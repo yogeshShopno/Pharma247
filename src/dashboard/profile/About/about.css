@@ -1,0 +1,34 @@
+.aboutPharmacy {
+  display: flex;
+  gap: 20px;
+  margin-top: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+}
+
+.aboutTextField {
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+/* .aboutTextField:hover {
+  background-color: rgba(4, 76, 157, 0.2);
+  border-radius: 5px;
+} */
+
+.labelStyles {
+  color: red;
+}
+
+.selected {
+  background-color: rgb(49 111 180 / 0.78);
+  color: white;
+}
+
+/* .selected {
+    background-color: yellow; 
+  } */
+.input-label {
+  color: red;
+}

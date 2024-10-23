@@ -1,0 +1,172 @@
+.heading {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+/* .filed {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    flex-wrap: wrap;
+} */
+
+.checkbox-text {
+  display: flex;
+  align-items: center;
+}
+
+.uploadBox {
+  margin: 20px;
+}
+
+.product {
+  font-weight: 700;
+  font-size: 20px;
+  color: #4b5675;
+}
+
+.upload {
+  width: 350px;
+  /* border-radius: 30px; */
+  border: 2px dashed #919191;
+  height: 300px;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.profile-upload {
+  width: 200px;
+  border: 2px dashed #919191;
+  border-radius: 10px;
+  height: 200px;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainform {
+  /* display: flex; */
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  /* flex-wrap: wrap; */
+  max-width: 1399px;
+}
+
+.UploadClass {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 10px;
+  align-items: center;
+}
+
+.content {
+  padding: 20px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-content: center;
+}
+
+.firstRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ExpenseBoxTitle {
+  color: rgb(4, 76, 157);
+  font-weight: 600;
+}
+
+.ExpenseBoxSubTitle {
+  color: rgb(4, 76, 157);
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  width: 300px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+}
+
+.file-upload-container input[type="file"] {
+  display: none;
+}
+
+.file-upload-container label {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.label {
+  margin-bottom: 7px;
+}
+
+.file-upload-container label:hover {
+  background-color: #0056b3;
+}
+
+.file-upload-container .file-name {
+  margin-top: 10px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  text-wrap: wrap;
+  color: #333;
+}
+
+.File-upload {
+  border: 1px solid black;
+  width: 100%;
+  padding: 5px;
+}
+
+.downloadFile {
+  color: #0056b3;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.errorFile {
+  color: red;
+}

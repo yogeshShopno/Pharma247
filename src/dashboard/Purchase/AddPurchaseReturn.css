@@ -1,0 +1,29 @@
+.invoice-footer {
+  margin-top: 20px;
+}
+
+.invoice-footer label {
+  display: inline-block;
+  width: 100px;
+}
+
+.invoice-footer input {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.totals {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 15px;
+  min-width: 5%;
+  flex-direction: column;
+}
+
+.totals-purchase {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 22px;
+  min-width: 5%;
+  flex-direction: column;
+}

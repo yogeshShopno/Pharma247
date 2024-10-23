@@ -1,0 +1,62 @@
+/* Pagination styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination-container button {
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0 20px;
+  }
+  
+  .pagination li {
+    margin-right: 5px;
+  }
+  
+  .pagination li button {
+    border: none;
+    background-color: transparent;
+    color: #007bff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .pagination li button:hover {
+    color: #0056b3;
+  }
+  
+  .pagination li.active button {
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 50%;
+  }
+
+  .fixed-height-datepicker .MuiInputBase-root {
+    height: 40px; /* Adjust the height as needed */
+    box-sizing: border-box;
+  }
+
+  .custom-datepicker {
+    height: 40px; /* Set the height you need */
+    box-sizing: border-box;
+    width: 100%; /* Optional: to make the date picker take the full width */
+    padding: 8px; /* Adjust padding if necessary */
+    border: 1px solid #ccc; /* Optional: to style the border */
+    border-radius: 4px; /* Optional: to style the border radius */
+  }

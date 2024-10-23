@@ -1,0 +1,79 @@
+.toast {
+    position: fixed;
+    top: 65px;
+    right: 20px;
+    min-width: 200px;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 4px 6px rgba(243, 239, 239, 0.1);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.toast.active {
+    transform: translateY(0);
+}
+
+.toast-red {
+    background-color: #dc3545;
+    color: white;
+}
+
+.toast-green {
+    background-color: #28a745;
+    color: white;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+}
+
+.message {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.toast-close {
+    cursor: pointer;
+}
+
+.progress {
+    height: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0;
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

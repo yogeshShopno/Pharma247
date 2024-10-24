@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Button, CircularProgress, ListItemText, TextField } from "@mui/material";
+import { Button, Checkbox, CircularProgress, ListItemText, TextField } from "@mui/material";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import ListItem from '@mui/material/ListItem';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -15,9 +15,9 @@ import { MenuItem, Select } from '@mui/material';
 import { BsLightbulbFill } from "react-icons/bs";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+
 const Salereturn = () => {
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
@@ -89,6 +89,8 @@ const Salereturn = () => {
     const [bankData, setBankData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchDoctor, setSearchDoctor] = useState('');
+    const [selectedItem, setSelectedItem] = useState([]);
+
     useEffect(() => {
         if (searchDoctor) {
             const ListOfDoctor = async () => {
@@ -236,6 +238,33 @@ const Salereturn = () => {
         }
     }, [searchQuery, token]);
 
+    const handleChecked = async (itemId, checked) => {
+        let data = new FormData();
+        data.append("id", itemId);
+        // try {
+        //     const response = await axios.post("sales-return-iteam-select", data, {
+        //         headers: {
+        //             Authorization: `Bearer ${token}`,
+        //         },
+        //     });
+        //     console.log(response, "response")
+        //     if (response.data) {
+        //         setSelectedItem((prevSelected) => {
+        //             if (checked) {
+        //                 return [...prevSelected, itemId];
+        //             } else {
+        //                 return prevSelected.filter((id) => id !== itemId);
+        //             }
+        //         });
+        //         const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
+        //         setSelectAll(allSelected);
+        //         validfilter()
+        //     }
+        // } catch (error) {
+        //     console.error("API error:", error);
+        // }
+    };
+
     const validfilter = () => {
         const newErrors = {};
 
@@ -355,8 +384,12 @@ const Salereturn = () => {
     const handleSubmit = () => {
         const newErrors = {};
         if (!customer) {
-            newErrors.customer = 'Please select Patient';
+            newErrors.customer = 'Please select customer';
         }
+        // if (selectedItem.length === 0) {
+        //     newErrors.ItemId = 'Please select at least one item';
+        //     toast.error('Please select at least one item');
+        // }
         setError(newErrors);
         if (Object.keys(newErrors).length > 0) {
             return;
@@ -366,21 +399,22 @@ const Salereturn = () => {
 
     const submitSaleReturnData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('SaleRetunBillNo'));
-        data.append("bill_date", selectedDate.format('YYYY-MM-DD'))
-        data.append("customer_id", customer.id);
-        data.append("customer_address", address)
-        data.append("doctor_id", doctor.id);
-        data.append('payment_name', paymentType)
-        data.append('mrp_total', totalAmount)
-        data.append('total_discount', finalDiscount)
-        data.append('other_amount', otherAmt)
-        data.append('net_amount', netAmount)
-        data.append('total_base', totalBase)
-        data.append('igst', '0')
-        data.append('cgst', cgst)
-        data.append('sgst', sgst)
-        data.append('product_list', JSON.stringify(saleItems.sales_item))
+        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') || '');
+        data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
+        data.append("customer_id", (customer && customer.id) ? customer.id : '');
+        data.append("customer_address", address || '');
+        data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
+        data.append('payment_name', paymentType || '');
+        data.append('mrp_total', totalAmount || '');
+        data.append('total_discount', finalDiscount || '');
+        data.append('other_amount', otherAmt || '');
+        data.append('net_amount', netAmount || '');
+        data.append('total_base', totalBase || '');
+        data.append('igst', '0');  // Assuming IGST is always 0
+        data.append('cgst', cgst || '');
+        data.append('sgst', sgst || '');
+        data.append('product_list', JSON.stringify(saleItems.sales_item) || '');
+
         try {
             await axios.post("sales-return-create", data, {
                 headers: {
@@ -455,6 +489,7 @@ const Salereturn = () => {
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name)
+
         if (selectedEditItem) {
             setUnit(selectedEditItem.unit);
             setSearchItemID(selectedEditItem.item_id)
@@ -906,11 +941,20 @@ const Salereturn = () => {
                                                     <>
                                                         {saleItems?.sales_item?.map(item => (
                                                             <tr key={item.id} className="item-List border-b border-gray-400 "
-                                                                onClick={() => handleEditClick(item)}
-                                                            >
+                                                                onClick={(event) => handleEditClick(item, event.target)}                                                            >
                                                                 <td style={{
                                                                     display: 'flex', gap: '8px',
                                                                 }}>
+                                                                    <td>
+                                                                        <Checkbox
+                                                                            // key={item.id}
+                                                                            // checked={item?.iss_check}
+                                                                            onClick={(event) => {
+                                                                                event.stopPropagation();
+                                                                            }}
+                                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}
+                                                                        />
+                                                                    </td>
                                                                     < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
                                                                     <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                                     {item.iteam_name}

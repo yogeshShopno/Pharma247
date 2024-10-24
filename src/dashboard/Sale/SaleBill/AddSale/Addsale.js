@@ -358,7 +358,7 @@ const Addsale = () => {
         setMRP(event.mrp);
         setBase(event.mrp);
         setGst(event.gst);
-        setQty(event.qty);
+        setQty(event.unit);
         setLoc(event.location)
     }
 
@@ -928,7 +928,7 @@ const Addsale = () => {
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
+                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address </span>
 
                                     <TextField id="outlined-basic"
                                         value={address}
@@ -1139,8 +1139,8 @@ const Addsale = () => {
                                                     <ListItem {...props}
                                                     >
                                                         <ListItemText
-                                                            primary={`${option.iteam_name} - ${option.stock}`}
-                                                            secondary={`weightage: ${option.weightage}`}
+                                                            primary={`${option.iteam_name},(${option.company})`}
+                                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
                                                             sx={{
                                                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                                                             }}
@@ -1200,14 +1200,14 @@ const Addsale = () => {
                                                 <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
                                                         <tr className="customtable">
-                                                            <th>Item Name</th>
+                                                            <th>Item Name </th>
                                                             <th>Batch Number</th>
                                                             <th>Unit</th>
                                                             <th>Expiry Date</th>
                                                             <th>QTY</th>
                                                             <th>Loc</th>
                                                         </tr>
-                                                    </thead>
+                                                        </thead>
                                                     <tbody>
                                                         {batchListData.length > 0 ?
                                                             <>

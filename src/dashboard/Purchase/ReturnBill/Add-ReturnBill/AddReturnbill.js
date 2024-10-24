@@ -1088,7 +1088,7 @@ const AddReturnbill = () => {
                                                     <TextField
                                                         id="outlined-basic"
                                                         size="small"
-                                                        sx={{ width: "75%", marginTop: "5px" }}
+                                                        sx={{ width: "100%",marginLeft: "15px",marginBlock:"10px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
                                                         variant="outlined"

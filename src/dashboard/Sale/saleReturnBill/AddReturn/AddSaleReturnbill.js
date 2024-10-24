@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Button, Checkbox, CircularProgress, ListItemText, TextField } from "@mui/material";
+import { Button, Checkbox, CircularProgress, InputAdornment, ListItemText, TextField } from "@mui/material";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import ListItem from '@mui/material/ListItem';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -17,6 +17,8 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import SearchIcon from "@mui/icons-material/Search";
+
 
 const Salereturn = () => {
     const token = localStorage.getItem("token")
@@ -237,32 +239,42 @@ const Salereturn = () => {
             setCustomerDetails([]);
         }
     }, [searchQuery, token]);
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setSearchQuery(value); // Update the state first
+        validfilter(value)
+        ; // Call the filter function with the updated value
+    };
+
 
     const handleChecked = async (itemId, checked) => {
         let data = new FormData();
         data.append("id", itemId);
-        // try {
-        //     const response = await axios.post("sales-return-iteam-select", data, {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`,
-        //         },
-        //     });
-        //     console.log(response, "response")
-        //     if (response.data) {
-        //         setSelectedItem((prevSelected) => {
-        //             if (checked) {
-        //                 return [...prevSelected, itemId];
-        //             } else {
-        //                 return prevSelected.filter((id) => id !== itemId);
-        //             }
-        //         });
-        //         const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
-        //         setSelectAll(allSelected);
-        //         validfilter()
-        //     }
-        // } catch (error) {
-        //     console.error("API error:", error);
-        // }
+        data.append("type", 0);
+
+        try {
+            const response = await axios.post("sales-return-iteam-select", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            validfilter()
+            console.log(response, "response")
+            // if (response.data) {
+            //     setSelectedItem((prevSelected) => {
+            //         if (checked) {
+            //             return [...prevSelected, itemId];
+            //         } else {
+            //             return prevSelected.filter((id) => id !== itemId);
+            //         }
+            //     });
+            //     const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
+            //     setSelectAll(allSelected);
+            //     validfilter()
+            // }
+        } catch (error) {
+            console.error("API error:", error);
+        }
     };
 
     const validfilter = () => {
@@ -804,10 +816,12 @@ const Salereturn = () => {
                                                 </tr>
                                             ) : (<>
                                                 <tr>
+
                                                     <td >
                                                         <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                         {searchItem}
                                                     </td>
+                                                    
                                                     <td>
 
                                                         <TextField
@@ -923,8 +937,25 @@ const Salereturn = () => {
                                                     <td className="total">{itemAmount}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td></td>
-                                                    <td></td>
+                                                <td>
+                                                    <TextField
+                                                        id="outlined-basic"
+                                                        size="small"
+                                                        sx={{ width: "100%",marginLeft: "15px",marginBlock:"10px" }}
+                                                        value={searchQuery}
+                                                        onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: "search",
+                                                        }}
+                                                    />
+                                                </td>                                                    <td></td>
                                                     <td></td>
                                                     {/* <td></td> */}
                                                     <td></td>
@@ -943,12 +974,12 @@ const Salereturn = () => {
                                                             <tr key={item.id} className="item-List border-b border-gray-400 "
                                                                 onClick={(event) => handleEditClick(item, event.target)}                                                            >
                                                                 <td style={{
-                                                                    display: 'flex', gap: '8px',
+                                                                    display: 'flex', gap: '8px',alignItems:"center"
                                                                 }}>
                                                                     <td>
                                                                         <Checkbox
-                                                                            // key={item.id}
-                                                                            // checked={item?.iss_check}
+                                                                            key={item.id}
+                                                                            checked={item?.iss_check}
                                                                             onClick={(event) => {
                                                                                 event.stopPropagation();
                                                                             }}

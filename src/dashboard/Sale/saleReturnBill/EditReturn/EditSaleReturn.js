@@ -771,9 +771,9 @@ const EditSaleReturn = () => {
                                             <div>
                                                 <label className="font-bold">Total Amount : </label>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <label className="font-bold">Discount % : </label>
-                                            </div>
+                                            </div> */}
                                             <div>
                                                 <label className="font-bold">Other Amount: </label>
                                             </div>
@@ -781,17 +781,17 @@ const EditSaleReturn = () => {
                                                 <label className="font-bold" >Net Amount % : </label>
                                             </div>
                                         </div>
-                                        <div class="totals">
+                                        <div class="totals" style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                     '& .MuiInputBase-root': {
                                                         height: '35px'
                                                     },
                                                 }} />
-                                            </div>
+                                            </div> */}
                                             <div>
                                                 <TextField value={otherAmt} onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                     '& .MuiInputBase-root': {

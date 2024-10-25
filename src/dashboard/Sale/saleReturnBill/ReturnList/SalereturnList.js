@@ -20,7 +20,7 @@ const columns = [
     { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
     { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
     { id: 'phone_number', label: 'Mobile No ', minWidth: 100 },
-    { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
+    { id: 'payment_name', label: 'Payment Mode', minWidth: 100 },
     { id: 'net_amount', label: 'Bill Amount', minWidth: 100 },
 ];
 const SalereturnList = () => {

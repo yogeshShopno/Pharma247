@@ -14,6 +14,7 @@ import axios from 'axios';
 import Loader from "../../../../componets/loader/Loader";
 import { FaFilePdf } from "react-icons/fa6";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
+import { toast } from "react-toastify";
 
 const columns = [
     { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
@@ -161,6 +162,38 @@ const Salelist = () => {
         }
     }
 
+    
+  const pdfGenerator = async (id) => {
+    let data = new FormData();
+    data.append('id', id);
+    setIsLoading(true);
+    try {
+      await axios.post("sales-pdf-downloads", data, {
+        // params: { id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+
+        const PDFURL = response.data.data.pdf_url;
+        toast.success(response.data.meassage)
+        setIsLoading(false);
+        handlePdf(PDFURL);
+      });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
+  const handlePdf = (url) => {
+    if (typeof url === 'string') {
+      window.open(url, '_blank');
+    } else {
+      console.error('Invalid URL for the PDF');
+    }
+  };
+
+
     return (
         <>
             <div>
@@ -234,9 +267,11 @@ const Salelist = () => {
                                                             <td>
                                                                 <div className="flex gap-4">
                                                                     < VisibilityIcon color="primary" className='cursor-pointer view' onClick={() => { history.push(`/salebill/view/${row.id}`) }} />
-                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black' />
+                                                                    {/* <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black' onClick={() => pdfGenerator(row.id)}/> */}
                                                                     {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
                                                                 </div>
+
+                                                              
 
                                                             </td>
                                                         </tr>

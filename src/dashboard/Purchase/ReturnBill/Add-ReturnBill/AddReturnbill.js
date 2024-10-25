@@ -393,7 +393,7 @@ const AddReturnbill = () => {
         // setIsLoading(true);
         data.append("start_date", startDate ? format(startDate, 'MM/yy') : '');
         data.append("end_date", endDate ? format(endDate, 'MM/yy') : '');
-        data.append("distributor_id", distributor.id);
+        data.append("distributor_id", distributor.id || '');
         data.append("search", value ? value : "");
         // console.log(searchQuery,"value")
 

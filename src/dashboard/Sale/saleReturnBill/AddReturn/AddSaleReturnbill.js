@@ -19,6 +19,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
 
+import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 
 const Salereturn = () => {
     const token = localStorage.getItem("token")
@@ -90,6 +91,8 @@ const Salereturn = () => {
     const [selectedEditItem, setSelectedEditItem] = useState(null);
     const [bankData, setBankData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [search, setSearch] = useState('');
+
     const [searchDoctor, setSearchDoctor] = useState('');
     const [selectedItem, setSelectedItem] = useState([]);
 
@@ -232,18 +235,19 @@ const Salereturn = () => {
 
             const delayDebounceFn = setTimeout(() => {
                 customerAllData();
-            }, 500); // Debounce to prevent too many API calls
+            }, 500); 
 
             return () => clearTimeout(delayDebounceFn);
         } else {
             setCustomerDetails([]);
         }
     }, [searchQuery, token]);
+    
     const handleInputChange = (e) => {
         const value = e.target.value;
-        setSearchQuery(value); // Update the state first
-        validfilter(value)
-        ; // Call the filter function with the updated value
+        setSearch(value);
+        getSaleItemList(value);
+        ; 
     };
 
 
@@ -290,11 +294,14 @@ const Salereturn = () => {
         }
     }
 
-    const getSaleItemList = async () => {
+    const getSaleItemList = async (value) => {
         let data = new FormData();
-        data.append('customer_id', customer.id);
-        data.append('start_date', startDate.format('YYYY-MM-DD'));
-        data.append('end_date', endDate.format('YYYY-MM-DD'));
+        data.append('customer_id', customer.id || '');
+        data.append('start_date', startDate.format('YYYY-MM-DD') || '');
+        data.append('end_date', endDate.format('YYYY-MM-DD') || '');
+        data.append('search', value || '');
+
+
         const params = {
             customer_id: customer.id,
             start_date: startDate,
@@ -815,7 +822,7 @@ const Salereturn = () => {
                                                     <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                 </tr>
                                             ) : (<>
-                                                <tr>
+                                                <tr  className="item-List border-b border-gray-400" >
 
                                                     <td >
                                                         <DeleteIcon className="delete-icon" onClick={resetValue} />
@@ -922,7 +929,7 @@ const Salereturn = () => {
                                                     />
                                                 </td> */}
 
-                                                    <td>
+                                                    <td >
                                                         <TextField
                                                             id="outlined-number"
                                                             size="small"
@@ -936,13 +943,13 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="total">{itemAmount}</td>
                                                 </tr>
-                                                <tr>
+                                              <tr className="item-List border-b border-gray-400 ">
                                                 <td>
                                                     <TextField
                                                         id="outlined-basic"
                                                         size="small"
-                                                        sx={{ width: "100%",marginLeft: "15px",marginBlock:"10px" }}
-                                                        value={searchQuery}
+                                                        sx={{ width: "90%",marginLeft: "20px",marginBlock:"10px" }}
+                                                        value={search}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
                                                         placeholder="Please search any items.."
@@ -971,7 +978,7 @@ const Salereturn = () => {
                                                 {saleItems.sales_item.length > 0 ?
                                                     <>
                                                         {saleItems?.sales_item?.map(item => (
-                                                            <tr key={item.id} className="item-List border-b border-gray-400 "
+                                                            <tr key={item.id} className="item-List border-b border-gray-400  "
                                                                 onClick={(event) => handleEditClick(item, event.target)}                                                            >
                                                                 <td style={{
                                                                     display: 'flex', gap: '8px',alignItems:"center"
@@ -1015,7 +1022,7 @@ const Salereturn = () => {
                                 </div>
                             </div>
                             {saleItems?.sales_item?.length > 0 && (
-                                <div className="flex gap-10 justify-end mt-4"  >
+                                <div className="flex gap-10 justify-end mt-4 "  >
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Base: </label>

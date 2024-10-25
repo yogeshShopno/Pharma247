@@ -140,7 +140,6 @@ const Purchasebill = () => {
         setTableData(response.data.data)
         setIsLoading(false);
 
-        //console.log(purchaseData)
       })
     } catch (error) {
       console.error("API error:", error);
@@ -186,7 +185,6 @@ const Purchasebill = () => {
 
         const PDFURL = response.data.data.pdf_url;
         toast.success(response.data.meassage)
-        //console.log(PDFURL, 'hh');
         setIsLoading(false);
         handlePdf(PDFURL);
       });
@@ -197,7 +195,6 @@ const Purchasebill = () => {
 
   const handlePdf = (url) => {
     if (typeof url === 'string') {
-      // Open the PDF in a new tab
       window.open(url, '_blank');
     } else {
       console.error('Invalid URL for the PDF');

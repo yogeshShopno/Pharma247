@@ -1010,7 +1010,7 @@ const AddPurchaseBill = () => {
                   history.push("/purchase/purchasebill");
                 }}
               >
-                Purchase
+                Purchase 
               </span>
               <ArrowForwardIosIcon
                 style={{

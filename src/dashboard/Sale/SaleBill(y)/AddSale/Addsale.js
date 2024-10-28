@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { FaPlusCircle } from "react-icons/fa";
-import { Alert, AlertTitle, Box, CircularProgress, MenuItem, Modal, Select, Tooltip } from '@mui/material';
+import { Alert, AlertTitle, Box, CircularProgress, MenuItem, Select, Tooltip } from '@mui/material';
 import { BsLightbulbFill } from "react-icons/bs";
 import { FiPrinter } from "react-icons/fi";
 import HistoryIcon from '@mui/icons-material/History';
@@ -26,8 +26,6 @@ import IconButton from '@mui/material/IconButton';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl } from '@mui/material';
 import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
-import { Prompt } from "react-router-dom/cjs/react-router-dom";
-
 const Addsale = () => {
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
@@ -66,8 +64,7 @@ const Addsale = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [ItemSaleList, setItemSaleList] = useState({ sales_item: [] });
     const [totalAmount, setTotalAmount] = useState(0)
-    const [qty, setQty] = useState(0);
-    const [maxQty, setMaxQty] = useState(0);
+    const [qty, setQty] = useState('');
     const [order, setOrder] = useState('');
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
@@ -94,8 +91,6 @@ const Addsale = () => {
     const [isVisible, setIsVisible] = useState(true);
     const tableRef = useRef(null);
     const [totalBase, setTotalBase] = useState(0);
-    const [totalNetRate, setTotalNetRate] = useState(0);
-    const [totalMargin, setTotalMargin] = useState(0);
     const [dueAmount, setDueAmount] = useState(null);
     const [givenAmt, setGivenAmt] = useState(null);
     const [otherAmt, setOtherAmt] = useState(0);
@@ -104,11 +99,6 @@ const Addsale = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchDoctor, setSearchDoctor] = useState('');
     const [purchaseHistory, setPurchaseHistory] = useState([]);
-
-    const [openModal, setOpenModal] = useState(false);
-    const [unsavedItems, setUnsavedItems] = useState(false);
-    const [nextPath, setNextPath] = useState("");
-
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
         { id: 'qty', label: 'QTY', minWidth: 100 },
@@ -352,7 +342,7 @@ const Addsale = () => {
             setMRP('');
             setBase('');
             setGst('');
-            setQty(0);
+            setQty('');
             setLoc('');
             setUnit('');
             setBatch('');
@@ -360,7 +350,6 @@ const Addsale = () => {
     };
 
     const handlePassData = (event) => {
-        
         setSearchItem(event.iteam_name)
         setBatch(event.batch_number);
         setItem(event.iteam_name);
@@ -369,9 +358,7 @@ const Addsale = () => {
         setMRP(event.mrp);
         setBase(event.mrp);
         setGst(event.gst);
-        setQty(event.qty);
-        setMaxQty(event.qty);
-
+        setQty(event.unit);
         setLoc(event.location)
     }
 
@@ -489,7 +476,6 @@ const Addsale = () => {
         draftSaleData();
     }
     const handleSubmit = () => {
-        setUnsavedItems(false);
         const newErrors = {};
         if (!customer) {
             newErrors.customer = 'Please select Customer';
@@ -526,7 +512,7 @@ const Addsale = () => {
         data.append('net_amount', netAmount)
         data.append('other_amount', otherAmt)
         data.append('total_discount', finalDiscount)
-        data.append('total_amount', totalAmount)
+        data.append('mrp_total', totalAmount)
         try {
             await axios.post("create-sales", data, {
                 headers: {
@@ -546,33 +532,6 @@ const Addsale = () => {
             console.error("API error:", error);
         }
     }
-
-    const handleNavigation = (path) => {
-        setOpenModal(true); // Show modal
-        setNextPath(path);   // Save the next path to navigate after confirmation
-    };
-
-    // Handle leaving page after user confirms in modal
-    const handleLeavePage = () => {
-        let data = new FormData();
-
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
-        axios.post("all-sales-item-delete", data, {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(() => {
-                setOpenModal(false);
-                setUnsavedItems(false); // Reset unsaved changes
-                history.push(nextPath); // Navigate to the saved path
-            })
-            .catch(error => {
-                console.error("Error deleting items:", error);
-            });
-    };
-
     const draftSaleData = async () => {
         let data = new FormData();
         data.append("bill_no", localStorage.getItem('BillNo'));
@@ -651,7 +610,6 @@ const Addsale = () => {
     };
 
     const addItemValidation = () => {
-        setUnsavedItems(true);
         if (!mrp) {
             toast.error('Please Select any Item Name')
         } else {
@@ -711,47 +669,11 @@ const Addsale = () => {
         }
     }
 
-    const [editQty, setEditQty] = useState(0);
-    const [initialStock, setInitialStock] = useState(0);
-    const [free, setFree] = useState(0);
-
-    // const handleEditClick = (item) => {
-    //     setSelectedEditItem(item);
-    //     setIsEditMode(true);
-    //     setSelectedEditItemId(item.id);
-    //     setSearchItem(item.iteam_name);
-    //     // setFree(item.purchase_free_qty);
-    //     // setInitialTotalStock(item.stock);
-    //     // setQty(item.qty);
-    //     setQty(item.qty);
-    //     setEditQty(item.qty);
-    //     setFree(item.purchase_free_qty);
-    //     setInitialStock(item.stock); // Set initial stock
-
-    //     if (selectedEditItem) {
-    //         setUnit(selectedEditItem.unit);
-    //         setBatch(selectedEditItem.batch);
-    //         setExpiryDate(selectedEditItem.exp);
-    //         setMRP(selectedEditItem.mrp);
-    //         setQty(selectedEditItem.qty);
-    //         setBase(selectedEditItem.base);
-    //         setGst(selectedEditItem.gst);
-    //         setLoc(selectedEditItem.location);
-    //         setOrder(selectedEditItem.order);
-    //         setItemAmount(selectedEditItem.net_rate);
-    //     }
-    // };
-
     const handleEditClick = (item) => {
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
-        setSearchItem(item.iteam_name);
-        // setQty(item.qty);
-        // setEditQty(item.qty);
-        // setFree(Number(item.purchase_free_qty)); // Ensure free is a number
-        // setInitialStock(Number(item.stock)); // Ensure stock is a number
-
+        setSearchItem(item.iteam_name)
         if (selectedEditItem) {
             setUnit(selectedEditItem.unit);
             setBatch(selectedEditItem.batch);
@@ -765,35 +687,6 @@ const Addsale = () => {
             setItemAmount(selectedEditItem.net_rate);
         }
     };
-
-    // const handleQtyChange = (e) => {
-    //     const inputQty = e.target.value ? Number(e.target.value) : 0; // Check for empty input and handle safely
-
-    //     // Ensure availableStockForEdit is always a valid number
-    //     const availableStockForEdit = Math.max(0, initialStock - free);
-
-    //     // Set qty based on valid input values
-    //     if (inputQty <= availableStockForEdit && inputQty >= 0) {
-    //         setQty(inputQty);
-    //     } else if (inputQty > availableStockForEdit) {
-    //         setQty(availableStockForEdit);
-    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
-    //     }
-    // };
-    // const handleQtyChange = (e) => {
-    //     const inputQty = Number(e.target.value);
-    //     const availableStockForEdit = initialTotalStock - free;
-
-    //     if (inputQty <= availableStockForEdit) {
-    //         setQty(inputQty);  // Valid input, update the qty
-    //     } else {
-    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
-    //         setQty(availableStockForEdit);  // Set to max available stock
-    //     }
-
-    // };
-
-
 
     const saleItemList = async () => {
         let data = new FormData();
@@ -812,8 +705,6 @@ const Addsale = () => {
                 setItemSaleList(response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
-                setTotalNetRate(response.data.data.total_net_rate)
-                setTotalMargin(response.data.data.total_margin)
             })
         } catch (error) {
             console.error("API error:", error);
@@ -866,7 +757,6 @@ const Addsale = () => {
             console.error("API error:", error);
         }
     }
-
 
     return (
         <>
@@ -1038,7 +928,7 @@ const Addsale = () => {
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
+                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address </span>
 
                                     <TextField id="outlined-basic"
                                         value={address}
@@ -1310,14 +1200,14 @@ const Addsale = () => {
                                                 <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
                                                         <tr className="customtable">
-                                                            <th>Item Name</th>
+                                                            <th>Item Name </th>
                                                             <th>Batch Number</th>
                                                             <th>Unit</th>
                                                             <th>Expiry Date</th>
                                                             <th>QTY</th>
                                                             <th>Loc</th>
                                                         </tr>
-                                                    </thead>
+                                                        </thead>
                                                     <tbody>
                                                         {batchListData.length > 0 ?
                                                             <>
@@ -1455,6 +1345,7 @@ const Addsale = () => {
                                                     />
                                                 </td>
                                                 <td>
+
                                                     <TextField
                                                         id="outlined-number"
                                                         type="number"
@@ -1462,17 +1353,8 @@ const Addsale = () => {
                                                         size="small"
                                                         inputRef={inputRef5}
                                                         onKeyDown={handleKeyDown}
-                                                        value={qty} // Ensure qty is properly controlled
-                                                        // onChange={handleQtyChange}
-                                                        onChange={(e) => {
-                                                            const enteredValue = Number(e.target.value, 10);
-                                                            
-                                                            if (enteredValue <= maxQty) {
-                                                            setQty(enteredValue); 
-                                                            }else{
-                                                            setQty(maxQty);
-                                                            }
-                                                          }}
+                                                        value={qty}
+                                                        onChange={(e) => { setQty(e.target.value) }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1552,16 +1434,16 @@ const Addsale = () => {
 
                             </div>
                             {ItemSaleList.sales_item.length > 0 && (
-                                <div className="flex gap-10 justify-end mt-4 flex-wrap "  >
+                                <div className="flex gap-10 justify-end mt-4 flex-wrap sm:justify-center"  >
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total Base: </label>
-                                        <label className="font-bold">Margin: </label>
+                                        <div>
+                                            <label className="font-bold">Total Base: </label>
+                                        </div>
                                     </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <div class="totals">
                                         <span style={{ fontWeight: 600 }}>{totalBase} /-</span>
-                                        <span style={{ fontWeight: 600 }}>₹ {totalNetRate} ({totalMargin}%)</span>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Given Amount: </label>
                                         </div>
@@ -1572,19 +1454,21 @@ const Addsale = () => {
                                             <label className="font-bold text-red">Due Amount: </label>
                                         </div>
                                     </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column' }} >
-                                        <TextField size="small"
-                                            value={givenAmt}
-                                            onChange={(e) => { setGivenAmt(e.target.value) }}
-                                            style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px',
-                                                },
-                                            }} />
+                                    <div class="totals">
+                                        <div>
+                                            <TextField size="small"
+                                                value={givenAmt}
+                                                onChange={(e) => { setGivenAmt(e.target.value) }}
+                                                style={{ width: '105px' }} sx={{
+                                                    '& .MuiInputBase-root': {
+                                                        height: '35px',
+                                                    },
+                                                }} />
+                                        </div>
                                         <span className="font-bold ">{netAmount}/-</span>
                                         <span className="font-bold text-red-500">{dueAmount}/-</span>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">SGST : </label>
                                         </div>
@@ -1596,7 +1480,7 @@ const Addsale = () => {
                                         </div>
 
                                     </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <div class="totals">
                                         <div className="font-bold">
                                             {((ItemSaleList?.sgst).toFixed(2))}
                                         </div>
@@ -1611,7 +1495,7 @@ const Addsale = () => {
                                             }} />
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
                                         </div>
@@ -1625,11 +1509,11 @@ const Addsale = () => {
                                             <label className="font-bold" >Net Amount % : </label>
                                         </div>
                                     </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '17px', flexDirection: 'column' }}>
+                                    <div class="totals">
                                         <div>
                                             <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
                                         </div>
-                                        <div className="mt-1">
+                                        <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
@@ -1855,50 +1739,6 @@ const Addsale = () => {
                     </div>
                 </div>
             </div >
-
-            <Prompt
-                when={unsavedItems} // Triggers only if there are unsaved changes
-                message={(location) => {
-                    handleNavigation(location.pathname);
-                    return false; // Prevent automatic navigation
-                }}
-            />
-            <div id="modal" value={openModal}
-                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
-
-                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                    {/* Close button */}
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-                        viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                    </svg>
-
-                    <div className="my-4 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                            <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                            <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                        </svg>
-                        <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
-                    </div>
-
-                    <div className="flex gap-5 justify-center mt-10">
-                        <button
-                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                            onClick={handleLeavePage}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                            onClick={() => setOpenModal(false)}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </>
     )
 }

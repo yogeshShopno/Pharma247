@@ -11,7 +11,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { Prompt, useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import HistoryIcon from "@mui/icons-material/History";
 import { MenuItem, Select } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
@@ -57,8 +57,6 @@ const EditSaleBill = () => {
   const [givenAmt, setGivenAmt] = useState(null);
   const [finalDiscount, setFinalDiscount] = useState(null);
   const [netAmount, setNetAmount] = useState(0);
-  const [netRateAmount, setNetRateAmount] = useState(0);
-  const [margin, setMargin] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [otherAmt, setOtherAmt] = useState(null);
   const [qty, setQty] = useState("");
@@ -84,10 +82,6 @@ const EditSaleBill = () => {
   const [selectedEditItem, setSelectedEditItem] = useState(null);
   const [searchItemID, setSearchItemID] = useState(null);
   const [bankData, setBankData] = useState([]);
-
-  const [openModal, setOpenModal] = useState(false);
-  const [unsavedItems, setUnsavedItems] = useState(false);
-  const [nextPath, setNextPath] = useState("");
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -187,8 +181,6 @@ const EditSaleBill = () => {
       setFinalDiscount(record.total_discount);
       setNetAmount(record.net_amt);
       setOtherAmt(record.other_amount);
-      setNetRateAmount(record.total_net_rate);
-      setMargin(record.total_margin);
       const foundDoctor = doctorData.find(
         (option) => option.id == record.doctor_id
       );
@@ -296,32 +288,6 @@ const EditSaleBill = () => {
     }
   };
 
-  const handleNavigation = (path) => {
-    setOpenModal(true); // Show modal
-    setNextPath(path);   // Save the next path to navigate after confirmation
-  };
-
-  // Handle leaving page after user confirms in modal
-  const handleLeavePage = () => {
-    let data = new FormData();
-
-    const params = {
-      random_number: localStorage.getItem('RandomNumber')
-    };
-    axios.post("sales-history", data, {
-      params: params,
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(() => {
-        setOpenModal(false);
-        setUnsavedItems(false); // Reset unsaved changes
-        history.push(nextPath); // Navigate to the saved path
-      })
-      .catch(error => {
-        console.error("Error deleting items:", error);
-      });
-  };
-
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -416,8 +382,6 @@ const EditSaleBill = () => {
   };
 
   const addSaleItem = async () => {
-    setUnsavedItems(true);
-    localStorage.setItem('RandomNumber', randomNumber)
     let data = new FormData();
     if (isEditMode == true) {
       data.append("item_id", searchItemID);
@@ -444,16 +408,16 @@ const EditSaleBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("sales-item-edit?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+            params: params,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
         : await axios.post("sales-item-add", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
       //console.log("response", response);
       // saleItemList();
       saleBillGetBySaleID();
@@ -489,8 +453,6 @@ const EditSaleBill = () => {
     }
   };
   const handleUpdate = () => {
-    setUnsavedItems(false);
-
     const newErrors = {};
     if (!customer) {
       newErrors.customer = "Please select Customer";
@@ -1347,26 +1309,24 @@ const EditSaleBill = () => {
               </div>
               <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap">
                 <div
-                >
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <label className="font-bold">Total Base: </label>
-                    <label className="font-bold">Margin: </label>
-                  </div>
-                </div>
-                <div class="totals mr-3"
                   style={{
                     display: "flex",
                     gap: "25px",
                     flexDirection: "column",
-                  }}>
-                  <span style={{ fontWeight: 600 }}> {totalBase} /-</span>
-                  <span style={{ fontWeight: 600 }}>₹ {netRateAmount} ({margin}%) </span>
+                  }}
+                >
+                  <div>
+                    <label className="font-bold">Total Base: </label>
+                  </div>
+                </div>
+                <div class="totals">
+                  <span style={{ fontWeight: 600 }}>{totalBase} /-</span>
                 </div>
 
                 <div
                   style={{
                     display: "flex",
-                    gap: "25px",
+                    gap: "10px",
                     flexDirection: "column",
                   }}
                 >
@@ -1383,18 +1343,18 @@ const EditSaleBill = () => {
                 <div
                   style={{
                     display: "flex",
-                    gap: "25px",
+                    gap: "10px",
                     flexDirection: "column",
                   }}
                 >
                   <div className="font-bold">{saleAllData?.sgst}</div>
                   <div className="font-bold">{saleAllData?.cgst}</div>
-                  <div className="font-bold">{saleAllData?.igst}</div>
+                  <div>0.0</div>
                 </div>
                 <div
                   style={{
                     display: "flex",
-                    gap: "25px",
+                    gap: "22px",
                     flexDirection: "column",
                   }}
                 >
@@ -1415,12 +1375,7 @@ const EditSaleBill = () => {
                   <div>
                     <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
                   </div>
-                  <div className="mt-5" style={{
-                    display: "flex",
-                    gap: "15px",
-                    flexDirection: "column",
-                  }}>
-
+                  <div>
                     <TextField
                       value={finalDiscount}
                       onChange={(e) => {
@@ -1434,6 +1389,8 @@ const EditSaleBill = () => {
                         },
                       }}
                     />
+                  </div>
+                  <div>
                     <TextField
                       value={otherAmt}
                       onChange={(e) => {
@@ -1448,7 +1405,7 @@ const EditSaleBill = () => {
                       }}
                     />
                   </div>
-                  <div className="mt-3">
+                  <div>
                     <span
                       style={{
                         fontWeight: 800,
@@ -1467,8 +1424,9 @@ const EditSaleBill = () => {
             <div
               id="modal"
               value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                }`}
+              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+                IsDelete ? "block" : "hidden"
+              }`}
             >
               <div />
               <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1519,49 +1477,6 @@ const EditSaleBill = () => {
             </div>
           </div>
         )}
-      </div>
-
-      <Prompt
-        when={unsavedItems} // Triggers only if there are unsaved changes
-        message={(location) => {
-          handleNavigation(location.pathname);
-          return false; // Prevent automatic navigation
-        }}
-      />
-      <div id="modal" value={openModal}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
-
-        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-          {/* Close button */}
-          <svg xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-            viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-          </svg>
-
-          <div className="my-4 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-              <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-              <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-            </svg>
-            <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
-          </div>
-
-          <div className="flex gap-5 justify-center mt-10">
-            <button
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-              onClick={handleLeavePage}
-            >
-              Delete
-            </button>
-            <button
-              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-              onClick={() => setOpenModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
       </div>
     </>
   );

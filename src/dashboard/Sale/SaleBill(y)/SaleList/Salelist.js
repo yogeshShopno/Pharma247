@@ -21,7 +21,7 @@ const columns = [
     { id: 'bill_date', label: 'Bill Date', minWidth: 50 },
     { id: 'name', label: 'Customer Name', minWidth: 100 },
     { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
-    { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
+    { id: 'payment_name', label: 'Payment Mode', minWidth: 100 },
     { id: 'status', label: 'Status', minWidth: 100 },
     { id: 'net_amt', label: 'Bill Amount', minWidth: 100 },
 ];
@@ -162,37 +162,38 @@ const Salelist = () => {
         }
     }
 
-    const pdfGenerator = async (id) => {
-        let data = new FormData();
-        data.append('id', id);
-        setIsLoading(true);
-        try {
-            await axios.post("sales-pdf-downloads", data, {
-                params: { id },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
+    
+  const pdfGenerator = async (id) => {
+    let data = new FormData();
+    data.append('id', id);
+    setIsLoading(true);
+    try {
+      await axios.post("sales-pdf-downloads", data, {
+        // params: { id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
 
-                const PDFURL = response.data.data.pdf_url;
-                toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
-                setIsLoading(false);
-                handlePdf(PDFURL);
-            });
-        } catch (error) {
-            console.error("API error:", error);
-        }
-    };
+        const PDFURL = response.data.data.pdf_url;
+        toast.success(response.data.meassage)
+        setIsLoading(false);
+        handlePdf(PDFURL);
+      });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
 
-    const handlePdf = (url) => {
-        if (typeof url === 'string') {
-            // Open the PDF in a new tab
-            window.open(url, '_blank');
-        } else {
-            console.error('Invalid URL for the PDF');
-        }
-    };
+  const handlePdf = (url) => {
+    if (typeof url === 'string') {
+      window.open(url, '_blank');
+    } else {
+      console.error('Invalid URL for the PDF');
+    }
+  };
+
+
     return (
         <>
             <div>
@@ -252,9 +253,9 @@ const Salelist = () => {
                                                                 const value = row[column.id];
                                                                 const statusClass = isStatus && value === 'due' ? 'dueStatus' : isStatus && value === 'Paid' ? 'orderStatus' : 'text-black';
                                                                 return (
-                                                                    <td key={column.id}
-                                                                        className={`text-lg `}
-                                                                        align={column.align} onClick={() => { history.push("/salebill/view/" + row.id) }}>
+                                                                    <td key={column.id} 
+                                                                    className={`text-lg `}
+                                                                    align={column.align} onClick={() => { history.push("/salebill/view/" + row.id) }}>
                                                                         <span className={`text ${isStatus && statusClass}`}>
                                                                             {column.format && typeof value === 'number'
                                                                                 ? column.format(value)
@@ -266,11 +267,11 @@ const Salelist = () => {
                                                             <td>
                                                                 <div className="flex gap-4">
                                                                     < VisibilityIcon color="primary" className='cursor-pointer view' onClick={() => { history.push(`/salebill/view/${row.id}`) }} />
-                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black'
-                                                                        onClick={() => pdfGenerator(row.id)}
-                                                                    />
+                                                                    {/* <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black' onClick={() => pdfGenerator(row.id)}/> */}
                                                                     {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
                                                                 </div>
+
+                                                              
 
                                                             </td>
                                                         </tr>

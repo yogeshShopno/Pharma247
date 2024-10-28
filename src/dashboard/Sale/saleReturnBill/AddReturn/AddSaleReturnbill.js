@@ -18,6 +18,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
+import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
 import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 
@@ -96,6 +97,10 @@ const Salereturn = () => {
     const [searchDoctor, setSearchDoctor] = useState('');
     const [selectedItem, setSelectedItem] = useState([]);
 
+    const [openModal, setOpenModal] = useState(false);
+    const [unsavedItems, setUnsavedItems] = useState(false);
+    const [nextPath, setNextPath] = useState("");
+    
     useEffect(() => {
         if (searchDoctor) {
             const ListOfDoctor = async () => {
@@ -330,6 +335,8 @@ const Salereturn = () => {
     }
 
     const editReturnItem = async () => {
+        setUnsavedItems(true);
+
         let data = new FormData();
         data.append("id", selectedEditItemId)
         data.append('item_id', searchItemID)
@@ -401,6 +408,7 @@ const Salereturn = () => {
 
 
     const handleSubmit = () => {
+
         const newErrors = {};
         if (!customer) {
             newErrors.customer = 'Please select customer';
@@ -444,6 +452,8 @@ const Salereturn = () => {
                 //console.log(response.data);
                 //console.log("response===>", response.data);
                 toast.success(response.data.message);
+                setUnsavedItems(false);
+
                 setTimeout(() => {
                     history.push('/saleReturn/list');
                 }, 2000);
@@ -523,6 +533,32 @@ const Salereturn = () => {
             setItemAmount(selectedEditItem.net_rate);
             setRandomNumber(selectedEditItem.random_number)
         }
+    };
+
+    const handleNavigation = (path) => {
+        setOpenModal(true); // Show modal
+        setNextPath(path);   // Save the next path to navigate after confirmation
+    };
+
+    // Handle leaving page after user confirms in modal
+    const handleLeavePage = () => {
+        let data = new FormData();
+
+        const params = {
+            random_number: localStorage.getItem('RandomNumber')
+        };
+        axios.post("sales-return-delete-history", data, {
+            params: params,
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(() => {
+                setOpenModal(false);
+                setUnsavedItems(false); // Reset unsaved changes
+                history.push(nextPath); // Navigate to the saved path
+            })
+            .catch(error => {
+                console.error("Error deleting items:", error);
+            });
     };
 
     return (
@@ -1133,6 +1169,48 @@ const Salereturn = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <Prompt
+                when={unsavedItems} // Triggers only if there are unsaved changes
+                message={(location) => {
+                    handleNavigation(location.pathname);
+                    return false; // Prevent automatic navigation
+                }}
+            />
+            <div id="modal" value={openModal}
+                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
+
+                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                    {/* Close button */}
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
+                        viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+                    </svg>
+
+                    <div className="my-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
+                            <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                            <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
+                        </svg>
+                        <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
+                    </div>
+
+                    <div className="flex gap-5 justify-center mt-10">
+                        <button
+                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                            onClick={handleLeavePage}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                            onClick={() => setOpenModal(false)}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>

@@ -71,7 +71,10 @@ const Salereturn = () => {
     const tableRef = useRef(null);
     const [unit, setUnit] = useState('')
     const [isEditMode, setIsEditMode] = useState(false);
-    const [totalAmount, setTotalAmount] = useState(0)
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalMargin, setTotalMargin] = useState(0)
+    const [totalNetRate, setTotalNetRate] = useState(0)
+
     const [itemAmount, setItemAmount] = useState(null);
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
@@ -85,6 +88,7 @@ const Salereturn = () => {
     const [totalBase, setTotalBase] = useState(0);
     const [givenAmt, setGivenAmt] = useState(null);
     const [otherAmt, setOtherAmt] = useState(0);
+    const [roundOff, setRoundOff] = useState(0);
     const [netAmount, setNetAmount] = useState(0)
     const [finalDiscount, setFinalDiscount] = useState(0)
     const [dueAmount, setDueAmount] = useState(null);
@@ -165,11 +169,38 @@ const Salereturn = () => {
         }
     }, [base, qty]);
 
+
     useEffect(() => {
-        const discountAmount = (totalAmount * finalDiscount) / 100;
-        const finalAmount = totalAmount - discountAmount;
-        setNetAmount(finalAmount.toFixed(2));
-    }, [totalAmount, finalDiscount]);
+        if(-otherAmt >= totalAmount){
+            setOtherAmt(totalAmount)
+        }
+
+        const finalAmount = Number(totalAmount) + Number(otherAmt);
+        const decimalPart =Number((finalAmount % 1).toFixed(2)); 
+        const roundedDecimal = decimalPart; 
+        if(decimalPart<0.49){
+        
+            setRoundOff(-roundedDecimal);
+            setNetAmount(Math.floor(finalAmount)); 
+
+        }else{
+            setRoundOff(1-roundedDecimal);
+            setNetAmount(Math.ceil(finalAmount)); 
+
+        }
+      
+      
+        
+        
+    }, [totalAmount, otherAmt]);
+
+
+
+    // useEffect(() => {
+    //     const discountAmount = (totalAmount * finalDiscount) / 100;
+    //     const finalAmount = totalAmount - discountAmount;
+    //     setNetAmount(finalAmount.toFixed(2));
+    // }, [totalAmount, finalDiscount]);
 
     const handleCustomerOption = (event, newValue) => {
         setCustomer(newValue);
@@ -289,7 +320,6 @@ const Salereturn = () => {
                 },
             });
             validfilter()
-            console.log(response, "response")
             // if (response.data) {
             //     setSelectedItem((prevSelected) => {
             //         if (checked) {
@@ -347,6 +377,9 @@ const Salereturn = () => {
                 setSgst(response.data.data.sgst)
                 setCgst(response.data.data.cgst)
                 setTotalAmount(response.data.data.sales_amount)
+                setTotalMargin(response.data.data.total_margin)
+                setTotalNetRate(response.data.data.total_net_rate)
+
                 setIsLoading(false);
             })
         } catch (error) {
@@ -550,7 +583,7 @@ const Salereturn = () => {
     const handleEditClick = (item) => {
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        console.log(existingItem,"existingItem")
+        console.log(existingItem, "existingItem")
 
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
@@ -558,7 +591,7 @@ const Salereturn = () => {
             setTempQty(item.qty);
         } else {
             setTempQty(existingItem.qty);
-            
+
         }
 
 
@@ -569,15 +602,15 @@ const Salereturn = () => {
 
     };
 
-    const handleQty = (value) =>{
+    const handleQty = (value) => {
 
-        const newQty = Number(value); 
+        const newQty = Number(value);
 
         if (newQty > tempQty) {
-            setQty(tempQty); 
+            setQty(tempQty);
             toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
         } else if (newQty < 0) {
-            setQty(tempQty); 
+            setQty(tempQty);
             toast.error(`Quantity should not be less than 0`);
         } else {
             setQty(newQty)
@@ -722,7 +755,7 @@ const Salereturn = () => {
                                             width: '10%',
                                             minWidth: '400px',
                                             '& .MuiInputBase-root': {
-                                              
+
                                                 // fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
@@ -767,7 +800,7 @@ const Salereturn = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail"  style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
@@ -831,13 +864,13 @@ const Salereturn = () => {
                                 <div className='flex items-center gap-4'>
                                     <div className='flex gap-8 pb-4'>
                                         <div >
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)"  }}>Start Date</span>
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Start Date</span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={startDate}
                                                     onChange={(newDate) => setStartDate(newDate)}
                                                     format="DD/MM/YYYY"
-                                                    sx={{ width: '200px' }} 
+                                                    sx={{ width: '200px' }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -849,7 +882,7 @@ const Salereturn = () => {
                                                     value={endDate}
                                                     onChange={(newDate) => setEndDate(newDate)}
                                                     format="DD/MM/YYYY"
-                                                    sx={{ width: '200px' }} 
+                                                    sx={{ width: '200px' }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -889,7 +922,7 @@ const Salereturn = () => {
                                         }} variant="outlined" />
                                 </div> */}
 
-                                
+
                                 <div className="scroll-two">
                                     <table className="saleTable ">
                                         <thead>
@@ -920,7 +953,7 @@ const Salereturn = () => {
                                                         {searchItem}
                                                     </td>
 
-                                                    <td className ="td-up " >
+                                                    <td className="td-up " >
 
                                                         <TextField
                                                             id="outlined-number"
@@ -932,14 +965,14 @@ const Salereturn = () => {
                                                             value={unit}
                                                             sx={{ width: '90px', textAlign: '', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
-                                                          
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className ="td-up " >
+                                                    <td className="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -948,13 +981,13 @@ const Salereturn = () => {
                                                             disabled
                                                             value={batch}
                                                             onChange={(e) => { setBatch(e.target.value) }}
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className ="td-up " >
+                                                    <td className="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             disabled
@@ -964,13 +997,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td  className ="td-up ">
+                                                    <td className="td-up ">
                                                         <TextField
                                                             disabled
                                                             id="outlined-number"
@@ -981,13 +1014,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className ="td-up " >
+                                                    <td className="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -997,13 +1030,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className ="td-up ">
+                                                    <td className="td-up ">
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -1014,13 +1047,13 @@ const Salereturn = () => {
                                                             sx={{ width: '80px' }}
                                                             value={gst}
                                                             onChange={(e) => { setGst(e.target.value) }}
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className ="td-up " >
+                                                    <td className="td-up " >
 
                                                         <TextField
                                                             id="outlined-number"
@@ -1030,10 +1063,10 @@ const Salereturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
-                                                            onChange={(e)=>{handleQty(e.target.value)}}
-                                                              InputProps={{
+                                                            onChange={(e) => { handleQty(e.target.value) }}
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td >
@@ -1049,7 +1082,7 @@ const Salereturn = () => {
                                                     />
                                                 </td> */}
 
-                                                    <td  className ="td-up " >
+                                                    <td className="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             size="small"
@@ -1059,14 +1092,14 @@ const Salereturn = () => {
                                                             sx={{ width: '100px' }}
                                                             value={loc}
                                                             onChange={(e) => { setLoc(e.target.value) }}
-                                                              InputProps={{
+                                                            InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true 
+                                                                disableUnderline: true
                                                             }}
                                                         />
                                                     </td>
                                                     <td className="total" style={{ textAlign: "right" }}>{itemAmount}</td>
-                                                    </tr>
+                                                </tr>
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
                                                         <TextField
@@ -1102,7 +1135,7 @@ const Salereturn = () => {
                                                 {saleItems.sales_item.length > 0 ?
                                                     <>
                                                         {saleItems?.sales_item?.map(item => (
-                                                        <tr  key={item.id} className="item-List border-b border-gray-400 "
+                                                            <tr key={item.id} className="item-List border-b border-gray-400 "
                                                                 onClick={(event) => handleEditClick(item, event.target)}                                                            >
                                                                 <td style={{
                                                                     display: 'flex', gap: '8px', alignItems: "center"
@@ -1121,7 +1154,7 @@ const Salereturn = () => {
                                                                     <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                                     {item.iteam_name}
                                                                 </td>
-                                                               <td  className="td-bottom"  >{item.unit}</td>
+                                                                <td className="td-bottom"  >{item.unit}</td>
                                                                 <td className="td-bottom"> {item.batch}</td>
                                                                 <td className="td-bottom"> {item.exp}</td>
                                                                 <td className="td-bottom"> {item.mrp}</td>
@@ -1147,76 +1180,85 @@ const Salereturn = () => {
                             </div>
                             {saleItems?.sales_item?.length > 0 && (
                                 <div className="flex gap-10 justify-end mt-4 "  >
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                  
+                                  <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
-                                            <label className="font-bold">Total Base: </label>
+                                            <label className="font-bold">Total Base : </label>
                                         </div>
+
+                                        <div>
+                                            <label className="font-bold">Total Margin: </label>
+                                        </div>
+                                        <div>
+                                            <label className="font-bold">Total Net Rate: </label>
+                                        </div>
+                                        
                                     </div>
+                                    
                                     <div class="totals">
-                                        <span style={{ fontWeight: 600 }}>{totalBase} /-</span>
+                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalBase}/-</span>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalMargin}/-</span>
+                                            </div>      <div>
+                                                <span style={{ fontWeight: 600 }}>{totalNetRate}/-</span>
+                                            </div>
+                                            </div>
                                     </div>
 
-                                    {/* <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
-                                        <div>
-                                            <label className="font-bold">SGST : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">CGST: </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">IGST: </label>
-                                        </div>
-
-                                    </div> */}
-                                    {/* <div class="totals">
-                                        <div className="font-bold">
-                                            {sgst}
-                                        </div>
-                                        <div className="font-bold">
-                                            {cgst}
-                                        </div>
-                                        <div>
-                                            <TextField size="small" style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px',
-                                                },
-                                            }} />
-                                        </div>
-                                    </div> */}
                                     <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
                                         </div>
-                                        {/* <div>
-                                            <label className="font-bold">Discount % : </label>
-                                        </div> */}
+
                                         <div>
                                             <label className="font-bold">Other Amount: </label>
+                                        </div>
+                                        <div>
+                                            <label className="font-bold">Round Off  : </label>
                                         </div>
                                         <div>
                                             <label className="font-bold" >Net Amount % : </label>
                                         </div>
                                     </div>
                                     <div class="totals">
-                                        <div>
-                                            <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
-                                        </div>
-                                        {/* <div>
+                                        <div style={{ display: 'flex', gap: '17px', flexDirection: 'column' }}>
+
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
+                                            </div>
+                                            {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },
                                             }} />
                                         </div> */}
-                                        <div>
-                                            <TextField value={otherAmt} onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px',
-                                                },
-                                            }} />
-                                        </div>
-                                        <div>
-                                            <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{netAmount}/-</span>
+                                            <div>
+                                                <TextField value={otherAmt} 
+                                                onChange={(e) => { setOtherAmt(e.target.value) }}
+                                                 size="small"
+                                                 sx={{
+                                                    width: '105px',
+                                                    '& .MuiOutlinedInput-root': {
+                                                        borderBottom: '2px solid rgb(12, 161, 246)', // Bottom border only
+                                                        borderRadius: 0, // Removes rounded corners
+                                                        '& fieldset': {
+                                                            border: 'none', // Removes default border
+                                                        },
+                                                        height: '35px' // Adjust height here if needed
+                                                    },
+                                                }} />
+                                            </div>
+                                            <div>
+                                                <span >{roundOff.toFixed(2)}</span>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{netAmount}/-</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

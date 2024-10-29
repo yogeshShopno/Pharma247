@@ -506,13 +506,13 @@ const Addsale = () => {
     }
     const submitSaleData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('BillNo') || "");
-        data.append("customer_id", customer?.id || "");
-        data.append("status", 'Completed' || "");
-        data.append("bill_date", selectedDate.format('YYYY-MM-DD') || "")
+        data.append("bill_no", localStorage.getItem('BillNo'));
+        data.append("customer_id", customer?.id );
+        data.append("status", 'Completed');
+        data.append("bill_date", selectedDate.format('YYYY-MM-DD'))
         data.append("customer_address", address)
-        data.append("doctor_id", doctor?.id || "");
-        data.append('total_gst', '0 || ""')
+        data.append("doctor_id", doctor?.id );
+        data.append('total_gst', 0)
         data.append('igst', ItemSaleList?.igst || "")
         data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) || "")
         data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) || "")

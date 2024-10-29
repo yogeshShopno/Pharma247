@@ -491,20 +491,20 @@ const Salereturn = () => {
 
     const submitSaleReturnData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') || '');
+        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') );
         data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
         data.append("customer_id", (customer && customer.id) ? customer.id : '');
-        data.append("customer_address", address || '');
+        data.append("customer_address", address );
         data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
-        data.append('payment_name', paymentType || '');
-        data.append('mrp_total', totalAmount || '');
-        data.append('total_discount', finalDiscount || '');
-        data.append('other_amount', otherAmt || '');
-        data.append('net_amount', netAmount || '');
-        data.append('total_base', totalBase || '');
+        data.append('payment_name', paymentType );
+        data.append('mrp_total', totalAmount);
+        data.append('total_discount', finalDiscount );
+        data.append('other_amount', otherAmt );
+        data.append('net_amount', netAmount );
+        data.append('total_base', totalBase );
         data.append('igst', '0');  // Assuming IGST is always 0
-        data.append('cgst', cgst || '');
-        data.append('sgst', sgst || '');
+        data.append('cgst', cgst );
+        data.append('sgst', sgst );
         data.append('product_list', JSON.stringify(saleItems.sales_item) || '');
 
         try {

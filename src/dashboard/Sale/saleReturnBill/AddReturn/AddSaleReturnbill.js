@@ -502,7 +502,7 @@ const Salereturn = () => {
         data.append('other_amount', otherAmt );
         data.append('net_amount', netAmount );
         data.append('total_base', totalBase );
-        data.append('igst', '0');  // Assuming IGST is always 0
+        data.append('igst', '0'); 
         data.append('cgst', cgst );
         data.append('sgst', sgst );
         data.append('product_list', JSON.stringify(saleItems.sales_item) || '');

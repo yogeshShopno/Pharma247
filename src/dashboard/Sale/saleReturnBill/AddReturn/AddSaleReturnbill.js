@@ -319,19 +319,20 @@ const Salereturn = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            validfilter()
-            // if (response.data) {
-            //     setSelectedItem((prevSelected) => {
-            //         if (checked) {
-            //             return [...prevSelected, itemId];
-            //         } else {
-            //             return prevSelected.filter((id) => id !== itemId);
-            //         }
-            //     });
-            //     const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
-            //     setSelectAll(allSelected);
-            //     validfilter()
-            // }
+            if (response.data) {
+                setSelectedItem((prevSelected) => {
+                    if (checked) {
+                        return [...prevSelected, itemId];
+                    } else {
+                        return prevSelected.filter((id) => id !== itemId);
+                    }
+                });
+                // const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
+                // setSelectAll(allSelected);
+                validfilter()
+                console.log(selectedItem,"selectedItem")
+
+            }
         } catch (error) {
             console.error("API error:", error);
         }
@@ -480,10 +481,10 @@ const Salereturn = () => {
         if (!customer) {
             newErrors.customer = 'Please select customer';
         }
-        // if (selectedItem.length === 0) {
-        //     newErrors.ItemId = 'Please select at least one item';
-        //     toast.error('Please select at least one item');
-        // }
+        if (selectedItem.length === 0) {
+            newErrors.ItemId = 'Please select at least one item';
+            toast.error('Please select at least one item');
+        }
         setError(newErrors);
         if (Object.keys(newErrors).length > 0) {
             return;
@@ -1189,9 +1190,7 @@ const Salereturn = () => {
                                         <div>
                                             <label className="font-bold">Total Margin: </label>
                                         </div>
-                                        <div>
-                                            <label className="font-bold">Total Net Rate: </label>
-                                        </div>
+                                      
                                         
                                     </div>
                                     
@@ -1202,10 +1201,8 @@ const Salereturn = () => {
                                                 <span style={{ fontWeight: 600 }}>{totalBase}/-</span>
                                             </div>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>{totalMargin}/-</span>
-                                            </div>      <div>
-                                                <span style={{ fontWeight: 600 }}>{totalNetRate}/-</span>
-                                            </div>
+                                                <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
+                                            </div>  
                                             </div>
                                     </div>
 

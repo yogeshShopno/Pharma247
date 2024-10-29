@@ -43,7 +43,9 @@ const EditSaleReturn = () => {
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
-    const [qty, setQty] = useState('');
+    const [qty, setQty] = useState(0);
+    const [tempQty, setTempQty] = useState(0)
+
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -81,6 +83,8 @@ const EditSaleReturn = () => {
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
+    const [uniqueId, setUniqueId] = useState([])
+
     // useEffect(() => {
     //     const totalAmount = (qty / unit);
     //     const total = parseFloat(base) * totalAmount;
@@ -114,6 +118,24 @@ const EditSaleReturn = () => {
         initializeData();
         BankList();
     }, []);
+
+    useEffect(() => {
+        if (selectedEditItem) {
+            setSearchItem(selectedEditItem.iteam_name)
+            setSearchItemID(selectedEditItem.item_id)
+            setUnit(selectedEditItem.unit);
+            setBatch(selectedEditItem.batch);
+            setExpiryDate(selectedEditItem.exp);
+            setMRP(selectedEditItem.mrp);
+            setQty(selectedEditItem.qty);
+            setBase(selectedEditItem.base);
+            setOrder(selectedEditItem.order)
+            setGst(selectedEditItem.gst);
+            setLoc(selectedEditItem.location);
+            setItemAmount(selectedEditItem.net_rate);
+        }
+
+    }, [selectedEditItem]);
 
     const BankList = async () => {
         let data = new FormData()
@@ -265,6 +287,7 @@ const EditSaleReturn = () => {
         const params = {
             id: selectedEditItemId
         };
+        
         try {
             await axios.post("sales-return-edit-iteam-second?", data, {
                 params: params,
@@ -280,7 +303,7 @@ const EditSaleReturn = () => {
                 setBatch('')
                 setExpiryDate('');
                 setMRP('')
-                setQty('')
+                setQty(0)
                 setBase('')
                 setGst('')
                 setBatch('')
@@ -351,7 +374,7 @@ const EditSaleReturn = () => {
         setMRP('');
         setBase('');
         setGst('');
-        setQty('')
+        setQty(0)
         setOrder('')
         setLoc('');
         if (isNaN(itemAmount)) {
@@ -384,24 +407,39 @@ const EditSaleReturn = () => {
     }
 
     const handleEditClick = (item) => {
+
+        const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        console.log(existingItem,"existingItem")
+
+        if (!existingItem) {
+            // If the ID is unique, add the item to uniqueId and set tempQty
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+            setTempQty(item.qty);
+        } else {
+            setTempQty(existingItem.qty);
+            
+        }
+
         setSelectedEditItem(item);
         setSelectedEditItemId(item.id);
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.iteam_name)
-            setSearchItemID(selectedEditItem.item_id)
-            setUnit(selectedEditItem.unit);
-            setBatch(selectedEditItem.batch);
-            setExpiryDate(selectedEditItem.exp);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setBase(selectedEditItem.base);
-            setOrder(selectedEditItem.order)
-            setGst(selectedEditItem.gst);
-            setLoc(selectedEditItem.location);
-            setItemAmount(selectedEditItem.net_rate);
-        }
+       
     };
 
+    const handleQty = (value) =>{
+
+        const newQty = Number(value); 
+
+        if (newQty > tempQty) {
+            setQty(tempQty); 
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+        } else if (newQty < 0) {
+            setQty(tempQty); 
+            toast.error(`Quantity should not be less than 0`);
+        } else {
+            setQty(newQty)
+        }
+
+    }
 
     const handleNavigation = (path) => {
         setOpenModal(true); // Show modal
@@ -721,7 +759,7 @@ const EditSaleReturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
-                                                            onChange={(e) => { setQty(e.target.value) }}
+                                                            onChange={(e) => { handleQty(e.target.value) }}
                                                         />
                                                     </td>
 

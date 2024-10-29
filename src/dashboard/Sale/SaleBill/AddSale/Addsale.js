@@ -268,7 +268,7 @@ const Addsale = () => {
         setNetAmount(finalAmount.toFixed(2));
         const due = givenAmt - netAmount
         setDueAmount(due.toFixed(2))
-    }, [totalAmount, finalDiscount, givenAmt, netAmount]);
+    }, [totalAmount, finalDiscount, givenAmt, netAmount,]);
 
 
     const handleSearch = async () => {
@@ -506,27 +506,27 @@ const Addsale = () => {
     }
     const submitSaleData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('BillNo'));
-        data.append("customer_id", customer?.id);
-        data.append("status", 'Completed');
-        data.append("bill_date", selectedDate.format('YYYY-MM-DD'))
+        data.append("bill_no", localStorage.getItem('BillNo') || "");
+        data.append("customer_id", customer?.id || "");
+        data.append("status", 'Completed' || "");
+        data.append("bill_date", selectedDate.format('YYYY-MM-DD') || "")
         data.append("customer_address", address)
-        data.append("doctor_id", doctor?.id);
-        data.append('total_gst', '0')
-        data.append('igst', ItemSaleList?.igst)
-        data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)))
-        data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)))
-        data.append('given_amount', givenAmt)//no
-        data.append('due_amount', dueAmount)//no
-        data.append('total_base', totalBase)
-        data.append('pickup', pickup)
-        data.append('owner_name', '0')
-        data.append('payment_name', paymentType)
-        data.append('product_list', JSON.stringify(ItemSaleList.sales_item))
-        data.append('net_amount', netAmount)
-        data.append('other_amount', otherAmt)
-        data.append('total_discount', finalDiscount)
-        data.append('total_amount', totalAmount)
+        data.append("doctor_id", doctor?.id || "");
+        data.append('total_gst', '0 || ""')
+        data.append('igst', ItemSaleList?.igst || "")
+        data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) || "")
+        data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) || "")
+        data.append('given_amount', givenAmt || "")//no
+        data.append('due_amount', dueAmount || "")//no
+        data.append('total_base', totalBase || "")
+        data.append('pickup', pickup || "")
+        data.append('owner_name', '0' || "")
+        data.append('payment_name', paymentType  || "")
+        data.append('product_list', JSON.stringify(ItemSaleList.sales_item) || "")
+        data.append('net_amount', netAmount || "")
+        data.append('other_amount', otherAmt ||"")
+        data.append('total_discount', finalDiscount ||"")
+        data.append('total_amount', totalAmount ||"")
         try {
             await axios.post("create-sales", data, {
                 headers: {

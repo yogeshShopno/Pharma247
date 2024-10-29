@@ -173,7 +173,7 @@ const AddReturnbill = () => {
             setBatch(selectedEditItem.batch_number);
             setExpiryDate(selectedEditItem.expiry);
             setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
+            setQty(Number(selectedEditItem.qty));
             setFree(selectedEditItem.fr_qty);
             setPTR(selectedEditItem.ptr);
             setDisc(selectedEditItem.disocunt);
@@ -449,7 +449,7 @@ const AddReturnbill = () => {
         setSearchItem('');
         setExpiryDate('');
         setMRP('')
-        setQty('')
+        setQty(0)
         setFree('')
         setPTR('')
         setDisc('')
@@ -542,7 +542,6 @@ const AddReturnbill = () => {
         setItemPurchaseId(item.item_id);
         setTempQty(item.qty)
 
-        console.log(item.qty, "qty")
     };
 
     const handleQtyChange = (value) => {
@@ -706,7 +705,7 @@ const AddReturnbill = () => {
             setBatch('')
             setExpiryDate('');
             setMRP('')
-            setQty('')
+            setQty(0)
             setFree('')
             setPTR('')
             setGst('')
@@ -995,7 +994,7 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
-                                                        onChange={(e) => {e.target.value>tempQty?setQty(tempQty): setQty(e.target.value) }}
+                                                        onChange={(e) => {Number(e.target.value)>tempQty?setQty(tempQty): setQty(Number(e.target.value)) }}
 
                                                     // onChange={(e) => {
                                                     //     const inputQty = Number(e.target.value); // Convert the input value to a number

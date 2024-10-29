@@ -55,9 +55,11 @@ const Salereturn = () => {
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
     const [searchItemID, setSearchItemID] = useState(null);
-    const [qty, setQty] = useState('');
+    const [qty, setQty] = useState(0);
+    const [tempQty, setTempQty] = useState(0)
+
     const [gst, setGst] = useState('');
-    const [batch, setBatch] = useState('');
+    const [batch, setBatch] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [customerDetails, setCustomerDetails] = useState([])
     const [doctorData, setDoctorData] = useState([])
@@ -100,7 +102,9 @@ const Salereturn = () => {
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
-    
+    const [errors, setErrors] = useState({});
+    const [uniqueId, setUniqueId] = useState([])
+
     useEffect(() => {
         if (searchDoctor) {
             const ListOfDoctor = async () => {
@@ -210,6 +214,23 @@ const Salereturn = () => {
             console.error("API error:", error);
         }
     }
+    useEffect(() => {
+        if (selectedEditItem) {
+            setUnit(selectedEditItem.unit);
+            setSearchItemID(selectedEditItem.item_id)
+            setBatch(selectedEditItem.batch);
+            setExpiryDate(selectedEditItem.exp);
+            setMRP(selectedEditItem.mrp);
+            setQty(selectedEditItem.qty);
+            setBase(selectedEditItem.base);
+            setGst(selectedEditItem.gst);
+            setLoc(selectedEditItem.location);
+            setOrder(selectedEditItem.order);
+            setItemAmount(selectedEditItem.net_rate);
+        }
+
+    }, [selectedEditItem]);
+
 
     useEffect(() => {
         if (searchQuery) {
@@ -240,19 +261,19 @@ const Salereturn = () => {
 
             const delayDebounceFn = setTimeout(() => {
                 customerAllData();
-            }, 500); 
+            }, 500);
 
             return () => clearTimeout(delayDebounceFn);
         } else {
             setCustomerDetails([]);
         }
     }, [searchQuery, token]);
-    
+
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearch(value);
         getSaleItemList(value);
-        ; 
+        ;
     };
 
 
@@ -335,49 +356,62 @@ const Salereturn = () => {
     }
 
     const editReturnItem = async () => {
+        const newErrors = {};
         setUnsavedItems(true);
 
-        let data = new FormData();
-        data.append("id", selectedEditItemId)
-        data.append('item_id', searchItemID)
-        data.append("qty", qty)
-        data.append("exp", expiryDate)
-        data.append('gst', gst)
-        data.append("mrp", mrp)
-        data.append("unit", unit);
-        data.append("random_number", randomNumber);
-        data.append("unit", unit)
-        data.append("batch", batch)
-        data.append('location', loc)
-        data.append("base", base)
-        data.append('amt', itemAmount)
-        data.append('net_rate', itemAmount)
-        // data.append("order", order)
-        const params = {
-            id: selectedEditItemId
-        };
-        try {
-            await axios.post("sales-return-edit-iteam?", data, {
-                params: params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
-                getSaleItemList();
-                setSearchItem(null)
-                setUnit('')
-                setBatch('')
-                setExpiryDate('');
-                setMRP('')
-                setQty('')
-                setBase('')
-                setGst('')
-                setBatch('')
-                setLoc('')
-            })
+
+        if (Number(tempQty) < Number(qty)) {
+            console.log(tempQty, qty, "")
+            newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
+            toast.error('Quantity should not be greater than purchase quantity ')
+            return
         }
-        catch (e) {
-            //console.log(e)
+        setErrors(newErrors);
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+
+            let data = new FormData();
+            data.append("id", selectedEditItemId)
+            data.append('item_id', searchItemID)
+            data.append("qty", qty)
+            data.append("exp", expiryDate)
+            data.append('gst', gst)
+            data.append("mrp", mrp)
+            data.append("unit", unit);
+            data.append("random_number", randomNumber);
+            data.append("unit", unit)
+            data.append("batch", batch)
+            data.append('location', loc)
+            data.append("base", base)
+            data.append('amt', itemAmount)
+            data.append('net_rate', itemAmount)
+            // data.append("order", order)
+            const params = {
+                id: selectedEditItemId
+            };
+            try {
+                await axios.post("sales-return-edit-iteam?", data, {
+                    params: params,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }).then((response) => {
+                    getSaleItemList();
+                    setSearchItem(null)
+                    setUnit('')
+                    setBatch('')
+                    setExpiryDate('');
+                    setMRP('')
+                    setQty(0)
+                    setBase('')
+                    setGst('')
+                    setBatch('')
+                    setLoc('')
+                })
+            }
+            catch (e) {
+                //console.log(e)
+            }
         }
     }
 
@@ -505,7 +539,7 @@ const Salereturn = () => {
         setMRP('');
         setBase('');
         setGst('');
-        setQty('')
+        setQty(0)
         setOrder('')
         setLoc('');
         if (isNaN(itemAmount)) {
@@ -514,26 +548,44 @@ const Salereturn = () => {
     }
 
     const handleEditClick = (item) => {
+
+        const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        console.log(existingItem,"existingItem")
+
+        if (!existingItem) {
+            // If the ID is unique, add the item to uniqueId and set tempQty
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+            setTempQty(item.qty);
+        } else {
+            setTempQty(existingItem.qty);
+            
+        }
+
+
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name)
 
-        if (selectedEditItem) {
-            setUnit(selectedEditItem.unit);
-            setSearchItemID(selectedEditItem.item_id)
-            setBatch(selectedEditItem.batch);
-            setExpiryDate(selectedEditItem.exp);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setBase(selectedEditItem.base);
-            setGst(selectedEditItem.gst);
-            setLoc(selectedEditItem.location);
-            setOrder(selectedEditItem.order);
-            setItemAmount(selectedEditItem.net_rate);
-            setRandomNumber(selectedEditItem.random_number)
-        }
     };
+
+    const handleQty = (value) =>{
+
+        const newQty = Number(value); 
+
+        if (newQty > tempQty) {
+            setQty(tempQty); 
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+        } else if (newQty < 0) {
+            setQty(tempQty); 
+            toast.error(`Quantity should not be less than 0`);
+        } else {
+            setQty(newQty)
+        }
+
+    }
+
+
 
     const handleNavigation = (path) => {
         setOpenModal(true); // Show modal
@@ -667,14 +719,14 @@ const Salereturn = () => {
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
                                         loading={isLoading}
                                         sx={{
-                                            width: '100%',
+                                            width: '10%',
                                             minWidth: '400px',
                                             '& .MuiInputBase-root': {
-                                                height: 20,
-                                                fontSize: '1.10rem',
+                                              
+                                                // fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
+                                                // padding: '10px 14px',
                                             },
                                             '@media (max-width:600px)': {
                                                 minWidth: '300px',
@@ -702,7 +754,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 55 },
+                                                    // style: { height: 55 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -715,67 +767,7 @@ const Salereturn = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-
-                                <div className='flex items-center gap-4'>
-                                    <div className='flex gap-8 pb-4'>
-                                        <div >
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Start Date</span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    format="DD/MM/YYYY"
-                                                />
-                                            </LocalizationProvider>
-                                        </div>
-
-                                        <div>
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>End Date</span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    format="DD/MM/YYYY"
-                                                />
-                                            </LocalizationProvider>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        style={{
-                                            minHeight: '41px',
-                                            alignItems: "center",
-                                            height: '41px',
-                                            marginTop: "7px",
-                                            background: "rgba(4, 76, 157, 1)"
-                                        }}
-                                        onClick={validfilter}
-                                    >
-                                        <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
-                                    </Button>
-                                </div>
-
-                                <div className="detail">
-                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
-
-                                    <TextField id="outlined-basic"
-                                        value={address}
-                                        onChange={(e) => { setAddress(e.target.value) }}
-                                        sx={{
-                                            width: 300,
-                                            '& .MuiInputBase-root': {
-                                                height: 55,
-                                                fontSize: '1.25rem',
-                                            },
-                                            '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
-                                            },
-                                        }} variant="outlined" />
-                                </div>
-
-                                <div className="detail">
+                                <div className="detail"  style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
@@ -792,14 +784,14 @@ const Salereturn = () => {
                                             width: '100%',
                                             minWidth: '400px',
                                             '& .MuiInputBase-root': {
-                                                height: 20,
-                                                fontSize: '1.10rem',
+                                                // height: 20,
+                                                // fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
+                                                // padding: '10px 14px',
                                             },
                                             '@media (max-width:600px)': {
-                                                minWidth: '300px',
+                                                // minWidth: '300px',
                                             },
                                         }}
                                         renderOption={(props, option) => (
@@ -823,7 +815,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 45 },
+                                                    // style: { height: 45 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -835,8 +827,71 @@ const Salereturn = () => {
                                         )}
                                     />
                                 </div>
+
+                                <div className='flex items-center gap-4'>
+                                    <div className='flex gap-8 pb-4'>
+                                        <div >
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)"  }}>Start Date</span>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    value={startDate}
+                                                    onChange={(newDate) => setStartDate(newDate)}
+                                                    format="DD/MM/YYYY"
+                                                    sx={{ width: '200px' }} 
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+
+                                        <div>
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>End Date</span>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    value={endDate}
+                                                    onChange={(newDate) => setEndDate(newDate)}
+                                                    format="DD/MM/YYYY"
+                                                    sx={{ width: '200px' }} 
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        style={{
+                                            minHeight: '41px',
+                                            alignItems: "center",
+                                            height: '41px',
+                                            marginTop: "7px",
+                                            background: "rgba(4, 76, 157, 1)"
+                                        }}
+                                        onClick={validfilter}
+                                    >
+                                        <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
+                                    </Button>
+                                </div>
+
+                                {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
+
+                                    <TextField id="outlined-basic"
+                                        value={address}
+                                        onChange={(e) => { setAddress(e.target.value) }}
+                                        sx={{
+                                            width: 300,
+                                            '& .MuiInputBase-root': {
+                                                // height: 55,
+                                                // fontSize: '1.25rem',
+                                            },
+                                            '& .MuiAutocomplete-inputRoot': {
+                                                // padding: '10px 14px',
+                                            },
+                                        }} variant="outlined" />
+                                </div> */}
+
+                                
                                 <div className="scroll-two">
-                                    <table className="saleTable">
+                                    <table className="saleTable ">
                                         <thead>
                                             <tr>
                                                 <th className="w-1/4">Item Name</th>
@@ -858,14 +913,14 @@ const Salereturn = () => {
                                                     <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                 </tr>
                                             ) : (<>
-                                                <tr  className="item-List border-b border-gray-400" >
+                                                <tr className="item-List border-b border-gray-400" >
 
                                                     <td >
                                                         <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                         {searchItem}
                                                     </td>
-                                                    
-                                                    <td>
+
+                                                    <td className ="td-up " >
 
                                                         <TextField
                                                             id="outlined-number"
@@ -875,11 +930,16 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
-                                                            sx={{ width: '90px' }}
+                                                            sx={{ width: '90px', textAlign: '', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
+                                                          
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className ="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -888,9 +948,13 @@ const Salereturn = () => {
                                                             disabled
                                                             value={batch}
                                                             onChange={(e) => { setBatch(e.target.value) }}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className ="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             disabled
@@ -900,9 +964,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td  className ="td-up ">
                                                         <TextField
                                                             disabled
                                                             id="outlined-number"
@@ -913,9 +981,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className ="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -925,9 +997,13 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className ="td-up ">
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
@@ -938,9 +1014,13 @@ const Salereturn = () => {
                                                             sx={{ width: '80px' }}
                                                             value={gst}
                                                             onChange={(e) => { setGst(e.target.value) }}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className ="td-up " >
 
                                                         <TextField
                                                             id="outlined-number"
@@ -950,9 +1030,13 @@ const Salereturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
-                                                            onChange={(e) => { setQty(e.target.value) }}
+                                                            onChange={(e)=>{handleQty(e.target.value)}}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
-                                                    </td>
+                                                    </td >
                                                     {/* <td>
                                                     <TextField
                                                         id="outlined-number"
@@ -965,7 +1049,7 @@ const Salereturn = () => {
                                                     />
                                                 </td> */}
 
-                                                    <td >
+                                                    <td  className ="td-up " >
                                                         <TextField
                                                             id="outlined-number"
                                                             size="small"
@@ -975,30 +1059,34 @@ const Salereturn = () => {
                                                             sx={{ width: '100px' }}
                                                             value={loc}
                                                             onChange={(e) => { setLoc(e.target.value) }}
+                                                              InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true 
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td className="total">{itemAmount}</td>
-                                                </tr>
-                                              <tr className="item-List border-b border-gray-400 ">
-                                                <td>
-                                                    <TextField
-                                                        id="outlined-basic"
-                                                        size="small"
-                                                        sx={{ width: "90%",marginLeft: "20px",marginBlock:"10px" }}
-                                                        value={search}
-                                                        onChange={handleInputChange}
-                                                        variant="outlined"
-                                                        placeholder="Please search any items.."
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: "search",
-                                                        }}
-                                                    />
-                                                </td>                                                    <td></td>
+                                                    <td className="total" style={{ textAlign: "right" }}>{itemAmount}</td>
+                                                    </tr>
+                                                <tr className="item-List border-b border-gray-400 ">
+                                                    <td>
+                                                        <TextField
+                                                            id="outlined-basic"
+                                                            size="small"
+                                                            sx={{ width: "90%", marginLeft: "20px", marginBlock: "10px" }}
+                                                            value={search}
+                                                            onChange={handleInputChange}
+                                                            variant="outlined"
+                                                            placeholder="Please search any items.."
+                                                            InputProps={{
+                                                                endAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <SearchIcon />
+                                                                    </InputAdornment>
+                                                                ),
+                                                                type: "search",
+                                                            }}
+                                                        />
+                                                    </td>                                                    <td></td>
                                                     <td></td>
                                                     {/* <td></td> */}
                                                     <td></td>
@@ -1014,10 +1102,10 @@ const Salereturn = () => {
                                                 {saleItems.sales_item.length > 0 ?
                                                     <>
                                                         {saleItems?.sales_item?.map(item => (
-                                                            <tr key={item.id} className="item-List border-b border-gray-400  "
+                                                        <tr  key={item.id} className="item-List border-b border-gray-400 "
                                                                 onClick={(event) => handleEditClick(item, event.target)}                                                            >
                                                                 <td style={{
-                                                                    display: 'flex', gap: '8px',alignItems:"center"
+                                                                    display: 'flex', gap: '8px', alignItems: "center"
                                                                 }}>
                                                                     <td>
                                                                         <Checkbox
@@ -1033,16 +1121,16 @@ const Salereturn = () => {
                                                                     <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                                     {item.iteam_name}
                                                                 </td>
-                                                                <td>{item.unit}</td>
-                                                                <td>{item.batch}</td>
-                                                                <td>{item.exp}</td>
-                                                                <td>{item.mrp}</td>
-                                                                <td>{item.base}</td>
-                                                                <td>{item.gst}</td>
-                                                                <td>{item.qty}</td>
-                                                                {/* <td>{item.order}</td> */}
-                                                                <td>{item.location}</td>
-                                                                <td>{item.net_rate}</td>
+                                                               <td  className="td-bottom"  >{item.unit}</td>
+                                                                <td className="td-bottom"> {item.batch}</td>
+                                                                <td className="td-bottom"> {item.exp}</td>
+                                                                <td className="td-bottom"> {item.mrp}</td>
+                                                                <td className="td-bottom"> {item.base}</td>
+                                                                <td className="td-bottom"> {item.gst}</td>
+                                                                <td className="td-bottom"> {item.qty}</td>
+                                                                {/* className="td-bottom"  <td>{item.order}</td> */}
+                                                                <td className="td-bottom"> {item.location}</td>
+                                                                <td className="td-bottom">{item.net_rate}</td>
                                                             </tr>
                                                         ))}
                                                     </> :
@@ -1068,7 +1156,7 @@ const Salereturn = () => {
                                         <span style={{ fontWeight: 600 }}>{totalBase} /-</span>
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
+                                    {/* <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">SGST : </label>
                                         </div>
@@ -1079,8 +1167,8 @@ const Salereturn = () => {
                                             <label className="font-bold">IGST: </label>
                                         </div>
 
-                                    </div>
-                                    <div class="totals">
+                                    </div> */}
+                                    {/* <div class="totals">
                                         <div className="font-bold">
                                             {sgst}
                                         </div>
@@ -1094,14 +1182,14 @@ const Salereturn = () => {
                                                 },
                                             }} />
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <label className="font-bold">Discount % : </label>
-                                        </div>
+                                        </div> */}
                                         <div>
                                             <label className="font-bold">Other Amount: </label>
                                         </div>
@@ -1113,13 +1201,13 @@ const Salereturn = () => {
                                         <div>
                                             <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },
                                             }} />
-                                        </div>
+                                        </div> */}
                                         <div>
                                             <TextField value={otherAmt} onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {

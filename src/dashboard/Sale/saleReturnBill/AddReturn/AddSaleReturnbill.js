@@ -178,11 +178,9 @@ const Salereturn = () => {
         const finalAmount = Number(totalAmount) + Number(otherAmt);
         const decimalPart =Number((finalAmount % 1).toFixed(2)); 
         const roundedDecimal = decimalPart; 
-        if(decimalPart<0.49){
-        
+        if(decimalPart<0.50){
             setRoundOff(-roundedDecimal);
             setNetAmount(Math.floor(finalAmount)); 
-
         }else{
             setRoundOff(1-roundedDecimal);
             setNetAmount(Math.ceil(finalAmount)); 
@@ -330,7 +328,6 @@ const Salereturn = () => {
                 // const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
                 // setSelectAll(allSelected);
                 validfilter()
-                console.log(selectedItem,"selectedItem")
 
             }
         } catch (error) {
@@ -1181,7 +1178,6 @@ const Salereturn = () => {
                             </div>
                             {saleItems?.sales_item?.length > 0 && (
                                 <div className="flex gap-10 justify-end mt-4 "  >
-                                  
                                   <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Base : </label>
@@ -1190,10 +1186,7 @@ const Salereturn = () => {
                                         <div>
                                             <label className="font-bold">Total Margin: </label>
                                         </div>
-                                      
-                                        
-                                    </div>
-                                    
+                                    </div>                                    
                                     <div class="totals">
                                         <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
 
@@ -1205,7 +1198,6 @@ const Salereturn = () => {
                                             </div>  
                                             </div>
                                     </div>
-
                                     <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
@@ -1235,7 +1227,7 @@ const Salereturn = () => {
                                             }} />
                                         </div> */}
                                             <div>
-                                                <TextField value={otherAmt} 
+                                                <TextField value={otherAmt==0?"":otherAmt} 
                                                 onChange={(e) => { setOtherAmt(e.target.value) }}
                                                  size="small"
                                                  sx={{
@@ -1251,10 +1243,10 @@ const Salereturn = () => {
                                                 }} />
                                             </div>
                                             <div>
-                                                <span >{roundOff.toFixed(2)}</span>
+                                                <span >{!roundOff?0:roundOff.toFixed(2)}</span>
                                             </div>
                                             <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{netAmount}/-</span>
+                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount?0:netAmount}/-</span>
                                             </div>
                                         </div>
                                     </div>

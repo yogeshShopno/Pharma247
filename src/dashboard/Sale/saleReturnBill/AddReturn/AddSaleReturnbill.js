@@ -1328,7 +1328,7 @@ const Salereturn = () => {
                             className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                             onClick={() => setOpenModal(false)}
                         >
-                            Cancel
+                            Cancel 
                         </button>
                     </div>
                 </div>

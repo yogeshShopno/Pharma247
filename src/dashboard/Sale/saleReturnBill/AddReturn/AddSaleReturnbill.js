@@ -165,12 +165,10 @@ const Salereturn = () => {
         }
     }, [base, qty]);
 
-
     useEffect(() => {
         if(-otherAmt >= totalAmount){
             setOtherAmt(totalAmount)
         }
-
         const finalAmount = Number(totalAmount) + Number(otherAmt);
         const decimalPart =Number((finalAmount % 1).toFixed(2)); 
         const roundedDecimal = decimalPart; 
@@ -183,8 +181,6 @@ const Salereturn = () => {
 
         }        
     }, [totalAmount, otherAmt]);
-
-
 
     // useEffect(() => {
     //     const discountAmount = (totalAmount * finalDiscount) / 100;
@@ -293,7 +289,6 @@ const Salereturn = () => {
         const value = e.target.value;
         setSearch(value);
         getSaleItemList(value);
-        ;
     };
 
 
@@ -365,7 +360,6 @@ const Salereturn = () => {
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalMargin(response.data.data.total_margin)
                 setTotalNetRate(response.data.data.total_net_rate)
-
                 setIsLoading(false);
             })
         } catch (error) {
@@ -378,11 +372,11 @@ const Salereturn = () => {
         const newErrors = {};
         setUnsavedItems(true);
         if (Number(tempQty) < Number(qty)) {
-    
             newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
             toast.error('Quantity should not be greater than purchase quantity ')
             return
         }
+        
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
@@ -596,7 +590,7 @@ const Salereturn = () => {
         setNextPath(path); 
     };
 
-    const handleLeavePage = async() => {
+    const  handleLeavePage = async() => {
         try {
             console.log("Request initiated");
             const params = {

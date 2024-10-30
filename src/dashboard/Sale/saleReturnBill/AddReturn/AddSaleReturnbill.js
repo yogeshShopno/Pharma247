@@ -74,23 +74,23 @@ const Salereturn = () => {
     const [itemAmount, setItemAmount] = useState(null);
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
-    let defaultDate = new Date()
-    const [cgst, setCgst] = useState('')
-    const [sgst, setSgst] = useState('')
-    const [searchItem, setSearchItem] = useState('')
-    const [itemList, setItemList] = useState([])
-    defaultDate.setDate(defaultDate.getDate() + 3)
+    let defaultDate = new Date();
+    const [cgst, setCgst] = useState('');
+    const [sgst, setSgst] = useState('');
+    const [searchItem, setSearchItem] = useState('');
+    const [itemList, setItemList] = useState([]);
+    defaultDate.setDate(defaultDate.getDate() + 3);
     const [saleItems, setSaleItems] = useState([]);
     const [totalBase, setTotalBase] = useState(0);
     const [givenAmt, setGivenAmt] = useState(null);
     const [otherAmt, setOtherAmt] = useState(0);
     const [roundOff, setRoundOff] = useState(0);
-    const [netAmount, setNetAmount] = useState(0)
-    const [finalDiscount, setFinalDiscount] = useState(0)
+    const [netAmount, setNetAmount] = useState(0);
+    const [finalDiscount, setFinalDiscount] = useState(0);
     const [dueAmount, setDueAmount] = useState(null);
     const [startDate, setStartDate] = useState(dayjs().subtract(3, 'month'));
     const [endDate, setEndDate] = useState(dayjs());
-    const [saleItemId, setSaleItemId] = useState('')
+    const [saleItemId, setSaleItemId] = useState('');
     const [selectedEditItem, setSelectedEditItem] = useState(null);
     const [bankData, setBankData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -101,7 +101,7 @@ const Salereturn = () => {
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
     const [errors, setErrors] = useState({});
-    const [uniqueId, setUniqueId] = useState([])
+    const [uniqueId, setUniqueId] = useState([]);
 
     useEffect(() => {
         if (searchDoctor) {
@@ -113,7 +113,7 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "doctor-list?",
-                        
+
                         {
                             params: params,
                             headers: {
@@ -142,7 +142,7 @@ const Salereturn = () => {
         // ListOfDoctor();
         const RandomNumber = localStorage.getItem('RandomNumber')
         setRandomNumber(RandomNumber)
-        
+
         BankList();
         const handleClickOutside = (event) => {
             if (tableRef.current && !tableRef.current.contains(event.target)) {
@@ -166,20 +166,20 @@ const Salereturn = () => {
     }, [base, qty]);
 
     useEffect(() => {
-        if(-otherAmt >= totalAmount){
+        if (-otherAmt >= totalAmount) {
             setOtherAmt(totalAmount)
         }
         const finalAmount = Number(totalAmount) + Number(otherAmt);
-        const decimalPart =Number((finalAmount % 1).toFixed(2)); 
-        const roundedDecimal = decimalPart; 
-        if(decimalPart<0.50){
+        const decimalPart = Number((finalAmount % 1).toFixed(2));
+        const roundedDecimal = decimalPart;
+        if (decimalPart < 0.50) {
             setRoundOff(-roundedDecimal);
-            setNetAmount(Math.floor(finalAmount)); 
-        }else{
-            setRoundOff(1-roundedDecimal);
-            setNetAmount(Math.ceil(finalAmount)); 
+            setNetAmount(Math.floor(finalAmount));
+        } else {
+            setRoundOff(1 - roundedDecimal);
+            setNetAmount(Math.ceil(finalAmount));
 
-        }        
+        }
     }, [totalAmount, otherAmt]);
 
     // useEffect(() => {
@@ -200,7 +200,7 @@ const Salereturn = () => {
 
     const BankList = async () => {
         try {
-            await axios.post('bank-list',  {
+            await axios.post('bank-list', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -214,7 +214,7 @@ const Salereturn = () => {
     }
 
     const ListOfDoctor = async () => {
-      
+
         setIsLoading(true);
         try {
             await axios.post("doctor-list", {
@@ -259,7 +259,7 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "list-customer?",
-                       
+
                         {
                             params: params,
                             headers: {
@@ -291,14 +291,13 @@ const Salereturn = () => {
         getSaleItemList(value);
     };
 
-
     const handleChecked = async (itemId, checked) => {
         let data = new FormData();
-        data.append("id", itemId ?itemId:'');
+        data.append("id", itemId ? itemId : '');
         data.append("type", 0);
 
         try {
-            const response = await axios.post("sales-return-iteam-select",  {
+            const response = await axios.post("sales-return-iteam-select", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -335,14 +334,14 @@ const Salereturn = () => {
 
     const getSaleItemList = async (value) => {
         let data = new FormData();
-        data.append('customer_id', customer.id?customer.id :'');
-        data.append('start_date', startDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
-        data.append('end_date', endDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
-        data.append('search', value?value:'');
+        data.append('customer_id', customer.id ? customer.id : '');
+        data.append('start_date', startDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+        data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+        data.append('search', value ? value : '');
         const params = {
-            customer_id: customer.id?customer.id :'',
-            start_date: startDate?startDate:'',
-            end_date: endDate?endDate:''
+            customer_id: customer.id ? customer.id : '',
+            start_date: startDate ? startDate : '',
+            end_date: endDate ? endDate : ''
         }
         setIsLoading(true);
         try {
@@ -376,25 +375,25 @@ const Salereturn = () => {
             toast.error('Quantity should not be greater than purchase quantity ')
             return
         }
-        
+
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
             let data = new FormData();
-            data.append("id", selectedEditItemId?selectedEditItemId:'')
-            data.append('item_id', searchItemID?searchItemID:'')
-            data.append("qty", qty?qty:'')
-            data.append("exp", expiryDate?expiryDate:'')
-            data.append('gst', gst?gst:'')
-            data.append("mrp", mrp?mrp:'')
+            data.append("id", selectedEditItemId ? selectedEditItemId : '')
+            data.append('item_id', searchItemID ? searchItemID : '')
+            data.append("qty", qty ? qty : '')
+            data.append("exp", expiryDate ? expiryDate : '')
+            data.append('gst', gst ? gst : '')
+            data.append("mrp", mrp ? mrp : '')
             data.append("unit", unit);
-            data.append("random_number", randomNumber?randomNumber:'');
-            data.append("unit", unit?unit:'')
-            data.append("batch", batch?batch:'')
-            data.append('location', loc?loc:'')
-            data.append("base", base?base:'')
-            data.append('amt', itemAmount?itemAmount:'')
-            data.append('net_rate', itemAmount?itemAmount:'')
+            data.append("random_number", randomNumber ? randomNumber : '');
+            data.append("unit", unit ? unit : '')
+            data.append("batch", batch ? batch : '')
+            data.append('location', loc ? loc : '')
+            data.append("base", base ? base : '')
+            data.append('amt', itemAmount ? itemAmount : '')
+            data.append('net_rate', itemAmount ? itemAmount : '')
             // data.append("order", order)
             const params = {
                 id: selectedEditItemId
@@ -469,21 +468,21 @@ const Salereturn = () => {
 
     const submitSaleReturnData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('SaleRetunBillNo')?localStorage.getItem('SaleRetunBillNo'):'' );
+        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') ? localStorage.getItem('SaleRetunBillNo') : '');
         data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
         data.append("customer_id", (customer && customer.id) ? customer.id : '');
-        data.append("customer_address", address? address:'');
+        data.append("customer_address", address ? address : '');
         data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
-        data.append('payment_name', paymentType?paymentType:'' );
-        data.append('mrp_total', totalAmount?totalAmount:'');
-        data.append('total_discount', finalDiscount?finalDiscount:'' );
-        data.append('other_amount', otherAmt?otherAmt:'' );
-        data.append('net_amount', netAmount?netAmount:'' );
-        data.append('total_base', totalBase?totalBase:'' );
-        data.append('igst', '0'); 
-        data.append('cgst', cgst?cgst:'' );
-        data.append('sgst', sgst?sgst:'' );
-        data.append('product_list', JSON.stringify(saleItems.sales_item)? JSON.stringify(saleItems.sales_item):'');
+        data.append('payment_name', paymentType ? paymentType : '');
+        data.append('mrp_total', totalAmount ? totalAmount : '');
+        data.append('total_discount', finalDiscount ? finalDiscount : '');
+        data.append('other_amount', otherAmt ? otherAmt : '');
+        data.append('net_amount', netAmount ? netAmount : '');
+        data.append('total_base', totalBase ? totalBase : '');
+        data.append('igst', '0');
+        data.append('cgst', cgst ? cgst : '');
+        data.append('sgst', sgst ? sgst : '');
+        data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
 
         try {
             await axios.post("sales-return-create", data, {
@@ -519,7 +518,7 @@ const Salereturn = () => {
     const handleDeleteItem = async (saleItemId) => {
         if (!saleItemId) return;
         let data = new FormData();
-        data.append("id", saleItemId?saleItemId:''); 
+        data.append("id", saleItemId ? saleItemId : '');
         const params = {
             id: saleItemId,
         };
@@ -587,16 +586,16 @@ const Salereturn = () => {
 
     const handleNavigation = (path) => {
         setOpenModal(true);
-        setNextPath(path); 
+        setNextPath(path);
     };
 
-    const  handleLeavePage = async() => {
+    const handleLeavePage = async () => {
         try {
             console.log("Request initiated");
             const params = {
                 random_number: randomNumber,
             };
-    
+
             const response = await axios.post(
                 "sales-return-delete-history",
                 {},
@@ -606,16 +605,16 @@ const Salereturn = () => {
                 }
             );
             if (response.status === 200) {
-                setUnsavedItems(false); 
-                setOpenModal(false); 
-            
+                setUnsavedItems(false);
+                setOpenModal(false);
+
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
             }
         } catch (error) {
             console.error("Error deleting items:", error);
-        }  
+        }
     };
 
     return (
@@ -1152,7 +1151,7 @@ const Salereturn = () => {
                             </div>
                             {saleItems?.sales_item?.length > 0 && (
                                 <div className="flex gap-10 justify-end mt-4 "  >
-                                  <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Base : </label>
                                         </div>
@@ -1160,7 +1159,7 @@ const Salereturn = () => {
                                         <div>
                                             <label className="font-bold">Total Margin: </label>
                                         </div>
-                                    </div>                                    
+                                    </div>
                                     <div class="totals">
                                         <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
 
@@ -1169,8 +1168,8 @@ const Salereturn = () => {
                                             </div>
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
-                                            </div>  
                                             </div>
+                                        </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                         <div>
@@ -1201,26 +1200,26 @@ const Salereturn = () => {
                                             }} />
                                         </div> */}
                                             <div>
-                                                <TextField value={otherAmt==0?"":otherAmt} 
-                                                onChange={(e) => { setOtherAmt(e.target.value) }}
-                                                 size="small"
-                                                 sx={{
-                                                    width: '105px',
-                                                    '& .MuiOutlinedInput-root': {
-                                                        borderBottom: '2px solid rgb(12, 161, 246)', // Bottom border only
-                                                        borderRadius: 0, // Removes rounded corners
-                                                        '& fieldset': {
-                                                            border: 'none', // Removes default border
+                                                <TextField value={otherAmt == 0 ? "" : otherAmt}
+                                                    onChange={(e) => { setOtherAmt(e.target.value) }}
+                                                    size="small"
+                                                    sx={{
+                                                        width: '105px',
+                                                        '& .MuiOutlinedInput-root': {
+                                                            borderBottom: '2px solid rgb(12, 161, 246)', // Bottom border only
+                                                            borderRadius: 0, // Removes rounded corners
+                                                            '& fieldset': {
+                                                                border: 'none', // Removes default border
+                                                            },
+                                                            height: '35px' // Adjust height here if needed
                                                         },
-                                                        height: '35px' // Adjust height here if needed
-                                                    },
-                                                }} />
+                                                    }} />
                                             </div>
                                             <div>
-                                                <span >{!roundOff?0:roundOff.toFixed(2)}</span>
+                                                <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
                                             </div>
                                             <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount?0:netAmount}/-</span>
+                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount ? 0 : netAmount}/-</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1300,7 +1299,7 @@ const Salereturn = () => {
                         <button
                             className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                             onClick={() => setOpenModal(false)}
-                        >Cancel 
+                        >Cancel
                         </button>
                     </div>
                 </div>

@@ -290,7 +290,7 @@ const EditSaleReturn = () => {
         const params = {
             id: selectedEditItemId
         };
-        
+
         try {
             await axios.post("sales-return-edit-iteam-second?", data, {
                 params: params,
@@ -412,7 +412,7 @@ const EditSaleReturn = () => {
     const handleEditClick = (item) => {
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        console.log(existingItem,"existingItem")
+        console.log(existingItem, "existingItem")
 
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
@@ -420,23 +420,23 @@ const EditSaleReturn = () => {
             setTempQty(item.qty);
         } else {
             setTempQty(existingItem.qty);
-            
+
         }
 
         setSelectedEditItem(item);
         setSelectedEditItemId(item.id);
-       
+
     };
 
-    const handleQty = (value) =>{
+    const handleQty = (value) => {
 
-        const newQty = Number(value); 
+        const newQty = Number(value);
 
         if (newQty > tempQty) {
-            setQty(tempQty); 
+            setQty(tempQty);
             toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
         } else if (newQty < 0) {
-            setQty(tempQty); 
+            setQty(tempQty);
             toast.error(`Quantity should not be less than 0`);
         } else {
             setQty(newQty)
@@ -449,13 +449,13 @@ const EditSaleReturn = () => {
         setNextPath(path);
     };
 
-     const handleLeavePage = async() => {
+    const handleLeavePage = async () => {
         try {
             console.log("Request initiated");
             const params = {
                 random_number: randomNumber,
             };
-    
+
             const response = await axios.post(
                 "sales-return-edit-history",
                 {},
@@ -465,16 +465,16 @@ const EditSaleReturn = () => {
                 }
             );
             if (response.status === 200) {
-                setUnsavedItems(false); 
-                setOpenModal(false); 
-            
+                setUnsavedItems(false);
+                setOpenModal(false);
+
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
             }
         } catch (error) {
             console.error("Error deleting items:", error);
-        }  
+        }
     };
 
 
@@ -839,13 +839,13 @@ const EditSaleReturn = () => {
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
-                                             <div>
-                                            <span style={{ fontWeight: 600 }}>{totalBase} /-</span>     </div>
-                                              <div>
-                                            <span style={{ fontWeight: 600 }}>({totalMargine} %) {totalNetRate} /-</span>
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalBase} /-</span>     </div>
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>({totalMargine} %) {totalNetRate} /-</span>
                                             </div>
-                                           
-                                          
+
+
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
@@ -951,8 +951,7 @@ const EditSaleReturn = () => {
                                             <button type="button"
                                                 className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                                                 onClick={() => setIsDelete(false)}
-                                            >
-                                                Cancel
+                                            >Cancel
                                             </button>
                                         </div>
                                     </div>
@@ -961,49 +960,46 @@ const EditSaleReturn = () => {
                         </div>
                     </div>
                     <Prompt
-                when={unsavedItems} // Triggers only if there are unsaved changes
-                message={(location) => {
-                    handleNavigation(location.pathname);
-                    return false; // Prevent automatic navigation
-                }}
-            />
-            <div id="modal" value={openModal}
-                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
+                        when={unsavedItems}
+                        message={(location) => {
+                            handleNavigation(location.pathname);
+                            return false;
+                        }}
+                    />
+                    <div id="modal" value={openModal}
+                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
 
-                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                    {/* Close button */}
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-                        viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                    </svg>
+                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                            {/* Close button */}
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
+                                viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+                            </svg>
 
-                    <div className="my-4 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                            <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                            <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                        </svg>
-                        <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
-                    </div>
+                            <div className="my-4 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
+                                    <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                                    <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
+                                </svg>
+                                <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
+                            </div>
 
-                    <div className="flex gap-5 justify-center mt-10">
-                        <button
-                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                            onClick={handleLeavePage}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                            onClick={() => setOpenModal(false)}
-                        >
-                            Cancel
-                        </button>
+                            <div className="flex gap-5 justify-center mt-10">
+                                <button
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                                    onClick={handleLeavePage}
+                                >Delete
+                                </button>
+                                <button
+                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                                    onClick={() => setOpenModal(false)}
+                                >Cancel
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-                </div>
-                
             }
         </>
     )

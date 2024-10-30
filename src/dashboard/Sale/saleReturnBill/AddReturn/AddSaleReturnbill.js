@@ -112,7 +112,6 @@ const Salereturn = () => {
     useEffect(() => {
         if (searchDoctor) {
             const ListOfDoctor = async () => {
-                let data = new FormData();
                 const params = {
                     search: searchDoctor
                 };
@@ -120,7 +119,7 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "doctor-list?",
-                        data,
+                        
                         {
                             params: params,
                             headers: {
@@ -211,9 +210,9 @@ const Salereturn = () => {
     // };
 
     const BankList = async () => {
-        let data = new FormData()
+ 
         try {
-            await axios.post('bank-list', data, {
+            await axios.post('bank-list',  {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -226,10 +225,10 @@ const Salereturn = () => {
         }
     }
     const ListOfDoctor = async () => {
-        let data = new FormData();
+      
         setIsLoading(true);
         try {
-            await axios.post("doctor-list", data, {
+            await axios.post("doctor-list", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -264,7 +263,6 @@ const Salereturn = () => {
     useEffect(() => {
         if (searchQuery) {
             const customerAllData = async () => {
-                let data = new FormData();
                 const params = {
                     search: searchQuery
                 };
@@ -272,7 +270,7 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "list-customer?",
-                        data,
+                       
                         {
                             params: params,
                             headers: {
@@ -308,11 +306,11 @@ const Salereturn = () => {
 
     const handleChecked = async (itemId, checked) => {
         let data = new FormData();
-        data.append("id", itemId);
+        data.append("id", itemId ?itemId:'');
         data.append("type", 0);
 
         try {
-            const response = await axios.post("sales-return-iteam-select", data, {
+            const response = await axios.post("sales-return-iteam-select",  {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -350,16 +348,16 @@ const Salereturn = () => {
 
     const getSaleItemList = async (value) => {
         let data = new FormData();
-        data.append('customer_id', customer.id || '');
-        data.append('start_date', startDate.format('YYYY-MM-DD') || '');
-        data.append('end_date', endDate.format('YYYY-MM-DD') || '');
-        data.append('search', value || '');
+        data.append('customer_id', customer.id?customer.id :'');
+        data.append('start_date', startDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
+        data.append('end_date', endDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
+        data.append('search', value?value:'');
 
 
         const params = {
-            customer_id: customer.id,
-            start_date: startDate,
-            end_date: endDate
+            customer_id: customer.id?customer.id :'',
+            start_date: startDate?startDate:'',
+            end_date: endDate?endDate:''
         }
         setIsLoading(true);
         try {
@@ -402,20 +400,20 @@ const Salereturn = () => {
         if (isValid) {
 
             let data = new FormData();
-            data.append("id", selectedEditItemId)
-            data.append('item_id', searchItemID)
-            data.append("qty", qty)
-            data.append("exp", expiryDate)
-            data.append('gst', gst)
-            data.append("mrp", mrp)
+            data.append("id", selectedEditItemId?selectedEditItemId:'')
+            data.append('item_id', searchItemID?searchItemID:'')
+            data.append("qty", qty?qty:'')
+            data.append("exp", expiryDate?expiryDate:'')
+            data.append('gst', gst?gst:'')
+            data.append("mrp", mrp?mrp:'')
             data.append("unit", unit);
-            data.append("random_number", randomNumber);
-            data.append("unit", unit)
-            data.append("batch", batch)
-            data.append('location', loc)
-            data.append("base", base)
-            data.append('amt', itemAmount)
-            data.append('net_rate', itemAmount)
+            data.append("random_number", randomNumber?randomNumber:'');
+            data.append("unit", unit?unit:'')
+            data.append("batch", batch?batch:'')
+            data.append('location', loc?loc:'')
+            data.append("base", base?base:'')
+            data.append('amt', itemAmount?itemAmount:'')
+            data.append('net_rate', itemAmount?itemAmount:'')
             // data.append("order", order)
             const params = {
                 id: selectedEditItemId
@@ -491,21 +489,21 @@ const Salereturn = () => {
 
     const submitSaleReturnData = async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') );
+        data.append("bill_no", localStorage.getItem('SaleRetunBillNo')?localStorage.getItem('SaleRetunBillNo'):'' );
         data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
         data.append("customer_id", (customer && customer.id) ? customer.id : '');
-        data.append("customer_address", address );
+        data.append("customer_address", address? address:'');
         data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
-        data.append('payment_name', paymentType );
-        data.append('mrp_total', totalAmount);
-        data.append('total_discount', finalDiscount );
-        data.append('other_amount', otherAmt );
-        data.append('net_amount', netAmount );
-        data.append('total_base', totalBase );
+        data.append('payment_name', paymentType?paymentType:'' );
+        data.append('mrp_total', totalAmount?totalAmount:'');
+        data.append('total_discount', finalDiscount?finalDiscount:'' );
+        data.append('other_amount', otherAmt?otherAmt:'' );
+        data.append('net_amount', netAmount?netAmount:'' );
+        data.append('total_base', totalBase?totalBase:'' );
         data.append('igst', '0'); 
-        data.append('cgst', cgst );
-        data.append('sgst', sgst );
-        data.append('product_list', JSON.stringify(saleItems.sales_item) || '');
+        data.append('cgst', cgst?cgst:'' );
+        data.append('sgst', sgst?sgst:'' );
+        data.append('product_list', JSON.stringify(saleItems.sales_item)? JSON.stringify(saleItems.sales_item):'');
 
         try {
             await axios.post("sales-return-create", data, {
@@ -541,7 +539,7 @@ const Salereturn = () => {
     const handleDeleteItem = async (saleItemId) => {
         if (!saleItemId) return;
         let data = new FormData();
-        data.append("id", saleItemId);
+        data.append("id", saleItemId?saleItemId:''); 
         const params = {
             id: saleItemId,
         };
@@ -625,12 +623,11 @@ const Salereturn = () => {
 
     // Handle leaving page after user confirms in modal
     const handleLeavePage = () => {
-        let data = new FormData();
 
         const params = {
             random_number: localStorage.getItem('RandomNumber')
         };
-        axios.post("sales-return-delete-history", data, {
+        axios.post("sales-return-delete-history", {
             params: params,
             headers: { Authorization: `Bearer ${token}` }
         })

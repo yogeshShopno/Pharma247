@@ -34,12 +34,10 @@ const Salereturn = () => {
     const inputRef8 = useRef();
     const inputRef9 = useRef();
     const inputRef10 = useRef();
-
     const [item, setItem] = useState('')
     const [billNo, setbillNo] = useState('')
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const options = ['Option 1', 'Option 2', 'Option 3'];
-
     const history = useHistory();
     const paymentOptions = [
         { id: 1, label: 'Cash' },
@@ -57,7 +55,6 @@ const Salereturn = () => {
     const [searchItemID, setSearchItemID] = useState(null);
     const [qty, setQty] = useState(0);
     const [tempQty, setTempQty] = useState(0)
-
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +71,6 @@ const Salereturn = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalMargin, setTotalMargin] = useState(0)
     const [totalNetRate, setTotalNetRate] = useState(0)
-
     const [itemAmount, setItemAmount] = useState(null);
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
@@ -99,10 +95,8 @@ const Salereturn = () => {
     const [bankData, setBankData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [search, setSearch] = useState('');
-
     const [searchDoctor, setSearchDoctor] = useState('');
     const [selectedItem, setSelectedItem] = useState([]);
-
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
@@ -137,7 +131,7 @@ const Salereturn = () => {
 
             const delayDebounceFn = setTimeout(() => {
                 ListOfDoctor();
-            }, 500); // Debounce to prevent too many API calls
+            }, 500);
 
             return () => clearTimeout(delayDebounceFn);
         } else {
@@ -146,6 +140,9 @@ const Salereturn = () => {
     }, [searchDoctor]);
     useEffect(() => {
         // ListOfDoctor();
+        const RandomNumber = localStorage.getItem('RandomNumber')
+        setRandomNumber(RandomNumber)
+        
         BankList();
         const handleClickOutside = (event) => {
             if (tableRef.current && !tableRef.current.contains(event.target)) {
@@ -184,11 +181,7 @@ const Salereturn = () => {
             setRoundOff(1-roundedDecimal);
             setNetAmount(Math.ceil(finalAmount)); 
 
-        }
-      
-      
-        
-        
+        }        
     }, [totalAmount, otherAmt]);
 
 
@@ -210,7 +203,6 @@ const Salereturn = () => {
     // };
 
     const BankList = async () => {
- 
         try {
             await axios.post('bank-list',  {
                 headers: {
@@ -224,6 +216,7 @@ const Salereturn = () => {
             console.error("API error:", error);
         }
     }
+
     const ListOfDoctor = async () => {
       
         setIsLoading(true);
@@ -242,6 +235,7 @@ const Salereturn = () => {
             console.error("API error:", error);
         }
     }
+
     useEffect(() => {
         if (selectedEditItem) {
             setUnit(selectedEditItem.unit);
@@ -258,7 +252,6 @@ const Salereturn = () => {
         }
 
     }, [selectedEditItem]);
-
 
     useEffect(() => {
         if (searchQuery) {
@@ -335,7 +328,6 @@ const Salereturn = () => {
 
     const validfilter = () => {
         const newErrors = {};
-
         if (!customer) { newErrors.customer = 'Customer is required'; toast.error('Customer is required'); }
         if (!startDate) { newErrors.startDate = 'startDate is required'; toast.error('Start Date is required'); }
         if (!endDate) { newErrors.endDate = 'endDate is required'; toast.error('End Date is required'); }
@@ -352,8 +344,6 @@ const Salereturn = () => {
         data.append('start_date', startDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
         data.append('end_date', endDate.format('YYYY-MM-DD')  ? endDate.format('YYYY-MM-DD'):'');
         data.append('search', value?value:'');
-
-
         const params = {
             customer_id: customer.id?customer.id :'',
             start_date: startDate?startDate:'',
@@ -387,10 +377,8 @@ const Salereturn = () => {
     const editReturnItem = async () => {
         const newErrors = {};
         setUnsavedItems(true);
-
-
         if (Number(tempQty) < Number(qty)) {
-            console.log(tempQty, qty, "")
+    
             newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
             toast.error('Quantity should not be greater than purchase quantity ')
             return
@@ -398,7 +386,6 @@ const Salereturn = () => {
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-
             let data = new FormData();
             data.append("id", selectedEditItemId?selectedEditItemId:'')
             data.append('item_id', searchItemID?searchItemID:'')
@@ -468,7 +455,6 @@ const Salereturn = () => {
             }
         };
     }
-
 
     const handleSubmit = () => {
 
@@ -577,31 +563,23 @@ const Salereturn = () => {
     }
 
     const handleEditClick = (item) => {
-
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
         console.log(existingItem, "existingItem")
-
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
             setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
             setTempQty(item.qty);
         } else {
             setTempQty(existingItem.qty);
-
         }
-
-
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name)
-
     };
 
     const handleQty = (value) => {
-
         const newQty = Number(value);
-
         if (newQty > tempQty) {
             setQty(tempQty);
             toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
@@ -611,34 +589,39 @@ const Salereturn = () => {
         } else {
             setQty(newQty)
         }
-
     }
 
-
-
     const handleNavigation = (path) => {
-        setOpenModal(true); // Show modal
-        setNextPath(path);   // Save the next path to navigate after confirmation
+        setOpenModal(true);
+        setNextPath(path); 
     };
 
-    // Handle leaving page after user confirms in modal
-    const handleLeavePage = () => {
-
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
-        axios.post("sales-return-delete-history", {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(() => {
-                setOpenModal(false);
-                setUnsavedItems(false); // Reset unsaved changes
-                history.push(nextPath); // Navigate to the saved path
-            })
-            .catch(error => {
-                console.error("Error deleting items:", error);
-            });
+    const handleLeavePage = async() => {
+        try {
+            console.log("Request initiated");
+            const params = {
+                random_number: randomNumber,
+            };
+    
+            const response = await axios.post(
+                "sales-return-delete-history",
+                {},
+                {
+                    params: params,
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false); 
+                setOpenModal(false); 
+            
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 0);
+            }
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }  
     };
 
     return (
@@ -1318,14 +1301,12 @@ const Salereturn = () => {
                         <button
                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
                             onClick={handleLeavePage}
-                        >
-                            Delete
+                        >Delete
                         </button>
                         <button
                             className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                             onClick={() => setOpenModal(false)}
-                        >
-                            Cancel 
+                        >Cancel 
                         </button>
                     </div>
                 </div>

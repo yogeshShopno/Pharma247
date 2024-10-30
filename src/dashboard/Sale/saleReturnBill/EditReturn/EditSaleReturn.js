@@ -80,6 +80,7 @@ const EditSaleReturn = () => {
     const [paymentType, setPaymentType] = useState('cash');
     const [bankData, setBankData] = useState([]);
 
+    const [randomNumber, setRandomNumber] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
@@ -110,6 +111,8 @@ const EditSaleReturn = () => {
     }, []);
 
     useEffect(() => {
+        const RandomNumber = localStorage.getItem('RandomNumber')
+        setRandomNumber(RandomNumber)
         const initializeData = async () => {
             const doctorData = await ListOfDoctor();
             const customerData = await customerAllData();
@@ -442,29 +445,36 @@ const EditSaleReturn = () => {
     }
 
     const handleNavigation = (path) => {
-        setOpenModal(true); // Show modal
-        setNextPath(path);   // Save the next path to navigate after confirmation
+        setOpenModal(true);
+        setNextPath(path);
     };
 
-    // Handle leaving page after user confirms in modal
-    const handleLeavePage = () => {
-        let data = new FormData();
-
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
-        axios.post("sales-return-edit-history", data, {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(() => {
-                setOpenModal(false);
-                setUnsavedItems(false); // Reset unsaved changes
-                history.push(nextPath); // Navigate to the saved path
-            })
-            .catch(error => {
-                console.error("Error deleting items:", error);
-            });
+     const handleLeavePage = async() => {
+        try {
+            console.log("Request initiated");
+            const params = {
+                random_number: randomNumber,
+            };
+    
+            const response = await axios.post(
+                "sales-return-edit-history",
+                {},
+                {
+                    params: params,
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false); 
+                setOpenModal(false); 
+            
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 0);
+            }
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }  
     };
 
 

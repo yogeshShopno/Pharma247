@@ -1346,9 +1346,7 @@ const Addsale = () => {
                                                 </table>
                                             </div>
                                         </Box>
-
                                     }
-
                                 </table>
 
                                 {/* {value && */}

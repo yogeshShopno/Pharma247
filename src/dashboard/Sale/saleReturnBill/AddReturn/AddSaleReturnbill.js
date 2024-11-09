@@ -56,7 +56,7 @@ const Salereturn = () => {
     const [qty, setQty] = useState(0);
     const [tempQty, setTempQty] = useState(0)
     const [gst, setGst] = useState('');
-    const [batch, setBatch] = useState(null);
+    const [batch, setBatch] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [customerDetails, setCustomerDetails] = useState([])
     const [doctorData, setDoctorData] = useState([])
@@ -167,7 +167,7 @@ const Salereturn = () => {
 
     useEffect(() => {
         if (-otherAmt >= totalAmount) {
-            setOtherAmt(totalAmount)
+            setOtherAmt(-totalAmount)
         }
         const finalAmount = Number(totalAmount) + Number(otherAmt);
         const decimalPart = Number((finalAmount % 1).toFixed(2));
@@ -247,6 +247,7 @@ const Salereturn = () => {
             setItemAmount(selectedEditItem.net_rate);
         }
 
+
     }, [selectedEditItem]);
 
     useEffect(() => {
@@ -293,11 +294,12 @@ const Salereturn = () => {
 
     const handleChecked = async (itemId, checked) => {
         let data = new FormData();
+        setUnsavedItems(true);
         data.append("id", itemId ? itemId : '');
         data.append("type", 0);
 
         try {
-            const response = await axios.post("sales-return-iteam-select", {
+            const response = await axios.post("sales-return-iteam-select", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -370,6 +372,7 @@ const Salereturn = () => {
     const editReturnItem = async () => {
         const newErrors = {};
         setUnsavedItems(true);
+
         if (Number(tempQty) < Number(qty)) {
             newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
             toast.error('Quantity should not be greater than purchase quantity ')
@@ -414,7 +417,6 @@ const Salereturn = () => {
                     setQty(0)
                     setBase('')
                     setGst('')
-                    setBatch('')
                     setLoc('')
                 })
             }
@@ -557,7 +559,6 @@ const Salereturn = () => {
 
     const handleEditClick = (item) => {
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        console.log(existingItem, "existingItem")
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
             setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
@@ -591,7 +592,6 @@ const Salereturn = () => {
 
     const handleLeavePage = async () => {
         try {
-            console.log("Request initiated");
             const params = {
                 random_number: randomNumber,
             };
@@ -898,7 +898,7 @@ const Salereturn = () => {
                                     <table className="saleTable ">
                                         <thead>
                                             <tr>
-                                                <th className="w-1/4">Item Name</th>
+                                             <th className="w-1/4 "style={{textAlign:"center"}}>Item Name</th>
                                                 <th >Unit </th>
                                                 <th >Batch </th>
                                                 <th >Expiry</ th>
@@ -919,7 +919,7 @@ const Salereturn = () => {
                                             ) : (<>
                                                 <tr className="item-List border-b border-gray-400" >
 
-                                                    <td >
+                                                    <td  >
                                                         <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                         {searchItem}
                                                     </td>
@@ -934,7 +934,7 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
-                                                            sx={{ width: '90px', textAlign: '', }}
+                                                            sx={{ width: '90px', textAlign: 'right', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
 
                                                             InputProps={{
@@ -943,15 +943,15 @@ const Salereturn = () => {
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className="td-up " >
+                                                    <td className="td-up "  >
                                                         <TextField
                                                             id="outlined-number"
-                                                            type="number"
+                                                            type="string"
                                                             sx={{ width: '110px' }}
                                                             size="small"
                                                             disabled
                                                             value={batch}
-                                                            onChange={(e) => { setBatch(e.target.value) }}
+                                                            // onChange={(e) => { setBatch(e.target.value) }}
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -1024,7 +1024,7 @@ const Salereturn = () => {
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className="td-up " >
+                                                    <td className="td-up ">
 
                                                         <TextField
                                                             id="outlined-number"
@@ -1053,7 +1053,7 @@ const Salereturn = () => {
                                                     />
                                                 </td> */}
 
-                                                    <td className="td-up " >
+                                                    <td className="td-up ">
                                                         <TextField
                                                             id="outlined-number"
                                                             size="small"
@@ -1069,7 +1069,7 @@ const Salereturn = () => {
                                                             }}
                                                         />
                                                     </td>
-                                                    <td className="total" style={{ textAlign: "right" }}>{itemAmount}</td>
+                                                    <td style={{textAlign:"right"}} className="total">{itemAmount}</td>
                                                 </tr>
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
@@ -1099,7 +1099,7 @@ const Salereturn = () => {
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td >
+                                                    <td style={{textAlign:"right"}} >
                                                         <Button variant="contained" color="success" marginRight="20px" onClick={editReturnItem}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                                     </td>
                                                 </tr>
@@ -1265,10 +1265,10 @@ const Salereturn = () => {
                 </div>
             </div>
             <Prompt
-                when={unsavedItems} // Triggers only if there are unsaved changes
+                when={unsavedItems}
                 message={(location) => {
                     handleNavigation(location.pathname);
-                    return false; // Prevent automatic navigation
+                    return false;
                 }}
             />
             <div id="modal" value={openModal}

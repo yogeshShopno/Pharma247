@@ -511,11 +511,14 @@ const Addsale = () => {
         data.append("status", 'Completed');
         data.append("bill_date", selectedDate.format('YYYY-MM-DD'))
         data.append("customer_address", address)
-        data.append("doctor_id", doctor?.id );
-        data.append('total_gst', 0)
-        data.append('igst', ItemSaleList?.igst || "")
-        data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) || "")
-        data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) || "")
+        data.append("doctor_id", doctor?.id || 0 );
+        data.append('total_gst', '')
+        data.append('igst', 0)
+        data.append('cgst', 0)
+        data.append('sgst', 0)
+        // data.append('igst', ItemSaleList?.igst ?ItemSaleList?.igst:"")
+        // data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) || "")
+        // data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) || "")
         data.append('given_amount', givenAmt || "")//no
         data.append('due_amount', dueAmount || "")//no
         data.append('total_base', totalBase || "")
@@ -1254,7 +1257,7 @@ const Addsale = () => {
                                                             sx={{
                                                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                                                             }}
-                                                        />
+                                                        /> 
                                                     </ListItem>
                                                 )}
                                                 renderInput={(params) => (

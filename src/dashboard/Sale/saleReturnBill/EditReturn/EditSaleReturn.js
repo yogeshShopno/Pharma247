@@ -97,6 +97,23 @@ const EditSaleReturn = () => {
     //     const finalAmount = totalAmount - discountAmount;
     //     setNetAmount(finalAmount.toFixed(2));
     // }, [totalAmount, finalDiscount]);
+    
+    useEffect(() => {
+        if (-otherAmt >= totalAmount) {
+            setOtherAmt(-totalAmount)
+        }
+        const finalAmount = Number(totalAmount) + Number(otherAmt);
+        const decimalPart = Number((finalAmount % 1).toFixed(2));
+        const roundedDecimal = decimalPart;
+        if (decimalPart < 0.50) {
+            setRoundOff(-roundedDecimal);
+            setNetAmount(Math.floor(finalAmount));
+        } else {
+            setRoundOff(1 - roundedDecimal);
+            setNetAmount(Math.ceil(finalAmount));
+
+        }
+    }, [totalAmount, otherAmt]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -231,12 +248,13 @@ const EditSaleReturn = () => {
     }
 
     const editSaleReturnBill = async () => {
+
         let data = new FormData();
-        data.append("bill_no", saleReturnItems.bill_no);
-        data.append("bill_date", saleReturnItems.bill_date)
-        data.append("customer_id", customer.id);
+        data.append("bill_no", saleReturnItems?.bill_no);
+        data.append("bill_date", saleReturnItems?.bill_date)
+        data.append("customer_id", customer?.id);
         data.append("customer_address", address)
-        data.append("doctor_id", doctor.id);
+        data.append("doctor_id", doctor?.id);
         data.append('mrp_total', totalAmount)
         data.append('total_discount', finalDiscount)
         data.append('other_amount', otherAmt)
@@ -245,7 +263,7 @@ const EditSaleReturn = () => {
         data.append('igst', igst)
         data.append('cgst', cgst)
         data.append('sgst', sgst)
-        data.append('product_list', JSON.stringify(saleReturnItems.sales_iteam))
+        data.append('product_list', JSON.stringify(saleReturnItems?.sales_iteam))
         const params = {
             id: id
         }
@@ -259,6 +277,8 @@ const EditSaleReturn = () => {
             ).then((response) => {
                 //console.log(response.data);
                 //console.log("response===>", response.data);
+                setUnsavedItems(false);
+
                 toast.success(response.data.message);
                 setTimeout(() => {
                     history.push('/saleReturn/list');
@@ -345,7 +365,6 @@ const EditSaleReturn = () => {
     }
 
     const handleUpdate = () => {
-        setUnsavedItems(false);
 
         const newErrors = {};
         if (!customer) {
@@ -388,7 +407,7 @@ const EditSaleReturn = () => {
     const handleDeleteItem = async (saleItemId) => {
         if (!saleItemId) return;
         let data = new FormData();
-        data.append("id", saleItemId);
+        data.append("id", saleItemId ? saleItemId : '');
         const params = {
             id: saleItemId
         };
@@ -664,7 +683,7 @@ const EditSaleReturn = () => {
                                     <div className="scroll-two">
                                         <table className="saleTable">
                                             <thead>
-                                                <tr>
+                                                <tr className="item-List border-b border-gray-400">
                                                     <th className="w-1/4">Item Name</th>
                                                     <th >Unit </th>
                                                     <th >Batch </th>
@@ -694,19 +713,29 @@ const EditSaleReturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
-                                                            sx={{ width: '90px' }}
+                                                            sx={{ width: '90px', textAlign: 'right', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
                                                         <TextField
                                                             id="outlined-number"
-                                                            type="number"
-                                                            sx={{ width: '110px' }}
+                                                            type="string"
+                                                            sx={{ width: '110px' , textAlign: 'right'}}
                                                             size="small"
                                                             disabled
                                                             value={batch}
                                                             onChange={(e) => { setBatch(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
@@ -719,6 +748,11 @@ const EditSaleReturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
@@ -726,24 +760,34 @@ const EditSaleReturn = () => {
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '100px' }}
+                                                            sx={{ width: '100px', textAlign: 'right' }}
                                                             size="small"
                                                             inputRef={inputRef4}
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '120px' }}
+                                                            sx={{ width: '120px' , textAlign: 'right'}}
                                                             size="small"
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
@@ -754,9 +798,14 @@ const EditSaleReturn = () => {
                                                             size="small"
                                                             inputRef={inputRef8}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: '80px' }}
+                                                            sx={{ width: '80px', textAlign: 'right' }}
                                                             value={gst}
                                                             onChange={(e) => { setGst(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
                                                     <td>
@@ -764,12 +813,17 @@ const EditSaleReturn = () => {
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '70px' }}
+                                                            sx={{ width: '70px', textAlign: 'right' }}
                                                             size="small"
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
                                                             onChange={(e) => { handleQty(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
 
@@ -780,12 +834,17 @@ const EditSaleReturn = () => {
                                                             inputRef={inputRef9}
                                                             onKeyDown={handleKeyDown}
                                                             disabled
-                                                            sx={{ width: '100px' }}
+                                                            sx={{ width: '100px', textAlign: 'right' }}
                                                             value={loc}
                                                             onChange={(e) => { setLoc(e.target.value) }}
+                                                            
+                                                            InputProps={{
+                                                                inputProps: { style: { textAlign: 'right' } },
+                                                                disableUnderline: true
+                                                            }}
                                                         />
                                                     </td>
-                                                    <td className="total">{itemAmount}</td>
+                                                    <td className="total ">{itemAmount}</td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>
@@ -902,21 +961,22 @@ const EditSaleReturn = () => {
                                                 }} />
                                             </div> */}
                                             <div>
-                                                <TextField value={otherAmt} onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                <TextField value={otherAmt == 0 ? "" : otherAmt} 
+                                                onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                     '& .MuiInputBase-root': {
                                                         height: '35px',
                                                     },
                                                 }} />
                                             </div>
                                             <div>
-                                                <TextField value={roundOff} onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                <TextField value={!roundOff ? 0 : roundOff.toFixed(2)} onChange={(e) => { setRoundOff(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                     '& .MuiInputBase-root': {
                                                         height: '35px',
                                                     },
                                                 }} />
                                             </div>
                                             <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{netAmount}/-</span>
+                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount ? 0 : netAmount}/-</span>
                                             </div>
                                         </div>
                                     </div>

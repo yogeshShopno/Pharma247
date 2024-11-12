@@ -166,8 +166,8 @@ const Salereturn = () => {
     }, [base, qty]);
 
     useEffect(() => {
-        if (-otherAmt >= totalAmount) {
-            setOtherAmt(-totalAmount)
+        if (totalAmount < -otherAmt) {
+            setOtherAmt(0);
         }
         const finalAmount = Number(totalAmount) + Number(otherAmt);
         const decimalPart = Number((finalAmount % 1).toFixed(2));
@@ -246,8 +246,6 @@ const Salereturn = () => {
             setOrder(selectedEditItem.order);
             setItemAmount(selectedEditItem.net_rate);
         }
-
-
     }, [selectedEditItem]);
 
     useEffect(() => {
@@ -260,7 +258,6 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "list-customer?",
-
                         {
                             params: params,
                             headers: {
@@ -482,8 +479,8 @@ const Salereturn = () => {
         data.append('net_amount', netAmount ? netAmount : '');
         data.append('total_base', totalBase ? totalBase : '');
         data.append('igst', '0');
-        data.append('cgst', cgst ? cgst : '');
-        data.append('sgst', sgst ? sgst : '');
+        data.append('cgst',  '0');
+        data.append('sgst',  '0');
         data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
 
         try {
@@ -898,7 +895,7 @@ const Salereturn = () => {
                                     <table className="saleTable ">
                                         <thead>
                                             <tr>
-                                             <th className="w-1/4 "style={{textAlign:"center"}}>Item Name</th>
+                                                <th className="w-1/4 " style={{ textAlign: "center" }}>Item Name</th>
                                                 <th >Unit </th>
                                                 <th >Batch </th>
                                                 <th >Expiry</ th>
@@ -1069,7 +1066,7 @@ const Salereturn = () => {
                                                             }}
                                                         />
                                                     </td>
-                                                    <td style={{textAlign:"right"}} className="total">{itemAmount}</td>
+                                                    <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
                                                 </tr>
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
@@ -1099,7 +1096,7 @@ const Salereturn = () => {
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td style={{textAlign:"right"}} >
+                                                    <td style={{ textAlign: "right" }} >
                                                         <Button variant="contained" color="success" marginRight="20px" onClick={editReturnItem}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                                     </td>
                                                 </tr>
@@ -1200,8 +1197,18 @@ const Salereturn = () => {
                                             }} />
                                         </div> */}
                                             <div>
-                                                <TextField value={otherAmt == 0 ? "" : otherAmt}
-                                                    onChange={(e) => { setOtherAmt(e.target.value) }}
+                                                <TextField value={otherAmt}
+                                                    onChange={(e) => {
+                                                        setUnsavedItems(true);
+                                                     const  x=e.target.value
+                                                     const y = (x)
+
+                                                        if (-y  >= totalAmount) {
+                                                            setOtherAmt((-totalAmount))
+                                                        }else{
+                                                            setOtherAmt(y)
+                                                        }   
+                                                    }}
                                                     size="small"
                                                     sx={{
                                                         width: '105px',

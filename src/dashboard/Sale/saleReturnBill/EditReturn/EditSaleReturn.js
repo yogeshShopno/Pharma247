@@ -86,11 +86,11 @@ const EditSaleReturn = () => {
     const [nextPath, setNextPath] = useState("");
     const [uniqueId, setUniqueId] = useState([])
 
-    // useEffect(() => {
-    //     const totalAmount = (qty / unit);
-    //     const total = parseFloat(base) * totalAmount;
-    //     setItemAmount(total.toFixed(2));
-    // }, [base, qty]);
+    useEffect(() => {
+        const totalAmount = (qty / unit);
+        const total = parseFloat(base) * totalAmount;
+        setItemAmount(total.toFixed(2));
+    }, [base, qty]);
 
     // useEffect(() => {
     //     const discountAmount = (totalAmount * finalDiscount) / 100;
@@ -99,8 +99,8 @@ const EditSaleReturn = () => {
     // }, [totalAmount, finalDiscount]);
     
     useEffect(() => {
-        if (-otherAmt >= totalAmount) {
-            setOtherAmt(-totalAmount)
+        if (totalAmount < -otherAmt) {
+            setOtherAmt(0);
         }
         const finalAmount = Number(totalAmount) + Number(otherAmt);
         const decimalPart = Number((finalAmount % 1).toFixed(2));
@@ -475,9 +475,7 @@ const EditSaleReturn = () => {
                 random_number: randomNumber,
             };
 
-            const response = await axios.post(
-                "sales-return-edit-history",
-                {},
+            const response = await axios.post("sales-return-edit-history",{},
                 {
                     params: params,
                     headers: { Authorization: `Bearer ${token}` },
@@ -581,6 +579,7 @@ const EditSaleReturn = () => {
                                                     minWidth: '300px',
                                                 },
                                             }}
+                                            
                                             renderOption={(props, option) => (
                                                 <ListItem {...props}>
                                                     <ListItemText
@@ -907,7 +906,7 @@ const EditSaleReturn = () => {
 
                                         </div>
 
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                        {/* <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                             <div>
                                                 <label className="font-bold">SGST : </label>
                                             </div>
@@ -918,7 +917,7 @@ const EditSaleReturn = () => {
                                                 <label className="font-bold">IGST: </label>
                                             </div>
 
-                                        </div>
+                                        </div> */}
                                         <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                             <div className="font-bold">
                                                 {sgst}
@@ -961,8 +960,20 @@ const EditSaleReturn = () => {
                                                 }} />
                                             </div> */}
                                             <div>
-                                                <TextField value={otherAmt == 0 ? "" : otherAmt} 
-                                                onChange={(e) => { setOtherAmt(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                <TextField value={otherAmt} 
+                                            onChange={(e) => {
+                                                setUnsavedItems(true);
+                                                const  x=e.target.value
+                                                const y = (x)
+
+                                                   if (-y  >= totalAmount) {
+                                                       setOtherAmt((-totalAmount))
+                                                   }else{
+                                                       setOtherAmt(y)
+                                                   }   
+                                               }}
+                                                 size="small" style={{ width: '105px' }} 
+                                                sx={{
                                                     '& .MuiInputBase-root': {
                                                         height: '35px',
                                                     },

@@ -170,7 +170,7 @@ const InventoryList = () => {
         : [...prevSelected, itemId]
     );
 
-    console.log("id", selectedItems);
+    // console.log("id", selectedItems);
   };
   let listOfCompany = () => {
     axios
@@ -180,11 +180,11 @@ const InventoryList = () => {
         },
       })
       .then((response) => {
-        console.log("API Response Pharma:===", response);
+        // console.log("API Response Pharma:===", response);
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
 
@@ -227,7 +227,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
   let listDrougGroup = () => {
@@ -242,7 +242,7 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
 
@@ -258,7 +258,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
 
@@ -274,7 +274,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
 
@@ -290,7 +290,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        console.error("API Error:", error);
       });
   };
   const handleCheckboxChange = (event, categoryId) => {
@@ -423,8 +423,7 @@ const InventoryList = () => {
             toast.error("No Record Found");
           }
           setIsLoading(false);
-          console.log(data);
-          console.log(searchItem);
+   
         });
     } catch (error) {
       console.error("API error:", error);
@@ -513,7 +512,7 @@ const InventoryList = () => {
   const handleInputChange = (event, newInputValue) => {
     setLocationBulk(newInputValue);
     // handleSearch(newInputValue);
-    console.log(newInputValue + "ayusf");
+    // console.log(newInputValue + "ayusf");
   };
 
   const bulkOrderData = async () => {
@@ -1352,10 +1351,10 @@ const InventoryList = () => {
                         onChange={() => {
                           if (selectedItems.length === data.length) {
                             setSelectedItems([]);
-                            console.log("id", selectedItems);
+                            
                           } else {
                             setSelectedItems(data.map((item) => item.id));
-                            console.log("id", selectedItems);
+                           
                           }
                         }}
                         checked={selectedItems.length === data.length}

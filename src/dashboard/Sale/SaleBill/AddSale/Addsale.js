@@ -519,7 +519,7 @@ const Addsale = () => {
         // data.append('igst', ItemSaleList?.igst ?ItemSaleList?.igst:"")
         // data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) || "")
         // data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) || "")
-        data.append('given_amount', givenAmt || "")//no
+        data.append('given_amount', 0 || "")//no
         data.append('due_amount', dueAmount || "")//no
         data.append('total_base', totalBase || "")
         data.append('pickup', pickup || "")

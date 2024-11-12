@@ -58,9 +58,12 @@ const Login = () => {
                 }
                 else {
                     toast.error(response.data.message)
+                    console.error(response.data.message)
+
                 }
             });
-        } catch (error) {
+        } 
+        catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message)
             }
@@ -68,6 +71,7 @@ const Login = () => {
         }
     };
 
+ 
     return (
         <>
             <ToastContainer
@@ -153,6 +157,8 @@ const Login = () => {
                             <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" onClick={handleLogin} >
                                 Login
                             </Button>
+
+                            
                         </div>
 
                         <div className="mt-4 flex items-center w-full text-center">

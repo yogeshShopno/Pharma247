@@ -17,9 +17,6 @@
     background-color: rgb(12, 161, 246);
     color: white;
     width: 120px;
-    text-align: right;
-    padding-right: 10px;
-
 }
 
 .saleTable {
@@ -30,7 +27,7 @@
 .saleTable th,
 .saleTable td {
     padding: 8px;
-    text-align: center;
+    text-align: left;
     font-size: 14px;
 }
 
@@ -168,21 +165,7 @@ header {
 .item-List th,
 .item-List td {
     padding: 8px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    /* box-shadow: 0px 0px 5px -2px #1a1d21 !important; */
-}
-.item-List .td-up {
-    padding: 8px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    /* box-shadow: 0px 0px 5px -2px #1a1d21 !important; */
-}
-.item-List .td-bottom {
-    padding: 8px;
-    text-align: center;
+    text-align: left;
     font-size: 15px;
     font-weight: 600;
     /* box-shadow: 0px 0px 5px -2px #1a1d21 !important; */

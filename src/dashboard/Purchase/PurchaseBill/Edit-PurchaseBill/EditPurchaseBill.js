@@ -19,6 +19,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel } from "@mui/material"
+import { Prompt } from "react-router-dom/cjs/react-router-dom";
+import { VscDebugStepBack } from "react-icons/vsc";
 
 const EditPurchaseBill = () => {
   const inputRef1 = useRef();
@@ -37,6 +39,8 @@ const EditPurchaseBill = () => {
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [searchItem, setSearchItem] = useState("");
   const [itemList, setItemList] = useState([]);
+  const [isOpenBox, setIsOpenBox] = useState(false);
+
   const [distributor, setDistributor] = useState(null);
   const [billNo, setbillNo] = useState("");
   // const [dueDate, setDueDate] = useState(dayjs().add(15, 'day'));
@@ -93,7 +97,9 @@ const EditPurchaseBill = () => {
   const [finalTotalAmount, setFinalTotalAmount] = useState(0)
   const [netAmount, setNetAmount] = useState(0)
   const [roundOffAmount, setRoundOffAmount] = useState(0)
-
+  const [openModal, setOpenModal] = useState(false);
+  const [unsavedItems, setUnsavedItems] = useState(false);
+  const [nextPath, setNextPath] = useState("");
 
   const [errors, setErrors] = useState({});
   let defaultDate = new Date();
@@ -143,7 +149,7 @@ const EditPurchaseBill = () => {
     let data = new FormData();
     data.append("id", id);
     data.append("random_number", randomNumber);
-
+    data.append("net_amount", netAmount);
     const params = {
       id: id,
       random_number: randomNumber,
@@ -161,6 +167,7 @@ const EditPurchaseBill = () => {
       //console.log("Purchase data fetched: ", purchaseData);
 
       setPurchase(purchaseData);
+      setNetAmount(response?.data?.data.net_amount)
       if (purchaseData) {
         //console.log("Distributors array: ", distributors);
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
@@ -184,7 +191,7 @@ const EditPurchaseBill = () => {
         // setCnAmount(purchase?.cn_amount || "")
         setFinalCnAmount(purchaseData?.cn_amount || "");
         setFinalTotalAmount(purchaseData?.total_amount || "")
-        handleCalNetAmount(purchaseData?.total_amount || "")
+        handleCalNetAmount(purchaseData?.net_amount || "")
         setRoundOffAmount(purchaseData?.round_off || "")
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
@@ -247,7 +254,9 @@ const EditPurchaseBill = () => {
     // listOfHistory()
   }, [id]);
 
+
   useEffect(() => {
+
     if (!qty || !ptr || !disc || !gst.name || !free) {
       console.warn("One or more dependencies are undefined");
       return;
@@ -396,6 +405,7 @@ const EditPurchaseBill = () => {
   };
 
   const addPurchaseValidation = async () => {
+
     const newErrors = {};
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
@@ -444,7 +454,50 @@ const EditPurchaseBill = () => {
     return isValid;
   };
 
+  const handleNavigation = (path) => {
+    setOpenAddPopUp(false)
+    setIsOpenBox(true);
+    setNextPath(path);
+  };
+
+  const LogoutClose = () => {
+    setIsOpenBox(false);
+    // setPendingNavigation(null);
+  };
+  const handleLeavePage = async () => {
+    try {
+      const params = {
+        start_date: localStorage.getItem('StartFilterDate'),
+        end_date: localStorage.getItem('EndFilterDate'),
+        distributor_id: localStorage.getItem('DistributorId'),
+        type: "1"
+      };
+
+      const response = await axios.post("purches-return-iteam-histroy", {},
+        {
+          params: params,
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.status === 200) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
+      }
+      setIsOpenBox(false);
+      setUnsavedItems(false);
+      history.replace(nextPath);
+    } catch (error) {
+      console.error("Error deleting items:", error);
+    }
+  };
+
   const handleEditItem = async () => {
+    setUnsavedItems(true);
+
     let data = new FormData();
     data.append("user_id", userId);
     if (isEditMode == true) {
@@ -621,6 +674,8 @@ const EditPurchaseBill = () => {
   };
 
   const handleUpdateSubmit = () => {
+    setUnsavedItems(false);
+
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -684,6 +739,7 @@ const EditPurchaseBill = () => {
   //     // }
   // };
   const handelAddOpen = () => {
+    setUnsavedItems(true)
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
     purchaseReturnData()
@@ -924,8 +980,8 @@ const EditPurchaseBill = () => {
 
     setInputDisabled(false);
   };
-  const handleCalNetAmount = (total_amount) => {
-    const adjustedTotalAmount = total_amount - finalCnAmount;
+  const handleCalNetAmount = (net_amount) => {
+    const adjustedTotalAmount = net_amount - finalCnAmount;
 
     const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
 
@@ -943,6 +999,7 @@ const EditPurchaseBill = () => {
     setRoundOffAmount(roundOffAmountCal);
   };
   const handleCnAmount = () => {
+
     const newErrors = {};
     if (finalTotalAmount <= cnAmount) {
       newErrors.finalTotalAmount = "You cannot adjust CN more than the total invoice amount";
@@ -951,6 +1008,7 @@ const EditPurchaseBill = () => {
       return;
     }
     setFinalCnAmount(cnAmount)
+    setUnsavedItems(true)
     // setNetAmount(finalTotalAmount - cnAmount)
     // //console.log("124", setFinalCnAmount);
     const decimalTotalAmount = finalTotalAmount - Math.floor(finalTotalAmount);
@@ -983,7 +1041,7 @@ const EditPurchaseBill = () => {
       <Header />
       <ToastContainer
         position="top-right"
-        autoClose={5000}  
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -1514,87 +1572,81 @@ const EditPurchaseBill = () => {
               </div>
               <div>
 
-                <div className="flex gap-10 justify-end p-5">
+                <div className="flex gap-10 justify-end mt-4 flex-wrap ">
+
                   {/* First Column */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total GST: </label>
-                      <div className="font-bold">{purchase?.total_gst}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Qty:</label>
-                      <div className="font-bold">{purchase?.total_qty}</div>
+                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                    <label className="font-bold">Total GST: </label>
+                    <label className="font-bold">Total Qty:</label>
+                    <label className="font-bold">Margin: </label>
+                  </div>
+
+                  <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                    <div className="font-bold">{purchase?.total_gst}</div>
+                    <div className="font-bold">{purchase?.total_qty}</div>
+                    <div className="font-bold">
+                      {purchase?.total_net_rate} ({purchase?.total_margin})%
                     </div>
                   </div>
 
-                  {/* Second Column */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
-                    {/* Total Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                    <div>
                       <label className="font-bold">Total Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                          borderBottom: "2px solid rgb(12, 161, 246)",
-                        }}
-                      >
+                    </div>
+                    <div>
+                      <label className="font-bold">CN Amount: </label>
+                    </div>
+
+
+                    <div>
+                      <label className="font-bold">Round off: </label>
+                    </div>
+                    <div>
+                      <label className="font-bold">Net Amount: </label>
+                    </div>
+                  </div>
+
+                  <div class="totals mr-5" style={{ display: 'flex', gap: '23px', flexDirection: 'column', alignItems: "end" }}>
+                    <div>
+                      <span style={{ fontWeight: 600 }}>
                         {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
                       </span>
                     </div>
-
-                    {/* CN Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">CN Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                        }}
-                      >
-                        {(parseFloat(finalCnAmount) || 0).toFixed(2)}
+                    <div style={{ marginTop: "2%" }}>
+                      <span style={{ fontWeight: 600 }}>
+                        {- (parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>
 
-                    {/* Total Margin Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Margin: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                        }}
-                      >
-                        {purchase?.total_margin}%
+                    {/* <div style={{ marginTop: "2%" }}>
+                     
+                    </div> */}
+                    {/* <div style={{ marginTop: "0%" }}>
+                      <span style={{ fontWeight: 600 }}>
+                      
+                        {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)}
+
+                      </span>
+                    </div> */}
+                    <div style={{ marginTop: "0%" }}>
+                      <span style={{ fontWeight: 600 }}>
+                        {roundOffAmount === "0.00"
+                          ? roundOffAmount
+                          : roundOffAmount < 0
+                            ? `-${Math.abs(roundOffAmount)}`
+                            : `+${Math.abs(roundOffAmount)}`}
                       </span>
                     </div>
 
-                    {/* Round Off Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Round off: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                        }}
-                      >
-                        {(parseFloat(roundOffAmount) || 0).toFixed(2)}
-                      </span>
-                    </div>
-
-                    {/* Net Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Net Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                        }}
-                      >
+                    <div>
+                      <span style={{ fontWeight: 800, fontSize: '22px' }}>
                         {(parseFloat(netAmount) || 0).toFixed(2)}
                       </span>
                     </div>
+
                   </div>
+
+
                 </div>
 
               </div>
@@ -1796,6 +1848,42 @@ const EditPurchaseBill = () => {
                   type="button"
                   className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                   onClick={() => setIsDelete(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+          <Prompt
+            when={unsavedItems}
+            message={(location) => {
+              handleNavigation(location.pathname);
+              return false;
+            }}
+          />
+          <div
+            id="modal"
+            value={isOpenBox}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+          >
+            <div />
+            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+              <div className="my-4 logout-icon">
+                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+              </div>
+              <div className="flex gap-5 justify-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                  onClick={handleLeavePage}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                  onClick={LogoutClose}
                 >
                   Cancel
                 </button>

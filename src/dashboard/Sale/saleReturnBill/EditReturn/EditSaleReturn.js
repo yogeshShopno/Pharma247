@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Header from "../../../Header"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
-import { Button, ListItemText, TextField } from "@mui/material";
+import { Button, Checkbox, Input, ListItemText, TextField } from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
 import { MenuItem, Select } from '@mui/material';
@@ -15,6 +15,7 @@ import { useParams } from 'react-router-dom';
 import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
+import { VscDebugStepBack } from "react-icons/vsc";
 
 const EditSaleReturn = () => {
     const token = localStorage.getItem("token")
@@ -45,6 +46,7 @@ const EditSaleReturn = () => {
     const [mrp, setMRP] = useState('');
     const [qty, setQty] = useState(0);
     const [tempQty, setTempQty] = useState(0)
+    const [selectedItem, setSelectedItem] = useState([]);
 
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
@@ -70,7 +72,7 @@ const EditSaleReturn = () => {
     const [sgst, setSgst] = useState('')
     const [igst, setIgst] = useState('')
     const [totalBase, setTotalBase] = useState(0);
-    const [totalMargine, setTotalMargine] = useState(0);
+    const [totalMargin, setTotalMargin] = useState(0);
     const [totalNetRate, setTotalNetRate] = useState(0);
     const [netAmount, setNetAmount] = useState(0)
     const [roundOff, setRoundOff] = useState(0)
@@ -97,7 +99,7 @@ const EditSaleReturn = () => {
     //     const finalAmount = totalAmount - discountAmount;
     //     setNetAmount(finalAmount.toFixed(2));
     // }, [totalAmount, finalDiscount]);
-    
+
     useEffect(() => {
         if (totalAmount < -otherAmt) {
             setOtherAmt(0);
@@ -175,6 +177,8 @@ const EditSaleReturn = () => {
     const saleBillGetBySaleID = async (doctorData, customerData) => {
         let data = new FormData();
         data.append("id", id);
+        data.append("total_margin", totalMargin);
+        data.append("total_net_rate", totalNetRate);
         const params = {
             id: id,
         };
@@ -188,7 +192,7 @@ const EditSaleReturn = () => {
             const record = response.data.data;
             setSaleReturnItems(response.data.data);
             setTotalBase(response.data.data.total_base)
-            setTotalMargine(response.data.data.total_margin)
+            setTotalMargin(response.data.data.total_margin)
             setTotalNetRate(response.data.data.total_net_rate)
             setSgst(response.data.data.sgst)
             setIgst(response.data.data.igst)
@@ -200,6 +204,7 @@ const EditSaleReturn = () => {
             const foundDoctor = doctorData.find(option => option.id == record.doctor_id);
             setDoctor(foundDoctor);
             setNetAmount((response.data.data.net_amount))
+
             setOtherAmt((response.data.data.other_amount))
         } catch (error) {
             console.error("API error fetching purchase data:", error);
@@ -249,43 +254,51 @@ const EditSaleReturn = () => {
 
     const editSaleReturnBill = async () => {
 
-        let data = new FormData();
-        data.append("bill_no", saleReturnItems?.bill_no);
-        data.append("bill_date", saleReturnItems?.bill_date)
-        data.append("customer_id", customer?.id);
-        data.append("customer_address", address)
-        data.append("doctor_id", doctor?.id);
-        data.append('mrp_total', totalAmount)
-        data.append('total_discount', finalDiscount)
-        data.append('other_amount', otherAmt)
-        data.append('net_amount', netAmount)
-        data.append('total_base', totalBase)
-        data.append('igst', igst)
-        data.append('cgst', cgst)
-        data.append('sgst', sgst)
-        data.append('product_list', JSON.stringify(saleReturnItems?.sales_iteam))
-        const params = {
-            id: id
-        }
-        try {
-            await axios.post("sales-return-update", data, {
-                params: params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-            ).then((response) => {
-                //console.log(response.data);
-                //console.log("response===>", response.data);
-                setUnsavedItems(false);
+        const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(item => item.iss_check === false)
+        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
+        if (hasUncheckedItems) {
+            toast.error('Please select at least one item');;
 
-                toast.success(response.data.message);
-                setTimeout(() => {
-                    history.push('/saleReturn/list');
-                }, 2000);
-            })
-        } catch (error) {
-            console.error("API error:", error);
+        } else {
+            let data = new FormData();
+            data.append("bill_no", saleReturnItems?.bill_no);
+            data.append("bill_date", saleReturnItems?.bill_date)
+            data.append("customer_id", customer?.id);
+            data.append("customer_address", address)
+            data.append("doctor_id", doctor?.id);
+            data.append('mrp_total', totalAmount)
+            data.append('total_discount', finalDiscount)
+            data.append('other_amount', otherAmt)
+            data.append('net_amount', netAmount)
+            data.append('total_base', totalBase)
+            data.append('igst', igst)
+            data.append('cgst', cgst)
+            data.append('sgst', sgst)
+            data.append('round_off', roundOff)
+            data.append('total_net_rate', totalNetRate)
+            data.append('total_margin', totalMargin)
+            data.append('payment_name', paymentType)
+            data.append('product_list', JSON.stringify(saleReturnItems?.sales_iteam))
+            const params = {
+                id: id
+            }
+            try {
+                await axios.post("sales-return-update", data, {
+                    params: params,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+                ).then((response) => {
+                    setUnsavedItems(false);
+                    toast.success(response.data.message);
+                    setTimeout(() => {
+                        history.push('/saleReturn/list');
+                    }, 2000);
+                })
+            } catch (error) {
+                console.error("API error:", error);
+            }
         }
     }
 
@@ -428,6 +441,45 @@ const EditSaleReturn = () => {
         }
     }
 
+    const handleChecked = async (itemId, checked) => {
+        let data = new FormData();
+        setUnsavedItems(true);
+        data.append("id", itemId ? itemId : '');
+        data.append("type", 0);
+
+        try {
+            const response = await axios.post("sales-return-iteam-select", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.data) {
+                // Toggle the selected item's iss_check state
+                setSelectedItem((prevSelected) => {
+                    // Check if the item is already in the selected list
+                    if (checked) {
+                        return [...prevSelected, itemId]; // Add item to selected
+                    } else {
+                        return prevSelected.filter((id) => id !== itemId); // Remove item from selected
+                    }
+                });
+
+                // Optionally, update the state of the item to reflect the checked state
+                saleReturnItems.sales_iteam = saleReturnItems.sales_iteam.map(item => {
+                    if (item.id === itemId) {
+                        item.iss_check = checked; // Toggle the checkbox state
+                    }
+                    return item;
+                });
+            }
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+
+
     const handleEditClick = (item) => {
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
@@ -470,12 +522,11 @@ const EditSaleReturn = () => {
 
     const handleLeavePage = async () => {
         try {
-            console.log("Request initiated");
             const params = {
                 random_number: randomNumber,
             };
 
-            const response = await axios.post("sales-return-edit-history",{},
+            const response = await axios.post("sales-return-edit-history", {},
                 {
                     params: params,
                     headers: { Authorization: `Bearer ${token}` },
@@ -579,7 +630,7 @@ const EditSaleReturn = () => {
                                                     minWidth: '300px',
                                                 },
                                             }}
-                                            
+
                                             renderOption={(props, option) => (
                                                 <ListItem {...props}>
                                                     <ListItemText
@@ -714,7 +765,7 @@ const EditSaleReturn = () => {
                                                             value={unit}
                                                             sx={{ width: '90px', textAlign: 'right', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -725,12 +776,12 @@ const EditSaleReturn = () => {
                                                         <TextField
                                                             id="outlined-number"
                                                             type="string"
-                                                            sx={{ width: '110px' , textAlign: 'right'}}
+                                                            sx={{ width: '110px', textAlign: 'right' }}
                                                             size="small"
                                                             disabled
                                                             value={batch}
                                                             onChange={(e) => { setBatch(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -747,7 +798,7 @@ const EditSaleReturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -765,7 +816,7 @@ const EditSaleReturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -776,13 +827,13 @@ const EditSaleReturn = () => {
                                                         <TextField
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '120px' , textAlign: 'right'}}
+                                                            sx={{ width: '120px', textAlign: 'right' }}
                                                             size="small"
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -800,7 +851,7 @@ const EditSaleReturn = () => {
                                                             sx={{ width: '80px', textAlign: 'right' }}
                                                             value={gst}
                                                             onChange={(e) => { setGst(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -818,7 +869,7 @@ const EditSaleReturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
                                                             onChange={(e) => { handleQty(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -836,7 +887,7 @@ const EditSaleReturn = () => {
                                                             sx={{ width: '100px', textAlign: 'right' }}
                                                             value={loc}
                                                             onChange={(e) => { setLoc(e.target.value) }}
-                                                            
+
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
                                                                 disableUnderline: true
@@ -864,8 +915,19 @@ const EditSaleReturn = () => {
                                                         onClick={() => handleEditClick(item)}
                                                     >
                                                         <td style={{
-                                                            display: 'flex', gap: '8px',
+                                                            display: 'flex', gap: '8px', alignItems: "center"
                                                         }}>
+                                                            <td>
+                                                                <Checkbox
+                                                                    key={item.id}
+                                                                    checked={item?.iss_check} // Use the item’s iss_check value to control the checkbox state
+                                                                    onClick={(event) => {
+                                                                        event.stopPropagation(); // Prevent triggering other events
+                                                                    }}
+                                                                    onChange={(event) => handleChecked(item.id, event.target.checked)} // Pass checked state to handleChecked
+                                                                />
+                                                            </td>
+
                                                             < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                             {item.iteam_name}
@@ -886,21 +948,29 @@ const EditSaleReturn = () => {
                                     </div>
                                 </div>
                                 {saleReturnItems?.sales_iteam?.length > 0 && (
-                                    <div className="flex gap-10 justify-end mt-4 flex-wrap"  >
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                    <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap"  >
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <div>
-                                                <label className="font-bold">Total Base: </label>
+                                                <label className="font-bold">Total Base : </label>
                                             </div>
 
                                             <div>
-                                                <label className="font-bold">Total Margin: </label>
+                                                <label className="font-bold">Total Margin : </label>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                        <div class="totals mr-3"
+                                            style={{
+                                                display: "flex",
+                                                gap: "25px",
+                                                flexDirection: "column",
+                                                alignItems: "end"
+
+                                            }}>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>{totalBase} /-</span>     </div>
+                                                <span style={{ fontWeight: 600 }}>{totalBase} </span>     </div>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>({totalMargine} %) {totalNetRate} /-</span>
+                                                <span style={{ fontWeight: 600 }}>
+                                                    ₹ {totalNetRate}({totalMargin} %)  </span>
                                             </div>
 
 
@@ -918,7 +988,7 @@ const EditSaleReturn = () => {
                                             </div>
 
                                         </div> */}
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                        {/* <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
                                             <div className="font-bold">
                                                 {sgst}
                                             </div>
@@ -928,8 +998,14 @@ const EditSaleReturn = () => {
                                             <div className="font-bold">
                                                 {igst}
                                             </div>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                        </div> */}
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                gap: "25px",
+                                                flexDirection: "column",
+                                            }}
+                                        >
                                             <div>
                                                 <label className="font-bold">Total Amount : </label>
                                             </div>
@@ -937,57 +1013,85 @@ const EditSaleReturn = () => {
                                                 <label className="font-bold">Discount % : </label>
                                             </div> */}
                                             <div>
-                                                <label className="font-bold">Other Amount: </label>
+                                                <label className="font-bold">Other Amount : </label>
                                             </div>
 
                                             <div>
-                                                <label className="font-bold">Round Off: </label>
+                                                <label className="font-bold">Round Off : </label>
                                             </div>
 
                                             <div>
-                                                <label className="font-bold" >Net Amount  : </label>
+                                                <label className="font-bold" >Net Amount : </label>
                                             </div>
                                         </div>
-                                        <div class="totals" style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
-                                            <div>
-                                                <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
-                                            </div>
-                                            {/* <div>
+                                        <div class="totals">
+                                            <div className="" style={{
+                                                display: "flex",
+                                                gap: "20px",
+                                                flexDirection: "column",
+                                                alignItems: "end"
+                                            }}>
+                                                <div>
+                                                    <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                                </div>
+                                                {/* <div>
                                                 <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                     '& .MuiInputBase-root': {
                                                         height: '35px'
                                                     },
                                                 }} />
                                             </div> */}
-                                            <div>
-                                                <TextField value={otherAmt} 
-                                            onChange={(e) => {
-                                                setUnsavedItems(true);
-                                                const  x=e.target.value
-                                                const y = (x)
+                                                <Input
+                                                    type="number"
+                                                    value={otherAmt}
+                                                    onChange={(e) => {
+                                                        setUnsavedItems(true);
+                                                        const x = e.target.value
+                                                        const y = (x)
 
-                                                   if (-y  >= totalAmount) {
-                                                       setOtherAmt((-totalAmount))
-                                                   }else{
-                                                       setOtherAmt(y)
-                                                   }   
-                                               }}
-                                                 size="small" style={{ width: '105px' }} 
-                                                sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px',
-                                                    },
-                                                }} />
-                                            </div>
-                                            <div>
-                                                <TextField value={!roundOff ? 0 : roundOff.toFixed(2)} onChange={(e) => { setRoundOff(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px',
-                                                    },
-                                                }} />
-                                            </div>
-                                            <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount ? 0 : netAmount}/-</span>
+                                                        if (-y >= totalAmount) {
+                                                            setOtherAmt((-totalAmount))
+                                                        } else {
+                                                            setOtherAmt(y)
+                                                        }
+                                                    }}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        outline: "none",
+                                                        justifyItems: "end"
+
+                                                    }}
+                                                    sx={{
+                                                        "& .MuiInputBase-root": {
+                                                            height: "35px",
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" },
+                                                    }}
+                                                />
+                                                <Input
+                                                    type="number"
+                                                    value={!roundOff ? 0 : roundOff.toFixed(2)} onChange={(e) => { setRoundOff(e.target.value) }} size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        outline: "none",
+                                                        justifyItems: "end"
+
+                                                    }}
+                                                    sx={{
+                                                        "& .MuiInputBase-root": {
+                                                            height: "35px",
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" },
+                                                    }}
+                                                />
+                                                <div>
+                                                    <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1037,35 +1141,33 @@ const EditSaleReturn = () => {
                             return false;
                         }}
                     />
-                    <div id="modal" value={openModal}
-                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
-
+                    <div
+                        id="modal"
+                        value={openModal}
+                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
+                    >
+                        <div />
                         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                            {/* Close button */}
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-                                viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                            </svg>
-
-                            <div className="my-4 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                                    <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                                    <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                                </svg>
-                                <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
+                            <div className="my-4 logout-icon">
+                                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
                             </div>
-
-                            <div className="flex gap-5 justify-center mt-10">
+                            <div className="flex gap-5 justify-center">
                                 <button
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                                    type="submit"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
                                     onClick={handleLeavePage}
-                                >Delete
+                                >
+                                    Yes
                                 </button>
                                 <button
-                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                                    type="button"
+                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                                     onClick={() => setOpenModal(false)}
-                                >Cancel
+
+                                >
+
+                                    Cancel
                                 </button>
                             </div>
                         </div>

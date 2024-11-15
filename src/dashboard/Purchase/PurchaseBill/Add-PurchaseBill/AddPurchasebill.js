@@ -4,7 +4,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Button, InputAdornment, ListItem, ListItemText, OutlinedInput, TextField } from "@mui/material";
+import { Button, Input, InputAdornment, ListItem, ListItemText, OutlinedInput, TextField } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaPlusCircle } from "react-icons/fa";
@@ -19,6 +19,8 @@ import { toast, ToastContainer } from "react-toastify";
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel } from "@mui/material"
+import { Prompt } from "react-router-dom/cjs/react-router-dom";
+import { VscDebugStepBack } from "react-icons/vsc";
 
 const debounce = (func, delay) => {
   let timeout;
@@ -45,6 +47,7 @@ const AddPurchaseBill = () => {
   const inputRef13 = useRef();
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0)
+  const [totalNetRate, setTotalNetRate] = useState(0)
   const [totalGst, setTotalGst] = useState(0)
   const [totalQty, setTotalQty] = useState(0)
   const [searchItem, setSearchItem] = useState("");
@@ -63,10 +66,14 @@ const AddPurchaseBill = () => {
   const [ptr, setPTR] = useState(null);
   const [qty, setQty] = useState("");
   const [value, setValue] = useState(null);
+  const [unsavedItems, setUnsavedItems] = useState(false);
+  const [nextPath, setNextPath] = useState("");
+  const [isOpenBox, setIsOpenBox] = useState(false);
+
   const [deleteAll, setDeleteAll] = useState(false);
   const [free, setFree] = useState("");
   const [loc, setLoc] = useState("");
-  const [unit, setUnit] = useState(0);
+  const [unit, setUnit] = useState("");
   const [schAmt, setSchAmt] = useState("");
   const [ItemTotalAmount, setItemTotalAmount] = useState(0);
   const [margin, setMargin] = useState("");
@@ -117,6 +124,40 @@ const AddPurchaseBill = () => {
   const [id, setId] = useState(null);
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
+
+  // useEffect(() => {
+  //   if (otherAmt !== '') {
+  //     const x = parseFloat(finalTotalAmount) + parseFloat(otherAmt)
+  //     setRoundOffAmount((x % 1).toFixed(2))
+  //     roundOffAmount > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+
+  //   } else {
+  //     const x = parseFloat(finalTotalAmount).toFixed(2)
+  //     setRoundOffAmount((x % 1).toFixed(2))
+  //     roundOffAmount > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+
+  //   }
+
+  //   if (netAmount < 0) {
+  //     setOtherAmt(0)
+  //   }
+
+  // }, [otherAmt, roundOffAmount, netAmount, finalTotalAmount,cnAmount]);
+
+  useEffect(() => {
+    if (finalCnAmount) {
+      const x = parseFloat(finalTotalAmount) - parseFloat(finalCnAmount)
+      setRoundOffAmount((x % 1).toFixed(2))
+      roundOffAmount > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+
+    } else {
+      const x = parseFloat(finalTotalAmount).toFixed(2)
+      setRoundOffAmount((x % 1).toFixed(2))
+      roundOffAmount > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+
+    }
+
+  }, [otherAmt, roundOffAmount, netAmount, finalTotalAmount, cnAmount, finalCnAmount]);
 
   useEffect(() => {
     if (id) {
@@ -177,6 +218,17 @@ const AddPurchaseBill = () => {
     // Margin Caluculation
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
+    // const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+    // const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+    // const totalAmount = parseFloat(
+    //   (totalBase + (totalBase * gst.name) / 100).toFixed(2)
+    // );
+    // if(totalAmount){
+    //   setItemTotalAmount(totalAmount.toFixed(2));
+    // }else{
+    //   setItemTotalAmount(0)
+    // }
+
   }, [qty, ptr, disc, gst.name, free]);
 
   useEffect(() => {
@@ -292,6 +344,46 @@ const AddPurchaseBill = () => {
       });
   };
 
+  const handleNavigation = (path) => {
+    setIsOpenBox(true);
+    setNextPath(path);
+  };
+
+  const LogoutClose = () => {
+    setIsOpenBox(false);
+    // setPendingNavigation(null);
+  };
+  const handleLeavePage = async () => {
+    try {
+      const params = {
+        start_date: localStorage.getItem('StartFilterDate'),
+        end_date: localStorage.getItem('EndFilterDate'),
+        distributor_id: localStorage.getItem('DistributorId'),
+        type: "0"
+      };
+
+      const response = await axios.post("purches-return-iteam-histroy", {},
+        {
+          params: params,
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.status === 200) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
+      }
+      setIsOpenBox(false);
+      setUnsavedItems(false);
+      history.replace(nextPath);
+    } catch (error) {
+      console.error("Error deleting items:", error);
+    }
+  };
+
   const itemPurchaseList = async () => {
     let data = new FormData();
     const params = {
@@ -313,6 +405,7 @@ const AddPurchaseBill = () => {
           setTotalGst(response.data.data.total_gst)
           setTotalQty(response.data.data.total_qty)
           setTotalMargin(response.data.data.total_margin)
+          setTotalNetRate(response.data.data.total_net_rate)
           handleCalNetAmount(response.data.data.total_price)
           // setNetAmount(response.data.data.total_price)
           //console.log(ItemPurchaseList);
@@ -368,7 +461,7 @@ const AddPurchaseBill = () => {
             );
             // setUnit()
           } else {
-            setUnit(0);
+            setUnit("");
             setBatch("");
             setExpiryDate("");
             setMRP("");
@@ -445,6 +538,8 @@ const AddPurchaseBill = () => {
     return isValid;
   };
   const handleAddItem = async () => {
+    setUnsavedItems(true);
+
     generateRandomNumber();
     let data = new FormData();
     data.append("user_id", userId);
@@ -453,10 +548,10 @@ const AddPurchaseBill = () => {
       data.append("unit_id", unitEditID);
     } else {
       data.append("item_id", value.id);
-      data.append("unit_id", Number(value.unit_id));
+      data.append("unit_id", value.unit_id);
     }
     data.append("random_number", localStorage.getItem("RandomNumber"));
-    data.append("weightage", unit?Number(unit):1);
+    data.append("weightage", unit);
     data.append("batch_number", batch);
     data.append("expiry", expiryDate);
     data.append("mrp", mrp);
@@ -492,7 +587,7 @@ const AddPurchaseBill = () => {
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
-      setUnit(0);
+      setUnit("");
       setBatch("");
       setExpiryDate("");
       setMRP("");
@@ -530,6 +625,8 @@ const AddPurchaseBill = () => {
   };
 
   const handleSearch = async () => {
+    setUnsavedItems(true);
+
     let data = new FormData();
     data.append("search", searchItem);
     const params = {
@@ -600,7 +697,7 @@ const AddPurchaseBill = () => {
     data.append("total_gst", ItemPurchaseList.total_gst)
     data.append("total_margin", ItemPurchaseList.total_margin)
     data.append("cn_amount", finalCnAmount)
-    data.append("round_off", roundOffAmount?.toFixed(2));
+    data.append("round_off", roundOffAmount);
     data.append("purches_data", JSON.stringify(ItemPurchaseList.item));
     data.append("purches_return_data", JSON.stringify(finalPurchaseReturnList));
 
@@ -627,6 +724,8 @@ const AddPurchaseBill = () => {
   };
 
   const handleSubmit = () => {
+    setUnsavedItems(false);
+
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -681,6 +780,7 @@ const AddPurchaseBill = () => {
       setDisc(selectedEditItem.discount);
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
+
       setGst(
         gstList.find((option) => option.name === selectedEditItem.gst) || {}
       );
@@ -727,6 +827,18 @@ const AddPurchaseBill = () => {
     // setCnTotalAmount("")
     // setCnAmount(0);
   }
+
+  const handleOtherAmount = (event) => {
+    setUnsavedItems(true);
+
+    let value = parseFloat(event.target.value) || "";
+    if (value < -finalTotalAmount) {
+      value = -finalTotalAmount;
+    }
+    setOtherAmt(value);
+  };
+
+
   // const handleKeyDown = (event) => {
   //     if (event.key === 'Enter') {
   //         event.preventDefault();
@@ -762,14 +874,20 @@ const AddPurchaseBill = () => {
     //console.log(newValue, "dfjkngvkndfgjk");
     setDistributor(newValue);
     purchaseReturnData(id)
+    setUnsavedItems(true);
+
   };
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
+    setUnsavedItems(true);
+
   };
 
   const handleOptionChange = (event, newValue) => {
+    setUnsavedItems(true);
+
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
@@ -807,7 +925,7 @@ const AddPurchaseBill = () => {
 
   const removeItem = () => {
     // setAutocompleteDisabled(false);
-    setUnit(0);
+    setUnit("");
     setBatch("");
     setExpiryDate("");
     setSearchItem("");
@@ -905,7 +1023,7 @@ const AddPurchaseBill = () => {
   };
 
   const handleCalNetAmount = (total_price) => {
-    const adjustedTotalAmount = total_price - finalCnAmount;
+    const adjustedTotalAmount = total_price - cnAmount;
 
     const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
 
@@ -913,7 +1031,7 @@ const AddPurchaseBill = () => {
     let roundOffAmountCal;
 
     if (decimalPart >= 0.50) {
-      netAmountCal = Math.ceil(adjustedTotalAmount); // round up
+      netAmountCal = Math.ceil(adjustedTotalAmount);
       roundOffAmountCal = netAmountCal - adjustedTotalAmount; // calculate the round-off value
     } else {
       netAmountCal = Math.floor(adjustedTotalAmount);
@@ -923,8 +1041,6 @@ const AddPurchaseBill = () => {
     setNetAmount(netAmountCal);
     setRoundOffAmount(roundOffAmountCal);
   };
-
-
 
   const handleCnAmount = () => {
     const newErrors = {};
@@ -1010,7 +1126,7 @@ const AddPurchaseBill = () => {
                   history.push("/purchase/purchasebill");
                 }}
               >
-                Purchase 
+                Purchase
               </span>
               <ArrowForwardIosIcon
                 style={{
@@ -1114,6 +1230,8 @@ const AddPurchaseBill = () => {
                   value={billNo}
                   onChange={(e) => {
                     setbillNo(e.target.value);
+                    setUnsavedItems(true);
+
                   }}
                 />
                 {error.billNo && (
@@ -1255,10 +1373,10 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               size="small"
                               error={!!errors.unit}
-                              value={unit === 0 ? '' : unit} 
+                              value={unit}
                               sx={{ width: "50px" }}
                               onChange={(e) => {
-                                setUnit(Number(e.target.value));
+                                setUnit(e.target.value);
                               }}
                             />
                           </td>
@@ -1454,7 +1572,7 @@ const AddPurchaseBill = () => {
                             </td>
                           </td>
                           <td className="total">
-                            <span>{ItemTotalAmount.toFixed(2)}</span>
+                            <span>{ItemTotalAmount}</span>
                           </td>
                         </tr>
                         <tr>
@@ -1552,47 +1670,53 @@ const AddPurchaseBill = () => {
               <div
                 style={{
                   display: "flex",
-                  gap: "20px",
+                  gap: "25px",
                   flexDirection: "column",
                 }}
               >
-                <div>
-                  <label className="font-bold">Total GST : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">Total Qty </label>
-                </div>
+                <label className="font-bold">Total GST : </label>
+                <label className="font-bold">Total Qty :</label>
+                <label className="font-bold">Total Margin: </label>
               </div>
-              <div class="totals-purchase">
+
+              <div class="totals mr-5" style={{
+                display: "flex",
+                gap: "25px",
+                flexDirection: "column",
+                alignItems: "end"
+              }}>
                 <div className="font-bold">
                   {totalGst}
                 </div>
 
-                <div className="font-bold mt-4">
+                <div className="font-bold ">
                   {totalQty}
                 </div>
+                <div className="font-bold ">
+                  ₹ {totalNetRate} ( {totalMargin} %)
+                </div>
               </div>
+
               <div
                 className="totals"
                 style={{
                   display: "flex",
-                  gap: "22px",
+                  gap: "25px",
                   flexDirection: "column",
                 }}
               >
                 <div>
                   <label className="font-bold">Total Amount : </label>
                 </div>
-                <div>
+                {/* <div>
                   <label className="font-bold">Other Amount: </label>
-                </div>
+                </div> */}
                 <div>
                   <label className="font-bold">CN Amount: </label>
                 </div>
-                <div>
-                  <label className="font-bold">Total Margin: </label>
-                </div>
+                {/*  <div>
+                 
+                </div> */}
                 <div>
                   <label className="font-bold">Round off: </label>
                 </div>
@@ -1600,69 +1724,75 @@ const AddPurchaseBill = () => {
                   <label className="font-bold">Net Amount: </label>
                 </div>
               </div>
-              <div className="totals">
-                <div>
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      borderBottom: "2px solid rgb(12, 161, 246)",
-                    }}
-                  >
-                    {finalTotalAmount?.toFixed(2)}
-                  </span>
-                </div>
-                <div>
-                  <TextField
-                    value={otherAmt}
-                    onChange={(e) => {
-                      setOtherAmt(e.target.value);
-                    }}
-                    size="small"
-                    style={{ width: "105px" }}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        height: "35px",
-                        marginTop: "12px"
-                      },
-                    }}
-                  />
-                </div>
-                <div className="mt-2">
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      marginTop: "15px",
-                    }}
-                  >
-                    {finalCnAmount?.toFixed(2)}
-                  </span>
-                  <div className="font-bold mt-3" style={{ fontSize: "22px" }}>
-                    {totalMargin} %
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <span
+              <div className="totals mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                {/* <div> */}
+                <span
+                  className=""
+                  style={{
+                    fontWeight: 800,
+                    // fontSize: "22px",
+                  }}
+                >
+                  {finalTotalAmount?.toFixed(2)}
+                </span>
+                {/* </div> */}
+                {/* <div> */}
+                {/* <Input
+                  value={otherAmt}
+                  onChange={handleOtherAmount}
+                  size="small" style={{
+                    width: "70px",
+                    background: "none",
+                    borderBottom: "1px solid gray",
+                    justifyItems: "end",
+                    outline: "none",
+                  }} sx={{
+                    '& .MuiInputBase-root': {
+                      height: '35px',
+                    },
+                    "& .MuiInputBase-input": { textAlign: "end" }
 
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                    }}
-                  >
-                    {roundOffAmount.toFixed(2)}
-                  </span>
-                </div>
-                <div className="mt-4">
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                    }}
-                  >
-                    {netAmount.toFixed(2)}
-                  </span>
-                </div>
+                  }}
+                /> */}
+                {/* </div> */}
+                {/* <div className="mt-2"> */}
+                <span
+                  style={{
+                    fontWeight: 800,
+                    // fontSize: "22px",
+                  }}
+                >
+                  {- (parseFloat(finalCnAmount) || 0).toFixed(2)}
+                  {/* {-finalCnAmount?.toFixed(2)} */}
+                </span>
+                {/*    <div className="font-bold" >
+                  ₹ {totalNetRate} ( {totalMargin} %)
+                </div>  */}
+                {/* </div> */}
+                {/* <div className="mt-3"> */}
+                <span
+                  className=""
+                  style={{
+                    fontWeight: 800,
+                    // fontSize: "22px",
+                  }}
+                >
+                  {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)}
+
+                </span>
+                {/* </div> */}
+                {/* <div className="mt-2"> */}
+                <span
+                  className=""
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "22px",
+
+                  }}
+                >
+                  {netAmount.toFixed(2)}
+                </span>
+                {/* </div> */}
               </div>
             </div>
           </div>
@@ -1675,9 +1805,10 @@ const AddPurchaseBill = () => {
           <IconButton
             aria-label="close"
             onClick={resetAddDialog}
-            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-          >
+            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}>
+
             <CloseIcon />
+
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -1802,6 +1933,42 @@ const AddPurchaseBill = () => {
                 type="button"
                 className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                 onClick={() => setIsDelete(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+        <Prompt
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            return false;
+          }}
+        />
+        <div
+          id="modal"
+          value={isOpenBox}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+              <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={LogoutClose}
               >
                 Cancel
               </button>

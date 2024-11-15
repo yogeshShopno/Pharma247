@@ -6,12 +6,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {
   Box,
   Button,
+  Input,
   InputAdornment,
   ListItemText,
   TextField,
   Tooltip,
 } from "@mui/material";
-import { Prompt, useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import '../Edit-SaleBill/edit.css';
+import { Prompt, useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import HistoryIcon from "@mui/icons-material/History";
 import { MenuItem, Select } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
@@ -24,6 +26,7 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../../componets/loader/Loader";
 import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
+import { VscDebugStepBack } from "react-icons/vsc";
 
 const EditSaleBill = () => {
   const token = localStorage.getItem("token");
@@ -42,7 +45,10 @@ const EditSaleBill = () => {
     { id: 1, label: "Pickup" },
     { id: 2, label: "Delivery" },
   ];
-  const [paymentType, setPaymentType] = useState("cash");
+  const location = useLocation();
+  const { paymentType: initialPayment } = location.state
+  const [paymentType, setPaymentType] = useState(initialPayment || '');
+
   const [error, setError] = useState({ customer: "" });
   const [itemAmount, setItemAmount] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
@@ -52,15 +58,17 @@ const EditSaleBill = () => {
   const [batchListData, setBatchListData] = useState([]);
   const [saleItemId, setSaleItemId] = useState(null);
   const [mrp, setMRP] = useState("");
+  const [totalgst, setTotalgst] = useState(0);
   const [totalBase, setTotalBase] = useState(0);
   const [dueAmount, setDueAmount] = useState(null);
   const [givenAmt, setGivenAmt] = useState(null);
-  const [finalDiscount, setFinalDiscount] = useState(null);
+  const [finalDiscount, setFinalDiscount] = useState('');
   const [netAmount, setNetAmount] = useState(0);
   const [netRateAmount, setNetRateAmount] = useState(0);
   const [margin, setMargin] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [otherAmt, setOtherAmt] = useState(null);
+  const [tempOtherAmt, setTempOtherAmt] = useState('');
+  const [otherAmt, setOtherAmt] = useState(localStorage.getItem("Other_Amount") || '');
   const [qty, setQty] = useState("");
   const [order, setOrder] = useState("");
   const [gst, setGst] = useState("");
@@ -68,7 +76,9 @@ const EditSaleBill = () => {
   const [unit, setUnit] = useState("");
   const [loc, setLoc] = useState("");
   const [base, setBase] = useState("");
-  const [pickup, setPickup] = useState(1);
+  const [discountAmount, setDiscountAmount] = useState();
+  const [roundOff, setRoundOff] = useState(0);
+  const [pickup, setPickup] = useState('');
   const [IsDelete, setIsDelete] = useState(false);
   const [ItemSaleList, setItemSaleList] = useState({ sales_item: [] });
   let defaultDate = new Date();
@@ -108,6 +118,90 @@ const EditSaleBill = () => {
   };
 
   useEffect(() => {
+    const discount = (totalAmount * finalDiscount) / 100;
+    setDiscountAmount(discount.toFixed(2));
+
+    let amountToUse = otherAmt ? otherAmt : tempOtherAmt;
+
+    console.log("otherAmt", otherAmt);
+
+    if (amountToUse < 0 && Math.abs(amountToUse) > totalAmount) {
+      setOtherAmt(0);
+      setTempOtherAmt(0);
+    } else {
+      let calculatedNetAmount = totalAmount - discount + Number(tempOtherAmt);
+
+      if (calculatedNetAmount < 0) {
+        setOtherAmt(-(totalAmount - discount));
+        setTempOtherAmt(-(totalAmount - discount));
+        calculatedNetAmount = 0;
+      }
+      const decimalPart = Number((calculatedNetAmount % 1).toFixed(2));
+      const roundedDecimal = decimalPart;
+      if (decimalPart < 0.50) {
+          setRoundOff((-roundedDecimal).toFixed(2));
+          setNetAmount(Math.floor(calculatedNetAmount));
+      } else {
+          setRoundOff((1 - roundedDecimal).toFixed(2));
+          setNetAmount(Math.ceil(calculatedNetAmount));
+
+      }
+      const due = givenAmt - calculatedNetAmount;
+      setDueAmount(due.toFixed(2));
+    }
+  }, [totalAmount, finalDiscount, otherAmt, givenAmt, tempOtherAmt]);
+
+  const handleOtherAmtChange = (e) => {
+    const value = e.target.value;
+    localStorage.setItem('RandomNumber', randomNumber)
+
+    const numericValue = isNaN(value) || value === '' ? '' : Number(value);
+
+    if (numericValue >= 0) {
+      setTempOtherAmt(numericValue);
+      setOtherAmt(numericValue);
+    } else {
+      const negativeLimit = -totalAmount;
+      if (numericValue < negativeLimit) {
+        setTempOtherAmt(negativeLimit);
+        setOtherAmt(negativeLimit);
+
+      } else {
+        setTempOtherAmt(numericValue);
+        setOtherAmt(numericValue);
+      }
+    }
+    setUnsavedItems(true)
+
+  };
+
+  // useEffect(() => {
+  //   const discountAmount = (totalAmount * finalDiscount) / 100;
+  //   const finalAmount = totalAmount - discountAmount;
+  //   setNetAmount(finalAmount.toFixed(2));
+  //   const due = givenAmt - netAmount;
+  //   setDueAmount(due.toFixed(2));
+  // }, [totalAmount, finalDiscount, givenAmt, netAmount]);
+
+  // const handleOtherAmtChange = (e) => {
+  //   const value = e.target.value;
+  //   const numericValue = isNaN(value) || value === '' ? '' : Number(value);
+  //   setOtherAmt(numericValue);
+  // };
+
+  // const handleOtherAmtChange = (e) => {
+  //   let value = e.target.value;
+
+  //   if (!isNaN(value)) {
+  //     if (value < 0 && value.length > 7) {
+  //       value = "";
+  //     } 
+  //     setOtherAmt(value ? Number(value) : '');
+  //   }
+  // };
+
+
+  useEffect(() => {
     const initializeData = async () => {
       const doctorData = await ListOfDoctor();
       const customerData = await customerAllData();
@@ -139,14 +233,6 @@ const EditSaleBill = () => {
     }
   }, [itemId, base, qty]);
 
-  useEffect(() => {
-    const discountAmount = (totalAmount * finalDiscount) / 100;
-    const finalAmount = totalAmount - discountAmount;
-    setNetAmount(finalAmount.toFixed(2));
-    const due = givenAmt - netAmount;
-    setDueAmount(due.toFixed(2));
-  }, [totalAmount, finalDiscount, givenAmt, netAmount]);
-
   const BankList = async () => {
     let data = new FormData();
     try {
@@ -165,12 +251,14 @@ const EditSaleBill = () => {
   };
 
   const saleBillGetBySaleID = async (doctorData, customerData) => {
+
     let data = new FormData();
     data.append("id", id);
+    data.append("payment_name", paymentType);
     data.append("random_number", randomNumber);
     const params = {
-      id: id,
-      random_number: randomNumber,
+      id: id ? id : '',
+      random_number: randomNumber ? randomNumber : '',
     };
     try {
       const response = await axios.post("sales-edit-details?", data, {
@@ -183,12 +271,19 @@ const EditSaleBill = () => {
       setSaleAllData(response.data.data);
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
+      setTotalgst(record.total_gst);
       setTotalAmount(record.sales_amount);
-      setFinalDiscount(record.total_discount);
-      setNetAmount(record.net_amt);
-      setOtherAmt(record.other_amount);
+      setRoundOff(record.round_off)
+      if (!finalDiscount) {
+        setFinalDiscount(record.total_discount);
+      }
+      setNetAmount(record.net_amount);
+      // setOtherAmt(record.other_amount);
+      // setTempOtherAmt(record.other_amount)
       setNetRateAmount(record.total_net_rate);
       setMargin(record.total_margin);
+      setPaymentType(record.payment_name)
+      setPickup(record.pickup)
       const foundDoctor = doctorData.find(
         (option) => option.id == record.doctor_id
       );
@@ -253,7 +348,7 @@ const EditSaleBill = () => {
     let data = new FormData();
     data.append("iteam_id", itemId);
     const params = {
-      iteam_id: itemId,
+      iteam_id: itemId ? itemId : '',
     };
     try {
       const res = await axios
@@ -273,11 +368,15 @@ const EditSaleBill = () => {
   };
 
   const handleInputChange = (event, newInputValue) => {
+    setUnsavedItems(true);
+
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
   };
 
   const handleOptionChange = (event, newValue) => {
+    setUnsavedItems(true);
+
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
@@ -297,8 +396,9 @@ const EditSaleBill = () => {
   };
 
   const handleNavigation = (path) => {
-    setOpenModal(true); // Show modal
-    setNextPath(path);   // Save the next path to navigate after confirmation
+    setOpenModal(true);
+    setNextPath(path);
+    // setUnsavedItems(true)
   };
 
   // Handle leaving page after user confirms in modal
@@ -306,7 +406,7 @@ const EditSaleBill = () => {
     let data = new FormData();
 
     const params = {
-      random_number: localStorage.getItem('RandomNumber')
+      random_number: localStorage.getItem('RandomNumber') ? localStorage.getItem('RandomNumber') : ''
     };
     axios.post("sales-history", data, {
       params: params,
@@ -315,12 +415,13 @@ const EditSaleBill = () => {
       .then(() => {
         setOpenModal(false);
         setUnsavedItems(false); // Reset unsaved changes
-        history.push(nextPath); // Navigate to the saved path
+        history.replace(nextPath); // Navigate to the saved path
       })
       .catch(error => {
         console.error("Error deleting items:", error);
       });
   };
+
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
@@ -343,10 +444,14 @@ const EditSaleBill = () => {
   };
 
   const handleCustomerOption = (event, newValue) => {
+    setUnsavedItems(true);
+
     setCustomer(newValue);
   };
 
   const handleDoctorOption = (event, newValue) => {
+    setUnsavedItems(true);
+
     setDoctor(newValue);
   };
 
@@ -371,7 +476,7 @@ const EditSaleBill = () => {
     let data = new FormData();
     data.append("search", searchItem);
     const params = {
-      search: searchItem,
+      search: searchItem ? searchItem : ''
     };
     try {
       const res = await axios
@@ -395,7 +500,7 @@ const EditSaleBill = () => {
     let data = new FormData();
     data.append("id", saleItemId);
     const params = {
-      id: saleItemId,
+      id: saleItemId ? saleItemId : '',
     };
     try {
       await axios
@@ -430,7 +535,6 @@ const EditSaleBill = () => {
     data.append("mrp", mrp);
     data.append("unit", unit);
     data.append("random_number", randomNumber);
-    data.append("unit", unit);
     data.append("batch", batch);
     data.append("location", loc);
     data.append("base", base);
@@ -438,8 +542,11 @@ const EditSaleBill = () => {
     data.append("net_rate", itemAmount);
     data.append("order", order);
     data.append("total_base", totalBase);
+    data.append("payment_name", paymentType);
+
+
     const params = {
-      id: selectedEditItemId,
+      id: selectedEditItemId ? selectedEditItemId : '',
     };
     try {
       const response = isEditMode
@@ -472,6 +579,7 @@ const EditSaleBill = () => {
       //console.log(e);
     }
   };
+
   const resetValue = () => {
     setUnit("");
     setBatch("");
@@ -502,31 +610,33 @@ const EditSaleBill = () => {
     updateSaleData();
   };
 
+
   const updateSaleData = async () => {
     let data = new FormData();
     data.append("bill_no", saleAllData?.bill_no);
     data.append("customer_id", customer?.id);
     data.append("status", "Completed");
     data.append("bill_date", saleAllData?.bill_date);
-    data.append("customer_address", address);
+    data.append("customer_address", address || "");
     data.append("doctor_id", doctor?.id);
     // data.append('total_gst', '0')
     data.append("igst", "0");
     data.append("cgst", saleAllData?.cgst);
     data.append("sgst", saleAllData?.sgst);
-    data.append("given_amount", givenAmt);
-    data.append("due_amount", dueAmount);
+    data.append("given_amount", givenAmt || 0);
+    data.append("due_amount", dueAmount || 0);
     data.append("total_base", totalBase);
     data.append("pickup", pickup);
     data.append("owner_name", "0");
-    data.append("payment_name", paymentType);
+    data.append("payment_name", location.state.paymentType);
     data.append("product_list", JSON.stringify(saleAllData?.sales_item));
     data.append("net_amount", netAmount);
-    data.append("other_amount", otherAmt);
+    data.append("other_amount", tempOtherAmt);
     data.append("total_discount", finalDiscount);
-    data.append("mrp_total", totalAmount);
+    data.append("discount_amount", discountAmount);
+    data.append("total_amount", totalAmount);
     const params = {
-      id: id,
+      id: id || '',
     };
     try {
       await axios
@@ -548,7 +658,9 @@ const EditSaleBill = () => {
     } catch (error) {
       console.error("API error:", error);
     }
+
   };
+
   const handleDraft = () => {
     const newErrors = {};
     if (!customer) {
@@ -563,29 +675,30 @@ const EditSaleBill = () => {
 
   const draftSaleData = async () => {
     let data = new FormData();
-    data.append("bill_no", saleAllData.bill_no);
-    data.append("customer_id", customer.id);
-    data.append("status", "Draft");
-    data.append("bill_date", saleAllData.bill_date);
-    data.append("customer_address", address);
-    data.append("doctor_id", doctor.id);
+    data.append("bill_no", saleAllData?.bill_no ? saleAllData?.bill_no : "");
+    data.append("customer_id", customer?.id ? customer?.id : "");
+    data.append("status", "Completed");
+    data.append("bill_date", saleAllData?.bill_date ? saleAllData?.bill_date : "");
+    data.append("customer_address", address || "");
+    data.append("doctor_id", doctor?.id ? doctor?.id : '');
     // data.append('total_gst', '0')
     data.append("igst", "0");
-    data.append("cgst", saleAllData?.cgst);
-    data.append("sgst", saleAllData?.sgst);
-    data.append("given_amount", givenAmt);
-    data.append("due_amount", dueAmount);
+    data.append("cgst", saleAllData?.cgst ? saleAllData?.cgst : '');
+    data.append("sgst", saleAllData?.sgst ? saleAllData?.sgst : '');
+    data.append("given_amount", givenAmt || 0);
+    data.append("due_amount", dueAmount || 0);
     data.append("total_base", totalBase);
-    data.append("pickup", pickup);
+    data.append("pickup", pickup ? pickup : "");
     data.append("owner_name", "0");
-    data.append("payment_name", paymentType);
-    data.append("product_list", JSON.stringify(saleAllData.sales_item));
+    data.append("payment_name", location.state.paymentType ? location.state.paymentType : '');
+    data.append("product_list", JSON.stringify(saleAllData?.sales_item) ? JSON.stringify(saleAllData?.sales_item) : '');
     data.append("net_amount", netAmount);
-    data.append("other_amount", otherAmt);
+    data.append("other_amount", otherAmt ? otherAmt : '');
     data.append("total_discount", finalDiscount);
-    data.append("mrp_total", totalAmount);
+    data.append("discount_amount", discountAmount ? discountAmount : '');
+    data.append("total_amount", totalAmount);
     const params = {
-      id: id,
+      id: id ? id : '',
     };
     try {
       await axios
@@ -673,25 +786,20 @@ const EditSaleBill = () => {
                   <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
                 </div>
                 <div className="headerList">
-                  <Select
+                  <input
                     labelId="dropdown-label"
                     id="dropdown"
-                    value={paymentType}
+                    value={location.state.paymentType}
                     sx={{ minWidth: "200px" }}
-                    onChange={(e) => {
-                      setPaymentType(e.target.value);
-                    }}
+                    disabled  // Keeps the label disabled
                     size="small"
+                    className="Payment_Value"
                   >
-                    <MenuItem value="cash">Cash</MenuItem>
-                    <MenuItem value="credit">Credit</MenuItem>
-                    {bankData?.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.bank_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <Select
+                    {/* {location.state.paymentType} */}
+                  </input>
+
+
+                  {/* <Select
                     labelId="dropdown-label"
                     id="dropdown"
                     value={pickup}
@@ -706,9 +814,23 @@ const EditSaleBill = () => {
                         {option.label}
                       </MenuItem>
                     ))}
-                  </Select>
-
-                  <Button
+                  </Select> */}
+                  <input
+                    labelId="dropdown-label"
+                    id="dropdown"
+                    value={pickup}
+                    sx={{ minWidth: "150px" }}
+                    className="Payment_Value"
+                    disabled
+                    size="small"
+                  >
+                    {/* {pickupOptions.map((option) => (
+                      <MenuItem key={option.id} value={option.label}>
+                        {option.label}
+                      </MenuItem>
+                    ))} */}
+                  </input>
+                  {/* <Button
                     variant="contained"
                     sx={{
                       gap: "5px",
@@ -719,7 +841,7 @@ const EditSaleBill = () => {
                     onClick={handleDraft}
                   >
                     <SaveAsIcon /> Draft
-                  </Button>
+                  </Button> */}
 
                   <Button
                     variant="contained"
@@ -859,7 +981,7 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  <div className="detail">
+                  {/* <div className="detail">
                     <span
                       className="heading mb-2"
                       style={{
@@ -888,7 +1010,7 @@ const EditSaleBill = () => {
                       }}
                       variant="outlined"
                     />
-                  </div>
+                  </div> */}
 
                   <div className="detail">
                     <span
@@ -1020,7 +1142,7 @@ const EditSaleBill = () => {
                         )}
                       />
                     </Box>
-                    {customer && (
+                    {/* {customer && (
                       <Button
                         variant="contained"
                         sx={{
@@ -1034,7 +1156,7 @@ const EditSaleBill = () => {
                         <HistoryIcon />
                         Purchase History
                       </Button>
-                    )}
+                    )} */}
                     {isVisible && value && !batch && (
                       <Box
                         sx={{
@@ -1140,7 +1262,7 @@ const EditSaleBill = () => {
                           <th>QTY </th>
                           <th>
                             Order{" "}
-                            <Tooltip title="Please Enter o" arrow>
+                            <Tooltip title="Please Enter only (o)" arrow>
                               <Button>
                                 <GoInfo
                                   className="absolute"
@@ -1349,8 +1471,9 @@ const EditSaleBill = () => {
                 <div
                 >
                   <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <label className="font-bold">Total Base: </label>
-                    <label className="font-bold">Margin: </label>
+                    <label className="font-bold">Total GST : </label>
+                    <label className="font-bold">Total Base : </label>
+                    <label className="font-bold">Margin : </label>
                   </div>
                 </div>
                 <div class="totals mr-3"
@@ -1358,8 +1481,11 @@ const EditSaleBill = () => {
                     display: "flex",
                     gap: "25px",
                     flexDirection: "column",
+                    alignItems: "end"
+
                   }}>
-                  <span style={{ fontWeight: 600 }}> {totalBase} /-</span>
+                  <span style={{ fontWeight: 600 }}> {totalgst} </span>
+                  <span style={{ fontWeight: 600 }}> {totalBase} </span>
                   <span style={{ fontWeight: 600 }}>₹ {netRateAmount} ({margin}%) </span>
                 </div>
 
@@ -1370,7 +1496,7 @@ const EditSaleBill = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <div>
+                  {/* <div>
                     <label className="font-bold">SGST : </label>
                   </div>
                   <div>
@@ -1385,11 +1511,14 @@ const EditSaleBill = () => {
                     display: "flex",
                     gap: "25px",
                     flexDirection: "column",
+                    alignItems: "end"
+
                   }}
                 >
                   <div className="font-bold">{saleAllData?.sgst}</div>
                   <div className="font-bold">{saleAllData?.cgst}</div>
-                  <div className="font-bold">{saleAllData?.igst}</div>
+                  // {/* <div className="font-bold">{saleAllData?.igst}</div> 
+                  <div className="font-bold">0.0</div>*/}
                 </div>
                 <div
                   style={{
@@ -1402,62 +1531,121 @@ const EditSaleBill = () => {
                     <label className="font-bold">Total Amount : </label>
                   </div>
                   <div>
-                    <label className="font-bold">Discount % : </label>
+                    <label className="font-bold">Discount (%): </label>
                   </div>
                   <div>
                     <label className="font-bold">Other Amount : </label>
+                  </div>
+                  <div>
+                    <label className="font-bold">Discount Amount : </label>
+                  </div>
+                  <div>
+                    <label className="font-bold">Round Off : </label>
                   </div>
                   <div>
                     <label className="font-bold">Net Amount : </label>
                   </div>
                 </div>
                 <div class="totals">
-                  <div>
-                    <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
-                  </div>
-                  <div className="mt-5" style={{
+                  <div className="" style={{
                     display: "flex",
-                    gap: "15px",
+                    gap: "20px",
                     flexDirection: "column",
+                    alignItems: "end"
                   }}>
 
-                    <TextField
+                    <div>
+                      <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                    </div>
+                    <Input
+                      type="number"
+                      className="mt-2"
                       value={finalDiscount}
                       onChange={(e) => {
                         setFinalDiscount(e.target.value);
+                        setUnsavedItems(true)
+                        localStorage.setItem('RandomNumber', randomNumber)
+
+                      }}
+                      onKeyPress={(e) => {
+                        // Allow numbers, backspace, and decimal point
+                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
                       }}
                       size="small"
-                      style={{ width: "105px" }}
-                      sx={{
-                        "& .MuiInputBase-root": {
-                          height: "35px",
-                        },
-                      }}
-                    />
-                    <TextField
-                      value={otherAmt}
-                      onChange={(e) => {
-                        setOtherAmt(e.target.value);
-                      }}
-                      size="small"
-                      style={{ width: "105px" }}
-                      sx={{
-                        "& .MuiInputBase-root": {
-                          height: "35px",
-                        },
-                      }}
-                    />
-                  </div>
-                  <div className="mt-3">
-                    <span
                       style={{
-                        fontWeight: 800,
-                        fontSize: "22px",
-                        borderBottom: "2px solid rgb(12, 161, 246)",
+                        width: "70px", background: "none", borderBottom: "1px solid gray", outline: "none", justifyItems: "end",
+
                       }}
-                    >
-                      {netAmount}/-
-                    </span>
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: "35px",
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" }
+                      }}
+                    />
+
+                    <Input
+                      type="number"
+                      value={tempOtherAmt || otherAmt}
+                      onChange={handleOtherAmtChange}
+                      onKeyPress={(e) => {
+                        // Allow numbers, backspace, and decimal point
+                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+                      }}
+                      size="small"
+                      style={{
+                        width: "70px",
+                        background: "none",
+                        borderBottom: "1px solid gray",
+                        outline: "none",
+                        justifyItems: "end"
+
+                      }}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: "35px",
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" },
+                      }}
+
+                    />
+
+                    <div className="">
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                        -{discountAmount}
+                      </span>
+                    </div>
+                    <div className="">
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                                                                   <span >{!roundOff ? 0 : roundOff}</span>
+
+                      </span>
+                    </div>
+
+                    <div className="">
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: "22px"
+                        }}
+                      >
+                        {/* {(Number(netAmount) || 0).toFixed(2)} */}
+
+                        {netAmount}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1503,7 +1691,7 @@ const EditSaleBill = () => {
                   <button
                     type="submit"
                     className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                    onClick={() => handleDeleteItem(saleItemId)}
+                    onClick={() => { handleDeleteItem(saleItemId); setUnsavedItems(true) }}
                   >
                     Delete
                   </button>
@@ -1528,35 +1716,31 @@ const EditSaleBill = () => {
           return false; // Prevent automatic navigation
         }}
       />
-      <div id="modal" value={openModal}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
-
+      <div
+        id="modal"
+        value={openModal}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
+      >
+        <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-          {/* Close button */}
-          <svg xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-            viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-          </svg>
-
-          <div className="my-4 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-              <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-              <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-            </svg>
-            <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
+          <div className="my-4 logout-icon">
+            <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+            <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
           </div>
 
-          <div className="flex gap-5 justify-center mt-10">
+          <div className="flex gap-5 justify-center">
             <button
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+              type="submit"
+              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
               onClick={handleLeavePage}
             >
-              Delete
+              Yes
             </button>
             <button
-              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+              type="button"
+              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
               onClick={() => setOpenModal(false)}
+
             >
               Cancel
             </button>

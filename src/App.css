@@ -664,9 +664,9 @@ body {
   margin-left: 102px;
 }
 
-/* .bg-bubbles li {
-  Add bubble styles here
-} */
+.bg-bubbles li {
+  /* Add bubble styles here */
+}
 
 body {
   @apply bg-gray-100;

@@ -25,6 +25,7 @@ const ReturnView = () => {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [returnData, setReturnData] = useState([])
+    const [roundOff, setRoundOff] = useState(0)
 
     useEffect(() => {
         const index = returnData.findIndex(item => item.id == parseInt(id));
@@ -103,6 +104,7 @@ const ReturnView = () => {
             }
             ).then((response) => {
                 setTableData(response?.data?.data);
+                setRoundOff(response?.data?.data?.round_off)
                 setIsLoading(false);
             })
         } catch (error) {
@@ -271,7 +273,12 @@ const ReturnView = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal">Round Off</td>
-                                                <td className="amounttotal">{Number(tableData?.round_off).toFixed(2)}</td>
+                                                {/* <td className="amounttotal">{Number(tableData?.round_off).toFixed(2)} */}
+                                                <td className="amounttotal">
+                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `+ ${parseFloat(1 - roundOff).toFixed(2)}`)}
+                                                </td>
+
+
                                             </tr>
                                             {/* <tr>
                                                 <td className="amounttotal"></td>

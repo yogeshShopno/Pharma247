@@ -698,11 +698,11 @@ const PaymentList = () => {
                                                                         <td >
                                                                             <div >
                                                                                 <div>
-                                                                                    <span>{row.net_amount}/-</span>
+                                                                                    <span>{row.net_amount}</span>
 
                                                                                 </div>
                                                                                 <div style={{ color: 'red' }}>
-                                                                                    <span>Pending: Rs.{row.pending_amount}/-   </span>
+                                                                                    <span>Pending: Rs.{row.pending_amount}   </span>
 
                                                                                 </div>
                                                                             </div>
@@ -791,7 +791,7 @@ const PaymentList = () => {
                                                         <tr hover role="checkbox" tabIndex={-1} key={row.code}>
                                                             <td>{row.bill_no}</td>
                                                             <td>{row.date}</td>
-                                                            <td ><span>{row.net_amount}/-</span></td>
+                                                            <td ><span>{row.net_amount}</span></td>
                                                         </tr>
                                                     </>
                                                 );

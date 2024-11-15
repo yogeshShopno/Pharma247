@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Button, Checkbox, CircularProgress, InputAdornment, ListItemText, TextField } from "@mui/material";
+import { Button, Checkbox, CircularProgress, Input, InputAdornment, ListItemText, TextField } from "@mui/material";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import ListItem from '@mui/material/ListItem';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -21,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
 import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
+import { VscDebugStepBack } from "react-icons/vsc";
 
 const Salereturn = () => {
     const token = localStorage.getItem("token")
@@ -48,7 +49,7 @@ const Salereturn = () => {
     const [billing, setBilling] = useState('')
     const [doctor, setDoctor] = useState('')
     const [selectedOption, setSelectedOption] = useState(1);
-    const [paymentType, setPaymentType] = useState('cash');
+    const [paymentType, setPaymentType] = useState('');
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
@@ -81,6 +82,7 @@ const Salereturn = () => {
     const [itemList, setItemList] = useState([]);
     defaultDate.setDate(defaultDate.getDate() + 3);
     const [saleItems, setSaleItems] = useState([]);
+    const [totalGst, setTotalGst] = useState(0);
     const [totalBase, setTotalBase] = useState(0);
     const [givenAmt, setGivenAmt] = useState(null);
     const [otherAmt, setOtherAmt] = useState(0);
@@ -189,6 +191,7 @@ const Salereturn = () => {
     // }, [totalAmount, finalDiscount]);
 
     const handleCustomerOption = (event, newValue) => {
+        setUnsavedItems(true)
         setCustomer(newValue);
         // customerAllData(newValue);
     };
@@ -320,6 +323,7 @@ const Salereturn = () => {
     };
 
     const validfilter = () => {
+        setUnsavedItems(true)
         const newErrors = {};
         if (!customer) { newErrors.customer = 'Customer is required'; toast.error('Customer is required'); }
         if (!startDate) { newErrors.startDate = 'startDate is required'; toast.error('Start Date is required'); }
@@ -353,6 +357,7 @@ const Salereturn = () => {
             ).then((response) => {
                 setSaleItems(response.data.data)
                 setTotalBase(response.data.data.total_base)
+                setTotalGst(response.data.data.total_gst)
                 setSgst(response.data.data.sgst)
                 setCgst(response.data.data.cgst)
                 setTotalAmount(response.data.data.sales_amount)
@@ -454,57 +459,75 @@ const Salereturn = () => {
         if (!customer) {
             newErrors.customer = 'Please select customer';
         }
-        if (selectedItem.length === 0) {
-            newErrors.ItemId = 'Please select at least one item';
-            toast.error('Please select at least one item');
-        }
+        // if (selectedItem === 0) {
+        //     newErrors.ItemId = 'Please select at least one item';
+        //     toast.error('Please select at least one item');
+        // }
         setError(newErrors);
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        submitSaleReturnData()
+        submitSaleReturnData();
     }
 
     const submitSaleReturnData = async () => {
-        let data = new FormData();
-        data.append("bill_no", localStorage.getItem('SaleRetunBillNo') ? localStorage.getItem('SaleRetunBillNo') : '');
-        data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
-        data.append("customer_id", (customer && customer.id) ? customer.id : '');
-        data.append("customer_address", address ? address : '');
-        data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
-        data.append('payment_name', paymentType ? paymentType : '');
-        data.append('mrp_total', totalAmount ? totalAmount : '');
-        data.append('total_discount', finalDiscount ? finalDiscount : '');
-        data.append('other_amount', otherAmt ? otherAmt : '');
-        data.append('net_amount', netAmount ? netAmount : '');
-        data.append('total_base', totalBase ? totalBase : '');
-        data.append('igst', '0');
-        data.append('cgst',  '0');
-        data.append('sgst',  '0');
-        data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
+        // console.log('totalMargin :>> ', totalMargin);
+        // console.log('totalNetRate :>> ', totalNetRate);
 
-        try {
-            await axios.post("sales-return-create", data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
+        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
+        if (hasUncheckedItems) {
+            toast.error('Please select at least one item');;
+
+        } else {
+            console.log('+++++++++++++');
+            let data = new FormData();
+            data.append("bill_no", localStorage.getItem('SaleRetunBillNo') ? localStorage.getItem('SaleRetunBillNo') : '');
+            data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
+            data.append("customer_id", (customer && customer.id) ? customer.id : '');
+            data.append("customer_address", address ? address : '');
+            data.append("doctor_id", (doctor && doctor.id) ? doctor.id : '');
+            data.append('payment_name', paymentType ? paymentType : '');
+            data.append('mrp_total', totalAmount ? totalAmount : '');
+            data.append('total_discount', finalDiscount ? finalDiscount : '');
+            data.append('other_amount', otherAmt ? otherAmt : '');
+            data.append('net_amount', netAmount ? netAmount : '');
+            data.append('total_base', totalBase ? totalBase : '');
+            data.append('total_gst', totalGst ? totalGst : '');
+            data.append('round_off', roundOff ? roundOff : '');
+            data.append('net_amount', netAmount ? netAmount : '');
+            data.append('margin', totalMargin ? totalMargin : '');
+            data.append('net_rate', totalNetRate ? totalNetRate : '');
+            data.append('igst', '0');
+            data.append('cgst', '0');
+            data.append('sgst', '0');
+            data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
+
+            try {
+                await axios.post("sales-return-create", data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+                ).then((response) => {
+                    //console.log(response.data);
+                    //console.log("response===>", response.data);
+                    toast.success(response.data.message);
+                    setUnsavedItems(false);
+
+                    setTimeout(() => {
+                        history.push('/saleReturn/list');
+                    }, 2000);
+                })
+            } catch (error) {
+                console.error("API error:", error);
             }
-            ).then((response) => {
-                //console.log(response.data);
-                //console.log("response===>", response.data);
-                toast.success(response.data.message);
-                setUnsavedItems(false);
-
-                setTimeout(() => {
-                    history.push('/saleReturn/list');
-                }, 2000);
-            })
-        } catch (error) {
-            console.error("API error:", error);
         }
+
     }
 
     const handleDoctorOption = (event, newValue) => {
+        setUnsavedItems(true)
         setDoctor(newValue);
     };
 
@@ -1115,7 +1138,7 @@ const Salereturn = () => {
                                                                             onClick={(event) => {
                                                                                 event.stopPropagation();
                                                                             }}
-                                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}
+                                                                            onChange={(event) => handleChecked(item.id, event.target.unc)}
                                                                         />
                                                                     </td>
                                                                     < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
@@ -1147,8 +1170,11 @@ const Salereturn = () => {
                                 </div>
                             </div>
                             {saleItems?.sales_item?.length > 0 && (
-                                <div className="flex gap-10 justify-end mt-4 "  >
-                                    <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                <div className="flex gap-10 justify-end mt-4 flex-wrap mr-5"  >
+                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                        <div>
+                                            <label className="font-bold">Total GST : </label>
+                                        </div>
                                         <div>
                                             <label className="font-bold">Total Base : </label>
                                         </div>
@@ -1157,18 +1183,15 @@ const Salereturn = () => {
                                             <label className="font-bold">Total Margin: </label>
                                         </div>
                                     </div>
-                                    <div class="totals">
-                                        <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
 
-                                            <div>
-                                                <span style={{ fontWeight: 600 }}>{totalBase}/-</span>
-                                            </div>
-                                            <div>
-                                                <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
-                                            </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                            <span style={{ fontWeight: 600 }}>{totalGst}</span>
+                                            <span style={{ fontWeight: 600 }}>{totalBase}</span>
+                                            <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
                                         </div>
@@ -1180,54 +1203,55 @@ const Salereturn = () => {
                                             <label className="font-bold">Round Off  : </label>
                                         </div>
                                         <div>
-                                            <label className="font-bold" >Net Amount % : </label>
+                                            <label className="font-bold" >Net Amount : </label>
                                         </div>
                                     </div>
-                                    <div class="totals">
-                                        <div style={{ display: 'flex', gap: '17px', flexDirection: 'column' }}>
+                                    <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
 
-                                            <div>
-                                                <span style={{ fontWeight: 600 }}>{totalAmount}/-</span>
-                                            </div>
-                                            {/* <div>
+                                        <div>
+                                            <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                        </div>
+                                        {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },
                                             }} />
                                         </div> */}
-                                            <div>
-                                                <TextField value={otherAmt}
-                                                    onChange={(e) => {
-                                                        setUnsavedItems(true);
-                                                     const  x=e.target.value
-                                                     const y = (x)
+                                        <div>
+                                            <Input
+                                                value={otherAmt}
+                                                onChange={(e) => {
+                                                    setUnsavedItems(true);
+                                                    const x = e.target.value
+                                                    const y = (x)
 
-                                                        if (-y  >= totalAmount) {
-                                                            setOtherAmt((-totalAmount))
-                                                        }else{
-                                                            setOtherAmt(y)
-                                                        }   
-                                                    }}
-                                                    size="small"
-                                                    sx={{
-                                                        width: '105px',
-                                                        '& .MuiOutlinedInput-root': {
-                                                            borderBottom: '2px solid rgb(12, 161, 246)', // Bottom border only
-                                                            borderRadius: 0, // Removes rounded corners
-                                                            '& fieldset': {
-                                                                border: 'none', // Removes default border
-                                                            },
-                                                            height: '35px' // Adjust height here if needed
-                                                        },
-                                                    }} />
-                                            </div>
-                                            <div>
-                                                <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
-                                            </div>
-                                            <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{!netAmount ? 0 : netAmount}/-</span>
-                                            </div>
+                                                    if (-y >= totalAmount) {
+                                                        setOtherAmt((-totalAmount))
+                                                    } else {
+                                                        setOtherAmt(y)
+                                                    }
+                                                }}
+                                                size="small"
+                                                style={{
+                                                    width: "70px",
+                                                    background: "none",
+                                                    borderBottom: "1px solid gray",
+                                                    justifyItems: "end",
+                                                    outline: "none",
+                                                }} sx={{
+                                                    '& .MuiInputBase-root': {
+                                                        height: '35px',
+                                                    },
+                                                    "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                }} />
+                                        </div>
+                                        <div>
+                                            <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
+                                        </div>
+                                        <div>
+                                            <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1278,35 +1302,33 @@ const Salereturn = () => {
                     return false;
                 }}
             />
-            <div id="modal" value={openModal}
-                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}>
-
+            <div
+                id="modal"
+                value={openModal}
+                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
+            >
+                <div />
                 <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                    {/* Close button */}
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-                        viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                    </svg>
-
-                    <div className="my-4 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                            <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                            <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                        </svg>
-                        <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> You have unsaved changes. Are you sure you want to leave? All added items will be deleted.</h5>
+                    <div className="my-4 logout-icon">
+                        <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                        <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
                     </div>
-
-                    <div className="flex gap-5 justify-center mt-10">
+                    <div className="flex gap-5 justify-center">
                         <button
-                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                            type="submit"
+                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
                             onClick={handleLeavePage}
-                        >Delete
+                        >
+                            Yes
                         </button>
                         <button
-                            className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                            type="button"
+                            className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                             onClick={() => setOpenModal(false)}
-                        >Cancel
+
+                        >
+
+                            Cancel
                         </button>
                     </div>
                 </div>

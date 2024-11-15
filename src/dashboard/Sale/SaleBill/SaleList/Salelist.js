@@ -21,7 +21,7 @@ const columns = [
     { id: 'bill_date', label: 'Bill Date', minWidth: 50 },
     { id: 'name', label: 'Customer Name', minWidth: 100 },
     { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
-    { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
+    { id:  "payment_name", label: 'Payment Mode', minWidth: 100 },
     { id: 'status', label: 'Status', minWidth: 100 },
     { id: 'net_amt', label: 'Bill Amount', minWidth: 100 },
 ];

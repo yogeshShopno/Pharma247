@@ -41,7 +41,7 @@ const SaleReturnView = () => {
                 if (nextId) {
                     history.push(`/SaleReturn/View/${nextId}`);
                 }
-                
+
             } else if (e.key === 'ArrowLeft') {
                 const prevIndex = (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
                 const prevId = saleReturnData[prevIndex]?.id;
@@ -91,6 +91,7 @@ const SaleReturnView = () => {
                 },
             }
             ).then((response) => {
+                console.log('response :>> ', response.data.data);
                 setTableData(response.data.data)
                 setIsLoading(false);
                 //console.log(tableData);
@@ -141,7 +142,7 @@ const SaleReturnView = () => {
 
                                     </div>
                                     <div className="detail">
-                                        <span className="heading">Customer Name</span>
+                                        <span className="heading">Customer </span>
                                         <span className="data">
                                             {tableData.customer_name}
                                         </span>
@@ -154,15 +155,15 @@ const SaleReturnView = () => {
                                         </span>
                                     </div>
                                     <div className="detail">
-                                        <span className="heading">Doctor Name</span>
+                                        <span className="heading">Doctor </span>
                                         <span className="data">
                                             {tableData.doctor_name}
                                         </span>
                                     </div>
                                     <div className="detail">
-                                        <span className="heading">Address</span>
+                                        <span className="heading">Payment Mode</span>
                                         <span className="data">
-                                            {tableData.customer_address}
+                                            {tableData.payment_name}
 
                                         </span>
                                     </div>
@@ -209,15 +210,19 @@ const SaleReturnView = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="flex gap-10 justify-end mt-4 flex-wrap"  >
+                                <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10"  >
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total Base: </label>
+                                        <label className="font-bold">Total GST : </label>
+                                        <label className="font-bold">Total Base : </label>
+                                        <label className="font-bold">Margin : </label>
                                     </div>
-                                    <div class="totals">
-                                        <span style={{ fontWeight: 600 }}> {tableData?.total_base} /-</span>
+                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                        <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
+                                        <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
+                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate}({tableData?.total_margin} %)   </span>
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                                    {/* <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
                                         <label className="font-bold">SGST : </label>
                                         <label className="font-bold">CGST: </label>
                                         <label className="font-bold">IGST: </label>
@@ -226,19 +231,20 @@ const SaleReturnView = () => {
                                         <span style={{ fontWeight: 600 }}>{tableData?.sgst}</span>
                                         <span style={{ fontWeight: 600 }}>{tableData?.cgst}</span>
                                         <span style={{ fontWeight: 600 }}>{tableData?.igst}</span>
-                                    </div>
+                                    </div> */}
 
-                                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <label className="font-bold">Total Amount : </label>
-                                        <label className="font-bold">Discount  : </label>
-                                        <label className="font-bold">Other Amount: </label>
-                                        <label className="font-bold" >Net Amount % : </label>
+                                        <label className="font-bold">Other Amount : </label>
+                                        <label className="font-bold">Round Off : </label>
+                                        <label className="font-bold" >Net Amount : </label>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}/-</span>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.other_amount}/-</span>
-                                        <span style={{ fontWeight: 800, fontSize: '22px', borderBottom: "2px solid rgb(12, 161, 246)" }}>{tableData?.net_amount}/-</span>
+                                    <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                                        <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}</span>
+                                        {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
+                                        <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
+                                        <span style={{ fontWeight: 600 }}>{Number(tableData?.round_off || 0).toFixed(2)}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
                                     </div>
                                 </div>
                             </div>

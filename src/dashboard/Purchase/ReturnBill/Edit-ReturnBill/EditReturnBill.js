@@ -20,6 +20,7 @@ import Loader from '../../../../componets/loader/Loader';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { VscDebugStepBack } from "react-icons/vsc";
+import { Prompt } from 'react-router-dom/cjs/react-router-dom';
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -65,9 +66,7 @@ const EditReturnBill = () => {
     const [distributor, setDistributor] = useState(null);
     const [remark, setRemark] = useState()
     const [expiryDate, setExpiryDate] = useState('');
-
-    const [qty, setQty] = useState(0)
-    const [tempQty, setTempQty] = useState(0)
+    const [qty, setQty] = useState('')
     const [free, setFree] = useState('')
     const [error, setError] = useState({ distributor: '', returnType: '', billNo: '', startDate: '', endDate: '' });
     const staffOptions = [{ value: 'Owner', id: 1 }, { value: localStorage.getItem('UserName'), id: 2 },]
@@ -93,28 +92,30 @@ const EditReturnBill = () => {
     const [isOpenBox, setIsOpenBox] = useState(false);
     const [pendingNavigation, setPendingNavigation] = useState(null);
     const [ItemTotalAmount, setItemTotalAmount] = useState()
+    const [unsavedItems, setUnsavedItems] = useState(false);
+    const [nextPath, setNextPath] = useState("");
 
     const handleClose = () => {
         setIsDelete(false);
     };
 
-    useEffect(() => {
-        if (saveValue === false) {
-            unblockRef.current = history.block((location) => {
-                if (!isOpenBox) {
-                    setPendingNavigation(location);
-                    setIsOpenBox(true);
-                    setSaveValue(false);
-                    return false;
-                }
-            });
-            return () => {
-                if (unblockRef.current) {
-                    unblockRef.current();
-                }
-            };
-        }
-    }, [saveValue, history, isOpenBox]);
+    // useEffect(() => {
+    //     if (saveValue === false) {
+    //         unblockRef.current = history.block((location) => {
+    //             if (!isOpenBox) {
+    //                 setPendingNavigation(location);
+    //                 setIsOpenBox(true);
+    //                 setSaveValue(false);
+    //                 return false;
+    //             }
+    //         });
+    //         return () => {
+    //             if (unblockRef.current) {
+    //                 unblockRef.current();
+    //             }
+    //         };
+    //     }
+    // }, [saveValue, history, isOpenBox]);
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -128,24 +129,53 @@ const EditReturnBill = () => {
         if (isDeleteAll == false) {
             // restoreData();
         }
-    }, [ptr, qty, disc, gst.name, tempQty])
+    }, [ptr, qty, disc, gst.name])
 
     const LogoutClose = () => {
         setIsOpenBox(false);
-        setPendingNavigation(null);
+        // setPendingNavigation(null);
+    };
+
+
+    const handleNavigation = (path) => {
+        setIsOpenBox(true);
+        setNextPath(path);
     };
 
     const handleLogout = async () => {
-        await restoreData();
+        // await restoreData();
+        let data = new FormData();
+        const params = {
+            start_date: localStorage.getItem('StartFilterDate'),
+            end_date: localStorage.getItem('EndFilterDate'),
+            distributor_id: localStorage.getItem('DistributorId'),
+            type: "1"
+        };
 
-        if (pendingNavigation) {
-            if (unblockRef.current) {
-                unblockRef.current();
-            }
-            history.push(pendingNavigation.pathname);
+        const response = axios.post("purches-return-iteam-histroy?", data, {
+            params: params,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        if (response.status === 200) {
+            setUnsavedItems(false);
+            setIsOpenBox(false);
+            // window.location.reload();
+            history.replace(nextPath);
         }
+
+        // if (pendingNavigation) {
+        //     if (unblockRef.current) {
+        //         unblockRef.current();
+        //     }
+        //     history.push(pendingNavigation.pathname);
+        // }
         setIsOpenBox(false);
-        window.location.reload();
+        setUnsavedItems(false);
+        history.replace(nextPath);
+        // window.location.reload();
     };
 
     useEffect(() => {
@@ -166,9 +196,9 @@ const EditReturnBill = () => {
         BankList();
     }, [])
 
-    useEffect(() => {
-        restoreData()
-    }, [])
+    // useEffect(() => {
+    //     restoreData()
+    // }, [])
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -182,7 +212,7 @@ const EditReturnBill = () => {
         // if (isDeleteAll == false) {
         //     // restoreData();
         // }
-    }, [ptr, qty, disc, gst.name,])
+    }, [ptr, qty, disc, gst.name])
 
     useEffect(() => {
 
@@ -207,7 +237,7 @@ const EditReturnBill = () => {
     useEffect(() => {
         if (selectedEditItem) {
             setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
+            setUnit(selectedEditItem.unit);
             setBatch(selectedEditItem.batch_number);
             setExpiryDate(selectedEditItem.expiry);
             setMRP(selectedEditItem.mrp);
@@ -392,12 +422,9 @@ const EditReturnBill = () => {
         setSelectedEditItem(item);
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
-        setTempQty(Number(item.qty))
-
-        
         if (selectedEditItem) {
             setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
+            setUnit(selectedEditItem.unit);
             setBatch(selectedEditItem.batch_number);
             setExpiryDate(selectedEditItem.expiry);
             setMRP(selectedEditItem.mrp);
@@ -419,13 +446,6 @@ const EditReturnBill = () => {
         if (!expiryDate) newErrors.expiryDate = 'Expiry date is required';
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
-        if (Number(tempQty) < Number(qty)) {
-            console.log(tempQty, qty, "")
-            newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
-            toast.error('Quantity should not be greater than purchase quantity ')
-            return
-        }
-
         if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
         if (!disc) newErrors.disc = 'Discount is required';
@@ -442,6 +462,8 @@ const EditReturnBill = () => {
     }
 
     const handleEditItem = async () => {
+        setUnsavedItems(true);
+
         let data = new FormData();
         data.append('purches_return_id', selectedEditItemId)
         data.append('iteam_id', itemPurchaseId)
@@ -455,8 +477,7 @@ const EditReturnBill = () => {
         data.append('gst', gst.id)
         data.append('location', loc)
         data.append('amount', ItemTotalAmount)
-        data.append("weightage", unit)
-        data.append("unit", '')
+        data.append("unit", unit)
         const params = {
             purches_return_id: selectedEditItemId
         };
@@ -466,6 +487,10 @@ const EditReturnBill = () => {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            }).then((response) => {
+                // setTimeout(() => {
+                //     history.push('/return/view');
+                // }, 2000);
             })
             ////console.log("response", response);
             setIsDeleteAll(true);
@@ -492,6 +517,7 @@ const EditReturnBill = () => {
     }
 
     const handleReturnUpdate = (checkedItems) => {
+        setUnsavedItems(false);
 
         const newErrors = {};
         if (!distributor) {
@@ -512,46 +538,59 @@ const EditReturnBill = () => {
             return;
         }
         updatePurchaseRecord();
-        setIsOpenBox(false)
-        setPendingNavigation(null);
+        // setIsOpenBox(false)
+        // setPendingNavigation(null);
     }
 
     const updatePurchaseRecord = async () => {
-        let data = new FormData();
-        data.append("distributor_id", distributor?.id);
-        data.append("bill_no", billNo);
-        data.append("bill_date", selectedDate)
-        data.append('remark', remark)
-        data.append("discount", 0);
-        // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
-        // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
-        data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
-        data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
-        //    data.append('final_amount', tableData?.net_amount)
-        data.append('other_amount', otherAmount)
-        data.append('net_amount', netAmount)
-        data.append('total_amount', totalAmount)
-        data.append("purches_return", JSON.stringify(tableData?.item_list));
-        data.append('id', id)
-        data.append('round_off', roundOff)
 
-        const params = {
-            id: id,
-        };
-        try {
-            await axios.post("purches-return-edit?", data, {
-                params: params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        const hasUncheckedItems = tableData?.item_list?.every(item => item.iss_check === false)
+        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
+        if (hasUncheckedItems) {
+            toast.error('Please select at least one item');;
+
+        } else {
+            let data = new FormData();
+            data.append("distributor_id", distributor?.id);
+            data.append("bill_no", billNo);
+            data.append("bill_date", selectedDate)
+            data.append('remark', remark)
+            data.append('unit', unit)
+            data.append("discount", 0);
+            // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
+            // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
+            data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
+            data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
+            //    data.append('final_amount', tableData?.net_amount)
+            data.append('other_amount', otherAmount)
+            data.append('net_amount', netAmount)
+            data.append('total_amount', totalAmount)
+            data.append("purches_return", JSON.stringify(tableData?.item_list));
+            data.append('id', id)
+            data.append('round_off', roundOff)
+
+            const params = {
+                id: id,
+            };
+            try {
+                await axios.post("purches-return-edit?", data, {
+                    params: params,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+                ).then((response) => {
+
+                    ////console.log(response.data);
+                    toast.success(response.data.message);
+                    setSaveValue(true)
+                    setTimeout(() => {
+                        history.push('/purchase/return');
+                    }, 2000)
+                })
+            } catch (error) {
+                console.error("API error:", error);
             }
-            ).then((response) => {
-                ////console.log(response.data);
-                setSaveValue(true)
-                history.push('/purchase/return');
-            })
-        } catch (error) {
-            console.error("API error:", error);
         }
     }
 
@@ -560,13 +599,15 @@ const EditReturnBill = () => {
     const handleDeleteItem = async () => {
         setIsDelete(true);
     }
-    const handleChecked = async (ItemId, event) => {
-        setSelectedItem(
-            (prevSelected) => prevSelected.includes(ItemId) ? prevSelected.filter(id => id !== ItemId)
-                : [...prevSelected, ItemId]);
+    const handleChecked = async (ItemId, checked) => {
+        // setSelectedItem(
+        //     (prevSelected) => prevSelected.includes(ItemId) ? prevSelected.filter(id => id !== ItemId)
+        //         : [...prevSelected, ItemId]);
 
 
         let data = new FormData();
+        setUnsavedItems(true);
+
         data.append("id", ItemId);
         data.append("type", 1);
         // setIsLoading(true)
@@ -590,10 +631,22 @@ const EditReturnBill = () => {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            }).then(() => {
-                returnBillEditID()
+            })
+            if (response.data) {
+                setSelectedItem((prevSelected) => {
+                    if (checked) {
+                        return [...prevSelected, ItemId];
+                    } else {
+                        return prevSelected.filter((id) => id !== ItemId);
+                    }
+                })
             }
-            );
+            // returnBillEditID()
+            // setSelectedItem(
+            //     (prevSelected) => prevSelected.includes(ItemId) ? prevSelected.filter(id => id !== ItemId)
+            //         : [...prevSelected, ItemId]);
+
+
             ////console.log(response)
         } catch (error) {
             console.error("API error:", error);
@@ -608,6 +661,8 @@ const EditReturnBill = () => {
         }
 
         setOtherAmount(value);
+        setUnsavedItems(true);
+
 
     };
     return (
@@ -879,7 +934,7 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
-                                                        onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
+                                                        onChange={(e) => { setQty(e.target.value) }}
                                                     />
 
                                                 </td>
@@ -918,6 +973,7 @@ const EditReturnBill = () => {
                                                         type="number"
                                                         // inputRef={inputRef8}
                                                         // onKeyDown={handleKeyDown}
+                                                        onChange={(e) => setDisc(e.target.value)}
                                                         value={disc}
                                                         error={!!errors.disc}
                                                     // onChange={handleSchAmt} 
@@ -997,7 +1053,7 @@ const EditReturnBill = () => {
                                                         <DeleteIcon className='delete-icon' />
                                                         {item.item_name}
                                                     </td>
-                                                    <td>{item.weightage}</td>
+                                                    <td>{item.unit}</td>
                                                     <td>{item.batch_number}</td>
                                                     <td>{item.expiry}</td>
                                                     <td>{item.mrp}</td>
@@ -1066,19 +1122,7 @@ const EditReturnBill = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal">Round Off</td>
                                                 <td className="amounttotal">
-                                                    {/* <TextField
-                                                        id="outlined-number"
-                                                        // inputRef={inputRef12}
-                                                        // onKeyDown={handleKeyDown}
-                                                        disabled
-                                                        size="small"
-                                                        value={(roundOff < 0.49 ? `-${(roundOff)}` : (1 - roundOff))}
-                                                        // value={roundOff}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                    /> */}
-                                                    {/* {roundOff < 0.49 ? `-${roundOff}` : parseFloat(1 - roundOff)?.toFixed(2)} */}
-                                                    {roundOff}
+                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `+ ${parseFloat(1 - roundOff).toFixed(2)}`)}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1141,6 +1185,13 @@ const EditReturnBill = () => {
                         </div>
                     </div>
                     {/* popup for history api call */}
+                    <Prompt
+                        when={unsavedItems}
+                        message={(location) => {
+                            handleNavigation(location.pathname);
+                            return false;
+                        }}
+                    />
                     <div
                         id="modal"
                         value={isOpenBox}
@@ -1165,7 +1216,7 @@ const EditReturnBill = () => {
                                     className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                                     onClick={LogoutClose}
                                 >
-                                    No
+                                    Cancel
                                 </button>
                             </div>
                         </div>

@@ -235,7 +235,7 @@ const PurchaseView = () => {
                                             <td>{item.location}</td>
                                             <td>{item.margin}</td>
                                             <td>{item.net_rate}</td>
-                                            <td className="amount">{item.amount}</td>
+                                            <td className="amount">{item.amount} </td>
                                         </tr>
                                     ))}
 
@@ -274,7 +274,7 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal">CN Amount</td>
                                         <td className="amounttotal">{
-                                            (parseFloat(data?.cn_amount) || 0).toFixed(2)}</td>
+                                            - (parseFloat(data?.cn_amount) || 0).toFixed(2)}</td>
                                     </tr>
                                     <tr>
                                         <td className="amounttotal"></td>
@@ -291,8 +291,8 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
-                                        <td className="amounttotal">Total Margin(%)</td>
-                                        <td className="amounttotal">{data?.total_margin}</td>
+                                        <td className="amounttotal">Total Margin</td>
+                                        <td className="amounttotal">₹{data?.total_net_rate} ({data?.total_margin}%)</td>
                                     </tr>
                                     <tr>
                                         <td className="amounttotal"></td>
@@ -310,9 +310,18 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal">Round Off</td>
-                                        <td className="amounttotal">
+                                        {/* <td className="amounttotal">
                                             {(parseFloat(roundOffAmount) || 0).toFixed(2)}
+                                        </td> */}
+                                        <td className="amounttotal">
+                                            {/* {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)} */}
+                                            {roundOffAmount === "0.00"
+                                                ? roundOffAmount
+                                                : roundOffAmount < 0
+                                                    ? `-${Math.abs(roundOffAmount)}`
+                                                    : `+${Math.abs(roundOffAmount)}`}
                                         </td>
+
                                     </tr>
                                     <tr>
                                         <td className="amounttotal"></td>

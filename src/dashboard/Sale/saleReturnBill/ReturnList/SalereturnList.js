@@ -12,8 +12,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import Loader from "../../../../componets/loader/Loader";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
-import { FaFilePdf } from "react-icons/fa6";
-import { toast } from "react-toastify";
 
 const columns = [
     { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
@@ -121,35 +119,7 @@ const SalereturnList = () => {
     const goIntoAdd = () => {
         history.push('/saleReturn/Add')
     }
-    const pdfGenerator = async (id) => {
-        let data = new FormData();
-        data.append('id', id);
-        setIsLoading(true);
-        try {
-          await axios.post("sale-return-pdf-downloads", data, {
-            // params: { id },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).then((response) => {
-    
-            const PDFURL = response.data.data.pdf_url;
-            toast.success(response.data.meassage)
-            setIsLoading(false);
-            handlePdf(PDFURL);
-          });
-        } catch (error) {
-          console.error("API error:", error);
-        }
-      };
-    
-      const handlePdf = (url) => {
-        if (typeof url === 'string') {
-          window.open(url, '_blank');
-        } else {
-          console.error('Invalid URL for the PDF');
-        }
-      };
+
     return (
         <>
             <div>
@@ -216,9 +186,7 @@ const SalereturnList = () => {
                                                             })}
                                                             <td>
                                                                 <div className="flex gap-5 justify-center">
-                                                                    <VisibilityIcon className='cursor-pointer' onClick={() => { history.push(`/SaleReturn/View/${row.id}`) }} color="primary" />
-                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black' onClick={() => pdfGenerator(row.id)}/>
-
+                                                                    <VisibilityIcon className='cursor-pointer' onClick={() => { history.push(`/purchase/view/${row.id}`) }} color="primary" />
                                                                     {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
                                                                 </div>
                                                             </td>

@@ -66,7 +66,7 @@ const AddPurchaseBill = () => {
   const [deleteAll, setDeleteAll] = useState(false);
   const [free, setFree] = useState("");
   const [loc, setLoc] = useState("");
-  const [unit, setUnit] = useState("");
+  const [unit, setUnit] = useState(0);
   const [schAmt, setSchAmt] = useState("");
   const [ItemTotalAmount, setItemTotalAmount] = useState(0);
   const [margin, setMargin] = useState("");
@@ -368,7 +368,7 @@ const AddPurchaseBill = () => {
             );
             // setUnit()
           } else {
-            setUnit("");
+            setUnit(0);
             setBatch("");
             setExpiryDate("");
             setMRP("");
@@ -453,10 +453,10 @@ const AddPurchaseBill = () => {
       data.append("unit_id", unitEditID);
     } else {
       data.append("item_id", value.id);
-      data.append("unit_id", value.unit_id);
+      data.append("unit_id", Number(value.unit_id));
     }
     data.append("random_number", localStorage.getItem("RandomNumber"));
-    data.append("weightage", unit);
+    data.append("weightage", unit?Number(unit):1);
     data.append("batch_number", batch);
     data.append("expiry", expiryDate);
     data.append("mrp", mrp);
@@ -492,7 +492,7 @@ const AddPurchaseBill = () => {
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
-      setUnit("");
+      setUnit(0);
       setBatch("");
       setExpiryDate("");
       setMRP("");
@@ -807,7 +807,7 @@ const AddPurchaseBill = () => {
 
   const removeItem = () => {
     // setAutocompleteDisabled(false);
-    setUnit("");
+    setUnit(0);
     setBatch("");
     setExpiryDate("");
     setSearchItem("");
@@ -1255,10 +1255,10 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               size="small"
                               error={!!errors.unit}
-                              value={unit}
+                              value={unit === 0 ? '' : unit} 
                               sx={{ width: "50px" }}
                               onChange={(e) => {
-                                setUnit(e.target.value);
+                                setUnit(Number(e.target.value));
                               }}
                             />
                           </td>

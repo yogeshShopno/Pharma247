@@ -19,6 +19,7 @@ import Header from '../../../Header';
 import Loader from '../../../../componets/loader/Loader';
 import { toast, ToastContainer } from 'react-toastify';
 import SearchIcon from "@mui/icons-material/Search";
+import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { FaPowerOff } from "react-icons/fa";
 import { VscDebugStepBack } from "react-icons/vsc";
 
@@ -29,6 +30,9 @@ const AddReturnbill = () => {
     const token = localStorage.getItem("token")
     const history = useHistory();
     const unblockRef = useRef(null);
+    const [unsavedItems, setUnsavedItems] = useState(false);
+    const [nextPath, setNextPath] = useState("");
+
     const [isOpenBox, setIsOpenBox] = useState(false);
     const [pendingNavigation, setPendingNavigation] = useState(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -123,23 +127,23 @@ const AddReturnbill = () => {
     //     };
     // }
 
-    useEffect(() => {
-        if (saveValue === false) {
-            unblockRef.current = history.block((location) => {
-                if (!isOpenBox) {
-                    setPendingNavigation(location);
-                    setIsOpenBox(true);
-                    setSaveValue(false);
-                    return false;
-                }
-            });
-            return () => {
-                if (unblockRef.current) {
-                    unblockRef.current();
-                }
-            };
-        }
-    }, [saveValue, history, isOpenBox]);
+    // useEffect(() => {
+    //     if (saveValue === false) {
+    //         unblockRef.current = history.block((location) => {
+    //             if (!isOpenBox) {
+    //                 setPendingNavigation(location);
+    //                 setIsOpenBox(true);
+    //                 setSaveValue(false);
+    //                 return false;
+    //             }
+    //         });
+    //         return () => {
+    //             if (unblockRef.current) {
+    //                 unblockRef.current();
+    //             }
+    //         };
+    //     }
+    // }, [saveValue, history, isOpenBox]);
 
     useEffect(() => {
         if (otherAmount !== '') {
@@ -190,6 +194,43 @@ const AddReturnbill = () => {
         setPendingNavigation(null);
     };
 
+    const handleLeavePage = async () => {
+        try {
+          const params = {
+            start_date: localStorage.getItem('StartFilterDate'),
+            end_date: localStorage.getItem('EndFilterDate'),
+            distributor_id: localStorage.getItem('DistributorId'),
+            type: "1"
+          };
+    
+          const response = await axios.post("purches-return-iteam-histroy", {},
+            {
+              params: params,
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.status === 200) {
+            setUnsavedItems(false);
+            setIsOpenBox(false);
+    
+            setTimeout(() => {
+              history.push(nextPath);
+            }, 0);
+          }
+          setIsOpenBox(false);
+          setUnsavedItems(false);
+          history.replace(nextPath);
+        } catch (error) {
+          console.error("Error deleting items:", error);
+        }
+      };
+
+
+      const handleNavigation = (path) => {
+        setIsOpenBox(true);
+        setNextPath(path);
+      };
+
     const handleLogout = async () => {
         await restoreData();
 
@@ -216,7 +257,7 @@ const AddReturnbill = () => {
         listOfGst();
         listDistributor();
         BankList();
-        restoreData()
+        // restoreData()
         setBillNo(localStorage.getItem('Purchase_Return_BillNo'));
     }, [])
 
@@ -337,6 +378,7 @@ const AddReturnbill = () => {
     };
     const deleteOpen = (Id) => {
         setIsDelete(true);
+        setUnsavedItems(true)
         setItemId(Id);
     };
 
@@ -358,6 +400,7 @@ const AddReturnbill = () => {
                 },
             }
             ).then((response) => {
+                setUnsavedItems(true)
                 purcheseReturnFilter();
                 setIsDelete(false);
             })
@@ -430,7 +473,7 @@ const AddReturnbill = () => {
     };
 
     const handleSchAmt = (e) => {
-        const inputDiscount = parseFloat(e.target.value);
+        const inputDiscount = parseFloat(e.target.value).replace(/[eE]/g, '');
         setDisc(inputDiscount);
 
 
@@ -593,6 +636,7 @@ const AddReturnbill = () => {
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
+            setUnsavedItems(true)
             await handleEditItem(); // Call handleEditItem if validation passes
         }
         return isValid;
@@ -617,10 +661,7 @@ const AddReturnbill = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response);
-                localStorage.removeItem('StartFilterDate')
-                localStorage.removeItem('EndFilterDate')
-                localStorage.removeItem('DistributorId')
+                console.log(response);
             })
         } catch (error) {
             console.error("API error:", error);
@@ -659,6 +700,8 @@ const AddReturnbill = () => {
     };
 
     const handleEditItem = async () => {
+           
+        setUnsavedItems(true);
         let data = new FormData();
         data.append('purches_return_id', selectedEditItemId ? selectedEditItemId : '')
         data.append('iteam_id', itemPurchaseId ? itemPurchaseId : '')
@@ -698,6 +741,7 @@ const AddReturnbill = () => {
             setDisc('')
             setBatch('')
             setLoc('')
+            setUnsavedItems(true);
             if (isNaN(ItemTotalAmount)) {
                 setItemTotalAmount(0);
             }
@@ -708,6 +752,7 @@ const AddReturnbill = () => {
     }
 
     const handleOtherAmount = (event) => {
+        setUnsavedItems(true)
         let value = parseFloat(event.target.value) || "";
         if (value < -finalAmount) {
             value = -finalAmount;
@@ -923,7 +968,16 @@ const AddReturnbill = () => {
                                                         error={!!errors.unit}
                                                         value={unit}
                                                         sx={{ width: '80px' }}
-                                                        onChange={(e) => { setUnit(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[eE]/g, '');
+                            
+                                                            setUnit(Number(value));
+                                                          }}
+                                                          onKeyDown={(e) => {
+                                                            if (['e', 'E'].includes(e.key)) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1022,6 +1076,11 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         value={ptr}
                                                         error={!!errors.ptr}
+                                                        onKeyDown={(e) => {
+                                                            if (['e', 'E'].includes(e.key)) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}   
                                                         onChange={(e) => setPTR(e.target.value)}
                                                     />
                                                 </td>
@@ -1035,6 +1094,12 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         value={disc}
                                                         error={!!errors.disc}
+                                                        onKeyDown={(e) => {
+                                                            if (['e', 'E'].includes(e.key)) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }} 
+                                                          
                                                         onChange={handleSchAmt} />
                                                 </td>
                                                 <td>
@@ -1122,6 +1187,7 @@ const AddReturnbill = () => {
                                                                 checked={item?.iss_check}
                                                                 onClick={(event) => {
                                                                     event.stopPropagation();
+                                                                    setUnsavedItems(true)
                                                                 }}
                                                                 onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                             />
@@ -1287,7 +1353,7 @@ const AddReturnbill = () => {
                         <button
                             type="submit"
                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                            onClick={handleLogout}
+                            onClick={handleLeavePage}
                         >
                             Yes
                         </button>
@@ -1300,6 +1366,42 @@ const AddReturnbill = () => {
                         </button>
                     </div>
                 </div>
+                <Prompt
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            return false;
+          }}
+        />
+        <div
+          id="modal"
+          value={isOpenBox}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+              <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={LogoutClose}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
             </div>
         </>
     )

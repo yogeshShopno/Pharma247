@@ -599,6 +599,7 @@ const Addsale = () => {
         data.append('payment_name', paymentType ? paymentType : '')
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
         data.append('net_amount', netAmount)
+        data.append('margin', totalMargin)
         data.append('other_amount', otherAmt)
         data.append('total_discount', finalDiscount)
         data.append('discount_amount', discountAmount ? discountAmount : '')

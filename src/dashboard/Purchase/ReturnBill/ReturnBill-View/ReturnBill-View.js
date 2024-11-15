@@ -167,7 +167,7 @@ const ReturnView = () => {
                                 <span className="data">{tableData?.user_name}</span>
                             </div>
                             <div className="detail">
-                                <span className="heading">Return Bill No</span>
+                                <span className="heading">Bill No</span>
                                 <span className="data">{tableData?.bill_no} </span>
                             </div>
                             <div className="detail">

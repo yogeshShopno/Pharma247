@@ -401,6 +401,7 @@ const EditPurchaseBill = () => {
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
+    setUnsavedItems(true)
     //console.log(ItemId);
   };
 
@@ -619,6 +620,7 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
+          setUnsavedItems(true);
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
@@ -750,6 +752,7 @@ const EditPurchaseBill = () => {
     // setCnAmount(0)
   }
   const handleKeyDown = (event) => {
+    
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current) {
@@ -1099,7 +1102,7 @@ const EditPurchaseBill = () => {
                 <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
               </div>
               <div className="headerList">
-                <Select
+                {/* <Select
                   labelId="dropdown-label"
                   id="dropdown"
                   value={paymentType}
@@ -1116,7 +1119,7 @@ const EditPurchaseBill = () => {
                       {option.bank_name}
                     </MenuItem>
                   ))}
-                </Select>
+                </Select> */}
                 <Button
                   variant="contained"
                   color="primary"
@@ -1288,13 +1291,20 @@ const EditPurchaseBill = () => {
                             id="outlined-number"
                             type="number"
                             inputRef={inputRef1}
-                            onKeyDown={handleKeyDown}
                             size="small"
                             error={!!errors.unit}
                             value={unit}
                             sx={{ width: "50px" }}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+
                             onChange={(e) => {
-                              setUnit(e.target.value);
+                              const value = e.target.value.replace(/[eE]/g, '');
+
+                              setUnit(Number(value));
                             }}
                           />
                         </td>
@@ -1307,9 +1317,13 @@ const EditPurchaseBill = () => {
                             value={batch}
                             sx={{ width: "90px" }}
                             error={!!errors.batch}
+                            
                             onChange={(e) => {
-                              setBatch(e.target.value);
+                              const value = e.target.value.replace(/[eE]/g, '');
+
+                              setBatch(Number(value));
                             }}
+                            
                           />
                         </td>
                         <td>
@@ -1318,7 +1332,12 @@ const EditPurchaseBill = () => {
                             size="small"
                             sx={{ width: "80px" }}
                             inputRef={inputRef3}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                
                             error={!!errors.expiryDate}
                             value={expiryDate}
                             onChange={handleExpiryDateChange}
@@ -1333,8 +1352,12 @@ const EditPurchaseBill = () => {
                             size="small"
                             inputRef={inputRef4}
                             error={!!errors.mrp}
-                            onKeyDown={handleKeyDown}
-                            value={mrp}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               value={mrp}
                             onChange={(e) => {
                               setMRP(e.target.value);
                             }}
@@ -1347,8 +1370,12 @@ const EditPurchaseBill = () => {
                             sx={{ width: "80px" }}
                             size="small"
                             inputRef={inputRef5}
-                            onKeyDown={handleKeyDown}
-                            error={!!errors.qty}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               error={!!errors.qty}
                             value={qty}
                             onChange={(e) => {
                               const value = e.target.value;
@@ -1365,8 +1392,12 @@ const EditPurchaseBill = () => {
                             value={free}
                             inputRef={inputRef6}
                             error={!!errors.free}
-                            onKeyDown={handleKeyDown}
-                            onChange={(e) => {
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               onChange={(e) => {
                               setFree(e.target.value);
                             }}
                           />
@@ -1378,8 +1409,12 @@ const EditPurchaseBill = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef7}
-                            onKeyDown={handleKeyDown}
-                            value={ptr}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               value={ptr}
                             error={!!errors.ptr}
                             onChange={handlePTR}
                           />
@@ -1391,8 +1426,12 @@ const EditPurchaseBill = () => {
                             size="small"
                             type="number"
                             inputRef={inputRef8}
-                            onKeyDown={handleKeyDown}
-                            value={disc}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               value={disc}
                             error={!!errors.disc}
                             onChange={handleSchAmt}
                           />
@@ -1403,8 +1442,12 @@ const EditPurchaseBill = () => {
                             sx={{ width: "90px" }}
                             size="small"
                             inputRef={inputRef9}
-                            onKeyDown={handleKeyDown}
-                            value={schAmt}
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               value={schAmt}
                             disabled
                           />
                         </td>
@@ -1415,8 +1458,12 @@ const EditPurchaseBill = () => {
                             size="small"
                             value={base}
                             inputRef={inputRef10}
-                            onKeyDown={handleKeyDown}
-                            disabled
+                            onKeyDown={(e) => {
+                              if (['e', 'E'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                              handleKeyDown(e); 
+                            }}                               disabled
                             sx={{ width: "80px" }}
                             onChange={(e) => {
                               setBase(e.target.value);
@@ -1484,6 +1531,13 @@ const EditPurchaseBill = () => {
                               onChange={(e) => {
                                 setMargin(e.target.value);
                               }}
+
+                              onKeyDown={(e) => {
+                                if (['e', 'E'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e); 
+                              }}   
                             />
                           </td>
                         </td>

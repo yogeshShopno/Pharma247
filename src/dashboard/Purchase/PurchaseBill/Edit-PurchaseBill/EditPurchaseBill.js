@@ -164,7 +164,7 @@ const EditPurchaseBill = () => {
       });
 
       const purchaseData = response?.data?.data;
-      //console.log("Purchase data fetched: ", purchaseData);
+      console.log("Purchase data fetched: ", purchaseData);
 
       setPurchase(purchaseData);
       setNetAmount(response?.data?.data.net_amount)
@@ -508,8 +508,10 @@ const EditPurchaseBill = () => {
       data.append("item_id", value?.id);
       data.append("unit_id", value?.unit_id);
     }
+    data.append("unit_id", unit);
+
     data.append("random_number", randomNumber);
-    data.append("weightage", unit);
+    data.append("unite", unit);
     data.append("batch_number", batch);
     data.append("expiry", expiryDate);
     data.append("mrp", mrp);
@@ -522,10 +524,11 @@ const EditPurchaseBill = () => {
     data.append("gst", gst.id);
     data.append("location", loc);
     data.append("margin", margin);
-    data.append("net_rate", netRate);
-    data.append("total_amount", ItemTotalAmount);
     data.append("net_amount", netAmount);
     data.append("cn_amount", finalCnAmount);
+    data.append("net_rate", netRate);
+    data.append("total_amount", ItemTotalAmount);
+    data.append("weightage", unit);
 
     const params = {
       id: selectedEditItemId,
@@ -1667,8 +1670,8 @@ const EditPurchaseBill = () => {
                       </span>
                     </div>
                     <div style={{ marginTop: "2%" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {- (parseFloat(finalCnAmount) || 0).toFixed(2)}
+                      <span style={{ fontWeight: 600 ,color: "red" }}>
+                        {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>
 

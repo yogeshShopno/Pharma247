@@ -175,6 +175,14 @@ const ReturnView = () => {
                                 <span className="data">{tableData?.bill_date} </span>
                             </div>
                             <div className="detail">
+                                <span className="heading">start Date</span>
+                                <span className="data">{tableData?.start_date} </span>
+                            </div>
+                            <div className="detail">
+                                <span className="heading">end Date</span>
+                                <span className="data">{tableData?.end_date} </span>
+                            </div>
+                            <div className="detail">
                                 <span className="heading">Remark</span>
                                 <span className="data">{tableData?.remark} </span>
 
@@ -242,8 +250,10 @@ const ReturnView = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
+                                                <td className="amounttotal">Total Qty</td>
+                                                <td className="amounttotal">{isNaN(Number(tableData?.total_qty))
+                                                        ? tableData?.total_qty || "N/A" 
+                                                        : Number(tableData?.total_qty).toFixed(2)}</td>
                                                 <td className="amounttotal">Total</td>
                                                 <td className="amounttotal">{parseInt(tableData?.final_amount).toFixed(2)}</td>
                                             </tr>
@@ -256,10 +266,14 @@ const ReturnView = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
+                                                <td className="amounttotal">Total GST</td>
+                                                <td className="amounttotal">  {isNaN(Number(tableData?.other_amount))
+                                                        ? tableData?.total_gst || "N/A" 
+                                                        : Number(tableData?.total_gst).toFixed(2)}</td>
                                                 <td className="amounttotal">Other Amount</td>
-                                                <td className="amounttotal">{parseInt(tableData?.other_amount).toFixed(2)}</td>
+                                                <td className="amounttotal">{isNaN(Number(tableData?.other_amount))
+                                                        ? tableData?.total_gst || "N/A" 
+                                                        : Number(tableData?.other_amount).toFixed(2)}</td>
                                             </tr>
                                             <tr>
                                                 <td className="amounttotal"></td>
@@ -270,15 +284,17 @@ const ReturnView = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
+                                                <td className="amounttotal">Total Margin</td>
+                                                <td className="amounttotal">
+                                                    {isNaN(Number(tableData?.total_margin))
+                                                        ? tableData?.total_margin || "N/A" 
+                                                        : Number(tableData?.total_margin).toFixed(2)}
+                                                </td>
                                                 <td className="amounttotal">Round Off</td>
                                                 {/* <td className="amounttotal">{Number(tableData?.round_off).toFixed(2)} */}
                                                 <td className="amounttotal">
                                                     {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `+ ${parseFloat(1 - roundOff).toFixed(2)}`)}
                                                 </td>
-
-
                                             </tr>
                                             {/* <tr>
                                                 <td className="amounttotal"></td>

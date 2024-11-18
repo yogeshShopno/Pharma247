@@ -86,7 +86,7 @@ const EditReturnBill = () => {
     const [selectedItem, setSelectedItem] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0)
     const [netAmount, setNetAmount] = useState(0);
-    const [roundOff, setRoundOff] = useState(0)
+    const [roundOff, setRoundOff] = useState(0.00)
     const [roundOffRender, setRoundOffRender] = useState(0)
     const [otherAmount, setOtherAmount] = useState(0)
     const [finalAmount, setFinalAmount] = useState(0)
@@ -242,7 +242,7 @@ const EditReturnBill = () => {
         }
 
 
-    }, [otherAmount, totalAmount, roundOff, netAmount]);
+    }, [otherAmount, totalAmount, roundOff, netAmount,finalAmount]);
 
     useEffect(() => {
         if (selectedEditItem) {
@@ -499,7 +499,7 @@ const EditReturnBill = () => {
         data.append('location', loc)
         data.append('amount', ItemTotalAmount)
         data.append("weightage", unit)
-        data.append("unit", '')
+        data.append("unit", unit)
         const params = {
             purches_return_id: selectedEditItemId
         };
@@ -562,6 +562,7 @@ const EditReturnBill = () => {
         updatePurchaseRecord();
         setIsOpenBox(false)
         setPendingNavigation(null);
+        setUnsavedItems(false)
     }
 
     const updatePurchaseRecord = async () => {
@@ -594,6 +595,7 @@ const EditReturnBill = () => {
                 },
             }
             ).then((response) => {
+                setUnsavedItems(false)
                 ////console.log(response.data);
                 setSaveValue(true)
                 history.push('/purchase/return');
@@ -845,7 +847,7 @@ const EditReturnBill = () => {
                                 </div>
                                 <div>
                                 </div>
-                                <div className='overflow-x-auto'>
+                                <div className='overflow-x-auto w-full'>
                                     <table className="customtable  w-full border-collapse custom-table">
                                         <thead>
                                             <tr>
@@ -1143,20 +1145,17 @@ const EditReturnBill = () => {
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
                                                 <td className="amounttotal"></td>
-                                                <td className="amounttotal">Other Amount</td>
+                                                <td className="amounttotal">Other Amt</td>
                                                 <td className="amounttotal">
 
                                                     <TextField
                                                         id="outlined-number"
-                                                        // inputRef={inputRef12}
-                                                        // onKeyDown={handleKeyDown}
                                                         size="small"
                                                         value={otherAmount}
                                                         type="number"
                                                         sx={{ width: '100px' }}
                                                         onChange={handleOtherAmount}
 
-                                                    //onChange={(e) => { setOtherAmount(e.target.value) }}
                                                     />
                                                 </td>
                                             </tr>
@@ -1185,7 +1184,8 @@ const EditReturnBill = () => {
                                                         sx={{ width: '100px' }}
                                                     /> */}
                                                     {/* {roundOff < 0.49 ? `-${roundOff}` : parseFloat(1 - roundOff)?.toFixed(2)} */}
-                                                    {roundOff}
+                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}
+
                                                 </td>
                                             </tr>
                                             <tr>

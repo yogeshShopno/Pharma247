@@ -62,7 +62,7 @@ const AddReturnbill = () => {
     // const inputRef12 = useRef();
     const [unit, setUnit] = useState('');
     const [schAmt, setSchAmt] = useState('');
-    const [disc, setDisc] = useState('');
+    const [disc, setDisc] = useState(0);
     const [selectedEditItem, setSelectedEditItem] = useState(null);
     const [isDeleteAll, setIsDeleteAll] = useState(false);
     const [errors, setErrors] = useState({});
@@ -155,7 +155,6 @@ const AddReturnbill = () => {
             const x = parseFloat(finalAmount).toFixed(2)
             setRoundOff((x % 1).toFixed(2))
             roundOff > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
-
         }
 
         if (netAmount < 0) {
@@ -449,11 +448,9 @@ const AddReturnbill = () => {
             }
             ).then((response) => {
                 setTempQty(response.data.data.item_list)
-
                 setReturnItemList(response.data.data)
                 setFinalAmount(response.data.data?.final_amount)
                 setNetAmount(response.data.data?.final_amount)
-
                 // batchListAPI();
                 // setIsLoading(false);
                 //console.log(response.data.data.item_list)
@@ -471,23 +468,23 @@ const AddReturnbill = () => {
     const handleChange = (event) => {
         setSelectedOption(event.target.value);
     };
-
     const handleSchAmt = (e) => {
-        const inputDiscount = parseFloat(e.target.value).replace(/[eE]/g, '');
+        // Get the input value as a string
+        const inputString = e.target.value;
+        // Remove invalid characters from the string
+        const sanitizedInput = inputString.replace(/[eE]/g, '');
+        // Convert the sanitized string to a float
+        const inputDiscount = parseFloat(sanitizedInput) || 0;
         setDisc(inputDiscount);
-
-
+        // Calculate total scheme amount
         const totalSchAmt = parseFloat((((ptr * inputDiscount) / 100) * qty).toFixed(2));
         setSchAmt(totalSchAmt);
-
-        console.log(schAmt, "schAmt")
-
-
-
+        console.log(schAmt, "schAmt");
+        // Calculate total base
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        // setBase(totalBase);
+        // setBase(totalBase); // Uncomment if needed
     };
-
+    
     const removeItem = () => {
         setUnit('')
         setBatch('')
@@ -495,14 +492,14 @@ const AddReturnbill = () => {
         setExpiryDate('');
         setMRP('')
         setQty('')
-
         setFree('')
         setPTR('')
-        setDisc('')
+        setDisc(0)
         setGst('')
         setLoc('')
         setItemTotalAmount(0)
     }
+    
     const handleSubmit = () => {
         const newErrors = {};
         if (!distributor) {
@@ -519,6 +516,7 @@ const AddReturnbill = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
+       
         submitPurchaseData();
         setIsOpenBox(false)
         setPendingNavigation(null);
@@ -559,6 +557,7 @@ const AddReturnbill = () => {
                     //console.log(response.data)
                     setIsLoading(false)
                     setSaveValue(true);
+                    setUnsavedItems(false)
                     toast.success(response.data.message);
                     setTimeout(() => {
                         history.push('/purchase/return');
@@ -631,7 +630,7 @@ const AddReturnbill = () => {
         if (!ptr) newErrors.ptr = 'PTR is required';
         if (!disc) newErrors.disc = 'Discount is required';
         if (!gst.name) newErrors.gst = 'GST is required';
-        if (!loc) newErrors.loc = 'Location is required';
+        // if (!loc) newErrors.loc = 'Location is required';
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -738,7 +737,7 @@ const AddReturnbill = () => {
             setFree('')
             setPTR('')
             setGst('')
-            setDisc('')
+            setDisc(0)
             setBatch('')
             setLoc('')
             setUnsavedItems(true);
@@ -753,7 +752,7 @@ const AddReturnbill = () => {
 
     const handleOtherAmount = (event) => {
         setUnsavedItems(true)
-        let value = parseFloat(event.target.value) || "";
+        let value = Number(event.target.value) || "";
         if (value < -finalAmount) {
             value = -finalAmount;
         }
@@ -1238,8 +1237,7 @@ const AddReturnbill = () => {
                                                     <TextField
                                                         id="outlined-number"
                                                         size="small"
-                                                        // value={otherAmt}
-                                                        value={otherAmount}
+                                                        value={otherAmount===0?"":otherAmount}
                                                         type="number"
                                                         sx={{ width: '100px' }}
                                                         onChange={handleOtherAmount}
@@ -1264,7 +1262,7 @@ const AddReturnbill = () => {
 
                                                 </td> */}
                                                 <td className="amounttotal">
-                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `+ ${parseFloat(1 - roundOff).toFixed(2)}`)}
+                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}
                                                 </td>
                                             </tr>
                                             <tr>

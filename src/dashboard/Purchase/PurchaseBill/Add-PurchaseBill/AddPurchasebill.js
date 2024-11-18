@@ -622,6 +622,7 @@ const AddPurchaseBill = () => {
           localStorage.removeItem("RandomNumber");
           setItemPurchaseList("");
           //console.log("response===>", response.data);
+          setUnsavedItems(false)
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
@@ -645,6 +646,7 @@ const AddPurchaseBill = () => {
       return;
     }
     submitPurchaseData();
+    setUnsavedItems(false)
   };
 
 
@@ -669,10 +671,7 @@ const AddPurchaseBill = () => {
   //   });
   // };
 
-  const handleEditClick = (item) => {
-    setSelectedEditItem(item);
-    setIsEditMode(true);
-    setSelectedEditItemId(item.id);
+  useEffect(() => {
     if (selectedEditItem) {
       setUnitEditID(selectedEditItem.unit_id);
       setItemEditID(selectedEditItem.item_id);
@@ -694,6 +693,14 @@ const AddPurchaseBill = () => {
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
     }
+
+}, [selectedEditItem]);
+
+  const handleEditClick = (item) => {
+    setSelectedEditItem(item);
+    setIsEditMode(true);
+    setSelectedEditItemId(item.id);
+    
   };
 
   const purchaseReturnData = async () => {
@@ -1045,7 +1052,7 @@ const AddPurchaseBill = () => {
         }}
       >
         <div>
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+          <div className="py-3" style={{ display: "flex", gap: "4px", }}>
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
@@ -1080,6 +1087,7 @@ const AddPurchaseBill = () => {
               </span>
               <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
             </div>
+            
             <div className="headerList">
               {/* <Select
                 labelId="dropdown-label"
@@ -1725,6 +1733,7 @@ const AddPurchaseBill = () => {
                       fontWeight: 800,
                       fontSize: "22px",
                       marginTop: "15px",
+                      color: "red",
                     }}
                   >
                     -{finalCnAmount?.toFixed(2)}
@@ -1741,7 +1750,12 @@ const AddPurchaseBill = () => {
                       fontSize: "22px",
                     }}
                   >
-                    {roundOffAmount.toFixed(2)}
+                           
+                           {roundOffAmount === "0.00"
+                          ? roundOffAmount
+                          : roundOffAmount < 0
+                            ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                            : `+${Math.abs(roundOffAmount.toFixed(2))}`}
                   </span>
                 </div>
                 <div className="mt-4">

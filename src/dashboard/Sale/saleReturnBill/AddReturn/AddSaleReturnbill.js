@@ -24,7 +24,7 @@ import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
 
 const Salereturn = () => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     const inputRef1 = useRef();
     const inputRef2 = useRef();
     const inputRef3 = useRef();

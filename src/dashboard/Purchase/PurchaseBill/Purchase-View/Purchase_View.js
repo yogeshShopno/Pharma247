@@ -252,8 +252,8 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
+                                        <td className="amounttotal">Total GST</td>
+                                        <td className="amounttotal">{data?.total_gst}</td>
                                         <td className="amounttotal">Total Amount</td>
                                         <td className="amounttotal">{data?.total_amount}</td>
                                     </tr>
@@ -270,15 +270,14 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
+                                        <td className="amounttotal">Total Qty</td>
+                                        <td className="amounttotal">{data?.total_qty}</td>
                                         <td className="amounttotal">CN Amount</td>
                                         <td className="amounttotal">{
                                             - (parseFloat(data?.cn_amount) || 0).toFixed(2)}</td>
                                     </tr>
+                                   
                                     <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal"></td>
@@ -293,22 +292,6 @@ const PurchaseView = () => {
                                         <td className="amounttotal"></td>
                                         <td className="amounttotal">Total Margin</td>
                                         <td className="amounttotal">₹{data?.total_net_rate} ({data?.total_margin}%)</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
                                         <td className="amounttotal">Round Off</td>
                                         {/* <td className="amounttotal">
                                             {(parseFloat(roundOffAmount) || 0).toFixed(2)}
@@ -342,6 +325,7 @@ const PurchaseView = () => {
                                         <td className="amounttotal">{data?.net_amount}</td>
                                     </tr>
                                 </tbody>
+                               
                             </table>
                         </div>
                     </div>

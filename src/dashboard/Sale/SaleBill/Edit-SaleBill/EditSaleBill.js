@@ -69,7 +69,8 @@ const EditSaleBill = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [tempOtherAmt, setTempOtherAmt] = useState('');
   const [otherAmt, setOtherAmt] = useState(localStorage.getItem("Other_Amount") || '');
-  const [qty, setQty] = useState("");
+  const [qty, setQty] = useState(0)
+  const [tempQty, setTempQty] = useState(0)
   const [order, setOrder] = useState("");
   const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
@@ -94,10 +95,11 @@ const EditSaleBill = () => {
   const [selectedEditItem, setSelectedEditItem] = useState(null);
   const [searchItemID, setSearchItemID] = useState(null);
   const [bankData, setBankData] = useState([]);
-
+  const [randomNum, setRandomNum] = useState('')
   const [openModal, setOpenModal] = useState(false);
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
+  const [uniqueId, setUniqueId] = useState([])
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -139,11 +141,11 @@ const EditSaleBill = () => {
       const decimalPart = Number((calculatedNetAmount % 1).toFixed(2));
       const roundedDecimal = decimalPart;
       if (decimalPart < 0.50) {
-          setRoundOff((-roundedDecimal).toFixed(2));
-          setNetAmount(Math.floor(calculatedNetAmount));
+        setRoundOff((-roundedDecimal).toFixed(2));
+        setNetAmount(Math.floor(calculatedNetAmount));
       } else {
-          setRoundOff((1 - roundedDecimal).toFixed(2));
-          setNetAmount(Math.ceil(calculatedNetAmount));
+        setRoundOff((1 - roundedDecimal).toFixed(2));
+        setNetAmount(Math.ceil(calculatedNetAmount));
 
       }
       const due = givenAmt - calculatedNetAmount;
@@ -255,7 +257,7 @@ const EditSaleBill = () => {
     let data = new FormData();
     data.append("id", id);
     data.append("payment_name", paymentType);
-    data.append("random_number", randomNumber);
+    // data.append("random_number", randomNumber);
     const params = {
       id: id ? id : '',
       random_number: randomNumber ? randomNumber : '',
@@ -276,6 +278,12 @@ const EditSaleBill = () => {
       setRoundOff(record.round_off)
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
+      }
+      // setOtherAmt(record.other_amount)
+      const salesItem = response.data.data.sales_item;
+      if (salesItem && salesItem.length > 0) {
+        console.log('random_number :>> ', salesItem[0].random_number);
+        setRandomNum(salesItem[0].random_number)
       }
       setNetAmount(record.net_amount);
       // setOtherAmt(record.other_amount);
@@ -406,7 +414,7 @@ const EditSaleBill = () => {
     let data = new FormData();
 
     const params = {
-      random_number: localStorage.getItem('RandomNumber') ? localStorage.getItem('RandomNumber') : ''
+      random_number: randomNum
     };
     axios.post("sales-history", data, {
       params: params,
@@ -422,11 +430,32 @@ const EditSaleBill = () => {
       });
   };
 
-
   const handleEditClick = (item) => {
+    console.log(item, "Clicked item");
+    console.log(uniqueId, "Current uniqueId");
+
+    // Ensure consistent type comparison
+    const existingItem = uniqueId.find((obj) => Number(obj.id) === Number(item.id));
+    console.log(existingItem, "existingItem");
+
+    if (!existingItem) {
+      setUniqueId((prevUniqueIds) => {
+        const updatedList = [...prevUniqueIds, { id: item.id, qty: item.qty }];
+        console.log("Updated uniqueId:", updatedList);
+        return updatedList;
+      });
+      setTempQty(Number(item.qty));
+    } else {
+      console.log("Existing item found:", existingItem);
+      setTempQty(Number(existingItem.qty));
+    }
+
+    // Set the selected item for editing
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
+    // setBase(item.base);
+
     if (selectedEditItem) {
       setSearchItem(selectedEditItem.iteam_name);
       setSearchItemID(selectedEditItem.item_id);
@@ -435,13 +464,48 @@ const EditSaleBill = () => {
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
       setQty(selectedEditItem.qty);
-      setBase(selectedEditItem.base);
+      setBase(item.base);
+      // setBase(selectedEditItem.base);
       setOrder(selectedEditItem.order);
       setGst(selectedEditItem.gst);
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
     }
+    // setSelectedEditItem({ ...item });
+    // setIsEditMode(true);
+    // setSelectedEditItemId(item.id);
+    // setBase(item.base);
+    // if (selectedEditItem) {
+    //   setSearchItem(selectedEditItem.iteam_name);
+    //   setUnit(item.unit);
+    //   setBatch(item.batch);
+    //   setExpiryDate(item.exp);
+    //   setMRP(item.mrp);
+    //   setQty(item.qty);
+    //   setOrder(item.order);
+    //   setGst(item.gst);
+    //   setLoc(item.location);
+    //   setItemAmount(item.net_rate);
+    // }
+    // setSearchItem(item.iteam_name);
   };
+
+
+  const handleQty = (value) => {
+
+    const newQty = Number(value);
+
+    if (newQty > tempQty) {
+      setQty(tempQty);
+      toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+    } else if (newQty < 0) {
+      setQty(tempQty);
+      toast.error(`Quantity should not be less than 0`);
+    } else {
+      setQty(newQty)
+    }
+
+  }
 
   const handleCustomerOption = (event, newValue) => {
     setUnsavedItems(true);
@@ -1366,8 +1430,12 @@ const EditSaleBill = () => {
                               sx={{ width: "70px" }}
                               size="small"
                               value={qty}
-                              onChange={(e) => {
-                                setQty(e.target.value);
+                              // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
+                              onChange={(e) => { handleQty(e.target.value) }}
+
+                              InputProps={{
+                                inputProps: { style: { textAlign: 'right' } },
+                                disableUnderline: true
                               }}
                             />
                           </td>
@@ -1562,10 +1630,21 @@ const EditSaleBill = () => {
                       className="mt-2"
                       value={finalDiscount}
                       onChange={(e) => {
-                        setFinalDiscount(e.target.value);
-                        setUnsavedItems(true)
-                        localStorage.setItem('RandomNumber', randomNumber)
+                        let newValue = e.target.value;
 
+                        // if (newValue >= 0 && newValue <= 100) {
+                        //   setFinalDiscount(e.target.value);
+                        //   setUnsavedItems(true)
+                        //   localStorage.setItem('RandomNumber', randomNumber)
+                        // }
+                        if (newValue > 100) {
+                          setFinalDiscount(100);
+                        } else if (newValue >= 0) {
+                          // If the value is valid (0 to 100), update the state
+                          setFinalDiscount(newValue);
+                        }
+                        setUnsavedItems(true);
+                        localStorage.setItem('RandomNumber', randomNumber);
                       }}
                       onKeyPress={(e) => {
                         // Allow numbers, backspace, and decimal point
@@ -1613,7 +1692,6 @@ const EditSaleBill = () => {
                       }}
 
                     />
-
                     <div className="">
                       <span
                         style={{
@@ -1629,7 +1707,7 @@ const EditSaleBill = () => {
                           fontWeight: 800,
                         }}
                       >
-                                                                   <span >{!roundOff ? 0 : roundOff}</span>
+                        <span >{!roundOff ? 0 : roundOff}</span>
 
                       </span>
                     </div>

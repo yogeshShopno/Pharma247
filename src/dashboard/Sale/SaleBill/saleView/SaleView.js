@@ -169,7 +169,7 @@ const SaleView = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Doctor </span>
                                     <span className="data">
-                                        {tableData.doctor_name}
+                                        {tableData.doctor_name || " - "}
                                     </span>
                                 </div>
                                 <div className="detail">

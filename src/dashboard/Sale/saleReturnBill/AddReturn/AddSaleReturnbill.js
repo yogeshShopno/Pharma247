@@ -24,7 +24,7 @@ import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
 
 const Salereturn = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
     const inputRef1 = useRef();
     const inputRef2 = useRef();
     const inputRef3 = useRef();
@@ -49,7 +49,7 @@ const Salereturn = () => {
     const [billing, setBilling] = useState('')
     const [doctor, setDoctor] = useState('')
     const [selectedOption, setSelectedOption] = useState(1);
-    const [paymentType, setPaymentType] = useState('');
+    const [paymentType, setPaymentType] = useState('cash');
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
@@ -392,7 +392,6 @@ const Salereturn = () => {
             data.append('gst', gst ? gst : '')
             data.append("mrp", mrp ? mrp : '')
             data.append("unit", unit);
-            data.append("random_number", randomNumber ? randomNumber : '');
             data.append("unit", unit ? unit : '')
             data.append("batch", batch ? batch : '')
             data.append('location', loc ? loc : '')
@@ -1142,7 +1141,7 @@ const Salereturn = () => {
                                                                         />
                                                                     </td>
                                                                     < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                                                                    <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                                    {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} /> */}
                                                                     {item.iteam_name}
                                                                 </td>
                                                                 <td className="td-bottom"  >{item.unit}</td>
@@ -1180,7 +1179,7 @@ const Salereturn = () => {
                                         </div>
 
                                         <div>
-                                            <label className="font-bold">Total Margin: </label>
+                                            <label className="font-bold">Margin: </label>
                                         </div>
                                     </div>
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
@@ -1188,7 +1187,7 @@ const Salereturn = () => {
                                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                             <span style={{ fontWeight: 600 }}>{totalGst}</span>
                                             <span style={{ fontWeight: 600 }}>{totalBase}</span>
-                                            <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
+                                            <span style={{ fontWeight: 600 }}>₹ {totalNetRate} ({totalMargin} %) </span>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>

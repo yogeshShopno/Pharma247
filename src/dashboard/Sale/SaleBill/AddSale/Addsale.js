@@ -580,6 +580,10 @@ const Addsale = () => {
     }
     const submitSaleData = async () => {
         let data = new FormData();
+        //       const updatedSalesItemList = ItemSaleList.sales_item.map(item => ({
+        //     ...item,
+        //     total_stock: item.qty // Assuming `qty` is the quantity you want to use as total_qty
+        // }));
         data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
         data.append("customer_id", customer?.id ? customer?.id : '');
         data.append("status", 'Completed');
@@ -598,13 +602,16 @@ const Addsale = () => {
         data.append('owner_name', '0')
         data.append('payment_name', paymentType ? paymentType : '')
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
+        // data.append('product_list', JSON.stringify(updatedSalesItemList) ? JSON.stringify(updatedSalesItemList) : ''); // Include total_qty
         data.append('net_amount', netAmount)
-        data.append('margin', totalMargin)
         data.append('other_amount', otherAmt)
         data.append('total_discount', finalDiscount)
         data.append('discount_amount', discountAmount ? discountAmount : '')
         data.append('total_amount', totalAmount)
         data.append('other_amount', otherAmt)
+        data.append('net_rate', totalNetRate)
+        data.append('margin', totalMargin)
+
         try {
             await axios.post("create-sales", data, {
                 headers: {
@@ -1787,7 +1794,7 @@ const Addsale = () => {
                                         </div>
 
                                         <div className="mt-1">
-                                            <span style={{ fontWeight: 800 }}>{discountAmount}</span>
+                                            <span style={{ fontWeight: 800 }}>- {discountAmount}</span>
 
                                         </div>
                                         <div>

@@ -36,7 +36,7 @@ const EditSaleReturn = () => {
         { id: 3, label: 'UPI' },]
     const [customer, setCustomer] = useState('')
     const [isVisible, setIsVisible] = useState(true);
-    const { id } = useParams();
+    const { id, randomNumber } = useParams();
     const [selectedEditItem, setSelectedEditItem] = useState(null);
     const [saleItemId, setSaleItemId] = useState(null);
     const [address, setAddress] = useState('');
@@ -47,6 +47,7 @@ const EditSaleReturn = () => {
     const [qty, setQty] = useState(0);
     const [tempQty, setTempQty] = useState(0)
     const [selectedItem, setSelectedItem] = useState([]);
+    const [randomNum, setRandomNum] = useState('')
 
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
@@ -82,7 +83,7 @@ const EditSaleReturn = () => {
     const [paymentType, setPaymentType] = useState('cash');
     const [bankData, setBankData] = useState([]);
 
-    const [randomNumber, setRandomNumber] = useState(null);
+    // const [randomNumber, setRandomNumber] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
@@ -130,8 +131,8 @@ const EditSaleReturn = () => {
     }, []);
 
     useEffect(() => {
-        const RandomNumber = localStorage.getItem('RandomNumber')
-        setRandomNumber(RandomNumber)
+        // const RandomNumber = localStorage.getItem('RandomNumber')
+        // setRandomNumber(RandomNumber)
         const initializeData = async () => {
             const doctorData = await ListOfDoctor();
             const customerData = await customerAllData();
@@ -190,6 +191,7 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
+            console.log('response.data.data :>> ', response.data.data);
             setSaleReturnItems(response.data.data);
             setTotalBase(response.data.data.total_base)
             setTotalMargin(response.data.data.total_margin)
@@ -199,6 +201,13 @@ const EditSaleReturn = () => {
             setCgst(response.data.data.cgst)
             setAddress(response.data.data.customer_address)
             setTotalAmount(response.data.data.sales_amount)
+
+            const salesItem = response.data.data.sales_iteam;
+            if (salesItem && salesItem.length > 0) {
+                console.log('random_number :>> ', salesItem[0].random_number);
+                setRandomNum(salesItem[0].random_number)
+            }
+
             const foundCustomer = customerData.find(option => option.id == record.customer_id);
             setCustomer(foundCustomer);
             const foundDoctor = doctorData.find(option => option.id == record.doctor_id);
@@ -292,6 +301,7 @@ const EditSaleReturn = () => {
                 ).then((response) => {
                     setUnsavedItems(false);
                     toast.success(response.data.message);
+                    localStorage.removeItem("RandomNumber");
                     setTimeout(() => {
                         history.push('/saleReturn/list');
                     }, 2000);
@@ -304,6 +314,7 @@ const EditSaleReturn = () => {
 
     const editSaleReturnItem = async () => {
         setUnsavedItems(true);
+        localStorage.setItem('RandomNumber', randomNumber)
 
         let data = new FormData();
         data.append('item_id', searchItemID)
@@ -312,6 +323,7 @@ const EditSaleReturn = () => {
         data.append('gst', gst)
         data.append("mrp", mrp)
         data.append("unit", unit);
+        data.append("random_number", randomNumber);
         // data.append("random_number", localStorage.getItem('RandomNumber'));
         data.append("unit", unit)
         data.append("batch", batch)
@@ -378,6 +390,7 @@ const EditSaleReturn = () => {
     }
 
     const handleUpdate = () => {
+        setUnsavedItems(false);
 
         const newErrors = {};
         if (!customer) {
@@ -521,28 +534,34 @@ const EditSaleReturn = () => {
     };
 
     const handleLeavePage = async () => {
-        try {
-            const params = {
-                random_number: randomNumber,
-            };
+        let data = new FormData();
+        const params = {
+            random_number: randomNum,
+        };
 
-            const response = await axios.post("sales-return-edit-history", {},
-                {
-                    params: params,
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            if (response.status === 200) {
-                setUnsavedItems(false);
-                setOpenModal(false);
-
-                setTimeout(() => {
-                    history.push(nextPath);
-                }, 0);
+        axios.post("sales-return-edit-history", data,
+            {
+                params: params,
+                headers: { Authorization: `Bearer ${token}` },
             }
-        } catch (error) {
-            console.error("Error deleting items:", error);
-        }
+        )
+            .then(() => {
+                setOpenModal(false);
+                setUnsavedItems(false); // Reset unsaved changes
+                history.replace(nextPath); // Navigate to the saved path
+            })
+            .catch(error => {
+                console.error("Error deleting items:", error);
+            });
+        // if (response.status === 200) {
+        //     setUnsavedItems(false);
+        //     setOpenModal(false);
+
+        //     setTimeout(() => {
+        //         history.push(nextPath);
+        //     }, 0);
+        // }
+
     };
 
 
@@ -929,7 +948,7 @@ const EditSaleReturn = () => {
                                                             </td>
 
                                                             < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                                                            <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                            {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} /> */}
                                                             {item.iteam_name}
                                                         </td>
                                                         <td>{item.unit}</td>
@@ -955,7 +974,7 @@ const EditSaleReturn = () => {
                                             </div>
 
                                             <div>
-                                                <label className="font-bold">Total Margin : </label>
+                                                <label className="font-bold">Margin : </label>
                                             </div>
                                         </div>
                                         <div class="totals mr-3"
@@ -1121,7 +1140,7 @@ const EditSaleReturn = () => {
                                         <div className="flex gap-5 justify-center">
                                             <button type="submit"
                                                 className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                                                onClick={() => handleDeleteItem(saleItemId)}
+                                                onClick={() => { handleDeleteItem(saleItemId); setUnsavedItems(true) }}
                                             >Delete</button>
                                             <button type="button"
                                                 className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"

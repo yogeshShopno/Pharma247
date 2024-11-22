@@ -1371,7 +1371,7 @@ const InventoryList = () => {
                     <th>
                       Min{" "}
                       <SwapVertIcon
-                        className="cursor-pointer"
+                        className="cursor-pointer"re
                         onClick={() => sortByColumn("minimum")}
                       />
                     </th>

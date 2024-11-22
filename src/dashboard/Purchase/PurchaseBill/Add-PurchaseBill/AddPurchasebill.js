@@ -137,9 +137,9 @@ const AddPurchaseBill = () => {
       }
     };
 
-    initialize(); 
+    initialize();
   }, []);
-  
+
   // useEffect(() => {
   //   console.log('')
   //   generateRandomNumber()
@@ -676,26 +676,7 @@ const AddPurchaseBill = () => {
   };
 
 
-  // const handleCnAmount = () => {
-  //   const newErrors = {};
-
-  //   if (selectedRows.length === 0) {
-  //     newErrors.selectedRows = "Please select at least one item";
-  //     toast.error('Please select at least one item');
-  //   }
-  //   setError(newErrors);
-
-  //   if (Object.keys(newErrors).length > 0) {
-  //     return;
-  //   }
-
-  //   selectedRows.forEach((row, index, id) => {
-  //     const passenger = {
-  //       purches_return_bill_id: row.id,
-  //       amount: row.cnTotalAmount,
-  //     };
-  //   });
-  // };
+  
 
   useEffect(() => {
     if (selectedEditItem) {
@@ -768,39 +749,9 @@ const AddPurchaseBill = () => {
     // setCnTotalAmount("")
     // setCnAmount(0);
   }
-  // const handleKeyDown = (event) => {
-  //     if (event.key === 'Enter') {
-  //         event.preventDefault();
-  //         if (event.target === inputRef1.current) {
-  //             inputRef2.current.focus();
-  //         } else if (event.target === inputRef2.current) {
-  //             inputRef3.current.focus();
-  //         } else if (event.target === inputRef3.current) {
-  //             inputRef4.current.focus();
-  //         } else if (event.target === inputRef4.current) {
-  //             inputRef5.current.focus();
-  //         } else if (event.target === inputRef5.current) {
-  //             inputRef6.current.focus();
-  //         } else if (event.target === inputRef6.current) {
-  //             inputRef7.current.focus();
-  //         } else if (event.target === inputRef7.current) {
-  //             inputRef8.current.focus();
-  //         } else if (event.target === inputRef8.current) {
-  //             inputRef9.current.focus();
-  //         } else if (event.target === inputRef9.current) {
-  //             inputRef10.current.focus();
-  //         } else if (event.target === inputRef10.current) {
-  //             inputRef11.current.focus();
-  //         } else if (event.target === inputRef11.current) {
-  //             inputRef12.current.focus();
-  //         } else if (event.target === inputRef12.current) {
-  //             inputRef13.current.focus();
-  //         }
-  //     };
-  // }
+  
 
   const handleDistributorChange = (event, newValue) => {
-    //console.log(newValue, "dfjkngvkndfgjk");
     setDistributor(newValue);
     purchaseReturnData(id)
   };
@@ -816,7 +767,6 @@ const AddPurchaseBill = () => {
     setSearchItem(itemName);
     setId(newValue?.id);
     setAutocompleteDisabled(true);
-    //console.log("id", newValue?.id);
     handleSearch(itemName);
   };
 
@@ -868,17 +818,7 @@ const AddPurchaseBill = () => {
     setMargin("");
     setLoc("");
   };
-  // const handleRowSelect = (id, amount) => {
-  //   const newSelectedRows = selectedRows.includes(id)
-  //     ? selectedRows.filter(rowId => rowId !== id)
-  //     : [...selectedRows, id];
-
-  //   setSelectedRows(newSelectedRows);
-  //   setCnTotalAmount(prevValues => ({
-  //     ...prevValues,
-  //     [id]: newSelectedRows.includes(id) ? (prevValues[id] || amount) : ''
-  //   }));
-  // };
+ 
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)
@@ -898,22 +838,7 @@ const AddPurchaseBill = () => {
       setCnAmount((prev) => prev - parseFloat(totalAmount));
     }
   };
-  // const handleSelectAll = (event) => {
-  //   if (event.target.checked) {
-  //     const allIds = purchaseReturnPending.map(item => item.id);
-  //     const amounts = purchaseReturnPending.reduce((acc, item) => ({
-  //       ...acc,
-  //       [item.id]: item.total_amount || 0
-  //     }), {});
-
-  //     setSelectedRows(allIds);
-  //     setCnTotalAmount(amounts);
-  //   } else {
-  //     setSelectedRows([]);
-  //     setCnTotalAmount({});
-  //   }
-
-  // };
+ 
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1076,7 +1001,7 @@ const AddPurchaseBill = () => {
       />
       <div
         style={{
-         
+
           height: "calc(99vh - 55px)",
           padding: "0px 20px 0px",
         }}
@@ -1150,7 +1075,7 @@ const AddPurchaseBill = () => {
             <div className="firstrow flex">
               <div className="detail">
                 <span className="title mb-2">
-                  Distributor{" "}
+                  Distributor
                   <FaPlusCircle
                     className="darkblue_text cursor-pointer"
                     onClick={() => {
@@ -1669,24 +1594,7 @@ const AddPurchaseBill = () => {
                             <td>{item.total_amount}</td>
                           </tr>
                         ))}
-                        {/* <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal"></td>
-                                            </tr> */}
+                       
                       </>
                     )}
                   </tbody>

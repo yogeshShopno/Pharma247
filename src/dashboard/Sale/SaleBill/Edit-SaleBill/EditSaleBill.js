@@ -594,8 +594,8 @@ const EditSaleBill = () => {
     setItemAmount(0);
     if (isNaN(itemAmount)) {
       setItemAmount(0);
-    }
-  };
+    }};
+    
   const handleUpdate = () => {
     setUnsavedItems(false);
 
@@ -851,7 +851,6 @@ const EditSaleBill = () => {
                     }}
                     onClick={handleUpdate}
                   >
-                    {" "}
                     Update
                   </Button>
                 </div>
@@ -872,8 +871,8 @@ const EditSaleBill = () => {
                           marginLeft: "15px",
                         }}
                       >
-                        Bill No{" "}
-                        <span style={{ marginLeft: "35px" }}> Bill Date</span>{" "}
+                        Bill No
+                        <span style={{ marginLeft: "35px" }}> Bill Date</span>
                       </div>
                       <div className="flex gap-5">
                         <div
@@ -887,7 +886,7 @@ const EditSaleBill = () => {
                             width: "19%",
                           }}
                         >
-                          {saleAllData.bill_no}{" "}
+                          {saleAllData.bill_no}
                         </div>
                         <div
                           style={{
@@ -1152,7 +1151,6 @@ const EditSaleBill = () => {
                         }}
                         size="small"
                       >
-                        {" "}
                         <HistoryIcon />
                         Purchase History
                       </Button>
@@ -1260,8 +1258,7 @@ const EditSaleBill = () => {
                           <th>Base</th>
                           <th>GST% </th>
                           <th>QTY </th>
-                          <th>
-                            Order{" "}
+                          <th>Order
                             <Tooltip title="Please Enter only (o)" arrow>
                               <Button>
                                 <GoInfo

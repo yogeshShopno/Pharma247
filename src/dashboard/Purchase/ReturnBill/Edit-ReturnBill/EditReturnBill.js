@@ -977,22 +977,7 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // onChange={handleExpiryDateChange}
                                                         placeholder="MM/YY"
                                                     />
-                                                    {/* </td>
-                                                <Autocomplete
-                                                    id="dropdown"
-                                                    value={batch}
-                                                    onChange={(event, newValue) => {
-                                                        setBatch(newValue);
-                                                    }}
-                                                    error={!!errors.batch}
-                                                    options={batchList.map(option => option.batch_number)}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            variant="outlined"
-                                                            size="small"
-                                                        />)}
-                                                    size="small" /> */}
+                                               
                                                 </td>
                                                 <td>
                                                     <TextField

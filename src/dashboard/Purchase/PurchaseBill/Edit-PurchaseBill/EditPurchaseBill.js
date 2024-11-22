@@ -748,29 +748,7 @@ useEffect(()=>{
       setNetRate(selectedEditItem.net_rate);
     }
   };
-  // const handleEditClick = (item) => {
-  //     setSelectedEditItem(item);
-  //     setIsEditMode(true);
-  //     setSelectedEditItemId(item.id);
-  //     // if (selectedEditItem) {
-  //     setSearchItem(item.item_name)
-  //     setUnit(item.weightage);
-  //     setBatch(item.batch_number);
-  //     setExpiryDate(item.expiry);
-  //     setMRP(item.mrp);
-  //     setQty(item.qty);
-  //     setFree(item.fr_qty);
-  //     setPTR(item.ptr);
-  //     setDisc(item.disocunt);
-  //     setSchAmt(item.scheme_account);
-  //     setBase(item.base_price);
-  //     setGst(gstList.find(option => option.name === item.gst_name) || {});
-  //     setLoc(item.location);
-  //     setMargin(item.margin);
-  //     setNetRate(item.net_rate);
-  //     setItemTotalAmount(item.amount)
-  //     // }
-  // };
+ 
   const handelAddOpen = () => {
     setUnsavedItems(true)
 
@@ -941,25 +919,7 @@ useEffect(()=>{
       setCnAmount(0);
     }
   };
-  // const handleRowSelectPending = (id, totalAmount) => {
-  //   const newSelectedRows = selectedRows.includes(id)
-  //     ? selectedRows.filter((rowId) => rowId !== id)
-  //     : [...selectedRows, id];
-
-  //   setSelectedRows(newSelectedRows);
-
-  //   if (newSelectedRows.includes(id)) {
-  //     setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
-  //     setCnAmount((prev) => prev + parseFloat(totalAmount));
-  //   } else {
-  //     setCnTotalAmount((prev) => {
-  //       const updated = { ...prev };
-  //       delete updated[id];
-  //       return updated;
-  //     });
-  //     setCnAmount((prev) => prev - parseFloat(totalAmount));
-  //   }
-  // };
+ 
   const handleRowSelectPending = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)

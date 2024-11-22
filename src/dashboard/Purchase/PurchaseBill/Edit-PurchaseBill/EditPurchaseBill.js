@@ -108,6 +108,12 @@ const EditPurchaseBill = () => {
   const { id, randomNumber } = useParams();
   // const {  } = useParams();
   const [purchase, setPurchase] = useState([]);
+  useEffect(() => {
+    const total = Object.values(cnTotalAmount)
+      .map(amount => parseFloat(amount) || 0)
+      .reduce((acc, amount) => acc + amount, 0);
+    setCnAmount(total)
+  }, [cnTotalAmount])
 
   const listDistributor = async () => {
     try {
@@ -150,6 +156,7 @@ const EditPurchaseBill = () => {
     data.append("id", id);
     data.append("random_number", randomNumber);
     data.append("net_amount", netAmount);
+
     const params = {
       id: id,
       random_number: randomNumber,
@@ -164,10 +171,11 @@ const EditPurchaseBill = () => {
       });
 
       const purchaseData = response?.data?.data;
-      console.log("Purchase data fetched: ", purchaseData);
+      //console.log("Purchase data fetched: ", purchaseData);
 
       setPurchase(purchaseData);
       setNetAmount(response?.data?.data.net_amount)
+
       if (purchaseData) {
         //console.log("Distributors array: ", distributors);
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
@@ -254,9 +262,7 @@ const EditPurchaseBill = () => {
     // listOfHistory()
   }, [id]);
 
-
   useEffect(() => {
-
     if (!qty || !ptr || !disc || !gst.name || !free) {
       console.warn("One or more dependencies are undefined");
       return;
@@ -284,7 +290,28 @@ const EditPurchaseBill = () => {
   }, [qty, ptr, disc, gst.name, free]);
 
   // Call the combined function when you want to initiate the data fetching
-
+useEffect(()=>{
+  if (selectedEditItem) {
+    setSearchItem(selectedEditItem.item_name);
+    setUnit(selectedEditItem.weightage);
+    setBatch(selectedEditItem.batch_number);
+    setExpiryDate(selectedEditItem.expiry);
+    setMRP(selectedEditItem.mrp);
+    setQty(selectedEditItem.qty || 0);
+    setFree(selectedEditItem.fr_qty);
+    setPTR(selectedEditItem.ptr);
+    setDisc(selectedEditItem.disocunt);
+    setSchAmt(selectedEditItem.scheme_account);
+    setBase(selectedEditItem.base_price);
+    setGst(
+      gstList.find((option) => option.name === selectedEditItem.gst_name) ||
+      {}
+    );
+    setLoc(selectedEditItem.location);
+    setMargin(selectedEditItem.margin);
+    setNetRate(selectedEditItem.net_rate);
+  }
+},[selectedEditItem])
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/\D/g, "");
@@ -406,7 +433,6 @@ const EditPurchaseBill = () => {
   };
 
   const addPurchaseValidation = async () => {
-
     const newErrors = {};
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
@@ -447,6 +473,10 @@ const EditPurchaseBill = () => {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
+    if (!ItemTotalAmount) {
+      toast.error("Total amount is not available");
+      newErrors.searchItem = "Total amount is not available";
+    }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -454,7 +484,6 @@ const EditPurchaseBill = () => {
     }
     return isValid;
   };
-
   const handleNavigation = (path) => {
     setOpenAddPopUp(false)
     setIsOpenBox(true);
@@ -495,7 +524,6 @@ const EditPurchaseBill = () => {
       console.error("Error deleting items:", error);
     }
   };
-
   const handleEditItem = async () => {
     setUnsavedItems(true);
 
@@ -511,25 +539,24 @@ const EditPurchaseBill = () => {
     data.append("unit_id", unit);
 
     data.append("random_number", randomNumber);
-    data.append("unite", unit);
-    data.append("batch_number", batch);
-    data.append("expiry", expiryDate);
-    data.append("mrp", mrp);
-    data.append("qty", qty);
-    data.append("free_qty", free);
-    data.append("ptr", ptr);
-    data.append("discount", disc);
-    data.append("scheme_account", schAmt);
-    data.append("base_price", base);
-    data.append("gst", gst.id);
-    data.append("location", loc);
-    data.append("margin", margin);
-    data.append("net_amount", netAmount);
-    data.append("cn_amount", finalCnAmount);
-    data.append("net_rate", netRate);
-    data.append("total_amount", ItemTotalAmount);
-    data.append("weightage", unit);
-
+    data.append("unite", !unit?0:unit);
+    data.append("batch_number", !batch?0:batch);
+    data.append("expiry", !expiryDate?0:expiryDate);
+    data.append("mrp", !mrp?0:mrp);
+    data.append("qty", !qty?0:qty);
+    data.append("free_qty", !free?0:free);
+    data.append("ptr", !ptr?0:ptr);
+    data.append("discount", !disc?0:disc);
+    data.append("scheme_account", !schAmt?0:schAmt);
+    data.append("base_price", !base?0:base);
+    data.append("gst", !gst.id?0:gst.id);
+    data.append("location", !loc?0:loc);
+    data.append("margin", !margin?0:margin);
+    data.append("net_amount", !netAmount?0:netAmount);
+    data.append("cn_amount", !finalCnAmount?0:finalCnAmount);
+    data.append("net_rate", !netRate?0:netRate);
+    data.append("total_amount", !ItemTotalAmount?0:ItemTotalAmount);
+    data.append("weightage", !unit?0:unit);
     const params = {
       id: selectedEditItemId,
     };
@@ -624,6 +651,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           setUnsavedItems(true);
+
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
@@ -745,6 +773,7 @@ const EditPurchaseBill = () => {
   // };
   const handelAddOpen = () => {
     setUnsavedItems(true)
+
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
     purchaseReturnData()
@@ -755,7 +784,6 @@ const EditPurchaseBill = () => {
     // setCnAmount(0)
   }
   const handleKeyDown = (event) => {
-    
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current) {
@@ -940,17 +968,15 @@ const EditPurchaseBill = () => {
     setSelectedRows(newSelectedRows);
 
     if (newSelectedRows.includes(id)) {
-      // If the row is checked, update the amount
       setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
       setCnAmount((prev) => prev + parseFloat(totalAmount));
     } else {
-      // If the row is unchecked, set cnAmount to 0
       setCnTotalAmount((prev) => {
         const updated = { ...prev };
         delete updated[id];
         return updated;
       });
-      setCnAmount(0);
+      setCnAmount((prev) => prev - parseFloat(totalAmount));
     }
   };
 
@@ -1011,6 +1037,10 @@ const EditPurchaseBill = () => {
       newErrors.finalTotalAmount = "You cannot adjust CN more than the total invoice amount";
       toast.error('You cannot adjust CN more than the total invoice amount');
       setError(newErrors);
+      setError(newErrors);
+      setSelectedRows([]);
+      setCnTotalAmount({});
+      setCnAmount(0);
       return;
     }
     setFinalCnAmount(cnAmount)
@@ -1063,7 +1093,7 @@ const EditPurchaseBill = () => {
       ) : (
         <div
           style={{
-            backgroundColor: "rgb(233 228 228)",
+            
             height: "calc(99vh - 55px)",
             padding: "0px 20px",
           }}
@@ -1298,16 +1328,17 @@ const EditPurchaseBill = () => {
                             error={!!errors.unit}
                             value={unit}
                             sx={{ width: "50px" }}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setUnit(value ? Number(value) : "");
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
                                 e.preventDefault();
                               }
-                            }}
-
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[eE]/g, '');
-
-                              setUnit(Number(value));
                             }}
                           />
                         </td>
@@ -1320,13 +1351,11 @@ const EditPurchaseBill = () => {
                             value={batch}
                             sx={{ width: "90px" }}
                             error={!!errors.batch}
-                            
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[eE]/g, '');
 
-                              setBatch(Number(value));
+                            onChange={(e) => {
+                              setBatch(e.target.value);
                             }}
-                            
+
                           />
                         </td>
                         <td>
@@ -1339,8 +1368,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                
+                              handleKeyDown(e);
+                            }}
                             error={!!errors.expiryDate}
                             value={expiryDate}
                             onChange={handleExpiryDateChange}
@@ -1355,14 +1384,20 @@ const EditPurchaseBill = () => {
                             size="small"
                             inputRef={inputRef4}
                             error={!!errors.mrp}
+                            value={mrp}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setMRP(value ? Number(value) : "");
+                              }
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={mrp}
-                            onChange={(e) => {
-                              setMRP(e.target.value);
                             }}
                           />
                         </td>
@@ -1373,16 +1408,19 @@ const EditPurchaseBill = () => {
                             sx={{ width: "80px" }}
                             size="small"
                             inputRef={inputRef5}
-                            onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
-                                e.preventDefault();
-                              }
-                              handleKeyDown(e); 
-                            }}                               error={!!errors.qty}
                             value={qty}
                             onChange={(e) => {
-                              const value = e.target.value;
-                              setQty(value === "" ? 0 : Number(value));
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setQty(value ? Number(value) : "");
+                            }}
+
+                            onKeyDown={(e) => {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
+                                e.preventDefault();
+                              }
                             }}
                           />
                         </td>
@@ -1395,13 +1433,17 @@ const EditPurchaseBill = () => {
                             value={free}
                             inputRef={inputRef6}
                             error={!!errors.free}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setFree(value ? Number(value) : "");
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               onChange={(e) => {
-                              setFree(e.target.value);
                             }}
                           />
                         </td>
@@ -1412,13 +1454,15 @@ const EditPurchaseBill = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef7}
+                            value={ptr}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={ptr}
-                            error={!!errors.ptr}
+                            }}
                             onChange={handlePTR}
                           />
                         </td>
@@ -1430,11 +1474,14 @@ const EditPurchaseBill = () => {
                             type="number"
                             inputRef={inputRef8}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={disc}
+                            }}
+                            value={disc}
                             error={!!errors.disc}
                             onChange={handleSchAmt}
                           />
@@ -1449,8 +1496,9 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={schAmt}
+                              handleKeyDown(e);
+                            }}
+                            value={schAmt}
                             disabled
                           />
                         </td>
@@ -1465,8 +1513,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               disabled
+                              handleKeyDown(e);
+                            }} disabled
                             sx={{ width: "80px" }}
                             onChange={(e) => {
                               setBase(e.target.value);
@@ -1539,8 +1587,8 @@ const EditPurchaseBill = () => {
                                 if (['e', 'E'].includes(e.key)) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e); 
-                              }}   
+                                handleKeyDown(e);
+                              }}
                             />
                           </td>
                         </td>
@@ -1603,107 +1651,94 @@ const EditPurchaseBill = () => {
                           <td>{item.amount}</td>
                         </tr>
                       ))}
-                      <tr>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal">Total</td>
-                        <td className="amounttotal">
-                          {purchase?.total_amount}
-                        </td>
-                      </tr>
+                     
                     </tbody>
                   </table>
                 </div>
               </div>
               <div>
 
-                <div className="flex gap-10 justify-end mt-4 flex-wrap ">
-
+                <div className="flex gap-10 justify-end p-5 ">
                   {/* First Column */}
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <label className="font-bold">Total GST: </label>
-                    <label className="font-bold">Total Qty:</label>
-                    <label className="font-bold">Margin: </label>
-                  </div>
-
-                  <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <div className="font-bold">{purchase?.total_gst}</div>
-                    <div className="font-bold">{purchase?.total_qty}</div>
-                    <div className="font-bold">
-                      {purchase?.total_net_rate} ({purchase?.total_margin})%
+                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total GST: </label>
+                      <div className="font-bold">{purchase?.total_gst}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Qty:</label>
+                      <div className="font-bold">{purchase?.total_qty}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Net Profit:</label>
+                      <div className="font-bold">{purchase?.total_net_rate}</div>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <div>
+                  {/* Second Column */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+                    {/* Total Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
                       <label className="font-bold">Total Amount: </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">CN Amount: </label>
-                    </div>
-
-
-                    <div>
-                      <label className="font-bold">Round off: </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">Net Amount: </label>
-                    </div>
-                  </div>
-
-                  <div class="totals mr-5" style={{ display: 'flex', gap: '23px', flexDirection: 'column', alignItems: "end" }}>
-                    <div>
-                      <span style={{ fontWeight: 600 }}>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
                         {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
                       </span>
                     </div>
-                    <div style={{ marginTop: "2%" }}>
-                      <span style={{ fontWeight: 600 ,color: "red" }}>
+
+                    {/* CN Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" ,}}>
+                      <label className="font-bold">CN Amount: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          color :"red"
+                        }}
+                      >
                         {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>
 
-                    {/* <div style={{ marginTop: "2%" }}>
-                     
-                    </div> */}
-                    {/* <div style={{ marginTop: "0%" }}>
-                      <span style={{ fontWeight: 600 }}>
-                      
-                        {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)}
-
-                      </span>
-                    </div> */}
-                    <div style={{ marginTop: "0%" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {roundOffAmount === "0.00"
-                          ? roundOffAmount
-                          : roundOffAmount < 0
-                            ? `-${Math.abs(roundOffAmount)}`
-                            : `+${Math.abs(roundOffAmount)}`}
+                    {/* Total Margin Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Margin: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                       ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
                       </span>
                     </div>
 
-                    <div>
-                      <span style={{ fontWeight: 800, fontSize: '22px' }}>
+                    {/* Round Off Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Round off: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                        {(parseFloat(roundOffAmount) || 0).toFixed(2)}
+                      </span>
+                    </div>
+
+                    {/* Net Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Net Amount: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: "22px",
+                        }}
+                      >
                         {(parseFloat(netAmount) || 0).toFixed(2)}
                       </span>
                     </div>
-
                   </div>
-
-
                 </div>
 
               </div>
@@ -1728,8 +1763,7 @@ const EditPurchaseBill = () => {
                     <thead>
                       <tr>
                         <th>
-                          {
-                            purchase?.cn_bill_list?.length === 0 ? (
+                          {purchase?.cn_bill_list?.length === 0 ? (
                               <input
                                 type="checkbox"
                                 onChange={handleSelectAllPending}
@@ -1927,7 +1961,8 @@ const EditPurchaseBill = () => {
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+                <span style={{ textTransform: "lowercase" }}>re you sure you want to delete it?</span></h4>
               </div>
               <div className="flex gap-5 justify-center">
                 <button

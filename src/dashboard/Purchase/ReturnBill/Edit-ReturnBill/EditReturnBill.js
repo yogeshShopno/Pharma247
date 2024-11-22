@@ -1,7 +1,7 @@
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select,InputAdornment, Input, colors } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Button, TextField } from "@mui/material";
@@ -21,6 +21,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { VscDebugStepBack } from "react-icons/vsc";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -66,7 +67,7 @@ const EditReturnBill = () => {
     const [distributor, setDistributor] = useState(null);
     const [remark, setRemark] = useState()
     const [expiryDate, setExpiryDate] = useState('');
-
+const [intialQty, setIntialQty] = useState(0)
     const [qty, setQty] = useState(0)
     const [tempQty, setTempQty] = useState(0)
     const [free, setFree] = useState('')
@@ -96,6 +97,14 @@ const EditReturnBill = () => {
     const [ItemTotalAmount, setItemTotalAmount] = useState()
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [totalGST, setTotalGST] = useState(0)
+    const [totalQty, setTotalQty] = useState(0)
+    const [totalNetRate, setTotalNetRate] = useState(0)
+    const [totalMargin, setTotalMargin] = useState(0)
+    const [margin, setMargin] = useState(0)
+    const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
+    const [uniqueId, setUniqueId] = useState([])
 
     const handleClose = () => {
         setIsDelete(false);
@@ -138,19 +147,25 @@ const EditReturnBill = () => {
         setPendingNavigation(null);
     };
     
+    
 
     const handleLeavePage = async () => {
+        let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
         try {
-          const params = {
-            start_date: localStorage.getItem('StartFilterDate'),
-            end_date: localStorage.getItem('EndFilterDate'),
-            distributor_id: localStorage.getItem('DistributorId'),
-            type: "1"
-          };
+        //   const params = {
+        //     start_date: localStorage.getItem('StartFilterDate'),
+        //     end_date: localStorage.getItem('EndFilterDate'),
+        //     distributor_id: localStorage.getItem('DistributorId'),
+        //     type: "1"
+        //   };
     
-          const response = await axios.post("purches-return-iteam-histroy", {},
+          const response = await axios.post("purches-return-iteam-histroy",data,
             {
-              params: params,
+            //   params: params,
               headers: { Authorization: `Bearer ${token}` },
             }
           );
@@ -159,17 +174,19 @@ const EditReturnBill = () => {
             setIsOpenBox(false);
     
             setTimeout(() => {
-              history.push(nextPath);
+                if(nextPath){
+                    history.push(nextPath);
+
+                }
             }, 0);
           }
           setIsOpenBox(false);
           setUnsavedItems(false);
-          history.replace(nextPath);
+        //   history.replace(nextPath);
         } catch (error) {
           console.error("Error deleting items:", error);
         }
       };
-
 
       const handleNavigation = (path) => {
         setIsOpenBox(true);
@@ -358,10 +375,18 @@ const EditReturnBill = () => {
                 ////console.log("API Error:", error);
             });
     }
-
-    const returnBillEditID = async (distributors) => {
+    const handleInputChange = async(e) => {
+        const value = e.target.value;
+        setSearchQuery(value); 
+        const distributors = await listDistributor();
+        await returnBillEditID(distributors);
+        returnBillEditID(distributors, value);
+    };
+    const returnBillEditID = async (distributors,value) => {
         let data = new FormData();
-        data.append("id", id);
+        data.append("id", id==null?id:id);
+        data.append("search", value ? value : "");
+
         const params = {
             purches_return_id: id,
         };
@@ -380,6 +405,15 @@ const EditReturnBill = () => {
                 setTotalAmount(response.data.data?.total_amount)
                 otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
                 setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
+                setTotalGST(response.data.data?.total_gst)
+                setTotalQty(response.data.data?.total_qty)
+                setTotalNetRate(response.data.data?.total_net_rate)
+                setTotalMargin(response.data.data?.total_margin)
+                setMargin(response.data.data?.total_margin)
+
+
+
+
 
                 //console.log(data, "data")
                 setStartDate(response.data.data?.start_date);
@@ -419,7 +453,7 @@ const EditReturnBill = () => {
         setSearchItem('');
         setExpiryDate('');
         setMRP('')
-        setQty('')
+        setQty(0)
         setFree('')
         setPTR('')
         setDisc('')
@@ -429,28 +463,53 @@ const EditReturnBill = () => {
     }
 
     const handleEditClick = (item) => {
+        const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        console.log(existingItem, "existingItem")
+
+        if (!existingItem) {
+            // If the ID is unique, add the item to uniqueId and set tempQty
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+            setTempQty(item.qty);
+        } else {
+            setTempQty(existingItem.qty);
+
+        }
+
         setSelectedEditItem(item);
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
-        setTempQty(Number(item.qty))
-
-        
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
-            setBatch(selectedEditItem.batch_number);
-            setExpiryDate(selectedEditItem.expiry);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setFree(selectedEditItem.fr_qty);
-            setPTR(selectedEditItem.ptr);
-            setDisc(selectedEditItem.disocunt);
-            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
-            setLoc(selectedEditItem.location);
-            setItemTotalAmount(selectedEditItem.amount)
-        }
+        setQty(item.qty)
+     
     };
+    const handleQty = (value) => {
 
+        const newQty = Number(value);
+
+        if (newQty > tempQty) {
+            setQty(tempQty);
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+        } else if (newQty < 0) {
+            setQty(tempQty);
+            toast.error(`Quantity should not be less than 0`);
+        } else {
+            setQty(newQty)
+        }
+
+    }
+    const handleQtyChange = (e) => {
+        const inputQty = Number(e.target.value);
+        setQty(inputQty);
+
+        // const availableStockForEdit = editQty ;
+
+        // if (inputQty <= availableStockForEdit && inputQty >= 0) {
+        //     setQty(inputQty);
+        // } else if (inputQty > availableStockForEdit) {
+        //     setQty(availableStockForEdit);
+        //     toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
+        // }
+    };
+    
     const EditReturnItem = async () => {
         setUnsavedItems(true)
 
@@ -460,18 +519,17 @@ const EditReturnBill = () => {
         if (!expiryDate) newErrors.expiryDate = 'Expiry date is required';
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
-        if (Number(tempQty) < Number(qty)) {
-            console.log(tempQty, qty, "")
-            newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
-            toast.error('Quantity should not be greater than purchase quantity ')
-            return
-        }
-
+        // if (Number(tempQty) < Number(qty)) {
+        //     console.log(tempQty, qty, "")
+        //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
+        //     toast.error('Quantity should not be greater than purchase quantity ')
+        //     return
+        // }
         if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
         if (!disc) newErrors.disc = 'Discount is required';
         if (!gst.name) newErrors.gst = 'GST is required';
-        if (!loc) newErrors.loc = 'Location is required';
+        // if (!loc) newErrors.loc = 'Location is required';
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -486,20 +544,20 @@ const EditReturnBill = () => {
 
     const handleEditItem = async () => {
         let data = new FormData();
-        data.append('purches_return_id', selectedEditItemId)
-        data.append('iteam_id', itemPurchaseId)
-        data.append("batch", batch)
-        data.append("exp_dt", expiryDate)
-        data.append("mrp", mrp)
-        data.append("ptr", ptr)
-        data.append("fr_qty", free)
-        data.append("qty", qty)
-        data.append("disocunt", disc)
-        data.append('gst', gst.id)
-        data.append('location', loc)
-        data.append('amount', ItemTotalAmount)
-        data.append("weightage", unit)
-        data.append("unit", unit)
+        data.append('purches_return_id', selectedEditItemId==null?"0":selectedEditItemId)
+        data.append('iteam_id', itemPurchaseId==null?"0":itemPurchaseId)
+        data.append("batch", batch==null?"0":batch)
+        data.append("exp_dt", expiryDate==null?"0":expiryDate)
+        data.append("mrp", mrp==null?"0":mrp)
+        data.append("ptr", ptr==null?"0":ptr)
+        data.append("fr_qty", free==null?"0":free)
+        data.append("qty", qty==null?"0":qty)
+        data.append("disocunt", disc==null?"0":disc)
+        data.append('gst', gst.id==null?"0":gst.id)
+        data.append('location', loc==null?loc:"0")
+        data.append('amount', ItemTotalAmount==null?"0":ItemTotalAmount)
+        data.append("weightage", unit==null?"0":unit)
+        data.append("unit", unit==null?"0":unit)
         const params = {
             purches_return_id: selectedEditItemId
         };
@@ -568,21 +626,21 @@ const EditReturnBill = () => {
     const updatePurchaseRecord = async () => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
-        data.append("bill_no", billNo);
-        data.append("bill_date", selectedDate)
-        data.append('remark', remark)
+        data.append("bill_no", billNo==null?"0":billNo);
+        data.append("bill_date", selectedDate==null?"0":selectedDate)
+        data.append('remark', remark==null?"0":remark)
         data.append("discount", 0);
         // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
         // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
         data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
         data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
         //    data.append('final_amount', tableData?.net_amount)
-        data.append('other_amount', otherAmount)
-        data.append('net_amount', netAmount)
-        data.append('total_amount', totalAmount)
+        data.append('other_amount', otherAmount==null?"0":otherAmount)
+        data.append('net_amount', netAmount==null?"0":netAmount)
+        data.append('total_amount', totalAmount==null?"0":totalAmount)
         data.append("purches_return", JSON.stringify(tableData?.item_list));
-        data.append('id', id)
-        data.append('round_off', roundOff)
+        data.append('id', id==null?"0":id)
+        data.append('round_off', roundOff==null?"0":roundOff)
 
         const params = {
             id: id,
@@ -695,7 +753,7 @@ const EditReturnBill = () => {
                 <Loader />
             </div> :
 
-                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
+                <div style={{  height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
                     <ToastContainer />
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
@@ -706,7 +764,7 @@ const EditReturnBill = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Select
+                                {/* <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
@@ -719,7 +777,7 @@ const EditReturnBill = () => {
                                     {bankData?.map(option => (
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
-                                </Select>
+                                </Select> */}
                                 <Button
                                     variant="contained"
                                     color="success"
@@ -752,12 +810,20 @@ const EditReturnBill = () => {
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2">Bill Date</span>
-                                    <DatePicker
+                                    <span className="heading mb-2 ">Bill Date</span>
+                                    <DatePicker 
                                         className='custom-datepicker '
                                         selected={selectedDate}
                                         onChange={(newDate) => setSelectedDate(newDate)}
                                         dateFormat="dd/MM/yyyy"
+                                        disabled
+                                        sx={colors="#BDBDBD"}
+                                        style={{
+                                            color: '#BDBDBD',
+                                            backgroundColor: '#F0F0F0',
+                                            border: '1px solid #BDBDBD',
+                                            cursor: 'not-allowed',
+                                          }}
                                     />
                                 </div>
                                 <div className="detail">
@@ -767,6 +833,7 @@ const EditReturnBill = () => {
                                         size="small"
                                         sx={{ width: '250px' }}
                                         value={billNo}
+                                        disabled
                                         onChange={(e) => { setBillNo(e.target.value) }}
                                     />
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
@@ -972,7 +1039,9 @@ const EditReturnBill = () => {
                                                               e.preventDefault();
                                                             }
                                                           }}
-                                                        onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
+                                                          onChange={(e) => { handleQty(e.target.value) }}
+
+                                                        // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
                                                     />
 
                                                 </td>
@@ -1058,7 +1127,7 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         size="small"
                                                         value={loc}
-                                                        error={!!errors.loc}
+                                                        // error={!!errors.loc}
                                                         sx={{ width: '100px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                     />
@@ -1068,7 +1137,25 @@ const EditReturnBill = () => {
                                                 <td className="total"><span>{ItemTotalAmount}</span></td>
                                             </tr>
                                             <tr >
-                                                <td></td>
+                                            <td>
+                                                    <TextField
+                                                        id="outlined-basic"
+                                                        size="small"
+                                                        sx={{ width: "75%", marginTop: "5px" }}
+                                                        value={searchQuery}
+                                                        onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: "search",
+                                                        }}
+                                                    />
+                                                </td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -1120,98 +1207,99 @@ const EditReturnBill = () => {
                                                 </tr>
                                             ))}
 
-                                            < tr >
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal">{totalAmount}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Other Amt</td>
-                                                <td className="amounttotal">
-
-                                                    <TextField
-                                                        id="outlined-number"
-                                                        size="small"
-                                                        value={otherAmount}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                        onChange={handleOtherAmount}
-
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Round Off</td>
-                                                <td className="amounttotal">
-                                                    {/* <TextField
-                                                        id="outlined-number"
-                                                        // inputRef={inputRef12}
-                                                        // onKeyDown={handleKeyDown}
-                                                        disabled
-                                                        size="small"
-                                                        value={(roundOff < 0.49 ? `-${(roundOff)}` : (1 - roundOff))}
-                                                        // value={roundOff}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                    /> */}
-                                                    {/* {roundOff < 0.49 ? `-${roundOff}` : parseFloat(1 - roundOff)?.toFixed(2)} */}
-                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}
-
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Net Amount</td>
-                                                <td className="amounttotal">{netAmount}
-                                                </td>
-                                            </tr>
-                                            {/* </> */}
-                                            {/* )} */}
+                                            
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+                        
 
                     </div >
+                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                            <div>
+                                <label className="font-bold">Total GST : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold">Total Qty : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold">total Net Rate: </label>
+                            </div>
+                        </div>
+                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+
+                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
+                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
+                                <span style={{ fontWeight: 600 }}>{totalNetRate}</span>
+
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                            <div>
+                                <label className="font-bold">Total Amount : </label>
+                            </div>
+
+                            <div>
+                                <label className="font-bold">Other Amount: </label>
+                            </div>
+
+                            <div>
+                                <label className="font-bold">margin : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold">Round Off : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold" >Net Amount : </label>
+                            </div>
+                        </div>
+                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
+
+                            <div>
+                                <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
+                            </div>
+                            {/* <div>
+                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                '& .MuiInputBase-root': {
+                                                    height: '35px'
+                                                },
+                                            }} />
+                                        </div> */}
+
+                            <div>
+                                <Input
+                                    type="number"
+                                    value={otherAmount}
+                                    onChange={handleOtherAmount}
+                                    size="small"
+                                    style={{
+                                        width: "70px",
+                                        background: "none",
+                                        borderBottom: "1px solid gray",
+                                        justifyItems: "end",
+                                        outline: "none",
+                                    }} sx={{
+                                        '& .MuiInputBase-root': {
+                                            height: '35px',
+                                        },
+                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                    }} />
+                            </div>
+                            <div className='mt-2'>
+                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
+                            </div>
+                            <div className='mt-1'>
+                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                            </div>
+                            <div>
+                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                            </div>
+                        </div>
+                    </div>
                     {/* Delete PopUP */}
                     <div id="modal" value={IsDelete}
                         className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
@@ -1264,7 +1352,8 @@ const EditReturnBill = () => {
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
             <div className="my-4 logout-icon">
               <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-              <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+              <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+              <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
             </div>
             <div className="flex gap-5 justify-center">
               <button

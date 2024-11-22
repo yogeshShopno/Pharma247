@@ -146,7 +146,7 @@ const ReturnView = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: '150px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
@@ -241,95 +241,53 @@ const ReturnView = () => {
                                                 </tr>
                                             ))}
 
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total Qty</td>
-                                                <td className="amounttotal">{isNaN(Number(tableData?.total_qty))
-                                                        ? tableData?.total_qty || "N/A" 
-                                                        : Number(tableData?.total_qty).toFixed(2)}</td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal">{parseInt(tableData?.final_amount).toFixed(2)}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total GST</td>
-                                                <td className="amounttotal">  {isNaN(Number(tableData?.other_amount))
-                                                        ? tableData?.total_gst || "N/A" 
-                                                        : Number(tableData?.total_gst).toFixed(2)}</td>
-                                                <td className="amounttotal">Other Amount</td>
-                                                <td className="amounttotal">{isNaN(Number(tableData?.other_amount))
-                                                        ? tableData?.total_gst || "N/A" 
-                                                        : Number(tableData?.other_amount).toFixed(2)}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total Margin</td>
-                                                <td className="amounttotal">
-                                                    {isNaN(Number(tableData?.total_margin))
-                                                        ? tableData?.total_margin || "N/A" 
-                                                        : Number(tableData?.total_margin).toFixed(2)}
-                                                </td>
-                                                <td className="amounttotal">Round Off</td>
-                                                {/* <td className="amounttotal">{Number(tableData?.round_off).toFixed(2)} */}
-                                                <td className="amounttotal">
-                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `+ ${parseFloat(1 - roundOff).toFixed(2)}`)}
-                                                </td>
-                                            </tr>
-                                            {/* <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">GST</td>
-                                                <td className="amounttotal">0.0</td>
-                                            </tr> */}
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Net</td>
-                                                <td className="amounttotal">{parseInt(tableData?.net_amount).toFixed(2)}</td>
-                                            </tr>
-                                        </tbody>
+                                                                                  </tbody>
                                     }
                                 </table>
+                                <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10" >
+                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <label className="font-bold">Total GST : </label>
+                                    <label className="font-bold">Total Qty : </label>
+                                    <label className="font-bold">Total Margin : </label>
+                                </div>
+                                <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                    <span style={{ fontWeight: 600 }}>{tableData?.total_gst?tableData?.total_gst:0} </span>
+                                    <span style={{ fontWeight: 600 }}> {tableData?.total_qty?tableData?.total_qty:0} </span>
+                                    <span style={{ fontWeight: 600 }}>₹{tableData?.total_net_rate} ({tableData?.total_margin}%)</span>
+                                </div>
+
+
+                              
+
+                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <label className="font-bold">Total Amount : </label>
+                                    <label className="font-bold">Other Amount : </label>
+                                    <label className="font-bold">Round Off : </label>
+                                    <label className="font-bold" >Net Amount : </label>
+                                </div>
+                                <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                                    <span style={{ fontWeight: 600 }}>{tableData?.total_amount?tableData?.total_amount:0}</span>
+                                    <span style={{ fontWeight: 600, }}>{isNaN(Number(tableData?.other_amount))
+                                                        ? tableData?.other_amount || "N/A" 
+                                                        : Number(tableData?.other_amount).toFixed(2)}</span>
+
+                                 
+                                    <span style={{ fontWeight: 600 }}> 
+                                    {roundOff === "0.00"
+                                                ? roundOff
+                                                : roundOff < 0
+                                                    ? `-${Math.abs(roundOff)}`
+                                                    : `+${Math.abs(roundOff)}`}
+                                    </span>
+                                    <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount?tableData?.net_amount:0}</span>
+                                </div>
                             </div>
+                            </div>
+                           
                         </div>
+                        
                     </div>
+                   
 
                 </div>
             }

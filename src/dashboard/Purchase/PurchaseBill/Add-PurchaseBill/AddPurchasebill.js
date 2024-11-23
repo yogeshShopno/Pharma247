@@ -283,7 +283,6 @@ const AddPurchaseBill = () => {
       return;
     }
 
-
   };
 
   let listOfGst = () => {
@@ -412,6 +411,7 @@ const AddPurchaseBill = () => {
   };
 
   const handleAddButtonClick = async () => {
+    generateRandomNumber()
     const newErrors = {};
     const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
     const numericQty = parseFloat(qty) || 0;
@@ -978,6 +978,8 @@ const AddPurchaseBill = () => {
       }
       setIsOpenBox(false);
       setUnsavedItems(false);
+      localStorage.removeItem("RandomNumber");
+
       // history.replace(nextPath);
     } catch (error) {
       console.error("Error deleting items:", error);

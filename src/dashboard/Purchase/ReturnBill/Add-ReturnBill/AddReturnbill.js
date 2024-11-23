@@ -934,10 +934,9 @@ const AddReturnbill = () => {
                                         onChange={(e) => { setRemark(e.target.value) }}
                                     />
                                 </div>
-                            </div>
-                            <div className='overflow-x-auto mt-4 '>
-                                <table className="w-full border-collapse custom-table">
-                                    <thead>
+                                <div className='overflow-x-auto mt-4 w-full '>
+                            <table className="customtable w-full border-collapse custom-table ">
+                            <thead>
                                         <tr>
                                             <th >Item Name</th>
                                             <th >Unit</th>
@@ -978,15 +977,17 @@ const AddReturnbill = () => {
                                                         value={unit}
                                                         sx={{ width: '80px' }}
                                                         onChange={(e) => {
-                                                            const value = e.target.value.replace(/[eE]/g, '');
-
-                                                            setUnit(Number(value));
-                                                        }}
-                                                        onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                                e.preventDefault();
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setUnit(value ? Number(value) : "");
+                                                          }}
+                                                          onKeyDown={(e) => {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                              e.preventDefault();
                                                             }
-                                                        }}
+                                                          }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1030,7 +1031,20 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.mrp}
                                                         value={mrp}
-                                                        onChange={(e) => { setMRP(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                              setMRP(value ? Number(value) : "");
+                                                            }
+                                                          }}
+                                                          onKeyDown={(e) => {
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1044,7 +1058,19 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
-                                                        onChange={handleQtyChange}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setQty(value ? Number(value) : "");
+                                                          }}
+                            
+                                                          onKeyDown={(e) => {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
 
                                                     // onChange={(e) => {
                                                     //     const inputQty = Number(e.target.value); // Convert the input value to a number
@@ -1070,7 +1096,18 @@ const AddReturnbill = () => {
                                                         // inputRef={inputRef6}
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.free}
-                                                        onChange={(e) => { setFree(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setFree(value ? Number(value) : "");
+                                                          }}
+                                                          onKeyDown={(e) => {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
                                                     />
 
 
@@ -1086,10 +1123,13 @@ const AddReturnbill = () => {
                                                         value={ptr}
                                                         error={!!errors.ptr}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                                e.preventDefault();
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                              e.preventDefault();
                                                             }
-                                                        }}
+                                                          }}
                                                         onChange={(e) => setPTR(e.target.value)}
                                                     />
                                                 </td>
@@ -1104,12 +1144,20 @@ const AddReturnbill = () => {
                                                         value={disc}
                                                         error={!!errors.disc}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                                e.preventDefault();
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                              e.preventDefault();
                                                             }
-                                                        }}
-
-                                                        onChange={handleSchAmt} />
+                                                          }}
+                                                          onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (Number(value) > 100) {
+                                                              e.target.value = 100; 
+                                                            }
+                                                            handleSchAmt(e); 
+                                                          }}/>
                                                 </td>
                                                 <td>
                                                     <Select
@@ -1218,16 +1266,13 @@ const AddReturnbill = () => {
                                                 </tr>
                                             ))}
 
-
-
                                         </>
                                         )}
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div >
-                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                            </div>
+                            <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                             <div>
                                 <label className="font-bold">Total GST : </label>
@@ -1311,6 +1356,10 @@ const AddReturnbill = () => {
                             </div>
                         </div>
                     </div>
+                            
+                        </div>
+                    </div >
+                    
                 </div >
 
 

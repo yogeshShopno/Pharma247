@@ -1443,8 +1443,13 @@ useEffect(()=>{
                             }}
                             value={disc}
                             error={!!errors.disc}
-                            onChange={handleSchAmt}
-                          />
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (Number(value) > 100) {
+                                e.target.value = 100; 
+                              }
+                              handleSchAmt(e); 
+                            }}                          />
                         </td>
                         <td>
                           <TextField
@@ -1614,11 +1619,8 @@ useEffect(()=>{
                      
                     </tbody>
                   </table>
-                </div>
-              </div>
-              <div>
-
-                <div className="flex gap-10 justify-end p-5 ">
+                
+                  <div className="flex gap-10 justify-end mt-5 ">
                   {/* First Column */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
@@ -1700,6 +1702,12 @@ useEffect(()=>{
                     </div>
                   </div>
                 </div>
+                </div>
+
+                
+              </div>
+              <div>
+
 
               </div>
             </div>

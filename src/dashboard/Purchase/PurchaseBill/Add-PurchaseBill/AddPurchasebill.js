@@ -1071,7 +1071,7 @@ const AddPurchaseBill = () => {
               </Button>
             </div>
           </div>
-          <div>
+          <div className="bg-white">
             <div className="firstrow flex">
               <div className="detail">
                 <span className="title mb-2">
@@ -1209,7 +1209,7 @@ const AddPurchaseBill = () => {
                   )}
                 />
               )}
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto ">
                 <table className="customtable  w-full border-collapse custom-table">
                   <thead>
                     <tr>
@@ -1396,7 +1396,6 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               value={ptr}
                               error={!!errors.ptr}
-                              onChange={handlePTR}
                               onKeyDown={(e) => {
                                 if (
                                   ['e', 'E', '+', '-', ','].includes(e.key) ||
@@ -1405,6 +1404,8 @@ const AddPurchaseBill = () => {
                                   e.preventDefault();
                                 }
                               }}
+                              onChange={handlePTR}
+                            
                             />
                           </td>
                           <td>
@@ -1424,7 +1425,13 @@ const AddPurchaseBill = () => {
                                   e.preventDefault();
                                 }
                               }}
-                              onChange={handleSchAmt}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (Number(value) > 100) {
+                                  e.target.value = 100; 
+                                }
+                                handleSchAmt(e); 
+                              }}
 
                             />
                           </td>
@@ -1599,9 +1606,7 @@ const AddPurchaseBill = () => {
                     )}
                   </tbody>
                 </table>
-              </div>
-            </div>
-            <div className="flex gap-10 justify-end mt-4">
+                <div className="flex gap-10 justify-end mt-4 ">
               <div
                 style={{
                   display: "flex",
@@ -1727,6 +1732,10 @@ const AddPurchaseBill = () => {
                 </div>
               </div>
             </div>
+              </div>
+              
+            </div>
+            
           </div>
         </div>
         {/* CN amount PopUp Box */}

@@ -1,7 +1,7 @@
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select,InputAdornment, Input, colors } from '@mui/material';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select, InputAdornment, Input, colors } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Button, TextField } from "@mui/material";
@@ -67,7 +67,7 @@ const EditReturnBill = () => {
     const [distributor, setDistributor] = useState(null);
     const [remark, setRemark] = useState()
     const [expiryDate, setExpiryDate] = useState('');
-const [intialQty, setIntialQty] = useState(0)
+    const [intialQty, setIntialQty] = useState(0)
     const [qty, setQty] = useState(0)
     const [tempQty, setTempQty] = useState(0)
     const [free, setFree] = useState('')
@@ -146,8 +146,8 @@ const [intialQty, setIntialQty] = useState(0)
         setIsOpenBox(false);
         setPendingNavigation(null);
     };
-    
-    
+
+
 
     const handleLeavePage = async () => {
         let data = new FormData();
@@ -156,42 +156,42 @@ const [intialQty, setIntialQty] = useState(0)
         data.append("distributor_id", localStorage.getItem("DistributorId"));
         data.append("type", "1");
         try {
-        //   const params = {
-        //     start_date: localStorage.getItem('StartFilterDate'),
-        //     end_date: localStorage.getItem('EndFilterDate'),
-        //     distributor_id: localStorage.getItem('DistributorId'),
-        //     type: "1"
-        //   };
-    
-          const response = await axios.post("purches-return-iteam-histroy",data,
-            {
-            //   params: params,
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          if (response.status === 200) {
-            setUnsavedItems(false);
-            setIsOpenBox(false);
-    
-            setTimeout(() => {
-                if(nextPath){
-                    history.push(nextPath);
+            //   const params = {
+            //     start_date: localStorage.getItem('StartFilterDate'),
+            //     end_date: localStorage.getItem('EndFilterDate'),
+            //     distributor_id: localStorage.getItem('DistributorId'),
+            //     type: "1"
+            //   };
 
+            const response = await axios.post("purches-return-iteam-histroy", data,
+                {
+                    //   params: params,
+                    headers: { Authorization: `Bearer ${token}` },
                 }
-            }, 0);
-          }
-          setIsOpenBox(false);
-          setUnsavedItems(false);
-        //   history.replace(nextPath);
-        } catch (error) {
-          console.error("Error deleting items:", error);
-        }
-      };
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
 
-      const handleNavigation = (path) => {
+                setTimeout(() => {
+                    if (nextPath) {
+                        history.push(nextPath);
+
+                    }
+                }, 0);
+            }
+            setIsOpenBox(false);
+            setUnsavedItems(false);
+            //   history.replace(nextPath);
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }
+    };
+
+    const handleNavigation = (path) => {
         setIsOpenBox(true);
         setNextPath(path);
-      };
+    };
     const handleLogout = async () => {
         await restoreData();
 
@@ -259,7 +259,7 @@ const [intialQty, setIntialQty] = useState(0)
         }
 
 
-    }, [otherAmount, totalAmount, roundOff, netAmount,finalAmount]);
+    }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
 
     useEffect(() => {
         if (selectedEditItem) {
@@ -375,16 +375,16 @@ const [intialQty, setIntialQty] = useState(0)
                 ////console.log("API Error:", error);
             });
     }
-    const handleInputChange = async(e) => {
+    const handleInputChange = async (e) => {
         const value = e.target.value;
-        setSearchQuery(value); 
+        setSearchQuery(value);
         const distributors = await listDistributor();
         await returnBillEditID(distributors);
         returnBillEditID(distributors, value);
     };
-    const returnBillEditID = async (distributors,value) => {
+    const returnBillEditID = async (distributors, value) => {
         let data = new FormData();
-        data.append("id", id==null?id:id);
+        data.append("id", id == null ? id : id);
         data.append("search", value ? value : "");
 
         const params = {
@@ -447,6 +447,23 @@ const [intialQty, setIntialQty] = useState(0)
         }
     }
 
+    const handleSchAmt = (e) => {
+        // Get the input value as a string
+        const inputString = e.target.value;
+        // Remove invalid characters from the string
+        const sanitizedInput = inputString.replace(/[eE]/g, '');
+        // Convert the sanitized string to a float
+        const inputDiscount = parseFloat(sanitizedInput) || 0;
+        setDisc(inputDiscount);
+        // Calculate total scheme amount
+        const totalSchAmt = parseFloat((((ptr * inputDiscount) / 100) * qty).toFixed(2));
+        setSchAmt(totalSchAmt);
+        // Calculate total base
+        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
+        // setBase(totalBase); // Uncomment if needed
+    };
+
+
     const removeItem = () => {
         setUnit('')
         setBatch('')
@@ -479,7 +496,7 @@ const [intialQty, setIntialQty] = useState(0)
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
         setQty(item.qty)
-     
+
     };
     const handleQty = (value) => {
 
@@ -509,7 +526,7 @@ const [intialQty, setIntialQty] = useState(0)
         //     toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         // }
     };
-    
+
     const EditReturnItem = async () => {
         setUnsavedItems(true)
 
@@ -544,20 +561,20 @@ const [intialQty, setIntialQty] = useState(0)
 
     const handleEditItem = async () => {
         let data = new FormData();
-        data.append('purches_return_id', selectedEditItemId==null?"0":selectedEditItemId)
-        data.append('iteam_id', itemPurchaseId==null?"0":itemPurchaseId)
-        data.append("batch", batch==null?"0":batch)
-        data.append("exp_dt", expiryDate==null?"0":expiryDate)
-        data.append("mrp", mrp==null?"0":mrp)
-        data.append("ptr", ptr==null?"0":ptr)
-        data.append("fr_qty", free==null?"0":free)
-        data.append("qty", qty==null?"0":qty)
-        data.append("disocunt", disc==null?"0":disc)
-        data.append('gst', gst.id==null?"0":gst.id)
-        data.append('location', loc==null?loc:"0")
-        data.append('amount', ItemTotalAmount==null?"0":ItemTotalAmount)
-        data.append("weightage", unit==null?"0":unit)
-        data.append("unit", unit==null?"0":unit)
+        data.append('purches_return_id', selectedEditItemId == null ? "0" : selectedEditItemId)
+        data.append('iteam_id', itemPurchaseId == null ? "0" : itemPurchaseId)
+        data.append("batch", batch == null ? "0" : batch)
+        data.append("exp_dt", expiryDate == null ? "0" : expiryDate)
+        data.append("mrp", mrp == null ? "0" : mrp)
+        data.append("ptr", ptr == null ? "0" : ptr)
+        data.append("fr_qty", free == null ? "0" : free)
+        data.append("qty", qty == null ? "0" : qty)
+        data.append("disocunt", disc == null ? "0" : disc)
+        data.append('gst', gst.id == null ? "0" : gst.id)
+        data.append('location', loc == null ? loc : "0")
+        data.append('amount', ItemTotalAmount == null ? "0" : ItemTotalAmount)
+        data.append("weightage", unit == null ? "0" : unit)
+        data.append("unit", unit == null ? "0" : unit)
         const params = {
             purches_return_id: selectedEditItemId
         };
@@ -626,21 +643,21 @@ const [intialQty, setIntialQty] = useState(0)
     const updatePurchaseRecord = async () => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
-        data.append("bill_no", billNo==null?"0":billNo);
-        data.append("bill_date", selectedDate==null?"0":selectedDate)
-        data.append('remark', remark==null?"0":remark)
+        data.append("bill_no", billNo == null ? "0" : billNo);
+        data.append("bill_date", selectedDate == null ? "0" : selectedDate)
+        data.append('remark', remark == null ? "0" : remark)
         data.append("discount", 0);
         // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
         // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
         data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
         data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
         //    data.append('final_amount', tableData?.net_amount)
-        data.append('other_amount', otherAmount==null?"0":otherAmount)
-        data.append('net_amount', netAmount==null?"0":netAmount)
-        data.append('total_amount', totalAmount==null?"0":totalAmount)
+        data.append('other_amount', otherAmount == null ? "0" : otherAmount)
+        data.append('net_amount', netAmount == null ? "0" : netAmount)
+        data.append('total_amount', totalAmount == null ? "0" : totalAmount)
         data.append("purches_return", JSON.stringify(tableData?.item_list));
-        data.append('id', id==null?"0":id)
-        data.append('round_off', roundOff==null?"0":roundOff)
+        data.append('id', id == null ? "0" : id)
+        data.append('round_off', roundOff == null ? "0" : roundOff)
 
         const params = {
             id: id,
@@ -753,7 +770,7 @@ const [intialQty, setIntialQty] = useState(0)
                 <Loader />
             </div> :
 
-                <div style={{  height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
+                <div style={{ height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
                     <ToastContainer />
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
@@ -811,19 +828,19 @@ const [intialQty, setIntialQty] = useState(0)
                                 </div>
                                 <div className="detail">
                                     <span className="heading mb-2 ">Bill Date</span>
-                                    <DatePicker 
+                                    <DatePicker
                                         className='custom-datepicker '
                                         selected={selectedDate}
                                         onChange={(newDate) => setSelectedDate(newDate)}
                                         dateFormat="dd/MM/yyyy"
                                         disabled
-                                        sx={colors="#BDBDBD"}
+                                        sx={colors = "#BDBDBD"}
                                         style={{
                                             color: '#BDBDBD',
                                             backgroundColor: '#F0F0F0',
                                             border: '1px solid #BDBDBD',
                                             cursor: 'not-allowed',
-                                          }}
+                                        }}
                                     />
                                 </div>
                                 <div className="detail">
@@ -952,15 +969,17 @@ const [intialQty, setIntialQty] = useState(0)
                                                         value={unit}
                                                         sx={{ width: '80px' }}
                                                         onChange={(e) => {
-                                                            const value = e.target.value.replace(/[eE]/g, '');
-                            
-                                                            setUnit(Number(value));
-                                                          }}
-                                                          onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setUnit(value ? Number(value) : "");
+                                                        }}
+                                                        onKeyDown={(e) => {
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -977,7 +996,7 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // onChange={handleExpiryDateChange}
                                                         placeholder="MM/YY"
                                                     />
-                                               
+
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -1006,7 +1025,20 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // onKeyDown={handleKeyDown}
                                                         value={mrp}
 
-                                                        onChange={(e) => { setMRP(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                                setMRP(value ? Number(value) : "");
+                                                            }
+                                                        }}
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1019,14 +1051,22 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
-                                                        onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
-                                                            }
-                                                          }}
-                                                          onChange={(e) => { handleQty(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            handleQty(value ? Number(value) : "");
+                                                        }}
 
-                                                        // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
+                                                        onKeyDown={(e) => {
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+
+
+                                                    // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
                                                     />
 
                                                 </td>
@@ -1040,12 +1080,18 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // inputRef={inputRef6}
                                                         // error={!!errors.free}
                                                         // onKeyDown={handleKeyDown}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setFree(value ? Number(value) : "");
+                                                        }}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
-                                                        onChange={(e) => { setFree(e.target.value) }}
+                                                        }}
                                                     />
 
                                                 </td>
@@ -1060,10 +1106,13 @@ const [intialQty, setIntialQty] = useState(0)
                                                         value={ptr}
                                                         error={!!errors.ptr}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
+                                                        }}
                                                         onChange={(e) => setPTR(e.target.value)}
                                                     />
                                                 </td>
@@ -1076,13 +1125,23 @@ const [intialQty, setIntialQty] = useState(0)
                                                         // inputRef={inputRef8}
                                                         // onKeyDown={handleKeyDown}
                                                         value={disc}
+                                                        error={!!errors.disc}
+
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
                                                               e.preventDefault();
                                                             }
                                                           }}
-                                                        error={!!errors.disc}
-                                                    // onChange={handleSchAmt} 
+                                                          onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (Number(value) > 100) {
+                                                              e.target.value = 100; 
+                                                            }
+                                                            handleSchAmt(e); 
+                                                          }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1122,7 +1181,7 @@ const [intialQty, setIntialQty] = useState(0)
                                                 <td className="total"><span>{ItemTotalAmount}</span></td>
                                             </tr>
                                             <tr >
-                                            <td>
+                                                <td>
                                                     <TextField
                                                         id="outlined-basic"
                                                         size="small"
@@ -1192,16 +1251,10 @@ const [intialQty, setIntialQty] = useState(0)
                                                 </tr>
                                             ))}
 
-                                            
+
                                         </tbody>
                                     </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-                    </div >
-                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                             <div>
                                 <label className="font-bold">Total GST : </label>
@@ -1285,6 +1338,13 @@ const [intialQty, setIntialQty] = useState(0)
                             </div>
                         </div>
                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div >
+                   
                     {/* Delete PopUP */}
                     <div id="modal" value={IsDelete}
                         className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
@@ -1322,45 +1382,45 @@ const [intialQty, setIntialQty] = useState(0)
                     </div>
                     {/* popup for history api call */}
                     <Prompt
-          when={unsavedItems}
-          message={(location) => {
-            handleNavigation(location.pathname);
-            return false;
-          }}
-        />
-        <div
-          id="modal"
-          value={isOpenBox}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-        >
-          <div />
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <div className="my-4 logout-icon">
-              <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-              <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
-              <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                onClick={handleLeavePage}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                onClick={LogoutClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-                
-              
-                  
+                        when={unsavedItems}
+                        message={(location) => {
+                            handleNavigation(location.pathname);
+                            return false;
+                        }}
+                    />
+                    <div
+                        id="modal"
+                        value={isOpenBox}
+                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+                    >
+                        <div />
+                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                            <div className="my-4 logout-icon">
+                                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+                                    <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
+                            </div>
+                            <div className="flex gap-5 justify-center">
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                                    onClick={handleLeavePage}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                                    onClick={LogoutClose}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div >
             }
         </>

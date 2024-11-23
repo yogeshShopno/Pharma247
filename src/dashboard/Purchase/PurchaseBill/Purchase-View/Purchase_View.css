@@ -157,7 +157,7 @@
 .custom-table th,
 .custom-table td {
     padding: 8px;
-    text-align: center;
+    text-align: start;
     font-size: 15px;
     font-weight: 600;
 }

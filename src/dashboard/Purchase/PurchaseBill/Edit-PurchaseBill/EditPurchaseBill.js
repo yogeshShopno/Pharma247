@@ -503,7 +503,7 @@ useEffect(()=>{
         type: "1"
       };
 
-      const response = await axios.post("purches-return-iteam-histroy", {},
+      const response = await axios.post("purches-histroy", {},
         {
           params: params,
           headers: { Authorization: `Bearer ${token}` },
@@ -1944,9 +1944,7 @@ useEffect(()=>{
                   type="button"
                   className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                   onClick={LogoutClose}
-                >
-                  Cancel
-                </button>
+                >Cancel</button>
               </div>
             </div>
           </div>

@@ -456,7 +456,7 @@ const AddReturnbill = () => {
                 setFinalAmount(response.data.data?.final_amount)
                 setNetAmount(response.data.data?.final_amount)
                 setTotalMargin(Number(response.data.data?.total_margin))
-                setMargin(Number(response.data.data?.total_margin))
+                setMargin(Number(response.data.data?.margin))
                 setTotalNetRate(response.data.data?.total_net_rate)
                 setTotalGST(response.data.data?.total_gst)
                 setTotalQty(response.data.data?.total_qty)
@@ -1299,11 +1299,11 @@ const AddReturnbill = () => {
                             </div>
 
                             <div>
-                                <label className="font-bold">Other Amount: </label>
+                                <label className="font-bold">Other Amount : </label>
                             </div>
 
                             <div>
-                                <label className="font-bold">margin : </label>
+                                <label className="font-bold">Profit : </label>
                             </div>
                             <div>
                                 <label className="font-bold">Round Off : </label>

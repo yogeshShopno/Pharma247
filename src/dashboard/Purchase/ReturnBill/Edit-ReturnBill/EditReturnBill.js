@@ -1263,7 +1263,7 @@ const EditReturnBill = () => {
                                 <label className="font-bold">Total Qty : </label>
                             </div>
                             <div>
-                                <label className="font-bold">total Net Rate: </label>
+                                <label className="font-bold">total Net Rate : </label>
                             </div>
                         </div>
                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
@@ -1285,7 +1285,7 @@ const EditReturnBill = () => {
                             </div>
 
                             <div>
-                                <label className="font-bold">margin : </label>
+                                <label className="font-bold">Profit : </label>
                             </div>
                             <div>
                                 <label className="font-bold">Round Off : </label>

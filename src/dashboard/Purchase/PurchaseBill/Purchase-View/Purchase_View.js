@@ -248,12 +248,12 @@ const PurchaseView = () => {
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                     <label className="font-bold">Total GST : </label>
                                     <label className="font-bold">Total Qty : </label>
-                                    <label className="font-bold">Total Margin : </label>
+                                    <label className="font-bold">Total Net Rate : </label>
                                 </div>
                                 <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                     <span style={{ fontWeight: 600 }}>{data?.total_gst?data?.total_gst:0} </span>
                                     <span style={{ fontWeight: 600 }}> {data?.total_qty?data?.total_qty:0} </span>
-                                    <span style={{ fontWeight: 600 }}>₹{data?.total_net_rate} ({data?.total_margin}%)</span>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_net_rate}</span>
                                 </div>
 
 
@@ -263,7 +263,7 @@ const PurchaseView = () => {
                                     <label className="font-bold">Total Amount : </label>
                                     <label className="font-bold">CN Amount : </label>
                                     <label className="font-bold">Round Off : </label>
-                                    {/* <label className="font-bold">Discount Amount : </label> */}
+                                    <label className="font-bold">Profit : </label>
                                     <label className="font-bold" >Net Amount : </label>
                                 </div>
                                 <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
@@ -278,6 +278,8 @@ const PurchaseView = () => {
                                                     ? `-${Math.abs(roundOffAmount)}`
                                                     : `+${Math.abs(roundOffAmount)}`}
                                     </span>
+                                    <span style={{ fontWeight: 600 }}>₹{data?.margin_net_profit} &nbsp; (₹{data?.total_margin})</span>
+
                                     <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{data?.net_amount?data?.net_amount:0}</span>
                                 </div>
                             </div>

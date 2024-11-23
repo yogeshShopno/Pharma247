@@ -504,10 +504,8 @@ useEffect(()=>{
       };
 
       const response = await axios.post("purches-histroy", {},
-        {
-          params: params,
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        {params: params,
+          headers: { Authorization: `Bearer ${token}` },}
       );
       if (response.status === 200) {
         setUnsavedItems(false);
@@ -537,7 +535,6 @@ useEffect(()=>{
       data.append("unit_id", value?.unit_id);
     }
     data.append("unit_id", unit);
-
     data.append("random_number", randomNumber);
     data.append("unite", !unit?0:unit);
     data.append("batch_number", !batch?0:batch);
@@ -1624,15 +1621,15 @@ useEffect(()=>{
                   {/* First Column */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total GST: </label>
+                      <label className="font-bold">Total GST : </label>
                       <div className="font-bold">{purchase?.total_gst}</div>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Qty:</label>
+                      <label className="font-bold">Total Qty :</label>
                       <div className="font-bold">{purchase?.total_qty}</div>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Net Profit:</label>
+                      <label className="font-bold">Total Net Profit :</label>
                       <div className="font-bold">{purchase?.total_net_rate}</div>
                     </div>
                   </div>
@@ -1641,7 +1638,7 @@ useEffect(()=>{
                   <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
                     {/* Total Amount Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Amount: </label>
+                      <label className="font-bold">Total Amount : </label>
                       <span
                         style={{
                           fontWeight: 800,
@@ -1653,7 +1650,7 @@ useEffect(()=>{
 
                     {/* CN Amount Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" ,}}>
-                      <label className="font-bold">CN Amount: </label>
+                      <label className="font-bold">CN Amount : </label>
                       <span
                         style={{
                           fontWeight: 800,
@@ -1666,7 +1663,7 @@ useEffect(()=>{
 
                     {/* Total Margin Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Margin: </label>
+                      <label className="font-bold">Profit : </label>
                       <span
                         style={{
                           fontWeight: 800,
@@ -1678,7 +1675,7 @@ useEffect(()=>{
 
                     {/* Round Off Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Round off: </label>
+                      <label className="font-bold">Round off : </label>
                       <span
                         style={{
                           fontWeight: 800,
@@ -1690,7 +1687,7 @@ useEffect(()=>{
 
                     {/* Net Amount Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Net Amount: </label>
+                      <label className="font-bold">Net Amount : </label>
                       <span
                         style={{
                           fontWeight: 800,

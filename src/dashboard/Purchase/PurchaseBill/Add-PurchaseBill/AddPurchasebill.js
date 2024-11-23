@@ -1621,11 +1621,11 @@ const AddPurchaseBill = () => {
                 </div>
 
                 <div>
-                  <label className="font-bold">Total Qty: </label>
+                  <label className="font-bold">Total Qty : </label>
                 </div>
 
                 <div>
-                  <label className="font-bold">Total Net Profit: </label>
+                  <label className="font-bold">Total Net Profit : </label>
                 </div>
 
               </div>
@@ -1656,17 +1656,17 @@ const AddPurchaseBill = () => {
                 </div>
 
                 <div>
-                  <label className="font-bold">CN Amount: </label>
+                  <label className="font-bold">CN Amount : </label>
                 </div>
                 <div>
-                  <label className="font-bold">Margin: </label>
+                  <label className="font-bold">Profit : </label>
                 </div>
 
                 <div>
-                  <label className="font-bold">Round off: </label>
+                  <label className="font-bold">Round off : </label>
                 </div>
                 <div>
-                  <label className="font-bold">Net Amount: </label>
+                  <label className="font-bold">Net Amount : </label>
                 </div>
               </div>
               <div className="totals text-end ">

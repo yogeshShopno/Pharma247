@@ -248,12 +248,12 @@ const ReturnView = () => {
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                     <label className="font-bold">Total GST : </label>
                                     <label className="font-bold">Total Qty : </label>
-                                    <label className="font-bold">Total Margin : </label>
+                                    <label className="font-bold">Total Net Rate : </label>
                                 </div>
                                 <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                     <span style={{ fontWeight: 600 }}>{tableData?.total_gst?tableData?.total_gst:0} </span>
                                     <span style={{ fontWeight: 600 }}> {tableData?.total_qty?tableData?.total_qty:0} </span>
-                                    <span style={{ fontWeight: 600 }}>₹{tableData?.total_net_rate} ({tableData?.total_margin}%)</span>
+                                    <span style={{ fontWeight: 600 }}>{tableData?.total_net_rate}</span>
                                 </div>
 
 
@@ -263,6 +263,9 @@ const ReturnView = () => {
                                     <label className="font-bold">Total Amount : </label>
                                     <label className="font-bold">Other Amount : </label>
                                     <label className="font-bold">Round Off : </label>
+                                    <label className="font-bold">Profit : </label>
+
+                                    
                                     <label className="font-bold" >Net Amount : </label>
                                 </div>
                                 <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
@@ -279,6 +282,8 @@ const ReturnView = () => {
                                                     ? `-${Math.abs(roundOff)}`
                                                     : `+${Math.abs(roundOff)}`}
                                     </span>
+                                    <span style={{ fontWeight: 600 }}>₹{tableData?.total_net_rate} ({tableData?.total_margin}%)</span>
+
                                     <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount?tableData?.net_amount:0}</span>
                                 </div>
                             </div>

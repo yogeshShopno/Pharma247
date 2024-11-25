@@ -226,7 +226,7 @@ const AddReturnbill = () => {
                 setTimeout(() => {
                     if(nextPath){
                         history.push(nextPath);
-                                        }
+}
                 }, 0);
             }
             setIsOpenBox(false);

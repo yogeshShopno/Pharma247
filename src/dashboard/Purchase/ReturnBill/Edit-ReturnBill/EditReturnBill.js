@@ -127,6 +127,18 @@ const EditReturnBill = () => {
     //         };
     //     }
     // }, [saveValue, history, isOpenBox]);
+    useEffect(() => {
+
+        const initialize = async () => {
+            try {
+                await handleLeavePage();
+            } catch (error) {
+                console.error("Error during initialization:", error);
+            }
+        };
+
+        initialize();
+    }, []);
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -155,17 +167,10 @@ const EditReturnBill = () => {
         data.append("end_date", localStorage.getItem("EndFilterDate"));
         data.append("distributor_id", localStorage.getItem("DistributorId"));
         data.append("type", "1");
-        try {
-            //   const params = {
-            //     start_date: localStorage.getItem('StartFilterDate'),
-            //     end_date: localStorage.getItem('EndFilterDate'),
-            //     distributor_id: localStorage.getItem('DistributorId'),
-            //     type: "1"
-            //   };
 
+        try {
             const response = await axios.post("purches-return-iteam-histroy", data,
                 {
-                    //   params: params,
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
@@ -176,13 +181,11 @@ const EditReturnBill = () => {
                 setTimeout(() => {
                     if (nextPath) {
                         history.push(nextPath);
-
                     }
                 }, 0);
             }
             setIsOpenBox(false);
             setUnsavedItems(false);
-            //   history.replace(nextPath);
         } catch (error) {
             console.error("Error deleting items:", error);
         }
@@ -205,27 +208,42 @@ const EditReturnBill = () => {
         window.location.reload();
     };
 
+    // useEffect(() => {
+    //     const initializeData = async () => {
+    //         setIsLoading(true);
+    //         const distributors = await listDistributor();
+    //         await returnBillEditID(distributors);
+    //         setIsLoading(false);
+    //         ////console.log(distributors, "1234");
+
+    //     };
+    //     batchListAPI();
+    //     initializeData();
+    //     if (isDeleteAll == true) {
+    //         // restoreData();
+    //     }
+    //     listOfGst();
+    //     BankList();
+    // }, [])
     useEffect(() => {
         const initializeData = async () => {
             setIsLoading(true);
             const distributors = await listDistributor();
             await returnBillEditID(distributors);
             setIsLoading(false);
-            ////console.log(distributors, "1234");
-
         };
-        batchListAPI();
+
         initializeData();
-        if (isDeleteAll == true) {
+        batchListAPI();
+        if (isDeleteAll) {
             // restoreData();
         }
         listOfGst();
         BankList();
-    }, [])
+    }, [id, isDeleteAll]); // Add only necessary dependencies
 
-    useEffect(() => {
-        restoreData()
-    }, [])
+
+
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -319,16 +337,16 @@ const EditReturnBill = () => {
     }
 
     const restoreData = () => {
+        handleLeavePage()
         let data = new FormData();
-        const params = {
-            start_date: localStorage.getItem('StartFilterDate'),
-            end_date: localStorage.getItem('EndFilterDate'),
-            distributor_id: localStorage.getItem('DistributorId'),
-            type: "1"
-        };
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+
         try {
             const response = axios.post("purches-return-iteam-histroy?", data, {
-                params: params,
+                // params: params,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -344,6 +362,7 @@ const EditReturnBill = () => {
             console.error("API error:", error);
         }
     }
+
 
     const BankList = async () => {
         let data = new FormData()
@@ -379,73 +398,113 @@ const EditReturnBill = () => {
         const value = e.target.value;
         setSearchQuery(value);
         const distributors = await listDistributor();
-        await returnBillEditID(distributors);
-        returnBillEditID(distributors, value);
+        await returnBillEditID(distributors, value);
     };
-    const returnBillEditID = async (distributors, value) => {
-        let data = new FormData();
-        data.append("id", id == null ? id : id);
-        data.append("search", value ? value : "");
+    let isFetching = false;
 
-        const params = {
-            purches_return_id: id,
-        };
+    const returnBillEditID = async (distributors, value) => {
+        if (isFetching) return; // Prevent multiple calls
+        isFetching = true;
+
         try {
-            await axios.post("purches-return-edit-data?", data, {
-                params: params,
+            let data = new FormData();
+            data.append("purches_return_id", id == null ? id : id);
+            data.append("search", value ? value : "");
+
+            const response = await axios.post("purches-return-edit-data?", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            });
+
+            const responseData = response.data.data;
+
+            setTableData(responseData);
+            setSelectedDate(responseData?.bill_date);
+            setFinalAmount(responseData?.final_amount);
+            setTotalAmount(responseData?.total_amount);
+            setNetAmount(parseFloat(responseData?.total_amount) + parseFloat(responseData?.other_amount || 0));
+            setTotalGST(responseData?.total_gst);
+            setTotalQty(responseData?.total_qty);
+            setTotalNetRate(responseData?.total_net_rate);
+            setTotalMargin(responseData?.total_margin);
+            setMargin(responseData?.total_margin);
+            setStartDate(responseData?.start_date);
+            setEndDate(responseData?.end_date);
+
+            const foundDistributor = distributors?.find(option => option.id == responseData.distributor_id);
+
+            if (foundDistributor) {
+                setDistributor(foundDistributor);
             }
-            ).then((response) => {
-                const data = response.data.data;
-                setTableData(data);
-                setSelectedDate(data?.bill_date)
-                setFinalAmount(response.data.data?.final_amount)
-                setTotalAmount(response.data.data?.total_amount)
-                otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
-                setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
-                setTotalGST(response.data.data?.total_gst)
-                setTotalQty(response.data.data?.total_qty)
-                setTotalNetRate(response.data.data?.total_net_rate)
-                setTotalMargin(response.data.data?.total_margin)
-                setMargin(response.data.data?.total_margin)
 
-
-
-
-
-                //console.log(data, "data")
-                setStartDate(response.data.data?.start_date);
-                setEndDate(response.data.data?.end_date)
-
-                if (!distributors || !Array.isArray(distributors)) {
-                    console.error("Distributors is not an array or undefined");
-                    return;
-                }
-                const foundDistributor = distributors.find(option => option.id == data.distributor_id);
-
-                // const foundDistributor = distributors.find(option => {
-                //     return option.id == data.distributor_id;
-                // });
-
-                ////console.log(foundDistributor, "mh");
-                setBillNo(data.bill_no || '');
-                // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
-                // const formattedDate = format(parsedDate, 'MM-yyyy');
-
-                setRemark(data?.remark)
-                ////console.log(tableData, 'tableData')
-
-                if (foundDistributor) {
-                    setDistributor(foundDistributor);
-                }
-            })
+            setBillNo(responseData.bill_no || '');
+            setRemark(responseData?.remark);
         } catch (error) {
             console.error("API error:", error);
-            setIsLoading(false);
+        } finally {
+            isFetching = false;
         }
-    }
+    };
+
+    // const returnBillEditID = async (distributors, value) => {
+    //     let data = new FormData();
+    //     data.append("purches_return_id", id == null ? id : id);
+    //     data.append("search", value ? value : "");
+
+    //     const params = {
+    //         purches_return_id: id,
+    //     };
+    //     try {
+    //         await axios.post("purches-return-edit-data?", data, {
+    //             // params: params,
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         }
+    //         ).then((response) => {
+    //             const data = response.data.data;
+    //             setTableData(data);
+    //             setSelectedDate(data?.bill_date)
+    //             setFinalAmount(response.data.data?.final_amount)
+    //             setTotalAmount(response.data.data?.total_amount)
+    //             otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
+    //             setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
+    //             setTotalGST(response.data.data?.total_gst)
+    //             setTotalQty(response.data.data?.total_qty)
+    //             setTotalNetRate(response.data.data?.total_net_rate)
+    //             setTotalMargin(response.data.data?.total_margin)
+    //             setMargin(response.data.data?.total_margin)
+    //             setStartDate(response.data.data?.start_date);
+    //             setEndDate(response.data.data?.end_date)
+
+    //             if (!distributors || !Array.isArray(distributors)) {
+    //                 console.error("Distributors is not an array or undefined");
+    //                 return;
+    //             }
+    //             const foundDistributor = distributors.find(option => option.id == data.distributor_id);
+
+    //             // const foundDistributor = distributors.find(option => {
+    //             //     return option.id == data.distributor_id;
+    //             // });
+
+    //             ////console.log(foundDistributor, "mh");
+    //             setBillNo(data.bill_no || '');
+    //             // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
+    //             // const formattedDate = format(parsedDate, 'MM-yyyy');
+
+    //             setRemark(data?.remark)
+    //             ////console.log(tableData, 'tableData')
+
+    //             if (foundDistributor) {
+    //                 setDistributor(foundDistributor);
+    //             }
+    //         })
+    //     } catch (error) {
+    //         console.error("API error:", error);
+    //         setIsLoading(false);
+    //     }
+    // }
 
     const handleSchAmt = (e) => {
         // Get the input value as a string
@@ -513,6 +572,21 @@ const EditReturnBill = () => {
         }
 
     }
+    const handlePTR = (value) => {
+
+        const newPTR = Number(value);
+
+        if (newPTR > mrp) {
+            setPTR(mrp);
+            toast.error(`PTR should not greater than MRP: ${mrp}`);
+        } else if (mrp < 0) {
+            setPTR(mrp);
+            toast.error(`PTR should not less than MRP: 0`);
+        } else {
+            setPTR(newPTR)
+        }
+
+    }
     const handleQtyChange = (e) => {
         const inputQty = Number(e.target.value);
         setQty(inputQty);
@@ -544,7 +618,9 @@ const EditReturnBill = () => {
         // }
         if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
+      
         if (!disc) newErrors.disc = 'Discount is required';
+
         if (!gst.name) newErrors.gst = 'GST is required';
         // if (!loc) newErrors.loc = 'Location is required';
 
@@ -1113,7 +1189,12 @@ const EditReturnBill = () => {
                                                                 e.preventDefault();
                                                             }
                                                         }}
-                                                        onChange={(e) => setPTR(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                                handlePTR(value ? Number(value) : "");
+                                                            }
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1129,19 +1210,19 @@ const EditReturnBill = () => {
 
                                                         onKeyDown={(e) => {
                                                             if (
-                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
-                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
                                                             ) {
-                                                              e.preventDefault();
+                                                                e.preventDefault();
                                                             }
-                                                          }}
-                                                          onChange={(e) => {
+                                                        }}
+                                                        onChange={(e) => {
                                                             const value = e.target.value;
                                                             if (Number(value) > 100) {
-                                                              e.target.value = 100; 
+                                                                e.target.value = 100;
                                                             }
-                                                            handleSchAmt(e); 
-                                                          }}
+                                                            handleSchAmt(e);
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1220,21 +1301,16 @@ const EditReturnBill = () => {
 
 
 
-                                            {tableData?.item_list?.map(item => (
+                                            {tableData?.item_list?.map((item) => (
                                                 <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
-                                                    <td style={{
-                                                        display: 'flex', gap: '8px', alignItems: 'center'
-                                                    }}>
+                                                    <td>
                                                         <Checkbox
                                                             checked={item.iss_check}
-                                                            onClick={(event) => {
-                                                                event.stopPropagation();
-                                                                setUnsavedItems(true)
-                                                            }}
-                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}  // Only pass item.id and checked value
+                                                            onClick={(event) => event.stopPropagation()}
+                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                         />
                                                         <BorderColorIcon color="primary" onClick={() => handleEditClick(item)} />
-                                                        <DeleteIcon className='delete-icon' onClick={() => deleteOpen(item.id)} />{item.item_name}
+                                                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         {item.item_name}
                                                     </td>
                                                     <td>{item.weightage}</td>
@@ -1245,61 +1321,62 @@ const EditReturnBill = () => {
                                                     <td>{item.fr_qty}</td>
                                                     <td>{item.ptr}</td>
                                                     <td>{item.disocunt}</td>
-                                                    <td>{item.gst_name}</td>
+                                                     <td>{item.gst_name}</td>
                                                     <td>{item.location}</td>
                                                     <td>{item.amount}</td>
                                                 </tr>
                                             ))}
 
 
+
                                         </tbody>
                                     </table>
                                     <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
-                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                            <div>
-                                <label className="font-bold">Total GST : </label>
-                            </div>
-                            <div>
-                                <label className="font-bold">Total Qty : </label>
-                            </div>
-                            <div>
-                                <label className="font-bold">total Net Rate : </label>
-                            </div>
-                        </div>
-                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <div>
+                                                <label className="font-bold">Total GST : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">Total Qty : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">total Net Rate : </label>
+                                            </div>
+                                        </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
 
-                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
-                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
-                                <span style={{ fontWeight: 600 }}>{totalNetRate}</span>
+                                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
+                                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
+                                                <span style={{ fontWeight: 600 }}>{totalNetRate}</span>
 
-                            </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                            <div>
-                                <label className="font-bold">Total Amount : </label>
-                            </div>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <div>
+                                                <label className="font-bold">Total Amount : </label>
+                                            </div>
 
-                            <div>
-                                <label className="font-bold">Other Amount: </label>
-                            </div>
+                                            <div>
+                                                <label className="font-bold">Other Amount: </label>
+                                            </div>
 
-                            <div>
-                                <label className="font-bold">Profit : </label>
-                            </div>
-                            <div>
-                                <label className="font-bold">Round Off : </label>
-                            </div>
-                            <div>
-                                <label className="font-bold" >Net Amount : </label>
-                            </div>
-                        </div>
-                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
+                                            <div>
+                                                <label className="font-bold">Profit : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">Round Off : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold" >Net Amount : </label>
+                                            </div>
+                                        </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
 
-                            <div>
-                                <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
-                            </div>
-                            {/* <div>
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
+                                            </div>
+                                            {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
@@ -1307,44 +1384,44 @@ const EditReturnBill = () => {
                                             }} />
                                         </div> */}
 
-                            <div>
-                                <Input
-                                    type="number"
-                                    value={otherAmount}
-                                    onChange={handleOtherAmount}
-                                    size="small"
-                                    style={{
-                                        width: "70px",
-                                        background: "none",
-                                        borderBottom: "1px solid gray",
-                                        justifyItems: "end",
-                                        outline: "none",
-                                    }} sx={{
-                                        '& .MuiInputBase-root': {
-                                            height: '35px',
-                                        },
-                                        "& .MuiInputBase-input": { textAlign: "end" }
+                                            <div>
+                                                <Input
+                                                    type="number"
+                                                    value={otherAmount}
+                                                    onChange={handleOtherAmount}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        justifyItems: "end",
+                                                        outline: "none",
+                                                    }} sx={{
+                                                        '& .MuiInputBase-root': {
+                                                            height: '35px',
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" }
 
-                                    }} />
-                            </div>
-                            <div className='mt-2'>
-                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
-                            </div>
-                            <div className='mt-1'>
-                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
-                            </div>
-                            <div>
-                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
-                            </div>
-                        </div>
-                    </div>
+                                                    }} />
+                                            </div>
+                                            <div className='mt-2'>
+                                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
+                                            </div>
+                                            <div className='mt-1'>
+                                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
 
                     </div >
-                   
+
                     {/* Delete PopUP */}
                     <div id="modal" value={IsDelete}
                         className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"

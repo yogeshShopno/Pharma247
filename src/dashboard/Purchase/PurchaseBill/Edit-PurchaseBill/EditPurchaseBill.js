@@ -109,6 +109,18 @@ const EditPurchaseBill = () => {
   // const {  } = useParams();
   const [purchase, setPurchase] = useState([]);
   useEffect(() => {
+    
+    const initialize = async () => {
+      try {
+        await handleLeavePage();
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    initialize(); 
+  }, []);
+  useEffect(() => {
     const total = Object.values(cnTotalAmount)
       .map(amount => parseFloat(amount) || 0)
       .reduce((acc, amount) => acc + amount, 0);
@@ -494,34 +506,43 @@ useEffect(()=>{
     setIsOpenBox(false);
     // setPendingNavigation(null);
   };
+
+
+  
   const handleLeavePage = async () => {
-    try {
-      const params = {
-        start_date: localStorage.getItem('StartFilterDate'),
-        end_date: localStorage.getItem('EndFilterDate'),
-        distributor_id: localStorage.getItem('DistributorId'),
-        type: "1"
-      };
-
-      const response = await axios.post("purches-histroy", {},
-        {params: params,
-          headers: { Authorization: `Bearer ${token}` },}
-      );
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-      }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
-      history.replace(nextPath);
-    } catch (error) {
+    let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+        try {
+          const response = await axios.post("purches-histroy", data, 
+            {
+            headers: {Authorization: `Bearer ${token}`},
+          });
+    
+          if (response.status === 200) {
+            setUnsavedItems(false);
+            setIsOpenBox(false);
+            setTimeout(() => {
+              if (nextPath) {
+                history.push(nextPath)
+              }
+    
+            }, 0);
+          }
+          setIsOpenBox(false);
+          setUnsavedItems(false);
+    
+          // history.replace(nextPath);
+        }catch (error) {
       console.error("Error deleting items:", error);
     }
   };
+
+
+
+
   const handleEditItem = async () => {
     setUnsavedItems(true);
 

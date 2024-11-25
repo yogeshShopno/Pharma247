@@ -24,7 +24,7 @@ import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
 
 const Salereturn = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
     const inputRef1 = useRef();
     const inputRef2 = useRef();
     const inputRef3 = useRef();
@@ -49,13 +49,13 @@ const Salereturn = () => {
     const [billing, setBilling] = useState('')
     const [doctor, setDoctor] = useState('')
     const [selectedOption, setSelectedOption] = useState(1);
-    const [paymentType, setPaymentType] = useState('');
+    const [paymentType, setPaymentType] = useState('cash');
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
     const [searchItemID, setSearchItemID] = useState(null);
-    const [qty, setQty] = useState(0);
-    const [tempQty, setTempQty] = useState(0)
+    const [qty, setQty] = useState('');
+    const [tempQty, setTempQty] = useState('')
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +71,8 @@ const Salereturn = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalMargin, setTotalMargin] = useState(0)
-    const [totalNetRate, setTotalNetRate] = useState(0)
+    const [totalNetRate, setTotalNetRate] = useState(0);
+    const [marginNetProfit, setMarginNetProfit] = useState(0);
     const [itemAmount, setItemAmount] = useState(null);
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
@@ -293,8 +294,8 @@ const Salereturn = () => {
     };
 
     const handleChecked = async (itemId, checked) => {
-        let data = new FormData();
         setUnsavedItems(true);
+        let data = new FormData();
         data.append("id", itemId ? itemId : '');
         data.append("type", 0);
 
@@ -363,6 +364,7 @@ const Salereturn = () => {
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalMargin(response.data.data.total_margin)
                 setTotalNetRate(response.data.data.total_net_rate)
+                setMarginNetProfit(response.data.data.margin_net_profit)
                 setIsLoading(false);
             })
         } catch (error) {
@@ -392,7 +394,6 @@ const Salereturn = () => {
             data.append('gst', gst ? gst : '')
             data.append("mrp", mrp ? mrp : '')
             data.append("unit", unit);
-            data.append("random_number", randomNumber ? randomNumber : '');
             data.append("unit", unit ? unit : '')
             data.append("batch", batch ? batch : '')
             data.append('location', loc ? loc : '')
@@ -401,7 +402,7 @@ const Salereturn = () => {
             data.append('net_rate', itemAmount ? itemAmount : '')
             // data.append("order", order)
             const params = {
-                id: selectedEditItemId
+                id: selectedEditItemId || ''
             };
             try {
                 await axios.post("sales-return-edit-iteam?", data, {
@@ -475,12 +476,12 @@ const Salereturn = () => {
         // console.log('totalNetRate :>> ', totalNetRate);
 
         const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
-        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
+        // console.log('hasUncheckedItems :>> ', hasUncheckedItems);
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
 
         } else {
-            console.log('+++++++++++++');
+            // console.log('+++++++++++++');
             let data = new FormData();
             data.append("bill_no", localStorage.getItem('SaleRetunBillNo') ? localStorage.getItem('SaleRetunBillNo') : '');
             data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
@@ -498,6 +499,8 @@ const Salereturn = () => {
             data.append('net_amount', netAmount ? netAmount : '');
             data.append('margin', totalMargin ? totalMargin : '');
             data.append('net_rate', totalNetRate ? totalNetRate : '');
+            data.append('margin_net_profit', marginNetProfit)
+
             data.append('igst', '0');
             data.append('cgst', '0');
             data.append('sgst', '0');
@@ -527,8 +530,8 @@ const Salereturn = () => {
     }
 
     const handleDoctorOption = (event, newValue) => {
-        setUnsavedItems(true)
         setDoctor(newValue);
+        setUnsavedItems(true)
     };
 
     const deleteOpen = (Id) => {
@@ -572,6 +575,7 @@ const Salereturn = () => {
         setQty(0)
         setOrder('')
         setLoc('');
+        setItemAmount(0);
         if (isNaN(itemAmount)) {
             setItemAmount(0);
         }
@@ -605,29 +609,41 @@ const Salereturn = () => {
         }
     }
 
+    useEffect(() => {
+        const savedState = localStorage.getItem("unsavedItems");
+        if (savedState === "false") {
+            setUnsavedItems(true);
+        }
+
+        return () => {
+            localStorage.setItem("unsavedItems", unsavedItems.toString());
+        };
+    }, [unsavedItems]);
+
     const handleNavigation = (path) => {
         setOpenModal(true);
         setNextPath(path);
     };
 
     const handleLeavePage = async () => {
-        try {
-            const params = {
-                random_number: randomNumber,
-            };
 
-            const response = await axios.post(
-                "sales-return-delete-history",
-                {},
-                {
-                    params: params,
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
+        const randomNumber = Number(localStorage.getItem("RandomNumber"));
+        let data = new FormData();
+        data.append('customer_id', customer.id ? customer.id : '');
+        data.append('start_date', startDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+        data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+
+        try {
+            const response = await axios.post("sales-return-delete-history", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
             if (response.status === 200) {
                 setUnsavedItems(false);
                 setOpenModal(false);
-
+                localStorage.setItem("unsavedItems", unsavedItems.toString());
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
@@ -636,6 +652,7 @@ const Salereturn = () => {
             console.error("Error deleting items:", error);
         }
     };
+
 
     return (
         <>
@@ -737,6 +754,7 @@ const Salereturn = () => {
                                         inputValue={searchQuery}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchQuery(newInputValue);
+                                            // setUnsavedItems(true);
                                         }}
                                         options={customerDetails}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
@@ -799,6 +817,8 @@ const Salereturn = () => {
                                         inputValue={searchDoctor}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchDoctor(newInputValue);
+                                            // setUnsavedItems(true);
+
                                         }}
                                         options={doctorData}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
@@ -859,7 +879,10 @@ const Salereturn = () => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
+                                                    onChange={(newDate) => {
+                                                        setStartDate(newDate);
+                                                        setUnsavedItems(true);
+                                                    }}
                                                     format="DD/MM/YYYY"
                                                     sx={{ width: '200px' }}
                                                 />
@@ -871,7 +894,10 @@ const Salereturn = () => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
+                                                    onChange={(newDate) => {
+                                                        setEndDate(newDate);
+                                                        setUnsavedItems(true);
+                                                    }}
                                                     format="DD/MM/YYYY"
                                                     sx={{ width: '200px' }}
                                                 />
@@ -1054,6 +1080,11 @@ const Salereturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
+                                                            onKeyPress={(e) => {
+                                                                if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
                                                             onChange={(e) => { handleQty(e.target.value) }}
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
@@ -1138,11 +1169,14 @@ const Salereturn = () => {
                                                                             onClick={(event) => {
                                                                                 event.stopPropagation();
                                                                             }}
-                                                                            onChange={(event) => handleChecked(item.id, event.target.unc)}
+                                                                            onChange={(event) => {
+                                                                                handleChecked(item.id, event.target.unc);
+
+                                                                            }}
                                                                         />
                                                                     </td>
                                                                     < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                                                                    <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                                    {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} /> */}
                                                                     {item.iteam_name}
                                                                 </td>
                                                                 <td className="td-bottom"  >{item.unit}</td>
@@ -1180,7 +1214,10 @@ const Salereturn = () => {
                                         </div>
 
                                         <div>
-                                            <label className="font-bold">Total Margin: </label>
+                                            <label className="font-bold">Profit: </label>
+                                        </div>
+                                        <div>
+                                            <label className="font-bold">Total Net Rate : </label>
                                         </div>
                                     </div>
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
@@ -1188,7 +1225,8 @@ const Salereturn = () => {
                                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                             <span style={{ fontWeight: 600 }}>{totalGst}</span>
                                             <span style={{ fontWeight: 600 }}>{totalBase}</span>
-                                            <span style={{ fontWeight: 600 }}>₹({totalNetRate}) {totalMargin}%</span>
+                                            <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)} %) </span>
+                                            <span style={{ fontWeight: 600 }}>₹ {totalNetRate} </span>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
@@ -1311,7 +1349,7 @@ const Salereturn = () => {
                 <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                        <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                        <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
                     </div>
                     <div className="flex gap-5 justify-center">
                         <button

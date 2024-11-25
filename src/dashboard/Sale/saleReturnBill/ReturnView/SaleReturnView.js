@@ -91,7 +91,6 @@ const SaleReturnView = () => {
                 },
             }
             ).then((response) => {
-                console.log('response :>> ', response.data.data);
                 setTableData(response.data.data)
                 setIsLoading(false);
                 //console.log(tableData);
@@ -157,7 +156,7 @@ const SaleReturnView = () => {
                                     <div className="detail">
                                         <span className="heading">Doctor </span>
                                         <span className="data">
-                                            {tableData.doctor_name}
+                                            {tableData.doctor_name || '-'}
                                         </span>
                                     </div>
                                     <div className="detail">
@@ -214,12 +213,14 @@ const SaleReturnView = () => {
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <label className="font-bold">Total GST : </label>
                                         <label className="font-bold">Total Base : </label>
-                                        <label className="font-bold">Margin : </label>
+                                        <label className="font-bold">Profit : </label>
+                                        <label className="font-bold">Total Net Rate : </label>
                                     </div>
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                         <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
                                         <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
-                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate}({tableData?.total_margin} %)   </span>
+                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
+                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
                                     </div>
 
                                     {/* <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>

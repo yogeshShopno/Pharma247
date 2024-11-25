@@ -582,14 +582,15 @@ const Salereturn = () => {
     }
 
     const handleEditClick = (item) => {
-        const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        if (!existingItem) {
-            // If the ID is unique, add the item to uniqueId and set tempQty
-            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-            setTempQty(item.qty);
-        } else {
-            setTempQty(existingItem.qty);
-        }
+        // const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        // if (!existingItem) {
+        //     setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.total_stock}]);
+        //     setTempQty(item.total_stock);
+        // } else {
+        //     setTempQty(existingItem.total_stock);
+        // }
+        setTempQty(item.total_stock);
+
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);

@@ -120,7 +120,7 @@ const PurchaseView = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <div style={{ backgroundColor: 'rgb(233 228 228)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <span style={{ color: "rgba(12, 161, 246, 1)", display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
@@ -239,94 +239,50 @@ const PurchaseView = () => {
                                         </tr>
                                     ))}
 
-                                    <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal">Total GST</td>
-                                        <td className="amounttotal">{data?.total_gst}</td>
-                                        <td className="amounttotal">Total Amount</td>
-                                        <td className="amounttotal">{data?.total_amount}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal">Total Qty</td>
-                                        <td className="amounttotal">{data?.total_qty}</td>
-                                        <td className="amounttotal">CN Amount</td>
-                                        <td className="amounttotal">{
-                                            - (parseFloat(data?.cn_amount) || 0).toFixed(2)}</td>
-                                    </tr>
+                                  
                                    
-                                    <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal">Total Margin</td>
-                                        <td className="amounttotal">₹{data?.total_net_rate} ({data?.total_margin}%)</td>
-                                        <td className="amounttotal">Round Off</td>
-                                        {/* <td className="amounttotal">
-                                            {(parseFloat(roundOffAmount) || 0).toFixed(2)}
-                                        </td> */}
-                                        <td className="amounttotal">
-                                            {/* {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)} */}
-                                            {roundOffAmount === "0.00"
+                                </tbody>
+                               
+                            </table>
+                            <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10" >
+                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <label className="font-bold">Total GST : </label>
+                                    <label className="font-bold">Total Qty : </label>
+                                    <label className="font-bold">Total Net Rate : </label>
+                                </div>
+                                <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_gst?data?.total_gst:0} </span>
+                                    <span style={{ fontWeight: 600 }}> {data?.total_qty?data?.total_qty:0} </span>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_net_rate}</span>
+                                </div>
+
+
+                              
+
+                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                    <label className="font-bold">Total Amount : </label>
+                                    <label className="font-bold">CN Amount : </label>
+                                    <label className="font-bold">Round Off : </label>
+                                    <label className="font-bold">Profit : </label>
+                                    <label className="font-bold" >Net Amount : </label>
+                                </div>
+                                <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_amount?data?.total_amount:0}</span>
+                                    <span style={{ fontWeight: 600, color: "red" }}>{- (parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>
+
+                                 
+                                    <span style={{ fontWeight: 600 }}> 
+                                    {roundOffAmount === "0.00"
                                                 ? roundOffAmount
                                                 : roundOffAmount < 0
                                                     ? `-${Math.abs(roundOffAmount)}`
                                                     : `+${Math.abs(roundOffAmount)}`}
-                                        </td>
+                                    </span>
+                                    <span style={{ fontWeight: 600 }}>₹{data?.margin_net_profit} &nbsp; (₹{data?.total_margin})</span>
 
-                                    </tr>
-                                    <tr>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal"></td>
-                                        <td className="amounttotal">Net Amount</td>
-                                        <td className="amounttotal">{data?.net_amount}</td>
-                                    </tr>
-                                </tbody>
-                               
-                            </table>
+                                    <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{data?.net_amount?data?.net_amount:0}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {/* CN List PopUp Box */}

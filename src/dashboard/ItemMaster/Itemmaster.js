@@ -1265,11 +1265,9 @@ const Itemmaster = () => {
                 color="primary"
                 style={{ margin: "10px", background: "rgb(4,76,157)" }}
                 onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+              >Submit</Button>
               <Button variant="contained" color="error" onClick={resetData}>
-                Cancel{" "}
+                Cancel
               </Button>
             </div>
           </div>

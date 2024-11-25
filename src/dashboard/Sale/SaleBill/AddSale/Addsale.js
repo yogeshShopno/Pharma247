@@ -115,7 +115,6 @@ const Addsale = () => {
     const [nextPath, setNextPath] = useState("");
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
-    const [tempVal, setTempVal] = useState();
 
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -440,13 +439,12 @@ const Addsale = () => {
 
     const handlePassData = (event) => {
         setSearchItem(event.iteam_name)
-        setTempVal(event.iteam_name)
         setBatch(event.batch_number);
         setItem(event.iteam_name);
         setUnit(event.unit);
         setExpiryDate(event.expiry_date);
         setMRP(event.mrp);
-        setMaxQty(event.qty);
+        setMaxQty(event.stock);
         setBase(event.mrp);
         setGst(event.gst);
         setQty(event.qty);
@@ -803,9 +801,9 @@ const Addsale = () => {
     // }, [])
 
     const clearSearch = () => {
-        // setSearchItem('');
+        setSearchItem('');
         // setItemList([]);
-        setValue('');
+        // setValue('');
     };
 
 
@@ -859,7 +857,7 @@ const Addsale = () => {
                 });
             console.log("response", response);
             saleItemList();
-            // clearSearch();
+            clearSearch();
             setUnit('')
             setBatch('')
             setExpiryDate('');
@@ -936,7 +934,6 @@ const Addsale = () => {
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name);
-        setTempVal(item.iteam_name);
 
         console.log('item.iteam_name :>> ', item.iteam_name);
         // setQty(item.qty);
@@ -1456,8 +1453,8 @@ const Addsale = () => {
                                             }}
                                         >
                                             <Autocomplete
-                                                value={searchItem}
-                                                // value={searchItem?.iteam_name}
+                                                // value={searchItem}
+                                                value={searchItem?.iteam_name}
                                                 size="small"
                                                 sx={{ fontSize: "1.5rem" }}
                                                 onChange={handleOptionChange}
@@ -1754,7 +1751,7 @@ const Addsale = () => {
                                                     }}>
                                                         < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
                                                         <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
-                                                        {tempVal}
+                                                        {item.iteam_name}
                                                     </td>
                                                     <td>{item.unit}</td>
                                                     <td>{item.batch}</td>

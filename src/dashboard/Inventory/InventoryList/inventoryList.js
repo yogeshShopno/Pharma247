@@ -170,7 +170,7 @@ const InventoryList = () => {
         : [...prevSelected, itemId]
     );
 
-    console.log("id", selectedItems);
+    // console.log("id", selectedItems);
   };
   let listOfCompany = () => {
     axios
@@ -180,11 +180,11 @@ const InventoryList = () => {
         },
       })
       .then((response) => {
-        console.log("API Response Pharma:===", response);
+        // console.log("API Response Pharma:===", response);
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
 
@@ -227,7 +227,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
   let listDrougGroup = () => {
@@ -242,7 +242,7 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
 
@@ -258,7 +258,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
 
@@ -274,7 +274,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
 
@@ -290,7 +290,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        console.log("API Error:", error);
+        // console.log("API Error:", error);
       });
   };
   const handleCheckboxChange = (event, categoryId) => {
@@ -423,8 +423,8 @@ const InventoryList = () => {
             toast.error("No Record Found");
           }
           setIsLoading(false);
-          console.log(data);
-          console.log(searchItem);
+          // console.log(data);
+          // console.log(searchItem);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -513,7 +513,7 @@ const InventoryList = () => {
   const handleInputChange = (event, newInputValue) => {
     setLocationBulk(newInputValue);
     // handleSearch(newInputValue);
-    console.log(newInputValue + "ayusf");
+    // console.log(newInputValue + "ayusf");
   };
 
   const bulkOrderData = async () => {
@@ -903,7 +903,7 @@ const InventoryList = () => {
                       <FormGroup
                         value={selectedOptionExpiry}
                         onChange={handleExpiryChange}
-                        // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+                      // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
                       >
                         <FormControlLabel
                           control={
@@ -1310,7 +1310,7 @@ const InventoryList = () => {
                 }}
                 onClick={handleFilterData}
               >
-                {" "}
+
                 <img
                   src={csvIcon}
                   className="report-icon absolute mr-10"
@@ -1352,59 +1352,59 @@ const InventoryList = () => {
                         onChange={() => {
                           if (selectedItems.length === data.length) {
                             setSelectedItems([]);
-                            console.log("id", selectedItems);
+                            // console.log("id", selectedItems);
                           } else {
                             setSelectedItems(data.map((item) => item.id));
-                            console.log("id", selectedItems);
+                            // console.log("id", selectedItems);
                           }
                         }}
                         checked={selectedItems.length === data.length}
                       />
                     </th>
                     <th>
-                      Item Name{" "}
+                      Item Name
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("iteam_name")}
                       />
                     </th>
                     <th>
-                      Min{" "}
+                      Min
                       <SwapVertIcon
-                        className="cursor-pointer"
+                        className="cursor-pointer" re
                         onClick={() => sortByColumn("minimum")}
                       />
                     </th>
                     <th>
-                      Max{" "}
+                      Max
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("maximum")}
                       />
                     </th>
                     <th>
-                      Stock{" "}
+                      Stock
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("stock")}
                       />
                     </th>
                     <th>
-                      Loc{" "}
+                      Loc
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("location")}
                       />
                     </th>
                     <th>
-                      Disc{" "}
+                      Disc
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("discount")}
                       />
                     </th>
                     <th>
-                      Barcode No{" "}
+                      Barcode No
                       <SwapVertIcon
                         className="cursor-pointer"
                         onClick={() => sortByColumn("barcode")}
@@ -1588,7 +1588,7 @@ const InventoryList = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        // label="Select Item"
+                      // label="Select Item"
                       />
                     )}
                   />
@@ -1627,7 +1627,7 @@ const InventoryList = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        // label="Select Company"
+                      // label="Select Company"
                       />
                     )}
                   />
@@ -1838,15 +1838,14 @@ const InventoryList = () => {
       {/* Bulk Order */}
       <Dialog open={bulkOrder}>
         <DialogTitle>
-          {" "}
           <WarningAmberRoundedIcon
             sx={{ color: "red", marginBottom: "5px", fontSize: "2.5rem" }}
-          />{" "}
+          />
           Warning
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to Place Order?{" "}
+            Are you sure you want to Place Order?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

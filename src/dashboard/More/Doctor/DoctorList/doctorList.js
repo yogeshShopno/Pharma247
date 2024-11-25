@@ -645,7 +645,7 @@ const DoctorList = () => {
                   }`}
                   disabled={currentPage === 1}
                 >
-                  Previous{" "}
+                  Previous
                 </button>
                 {currentPage > 2 && (
                   <button
@@ -686,7 +686,7 @@ const DoctorList = () => {
                   }`}
                   disabled={filteredList.length === 0}
                 >
-                  Next{" "}
+                  Next
                 </button>
               </div>
             </div>
@@ -893,7 +893,6 @@ const DoctorList = () => {
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <span className="label darkblue_text">
-                              {" "}
                               Licence No.
                             </span>
                             <OutlinedInput

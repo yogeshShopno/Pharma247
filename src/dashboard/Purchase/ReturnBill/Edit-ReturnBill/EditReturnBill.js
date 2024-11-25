@@ -1,7 +1,7 @@
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select, InputAdornment, Input, colors } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Button, TextField } from "@mui/material";
@@ -21,6 +21,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { VscDebugStepBack } from "react-icons/vsc";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -66,7 +67,7 @@ const EditReturnBill = () => {
     const [distributor, setDistributor] = useState(null);
     const [remark, setRemark] = useState()
     const [expiryDate, setExpiryDate] = useState('');
-
+    const [intialQty, setIntialQty] = useState(0)
     const [qty, setQty] = useState(0)
     const [tempQty, setTempQty] = useState(0)
     const [free, setFree] = useState('')
@@ -96,6 +97,14 @@ const EditReturnBill = () => {
     const [ItemTotalAmount, setItemTotalAmount] = useState()
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [totalGST, setTotalGST] = useState(0)
+    const [totalQty, setTotalQty] = useState(0)
+    const [totalNetRate, setTotalNetRate] = useState(0)
+    const [totalMargin, setTotalMargin] = useState(0)
+    const [margin, setMargin] = useState(0)
+    const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
+    const [uniqueId, setUniqueId] = useState([])
 
     const handleClose = () => {
         setIsDelete(false);
@@ -118,6 +127,18 @@ const EditReturnBill = () => {
     //         };
     //     }
     // }, [saveValue, history, isOpenBox]);
+    useEffect(() => {
+
+        const initialize = async () => {
+            try {
+                await handleLeavePage();
+            } catch (error) {
+                console.error("Error during initialization:", error);
+            }
+        };
+
+        initialize();
+    }, []);
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -137,44 +158,43 @@ const EditReturnBill = () => {
         setIsOpenBox(false);
         setPendingNavigation(null);
     };
-    
+
+
 
     const handleLeavePage = async () => {
+        let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+
         try {
-          const params = {
-            start_date: localStorage.getItem('StartFilterDate'),
-            end_date: localStorage.getItem('EndFilterDate'),
-            distributor_id: localStorage.getItem('DistributorId'),
-            type: "1"
-          };
-    
-          const response = await axios.post("purches-return-iteam-histroy", {},
-            {
-              params: params,
-              headers: { Authorization: `Bearer ${token}` },
+            const response = await axios.post("purches-return-iteam-histroy", data,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
+
+                setTimeout(() => {
+                    if (nextPath) {
+                        history.push(nextPath);
+                    }
+                }, 0);
             }
-          );
-          if (response.status === 200) {
-            setUnsavedItems(false);
             setIsOpenBox(false);
-    
-            setTimeout(() => {
-              history.push(nextPath);
-            }, 0);
-          }
-          setIsOpenBox(false);
-          setUnsavedItems(false);
-          history.replace(nextPath);
+            setUnsavedItems(false);
         } catch (error) {
-          console.error("Error deleting items:", error);
+            console.error("Error deleting items:", error);
         }
-      };
+    };
 
-
-      const handleNavigation = (path) => {
+    const handleNavigation = (path) => {
         setIsOpenBox(true);
         setNextPath(path);
-      };
+    };
     const handleLogout = async () => {
         await restoreData();
 
@@ -188,27 +208,42 @@ const EditReturnBill = () => {
         window.location.reload();
     };
 
+    // useEffect(() => {
+    //     const initializeData = async () => {
+    //         setIsLoading(true);
+    //         const distributors = await listDistributor();
+    //         await returnBillEditID(distributors);
+    //         setIsLoading(false);
+    //         ////console.log(distributors, "1234");
+
+    //     };
+    //     batchListAPI();
+    //     initializeData();
+    //     if (isDeleteAll == true) {
+    //         // restoreData();
+    //     }
+    //     listOfGst();
+    //     BankList();
+    // }, [])
     useEffect(() => {
         const initializeData = async () => {
             setIsLoading(true);
             const distributors = await listDistributor();
             await returnBillEditID(distributors);
             setIsLoading(false);
-            ////console.log(distributors, "1234");
-
         };
-        batchListAPI();
+
         initializeData();
-        if (isDeleteAll == true) {
+        batchListAPI();
+        if (isDeleteAll) {
             // restoreData();
         }
         listOfGst();
         BankList();
-    }, [])
+    }, [id, isDeleteAll]); // Add only necessary dependencies
 
-    useEffect(() => {
-        restoreData()
-    }, [])
+
+
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -242,7 +277,7 @@ const EditReturnBill = () => {
         }
 
 
-    }, [otherAmount, totalAmount, roundOff, netAmount,finalAmount]);
+    }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
 
     useEffect(() => {
         if (selectedEditItem) {
@@ -302,16 +337,16 @@ const EditReturnBill = () => {
     }
 
     const restoreData = () => {
+        handleLeavePage()
         let data = new FormData();
-        const params = {
-            start_date: localStorage.getItem('StartFilterDate'),
-            end_date: localStorage.getItem('EndFilterDate'),
-            distributor_id: localStorage.getItem('DistributorId'),
-            type: "1"
-        };
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+
         try {
             const response = axios.post("purches-return-iteam-histroy?", data, {
-                params: params,
+                // params: params,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -327,6 +362,7 @@ const EditReturnBill = () => {
             console.error("API error:", error);
         }
     }
+
 
     const BankList = async () => {
         let data = new FormData()
@@ -358,60 +394,135 @@ const EditReturnBill = () => {
                 ////console.log("API Error:", error);
             });
     }
+    const handleInputChange = async (e) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        const distributors = await listDistributor();
+        await returnBillEditID(distributors, value);
+    };
+    let isFetching = false;
 
-    const returnBillEditID = async (distributors) => {
-        let data = new FormData();
-        data.append("id", id);
-        const params = {
-            purches_return_id: id,
-        };
+    const returnBillEditID = async (distributors, value) => {
+        if (isFetching) return; // Prevent multiple calls
+        isFetching = true;
+
         try {
-            await axios.post("purches-return-edit-data?", data, {
-                params: params,
+            let data = new FormData();
+            data.append("purches_return_id", id == null ? id : id);
+            data.append("search", value ? value : "");
+
+            const response = await axios.post("purches-return-edit-data?", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            });
+
+            const responseData = response.data.data;
+
+            setTableData(responseData);
+            setSelectedDate(responseData?.bill_date);
+            setFinalAmount(responseData?.final_amount);
+            setTotalAmount(responseData?.total_amount);
+            setNetAmount(parseFloat(responseData?.total_amount) + parseFloat(responseData?.other_amount || 0));
+            setTotalGST(responseData?.total_gst);
+            setTotalQty(responseData?.total_qty);
+            setTotalNetRate(responseData?.total_net_rate);
+            setTotalMargin(responseData?.total_margin);
+            setMargin(responseData?.total_margin);
+            setStartDate(responseData?.start_date);
+            setEndDate(responseData?.end_date);
+
+
+            const foundDistributor = distributors?.find(option => option.id == responseData.distributor_id);
+
+            if (foundDistributor) {
+                setDistributor(foundDistributor);
             }
-            ).then((response) => {
-                const data = response.data.data;
-                setTableData(data);
-                setSelectedDate(data?.bill_date)
-                setFinalAmount(response.data.data?.final_amount)
-                setTotalAmount(response.data.data?.total_amount)
-                otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
-                setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
 
-                //console.log(data, "data")
-                setStartDate(response.data.data?.start_date);
-                setEndDate(response.data.data?.end_date)
-
-                if (!distributors || !Array.isArray(distributors)) {
-                    console.error("Distributors is not an array or undefined");
-                    return;
-                }
-                const foundDistributor = distributors.find(option => option.id == data.distributor_id);
-
-                // const foundDistributor = distributors.find(option => {
-                //     return option.id == data.distributor_id;
-                // });
-
-                ////console.log(foundDistributor, "mh");
-                setBillNo(data.bill_no || '');
-                // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
-                // const formattedDate = format(parsedDate, 'MM-yyyy');
-
-                setRemark(data?.remark)
-                ////console.log(tableData, 'tableData')
-
-                if (foundDistributor) {
-                    setDistributor(foundDistributor);
-                }
-            })
+            setBillNo(responseData.bill_no || '');
+            setRemark(responseData?.remark);
         } catch (error) {
             console.error("API error:", error);
-            setIsLoading(false);
+        } finally {
+            isFetching = false;
         }
-    }
+    };
+
+    // const returnBillEditID = async (distributors, value) => {
+    //     let data = new FormData();
+    //     data.append("purches_return_id", id == null ? id : id);
+    //     data.append("search", value ? value : "");
+
+    //     const params = {
+    //         purches_return_id: id,
+    //     };
+    //     try {
+    //         await axios.post("purches-return-edit-data?", data, {
+    //             // params: params,
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         }
+    //         ).then((response) => {
+    //             const data = response.data.data;
+    //             setTableData(data);
+    //             setSelectedDate(data?.bill_date)
+    //             setFinalAmount(response.data.data?.final_amount)
+    //             setTotalAmount(response.data.data?.total_amount)
+    //             otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
+    //             setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
+    //             setTotalGST(response.data.data?.total_gst)
+    //             setTotalQty(response.data.data?.total_qty)
+    //             setTotalNetRate(response.data.data?.total_net_rate)
+    //             setTotalMargin(response.data.data?.total_margin)
+    //             setMargin(response.data.data?.total_margin)
+    //             setStartDate(response.data.data?.start_date);
+    //             setEndDate(response.data.data?.end_date)
+
+    //             if (!distributors || !Array.isArray(distributors)) {
+    //                 console.error("Distributors is not an array or undefined");
+    //                 return;
+    //             }
+    //             const foundDistributor = distributors.find(option => option.id == data.distributor_id);
+
+    //             // const foundDistributor = distributors.find(option => {
+    //             //     return option.id == data.distributor_id;
+    //             // });
+
+    //             ////console.log(foundDistributor, "mh");
+    //             setBillNo(data.bill_no || '');
+    //             // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
+    //             // const formattedDate = format(parsedDate, 'MM-yyyy');
+
+    //             setRemark(data?.remark)
+    //             ////console.log(tableData, 'tableData')
+
+    //             if (foundDistributor) {
+    //                 setDistributor(foundDistributor);
+    //             }
+    //         })
+    //     } catch (error) {
+    //         console.error("API error:", error);
+    //         setIsLoading(false);
+    //     }
+    // }
+
+    const handleSchAmt = (e) => {
+        // Get the input value as a string
+        const inputString = e.target.value;
+        // Remove invalid characters from the string
+        const sanitizedInput = inputString.replace(/[eE]/g, '');
+        // Convert the sanitized string to a float
+        const inputDiscount = parseFloat(sanitizedInput) || 0;
+        setDisc(inputDiscount);
+        // Calculate total scheme amount
+        const totalSchAmt = parseFloat((((ptr * inputDiscount) / 100) * qty).toFixed(2));
+        setSchAmt(totalSchAmt);
+        // Calculate total base
+        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
+        // setBase(totalBase); // Uncomment if needed
+    };
+
 
     const removeItem = () => {
         setUnit('')
@@ -419,7 +530,7 @@ const EditReturnBill = () => {
         setSearchItem('');
         setExpiryDate('');
         setMRP('')
-        setQty('')
+        setQty(0)
         setFree('')
         setPTR('')
         setDisc('')
@@ -429,27 +540,70 @@ const EditReturnBill = () => {
     }
 
     const handleEditClick = (item) => {
+        const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        console.log(existingItem, "existingItem")
+
+        if (!existingItem) {
+            // If the ID is unique, add the item to uniqueId and set tempQty
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+            setTempQty(item.qty);
+        } else {
+            setTempQty(existingItem.qty);
+
+        }
+
         setSelectedEditItem(item);
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
-        setTempQty(Number(item.qty))
+        setQty(item.qty)
+        setInitialTotalStock(item.total_stock);
+console.log(initialTotalStock,"initialTotalStock")
 
-        
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
-            setBatch(selectedEditItem.batch_number);
-            setExpiryDate(selectedEditItem.expiry);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setFree(selectedEditItem.fr_qty);
-            setPTR(selectedEditItem.ptr);
-            setDisc(selectedEditItem.disocunt);
-            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
-            setLoc(selectedEditItem.location);
-            setItemTotalAmount(selectedEditItem.amount)
+    };
+    // const handleQty = (value) => {
+
+    //     const newQty = Number(value);
+
+    //     if (newQty > tempQty) {
+    //         setQty(tempQty);
+    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+    //     } else if (newQty < 0) {
+    //         setQty(tempQty);
+    //         toast.error(`Quantity should not be less than 0`);
+    //     } else {
+    //         setQty(newQty)
+    //     }
+
+    // }
+    const handleQtyChange = (value) => {
+        // const inputQty = Number(e.target.value);
+        // setQty(inputQty);
+
+        const availableStockForEdit = initialTotalStock-free ;
+
+        if (value <= availableStockForEdit && value >= 0) {
+            setQty(value);
+        } else if (value > availableStockForEdit) {
+            setQty(availableStockForEdit);
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
     };
+    const handlePTR = (value) => {
+
+        const newPTR = Number(value);
+
+        if (newPTR > mrp) {
+            setPTR(mrp);
+            toast.error(`PTR should not greater than MRP: ${mrp}`);
+        } else if (mrp < 0) {
+            setPTR(mrp);
+            toast.error(`PTR should not less than MRP: 0`);
+        } else {
+            setPTR(newPTR)
+        }
+
+    }
+   
 
     const EditReturnItem = async () => {
         setUnsavedItems(true)
@@ -460,18 +614,19 @@ const EditReturnBill = () => {
         if (!expiryDate) newErrors.expiryDate = 'Expiry date is required';
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
-        if (Number(tempQty) < Number(qty)) {
-            console.log(tempQty, qty, "")
-            newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
-            toast.error('Quantity should not be greater than purchase quantity ')
-            return
-        }
-
-        if (!free) newErrors.free = 'Free quantity is required';
+        // if (Number(tempQty) < Number(qty)) {
+        //     console.log(tempQty, qty, "")
+        //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
+        //     toast.error('Quantity should not be greater than purchase quantity ')
+        //     return
+        // }
+        // if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
+      
         if (!disc) newErrors.disc = 'Discount is required';
+
         if (!gst.name) newErrors.gst = 'GST is required';
-        if (!loc) newErrors.loc = 'Location is required';
+        // if (!loc) newErrors.loc = 'Location is required';
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -486,20 +641,20 @@ const EditReturnBill = () => {
 
     const handleEditItem = async () => {
         let data = new FormData();
-        data.append('purches_return_id', selectedEditItemId)
-        data.append('iteam_id', itemPurchaseId)
-        data.append("batch", batch)
-        data.append("exp_dt", expiryDate)
-        data.append("mrp", mrp)
-        data.append("ptr", ptr)
-        data.append("fr_qty", free)
-        data.append("qty", qty)
-        data.append("disocunt", disc)
-        data.append('gst', gst.id)
-        data.append('location', loc)
-        data.append('amount', ItemTotalAmount)
-        data.append("weightage", unit)
-        data.append("unit", unit)
+        data.append('purches_return_id', selectedEditItemId == null ? "0" : selectedEditItemId)
+        data.append('iteam_id', itemPurchaseId == null ? "0" : itemPurchaseId)
+        data.append("batch", batch == null ? "0" : batch)
+        data.append("exp_dt", expiryDate == null ? "0" : expiryDate)
+        data.append("mrp", mrp == null ? "0" : mrp)
+        data.append("ptr", ptr == null ? "0" : ptr)
+        data.append("fr_qty", free == null ? "0" : free)
+        data.append("qty", qty == null ? "0" : qty)
+        data.append("disocunt", disc == null ? "0" : disc)
+        data.append('gst', gst.id == null ? "0" : gst.id)
+        data.append('location', loc == null ? loc : "0")
+        data.append('amount', ItemTotalAmount == null ? "0" : ItemTotalAmount)
+        data.append("weightage", unit == null ? "0" : unit)
+        data.append("unit", unit == null ? "0" : unit)
         const params = {
             purches_return_id: selectedEditItemId
         };
@@ -568,21 +723,21 @@ const EditReturnBill = () => {
     const updatePurchaseRecord = async () => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
-        data.append("bill_no", billNo);
-        data.append("bill_date", selectedDate)
-        data.append('remark', remark)
+        data.append("bill_no", billNo == null ? "0" : billNo);
+        data.append("bill_date", selectedDate == null ? "0" : selectedDate)
+        data.append('remark', remark == null ? "0" : remark)
         data.append("discount", 0);
         // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
         // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
         data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
         data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
         //    data.append('final_amount', tableData?.net_amount)
-        data.append('other_amount', otherAmount)
-        data.append('net_amount', netAmount)
-        data.append('total_amount', totalAmount)
+        data.append('other_amount', otherAmount == null ? "0" : otherAmount)
+        data.append('net_amount', netAmount == null ? "0" : netAmount)
+        data.append('total_amount', totalAmount == null ? "0" : totalAmount)
         data.append("purches_return", JSON.stringify(tableData?.item_list));
-        data.append('id', id)
-        data.append('round_off', roundOff)
+        data.append('id', id == null ? "0" : id)
+        data.append('round_off', roundOff == null ? "0" : roundOff)
 
         const params = {
             id: id,
@@ -695,7 +850,7 @@ const EditReturnBill = () => {
                 <Loader />
             </div> :
 
-                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
+                <div style={{ height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
                     <ToastContainer />
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
@@ -706,7 +861,7 @@ const EditReturnBill = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Select
+                                {/* <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
@@ -719,7 +874,7 @@ const EditReturnBill = () => {
                                     {bankData?.map(option => (
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
-                                </Select>
+                                </Select> */}
                                 <Button
                                     variant="contained"
                                     color="success"
@@ -752,12 +907,20 @@ const EditReturnBill = () => {
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2">Bill Date</span>
+                                    <span className="heading mb-2 ">Bill Date</span>
                                     <DatePicker
                                         className='custom-datepicker '
                                         selected={selectedDate}
                                         onChange={(newDate) => setSelectedDate(newDate)}
                                         dateFormat="dd/MM/yyyy"
+                                        disabled
+                                        sx={colors = "#BDBDBD"}
+                                        style={{
+                                            color: '#BDBDBD',
+                                            backgroundColor: '#F0F0F0',
+                                            border: '1px solid #BDBDBD',
+                                            cursor: 'not-allowed',
+                                        }}
                                     />
                                 </div>
                                 <div className="detail">
@@ -767,6 +930,7 @@ const EditReturnBill = () => {
                                         size="small"
                                         sx={{ width: '250px' }}
                                         value={billNo}
+                                        disabled
                                         onChange={(e) => { setBillNo(e.target.value) }}
                                     />
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
@@ -885,15 +1049,17 @@ const EditReturnBill = () => {
                                                         value={unit}
                                                         sx={{ width: '80px' }}
                                                         onChange={(e) => {
-                                                            const value = e.target.value.replace(/[eE]/g, '');
-                            
-                                                            setUnit(Number(value));
-                                                          }}
-                                                          onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setUnit(value ? Number(value) : "");
+                                                        }}
+                                                        onKeyDown={(e) => {
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -910,22 +1076,7 @@ const EditReturnBill = () => {
                                                         // onChange={handleExpiryDateChange}
                                                         placeholder="MM/YY"
                                                     />
-                                                    {/* </td>
-                                                <Autocomplete
-                                                    id="dropdown"
-                                                    value={batch}
-                                                    onChange={(event, newValue) => {
-                                                        setBatch(newValue);
-                                                    }}
-                                                    error={!!errors.batch}
-                                                    options={batchList.map(option => option.batch_number)}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            variant="outlined"
-                                                            size="small"
-                                                        />)}
-                                                    size="small" /> */}
+
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -954,7 +1105,20 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         value={mrp}
 
-                                                        onChange={(e) => { setMRP(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                                setMRP(value ? Number(value) : "");
+                                                            }
+                                                        }}
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -967,12 +1131,22 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            handleQtyChange(value ? Number(value) : "");
+                                                        }}
+
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
-                                                        onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
+                                                        }}
+
+
+                                                    // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
                                                     />
 
                                                 </td>
@@ -986,12 +1160,18 @@ const EditReturnBill = () => {
                                                         // inputRef={inputRef6}
                                                         // error={!!errors.free}
                                                         // onKeyDown={handleKeyDown}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setFree(value ? Number(value) : "");
+                                                        }}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+
+                                                            if (
+                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
-                                                        onChange={(e) => { setFree(e.target.value) }}
+                                                        }}
                                                     />
 
                                                 </td>
@@ -1006,11 +1186,19 @@ const EditReturnBill = () => {
                                                         value={ptr}
                                                         error={!!errors.ptr}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
                                                             }
-                                                          }}
-                                                        onChange={(e) => setPTR(e.target.value)}
+                                                        }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                                handlePTR(value ? Number(value) : "");
+                                                            }
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1022,13 +1210,23 @@ const EditReturnBill = () => {
                                                         // inputRef={inputRef8}
                                                         // onKeyDown={handleKeyDown}
                                                         value={disc}
-                                                        onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
-                                                              e.preventDefault();
-                                                            }
-                                                          }}
                                                         error={!!errors.disc}
-                                                    // onChange={handleSchAmt} 
+
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (Number(value) > 100) {
+                                                                e.target.value = 100;
+                                                            }
+                                                            handleSchAmt(e);
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1058,7 +1256,7 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         size="small"
                                                         value={loc}
-                                                        error={!!errors.loc}
+                                                        // error={!!errors.loc}
                                                         sx={{ width: '100px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                     />
@@ -1068,7 +1266,25 @@ const EditReturnBill = () => {
                                                 <td className="total"><span>{ItemTotalAmount}</span></td>
                                             </tr>
                                             <tr >
-                                                <td></td>
+                                                <td>
+                                                    <TextField
+                                                        id="outlined-basic"
+                                                        size="small"
+                                                        sx={{ width: "75%", marginTop: "5px" }}
+                                                        value={searchQuery}
+                                                        onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: "search",
+                                                        }}
+                                                    />
+                                                </td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -1089,21 +1305,16 @@ const EditReturnBill = () => {
 
 
 
-                                            {tableData?.item_list?.map(item => (
+                                            {tableData?.item_list?.map((item) => (
                                                 <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
-                                                    <td style={{
-                                                        display: 'flex', gap: '8px', alignItems: 'center'
-                                                    }}>
+                                                    <td>
                                                         <Checkbox
                                                             checked={item.iss_check}
-                                                            onClick={(event) => {
-                                                                event.stopPropagation();
-                                                                setUnsavedItems(true)
-                                                            }}
-                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}  // Only pass item.id and checked value
+                                                            onClick={(event) => event.stopPropagation()}
+                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                         />
                                                         <BorderColorIcon color="primary" onClick={() => handleEditClick(item)} />
-                                                        <DeleteIcon className='delete-icon' onClick={() => deleteOpen(item.id)} />{item.item_name}
+                                                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         {item.item_name}
                                                     </td>
                                                     <td>{item.weightage}</td>
@@ -1114,104 +1325,113 @@ const EditReturnBill = () => {
                                                     <td>{item.fr_qty}</td>
                                                     <td>{item.ptr}</td>
                                                     <td>{item.disocunt}</td>
-                                                    <td>{item.gst_name}</td>
+                                                     <td>{item.gst_name}</td>
                                                     <td>{item.location}</td>
                                                     <td>{item.amount}</td>
                                                 </tr>
                                             ))}
 
-                                            < tr >
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal">{totalAmount}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Other Amt</td>
-                                                <td className="amounttotal">
 
-                                                    <TextField
-                                                        id="outlined-number"
-                                                        size="small"
-                                                        value={otherAmount}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                        onChange={handleOtherAmount}
 
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Round Off</td>
-                                                <td className="amounttotal">
-                                                    {/* <TextField
-                                                        id="outlined-number"
-                                                        // inputRef={inputRef12}
-                                                        // onKeyDown={handleKeyDown}
-                                                        disabled
-                                                        size="small"
-                                                        value={(roundOff < 0.49 ? `-${(roundOff)}` : (1 - roundOff))}
-                                                        // value={roundOff}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                    /> */}
-                                                    {/* {roundOff < 0.49 ? `-${roundOff}` : parseFloat(1 - roundOff)?.toFixed(2)} */}
-                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}
-
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Net Amount</td>
-                                                <td className="amounttotal">{netAmount}
-                                                </td>
-                                            </tr>
-                                            {/* </> */}
-                                            {/* )} */}
                                         </tbody>
                                     </table>
+                                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <div>
+                                                <label className="font-bold">Total GST : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">Total Qty : </label>
+                                            </div>
+                                            {/* <div>
+                                                <label className="font-bold">Net Rate : </label>
+                                            </div> */}
+                                        </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+
+                                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
+                                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
+                                                {/* <span style={{ fontWeight: 600 }}>{totalNetRate}</span> */}
+
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <div>
+                                                <label className="font-bold">Total Amount : </label>
+                                            </div>
+
+                                            <div>
+                                                <label className="font-bold">Other Amount: </label>
+                                            </div>
+                                            {/* <div>
+                                                <label className="font-bold">Profit : </label>
+                                            </div> */}
+
+                                            <div>
+                                                <label className="font-bold">Net Rate : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">Round Off : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold" >Net Amount : </label>
+                                            </div>
+                                        </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
+
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
+                                            </div>
+                                            {/* <div>
+                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                '& .MuiInputBase-root': {
+                                                    height: '35px'
+                                                },
+                                            }} />
+                                        </div> */}
+
+                                            <div>
+                                                <Input
+                                                    type="number"
+                                                    value={otherAmount}
+                                                    onChange={handleOtherAmount}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        justifyItems: "end",
+                                                        outline: "none",
+                                                    }} sx={{
+                                                        '& .MuiInputBase-root': {
+                                                            height: '35px',
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                    }} />
+                                            </div>
+                                            {/* <div className='mt-2'>
+                                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
+                                            </div> */}
+                                            <div className='mt-2'>
+                                                <span style={{ fontWeight: 600, }}>{totalNetRate}</span>
+                                            </div>
+                                            <div className='mt-1'>
+                                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+
                     </div >
+
                     {/* Delete PopUP */}
                     <div id="modal" value={IsDelete}
                         className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
@@ -1249,44 +1469,45 @@ const EditReturnBill = () => {
                     </div>
                     {/* popup for history api call */}
                     <Prompt
-          when={unsavedItems}
-          message={(location) => {
-            handleNavigation(location.pathname);
-            return false;
-          }}
-        />
-        <div
-          id="modal"
-          value={isOpenBox}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-        >
-          <div />
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <div className="my-4 logout-icon">
-              <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-              <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                onClick={handleLeavePage}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                onClick={LogoutClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-                
-              
-                  
+                        when={unsavedItems}
+                        message={(location) => {
+                            handleNavigation(location.pathname);
+                            return false;
+                        }}
+                    />
+                    <div
+                        id="modal"
+                        value={isOpenBox}
+                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+                    >
+                        <div />
+                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                            <div className="my-4 logout-icon">
+                                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+                                    <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
+                            </div>
+                            <div className="flex gap-5 justify-center">
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                                    onClick={handleLeavePage}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                                    onClick={LogoutClose}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div >
             }
         </>

@@ -432,6 +432,7 @@ const EditReturnBill = () => {
             setStartDate(responseData?.start_date);
             setEndDate(responseData?.end_date);
 
+
             const foundDistributor = distributors?.find(option => option.id == responseData.distributor_id);
 
             if (foundDistributor) {
@@ -555,23 +556,38 @@ const EditReturnBill = () => {
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
         setQty(item.qty)
+        setInitialTotalStock(item.total_stock);
+console.log(initialTotalStock,"initialTotalStock")
 
     };
-    const handleQty = (value) => {
+    // const handleQty = (value) => {
 
-        const newQty = Number(value);
+    //     const newQty = Number(value);
 
-        if (newQty > tempQty) {
-            setQty(tempQty);
-            toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
-        } else if (newQty < 0) {
-            setQty(tempQty);
-            toast.error(`Quantity should not be less than 0`);
-        } else {
-            setQty(newQty)
+    //     if (newQty > tempQty) {
+    //         setQty(tempQty);
+    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+    //     } else if (newQty < 0) {
+    //         setQty(tempQty);
+    //         toast.error(`Quantity should not be less than 0`);
+    //     } else {
+    //         setQty(newQty)
+    //     }
+
+    // }
+    const handleQtyChange = (value) => {
+        // const inputQty = Number(e.target.value);
+        // setQty(inputQty);
+
+        const availableStockForEdit = initialTotalStock-free ;
+
+        if (value <= availableStockForEdit && value >= 0) {
+            setQty(value);
+        } else if (value > availableStockForEdit) {
+            setQty(availableStockForEdit);
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
-
-    }
+    };
     const handlePTR = (value) => {
 
         const newPTR = Number(value);
@@ -587,19 +603,7 @@ const EditReturnBill = () => {
         }
 
     }
-    const handleQtyChange = (e) => {
-        const inputQty = Number(e.target.value);
-        setQty(inputQty);
-
-        // const availableStockForEdit = editQty ;
-
-        // if (inputQty <= availableStockForEdit && inputQty >= 0) {
-        //     setQty(inputQty);
-        // } else if (inputQty > availableStockForEdit) {
-        //     setQty(availableStockForEdit);
-        //     toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
-        // }
-    };
+   
 
     const EditReturnItem = async () => {
         setUnsavedItems(true)
@@ -616,7 +620,7 @@ const EditReturnBill = () => {
         //     toast.error('Quantity should not be greater than purchase quantity ')
         //     return
         // }
-        if (!free) newErrors.free = 'Free quantity is required';
+        // if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
       
         if (!disc) newErrors.disc = 'Discount is required';
@@ -1129,7 +1133,7 @@ const EditReturnBill = () => {
                                                         value={qty}
                                                         onChange={(e) => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
-                                                            handleQty(value ? Number(value) : "");
+                                                            handleQtyChange(value ? Number(value) : "");
                                                         }}
 
                                                         onKeyDown={(e) => {
@@ -1339,16 +1343,16 @@ const EditReturnBill = () => {
                                             <div>
                                                 <label className="font-bold">Total Qty : </label>
                                             </div>
-                                            <div>
-                                                <label className="font-bold">total Net Rate : </label>
-                                            </div>
+                                            {/* <div>
+                                                <label className="font-bold">Net Rate : </label>
+                                            </div> */}
                                         </div>
                                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
 
                                             <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                                 <span style={{ fontWeight: 600 }}>{totalGST}</span>
                                                 <span style={{ fontWeight: 600 }}>{totalQty}</span>
-                                                <span style={{ fontWeight: 600 }}>{totalNetRate}</span>
+                                                {/* <span style={{ fontWeight: 600 }}>{totalNetRate}</span> */}
 
                                             </div>
                                         </div>
@@ -1360,9 +1364,12 @@ const EditReturnBill = () => {
                                             <div>
                                                 <label className="font-bold">Other Amount: </label>
                                             </div>
+                                            {/* <div>
+                                                <label className="font-bold">Profit : </label>
+                                            </div> */}
 
                                             <div>
-                                                <label className="font-bold">Profit : </label>
+                                                <label className="font-bold">Net Rate : </label>
                                             </div>
                                             <div>
                                                 <label className="font-bold">Round Off : </label>
@@ -1404,8 +1411,11 @@ const EditReturnBill = () => {
 
                                                     }} />
                                             </div>
-                                            <div className='mt-2'>
+                                            {/* <div className='mt-2'>
                                                 <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
+                                            </div> */}
+                                            <div className='mt-2'>
+                                                <span style={{ fontWeight: 600, }}>{totalNetRate}</span>
                                             </div>
                                             <div className='mt-1'>
                                                 <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>

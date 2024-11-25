@@ -17,11 +17,11 @@ const validate = Yup.object().shape({
         .max(10, "Too Long!")
         .required("Mobile No is Required"),
     address: Yup.string().required("Address is requiredf"),
-    // area: Yup.string().required("Area is required"),
+    area: Yup.string().required("Area is required"),
     pincode: Yup.string()
         .min(6, "Too Short!")
-        .max(6, "Too Long!"),
-        // .required("Pincode  is required"),
+        .max(6, "Too Long!")
+        .required("Pincode  is required"),
     // bank_name: Yup.string()
     //     .min(2, "Too Short!")
     //     .max(50, "Too Long!")

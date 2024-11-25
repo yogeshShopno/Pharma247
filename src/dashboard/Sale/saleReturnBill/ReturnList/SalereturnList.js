@@ -3,15 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { Button } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
+import DatePicker from 'react-datepicker';
 import { BsLightbulbFill } from "react-icons/bs";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import Loader from "../../../../componets/loader/Loader";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
+import { FaFilePdf } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { format, subDays } from "date-fns";
+import CloseIcon from '@mui/icons-material/Close';
 
 const columns = [
     { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
@@ -35,6 +40,10 @@ const SalereturnList = () => {
     const [IsDelete, setIsDelete] = useState(false);
     const totalPages = Math.ceil(tableData.length / rowsPerPage);
     const paginatedData = tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+    const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15))
+    const [PdfendDate, setPdfEndDate] = useState(new Date());
+    const [openAddPopUp, setOpenAddPopUp] = useState(false);
+
     const options = ['Option 1', 'Option 2', 'Option 3'];
     const startIndex = (currentPage - 1) * rowsPerPage + 1;
     const [saleId, setSaleId] = useState(null)
@@ -120,6 +129,63 @@ const SalereturnList = () => {
         history.push('/saleReturn/Add')
     }
 
+    const AllPDFGenerate = async () => {
+        let data = new FormData();
+        data.append('start_date', PdfstartDate ? format(PdfstartDate, 'yyyy-MM-dd') : '');
+        data.append('end_date', PdfendDate ? format(PdfendDate, 'yyyy-MM-dd') : '');
+
+        setIsLoading(true);
+        try {
+            await axios.post("sale-return-multiple-pdf-downloads", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+
+                const PDFURL = response.data.data.pdf_url;
+                toast.success(response.data.meassage)
+                setOpenAddPopUp(false)
+                //console.log(PDFURL, 'hh');
+                setIsLoading(false);
+                handlePdf(PDFURL);
+            });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+    const pdfGenerator = async (id) => {
+        let data = new FormData();
+        data.append('id', id);
+        setIsLoading(true);
+        try {
+            await axios.post("sale-return-pdf-downloads", data, {
+                params: { id },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+
+                const PDFURL = response.data.data.pdf_url;
+                toast.success(response.data.meassage)
+                //console.log(PDFURL, 'hh');
+                setIsLoading(false);
+                handlePdf(PDFURL);
+            });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+    const handlePdf = (url) => {
+        if (typeof url === 'string') {
+            // Open the PDF in a new tab
+            window.open(url, '_blank');
+        } else {
+            console.error('Invalid URL for the PDF');
+        }
+    };
+
     return (
         <>
             <div>
@@ -129,11 +195,23 @@ const SalereturnList = () => {
                 </div> :
                     <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Sales Return</span>
+                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px',whiteSpace:"nowrap" }} >Sales Return</span>
                             {hasPermission(permissions, "sale return bill create") && (<>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '7px', color: "rgba(4, 76, 157, 1)" }} />
-                                <Button variant="contained" size='small' style={{ backgroundColor: 'rgb(4, 76, 157)', fontSize: '12px', marginLeft: "5px" }} onClick={goIntoAdd} ><AddIcon />New  </Button></>)}
+                                <Button variant="contained" size='small' style={{ backgroundColor: 'rgb(4, 76, 157)', fontSize: '12px', marginLeft: "5px" }} onClick={goIntoAdd} ><AddIcon />New  </Button>
+                            </>
+                            )}
+                            <div className="headerList">
+                                <Button
+                                    variant="contained"
+                                    style={{ background: "rgb(4, 76, 157)" }}
+                                    onClick={() => { setOpenAddPopUp(true) }}
+                                >
+                                    Generate PDF
+                                </Button>
+                            </div>
                         </div>
+
                         <div >
                             <div className="firstrow">
                                 <div className='overflow-x-auto'>
@@ -187,6 +265,9 @@ const SalereturnList = () => {
                                                             <td>
                                                                 <div className="flex gap-5 justify-center">
                                                                     <VisibilityIcon className='cursor-pointer' onClick={() => { history.push(`/purchase/view/${row.id}`) }} color="primary" />
+                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black'
+                                                                        onClick={() => pdfGenerator(row.id)}
+                                                                    />
                                                                     {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
                                                                 </div>
                                                             </td>
@@ -278,9 +359,78 @@ const SalereturnList = () => {
                                             </button>
                                         </div>
                                     </div>
-
-
                                 </div>
+                                <Dialog open={openAddPopUp}
+                                    sx={{
+                                        "& .MuiDialog-container": {
+                                            "& .MuiPaper-root": {
+                                                width: "50%",
+                                                height: "50%",
+                                                maxWidth: "500px", // Set your width here
+                                                maxHeight: "80vh", // Set your height here
+                                                overflowY: "auto", // Enable vertical scrolling if content overflows
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                                        Genrate PDF
+                                    </DialogTitle>
+                                    <IconButton
+                                        aria-label="close"
+                                        onClick={() => { setOpenAddPopUp(false); }}
+                                        sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
+                                                <div className="flex gap-10">
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                                                        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                                                            <div className="flex flex-col md:flex-row w-full">
+                                                                <div className="w-full md:w-auto">
+                                                                    <span className="text-gray-500 block">Start Date</span>
+                                                                    <div className="w-full md:w-[215px]">
+                                                                        <DatePicker
+                                                                            className="custom-datepicker w-full"
+                                                                            selected={PdfstartDate}
+                                                                            onChange={(newDate) => setPdfStartDate(newDate)}
+                                                                            dateFormat="dd/MM/yyyy"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="w-full md:w-auto">
+                                                                    <span className="text-gray-500 block">End Date</span>
+                                                                    <div className="w-full md:w-[215px]">
+                                                                        <DatePicker
+                                                                            className="custom-datepicker w-full"
+                                                                            selected={PdfendDate}
+                                                                            onChange={(newDate) => setPdfEndDate(newDate)}
+                                                                            dateFormat="dd/MM/yyyy"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button autoFocus variant="contained" className="p-5" color="success"
+                                            onClick={() => { AllPDFGenerate() }}
+                                        >
+                                            Genrate
+                                        </Button>
+                                        <Button autoFocus variant="contained" onClick={() => { setOpenAddPopUp(false) }} color="error"  >
+                                            Cancel
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </div>
                         </div>
                     </div>

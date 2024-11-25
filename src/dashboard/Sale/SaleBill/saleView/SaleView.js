@@ -55,6 +55,10 @@ const SaleView = () => {
         //console.log('purchase', saleData);
     }, [id, saleData]);
 
+    useEffect(()=>{
+        localStorage.removeItem("RandomNumber")
+    },[])
+    
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'ArrowRight') {
@@ -100,7 +104,7 @@ const SaleView = () => {
                 },
             }
             ).then((response) => {
-                console.log('response.data.data :>> ', response.data.data);
+                // console.log('response.data.data :>> ', response.data.data);
                 setPaymentType(response.data.data.payment_name)
                 setTableData(response.data.data)
                 localStorage.setItem("Other_Amount", response.data.data.other_amount)
@@ -169,7 +173,7 @@ const SaleView = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Doctor </span>
                                     <span className="data">
-                                        {tableData.doctor_name}
+                                        {tableData.doctor_name || " - "}
                                     </span>
                                 </div>
                                 <div className="detail">
@@ -239,12 +243,14 @@ const SaleView = () => {
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                     <label className="font-bold">Total GST : </label>
                                     <label className="font-bold">Total Base : </label>
-                                    <label className="font-bold">Margin : </label>
+                                    <label className="font-bold">Profit : </label>
+                                    <label className="font-bold">Total Net Rate : </label>
                                 </div>
                                 <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                     <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
                                     <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
-                                    <span style={{ fontWeight: 600 }}>₹ {tableData?.total_net_rate} ({tableData?.total_margin}%) </span>
+                                    <span style={{ fontWeight: 600 }}>₹ {tableData?.margin_net_profit} ({Number(tableData?.total_margin).toFixed(2)}%) </span>
+                                    <span style={{ fontWeight: 600 }}>₹ {tableData?.total_net_rate} </span>
                                 </div>
 
 
@@ -276,11 +282,14 @@ const SaleView = () => {
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
                                     <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.round_off}</span> */}
-                                    <span style={{ fontWeight: 600 }}> {tableData?.round_off === "0.00"
+                                    <span style={{ fontWeight: 600 }}>
+                                        {/* {tableData?.round_off === "0.00"
                                         ? tableData?.round_off
                                         : tableData?.round_off < 0
                                             ? `-${Math.abs(tableData?.round_off)}`
-                                            : `+${Math.abs(tableData?.round_off)}`}</span>
+                                            : `+${Math.abs(tableData?.round_off)}`} */}
+                                        {!tableData?.round_off ? 0 : tableData?.round_off}
+                                    </span>
                                     <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
                                 </div>
                             </div>

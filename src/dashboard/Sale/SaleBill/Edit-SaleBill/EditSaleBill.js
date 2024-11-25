@@ -69,8 +69,10 @@ const EditSaleBill = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [tempOtherAmt, setTempOtherAmt] = useState('');
   const [otherAmt, setOtherAmt] = useState(localStorage.getItem("Other_Amount") || '');
-  const [qty, setQty] = useState(0)
-  const [tempQty, setTempQty] = useState(0)
+  const [qty, setQty] = useState('')
+  const [tempQty, setTempQty] = useState('')
+  const [marginNetProfit, setMarginNetProfit] = useState(0);
+
   const [order, setOrder] = useState("");
   const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
@@ -125,8 +127,6 @@ const EditSaleBill = () => {
 
     let amountToUse = otherAmt ? otherAmt : tempOtherAmt;
 
-    console.log("otherAmt", otherAmt);
-
     if (amountToUse < 0 && Math.abs(amountToUse) > totalAmount) {
       setOtherAmt(0);
       setTempOtherAmt(0);
@@ -176,33 +176,6 @@ const EditSaleBill = () => {
     setUnsavedItems(true)
 
   };
-
-  // useEffect(() => {
-  //   const discountAmount = (totalAmount * finalDiscount) / 100;
-  //   const finalAmount = totalAmount - discountAmount;
-  //   setNetAmount(finalAmount.toFixed(2));
-  //   const due = givenAmt - netAmount;
-  //   setDueAmount(due.toFixed(2));
-  // }, [totalAmount, finalDiscount, givenAmt, netAmount]);
-
-  // const handleOtherAmtChange = (e) => {
-  //   const value = e.target.value;
-  //   const numericValue = isNaN(value) || value === '' ? '' : Number(value);
-  //   setOtherAmt(numericValue);
-  // };
-
-  // const handleOtherAmtChange = (e) => {
-  //   let value = e.target.value;
-
-  //   if (!isNaN(value)) {
-  //     if (value < 0 && value.length > 7) {
-  //       value = "";
-  //     } 
-  //     setOtherAmt(value ? Number(value) : '');
-  //   }
-  // };
-
-
   useEffect(() => {
     const initializeData = async () => {
       const doctorData = await ListOfDoctor();
@@ -257,7 +230,6 @@ const EditSaleBill = () => {
     let data = new FormData();
     data.append("id", id);
     data.append("payment_name", paymentType);
-    // data.append("random_number", randomNumber);
     const params = {
       id: id ? id : '',
       random_number: randomNumber ? randomNumber : '',
@@ -270,7 +242,8 @@ const EditSaleBill = () => {
         },
       });
       const record = response.data.data;
-      setSaleAllData(response.data.data);
+      setSaleAllData({ ...record, sales_item: [] });
+      setSaleAllData(record);
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
       setTotalgst(record.total_gst);
@@ -282,13 +255,12 @@ const EditSaleBill = () => {
       // setOtherAmt(record.other_amount)
       const salesItem = response.data.data.sales_item;
       if (salesItem && salesItem.length > 0) {
-        console.log('random_number :>> ', salesItem[0].random_number);
-        setRandomNum(salesItem[0].random_number)
+        const fetchedRandomNumber = salesItem[0].random_number;
+        setRandomNum(fetchedRandomNumber);
       }
       setNetAmount(record.net_amount);
-      // setOtherAmt(record.other_amount);
-      // setTempOtherAmt(record.other_amount)
       setNetRateAmount(record.total_net_rate);
+      setMarginNetProfit(record.margin_net_profit);
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
@@ -403,53 +375,100 @@ const EditSaleBill = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const savedState = localStorage.getItem("unsavedItems");
+  //   if (savedState === "false") {
+  //     setUnsavedItems(true);
+  //   }
+
+  //   return () => {
+  //     localStorage.setItem("unsavedItems", unsavedItems.toString());
+  //   };
+  // }, [unsavedItems]);
+
+  // useEffect(() => {
+  //   const params = {
+  //     random_number: randomNumber,
+  //   };
+  //   const response = axios.post("sales-history", {}, {
+  //     params: params,
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //   if (response.status === 200) {
+  //     setUnsavedItems(false);
+  //     setOpenModal(false);
+  //     setTimeout(() => {
+  //       history.push(nextPath);
+  //     }, 0);
+  //   }
+  // }, [])
+
+  useEffect(() => {
+    handleLeavePage()
+  }, [])
+
   const handleNavigation = (path) => {
     setOpenModal(true);
     setNextPath(path);
     // setUnsavedItems(true)
   };
 
-  // Handle leaving page after user confirms in modal
   const handleLeavePage = () => {
     let data = new FormData();
-
-    const params = {
-      random_number: randomNum
-    };
-    axios.post("sales-history", data, {
-      params: params,
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(() => {
-        setOpenModal(false);
-        setUnsavedItems(false); // Reset unsaved changes
-        history.replace(nextPath); // Navigate to the saved path
+    data.append("random_number",randomNumber)
+    setOpenModal(false);
+    setUnsavedItems(false);
+    try {
+      // const params = {
+      //   random_number: randomNumber,
+      // };
+      const response = axios.post("sales-history", data,   {
+        // params: params,
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch(error => {
-        console.error("Error deleting items:", error);
-      });
-  };
+        // if (response.status === 200) {
+        //   setUnsavedItems(false);
+        //   setOpenModal(false);
+        //   setTimeout(() => {
+        //     history.push(nextPath);
+        //   }, 0);
+        // }
+        // setUnsavedItems(false);
+        // setOpenModal(false);
+        // history.replace(nextPath);
+        .then((response) => {
+          // setSaleAllData([]);
+          setUnsavedItems(false);
+          setOpenModal(false);
+          if (nextPath) {
+            history.replace(nextPath);
+          }
+
+        })
+        .catch(error => {
+          console.error("Error fetching sales history:", error);
+        });
+
+    } catch (error) {
+      console.error("Error fetching sales history:", error);
+    }
+  }
 
   const handleEditClick = (item) => {
-    console.log(item, "Clicked item");
-    console.log(uniqueId, "Current uniqueId");
-
-    // Ensure consistent type comparison
-    const existingItem = uniqueId.find((obj) => Number(obj.id) === Number(item.id));
-    console.log(existingItem, "existingItem");
+    const existingItem = uniqueId.find((obj) => obj.id === item.id);
+    // console.log(existingItem, "existingItem")
 
     if (!existingItem) {
-      setUniqueId((prevUniqueIds) => {
-        const updatedList = [...prevUniqueIds, { id: item.id, qty: item.qty }];
-        console.log("Updated uniqueId:", updatedList);
-        return updatedList;
-      });
-      setTempQty(Number(item.qty));
+      // If the ID is unique, add the item to uniqueId and set tempQty
+      setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+      // console.log('(prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }] :>> ', (prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+      setTempQty(item.qty);
+      // console.log('tempQty :>> ', tempQty);
+      // console.log('item.qty :>> ', item.qty);
     } else {
-      console.log("Existing item found:", existingItem);
-      setTempQty(Number(existingItem.qty));
-    }
+      setTempQty(existingItem.qty);
 
+    }
     // Set the selected item for editing
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -463,7 +482,7 @@ const EditSaleBill = () => {
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
-      setQty(selectedEditItem.qty);
+      setQty(item.qty);
       setBase(item.base);
       // setBase(selectedEditItem.base);
       setOrder(selectedEditItem.order);
@@ -559,34 +578,41 @@ const EditSaleBill = () => {
       console.error("API error:", error);
     }
   };
+  useEffect(() => {
+    if (!unsavedItems) {
+      saleBillGetBySaleID();
+    }
+  }, [unsavedItems]);
+
+  useEffect(() => {
+    // Reset state when component loads
+    setUnsavedItems(false);
+    setOpenModal(false);
+  }, []);
+
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
-    let data = new FormData();
-    data.append("id", saleItemId);
-    const params = {
-      id: saleItemId ? saleItemId : '',
-    };
     try {
-      await axios
-        .post("sales-item-delete?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          saleBillGetBySaleID();
-          setIsDelete(false);
-        });
+      await axios.post("sales-item-delete?", { id: saleItemId }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Item deleted successfully!");
+      setUnsavedItems(true);
+      // setItemSaleList();
+      // Fetch updated data after delete
+      saleBillGetBySaleID();
+      setIsDelete(false);
+
     } catch (error) {
-      console.error("API error:", error);
+      console.error("Error during delete:", error);
+      toast.error("Failed to delete the item.");
     }
   };
 
+
+
   const addSaleItem = async () => {
     setUnsavedItems(true);
-    localStorage.setItem('RandomNumber', randomNumber)
     let data = new FormData();
     if (isEditMode == true) {
       data.append("item_id", searchItemID);
@@ -699,6 +725,10 @@ const EditSaleBill = () => {
     data.append("total_discount", finalDiscount);
     data.append("discount_amount", discountAmount);
     data.append("total_amount", totalAmount);
+    data.append("round_off", roundOff);
+    data.append("margin_net_profit", marginNetProfit);
+    data.append("net_rate", netRateAmount);
+    data.append("margin", margin);
     const params = {
       id: id || '',
     };
@@ -712,7 +742,6 @@ const EditSaleBill = () => {
         })
         .then((response) => {
           //console.log(response.data);
-          localStorage.removeItem("RandomNumber");
           //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
@@ -774,7 +803,6 @@ const EditSaleBill = () => {
         })
         .then((response) => {
           //console.log(response.data);
-          localStorage.removeItem("RandomNumber");
           //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
@@ -1430,6 +1458,11 @@ const EditSaleBill = () => {
                               sx={{ width: "70px" }}
                               size="small"
                               value={qty}
+                              onKeyPress={(e) => {
+                                if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                  e.preventDefault();
+                                }
+                              }}
                               // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
                               onChange={(e) => { handleQty(e.target.value) }}
 
@@ -1541,7 +1574,8 @@ const EditSaleBill = () => {
                   <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                     <label className="font-bold">Total GST : </label>
                     <label className="font-bold">Total Base : </label>
-                    <label className="font-bold">Margin : </label>
+                    <label className="font-bold">Profit : </label>
+                    <label className="font-bold">Total Net Rate : </label>
                   </div>
                 </div>
                 <div class="totals mr-3"
@@ -1554,7 +1588,8 @@ const EditSaleBill = () => {
                   }}>
                   <span style={{ fontWeight: 600 }}> {totalgst} </span>
                   <span style={{ fontWeight: 600 }}> {totalBase} </span>
-                  <span style={{ fontWeight: 600 }}>₹ {netRateAmount} ({margin}%) </span>
+                  <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(margin).toFixed(2)}%) </span>
+                  <span style={{ fontWeight: 600 }}>₹ {netRateAmount} </span>
                 </div>
 
                 <div
@@ -1648,7 +1683,7 @@ const EditSaleBill = () => {
                       }}
                       onKeyPress={(e) => {
                         // Allow numbers, backspace, and decimal point
-                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                        if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
                           e.preventDefault();
                         }
                       }}
@@ -1693,11 +1728,7 @@ const EditSaleBill = () => {
 
                     />
                     <div className="">
-                      <span
-                        style={{
-                          fontWeight: 800,
-                        }}
-                      >
+                      <span>
                         -{discountAmount}
                       </span>
                     </div>
@@ -1721,7 +1752,7 @@ const EditSaleBill = () => {
                       >
                         {/* {(Number(netAmount) || 0).toFixed(2)} */}
 
-                        {netAmount}
+                        {Number(netAmount).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -1791,6 +1822,7 @@ const EditSaleBill = () => {
         when={unsavedItems} // Triggers only if there are unsaved changes
         message={(location) => {
           handleNavigation(location.pathname);
+          setOpenModal(true);
           return false; // Prevent automatic navigation
         }}
       />
@@ -1803,7 +1835,7 @@ const EditSaleBill = () => {
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
           <div className="my-4 logout-icon">
             <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-            <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+            <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
           </div>
 
           <div className="flex gap-5 justify-center">

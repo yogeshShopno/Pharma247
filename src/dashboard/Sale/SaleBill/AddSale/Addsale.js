@@ -66,10 +66,11 @@ const Addsale = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [ItemSaleList, setItemSaleList] = useState({ sales_item: [] });
     const [totalAmount, setTotalAmount] = useState(0)
-    const [qty, setQty] = useState(0);
-    const [maxQty, setMaxQty] = useState(0);
+    const [qty, setQty] = useState('');
+    const [maxQty, setMaxQty] = useState('');
     const [order, setOrder] = useState('');
     const [roundOff, setRoundOff] = useState(0);
+    const [uniqueId, setUniqueId] = useState([])
 
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
@@ -97,8 +98,9 @@ const Addsale = () => {
     const tableRef = useRef(null);
     const [totalgst, setTotalgst] = useState(0);
     const [totalBase, setTotalBase] = useState(0);
-    const [totalNetRate, setTotalNetRate] = useState(0);
+    const [marginNetProfit, setMarginNetProfit] = useState(0);
     const [totalMargin, setTotalMargin] = useState(0);
+    const [totalNetRate, setTotalNetRate] = useState(0);
     const [dueAmount, setDueAmount] = useState(null);
     const [givenAmt, setGivenAmt] = useState(null);
     const [otherAmt, setOtherAmt] = useState(0);
@@ -111,6 +113,9 @@ const Addsale = () => {
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
+    const [ptr, setPtr] = useState();
+    const [discount, setDiscount] = useState();
+    const [tempVal, setTempVal] = useState();
 
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -399,6 +404,7 @@ const Addsale = () => {
     }
     const handleInputChange = (event, newInputValue) => {
         setSearchItem(newInputValue);
+        console.log('searchItem :>> ', searchItem);
         handleSearch(newInputValue);
         setUnsavedItems(true);
 
@@ -434,6 +440,7 @@ const Addsale = () => {
 
     const handlePassData = (event) => {
         setSearchItem(event.iteam_name)
+        setTempVal(event.iteam_name)
         setBatch(event.batch_number);
         setItem(event.iteam_name);
         setUnit(event.unit);
@@ -603,14 +610,18 @@ const Addsale = () => {
         data.append('payment_name', paymentType ? paymentType : '')
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
         // data.append('product_list', JSON.stringify(updatedSalesItemList) ? JSON.stringify(updatedSalesItemList) : ''); // Include total_qty
-        data.append('net_amount', netAmount)
+        data.append('net_amount', netAmount.toFixed(2))
         data.append('other_amount', otherAmt)
         data.append('total_discount', finalDiscount)
         data.append('discount_amount', discountAmount ? discountAmount : '')
         data.append('total_amount', totalAmount)
         data.append('other_amount', otherAmt)
-        data.append('net_rate', totalNetRate)
+        data.append('margin_net_profit', marginNetProfit)
         data.append('margin', totalMargin)
+        data.append('net_rate', totalNetRate)
+        data.append("mrp", mrp ? mrp : '')
+        data.append("ptr", ptr ? ptr : '')
+        data.append("discount", discount ? discount : '')
 
         try {
             await axios.post("create-sales", data, {
@@ -620,7 +631,6 @@ const Addsale = () => {
             }
             ).then((response) => {
 
-                //console.log(response.data);
                 localStorage.removeItem('RandomNumber');
                 //console.log("response===>", response.data);
                 toast.success(response.data.message);
@@ -633,14 +643,53 @@ const Addsale = () => {
         }
     }
 
+    // useEffect(() => {
+    //     const savedState = localStorage.getItem("unsavedItems");
+    //     if (savedState === "false") {
+    //         setUnsavedItems(true);
+    //     }
+    //     return () => {
+    //         localStorage.setItem("unsavedItems", unsavedItems.toString());
+    //     };
+    // }, [unsavedItems]);
+
+    // useEffect(() => {
+    //     let data = new FormData();
+
+    //     const params = {
+    //         random_number: localStorage.getItem('RandomNumber')
+    //     };
+    //     axios.post("all-sales-item-delete", data, {
+    //         params: params,
+    //         headers: { Authorization: `Bearer ${token}` }
+    //     })
+    // }, [])
+
+    useEffect(() => {
+        generateRandomNumber()
+        let data = new FormData();
+
+        const params = {
+            random_number: localStorage.getItem('RandomNumber')
+        };
+        axios.post("all-sales-item-delete", data, {
+            params: params,
+            headers: { Authorization: `Bearer ${token}` }
+        })
+    }, [])
+
     const handleNavigation = (path) => {
-        setOpenModal(true); // Show modal
-        setNextPath(path);   // Save the next path to navigate after confirmation
+        setOpenModal(true);
+        setOpenCustomer(false);
+        setOpenAddPopUp(false);
+        setNextPath(path);
     };
 
     // Handle leaving page after user confirms in modal
     const handleLeavePage = () => {
         let data = new FormData();
+        setOpenModal(false);
+        setUnsavedItems(false);
 
         const params = {
             random_number: localStorage.getItem('RandomNumber')
@@ -652,6 +701,7 @@ const Addsale = () => {
             .then(() => {
                 setOpenModal(false);
                 setUnsavedItems(false); // Reset unsaved changes
+                // localStorage.setItem("unsavedItems", unsavedItems.toString());
                 history.push(nextPath);
             })
             .catch(error => {
@@ -678,7 +728,7 @@ const Addsale = () => {
         data.append('owner_name', '0')
         data.append('payment_name', paymentType ? paymentType : "")
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
-        data.append('net_amount', netAmount)
+        data.append('net_amount', netAmount.toFixed(2))
         data.append('other_amount', otherAmt)
         data.append('total_discount', finalDiscount ? finalDiscount : '')
         data.append('other_amount', otherAmt)
@@ -720,6 +770,17 @@ const Addsale = () => {
             }
             ).then((response) => {
                 setBatchListData(response.data.data);
+                if (Array.isArray(response.data.data)) {
+                    response.data.data.forEach((item) => {
+                        setMRP(item.mrp)
+                        setPtr(item.ptr);
+                        setDiscount(item.discount);
+                    });
+                } else {
+                    setMRP(response.data.data.mrp)
+                    setPtr(response.data.data.ptr);
+                    setDiscount(response.data.data.discount);
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -737,20 +798,34 @@ const Addsale = () => {
         }
     };
 
+    // useEffect(() => {
+    //     generateRandomNumber();
+    // }, [])
+
+    const clearSearch = () => {
+        // setSearchItem('');
+        // setItemList([]);
+        setValue('');
+    };
+
+
     const addItemValidation = () => {
         setUnsavedItems(true);
         if (!mrp) {
             toast.error('Please Select any Item Name')
         } else {
             addSaleItem();
+            clearSearch();
         }
     }
 
     const addSaleItem = async () => {
         generateRandomNumber();
         let data = new FormData();
-        data.append('item_id', value.id ? value.id : '')
-        data.append("qty", qty)
+        data.append("id", selectedEditItemId ? selectedEditItemId : '')
+        data.append('item_id', value && value.id ? value.id : '')
+        // data.append('item_id', value.id ? value.id : '')
+        data.append("qty", qty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
@@ -764,8 +839,10 @@ const Addsale = () => {
         data.append('net_rate', itemAmount ? itemAmount : '')
         data.append('total_amount', totalAmount)
         data.append("order", order ? order : '')
+        data.append("ptr", ptr ? ptr : '')
+        data.append("discount", discount ? discount : '')
         const params = {
-            id: selectedEditItemId ? selectedEditItemId : ''
+            id: selectedEditItemId || ''
         };
         try {
             const response = isEditMode
@@ -780,9 +857,9 @@ const Addsale = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-            //console.log("response", response);
+            console.log("response", response);
             saleItemList();
-            setSearchItem(null)
+            // clearSearch();
             setUnit('')
             setBatch('')
             setExpiryDate('');
@@ -830,11 +907,38 @@ const Addsale = () => {
     //     }
     // };
 
+    const handleQtyChange = (e) => {
+        const enteredValue = Number(e.target.value, 10);
+        if (enteredValue <= maxQty) {
+            setQty(enteredValue);
+        } else {
+            toast.error("can't add qty more than stock")
+            setQty(maxQty);
+        }
+    }
+
     const handleEditClick = (item) => {
+
+        const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        // console.log(existingItem, "existingItem")
+
+        if (!existingItem) {
+            // If the ID is unique, add the item to uniqueId and set tempQty
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+            setMaxQty(item.qty);
+        } else {
+            setMaxQty(existingItem.qty);
+
+        }
+
+
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name);
+        setTempVal(item.iteam_name);
+
+        console.log('item.iteam_name :>> ', item.iteam_name);
         // setQty(item.qty);
         // setEditQty(item.qty);
         // setFree(Number(item.purchase_free_qty)); // Ensure free is a number
@@ -845,8 +949,8 @@ const Addsale = () => {
             setBatch(selectedEditItem.batch);
             setExpiryDate(selectedEditItem.exp);
             setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setBase(selectedEditItem.base);
+            setQty(item.qty);
+            setBase(item.base);
             setGst(selectedEditItem.gst);
             setLoc(selectedEditItem.location);
             setOrder(selectedEditItem.order);
@@ -898,11 +1002,13 @@ const Addsale = () => {
             }
             ).then((response) => {
                 setItemSaleList(response.data.data);
+                // console.log('response.data.data :>> ', response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
                 setTotalgst(response.data.data.total_gst)
-                setTotalNetRate(response.data.data.total_net_rate)
+                setMarginNetProfit(response.data.data.margin_net_profit)
                 setTotalMargin(response.data.data.total_margin)
+                setTotalNetRate(response.data.data.total_net_rate)
             })
         } catch (error) {
             console.error("API error:", error);
@@ -1080,13 +1186,14 @@ const Addsale = () => {
                                     </div>
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name <FaPlusCircle className="icon darkblue_text" onClick={() => setOpenCustomer(true)} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={customer}
                                         onChange={handleCustomerOption}
                                         inputValue={searchQuery}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchQuery(newInputValue);
+                                            // setUnsavedItems(true);
                                         }}
                                         options={customerDetails}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
@@ -1116,6 +1223,12 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                                                // onChange={(e) => {
+                                                //     setUnsavedItems(true); 
+                                                //     if (params.inputProps.onChange) {
+                                                //         params.inputProps.onChange(e); 
+                                                //     }
+                                                // }}
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -1129,6 +1242,7 @@ const Addsale = () => {
                                                     ),
                                                     style: { height: 55 },
                                                 }}
+
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
                                                         fontSize: '1rem',
@@ -1159,13 +1273,14 @@ const Addsale = () => {
                                 </div> */}
 
                                 <div className="detail">
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor <FaPlusCircle className="icon darkblue_text" onClick={() => setOpenAddPopUp(true)} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
                                         onChange={handleDoctorOption}
                                         inputValue={searchDoctor}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchDoctor(newInputValue);
+                                            // setUnsavedItems(true);
                                         }}
                                         options={doctorData}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
@@ -1341,12 +1456,18 @@ const Addsale = () => {
                                             }}
                                         >
                                             <Autocomplete
-                                                value={searchItem?.iteam_name}
+                                                value={searchItem}
+                                                // value={searchItem?.iteam_name}
                                                 size="small"
                                                 sx={{ fontSize: "1.5rem" }}
                                                 onChange={handleOptionChange}
                                                 onInputChange={handleInputChange}
-                                                getOptionLabel={(option) => `${option.iteam_name} `}
+                                                // onKeyDown={(e) => {
+                                                //     if (e.key === " ") { // Detect spacebar press
+                                                //         handleSearch(searchItem);
+                                                //     }
+                                                // }}
+                                                getOptionLabel={(option) => `${option.iteam_name || ''} `}
                                                 options={itemList}
                                                 renderOption={(props, option) => (
                                                     <ListItem {...props}
@@ -1469,7 +1590,7 @@ const Addsale = () => {
                                                 <th >GST%  </th>
                                                 <th >QTY </th>
                                                 <th  >Order
-                                                    <Tooltip title="Press 'O' to create a new order. It will Show in Order List." arrow>
+                                                    <Tooltip title="Please Enter only (o)" arrow>
                                                         <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                                                     </Tooltip>
                                                 </th>
@@ -1567,14 +1688,13 @@ const Addsale = () => {
                                                         inputRef={inputRef5}
                                                         onKeyDown={handleKeyDown}
                                                         value={qty}
-                                                        onChange={(e) => {
-                                                            const enteredValue = Number(e.target.value, 10);
-                                                            if (enteredValue <= maxQty) {
-                                                                setQty(enteredValue);
-                                                            } else {
-                                                                toast.error("can't add qty more than stock")
-                                                                setQty(maxQty);
+                                                        onKeyPress={(e) => {
+                                                            if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                                                e.preventDefault();
                                                             }
+                                                        }}
+                                                        onChange={(e) => {
+                                                            handleQtyChange(e)
                                                         }}
                                                     />
                                                 </td>
@@ -1634,7 +1754,7 @@ const Addsale = () => {
                                                     }}>
                                                         < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
                                                         <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
-                                                        {item.iteam_name}
+                                                        {tempVal}
                                                     </td>
                                                     <td>{item.unit}</td>
                                                     <td>{item.batch}</td>
@@ -1659,12 +1779,14 @@ const Addsale = () => {
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <label className="font-bold">Total GST : </label>
                                         <label className="font-bold">Total Base : </label>
-                                        <label className="font-bold">Margin : </label>
+                                        <label className="font-bold">Profit : </label>
+                                        <label className="font-bold">Total Net Rate : </label>
                                     </div>
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                         <span style={{ fontWeight: 600 }}> {totalgst} </span>
                                         <span style={{ fontWeight: 600 }}>{totalBase} </span>
-                                        <span style={{ fontWeight: 600 }}>₹ {totalNetRate} ({totalMargin}%)</span>
+                                        <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)}%)</span>
+                                        <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
                                     </div>
                                     {/* <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <div>
@@ -1750,13 +1872,27 @@ const Addsale = () => {
                                             <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                                         </div>
                                         <div className="">
-                                            <Input type="number" value={finalDiscount} onKeyPress={(e) => {
-                                                // Allow numbers, backspace, and decimal point
-                                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                                onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{
+                                            <Input type="number"
+                                                value={finalDiscount}
+                                                onKeyPress={(e) => {
+                                                    // Allow numbers, backspace, and decimal point
+                                                    if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                onChange={(e) => {
+                                                    let newValue = e.target.value
+
+                                                    if (newValue > 100) {
+
+                                                        setFinalDiscount(100)
+                                                    } else if (newValue >= 0) {
+                                                        setFinalDiscount(newValue)
+
+                                                    }
+
+                                                }}
+                                                size="small" style={{
                                                     width: "70px",
                                                     background: "none",
                                                     borderBottom: "1px solid gray",
@@ -1794,7 +1930,7 @@ const Addsale = () => {
                                         </div>
 
                                         <div className="mt-1">
-                                            <span style={{ fontWeight: 800 }}>- {discountAmount}</span>
+                                            <span>-{discountAmount}</span>
 
                                         </div>
                                         <div>
@@ -1838,7 +1974,7 @@ const Addsale = () => {
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={doctorName}
-                                            onChange={(e) => { setDoctorName(e.target.value) }}
+                                            onChange={(e) => { setDoctorName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
                                             variant="outlined"
                                         />
@@ -1850,7 +1986,7 @@ const Addsale = () => {
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={clinic}
-                                            onChange={(e) => { setClinic(e.target.value) }}
+                                            onChange={(e) => { setClinic(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
                                             variant="outlined"
                                         />
@@ -1891,7 +2027,7 @@ const Addsale = () => {
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={customerName}
-                                            onChange={(e) => { setCustomerName(e.target.value) }}
+                                            onChange={(e) => { setCustomerName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
                                             variant="outlined"
                                         />
@@ -1903,7 +2039,7 @@ const Addsale = () => {
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={mobileNo}
-                                            onChange={(e) => { setMobileNo(e.target.value) }}
+                                            onChange={(e) => { setMobileNo(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
                                             variant="outlined"
                                         />
@@ -2050,7 +2186,7 @@ const Addsale = () => {
                 <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                        <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                        <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
                     </div>
                     <div className="flex gap-5 justify-center">
                         <button

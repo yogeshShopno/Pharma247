@@ -44,8 +44,8 @@ const EditSaleReturn = () => {
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
-    const [qty, setQty] = useState(0);
-    const [tempQty, setTempQty] = useState(0)
+    const [qty, setQty] = useState('');
+    const [tempQty, setTempQty] = useState('')
     const [selectedItem, setSelectedItem] = useState([]);
     const [randomNum, setRandomNum] = useState('')
 
@@ -62,7 +62,7 @@ const EditSaleReturn = () => {
     const tableRef = useRef(null);
     const [unit, setUnit] = useState('')
     const [totalAmount, setTotalAmount] = useState(0)
-    const [itemAmount, setItemAmount] = useState(null);
+    const [itemAmount, setItemAmount] = useState(0);
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
     let defaultDate = new Date()
@@ -75,6 +75,8 @@ const EditSaleReturn = () => {
     const [totalBase, setTotalBase] = useState(0);
     const [totalMargin, setTotalMargin] = useState(0);
     const [totalNetRate, setTotalNetRate] = useState(0);
+    const [marginNetProfit, setMarginNetProfit] = useState(0);
+
     const [netAmount, setNetAmount] = useState(0)
     const [roundOff, setRoundOff] = useState(0)
 
@@ -90,9 +92,16 @@ const EditSaleReturn = () => {
     const [uniqueId, setUniqueId] = useState([])
 
     useEffect(() => {
-        const totalAmount = (qty / unit);
+        // const totalAmount = (qty / unit);
+        // const total = parseFloat(base) * totalAmount;
+        // setItemAmount(total.toFixed(2));
+        const totalAmount = qty / unit;
         const total = parseFloat(base) * totalAmount;
-        setItemAmount(total.toFixed(2));
+        if (total) {
+            setItemAmount(total.toFixed(2));
+        } else {
+            setItemAmount(0);
+        }
     }, [base, qty]);
 
     // useEffect(() => {
@@ -178,8 +187,9 @@ const EditSaleReturn = () => {
     const saleBillGetBySaleID = async (doctorData, customerData) => {
         let data = new FormData();
         data.append("id", id);
-        data.append("total_margin", totalMargin);
-        data.append("total_net_rate", totalNetRate);
+        // data.append("total_margin", totalMargin);
+        // data.append("total_net_rate", totalNetRate);
+        // data.append("margin_net_profit", marginNetProfit);
         const params = {
             id: id,
         };
@@ -191,11 +201,12 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
-            console.log('response.data.data :>> ', response.data.data);
+            // console.log('response.data.data :>> ', response.data.data);
             setSaleReturnItems(response.data.data);
             setTotalBase(response.data.data.total_base)
             setTotalMargin(response.data.data.total_margin)
             setTotalNetRate(response.data.data.total_net_rate)
+            setMarginNetProfit(response.data.data.margin_net_profit)
             setSgst(response.data.data.sgst)
             setIgst(response.data.data.igst)
             setCgst(response.data.data.cgst)
@@ -204,7 +215,7 @@ const EditSaleReturn = () => {
 
             const salesItem = response.data.data.sales_iteam;
             if (salesItem && salesItem.length > 0) {
-                console.log('random_number :>> ', salesItem[0].random_number);
+                // console.log('random_number :>> ', salesItem[0].random_number);
                 setRandomNum(salesItem[0].random_number)
             }
 
@@ -264,7 +275,7 @@ const EditSaleReturn = () => {
     const editSaleReturnBill = async () => {
 
         const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(item => item.iss_check === false)
-        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
+        // console.log('hasUncheckedItems :>> ', hasUncheckedItems);
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
 
@@ -274,7 +285,7 @@ const EditSaleReturn = () => {
             data.append("bill_date", saleReturnItems?.bill_date)
             data.append("customer_id", customer?.id);
             data.append("customer_address", address)
-            data.append("doctor_id", doctor?.id);
+            data.append("doctor_id", doctor?.id || '');
             data.append('mrp_total', totalAmount)
             data.append('total_discount', finalDiscount)
             data.append('other_amount', otherAmt)
@@ -284,8 +295,9 @@ const EditSaleReturn = () => {
             data.append('cgst', cgst)
             data.append('sgst', sgst)
             data.append('round_off', roundOff)
-            data.append('total_net_rate', totalNetRate)
-            data.append('total_margin', totalMargin)
+            data.append('net_rate', totalNetRate)
+            data.append('margin', totalMargin)
+            data.append('margin_net_profit', marginNetProfit)
             data.append('payment_name', paymentType)
             data.append('product_list', JSON.stringify(saleReturnItems?.sales_iteam))
             const params = {
@@ -425,6 +437,7 @@ const EditSaleReturn = () => {
         setQty(0)
         setOrder('')
         setLoc('');
+        setItemAmount(0)
         if (isNaN(itemAmount)) {
             setItemAmount(0);
         }
@@ -496,7 +509,7 @@ const EditSaleReturn = () => {
     const handleEditClick = (item) => {
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        console.log(existingItem, "existingItem")
+        // console.log(existingItem, "existingItem")
 
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
@@ -528,6 +541,8 @@ const EditSaleReturn = () => {
 
     }
 
+    
+
     const handleNavigation = (path) => {
         setOpenModal(true);
         setNextPath(path);
@@ -535,34 +550,34 @@ const EditSaleReturn = () => {
 
     const handleLeavePage = async () => {
         let data = new FormData();
-        const params = {
-            random_number: randomNum,
-        };
-
-        axios.post("sales-return-edit-history", data,
-            {
-                params: params,
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        )
-            .then(() => {
-                setOpenModal(false);
-                setUnsavedItems(false); // Reset unsaved changes
-                history.replace(nextPath); // Navigate to the saved path
-            })
-            .catch(error => {
-                console.error("Error deleting items:", error);
-            });
-        // if (response.status === 200) {
-        //     setUnsavedItems(false);
-        //     setOpenModal(false);
-
-        //     setTimeout(() => {
-        //         history.push(nextPath);
-        //     }, 0);
-        // }
-
-    };
+        data.append("id", id); // Append `id` to the FormData object
+        setOpenModal(false); // Close the modal
+        setUnsavedItems(false)
+        try {
+          const params = {
+            random_number: randomNum, // If needed, you can include this in params
+          };
+      
+          // Wait for the response from the server
+          const response = await axios.post("sales-return-edit-history", data, {
+            // params, // Uncomment if `random_number` is required in the request
+            headers: { Authorization: `Bearer ${token}` },
+          });
+      
+          // Check for a successful response
+          if (response.status === 200) {
+            setOpenModal(false); // Close the modal
+            setUnsavedItems(false); // Mark items as saved
+            history.replace(nextPath); // Redirect to the next page
+          }
+        } catch (error) {
+          console.error("Error deleting items:", error);
+      
+          // Optional: Provide user feedback if there’s an error
+          alert("Failed to save changes. Please try again.");
+        }
+      };
+      
 
 
     return (
@@ -887,6 +902,11 @@ const EditSaleReturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={qty}
+                                                            onKeyPress={(e) => {
+                                                                if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
                                                             onChange={(e) => { handleQty(e.target.value) }}
 
                                                             InputProps={{
@@ -943,7 +963,10 @@ const EditSaleReturn = () => {
                                                                     onClick={(event) => {
                                                                         event.stopPropagation(); // Prevent triggering other events
                                                                     }}
-                                                                    onChange={(event) => handleChecked(item.id, event.target.checked)} // Pass checked state to handleChecked
+                                                                    onChange={(event) => {
+                                                                        handleChecked(item.id, event.target.checked);
+                                                                        setUnsavedItems(true)
+                                                                    }} // Pass checked state to handleChecked
                                                                 />
                                                             </td>
 
@@ -974,7 +997,10 @@ const EditSaleReturn = () => {
                                             </div>
 
                                             <div>
-                                                <label className="font-bold">Margin : </label>
+                                                <label className="font-bold">Profit : </label>
+                                            </div>
+                                            <div>
+                                                <label className="font-bold">Total Net Rate : </label>
                                             </div>
                                         </div>
                                         <div class="totals mr-3"
@@ -989,7 +1015,11 @@ const EditSaleReturn = () => {
                                                 <span style={{ fontWeight: 600 }}>{totalBase} </span>     </div>
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>
-                                                    ₹ {totalNetRate}({totalMargin} %)  </span>
+                                                    ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)} %)  </span>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontWeight: 600 }}>
+                                                    ₹ {totalNetRate}  </span>
                                             </div>
 
 
@@ -1090,7 +1120,7 @@ const EditSaleReturn = () => {
                                                         "& .MuiInputBase-input": { textAlign: "end" },
                                                     }}
                                                 />
-                                                <Input
+                                                {/* <Input
                                                     type="number"
                                                     value={!roundOff ? 0 : roundOff.toFixed(2)} onChange={(e) => { setRoundOff(e.target.value) }} size="small"
                                                     style={{
@@ -1107,9 +1137,14 @@ const EditSaleReturn = () => {
                                                         },
                                                         "& .MuiInputBase-input": { textAlign: "end" },
                                                     }}
-                                                />
+                                                /> */}
+
+
                                                 <div>
-                                                    <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                                    <span style={{ fontWeight: 800, fontSize: '22px' }}> {Number(!roundOff ? 0 : roundOff).toFixed(2)}</span>
+                                                </div>
+                                                <div>
+                                                    <span style={{ fontWeight: 800, fontSize: '22px' }}>{Number(!netAmount ? 0 : netAmount).toFixed(2)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1169,23 +1204,19 @@ const EditSaleReturn = () => {
                         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                             <div className="my-4 logout-icon">
                                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                                <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
                             </div>
                             <div className="flex gap-5 justify-center">
                                 <button
                                     type="submit"
                                     className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                                    onClick={handleLeavePage}
-                                >
+                                    onClick={handleLeavePage}>
                                     Yes
                                 </button>
                                 <button
                                     type="button"
                                     className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                                    onClick={() => setOpenModal(false)}
-
-                                >
-
+                                    onClick={() => setOpenModal(false)}>
                                     Cancel
                                 </button>
                             </div>

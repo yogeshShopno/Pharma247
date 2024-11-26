@@ -95,7 +95,7 @@ const EditReturnBill = () => {
     const [isOpenBox, setIsOpenBox] = useState(false);
     const [pendingNavigation, setPendingNavigation] = useState(null);
     const [ItemTotalAmount, setItemTotalAmount] = useState()
-    const [unsavedItems, setUnsavedItems] = useState(false);
+    const [unsavedItems, setUnsavedItems] = useState(true);
     const [nextPath, setNextPath] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [totalGST, setTotalGST] = useState(0)
@@ -127,19 +127,76 @@ const EditReturnBill = () => {
     //         };
     //     }
     // }, [saveValue, history, isOpenBox]);
-    useEffect(() => {
+    // useEffect(() => {
 
-        const initialize = async () => {
-            try {
-                await handleLeavePage();
-            } catch (error) {
-                console.error("Error during initialization:", error);
-            }
+    //     const initialize = async () => {
+    //         try {
+    //             await handleLeavePage();
+    //         } catch (error) {
+    //             console.error("Error during initialization:", error);
+    //         }
+    //     };
+
+    //     initialize();
+    // }, []);
+    
+    useEffect(() => {
+        const initializeData = async () => {
+            setIsLoading(true);
+            const distributors = await listDistributor();
+            await returnBillEditID(distributors);
+            setIsLoading(false);
         };
 
-        initialize();
-    }, []);
+        initializeData();
+        batchListAPI();
+        if (isDeleteAll) {
+            // restoreData();
+        }
+        listOfGst();
+        BankList();
+    }, [id, isDeleteAll]); // Add only necessary dependencies
 
+
+
+
+    useEffect(() => {
+
+        if (otherAmount !== '') {
+            const x = parseFloat(totalAmount) + parseFloat(otherAmount)
+            setRoundOff((x % 1).toFixed(2))
+            roundOff > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+
+        } else {
+            const x = parseFloat(totalAmount).toFixed(2)
+            setRoundOff((x % 1).toFixed(2))
+            roundOff > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
+        }
+
+        if (netAmount < 0) {
+            setOtherAmount(0)
+        }
+
+
+    }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
+
+    useEffect(() => {
+        if (selectedEditItem) {
+            setSearchItem(selectedEditItem.item_name)
+            setUnit(selectedEditItem.weightage);
+            setBatch(selectedEditItem.batch_number);
+            setExpiryDate(selectedEditItem.expiry);
+            setMRP(selectedEditItem.mrp);
+            setQty(selectedEditItem.qty);
+            setFree(selectedEditItem.fr_qty);
+            setPTR(selectedEditItem.ptr);
+            setDisc(selectedEditItem.disocunt);
+            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
+            setLoc(selectedEditItem.location);
+            setItemTotalAmount(selectedEditItem.amount)
+        }
+    }, [selectedEditItem])
+   
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
@@ -158,8 +215,6 @@ const EditReturnBill = () => {
         setIsOpenBox(false);
         setPendingNavigation(null);
     };
-
-
 
     const handleLeavePage = async () => {
         let data = new FormData();
@@ -225,76 +280,7 @@ const EditReturnBill = () => {
     //     listOfGst();
     //     BankList();
     // }, [])
-    useEffect(() => {
-        const initializeData = async () => {
-            setIsLoading(true);
-            const distributors = await listDistributor();
-            await returnBillEditID(distributors);
-            setIsLoading(false);
-        };
-
-        initializeData();
-        batchListAPI();
-        if (isDeleteAll) {
-            // restoreData();
-        }
-        listOfGst();
-        BankList();
-    }, [id, isDeleteAll]); // Add only necessary dependencies
-
-
-
-
-    useEffect(() => {
-        const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
-        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        // const totalAmount = parseFloat((totalBase + (totalBase * gst.name / 100)).toFixed(2));
-        // if (totalAmount) {
-        //     setItemTotalAmount(totalAmount);
-        // } else {
-        //     setItemTotalAmount(0)
-        // }
-        // if (isDeleteAll == false) {
-        //     // restoreData();
-        // }
-    }, [ptr, qty, disc, gst.name,])
-
-    useEffect(() => {
-
-        if (otherAmount !== '') {
-            const x = parseFloat(totalAmount) + parseFloat(otherAmount)
-            setRoundOff((x % 1).toFixed(2))
-            roundOff > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
-
-        } else {
-            const x = parseFloat(totalAmount).toFixed(2)
-            setRoundOff((x % 1).toFixed(2))
-            roundOff > 0.49 ? setNetAmount(parseInt(x) + 1) : setNetAmount(parseInt(x))
-        }
-
-        if (netAmount < 0) {
-            setOtherAmount(0)
-        }
-
-
-    }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
-
-    useEffect(() => {
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
-            setBatch(selectedEditItem.batch_number);
-            setExpiryDate(selectedEditItem.expiry);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setFree(selectedEditItem.fr_qty);
-            setPTR(selectedEditItem.ptr);
-            setDisc(selectedEditItem.disocunt);
-            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
-            setLoc(selectedEditItem.location);
-            setItemTotalAmount(selectedEditItem.amount)
-        }
-    }, [selectedEditItem])
+   
 
     const listDistributor = async () => {
         try {

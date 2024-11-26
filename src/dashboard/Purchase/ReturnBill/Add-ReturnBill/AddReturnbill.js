@@ -549,8 +549,11 @@ const AddReturnbill = () => {
             data.append('payment_type', paymentType ? paymentType : '');
             // data.append('other_amount', otherAmt || 0);
             data.append('other_amount', otherAmount ? otherAmount : '' || 0);
+            
 
             data.append('net_amount', netAmount ? netAmount : '');
+            data.append('net_rate', totalNetRate ? totalNetRate : '');
+
             data.append('round_off', roundOff ? roundOff : '');
             data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
             data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');

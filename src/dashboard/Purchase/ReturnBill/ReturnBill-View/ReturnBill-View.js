@@ -139,6 +139,38 @@ const ReturnView = () => {
     //         console.error("API error:", error);
     //     }
     // }
+    
+    const handleLeavePage = async () => {
+        let data = new FormData();
+            data.append("start_date", localStorage.getItem("StartFilterDate"));
+            data.append("end_date", localStorage.getItem("EndFilterDate"));
+            data.append("distributor_id", localStorage.getItem("DistributorId"));
+            data.append("type", "1");
+            try {
+              const response = await axios.post("purches-return-iteam-histroy", data, 
+                {
+                headers: {Authorization: `Bearer ${token}`},
+              });
+        
+              if (response.status === 200) {
+                // setUnsavedItems(false);
+                // setIsOpenBox(false);
+
+                // setTimeout(() => {
+                //   if (nextPath) {
+                //     history.push(nextPath)
+                //   }
+        
+                // }, 0);
+              }
+            //   setIsOpenBox(false);
+            //   setUnsavedItems(false);
+        
+              // history.replace(nextPath);
+            }catch (error) {
+          console.error("Error deleting items:", error);
+        }
+      };
 
     return (
         <>
@@ -156,7 +188,7 @@ const ReturnView = () => {
                             <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData?.bill_no}</span>
                             {hasPermission(permissions, "purchase return bill edit") && (
                                 <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                    <Button variant="contained" color='primary' onClick={() => { history.push('/return/edit/' + tableData.id) }} >< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                    <Button variant="contained" color='primary' onClick={() => {history.push('/return/edit/' + tableData.id)}} >< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                 </div>)}
                         </div>
                     </div>

@@ -176,7 +176,7 @@ const PurchaseView = () => {
                                             </Button>
                                         )
                                     }
-                                    <Button variant="contained" onClick={() => { handleLeavePage() }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                    <Button variant="contained" onClick={() => {history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                 </div>
                             )}
                         </div>

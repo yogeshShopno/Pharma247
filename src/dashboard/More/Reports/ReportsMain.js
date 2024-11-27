@@ -144,7 +144,7 @@ const ReportsMain = () => {
                                                 <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon"  onClick={(e) => {
+                                                <span className="heart-icon" onClick={(e) => {
                                                     e.stopPropagation();
                                                     toggleFavorite(report);
                                                 }}>
@@ -174,7 +174,7 @@ const ReportsMain = () => {
                                                 <div>
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon"  onClick={(e) => {
+                                                <span className="heart-icon" onClick={(e) => {
                                                     e.stopPropagation();
                                                     toggleFavorite(report);
                                                 }}>
@@ -235,10 +235,10 @@ const ReportsMain = () => {
                                                     <div >
                                                         {report.name}
                                                     </div>
-                                                    <span className="heart-icon"  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleFavorite(report);
-                                                }}>
+                                                    <span className="heart-icon" onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleFavorite(report);
+                                                    }}>
                                                         {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                     </span>
                                                 </li>
@@ -266,7 +266,7 @@ const ReportsMain = () => {
                                                 <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon"  onClick={(e) => {
+                                                <span className="heart-icon" onClick={(e) => {
                                                     e.stopPropagation();
                                                     toggleFavorite(report);
                                                 }}>
@@ -296,7 +296,7 @@ const ReportsMain = () => {
                                                 <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon"  onClick={(e) => {
+                                                <span className="heart-icon" onClick={(e) => {
                                                     e.stopPropagation();
                                                     toggleFavorite(report);
                                                 }}>
@@ -315,27 +315,31 @@ const ReportsMain = () => {
                 </Box>
                 <Box sx={{ flex: 1 }}>
                     <div className="p-6" style={{ width: "100%" }}>
-                        <h2 className="text-xl mb-8 font-semibold">Favourite</h2>
                         {favorites.length > 0 ? (
-                            <ul className="flex flex-wrap">
-                                {favorites.map((favorite) => {
-                                    const report = combinedReports.find(r => r.name === favorite);
-                                    return (
-                                        <li key={favorite} className="font-semibold p-2">
-                                            <div className="custom-box-report" onClick={() => history.push(report.path)}>
-                                                <img src={report?.icon} className="w-1/2 mt-6" alt="Report Icon" />
-                                                <span className="font-semibold text-sm">
-                                                    {favorite}
-                                                </span>
-                                            </div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                            <>
+                                <h2 className="text-xl mb-8 font-semibold">Favourite Reports</h2>
+
+                                <ul className="flex flex-wrap">
+                                    {favorites.map((favorite) => {
+                                        const report = combinedReports.find(r => r.name === favorite);
+                                        return (
+                                            <li key={favorite} className="font-semibold p-2">
+                                                <div className="custom-box-report" onClick={() => history.push(report.path)}>
+                                                    <img src={report?.icon} className="w-1/2 mt-6" alt="Report Icon" />
+                                                    <span className="font-semibold text-sm">
+                                                        {favorite}
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </>
+
 
                         ) : (
                             <>
-                                <p className="text-7xl w-7/12 tracking-wide font-bold" style={{ color: "rgba(17, 17, 17, .1)" }}>Favorite Reports & Save Time</p>
+                                <p className="text-7xl w-full tracking-wide font-bold  my-20" style={{ color: "rgba(17, 17, 17, .1)" }}>Favorite Reports & Save Time</p>
                                 <p className="mt-4 text-xl tracking-wide"><FavoriteIcon className="mb-2 mr-2 text-red-500" />Mark reports as favorites to access them faster.</p>
                             </>
                         )}

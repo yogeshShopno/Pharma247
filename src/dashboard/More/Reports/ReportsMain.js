@@ -140,11 +140,14 @@ const ReportsMain = () => {
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     {accountingReport.map(report => (
                                         <ul className="hover-report" key={report.name}>
-                                            <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div onClick={() => history.push(report.path)}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                <span className="heart-icon"  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                     {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                 </span>
                                             </li>
@@ -167,11 +170,14 @@ const ReportsMain = () => {
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     {stockReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
-                                            <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div onClick={() => history.push(report.path)}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div>
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                <span className="heart-icon"  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                     {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                 </span>
                                             </li>
@@ -194,11 +200,14 @@ const ReportsMain = () => {
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     {marginReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
-                                            <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div onClick={() => history.push(report.path)}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                <span className="heart-icon" onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                     {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                 </span>
                                             </li>
@@ -222,11 +231,14 @@ const ReportsMain = () => {
                                     <div>
                                         {gstReports.map(report => (
                                             <ul className="hover-report" key={report}>
-                                                <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                    <div onClick={() => history.push(report.path)}>
+                                                <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                    <div >
                                                         {report.name}
                                                     </div>
-                                                    <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                    <span className="heart-icon"  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                         {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                     </span>
                                                 </li>
@@ -250,11 +262,14 @@ const ReportsMain = () => {
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     {eNtelligentReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
-                                            <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div onClick={() => history.push(report.path)}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                <span className="heart-icon"  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                     {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                 </span>
                                             </li>
@@ -277,11 +292,14 @@ const ReportsMain = () => {
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     {othersReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
-                                            <li className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div onClick={() => history.push(report.path)}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div >
                                                     {report.name}
                                                 </div>
-                                                <span className="heart-icon" onClick={() => toggleFavorite(report)}>
+                                                <span className="heart-icon"  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
                                                     {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                                                 </span>
                                             </li>

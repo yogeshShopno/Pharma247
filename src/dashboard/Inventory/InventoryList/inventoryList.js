@@ -1264,8 +1264,8 @@ const InventoryList = () => {
             </Button>
           </Box>
         </Box>
-        <Box className="p-5" sx={{ width: "100%" }}>
-          <div className="flex flex-wrap mb-4 relative">
+        <Box className="p-5 " sx={{ width: "100%"  }}>
+          <div className="flex flex-wrap  justify-between mb-4 relative">
             <TextField
               id="outlined-basic"
               value={searchItem}
@@ -1277,8 +1277,8 @@ const InventoryList = () => {
               placeholder="Please search any items.."
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
+                  <InputAdornment position="end">
+                     <SearchIcon />
                   </InputAdornment>
                 ),
                 type: "search",
@@ -1342,9 +1342,9 @@ const InventoryList = () => {
             </div>
           </div>
           {data.length > 0 ? (
-            <TableContainer component={Paper} style={{ width: "100%" }}>
-              <table className="custom-table custom-table-invantory cusror-pointer">
-                <thead>
+            <TableContainer component={Paper} style={{ width: "100%",paddingInline:"25px",paddingBlock:"15px" }}>
+              <table className="custom-table custom-table-invantory  cusror-pointer">
+                <thead >
                   <tr>
                     <th>
                       <input
@@ -1410,10 +1410,12 @@ const InventoryList = () => {
                         onClick={() => sortByColumn("barcode")}
                       />
                     </th>
+                   
+
                     {/* <th onClick={() => sortByColumn("totalptr")}>Total PTR <SwapVertIcon /></th> */}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody >
                   {data.map((item, index) => (
                     <tr
                       key={index}
@@ -1470,13 +1472,30 @@ const InventoryList = () => {
                       >
                         {item.maximum == "null" ? "-" : item.maximum}
                       </td>
-                      <td
+                      <Tooltip
+                        title="Stock Adjusted"
+                        placement="top-start"
+                        arrow>
+                        <td
+                        // onClick={() => {
+                        //   history.push(`/inventoryView/${item.id}`);
+                        // }}
+                         
+                        >
+                        <AssignmentIcon className="mr-5" onClick={(e) => {
+                            e.stopPropagation();
+                            handelAddOpen(item);
+                          }} />
+                        {item.stock == "null" ? "-" : item.stock}
+                        </td>
+                      </Tooltip>
+                      {/* <td
                         onClick={() => {
                           history.push(`/inventoryView/${item.id}`);
                         }}
                       >
                         {item.stock == "null" ? "-" : item.stock}
-                      </td>
+                      </td> */}
                       <td
                         onClick={() => {
                           history.push(`/inventoryView/${item.id}`);
@@ -1498,20 +1517,7 @@ const InventoryList = () => {
                       >
                         {item.barcode == "null" ? "-" : item.barcode}
                       </td>
-                      <Tooltip
-                        title="Stock Adjusted"
-                        placement="top-start"
-                        arrow
-                      >
-                        <td
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handelAddOpen(item);
-                          }}
-                        >
-                          <AssignmentIcon />
-                        </td>
-                      </Tooltip>
+                      
                     </tr>
                   ))}
                 </tbody>

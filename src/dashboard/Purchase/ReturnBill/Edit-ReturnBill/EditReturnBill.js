@@ -323,7 +323,7 @@ const EditReturnBill = () => {
     }
 
     const restoreData = () => {
-        handleLeavePage()
+        // handleLeavePage()
         let data = new FormData();
         data.append("start_date", localStorage.getItem("StartFilterDate"));
         data.append("end_date", localStorage.getItem("EndFilterDate"));
@@ -637,7 +637,7 @@ console.log(initialTotalStock,"initialTotalStock")
         data.append("qty", qty == null ? "0" : qty)
         data.append("disocunt", disc == null ? "0" : disc)
         data.append('gst', gst.id == null ? "0" : gst.id)
-        data.append('location', loc == null ? loc : "0")
+        data.append('location', loc == null ? "0"  :loc )
         data.append('amount', ItemTotalAmount == null ? "0" : ItemTotalAmount)
         data.append("weightage", unit == null ? "0" : unit)
         data.append("unit", unit == null ? "0" : unit)
@@ -652,7 +652,8 @@ console.log(initialTotalStock,"initialTotalStock")
                 },
             })
             ////console.log("response", response);
-            setUnsavedItems(true)
+            setUnsavedItems(true);
+
             setIsDeleteAll(true);
 
             returnBillEditID();
@@ -1500,4 +1501,3 @@ console.log(initialTotalStock,"initialTotalStock")
     )
 }
 export default EditReturnBill
-

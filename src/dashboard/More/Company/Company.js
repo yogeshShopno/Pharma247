@@ -260,10 +260,10 @@ const Company = () => {
                                 <Button variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Company</Button>
                             </div>
                         </div>
-                        <div className="bg-white">
-                            <table className="custom-table">
-                                <thead>
-                                    <tr>
+                        <div className="bg-white" style={{ paddingInline:"25px",paddingBlock:"15px" }}>
+                            <table className="custom-table " >
+                                <thead  style={{ background: "rgba(153, 153, 153, 0.1)"}} >
+                                    <tr >
                                         <th>SR No.</th>
                                         {companyColumns.map((column) => (
                                             <th key={column.id} style={{ minWidth: column.minWidth }}>

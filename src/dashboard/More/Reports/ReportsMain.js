@@ -40,8 +40,11 @@ const ReportsMain = () => {
         // { name: 'Sales Register', path: '/Reports/gst-sales-register', icon: GstIcon },
         { name: 'Sales Bill', path: '/Reports/gst-sales-bills', icon: GstIcon },
         { name: 'Day wise Summary', path: '/Reports/day-wise-summary', icon: GstIcon },
-        { name: 'GSTR-3B', path: '/Reports/gst-GSTR-3B', icon: GstIcon },
         { name: 'GSTR-1', path: '/Reports/gst-GSTR1', icon: GstIcon },
+        { name: 'GSTR-2', path: '/Reports/gst-GSTR2', icon: GstIcon },
+        { name: 'GSTR-3B', path: '/Reports/gst-GSTR-3B', icon: GstIcon },
+
+
         { name: 'HSN wise GST', path: '/Reports/gst-hsn-wise', icon: GstIcon },
         // { name: 'Composition GST Report', path: '/Report/margin-report/item-wise', icon: GstIcon },
     ];
@@ -255,7 +258,7 @@ const ReportsMain = () => {
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
                                     <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img>
-                                    eNtelligent Reports
+                                    entelligent Reports
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>

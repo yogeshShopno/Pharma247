@@ -401,9 +401,9 @@ const ManageExpense = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto mt-4" >
+                            <div  className="overflow-x-auto mt-4" >
                                 <table className="w-full border-collapse custom-table">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             {expenseColumns.map((column) => (
                                                 <th key={column.id} style={{ minWidth: column.minWidth }}>
@@ -412,7 +412,7 @@ const ManageExpense = () => {
                                             ))}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody >
                                         {ManageData?.map((item, index) => (
                                             <tr key={index} >
                                                 {expenseColumns.map((column) => (

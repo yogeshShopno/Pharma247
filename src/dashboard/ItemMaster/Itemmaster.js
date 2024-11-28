@@ -159,7 +159,7 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-        console.log('response :>> ', response);
+        // console.log('response :>> ', response);
         setLocationList(response.data.data);
         // setIsLoading(false);
       })

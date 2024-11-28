@@ -32,6 +32,7 @@ const CustomerList = () => {
     const [amount, setAmount] = useState(0);
     const [area, setArea] = useState('');
     const [address, setAddress] = useState('');
+    const [state, setState] = useState('');
     const [city, setCity] = useState('');
     const [emailId, setEmailId] = useState('');
     const history = useHistory();
@@ -54,6 +55,8 @@ const CustomerList = () => {
         { id: 'email', label: 'Email ID', minWidth: 100 },
         { id: 'area', label: 'Area', minWidth: 100 },
         { id: 'total_amount', label: 'Amount', minWidth: 100 },
+        { id: 'state', label: 'state', minWidth: 100 },
+
         // { id: 'due_amount', label: 'Due Amount', minWidth: 100 },
     ];
     const initialSearchTerms = columns.map(() => '');
@@ -134,6 +137,7 @@ const CustomerList = () => {
         setAmount(0);
         setArea('');
         setCity('');
+        setState('')
         setErrors({});
         setOpenAddPopUp(false);
     }
@@ -150,6 +154,8 @@ const CustomerList = () => {
         setAmount(row.balance);
         setArea(row.area);
         setCity(row.city);
+        setState(row.state);
+
         setAddress(row.address);
     }
 
@@ -164,6 +170,8 @@ const CustomerList = () => {
             //  Add Customer 
             const newErrors = {};
             if (!customer) newErrors.customer = 'Customer is required';
+            if (!state) newErrors.customer = 'State is required';
+
             if (!mobileNo) {
                 newErrors.mobileNo = 'Mobile No is required';
             } else if (!/^\d{10}$/.test(mobileNo)) {
@@ -202,6 +210,8 @@ const CustomerList = () => {
         data.append('area', area);
         data.append('amount', amount);
         data.append('address', address);
+        data.append('state', state);
+
         try {
             await axios.post("create-customer", data, {
                 headers: {
@@ -215,6 +225,8 @@ const CustomerList = () => {
                 setEmailId('');
                 setMobileNo('');
                 setCity('');
+                setState('');
+
                 setArea('');
                 setAmount('');
                 setAddress('');
@@ -281,6 +293,8 @@ const CustomerList = () => {
                 setEmailId('');
                 setMobileNo('');
                 setCity('');
+                setState('');
+
                 setArea('');
                 setAmount('');
                 setAddress('');
@@ -849,6 +863,18 @@ const CustomerList = () => {
                                                         size="small"
                                                         value={address}
                                                         onChange={(e) => { setAddress(e.target.value) }}
+                                                        style={{ minWidth: 250 }}
+
+                                                        variant="outlined"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                                                    <span className="label darkblue_text">State</span>
+                                                    <TextField
+                                                        id="outlined-multiline-static"
+                                                        size="small"
+                                                        value={state}
+                                                        onChange={(e) => { setState(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
                                                         variant="outlined"

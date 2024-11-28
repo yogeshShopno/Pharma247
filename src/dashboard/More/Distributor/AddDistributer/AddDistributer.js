@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Header from '../../../Header';
 import { toast, ToastContainer } from 'react-toastify';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+
 const validate = Yup.object().shape({
     gst_number: Yup.string()
         .required("Gst Number  is required"),
@@ -26,7 +27,7 @@ const validate = Yup.object().shape({
     pincode: Yup.string()
         .min(6, "Too Short!")
         .max(6, "Too Long!"),
-        // .required("Pincode  is required"),
+    // .required("Pincode  is required"),
     // bank_name: Yup.string()
     //     .min(2, "Too Short!")
     //     .max(50, "Too Long!")
@@ -81,6 +82,7 @@ const AddDistributer = () => {
                     bank_name: "",
                     account_no: "",
                     ifsc_code: "",
+                    state: "",
                     food_licence_no: "",
                     distributor_durg_distributor: "",
                     payment_due_days: 15
@@ -94,6 +96,7 @@ const AddDistributer = () => {
                     data.append("email", values.email)
                     data.append("mobile_no", values.mobile_no)
                     data.append("whatsapp", values.whatsapp)
+                    data.append("state", values.state)
                     data.append("address", values.address)
                     data.append("area", values.area)
                     data.append("pincode", values.pincode)
@@ -240,6 +243,24 @@ const AddDistributer = () => {
                                     name="whatsapp"
                                     type="number"
                                 />
+                            </div>
+                            <div>
+                                <label
+                                    className="block text-gray-700 font-bold mb-2"
+                                    htmlFor="state"
+                                >
+                                    state
+                                </label>
+                                <Field
+                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                    name="state"
+                                    type="number"
+                                />
+                                  <ErrorMessage
+                                    name="state"
+                                    component={ErrorMessageComponent}
+                                />
+
                             </div>
 
                         </div>

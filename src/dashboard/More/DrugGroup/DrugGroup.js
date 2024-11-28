@@ -339,7 +339,7 @@ const DrugGroup = () => {
                             </div>
                             <div className="overflow-x-auto mt-4">
                                 <table className="w-full border-collapse custom-table">
-                                    <thead>
+                                    <thead style={{ background: "rgba(153, 153, 153, 0.1)"}}>
                                         <tr>
                                             <th>SR No.</th>
                                             {drugGroupColumns.map((column) => (
@@ -492,7 +492,7 @@ const DrugGroup = () => {
                             {filterData.length > 0 ?
                                 <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
                                     <table className="custom-table" style={{ background: "none" }}>
-                                        <thead>
+                                        <thead  >
                                             <tr>
                                                 <th>Sr No</th>
                                                 {DrugGroupWiseFilter.map((column, index) => (

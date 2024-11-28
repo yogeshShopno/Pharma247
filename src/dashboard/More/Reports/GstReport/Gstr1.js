@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import DatePicker from 'react-datepicker';
 import { addDays, format, subDays, subMonths } from 'date-fns';
+
 const Gstr1 = () => {
     const history = useHistory()
     const [monthDate, setMonthDate] = useState(new Date());
@@ -20,8 +21,13 @@ const Gstr1 = () => {
     const excelIcon = process.env.PUBLIC_URL + '/excel.png';
     const [errors, setErrors] = useState({})
     const [reportType, setReportType] = useState()
+
+
     const downloadPDF = async () => {
         let data = new FormData()
+        data.append("date", monthDate ? format(monthDate, 'MM-yyyy') : '');
+        data.append("type", reportType ? reportType : '');
+
         const params = {
             month_year: monthDate ? format(monthDate, 'MM-yyyy') : '',
         }
@@ -85,24 +91,44 @@ const Gstr1 = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "100px", height: "380px" }}>
-                                <div className="flex gap-4">
+                            <div style={{ marginTop: "100px", height: "400px" }}>
+                                <div className="flex flex-col gap-2">
+
+                                    <span className="flex  sky_text text-lg">Choose Date</span>
+
+                                    <DatePicker
+                                        className='custom-datepicker '
+                                        selected={monthDate}
+                                        onChange={(newDate) => setMonthDate(newDate)}
+                                        dateFormat="MM/yyyy"
+                                        showMonthYearPicker
+                                        sx={{ width: '200px' }}
+
+                                    />
+
+                                    <span className="flex mt-5 sky_text text-lg" >Report Type </span>
+
+                                    <Select
+                                        labelId="dropdown-label"
+                                        id="dropdown"
+                                        value={reportType}
+                                        sx={{ width: '187px' }}
+                                        onChange={(e) => setReportType(e.target.value)}
+                                        size="small"
+                                        displayEmpty
+                                    >
+                                        <MenuItem key={0} value="0">sale</MenuItem>
+                                        <MenuItem key={1} value="1">sale return</MenuItem>
+                                    </Select>
+
+
+
+                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px", marginBlock: "25px" }} onClick={downloadPDF}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+
                                     <div >
-                                        <span className="flex mb-2 sky_text text-lg">Choose Date</span>
-                                        <div style={{ width: "215px" }}>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={monthDate}
-                                                onChange={(newDate) => setMonthDate(newDate)}
-                                                dateFormat="MM/yyyy"
-                                                showMonthYearPicker
-                                            />
-                                        </div>
                                     </div>
                                 </div>
-                                <div style={{ marginTop: "25px" }}>
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={downloadPDF}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-                                </div>
+
                             </div>
                         </div>
 

@@ -23,7 +23,7 @@ const usePermissions = () => {
           const key = Object.keys(permission)[0];
           return permission[key] === true;
         });
-        //console.log('Ayusgh', filteredPermissions);
+        // console.log('permission', filteredPermissions);
 
         setPermissions(filteredPermissions);
       } catch (error) {

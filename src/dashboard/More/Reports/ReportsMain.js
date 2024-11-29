@@ -256,9 +256,9 @@ const ReportsMain = () => {
                     {hasPermission(permissions, "report entelligent") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
+                                <Typography sx={{ my: 0, fontSize: "20px",textTransform: 'none', fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
                                     <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img>
-                                    entelligent Reports
+                                    eNtelligent Reports
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>

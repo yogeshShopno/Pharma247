@@ -43,6 +43,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     let data = new FormData()
+    
     try {
       await axios.post('log-out', data, {
         headers: {

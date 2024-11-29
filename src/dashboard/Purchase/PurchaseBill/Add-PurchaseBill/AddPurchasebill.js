@@ -78,6 +78,7 @@ const AddPurchaseBill = () => {
   const [base, setBase] = useState("");
   const [gst, setGst] = useState({ id: "", name: "" });
   const [batch, setBatch] = useState("");
+  const [barcode, setBarcode] = useState("");
   const [gstList, setGstList] = useState([]);
   const userId = localStorage.getItem("userId");
   const [netRate, setNetRate] = useState("");
@@ -246,6 +247,30 @@ const AddPurchaseBill = () => {
     }
 
     setExpiryDate(inputValue);
+  };
+  
+  const handleBarcode = async () => {
+    let data = new FormData();
+    data.append("barcode", barcode);
+
+    const params = {
+      random_number: localStorage.getItem("RandomNumber"),
+    };
+    try {
+      const res = axios
+        .post("barcode-batch-list?", data, {
+          // params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+console.log(response,"response")
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
   };
 
   const handlePopState = () => {
@@ -629,7 +654,7 @@ const AddPurchaseBill = () => {
     data.append("total_amount", ItemPurchaseList.total_price);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
-    data.append("total_gst", ItemPurchaseList.total_gst)
+    data.append("total_gst", !totalGst?0:totalGst)
     data.append("total_margin", ItemPurchaseList.total_margin)
     data.append("cn_amount", finalCnAmount)
     data.append("round_off", roundOffAmount?.toFixed(2));
@@ -1537,7 +1562,19 @@ const AddPurchaseBill = () => {
                           </td>
                         </tr>
                         <tr>
-                          <td></td>
+                        <td>
+                          <TextField
+                              id="outlined-number"
+                              type="number"
+                              size="small"
+                              value={barcode}
+                              placeholder="scan barcode"
+                              // inputRef={inputRef10}
+                              // onKeyDown={handleKeyDown}
+                              sx={{ width: "250px" }}
+                              onChange={(e) => {setBarcode(e.target.value)}}
+                            />
+                          </td>
                           <td></td>
                           <td></td>
                           <td></td>
@@ -1553,7 +1590,8 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td>
-                            <Button
+                            
+                          <Button
                               variant="contained"
                               color="success"
                               onClick={handleAddButtonClick}
@@ -1562,6 +1600,9 @@ const AddPurchaseBill = () => {
                               Add
                             </Button>
                           </td>
+                          
+
+                         
                         </tr>
 
                         {ItemPurchaseList?.item?.map((item) => (

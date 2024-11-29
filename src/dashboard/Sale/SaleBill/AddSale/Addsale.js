@@ -1548,8 +1548,7 @@ const Addsale = () => {
                                                                         className="cursor-pointer saleTable custom-hover"
                                                                         key={item.id}
                                                                         style={{ border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px' }}
-                                                                        onClick={() => handlePassData(item)}
-                                                                    >
+                                                                        onClick={() => handlePassData(item)}>
                                                                         <td className="text-base font-semibold">{item.iteam_name}</td>
                                                                         <td className="text-base font-semibold">{item.batch_number}</td>
                                                                         <td className="text-base font-semibold">{item.unit}</td>
@@ -1558,8 +1557,7 @@ const Addsale = () => {
                                                                         <td className="text-base font-semibold">{item.location}</td>
                                                                     </tr>
                                                                 ))}
-                                                            </>
-                                                            :
+                                                            </>:
                                                             <tr>
                                                                 <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                             </tr>

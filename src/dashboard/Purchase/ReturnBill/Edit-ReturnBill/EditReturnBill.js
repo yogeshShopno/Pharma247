@@ -718,6 +718,7 @@ console.log(initialTotalStock,"initialTotalStock")
         // data.append('end_date', endDate ? format(endDate, 'MM-yyyy') : '');
         data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
         data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
+        data.append('total_gst', totalGST ? totalGST : '' || 0);
         //    data.append('final_amount', tableData?.net_amount)
         data.append('other_amount', otherAmount == null ? "0" : otherAmount)
         data.append('net_amount', netAmount == null ? "0" : netAmount)

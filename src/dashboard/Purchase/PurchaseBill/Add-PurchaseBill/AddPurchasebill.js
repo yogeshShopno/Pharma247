@@ -86,10 +86,10 @@ const AddPurchaseBill = () => {
   const [ItemId, setItemId] = useState("");
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedEditItemId, setSelectedEditItemId] = useState(null);
+  const [selectedEditItemId, setSelectedEditItemId] = useState(0);
   const [selectedEditItem, setSelectedEditItem] = useState(null);
-  const [unitEditID, setUnitEditID] = useState(null);
-  const [itemEditID, setItemEditID] = useState(null);
+  const [unitEditID, setUnitEditID] = useState(0);
+  const [itemEditID, setItemEditID] = useState(0);
   const [distributorList, setDistributorList] = useState([]);
   const [otherAmt, setOtherAmt] = useState(0);
   const [batchListData, setBatchListData] = useState([]);
@@ -108,6 +108,8 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
+  const [barcodeAdd, setBarcodeAdd] = useState(false);
+
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -140,6 +142,13 @@ const AddPurchaseBill = () => {
 
     initialize();
   }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
 
   // useEffect(() => {
   //   console.log('')
@@ -248,17 +257,80 @@ const AddPurchaseBill = () => {
 
     setExpiryDate(inputValue);
   };
-  
+
+  // const handleBarcode = async () => {
+  //   if (!barcode) {
+  //     return;
+  //   }
+  //   let data = new FormData();
+  //   data.append("barcode", barcode);
+
+  //   const params = {
+  //     random_number: localStorage.getItem("RandomNumber"),
+  //   };
+  //   try {
+  //     const res = axios
+  //       .post("barcode-batch-list?", data, {
+  //         // params: params,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         // console.log(response?.data?.data[0]?.id,"response")
+  //         setValue(response?.data?.data[0]?.id)
+  //         // setValue.unit_id(response.data.data[0]?.unit)
+
+  //         setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+  //         setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+  //         setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+  //         // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+  //         setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
+  //         setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
+  //         setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+  //         setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+  //         setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+  //         setBase(response?.data?.data[0]?.batch_list[0]?.base)
+  //         setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+  //         setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+  //         setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+  //         setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+
+  //         setGst({
+  //           id: response?.data?.data[0]?.batch_list[0]?.gst,
+  //           name: response?.data?.data[0]?.batch_list[0]?.gst_name,
+  //         });
+
+  //         setSelectedEditItemId(response?.data?.data[0]?.id)
+  //         setItemEditID(response.data.data[0]?.id)
+  //         setIsEditMode(true)
+  //         const timeoutId = setTimeout(() => {
+  //           handleAddButtonClick()
+  //         }, 1000);
+  //         return () => clearTimeout(timeoutId);
+
+  //         // handleAddItem()
+
+  //       });
+  //   } catch (error) {
+  //     console.error("API error:", error);
+  //   }
+  // };
   const handleBarcode = async () => {
+    if (!barcode) {
+      return;
+    }
     let data = new FormData();
-    data.append("barcode", barcode);
+    // data.append("barcode", barcode);
+
 
     const params = {
       random_number: localStorage.getItem("RandomNumber"),
     };
     try {
       const res = axios
-        .post("barcode-batch-list?", data, {
+        .post("barcode-batch-list?", { "barcode": barcode }, {
           // params: params,
           headers: {
             "Content-Type": "application/json",
@@ -266,10 +338,86 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
-console.log(response,"response")
+          data.append("unit_id", Number(0));
+          data.append("random_number", localStorage.getItem("RandomNumber"));
+    data.append("item_id", response?.data?.data[0]?.batch_list[0]?.id);
+          data.append("weightage", response?.data?.data[0]?.batch_list[0]?.id ? Number(response?.data?.data[0]?.batch_list[0]?.id) : 1);
+          data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
+          data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+          data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
+          data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
+          data.append("free_qty", 0);
+          data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
+          data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
+          data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
+          data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
+          data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst.id);
+          data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+          data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
+          data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
+          data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+
+
+          // setIsEditMode(true)
+    
+              handleAddBarcodeItem(data)
+
+
+
         });
     } catch (error) {
       console.error("API error:", error);
+    }
+  };
+
+  const handleAddBarcodeItem = async (data) => {
+    const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
+    data.append("total_amount", totalAmount);
+    const params = {
+      id: selectedEditItemId,
+    };
+    try {
+      const response = await axios.post("item-purchase", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      //console.log("response", response);
+      setItemTotalAmount(0);
+      setDeleteAll(true);
+      itemPurchaseList();
+      setUnit("");
+      setBatch("");
+      setExpiryDate("");
+      setMRP("");
+      setQty("");
+      setFree("");
+      setPTR("");
+      setGst("");
+      setDisc("");
+      setBase("");
+      setNetRate("");
+      setSchAmt("");
+      setBatch("");
+      setMargin("");
+      setLoc("");
+
+      if (ItemTotalAmount <= finalCnAmount) {
+        setFinalCnAmount(0);
+        setSelectedRows([]);
+        setCnTotalAmount({});
+      }
+      // setNetAmount(totalAmount)
+      // handleCalNetAmount()
+      setIsEditMode(false);
+      setSelectedEditItemId(null);
+      searchItemField.current.focus();
+      // Reset Autocomplete field
+      setValue("");
+      setSearchItem("");
+      // setAutocompleteDisabled(false);
+    } catch (e) {
+      //console.log(e);
     }
   };
 
@@ -510,6 +658,7 @@ console.log(response,"response")
       data.append("item_id", value.id);
       data.append("unit_id", Number(value.unit_id));
     }
+
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("weightage", unit ? Number(unit) : 1);
     data.append("batch_number", batch ? batch : 0);
@@ -654,7 +803,7 @@ console.log(response,"response")
     data.append("total_amount", ItemPurchaseList.total_price);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
-    data.append("total_gst", !totalGst?0:totalGst)
+    data.append("total_gst", !totalGst ? 0 : totalGst)
     data.append("total_margin", ItemPurchaseList.total_margin)
     data.append("cn_amount", finalCnAmount)
     data.append("round_off", roundOffAmount?.toFixed(2));
@@ -701,7 +850,7 @@ console.log(response,"response")
   };
 
 
-  
+
 
   useEffect(() => {
     if (selectedEditItem) {
@@ -774,7 +923,7 @@ console.log(response,"response")
     // setCnTotalAmount("")
     // setCnAmount(0);
   }
-  
+
 
   const handleDistributorChange = (event, newValue) => {
     setDistributor(newValue);
@@ -787,6 +936,7 @@ console.log(response,"response")
   };
 
   const handleOptionChange = (event, newValue) => {
+    console.log(newValue)
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
@@ -843,7 +993,7 @@ console.log(response,"response")
     setMargin("");
     setLoc("");
   };
- 
+
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)
@@ -863,7 +1013,7 @@ console.log(response,"response")
       setCnAmount((prev) => prev - parseFloat(totalAmount));
     }
   };
- 
+
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1432,7 +1582,7 @@ console.log(response,"response")
                                 }
                               }}
                               onChange={handlePTR}
-                            
+
                             />
                           </td>
                           <td>
@@ -1455,9 +1605,9 @@ console.log(response,"response")
                               onChange={(e) => {
                                 const value = e.target.value;
                                 if (Number(value) > 100) {
-                                  e.target.value = 100; 
+                                  e.target.value = 100;
                                 }
-                                handleSchAmt(e); 
+                                handleSchAmt(e);
                               }}
 
                             />
@@ -1520,7 +1670,7 @@ console.log(response,"response")
                               // inputRef={inputRef12}
                               // onKeyDown={handleKeyDown}
                               size="small"
-                              value={loc.toUpperCase()}
+                              value={loc?.toUpperCase()}
                               // error={!!errors.loc}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
@@ -1562,8 +1712,8 @@ console.log(response,"response")
                           </td>
                         </tr>
                         <tr>
-                        <td>
-                          <TextField
+                          <td>
+                            <TextField
                               id="outlined-number"
                               type="number"
                               size="small"
@@ -1572,7 +1722,10 @@ console.log(response,"response")
                               // inputRef={inputRef10}
                               // onKeyDown={handleKeyDown}
                               sx={{ width: "250px" }}
-                              onChange={(e) => {setBarcode(e.target.value)}}
+                              onChange={(e) => {
+                                setBarcode(e.target.value)
+                              }}
+
                             />
                           </td>
                           <td></td>
@@ -1590,8 +1743,8 @@ console.log(response,"response")
                           <td></td>
                           <td></td>
                           <td>
-                            
-                          <Button
+
+                            <Button
                               variant="contained"
                               color="success"
                               onClick={handleAddButtonClick}
@@ -1600,9 +1753,9 @@ console.log(response,"response")
                               Add
                             </Button>
                           </td>
-                          
 
-                         
+
+
                         </tr>
 
                         {ItemPurchaseList?.item?.map((item) => (
@@ -1624,6 +1777,7 @@ console.log(response,"response")
                               <DeleteIcon
                                 className="delete-icon bg-none"
                                 onClick={() => deleteOpen(item.id)}
+
                               />
                               {item.iteam_name}
                             </td>
@@ -1644,141 +1798,141 @@ console.log(response,"response")
                             <td>{item.total_amount}</td>
                           </tr>
                         ))}
-                       
+
                       </>
                     )}
                   </tbody>
                 </table>
                 <div className="flex gap-10 justify-end mt-4 ">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  flexDirection: "column",
-                }}
-              >
-                <div>
-                  <label className="font-bold">Total GST : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">Total Qty : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">Total Net Profit : </label>
-                </div>
-
-              </div>
-              <div class="totals-purchase  text-end ">
-                <div className="font-bold">
-                  {totalGst ? totalGst : 0}
-                </div>
-
-                <div className="font-bold mt-5">
-                  {totalQty ? totalQty : 0}
-                </div>
-
-                <div className="font-bold mt-5">
-                  {totalNetRate ? totalNetRate : 0}
-                </div>
-
-              </div>
-              <div
-                className="totals"
-                style={{
-                  display: "flex",
-                  gap: "22px",
-                  flexDirection: "column",
-                }}
-              >
-                <div>
-                  <label className="font-bold">Total Amount : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">CN Amount : </label>
-                </div>
-                <div>
-                  <label className="font-bold">Profit : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">Round off : </label>
-                </div>
-                <div>
-                  <label className="font-bold">Net Amount : </label>
-                </div>
-              </div>
-              <div className="totals text-end ">
-                <div>
-                  <span
+                  <div
                     style={{
-                      fontWeight: 600,
+                      display: "flex",
+                      gap: "20px",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <div>
+                      <label className="font-bold">Total GST : </label>
+                    </div>
+
+                    <div>
+                      <label className="font-bold">Total Qty : </label>
+                    </div>
+
+                    <div>
+                      <label className="font-bold">Total Net Profit : </label>
+                    </div>
+
+                  </div>
+                  <div class="totals-purchase  text-end ">
+                    <div className="font-bold">
+                      {totalGst ? totalGst : 0}
+                    </div>
+
+                    <div className="font-bold mt-5">
+                      {totalQty ? totalQty : 0}
+                    </div>
+
+                    <div className="font-bold mt-5">
+                      {totalNetRate ? totalNetRate : 0}
+                    </div>
+
+                  </div>
+                  <div
+                    className="totals"
+                    style={{
+                      display: "flex",
                       gap: "22px",
                       flexDirection: "column",
-
                     }}
                   >
-                    {finalTotalAmount?.toFixed(2)}
-                  </span>
-                </div>
+                    <div>
+                      <label className="font-bold">Total Amount : </label>
+                    </div>
 
-                <div style={{
-                  marginTop: "23px"
-                }}>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      paddingTop: "10px",
-                      color: "red"
-                    }}
-                  >
-                    -{finalCnAmount?.toFixed(2)}
-                  </span>
+                    <div>
+                      <label className="font-bold">CN Amount : </label>
+                    </div>
+                    <div>
+                      <label className="font-bold">Profit : </label>
+                    </div>
 
-                </div>
-                <div style={{
-                  marginTop: "23px"
-                }}>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      paddingTop: "10px",
-                    }}
-                  >
-                    ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
-                  </span>
+                    <div>
+                      <label className="font-bold">Round off : </label>
+                    </div>
+                    <div>
+                      <label className="font-bold">Net Amount : </label>
+                    </div>
+                  </div>
+                  <div className="totals text-end ">
+                    <div>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          gap: "22px",
+                          flexDirection: "column",
 
-                </div>
-                <div style={{ marginTop: "23px" }}>
-                  <span style={{ fontWeight: 600 }}>
+                        }}
+                      >
+                        {finalTotalAmount?.toFixed(2)}
+                      </span>
+                    </div>
 
-                    {roundOffAmount === "0.00"
-                      ? roundOffAmount
-                      : roundOffAmount < 0
-                        ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                        : `${Math.abs(roundOffAmount.toFixed(2))}`}
-                  </span>
-                </div>
-                <div style={{
-                  marginTop: "15px"
-                }}>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "22px",
-                    }}
-                  >
-                    {netAmount.toFixed(2)}
-                  </span>
+                    <div style={{
+                      marginTop: "23px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          paddingTop: "10px",
+                          color: "red"
+                        }}
+                      >
+                        -{finalCnAmount?.toFixed(2)}
+                      </span>
+
+                    </div>
+                    <div style={{
+                      marginTop: "23px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          paddingTop: "10px",
+                        }}
+                      >
+                        ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
+                      </span>
+
+                    </div>
+                    <div style={{ marginTop: "23px" }}>
+                      <span style={{ fontWeight: 600 }}>
+
+                        {roundOffAmount === "0.00"
+                          ? roundOffAmount
+                          : roundOffAmount < 0
+                            ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                            : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                      </span>
+                    </div>
+                    <div style={{
+                      marginTop: "15px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "22px",
+                        }}
+                      >
+                        {netAmount.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
             </div>
-              </div>
-              
-            </div>
-            
+
           </div>
         </div>
         {/* CN amount PopUp Box */}

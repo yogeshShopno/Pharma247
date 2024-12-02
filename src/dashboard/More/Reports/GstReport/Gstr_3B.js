@@ -17,128 +17,101 @@ const Gstr_3B = () => {
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
     const [isLoading, setIsLoading] = useState(false);
+    const [isDownload, setIsDownload] = useState(false);
+
     const token = localStorage.getItem("token")
     const [nonMovingItemData, setNonMovingItemData] = useState([])
     const [showPopup, setShowPopup] = useState(false);
     const excelIcon = process.env.PUBLIC_URL + '/excel.png';
     const [reportType, setReportType] = useState("");
-    const [reportData, setReportData] = useState(null);
+    const [reportData, setReportData] = useState({});
 
     useEffect(() => {
-        if (Array.isArray(reportData) && reportData.length > 0) {
-            exportToCSV();
+        if (reportData && typeof reportData === "object") {
+            if(isDownload){
+                exportToCSV();
+
+            }
         }
     }, [reportData]);
+    
 
     const downloadCSV = async () => {
+        setIsDownload(true);
         try {
             let data = new FormData();
-            data.append("start_date", startDate ? format(startDate, 'yyyy-MM-dd') : '');
-            data.append("end_date", endDate ? format(endDate, 'yyyy-MM-dd') : '');
-
-            const response = await axios.post('gst-three-report?', data, {
+            data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
+            data.append("end_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
+    
+            const response = await axios.post("gst-three-report?", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                responseType: 'blob',
             });
-
-            if (response.status === 200) {
-                setIsLoading(false);
-
-                const text = await response.data.text();
-                const parsedData = JSON.parse(text);
-
+    
+            if (response.status === 200 && response.data) {
+                const parsedData = response.data; 
                 if (parsedData?.data) {
-                    setReportData([parsedData.data]);
+                    setReportData(parsedData.data); 
+                    toast.success("please wait ...downloading is in progress!")
+                    exportToCSV();
                 } else {
-                    toast.error('No data available for the selected criteria.');
+                    toast.error("No data available for the selected criteria.");
                 }
             } else {
-                toast.error('Failed to download records. Please try again.');
+                toast.error("Failed to download records. Please try again.");
             }
         } catch (error) {
             console.error("API error:", error);
-            toast.error('An error occurred while downloading the CSV.');
+            toast.error("An error occurred while downloading the CSV.");
+        } finally {
+            setIsDownload(false);
         }
     };
-
+    
     const exportToCSV = () => {
-        if (!reportData || typeof reportData !== "object" || !reportData.data) {
+        if (!reportData || typeof reportData !== "object") {
             toast.error("No data available for download.");
             return;
         }
     
-        const { invoice_details, summary, gst_liability } = reportData.data;
+        const { invoice_details, summary, gst_liability } = reportData;
     
-        const formattedData = [
-            {
-                Category: "Sales",
-                Total: invoice_details.sales.total,
-                CGST: invoice_details.sales.cgst,
-                SGST: invoice_details.sales.sgst,
-                IGST: invoice_details.sales.igst,
-            },
-            {
-                Category: "Sales Returns",
-                Total: invoice_details.sales_returns.total,
-                CGST: invoice_details.sales_returns.cgst,
-                SGST: invoice_details.sales_returns.sgst,
-                IGST: invoice_details.sales_returns.igst,
-            },
-            {
-                Category: "Purchases",
-                Total: invoice_details.purchases.total,
-                CGST: invoice_details.purchases.cgst,
-                SGST: invoice_details.purchases.sgst,
-                IGST: invoice_details.purchases.igst,
-            },
-            {
-                Category: "Purchase Returns",
-                Total: invoice_details.purchase_returns.total,
-                CGST: invoice_details.purchase_returns.cgst,
-                SGST: invoice_details.purchase_returns.sgst,
-                IGST: invoice_details.purchase_returns.igst,
-            },
-            {
-                Category: "Net Sales",
-                Total: summary.net_sales.taxable_amount,
-                CGST: summary.net_sales.cgst,
-                SGST: summary.net_sales.sgst,
-                IGST: summary.net_sales.igst,
-            },
-            {
-                Category: "Net Purchases",
-                Total: summary.net_purchases.taxable_amount,
-                CGST: summary.net_purchases.cgst,
-                SGST: summary.net_purchases.sgst,
-                IGST: summary.net_purchases.igst,
-            },
-            {
-                Category: "GST Liability",
-                Total: gst_liability.total,
-                CGST: gst_liability.cgst,
-                SGST: gst_liability.sgst,
-                IGST: gst_liability.igst,
-            },
-        ];
+        const headers = ["Category", "Sub Category", "Total", "CGST", "SGST", "IGST"];
+        const csvRows = [headers.join(",")];
     
-        const headers = ["Category", "Total", "CGST", "SGST", "IGST"];
+        csvRows.push("invoice detail,,,,,");
+        csvRows.push(
+            ...[
+                ["", "Sales", invoice_details?.sales?.total || 0, invoice_details?.sales?.cgst || 0, invoice_details?.sales?.sgst || 0, invoice_details?.sales?.igst || 0],
+                ["", "Sales Returns", invoice_details?.sales_returns?.total || 0, invoice_details?.sales_returns?.cgst || 0, invoice_details?.sales_returns?.sgst || 0, invoice_details?.sales_returns?.igst || 0],
+                ["", "Purchases", invoice_details?.purchases?.total || 0, invoice_details?.purchases?.cgst || 0, invoice_details?.purchases?.sgst || 0, invoice_details?.purchases?.igst || 0],
+                ["", "Purchase Returns", invoice_details?.purchase_returns?.total || 0, invoice_details?.purchase_returns?.cgst || 0, invoice_details?.purchase_returns?.sgst || 0, invoice_details?.purchase_returns?.igst || 0],
+            ].map(row => row.join(","))
+        );
+        csvRows.push(","); 
     
-        const csvRows = [
-            headers.join(","), 
-            ...formattedData.map(item => 
-                headers.map(header => item[header] || "").join(",")
-            ),
-        ];
+        csvRows.push("summery,,,,,"); 
+        csvRows.push(
+            ...[
+                ["", "Net Sales", summary?.net_sales?.taxable_amount || 0, summary?.net_sales?.cgst || 0, summary?.net_sales?.sgst || 0, summary?.net_sales?.igst || 0],
+                ["", "Net Purchases", summary?.net_purchases?.taxable_amount || 0, summary?.net_purchases?.cgst || 0, summary?.net_purchases?.sgst || 0, summary?.net_purchases?.igst || 0],
+            ].map(row => row.join(","))
+        );
+        csvRows.push(",");
+    
+        csvRows.push("GST Liability,,,,,"); 
+        csvRows.push(
+            ["", "GST Liability", gst_liability?.total || 0, gst_liability?.cgst || 0, gst_liability?.sgst || 0, gst_liability?.igst || 0].join(",")
+        );
     
         const csvString = csvRows.join("\n");
-    
         const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
         saveAs(blob, "GSTR3B_Report.csv");
     };
     
     
+
     return (
         <>
             <Header />
@@ -164,7 +137,6 @@ const Gstr_3B = () => {
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
                                 <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-3B Report
-
                                 </span>
                                 <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
                             </div>
@@ -208,6 +180,7 @@ const Gstr_3B = () => {
 
                             </div>
                         </div>
+
 
                     </div>
                 </div >

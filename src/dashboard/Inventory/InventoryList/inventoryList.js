@@ -473,6 +473,8 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
+console.log(newValue,"newValue")
+    setSelectedCompany(newValue?.company_name)
   };
 
   const resetAddDialog = () => {
@@ -1627,7 +1629,7 @@ const InventoryList = () => {
                     size="small"
                     disabled
                     value={selectedCompany}
-                    onChange={(e, value) => setSelectedCompany(value)}
+                    // onChange={(e, value) => setSelectedCompany(value)}
                     sx={{ width: 200 }}
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (

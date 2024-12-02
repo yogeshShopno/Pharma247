@@ -694,6 +694,7 @@ useEffect(()=>{
     data.append("total_amount", purchase.total_amount);
     data.append("net_amount", netAmount);
     data.append("total_margin", purchase.total_margin)
+    data.append("total_gst", purchase?.total_gst)
     data.append("round_off", roundOffAmount);
     data.append("cn_amount", finalCnAmount)
     data.append("purches_data", JSON.stringify(purchase.item_list));

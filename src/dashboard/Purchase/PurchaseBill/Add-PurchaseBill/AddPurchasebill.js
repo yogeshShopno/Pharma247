@@ -31,7 +31,7 @@ const debounce = (func, delay) => {
 };
 
 const AddPurchaseBill = () => {
-  const searchItemField = useRef(null);
+  const searchItemField = useRef();
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();
@@ -66,7 +66,7 @@ const AddPurchaseBill = () => {
   const [mrp, setMRP] = useState(null);
   const [ptr, setPTR] = useState(null);
   const [qty, setQty] = useState("");
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState("");
   const [deleteAll, setDeleteAll] = useState(false);
   const [free, setFree] = useState("");
   const [loc, setLoc] = useState("");
@@ -383,7 +383,6 @@ const AddPurchaseBill = () => {
 
           setSelectedEditItemId(response?.data?.data[0]?.id)
           setItemEditID(response.data.data[0]?.id)
-
           // setIsEditMode(true)
 
           // handleAddBarcodeItem(data)
@@ -396,56 +395,56 @@ const AddPurchaseBill = () => {
     }
   };
 
-  const handleAddBarcodeItem = async (data) => {
-    const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
-    // data.append("total_amount", totalAmount);
-    const params = {
-      id: selectedEditItemId,
-    };
-    try {
-      const response = await axios.post("item-purchase", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      //console.log("response", response);
-      setUnsavedItems(true);
-      setItemTotalAmount(0);
-      setDeleteAll(true);
-      itemPurchaseList();
-      setUnit("");
-      setBatch("");
-      setExpiryDate("");
-      setMRP("");
-      setQty("");
-      setFree("");
-      setPTR("");
-      setGst("");
-      setDisc("");
-      setBase("");
-      setNetRate("");
-      setSchAmt("");
-      setBatch("");
-      setMargin("");
-      setLoc("");
+  // const handleAddBarcodeItem = async (data) => {
+  //   const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
+  //   // data.append("total_amount", totalAmount);
+  //   const params = {
+  //     id: selectedEditItemId,
+  //   };
+  //   try {
+  //     const response = await axios.post("item-purchase", data, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     //console.log("response", response);
+  //     setUnsavedItems(true);
+  //     setItemTotalAmount(0);
+  //     setDeleteAll(true);
+  //     itemPurchaseList();
+  //     setUnit("");
+  //     setBatch("");
+  //     setExpiryDate("");
+  //     setMRP("");
+  //     setQty("");
+  //     setFree("");
+  //     setPTR("");
+  //     setGst("");
+  //     setDisc("");
+  //     setBase("");
+  //     setNetRate("");
+  //     setSchAmt("");
+  //     setBatch("");
+  //     setMargin("");
+  //     setLoc("");
 
-      if (ItemTotalAmount <= finalCnAmount) {
-        setFinalCnAmount(0);
-        setSelectedRows([]);
-        setCnTotalAmount({});
-      }
-      // setNetAmount(totalAmount)
-      // handleCalNetAmount()
-      setIsEditMode(false);
-      setSelectedEditItemId(null);
-      searchItemField.current.focus();
-      setValue("");
-      setSearchItem("");
-      // setAutocompleteDisabled(false);
-    } catch (e) {
-      //console.log(e);
-    }
-  };
+  //     if (ItemTotalAmount <= finalCnAmount) {
+  //       setFinalCnAmount(0);
+  //       setSelectedRows([]);
+  //       setCnTotalAmount({});
+  //     }
+  //     // setNetAmount(totalAmount)
+  //     // handleCalNetAmount()
+  //     setIsEditMode(false);
+  //     setSelectedEditItemId(null);
+  //     searchItemField.current.focus();
+  //     setValue("");
+  //     setSearchItem("");
+  //     // setAutocompleteDisabled(false);
+  //   } catch (e) {
+  //     //console.log(e);
+  //   }
+  // };
 
   const handlePopState = () => {
     let data = new FormData();
@@ -674,6 +673,7 @@ const AddPurchaseBill = () => {
     return isValid;
   };
   const handleAddItem = async () => {
+
     setUnsavedItems(true)
     let data = new FormData();
     data.append("user_id", userId);
@@ -729,6 +729,8 @@ const AddPurchaseBill = () => {
           },
         });
       //console.log("response", response);
+
+
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
@@ -759,10 +761,12 @@ const AddPurchaseBill = () => {
       setSelectedEditItemId(null);
 
       searchItemField.current.focus();
-
+      setBarcode("")
+      setValue("")
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
+     
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
@@ -1758,6 +1762,7 @@ const AddPurchaseBill = () => {
                               sx={{ width: "250px" }}
                               onChange={(e) => {
                                 setBarcode(e.target.value)
+
                               }}
 
                             />

@@ -151,6 +151,7 @@ const EditSaleBill = () => {
       const due = givenAmt - calculatedNetAmount;
       setDueAmount(due.toFixed(2));
     }
+
   }, [totalAmount, finalDiscount, otherAmt, givenAmt, tempOtherAmt]);
 
   const handleOtherAmtChange = (e) => {
@@ -177,12 +178,12 @@ const EditSaleBill = () => {
 
   };
   useEffect(() => {
-    const initializeData = async () => {
-      const doctorData = await ListOfDoctor();
-      const customerData = await customerAllData();
-      await saleBillGetBySaleID(doctorData, customerData);
-    };
-    initializeData();
+    // const initializeData = async () => {
+    //   await ListOfDoctor();
+    //   await customerAllData();
+
+    // };
+    // initializeData();
     BankList();
     const handleClickOutside = (event) => {
       if (tableRef.current && !tableRef.current.contains(event.target)) {
@@ -228,15 +229,13 @@ const EditSaleBill = () => {
   const saleBillGetBySaleID = async (doctorData, customerData) => {
 
     let data = new FormData();
-    data.append("id", id);
-    data.append("payment_name", paymentType);
-    const params = {
-      id: id ? id : '',
-      random_number: randomNumber ? randomNumber : '',
-    };
+    data.append("id", id || '');
+    data.append("random_number", randomNumber || '');
+    data.append("total_gst", totalgst || '')
+
+
     try {
       const response = await axios.post("sales-edit-details?", data, {
-        params: params,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -252,7 +251,6 @@ const EditSaleBill = () => {
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
       }
-      // setOtherAmt(record.other_amount)
       const salesItem = response.data.data.sales_item;
       if (salesItem && salesItem.length > 0) {
         const fetchedRandomNumber = salesItem[0].random_number;
@@ -359,6 +357,7 @@ const EditSaleBill = () => {
 
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
+
     setSearchItem(itemName);
     setItemId(newValue?.id);
     setIsVisible(true);
@@ -375,69 +374,24 @@ const EditSaleBill = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const savedState = localStorage.getItem("unsavedItems");
-  //   if (savedState === "false") {
-  //     setUnsavedItems(true);
-  //   }
-
-  //   return () => {
-  //     localStorage.setItem("unsavedItems", unsavedItems.toString());
-  //   };
-  // }, [unsavedItems]);
-
-  // useEffect(() => {
-  //   const params = {
-  //     random_number: randomNumber,
-  //   };
-  //   const response = axios.post("sales-history", {}, {
-  //     params: params,
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   })
-  //   if (response.status === 200) {
-  //     setUnsavedItems(false);
-  //     setOpenModal(false);
-  //     setTimeout(() => {
-  //       history.push(nextPath);
-  //     }, 0);
-  //   }
-  // }, [])
-
-  useEffect(() => {
-    handleLeavePage()
-  }, [])
-
   const handleNavigation = (path) => {
     setOpenModal(true);
     setNextPath(path);
-    // setUnsavedItems(true)
   };
 
   const handleLeavePage = () => {
     let data = new FormData();
-    data.append("random_number",randomNumber)
+    data.append("random_number", randomNumber)
+
     setOpenModal(false);
     setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
+
     try {
-      // const params = {
-      //   random_number: randomNumber,
-      // };
-      const response = axios.post("sales-history", data,   {
-        // params: params,
+      const response = axios.post("sales-history", data, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        // if (response.status === 200) {
-        //   setUnsavedItems(false);
-        //   setOpenModal(false);
-        //   setTimeout(() => {
-        //     history.push(nextPath);
-        //   }, 0);
-        // }
-        // setUnsavedItems(false);
-        // setOpenModal(false);
-        // history.replace(nextPath);
         .then((response) => {
-          // setSaleAllData([]);
           setUnsavedItems(false);
           setOpenModal(false);
           if (nextPath) {
@@ -456,24 +410,17 @@ const EditSaleBill = () => {
 
   const handleEditClick = (item) => {
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
-    // console.log(existingItem, "existingItem")
 
     if (!existingItem) {
-      // If the ID is unique, add the item to uniqueId and set tempQty
       setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-      // console.log('(prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }] :>> ', (prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
       setTempQty(item.qty);
-      // console.log('tempQty :>> ', tempQty);
-      // console.log('item.qty :>> ', item.qty);
     } else {
       setTempQty(existingItem.qty);
 
     }
-    // Set the selected item for editing
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-    // setBase(item.base);
 
     if (selectedEditItem) {
       setSearchItem(selectedEditItem.iteam_name);
@@ -483,30 +430,14 @@ const EditSaleBill = () => {
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
       setQty(item.qty);
+      // setQty(selectedEditItem.qty);
       setBase(item.base);
       // setBase(selectedEditItem.base);
       setOrder(selectedEditItem.order);
-      setGst(selectedEditItem.gst);
+      setGst(selectedEditItem.gst_name);
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
     }
-    // setSelectedEditItem({ ...item });
-    // setIsEditMode(true);
-    // setSelectedEditItemId(item.id);
-    // setBase(item.base);
-    // if (selectedEditItem) {
-    //   setSearchItem(selectedEditItem.iteam_name);
-    //   setUnit(item.unit);
-    //   setBatch(item.batch);
-    //   setExpiryDate(item.exp);
-    //   setMRP(item.mrp);
-    //   setQty(item.qty);
-    //   setOrder(item.order);
-    //   setGst(item.gst);
-    //   setLoc(item.location);
-    //   setItemAmount(item.net_rate);
-    // }
-    // setSearchItem(item.iteam_name);
   };
 
 
@@ -550,6 +481,7 @@ const EditSaleBill = () => {
     setQty(event.qty);
     setLoc(event.location);
   };
+
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setSaleItemId(Id);
@@ -572,20 +504,16 @@ const EditSaleBill = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-          //console.log(data);
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
   useEffect(() => {
-    if (!unsavedItems) {
-      saleBillGetBySaleID();
-    }
+    saleBillGetBySaleID();
   }, [unsavedItems]);
 
   useEffect(() => {
-    // Reset state when component loads
     setUnsavedItems(false);
     setOpenModal(false);
   }, []);
@@ -598,8 +526,7 @@ const EditSaleBill = () => {
       });
       toast.success("Item deleted successfully!");
       setUnsavedItems(true);
-      // setItemSaleList();
-      // Fetch updated data after delete
+      localStorage.setItem("unsavedItems", "true");
       saleBillGetBySaleID();
       setIsDelete(false);
 
@@ -609,34 +536,40 @@ const EditSaleBill = () => {
     }
   };
 
+  useEffect(() => {
+    const unsaved = localStorage.getItem("unsavedItems");
+    if (unsaved === "true") {
+      setUnsavedItems(true);
+    }
+  }, []);
 
 
   const addSaleItem = async () => {
     setUnsavedItems(true);
     let data = new FormData();
     if (isEditMode == true) {
-      data.append("item_id", searchItemID);
+      data.append("item_id", searchItemID ? Number(searchItemID) : '');
     } else {
-      data.append("item_id", value.id);
+      data.append("item_id", value && value.id ? Number(value.id) : '');
     }
-    data.append("qty", qty);
-    data.append("exp", expiryDate);
-    data.append("gst", gst);
-    data.append("mrp", mrp);
-    data.append("unit", unit);
-    data.append("random_number", randomNumber);
-    data.append("batch", batch);
-    data.append("location", loc);
-    data.append("base", base);
-    data.append("amt", itemAmount);
-    data.append("net_rate", itemAmount);
-    data.append("order", order);
-    data.append("total_base", totalBase);
-    data.append("payment_name", paymentType);
-
+    data.append("id", selectedEditItemId ? Number(selectedEditItemId) : '');
+    data.append("qty", qty || '');
+    data.append("exp", expiryDate || '');
+    data.append("gst", gst || '');
+    data.append("mrp", mrp || '');
+    data.append("unit", unit || '');
+    data.append("random_number", Number(randomNumber || ''));
+    data.append("batch", batch || '');
+    data.append("location", loc || '');
+    data.append("base", base || '');
+    data.append("amt", itemAmount || '');
+    data.append("net_rate", itemAmount || '');
+    data.append("order", order || '');
+    data.append("total_base", totalBase || '');
+    data.append("total_gst", totalgst || '')
 
     const params = {
-      id: selectedEditItemId ? selectedEditItemId : '',
+      id: Number(selectedEditItemId) || '',
     };
     try {
       const response = isEditMode
@@ -651,8 +584,6 @@ const EditSaleBill = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-      //console.log("response", response);
-      // saleItemList();
       saleBillGetBySaleID();
       setSearchItem(null);
       setUnit("");
@@ -666,7 +597,6 @@ const EditSaleBill = () => {
       setLoc("");
       setIsEditMode(false);
     } catch (e) {
-      //console.log(e);
     }
   };
 
@@ -709,7 +639,6 @@ const EditSaleBill = () => {
     data.append("bill_date", saleAllData?.bill_date);
     data.append("customer_address", address || "");
     data.append("doctor_id", doctor?.id);
-    // data.append('total_gst', '0')
     data.append("igst", "0");
     data.append("cgst", saleAllData?.cgst);
     data.append("sgst", saleAllData?.sgst);
@@ -741,8 +670,6 @@ const EditSaleBill = () => {
           },
         })
         .then((response) => {
-          //console.log(response.data);
-          //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/salelist");
@@ -751,7 +678,6 @@ const EditSaleBill = () => {
     } catch (error) {
       console.error("API error:", error);
     }
-
   };
 
   const handleDraft = () => {
@@ -774,7 +700,6 @@ const EditSaleBill = () => {
     data.append("bill_date", saleAllData?.bill_date ? saleAllData?.bill_date : "");
     data.append("customer_address", address || "");
     data.append("doctor_id", doctor?.id ? doctor?.id : '');
-    // data.append('total_gst', '0')
     data.append("igst", "0");
     data.append("cgst", saleAllData?.cgst ? saleAllData?.cgst : '');
     data.append("sgst", saleAllData?.sgst ? saleAllData?.sgst : '');
@@ -802,8 +727,6 @@ const EditSaleBill = () => {
           },
         })
         .then((response) => {
-          //console.log(response.data);
-          //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/salelist");
@@ -883,30 +806,12 @@ const EditSaleBill = () => {
                     id="dropdown"
                     value={location.state.paymentType}
                     sx={{ minWidth: "200px" }}
-                    disabled  // Keeps the label disabled
+                    disabled
                     size="small"
                     className="Payment_Value"
                   >
-                    {/* {location.state.paymentType} */}
                   </input>
 
-
-                  {/* <Select
-                    labelId="dropdown-label"
-                    id="dropdown"
-                    value={pickup}
-                    sx={{ minWidth: "150px" }}
-                    onChange={(e) => {
-                      setPickup(e.target.value);
-                    }}
-                    size="small"
-                  >
-                    {pickupOptions.map((option) => (
-                      <MenuItem key={option.id} value={option.label}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select> */}
                   <input
                     labelId="dropdown-label"
                     id="dropdown"
@@ -916,25 +821,7 @@ const EditSaleBill = () => {
                     disabled
                     size="small"
                   >
-                    {/* {pickupOptions.map((option) => (
-                      <MenuItem key={option.id} value={option.label}>
-                        {option.label}
-                      </MenuItem>
-                    ))} */}
                   </input>
-                  {/* <Button
-                    variant="contained"
-                    sx={{
-                      gap: "5px",
-                      display: "flex",
-                      textTransform: "none",
-                      background: "gray",
-                    }}
-                    onClick={handleDraft}
-                  >
-                    <SaveAsIcon /> Draft
-                  </Button> */}
-
                   <Button
                     variant="contained"
                     sx={{
@@ -1073,37 +960,6 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  {/* <div className="detail">
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
-                      }}
-                    >
-                      Address
-                    </span>
-                    <TextField
-                      id="outlined-basic"
-                      value={address}
-                      onChange={(e) => {
-                        setAddress(e.target.value);
-                      }}
-                      sx={{
-                        width: 300,
-                        "& .MuiInputBase-root": {
-                          height: 45,
-                          fontSize: "1.10rem",
-                        },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "10px 14px",
-                        },
-                      }}
-                      variant="outlined"
-                    />
-                  </div> */}
-
                   <div className="detail">
                     <span
                       className="heading mb-2"
@@ -1234,21 +1090,6 @@ const EditSaleBill = () => {
                         )}
                       />
                     </Box>
-                    {/* {customer && (
-                      <Button
-                        variant="contained"
-                        sx={{
-                          textTransform: "none",
-                          background: "rgb(4, 76, 157)",
-                          marginTop: "15px",
-                        }}
-                        size="small"
-                      >
-                        {" "}
-                        <HistoryIcon />
-                        Purchase History
-                      </Button>
-                    )} */}
                     {isVisible && value && !batch && (
                       <Box
                         sx={{
@@ -1435,6 +1276,7 @@ const EditSaleBill = () => {
                               value={base}
                               onChange={(e) => {
                                 setBase(e.target.value);
+                                localStorage.setItem("unsavedItems", "true");
                               }}
                             />
                           </td>
@@ -1463,8 +1305,11 @@ const EditSaleBill = () => {
                                   e.preventDefault();
                                 }
                               }}
-                              // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
-                              onChange={(e) => { handleQty(e.target.value) }}
+                              onChange={(e) => {
+                                handleQty(e.target.value);
+                                localStorage.setItem("unsavedItems", "true");
+
+                              }}
 
                               InputProps={{
                                 inputProps: { style: { textAlign: 'right' } },
@@ -1473,24 +1318,14 @@ const EditSaleBill = () => {
                             />
                           </td>
                           <td>
-                            {/* <TextField
-                                                            id="outlined-number"
-                                                            sx={{ width: '80px' }}
-                                                            size="small"
-                                                            value={order}
-                                                            onChange={(e) => { setOrder(e.target.value) }}
-                                                        /> */}
                             <TextField
                               id="outlined-number"
                               sx={{ width: "80px" }}
                               size="small"
-                              // inputRef={inputRef6}
-                              // onKeyDown={handleKeyDown}
                               value={order}
                               onChange={handleChange}
                             />
                           </td>
-
                           <td>
                             <TextField
                               id="outlined-number"
@@ -1541,13 +1376,22 @@ const EditSaleBill = () => {
                                 gap: "8px",
                               }}
                             >
+                              
                               <BorderColorIcon
                                 color="primary"
                                 className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevents row click
+                                  handleEditClick(item); // Explicitly set value for editing
+                                }}
                               />
+
                               <DeleteIcon
                                 className="delete-icon"
-                                onClick={() => deleteOpen(item.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteOpen(item.id); // Only triggers delete
+                                }}
                               />
                               {item.iteam_name}
                             </td>
@@ -1556,7 +1400,7 @@ const EditSaleBill = () => {
                             <td>{item.exp}</td>
                             <td>{item.mrp}</td>
                             <td>{item.base}</td>
-                            <td>{item.gst}</td>
+                            <td>{item.gst_name}</td>
                             <td>{item.qty}</td>
                             <td>{item.order}</td>
                             <td>{item.location}</td>
@@ -1599,29 +1443,6 @@ const EditSaleBill = () => {
                     flexDirection: "column",
                   }}
                 >
-                  {/* <div>
-                    <label className="font-bold">SGST : </label>
-                  </div>
-                  <div>
-                    <label className="font-bold">CGST : </label>
-                  </div>
-                  <div>
-                    <label className="font-bold">IGST : </label>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "column",
-                    alignItems: "end"
-
-                  }}
-                >
-                  <div className="font-bold">{saleAllData?.sgst}</div>
-                  <div className="font-bold">{saleAllData?.cgst}</div>
-                  // {/* <div className="font-bold">{saleAllData?.igst}</div> 
-                  <div className="font-bold">0.0</div>*/}
                 </div>
                 <div
                   style={{
@@ -1667,22 +1488,15 @@ const EditSaleBill = () => {
                       onChange={(e) => {
                         let newValue = e.target.value;
 
-                        // if (newValue >= 0 && newValue <= 100) {
-                        //   setFinalDiscount(e.target.value);
-                        //   setUnsavedItems(true)
-                        //   localStorage.setItem('RandomNumber', randomNumber)
-                        // }
                         if (newValue > 100) {
                           setFinalDiscount(100);
                         } else if (newValue >= 0) {
-                          // If the value is valid (0 to 100), update the state
                           setFinalDiscount(newValue);
                         }
                         setUnsavedItems(true);
                         localStorage.setItem('RandomNumber', randomNumber);
                       }}
                       onKeyPress={(e) => {
-                        // Allow numbers, backspace, and decimal point
                         if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
                           e.preventDefault();
                         }
@@ -1705,8 +1519,16 @@ const EditSaleBill = () => {
                       value={tempOtherAmt || otherAmt}
                       onChange={handleOtherAmtChange}
                       onKeyPress={(e) => {
-                        // Allow numbers, backspace, and decimal point
+                        const value = e.target.value;
+                        const isMinusKey = e.key === '-';
+
+                        // Allow Backspace and numeric keys
                         if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+
+                        // Allow only one '-' at the beginning of the input value
+                        if (isMinusKey && value.includes('-')) {
                           e.preventDefault();
                         }
                       }}
@@ -1750,8 +1572,6 @@ const EditSaleBill = () => {
                           fontSize: "22px"
                         }}
                       >
-                        {/* {(Number(netAmount) || 0).toFixed(2)} */}
-
                         {Number(netAmount).toFixed(2)}
                       </span>
                     </div>
@@ -1819,11 +1639,11 @@ const EditSaleBill = () => {
       </div>
 
       <Prompt
-        when={unsavedItems} // Triggers only if there are unsaved changes
+        when={unsavedItems}
         message={(location) => {
           handleNavigation(location.pathname);
           setOpenModal(true);
-          return false; // Prevent automatic navigation
+          return false;
         }}
       />
       <div

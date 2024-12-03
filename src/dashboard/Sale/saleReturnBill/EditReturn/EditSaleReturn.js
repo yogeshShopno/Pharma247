@@ -73,6 +73,7 @@ const EditSaleReturn = () => {
     const [sgst, setSgst] = useState('')
     const [igst, setIgst] = useState('')
     const [totalBase, setTotalBase] = useState(0);
+    const [totalGst, setTotalGst] = useState('');
     const [totalMargin, setTotalMargin] = useState(0);
     const [totalNetRate, setTotalNetRate] = useState(0);
     const [marginNetProfit, setMarginNetProfit] = useState(0);
@@ -81,20 +82,16 @@ const EditSaleReturn = () => {
     const [roundOff, setRoundOff] = useState(0)
 
     const [finalDiscount, setFinalDiscount] = useState(0)
-    const [otherAmt, setOtherAmt] = useState(0);
+    const [otherAmt, setOtherAmt] = useState('');
     const [paymentType, setPaymentType] = useState('cash');
     const [bankData, setBankData] = useState([]);
 
-    // const [randomNumber, setRandomNumber] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
     const [uniqueId, setUniqueId] = useState([])
 
     useEffect(() => {
-        // const totalAmount = (qty / unit);
-        // const total = parseFloat(base) * totalAmount;
-        // setItemAmount(total.toFixed(2));
         const totalAmount = qty / unit;
         const total = parseFloat(base) * totalAmount;
         if (total) {
@@ -104,17 +101,11 @@ const EditSaleReturn = () => {
         }
     }, [base, qty]);
 
-    // useEffect(() => {
-    //     const discountAmount = (totalAmount * finalDiscount) / 100;
-    //     const finalAmount = totalAmount - discountAmount;
-    //     setNetAmount(finalAmount.toFixed(2));
-    // }, [totalAmount, finalDiscount]);
-
     useEffect(() => {
         if (totalAmount < -otherAmt) {
-            setOtherAmt(0);
+            setOtherAmt('');
         }
-        const finalAmount = Number(totalAmount) + Number(otherAmt);
+        const finalAmount = Number(totalAmount) + Number(otherAmt || 0);
         const decimalPart = Number((finalAmount % 1).toFixed(2));
         const roundedDecimal = decimalPart;
         if (decimalPart < 0.50) {
@@ -140,8 +131,6 @@ const EditSaleReturn = () => {
     }, []);
 
     useEffect(() => {
-        // const RandomNumber = localStorage.getItem('RandomNumber')
-        // setRandomNumber(RandomNumber)
         const initializeData = async () => {
             const doctorData = await ListOfDoctor();
             const customerData = await customerAllData();
@@ -187,9 +176,6 @@ const EditSaleReturn = () => {
     const saleBillGetBySaleID = async (doctorData, customerData) => {
         let data = new FormData();
         data.append("id", id);
-        // data.append("total_margin", totalMargin);
-        // data.append("total_net_rate", totalNetRate);
-        // data.append("margin_net_profit", marginNetProfit);
         const params = {
             id: id,
         };
@@ -201,7 +187,6 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
-            // console.log('response.data.data :>> ', response.data.data);
             setSaleReturnItems(response.data.data);
             setTotalBase(response.data.data.total_base)
             setTotalMargin(response.data.data.total_margin)
@@ -212,10 +197,10 @@ const EditSaleReturn = () => {
             setCgst(response.data.data.cgst)
             setAddress(response.data.data.customer_address)
             setTotalAmount(response.data.data.sales_amount)
+            setTotalGst(response.data.data.total_gst)
 
             const salesItem = response.data.data.sales_iteam;
             if (salesItem && salesItem.length > 0) {
-                // console.log('random_number :>> ', salesItem[0].random_number);
                 setRandomNum(salesItem[0].random_number)
             }
 
@@ -275,7 +260,6 @@ const EditSaleReturn = () => {
     const editSaleReturnBill = async () => {
 
         const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(item => item.iss_check === false)
-        // console.log('hasUncheckedItems :>> ', hasUncheckedItems);
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
 
@@ -291,6 +275,7 @@ const EditSaleReturn = () => {
             data.append('other_amount', otherAmt)
             data.append('net_amount', netAmount)
             data.append('total_base', totalBase)
+            data.append('total_gst', totalGst)
             data.append('igst', igst)
             data.append('cgst', cgst)
             data.append('sgst', sgst)
@@ -300,6 +285,7 @@ const EditSaleReturn = () => {
             data.append('margin_net_profit', marginNetProfit)
             data.append('payment_name', paymentType)
             data.append('product_list', JSON.stringify(saleReturnItems?.sales_iteam))
+
             const params = {
                 id: id
             }
@@ -356,7 +342,6 @@ const EditSaleReturn = () => {
                 },
             }).then((response) => {
 
-                //console.log("response", response);
                 saleBillGetBySaleID();
                 setSearchItem(null)
                 setUnit('')
@@ -372,7 +357,6 @@ const EditSaleReturn = () => {
 
         }
         catch (e) {
-            //console.log(e)
         }
     }
 
@@ -400,6 +384,13 @@ const EditSaleReturn = () => {
             }
         };
     }
+
+    useEffect(() => {
+        const unsaved = localStorage.getItem("unsavedEditReturnItems");
+        if (unsaved === "true") {
+            setUnsavedItems(true);
+        }
+    }, []);
 
     const handleUpdate = () => {
         setUnsavedItems(false);
@@ -509,10 +500,8 @@ const EditSaleReturn = () => {
     const handleEditClick = (item) => {
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        // console.log(existingItem, "existingItem")
 
         if (!existingItem) {
-            // If the ID is unique, add the item to uniqueId and set tempQty
             setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
             setTempQty(item.qty);
         } else {
@@ -541,7 +530,7 @@ const EditSaleReturn = () => {
 
     }
 
-    
+
 
     const handleNavigation = (path) => {
         setOpenModal(true);
@@ -551,33 +540,33 @@ const EditSaleReturn = () => {
     const handleLeavePage = async () => {
         let data = new FormData();
         data.append("id", id); // Append `id` to the FormData object
+        data.append('random_number', randomNum)
         setOpenModal(false); // Close the modal
         setUnsavedItems(false)
+        localStorage.removeItem("unsavedItems");
+
         try {
-          const params = {
-            random_number: randomNum, // If needed, you can include this in params
-          };
-      
-          // Wait for the response from the server
-          const response = await axios.post("sales-return-edit-history", data, {
-            // params, // Uncomment if `random_number` is required in the request
-            headers: { Authorization: `Bearer ${token}` },
-          });
-      
-          // Check for a successful response
-          if (response.status === 200) {
-            setOpenModal(false); // Close the modal
-            setUnsavedItems(false); // Mark items as saved
-            history.replace(nextPath); // Redirect to the next page
-          }
+
+            // Wait for the response from the server
+            const response = await axios.post("sales-return-edit-history", data, {
+                // params, // Uncomment if `random_number` is required in the request
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            // Check for a successful response
+            if (response.status === 200) {
+                setOpenModal(false); // Close the modal
+                setUnsavedItems(false); // Mark items as saved
+                history.replace(nextPath); // Redirect to the next page
+            }
         } catch (error) {
-          console.error("Error deleting items:", error);
-      
-          // Optional: Provide user feedback if there’s an error
-          alert("Failed to save changes. Please try again.");
+            console.error("Error deleting items:", error);
+
+            // Optional: Provide user feedback if there’s an error
+            alert("Failed to save changes. Please try again.");
         }
-      };
-      
+    };
+
 
 
     return (
@@ -866,7 +855,11 @@ const EditSaleReturn = () => {
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
-                                                            onChange={(e) => { setBase(e.target.value) }}
+                                                            onChange={(e) => {
+                                                                setBase(e.target.value);
+                                                                localStorage.setItem("unsavedEditReturnItems", "true");
+
+                                                            }}
 
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
@@ -907,7 +900,11 @@ const EditSaleReturn = () => {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
-                                                            onChange={(e) => { handleQty(e.target.value) }}
+                                                            onChange={(e) => {
+                                                                handleQty(e.target.value);
+                                                                localStorage.setItem("unsavedEditReturnItems", "true");
+
+                                                            }}
 
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
@@ -993,6 +990,9 @@ const EditSaleReturn = () => {
                                     <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap"  >
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <div>
+                                                <label className="font-bold">Total GST : </label>
+                                            </div>
+                                            <div>
                                                 <label className="font-bold">Total Base : </label>
                                             </div>
 
@@ -1012,6 +1012,8 @@ const EditSaleReturn = () => {
 
                                             }}>
                                             <div>
+                                                <span style={{ fontWeight: 600 }}>{totalGst} </span>     </div>
+                                            <div>
                                                 <span style={{ fontWeight: 600 }}>{totalBase} </span>     </div>
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>
@@ -1025,29 +1027,6 @@ const EditSaleReturn = () => {
 
                                         </div>
 
-                                        {/* <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
-                                            <div>
-                                                <label className="font-bold">SGST : </label>
-                                            </div>
-                                            <div>
-                                                <label className="font-bold">CGST: </label>
-                                            </div>
-                                            <div>
-                                                <label className="font-bold">IGST: </label>
-                                            </div>
-
-                                        </div> */}
-                                        {/* <div style={{ display: 'flex', gap: '22px', flexDirection: 'column' }}>
-                                            <div className="font-bold">
-                                                {sgst}
-                                            </div>
-                                            <div className="font-bold">
-                                                {cgst}
-                                            </div>
-                                            <div className="font-bold">
-                                                {igst}
-                                            </div>
-                                        </div> */}
                                         <div
                                             style={{
                                                 display: "flex",
@@ -1058,9 +1037,6 @@ const EditSaleReturn = () => {
                                             <div>
                                                 <label className="font-bold">Total Amount : </label>
                                             </div>
-                                            {/* <div>
-                                                <label className="font-bold">Discount % : </label>
-                                            </div> */}
                                             <div>
                                                 <label className="font-bold">Other Amount : </label>
                                             </div>
@@ -1083,16 +1059,23 @@ const EditSaleReturn = () => {
                                                 <div>
                                                     <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                                                 </div>
-                                                {/* <div>
-                                                <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px'
-                                                    },
-                                                }} />
-                                            </div> */}
                                                 <Input
                                                     type="number"
                                                     value={otherAmt}
+                                                    onKeyPress={(e) => {
+                                                        const value = e.target.value;
+                                                        const isMinusKey = e.key === '-';
+
+                                                        // Allow Backspace and numeric keys
+                                                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                            e.preventDefault();
+                                                        }
+
+                                                        // Allow only one '-' at the beginning of the input value
+                                                        if (isMinusKey && value.includes('-')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
                                                     onChange={(e) => {
                                                         setUnsavedItems(true);
                                                         const x = e.target.value
@@ -1120,26 +1103,6 @@ const EditSaleReturn = () => {
                                                         "& .MuiInputBase-input": { textAlign: "end" },
                                                     }}
                                                 />
-                                                {/* <Input
-                                                    type="number"
-                                                    value={!roundOff ? 0 : roundOff.toFixed(2)} onChange={(e) => { setRoundOff(e.target.value) }} size="small"
-                                                    style={{
-                                                        width: "70px",
-                                                        background: "none",
-                                                        borderBottom: "1px solid gray",
-                                                        outline: "none",
-                                                        justifyItems: "end"
-
-                                                    }}
-                                                    sx={{
-                                                        "& .MuiInputBase-root": {
-                                                            height: "35px",
-                                                        },
-                                                        "& .MuiInputBase-input": { textAlign: "end" },
-                                                    }}
-                                                /> */}
-
-
                                                 <div>
                                                     <span style={{ fontWeight: 800, fontSize: '22px' }}> {Number(!roundOff ? 0 : roundOff).toFixed(2)}</span>
                                                 </div>

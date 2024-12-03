@@ -755,7 +755,7 @@ const EditPurchaseBill = () => {
     // setCnAmount(0)
   }
   const handleKeyDown = (event) => {
-    
+
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current) {
@@ -1320,13 +1320,13 @@ const EditPurchaseBill = () => {
                             value={batch}
                             sx={{ width: "90px" }}
                             error={!!errors.batch}
-                            
+
                             onChange={(e) => {
                               const value = e.target.value.replace(/[eE]/g, '');
 
                               setBatch(Number(value));
                             }}
-                            
+
                           />
                         </td>
                         <td>
@@ -1339,8 +1339,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                
+                              handleKeyDown(e);
+                            }}
                             error={!!errors.expiryDate}
                             value={expiryDate}
                             onChange={handleExpiryDateChange}
@@ -1359,8 +1359,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={mrp}
+                              handleKeyDown(e);
+                            }} value={mrp}
                             onChange={(e) => {
                               setMRP(e.target.value);
                             }}
@@ -1377,8 +1377,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               error={!!errors.qty}
+                              handleKeyDown(e);
+                            }} error={!!errors.qty}
                             value={qty}
                             onChange={(e) => {
                               const value = e.target.value;
@@ -1399,8 +1399,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               onChange={(e) => {
+                              handleKeyDown(e);
+                            }} onChange={(e) => {
                               setFree(e.target.value);
                             }}
                           />
@@ -1416,8 +1416,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={ptr}
+                              handleKeyDown(e);
+                            }} value={ptr}
                             error={!!errors.ptr}
                             onChange={handlePTR}
                           />
@@ -1433,8 +1433,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={disc}
+                              handleKeyDown(e);
+                            }} value={disc}
                             error={!!errors.disc}
                             onChange={handleSchAmt}
                           />
@@ -1449,8 +1449,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               value={schAmt}
+                              handleKeyDown(e);
+                            }} value={schAmt}
                             disabled
                           />
                         </td>
@@ -1465,8 +1465,8 @@ const EditPurchaseBill = () => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
-                              handleKeyDown(e); 
-                            }}                               disabled
+                              handleKeyDown(e);
+                            }} disabled
                             sx={{ width: "80px" }}
                             onChange={(e) => {
                               setBase(e.target.value);
@@ -1539,8 +1539,8 @@ const EditPurchaseBill = () => {
                                 if (['e', 'E'].includes(e.key)) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e); 
-                              }}   
+                                handleKeyDown(e);
+                              }}
                             />
                           </td>
                         </td>
@@ -1578,11 +1578,19 @@ const EditPurchaseBill = () => {
                           >
                             <BorderColorIcon
                               color="primary"
-                              onClick={() => handleEditClick(item)}
+                              className="cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditClick(item); 
+                              }}
                             />
+
                             <DeleteIcon
                               className="delete-icon"
-                              onClick={() => deleteOpen(item.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteOpen(item.id); 
+                              }}
                             />
                             {item.item_name}
                           </td>
@@ -1670,7 +1678,7 @@ const EditPurchaseBill = () => {
                       </span>
                     </div>
                     <div style={{ marginTop: "2%" }}>
-                      <span style={{ fontWeight: 600 ,color: "red" }}>
+                      <span style={{ fontWeight: 600, color: "red" }}>
                         {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>

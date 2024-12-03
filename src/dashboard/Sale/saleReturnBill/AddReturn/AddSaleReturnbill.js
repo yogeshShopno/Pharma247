@@ -86,7 +86,7 @@ const Salereturn = () => {
     const [totalGst, setTotalGst] = useState(0);
     const [totalBase, setTotalBase] = useState(0);
     const [givenAmt, setGivenAmt] = useState(null);
-    const [otherAmt, setOtherAmt] = useState(0);
+    const [otherAmt, setOtherAmt] = useState('');
     const [roundOff, setRoundOff] = useState(0);
     const [netAmount, setNetAmount] = useState(0);
     const [finalDiscount, setFinalDiscount] = useState(0);
@@ -170,9 +170,9 @@ const Salereturn = () => {
 
     useEffect(() => {
         if (totalAmount < -otherAmt) {
-            setOtherAmt(0);
+            setOtherAmt('');
         }
-        const finalAmount = Number(totalAmount) + Number(otherAmt);
+        const finalAmount = Number(totalAmount) + Number(otherAmt || 0);
         const decimalPart = Number((finalAmount % 1).toFixed(2));
         const roundedDecimal = decimalPart;
         if (decimalPart < 0.50) {
@@ -185,22 +185,10 @@ const Salereturn = () => {
         }
     }, [totalAmount, otherAmt]);
 
-    // useEffect(() => {
-    //     const discountAmount = (totalAmount * finalDiscount) / 100;
-    //     const finalAmount = totalAmount - discountAmount;
-    //     setNetAmount(finalAmount.toFixed(2));
-    // }, [totalAmount, finalDiscount]);
-
     const handleCustomerOption = (event, newValue) => {
         setUnsavedItems(true)
         setCustomer(newValue);
-        // customerAllData(newValue);
     };
-    // const handleCustomerInput = (event, newInputValue) => {
-    //     setCustomer(newInputValue);
-    //     //console.log(searchItem)
-    //     customerAllData(newInputValue);
-    // };
 
     const BankList = async () => {
         try {
@@ -400,6 +388,8 @@ const Salereturn = () => {
             data.append("base", base ? base : '')
             data.append('amt', itemAmount ? itemAmount : '')
             data.append('net_rate', itemAmount ? itemAmount : '')
+            data.append("total_gst", totalGst || '')
+
             // data.append("order", order)
             const params = {
                 id: selectedEditItemId || ''
@@ -424,7 +414,6 @@ const Salereturn = () => {
                 })
             }
             catch (e) {
-                //console.log(e)
             }
         }
     }
@@ -472,16 +461,11 @@ const Salereturn = () => {
     }
 
     const submitSaleReturnData = async () => {
-        // console.log('totalMargin :>> ', totalMargin);
-        // console.log('totalNetRate :>> ', totalNetRate);
-
         const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
-        // console.log('hasUncheckedItems :>> ', hasUncheckedItems);
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
 
         } else {
-            // console.log('+++++++++++++');
             let data = new FormData();
             data.append("bill_no", localStorage.getItem('SaleRetunBillNo') ? localStorage.getItem('SaleRetunBillNo') : '');
             data.append("bill_date", (selectedDate ? selectedDate.format('YYYY-MM-DD') : ''));
@@ -513,8 +497,6 @@ const Salereturn = () => {
                     },
                 }
                 ).then((response) => {
-                    //console.log(response.data);
-                    //console.log("response===>", response.data);
                     toast.success(response.data.message);
                     setUnsavedItems(false);
 
@@ -582,14 +564,15 @@ const Salereturn = () => {
     }
 
     const handleEditClick = (item) => {
-        const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        if (!existingItem) {
-            // If the ID is unique, add the item to uniqueId and set tempQty
-            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-            setTempQty(item.qty);
-        } else {
-            setTempQty(existingItem.qty);
-        }
+        // const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        // if (!existingItem) {
+        //     setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.total_stock}]);
+        //     setTempQty(item.total_stock);
+        // } else {
+        //     setTempQty(existingItem.total_stock);
+        // }
+        setTempQty(item.total_stock);
+
         setSelectedEditItem(item);
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
@@ -1223,7 +1206,7 @@ const Salereturn = () => {
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
 
                                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                            <span style={{ fontWeight: 600 }}>{totalGst}</span>
+                                            <span style={{ fontWeight: 600 }}>{totalGst || 0}</span>
                                             <span style={{ fontWeight: 600 }}>{totalBase}</span>
                                             <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)} %) </span>
                                             <span style={{ fontWeight: 600 }}>₹ {totalNetRate} </span>
@@ -1259,6 +1242,20 @@ const Salereturn = () => {
                                         <div>
                                             <Input
                                                 value={otherAmt}
+                                                onKeyPress={(e) => {
+                                                    const value = e.target.value;
+                                                    const isMinusKey = e.key === '-';
+                                            
+                                                    // Allow Backspace and numeric keys
+                                                    if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                        e.preventDefault();
+                                                    }
+                                            
+                                                    // Allow only one '-' at the beginning of the input value
+                                                    if (isMinusKey && value.includes('-')) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
                                                 onChange={(e) => {
                                                     setUnsavedItems(true);
                                                     const x = e.target.value

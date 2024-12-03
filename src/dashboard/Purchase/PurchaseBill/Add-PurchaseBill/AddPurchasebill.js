@@ -83,7 +83,7 @@ const AddPurchaseBill = () => {
   const userId = localStorage.getItem("userId");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
-  const [ItemId, setItemId] = useState("");
+  const [ItemId, setItemId] = useState(0);
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(0);
@@ -108,7 +108,6 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
-  const [barcodeAdd, setBarcodeAdd] = useState(false);
 
 
   const paymentOptions = [
@@ -338,29 +337,56 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
-          data.append("unit_id", Number(0));
-          data.append("random_number", localStorage.getItem("RandomNumber"));
-    data.append("item_id", response?.data?.data[0]?.batch_list[0]?.id);
-          data.append("weightage", response?.data?.data[0]?.batch_list[0]?.id ? Number(response?.data?.data[0]?.batch_list[0]?.id) : 1);
-          data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
-          data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
-          data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
-          data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
-          data.append("free_qty", 0);
-          data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
-          data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
-          data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
-          data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
-          data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst.id);
-          data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
-          data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
-          data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
-          data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+          // data.append("unit_id", Number(0));
+          // data.append("random_number", localStorage.getItem("RandomNumber"));
+          // data.append("item_id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+          // data.append("weightage", response?.data?.data[0]?.batch_list[0]?.unit ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 1);
+          // data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
+          // data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+          // data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
+          // data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
+          // data.append("free_qty", 0);
+          // data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
+          // data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
+          // data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
+          // data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
+          // data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst ? response?.data?.data[0]?.batch_list[0]?.gst : 0);
+          // data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+          // data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
+          // data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
+          // data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
 
+          // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
+          // setValue.unit_id(response.data.data[0]?.unit)
+
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
+          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
+          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
+          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setGst({
+            id: response?.data?.data[0]?.batch_list[0]?.gst,
+            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
+          });
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+
+          setSelectedEditItemId(response?.data?.data[0]?.id)
+          setItemEditID(response.data.data[0]?.id)
 
           // setIsEditMode(true)
-    
-              handleAddBarcodeItem(data)
+
+          // handleAddBarcodeItem(data)
 
 
 
@@ -372,7 +398,7 @@ const AddPurchaseBill = () => {
 
   const handleAddBarcodeItem = async (data) => {
     const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
-    data.append("total_amount", totalAmount);
+    // data.append("total_amount", totalAmount);
     const params = {
       id: selectedEditItemId,
     };
@@ -383,6 +409,7 @@ const AddPurchaseBill = () => {
         },
       });
       //console.log("response", response);
+      setUnsavedItems(true);
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
@@ -412,7 +439,6 @@ const AddPurchaseBill = () => {
       setIsEditMode(false);
       setSelectedEditItemId(null);
       searchItemField.current.focus();
-      // Reset Autocomplete field
       setValue("");
       setSearchItem("");
       // setAutocompleteDisabled(false);
@@ -605,8 +631,8 @@ const AddPurchaseBill = () => {
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
       const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns month from 0 to 11
-      const currentYear = currentDate.getFullYear() % 100; // get last two digits of year
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
 
       if (
         expYear < currentYear ||
@@ -655,8 +681,16 @@ const AddPurchaseBill = () => {
       data.append("item_id", itemEditID);
       data.append("unit_id", unitEditID);
     } else {
-      data.append("item_id", value.id);
-      data.append("unit_id", Number(value.unit_id));
+      if (barcode) {
+        data.append("item_id", ItemId);
+        data.append("unit_id", Number(0));
+
+      } else {
+        data.append("item_id", value.id);
+
+        data.append("unit_id", Number(value.unit_id));
+      }
+
     }
 
     data.append("random_number", localStorage.getItem("RandomNumber"));
@@ -1729,7 +1763,8 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td></td>
-                          <td></td>
+
+                          <td> </td>
                           <td></td>
                           <td></td>
                           <td></td>

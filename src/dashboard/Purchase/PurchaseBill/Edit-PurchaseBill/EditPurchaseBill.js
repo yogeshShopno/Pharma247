@@ -881,10 +881,6 @@ useEffect(()=>{
     // setCnAmount(0)
   }
   const handleKeyDown = (event) => {
-<<<<<<< HEAD
-
-=======
->>>>>>> main
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current) {
@@ -1434,12 +1430,6 @@ useEffect(()=>{
                             value={batch}
                             sx={{ width: "90px" }}
                             error={!!errors.batch}
-<<<<<<< HEAD
-
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[eE]/g, '');
-=======
->>>>>>> main
 
                             onChange={(e) => {
                               setBatch(e.target.value);
@@ -1487,13 +1477,6 @@ useEffect(()=>{
                               ) {
                                 e.preventDefault();
                               }
-<<<<<<< HEAD
-                              handleKeyDown(e);
-                            }} value={mrp}
-                            onChange={(e) => {
-                              setMRP(e.target.value);
-=======
->>>>>>> main
                             }}
                           />
                         </td>
@@ -1504,15 +1487,6 @@ useEffect(()=>{
                             sx={{ width: "80px" }}
                             size="small"
                             inputRef={inputRef5}
-<<<<<<< HEAD
-                            onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
-                                e.preventDefault();
-                              }
-                              handleKeyDown(e);
-                            }} error={!!errors.qty}
-=======
->>>>>>> main
                             value={qty}
                             onChange={(e) => {
                               const value = e.target.value.replace(/[^0-9]/g, '');
@@ -1549,12 +1523,6 @@ useEffect(()=>{
                               ) {
                                 e.preventDefault();
                               }
-<<<<<<< HEAD
-                              handleKeyDown(e);
-                            }} onChange={(e) => {
-                              setFree(e.target.value);
-=======
->>>>>>> main
                             }}
                           />
                         </td>
@@ -1573,13 +1541,7 @@ useEffect(()=>{
                               ) {
                                 e.preventDefault();
                               }
-<<<<<<< HEAD
-                              handleKeyDown(e);
-                            }} value={ptr}
-                            error={!!errors.ptr}
-=======
                             }}
->>>>>>> main
                             onChange={handlePTR}
                           />
                         </td>
@@ -1597,13 +1559,8 @@ useEffect(()=>{
                               ) {
                                 e.preventDefault();
                               }
-<<<<<<< HEAD
-                              handleKeyDown(e);
-                            }} value={disc}
-=======
                             }}
                             value={disc}
->>>>>>> main
                             error={!!errors.disc}
                             onChange={(e) => {
                               const value = e.target.value;
@@ -1624,12 +1581,8 @@ useEffect(()=>{
                                 e.preventDefault();
                               }
                               handleKeyDown(e);
-<<<<<<< HEAD
-                            }} value={schAmt}
-=======
                             }}
                             value={schAmt}
->>>>>>> main
                             disabled
                           />
                         </td>
@@ -1771,19 +1724,11 @@ useEffect(()=>{
                           >
                             <BorderColorIcon
                               color="primary"
-                              className="cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditClick(item); 
-                              }}
+                              onClick={() => handleEditClick(item)}
                             />
-
                             <DeleteIcon
                               className="delete-icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteOpen(item.id); 
-                              }}
+                              onClick={() => deleteOpen(item.id)}
                             />
                             {item.item_name}
                           </td>
@@ -1838,10 +1783,6 @@ useEffect(()=>{
                         {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
                       </span>
                     </div>
-<<<<<<< HEAD
-                    <div style={{ marginTop: "2%" }}>
-                      <span style={{ fontWeight: 600, color: "red" }}>
-=======
 
                     {/* CN Amount Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" ,}}>
@@ -1852,7 +1793,6 @@ useEffect(()=>{
                           color :"red"
                         }}
                       >
->>>>>>> main
                         {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>

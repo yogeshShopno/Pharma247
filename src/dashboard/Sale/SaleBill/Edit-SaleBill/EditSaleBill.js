@@ -120,23 +120,7 @@ const EditSaleBill = () => {
 
     setExpiryDate(inputValue);
   };
-useEffect(()=>{
-  if (selectedEditItem) {
-    setSearchItem(selectedEditItem.iteam_name);
-    setSearchItemID(selectedEditItem.item_id);
-    setUnit(selectedEditItem.unit);
-    setBatch(selectedEditItem.batch);
-    setExpiryDate(selectedEditItem.exp);
-    setMRP(selectedEditItem.mrp);
-    setQty(item.qty);
-    // setBase(item.base);
-    setBase(selectedEditItem.base);
-    setOrder(selectedEditItem.order);
-    setGst(selectedEditItem.gst);
-    setLoc(selectedEditItem.location);
-    setItemAmount(selectedEditItem.net_rate);
-  }
-},[selectedEditItem])
+
   useEffect(() => {
     const discount = (totalAmount * finalDiscount) / 100;
     setDiscountAmount(discount.toFixed(2));
@@ -428,13 +412,8 @@ useEffect(()=>{
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
 
     if (!existingItem) {
-<<<<<<< HEAD
       setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
       setTempQty(item.qty);
-=======
-      setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty:  item.total_stock }]);
-      setTempQty(item.total_stock);
->>>>>>> main
     } else {
       setTempQty(existingItem.qty);
 
@@ -635,8 +614,8 @@ useEffect(()=>{
     setItemAmount(0);
     if (isNaN(itemAmount)) {
       setItemAmount(0);
-    }};
-    
+    }
+  };
   const handleUpdate = () => {
     setUnsavedItems(false);
 
@@ -851,6 +830,7 @@ useEffect(()=>{
                     }}
                     onClick={handleUpdate}
                   >
+                    {" "}
                     Update
                   </Button>
                 </div>
@@ -871,8 +851,8 @@ useEffect(()=>{
                           marginLeft: "15px",
                         }}
                       >
-                        Bill No
-                        <span style={{ marginLeft: "35px" }}> Bill Date</span>
+                        Bill No{" "}
+                        <span style={{ marginLeft: "35px" }}> Bill Date</span>{" "}
                       </div>
                       <div className="flex gap-5">
                         <div
@@ -886,7 +866,7 @@ useEffect(()=>{
                             width: "19%",
                           }}
                         >
-                          {saleAllData.bill_no}
+                          {saleAllData.bill_no}{" "}
                         </div>
                         <div
                           style={{
@@ -1110,23 +1090,6 @@ useEffect(()=>{
                         )}
                       />
                     </Box>
-<<<<<<< HEAD
-=======
-                    {/* {customer && (
-                      <Button
-                        variant="contained"
-                        sx={{
-                          textTransform: "none",
-                          background: "rgb(4, 76, 157)",
-                          marginTop: "15px",
-                        }}
-                        size="small"
-                      >
-                        <HistoryIcon />
-                        Purchase History
-                      </Button>
-                    )} */}
->>>>>>> main
                     {isVisible && value && !batch && (
                       <Box
                         sx={{
@@ -1230,7 +1193,8 @@ useEffect(()=>{
                           <th>Base</th>
                           <th>GST% </th>
                           <th>QTY </th>
-                          <th>Order
+                          <th>
+                            Order{" "}
                             <Tooltip title="Please Enter only (o)" arrow>
                               <Button>
                                 <GoInfo

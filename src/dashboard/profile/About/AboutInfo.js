@@ -21,6 +21,7 @@ const AboutInfo = () => {
   const token = localStorage.getItem("token");
   const [area, setArea] = useState("");
   const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
   const [frontImgUrl, setFrontImgUrl] = useState(null);
@@ -48,7 +49,8 @@ const AboutInfo = () => {
         setAddress1(data?.address);
         setPincode(data?.zip_code);
         setArea(data?.address_line_two);
-        setCity(data?.city);
+        setCity(data?.city);        
+        setState(data?.state);
         setSelectedProfileFile(data?.pharmacy_logo)
         setFrontImgUrl(data?.pharmacy_logo)
       }
@@ -72,6 +74,8 @@ const AboutInfo = () => {
     data.append("pin_code", pincode);
     data.append("area", area);
     data.append("city", city);
+    data.append("state", state);
+
     data.append("pharmacy_logo", selectedProfileFile);
     try {
       const response = await axios.post("about-pharmacy", data, {
@@ -228,6 +232,15 @@ const AboutInfo = () => {
                   className="aboutTextField"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  InputLabelProps={{}}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="state"
+                  variant="standard"
+                  className="aboutTextField"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
                   InputLabelProps={{}}
                 />
               </Box>

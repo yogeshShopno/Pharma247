@@ -5,65 +5,186 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from "axios";
 import PopUpRed from '../../../../componets/popupBox/PopUpRed';
 import { saveAs } from 'file-saver';
+import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import { useEffect, useState } from "react";
 import DatePicker from 'react-datepicker';
 import { addDays, format, subDays, subMonths } from 'date-fns';
+
 const Gstr_3B = () => {
     const history = useHistory()
-    const [monthDate, setMonthDate] = useState(new Date())
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date())
     const [isLoading, setIsLoading] = useState(false);
+    const [isDownload, setIsDownload] = useState(false);
+
     const token = localStorage.getItem("token")
     const [nonMovingItemData, setNonMovingItemData] = useState([])
     const [showPopup, setShowPopup] = useState(false);
     const excelIcon = process.env.PUBLIC_URL + '/excel.png';
+    const [reportType, setReportType] = useState("");
+    const [reportData, setReportData] = useState({});
+
+    useEffect(() => {
+        if (reportData && typeof reportData === "object") {
+            if(isDownload){
+                exportToCSV();
+
+            }
+        }
+    }, [reportData]);
+    
+
+    const downloadCSV = async () => {
+        setIsDownload(true);
+        try {
+            let data = new FormData();
+            data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
+            data.append("end_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
+    
+            const response = await axios.post("gst-three-report?", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            if (response.status === 200 && response.data) {
+                const parsedData = response.data; 
+                if (parsedData?.data) {
+                    setReportData(parsedData.data); 
+                    toast.success("please wait ...downloading is in progress!")
+                    exportToCSV();
+                } else {
+                    toast.error("No data available for the selected criteria.");
+                }
+            } else {
+                toast.error("Failed to download records. Please try again.");
+            }
+        } catch (error) {
+            console.error("API error:", error);
+            toast.error("An error occurred while downloading the CSV.");
+        } finally {
+            setIsDownload(false);
+        }
+    };
+    
+    const exportToCSV = () => {
+        if (!reportData || typeof reportData !== "object") {
+            toast.error("No data available for download.");
+            return;
+        }
+    
+        const { invoice_details, summary, gst_liability } = reportData;
+    
+        const headers = ["Category", "Sub Category", "Total", "CGST", "SGST", "IGST"];
+        const csvRows = [headers.join(",")];
+    
+        csvRows.push("invoice detail,,,,,");
+        csvRows.push(
+            ...[
+                ["", "Sales", invoice_details?.sales?.total || 0, invoice_details?.sales?.cgst || 0, invoice_details?.sales?.sgst || 0, invoice_details?.sales?.igst || 0],
+                ["", "Sales Returns", invoice_details?.sales_returns?.total || 0, invoice_details?.sales_returns?.cgst || 0, invoice_details?.sales_returns?.sgst || 0, invoice_details?.sales_returns?.igst || 0],
+                ["", "Purchases", invoice_details?.purchases?.total || 0, invoice_details?.purchases?.cgst || 0, invoice_details?.purchases?.sgst || 0, invoice_details?.purchases?.igst || 0],
+                ["", "Purchase Returns", invoice_details?.purchase_returns?.total || 0, invoice_details?.purchase_returns?.cgst || 0, invoice_details?.purchase_returns?.sgst || 0, invoice_details?.purchase_returns?.igst || 0],
+            ].map(row => row.join(","))
+        );
+        csvRows.push(","); 
+    
+        csvRows.push("summery,,,,,"); 
+        csvRows.push(
+            ...[
+                ["", "Net Sales", summary?.net_sales?.taxable_amount || 0, summary?.net_sales?.cgst || 0, summary?.net_sales?.sgst || 0, summary?.net_sales?.igst || 0],
+                ["", "Net Purchases", summary?.net_purchases?.taxable_amount || 0, summary?.net_purchases?.cgst || 0, summary?.net_purchases?.sgst || 0, summary?.net_purchases?.igst || 0],
+            ].map(row => row.join(","))
+        );
+        csvRows.push(",");
+    
+        csvRows.push("GST Liability,,,,,"); 
+        csvRows.push(
+            ["", "GST Liability", gst_liability?.total || 0, gst_liability?.cgst || 0, gst_liability?.sgst || 0, gst_liability?.igst || 0].join(",")
+        );
+    
+        const csvString = csvRows.join("\n");
+        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+        saveAs(blob, "GSTR3B_Report.csv");
+    };
+    
+    
+
     return (
         <>
             <Header />
-            <div>
-                <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                    <div style={{ display: 'flex', gap: '4px' }}>
-                        <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                            </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}>GSTR-3B Report
-                            </span>
-                            <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
-                        </div>
-                    </div>
-                    <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
-                        <div style={{ width: "40%" }}>
-                            <div >
-                                <div style={{ maxWidth: "500px", marginBottom: "20px" }}>
-                                    <img src="../imgpsh_fullsize_anim.png" ></img>
-                                </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            {isLoading ? <div className="loader-container ">
+                <Loader />
+            </div> :
+                <div>
+                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                            <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
+                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                </span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
+                                <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-3B Report
+                                </span>
+                                <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
                             </div>
                         </div>
-                        <div style={{ marginTop: "100px", height: "380px" }}>
-                            <div className="flex gap-4">
+                        <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
+                            <div style={{ width: "40%" }}>
                                 <div >
-                                    <span className="flex mb-2 sky_text text-lg">Choose Date</span>
-                                    <div style={{ width: "215px" }}>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={monthDate}
-                                            onChange={(newDate) => setMonthDate(newDate)}
-                                            dateFormat="MM/yyyy"
-                                            showMonthYearPicker
-                                        />
+                                    <div style={{ maxWidth: "500px", marginBottom: "20px" }}>
+                                        <img src="../imgpsh_fullsize_anim.png" ></img>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "25px" }}>
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                            <div style={{ marginTop: "100px", height: "400px" }}>
+                                <div className="flex flex-col gap-2">
+
+                                    <span className="flex  sky_text text-lg">Start Date</span>
+
+                                    <DatePicker
+                                        className='custom-datepicker'
+                                        selected={startDate}
+                                        onChange={(newDate) => setStartDate(newDate)}
+                                        dateFormat="yyyy-MM-dd"
+                                        showMonthYearPicker
+                                        sx={{ width: '200px' }} />
+                                    <span className="flex  sky_text text-lg">End Date</span>
+
+                                    <DatePicker
+                                        className='custom-datepicker'
+                                        selected={endDate}
+                                        onChange={(newDate) => setEndDate(newDate)}
+                                        dateFormat="yyyy-MM-dd"
+                                        showMonthYearPicker
+                                        sx={{ width: '200px' }}
+                                    ></DatePicker>
+
+                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px", marginBlock: "25px" }} onClick={downloadCSV}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+
+                                    <div >
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
 
-                </div>
-            </div >
+
+                    </div>
+                </div >
+            }
         </>
     )
 }

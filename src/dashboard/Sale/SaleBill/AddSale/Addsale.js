@@ -116,7 +116,6 @@ const Addsale = () => {
     const [nextPath, setNextPath] = useState("");
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
-    const [tempVal, setTempVal] = useState();
 
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -397,13 +396,12 @@ const Addsale = () => {
 
     const handlePassData = (event) => {
         setSearchItem(event.iteam_name)
-        setTempVal(event.iteam_name)
         setBatch(event.batch_number);
         setItem(event.iteam_name);
         setUnit(event.unit);
         setExpiryDate(event.expiry_date);
         setMRP(event.mrp);
-        setMaxQty(event.qty);
+        setMaxQty(event.stock);
         setBase(event.mrp);
         setGst(event.gst_name);
         setQty(event.qty);
@@ -805,7 +803,6 @@ const Addsale = () => {
         setIsEditMode(true);
         setSelectedEditItemId(item.id);
         setSearchItem(item.iteam_name);
-        setTempVal(item.iteam_name);
 
         if (selectedEditItem) {
             setUnit(selectedEditItem.unit);
@@ -1324,8 +1321,7 @@ const Addsale = () => {
                                                                         <td className="text-base font-semibold">{item.location}</td>
                                                                     </tr>
                                                                 ))}
-                                                            </>
-                                                            :
+                                                            </>:
                                                             <tr>
                                                                 <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                             </tr>

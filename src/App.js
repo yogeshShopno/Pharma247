@@ -89,6 +89,7 @@ import Company from './dashboard/More/Company/Company';
 import DrugGroup from './dashboard/More/DrugGroup/DrugGroup';
 import LogSessions from './dashboard/profile/Staff-Sessions/LogActivity';
 import LogActivity from './dashboard/profile/Staff-Sessions/LogActivity';
+import Gstr2 from './dashboard/More/Reports/GstReport/Gstr2';
 
 
 function App() {
@@ -324,6 +325,11 @@ function App() {
           <Route path='/Reports/gst-GSTR1'>
             <Protected>
               <Gstr1 />
+            </Protected>
+          </Route>
+          <Route path='/Reports/gst-GSTR2'>
+            <Protected>
+              <Gstr2 />
             </Protected>
           </Route>
           <Route path='/Reports/gst-GSTR-3B'>

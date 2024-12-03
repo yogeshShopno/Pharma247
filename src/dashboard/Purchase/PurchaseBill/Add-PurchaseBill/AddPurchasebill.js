@@ -31,7 +31,7 @@ const debounce = (func, delay) => {
 };
 
 const AddPurchaseBill = () => {
-  const searchItemField = useRef(null);
+  const searchItemField = useRef();
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();
@@ -47,6 +47,8 @@ const AddPurchaseBill = () => {
   const inputRef13 = useRef();
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0)
+  const [marginNetProfit, setMarginNetProfit] = useState(0)
+  const [totalNetRate, setTotalNetRate] = useState(0)
   const [totalGst, setTotalGst] = useState(0)
   const [totalQty, setTotalQty] = useState(0)
   const [searchItem, setSearchItem] = useState("");
@@ -64,29 +66,30 @@ const AddPurchaseBill = () => {
   const [mrp, setMRP] = useState(null);
   const [ptr, setPTR] = useState(null);
   const [qty, setQty] = useState("");
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState("");
   const [deleteAll, setDeleteAll] = useState(false);
   const [free, setFree] = useState("");
   const [loc, setLoc] = useState("");
-  const [unit, setUnit] = useState(0);
+  const [unit, setUnit] = useState("");
   const [schAmt, setSchAmt] = useState("");
   const [ItemTotalAmount, setItemTotalAmount] = useState(0);
   const [margin, setMargin] = useState("");
-  const [disc, setDisc] = useState(0);
+  const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
   const [gst, setGst] = useState({ id: "", name: "" });
   const [batch, setBatch] = useState("");
+  const [barcode, setBarcode] = useState("");
   const [gstList, setGstList] = useState([]);
   const userId = localStorage.getItem("userId");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
-  const [ItemId, setItemId] = useState("");
+  const [ItemId, setItemId] = useState(0);
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedEditItemId, setSelectedEditItemId] = useState(null);
+  const [selectedEditItemId, setSelectedEditItemId] = useState(0);
   const [selectedEditItem, setSelectedEditItem] = useState(null);
-  const [unitEditID, setUnitEditID] = useState(null);
-  const [itemEditID, setItemEditID] = useState(null);
+  const [unitEditID, setUnitEditID] = useState(0);
+  const [itemEditID, setItemEditID] = useState(0);
   const [distributorList, setDistributorList] = useState([]);
   const [otherAmt, setOtherAmt] = useState(0);
   const [batchListData, setBatchListData] = useState([]);
@@ -106,6 +109,7 @@ const AddPurchaseBill = () => {
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
 
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -124,23 +128,50 @@ const AddPurchaseBill = () => {
   defaultDate.setDate(defaultDate.getDate() + 3);
 
   useEffect(() => {
+    generateRandomNumber()
+
+    const initialize = async () => {
+
+      try {
+        await handleLeavePage();
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    initialize();
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
+
+  // useEffect(() => {
+  //   console.log('')
+  //   generateRandomNumber()
+  //   handleLeavePage()
+  // },)
+
+  useEffect(() => {
     if (id) {
       batchList(id);
     }
     listDistributor();
     BankList();
     listOfGst();
-    setSrNo(localStorage.getItem("Purchase_SrNo"));
+    setSrNo(localStorage.getItem("Purchase_SrNo"));;
+
   }, [id]);
 
   useEffect(() => {
-    // Delete All Purchase Item
     if (localStorage.getItem("RandomNumber") !== null) {
       if (deleteAll == false) {
         handlePopState();
       }
     }
-    // delete All purchase item
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
@@ -226,9 +257,199 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  const handlePopState = () => {
-    // Call the delete API
+  // const handleBarcode = async () => {
+  //   if (!barcode) {
+  //     return;
+  //   }
+  //   let data = new FormData();
+  //   data.append("barcode", barcode);
+
+  //   const params = {
+  //     random_number: localStorage.getItem("RandomNumber"),
+  //   };
+  //   try {
+  //     const res = axios
+  //       .post("barcode-batch-list?", data, {
+  //         // params: params,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         // console.log(response?.data?.data[0]?.id,"response")
+  //         setValue(response?.data?.data[0]?.id)
+  //         // setValue.unit_id(response.data.data[0]?.unit)
+
+  //         setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+  //         setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+  //         setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+  //         // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+  //         setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
+  //         setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
+  //         setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+  //         setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+  //         setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+  //         setBase(response?.data?.data[0]?.batch_list[0]?.base)
+  //         setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+  //         setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+  //         setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+  //         setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+
+  //         setGst({
+  //           id: response?.data?.data[0]?.batch_list[0]?.gst,
+  //           name: response?.data?.data[0]?.batch_list[0]?.gst_name,
+  //         });
+
+  //         setSelectedEditItemId(response?.data?.data[0]?.id)
+  //         setItemEditID(response.data.data[0]?.id)
+  //         setIsEditMode(true)
+  //         const timeoutId = setTimeout(() => {
+  //           handleAddButtonClick()
+  //         }, 1000);
+  //         return () => clearTimeout(timeoutId);
+
+  //         // handleAddItem()
+
+  //       });
+  //   } catch (error) {
+  //     console.error("API error:", error);
+  //   }
+  // };
+  const handleBarcode = async () => {
+    if (!barcode) {
+      return;
+    }
     let data = new FormData();
+    // data.append("barcode", barcode);
+
+
+    const params = {
+      random_number: localStorage.getItem("RandomNumber"),
+    };
+    try {
+      const res = axios
+        .post("barcode-batch-list?", { "barcode": barcode }, {
+          // params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // data.append("unit_id", Number(0));
+          // data.append("random_number", localStorage.getItem("RandomNumber"));
+          // data.append("item_id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+          // data.append("weightage", response?.data?.data[0]?.batch_list[0]?.unit ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 1);
+          // data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
+          // data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+          // data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
+          // data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
+          // data.append("free_qty", 0);
+          // data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
+          // data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
+          // data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
+          // data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
+          // data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst ? response?.data?.data[0]?.batch_list[0]?.gst : 0);
+          // data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+          // data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
+          // data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
+          // data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+
+          // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
+          // setValue.unit_id(response.data.data[0]?.unit)
+
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
+          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
+          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
+          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setGst({
+            id: response?.data?.data[0]?.batch_list[0]?.gst,
+            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
+          });
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+
+          setSelectedEditItemId(response?.data?.data[0]?.id)
+          setItemEditID(response.data.data[0]?.id)
+          // setIsEditMode(true)
+
+          // handleAddBarcodeItem(data)
+
+
+
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
+  // const handleAddBarcodeItem = async (data) => {
+  //   const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
+  //   // data.append("total_amount", totalAmount);
+  //   const params = {
+  //     id: selectedEditItemId,
+  //   };
+  //   try {
+  //     const response = await axios.post("item-purchase", data, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     //console.log("response", response);
+  //     setUnsavedItems(true);
+  //     setItemTotalAmount(0);
+  //     setDeleteAll(true);
+  //     itemPurchaseList();
+  //     setUnit("");
+  //     setBatch("");
+  //     setExpiryDate("");
+  //     setMRP("");
+  //     setQty("");
+  //     setFree("");
+  //     setPTR("");
+  //     setGst("");
+  //     setDisc("");
+  //     setBase("");
+  //     setNetRate("");
+  //     setSchAmt("");
+  //     setBatch("");
+  //     setMargin("");
+  //     setLoc("");
+
+  //     if (ItemTotalAmount <= finalCnAmount) {
+  //       setFinalCnAmount(0);
+  //       setSelectedRows([]);
+  //       setCnTotalAmount({});
+  //     }
+  //     // setNetAmount(totalAmount)
+  //     // handleCalNetAmount()
+  //     setIsEditMode(false);
+  //     setSelectedEditItemId(null);
+  //     searchItemField.current.focus();
+  //     setValue("");
+  //     setSearchItem("");
+  //     // setAutocompleteDisabled(false);
+  //   } catch (e) {
+  //     //console.log(e);
+  //   }
+  // };
+
+  const handlePopState = () => {
+    let data = new FormData();
+    data.append("random_number", randomNumber);
+
     const params = {
       random_number: localStorage.getItem("RandomNumber"),
     };
@@ -244,7 +465,6 @@ const AddPurchaseBill = () => {
         .then((response) => {
           itemPurchaseList();
           localStorage.removeItem("RandomNumber");
-          //console.log(response);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -252,17 +472,15 @@ const AddPurchaseBill = () => {
   };
 
   const generateRandomNumber = () => {
-    const number = Math.floor(Math.random() * 100000) + 1;
-    setRandomNumber(number);
+
     if (localStorage.getItem("RandomNumber") == null) {
+      const number = Math.floor(Math.random() * 100000) + 1;
+      setRandomNumber(number);
       localStorage.setItem("RandomNumber", number);
     } else {
-      localStorage.setItem(
-        "RandomNumber",
-        localStorage.getItem("RandomNumber")
-      );
-      //console.log(localStorage.getItem("RandomNumber"));
+      return;
     }
+
   };
 
   let listOfGst = () => {
@@ -299,18 +517,14 @@ const AddPurchaseBill = () => {
 
   const itemPurchaseList = async () => {
     let data = new FormData();
-    const params = {
-      random_number: localStorage.getItem("RandomNumber"),
-    };
+    data.append("random_number", localStorage.getItem("RandomNumber"));
+
     try {
-      const res = await axios
-        .post("item-purchase-list?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      const res = await axios.post("item-purchase-list?", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
         .then((response) => {
 
           setItemPurchaseList(response.data.data);
@@ -318,6 +532,9 @@ const AddPurchaseBill = () => {
           setTotalGst(response.data.data.total_gst)
           setTotalQty(response.data.data.total_qty)
           setTotalMargin(response.data.data.total_margin)
+          setMarginNetProfit(response.data.data.margin_net_profit)
+
+          setTotalNetRate(response.data.data.total_net_rate)
           handleCalNetAmount(response.data.data.total_price)
           // setNetAmount(response.data.data.total_price)
           //console.log(ItemPurchaseList);
@@ -373,7 +590,7 @@ const AddPurchaseBill = () => {
             );
             // setUnit()
           } else {
-            setUnit(0);
+            setUnit("");
             setBatch("");
             setExpiryDate("");
             setMRP("");
@@ -392,6 +609,7 @@ const AddPurchaseBill = () => {
   };
 
   const handleAddButtonClick = async () => {
+    generateRandomNumber()
     const newErrors = {};
     const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
     const numericQty = parseFloat(qty) || 0;
@@ -402,6 +620,7 @@ const AddPurchaseBill = () => {
     }
     if (!unit) newErrors.unit = "Unit is required";
     if (!batch) newErrors.batch = "Batch is required";
+    if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.error(newErrors.expiryDate);
@@ -411,8 +630,8 @@ const AddPurchaseBill = () => {
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
       const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns month from 0 to 11
-      const currentYear = currentDate.getFullYear() % 100; // get last two digits of year
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
 
       if (
         expYear < currentYear ||
@@ -442,15 +661,19 @@ const AddPurchaseBill = () => {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
+    if (!ItemTotalAmount) {
+      toast.error("Total amount is not available");
+      newErrors.searchItem = "Total amount is not available";
+    }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
-      await handleAddItem(); // Call handleAddItem if validation passes
+      await handleAddItem();
     }
     return isValid;
   };
   const handleAddItem = async () => {
-    generateRandomNumber();
+
     setUnsavedItems(true)
     let data = new FormData();
     data.append("user_id", userId);
@@ -458,24 +681,35 @@ const AddPurchaseBill = () => {
       data.append("item_id", itemEditID);
       data.append("unit_id", unitEditID);
     } else {
-      data.append("item_id", value.id);
-      data.append("unit_id", Number(value.unit_id));
+      if (barcode) {
+        data.append("item_id", ItemId);
+        data.append("unit_id", Number(0));
+
+      } else {
+        data.append("item_id", value.id);
+
+        data.append("unit_id", Number(value.unit_id));
+      }
+
     }
+
     data.append("random_number", localStorage.getItem("RandomNumber"));
-    data.append("weightage", unit?Number(unit):1);
-    data.append("batch_number", batch);
+    data.append("weightage", unit ? Number(unit) : 1);
+    data.append("batch_number", batch ? batch : 0);
     data.append("expiry", expiryDate);
-    data.append("mrp", mrp);
-    data.append("qty", qty);
-    data.append("free_qty", free);
-    data.append("ptr", ptr);
-    data.append("discount", disc);
-    data.append("scheme_account", schAmt);
-    data.append("base_price", base);
+    data.append("mrp", mrp ? mrp : 0);
+    data.append("qty", qty ? qty : 0);
+    data.append("free_qty", free ? free : 0);
+    data.append("ptr", ptr ? ptr : 0);
+    data.append("discount", disc ? disc : 0);
+    data.append("scheme_account", schAmt ? schAmt : 0);
+    data.append("base_price", base ? base : 0);
     data.append("gst", gst.id);
-    data.append("location", loc);
-    data.append("margin", margin);
-    data.append("net_rate", netRate);
+    data.append("location", loc ? loc : 0);
+    data.append("margin", margin ? margin : 0);
+    data.append("net_rate", netRate ? netRate : 0);
+    data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+
     const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
     data.append("total_amount", totalAmount);
     const params = {
@@ -495,10 +729,12 @@ const AddPurchaseBill = () => {
           },
         });
       //console.log("response", response);
+
+
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
-      setUnit(0);
+      setUnit("");
       setBatch("");
       setExpiryDate("");
       setMRP("");
@@ -506,7 +742,7 @@ const AddPurchaseBill = () => {
       setFree("");
       setPTR("");
       setGst("");
-      setDisc(0);
+      setDisc("");
       setBase("");
       setNetRate("");
       setSchAmt("");
@@ -525,10 +761,12 @@ const AddPurchaseBill = () => {
       setSelectedEditItemId(null);
 
       searchItemField.current.focus();
-
+      setBarcode("")
+      setValue("")
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
+     
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
@@ -603,7 +841,7 @@ const AddPurchaseBill = () => {
     data.append("total_amount", ItemPurchaseList.total_price);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
-    data.append("total_gst", ItemPurchaseList.total_gst)
+    data.append("total_gst", !totalGst ? 0 : totalGst)
     data.append("total_margin", ItemPurchaseList.total_margin)
     data.append("cn_amount", finalCnAmount)
     data.append("round_off", roundOffAmount?.toFixed(2));
@@ -650,26 +888,7 @@ const AddPurchaseBill = () => {
   };
 
 
-  // const handleCnAmount = () => {
-  //   const newErrors = {};
 
-  //   if (selectedRows.length === 0) {
-  //     newErrors.selectedRows = "Please select at least one item";
-  //     toast.error('Please select at least one item');
-  //   }
-  //   setError(newErrors);
-
-  //   if (Object.keys(newErrors).length > 0) {
-  //     return;
-  //   }
-
-  //   selectedRows.forEach((row, index, id) => {
-  //     const passenger = {
-  //       purches_return_bill_id: row.id,
-  //       amount: row.cnTotalAmount,
-  //     };
-  //   });
-  // };
 
   useEffect(() => {
     if (selectedEditItem) {
@@ -694,13 +913,13 @@ const AddPurchaseBill = () => {
       setNetRate(selectedEditItem.net_rate);
     }
 
-}, [selectedEditItem]);
+  }, [selectedEditItem]);
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-    
+
   };
 
   const purchaseReturnData = async () => {
@@ -727,6 +946,8 @@ const AddPurchaseBill = () => {
   };
 
   const handelAddOpen = () => {
+    setUnsavedItems(true)
+
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
     setHeader('Add Amount');
@@ -740,39 +961,9 @@ const AddPurchaseBill = () => {
     // setCnTotalAmount("")
     // setCnAmount(0);
   }
-  // const handleKeyDown = (event) => {
-  //     if (event.key === 'Enter') {
-  //         event.preventDefault();
-  //         if (event.target === inputRef1.current) {
-  //             inputRef2.current.focus();
-  //         } else if (event.target === inputRef2.current) {
-  //             inputRef3.current.focus();
-  //         } else if (event.target === inputRef3.current) {
-  //             inputRef4.current.focus();
-  //         } else if (event.target === inputRef4.current) {
-  //             inputRef5.current.focus();
-  //         } else if (event.target === inputRef5.current) {
-  //             inputRef6.current.focus();
-  //         } else if (event.target === inputRef6.current) {
-  //             inputRef7.current.focus();
-  //         } else if (event.target === inputRef7.current) {
-  //             inputRef8.current.focus();
-  //         } else if (event.target === inputRef8.current) {
-  //             inputRef9.current.focus();
-  //         } else if (event.target === inputRef9.current) {
-  //             inputRef10.current.focus();
-  //         } else if (event.target === inputRef10.current) {
-  //             inputRef11.current.focus();
-  //         } else if (event.target === inputRef11.current) {
-  //             inputRef12.current.focus();
-  //         } else if (event.target === inputRef12.current) {
-  //             inputRef13.current.focus();
-  //         }
-  //     };
-  // }
+
 
   const handleDistributorChange = (event, newValue) => {
-    //console.log(newValue, "dfjkngvkndfgjk");
     setDistributor(newValue);
     purchaseReturnData(id)
   };
@@ -783,19 +974,19 @@ const AddPurchaseBill = () => {
   };
 
   const handleOptionChange = (event, newValue) => {
+    console.log(newValue)
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
     setId(newValue?.id);
     setAutocompleteDisabled(true);
-    //console.log("id", newValue?.id);
     handleSearch(itemName);
   };
 
   const handlePTR = (e) => {
-   
 
-    const setptr= e.target.value.replace(/[eE]/g, '');
+
+    const setptr = e.target.value.replace(/[eE]/g, '');
     setPTR(setptr);
     setBase(setptr);
   };
@@ -803,7 +994,7 @@ const AddPurchaseBill = () => {
   const handleSchAmt = (e) => {
 
     const inputDiscount =
-    e.target.value.replace(/[eE]/g, '') === "" ? "" : parseFloat( e.target.value.replace(/[eE]/g, ''));
+      e.target.value.replace(/[eE]/g, '') === "" ? "" : parseFloat(e.target.value.replace(/[eE]/g, ''));
     if (isNaN(inputDiscount)) {
       setDisc(0);
       setSchAmt(0);
@@ -823,7 +1014,7 @@ const AddPurchaseBill = () => {
 
   const removeItem = () => {
     // setAutocompleteDisabled(false);
-    setUnit(0);
+    setUnit("");
     setBatch("");
     setExpiryDate("");
     setSearchItem("");
@@ -832,25 +1023,15 @@ const AddPurchaseBill = () => {
     setFree("");
     setPTR("");
     setGst("");
-    setDisc(0);
-    setBase(0);
-    setSchAmt(0);
+    setDisc("");
+    setBase("");
+    setSchAmt("");
     setBatch("");
-    setNetRate(0);
+    setNetRate("");
     setMargin("");
     setLoc("");
   };
-  // const handleRowSelect = (id, amount) => {
-  //   const newSelectedRows = selectedRows.includes(id)
-  //     ? selectedRows.filter(rowId => rowId !== id)
-  //     : [...selectedRows, id];
 
-  //   setSelectedRows(newSelectedRows);
-  //   setCnTotalAmount(prevValues => ({
-  //     ...prevValues,
-  //     [id]: newSelectedRows.includes(id) ? (prevValues[id] || amount) : ''
-  //   }));
-  // };
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)
@@ -870,22 +1051,7 @@ const AddPurchaseBill = () => {
       setCnAmount((prev) => prev - parseFloat(totalAmount));
     }
   };
-  // const handleSelectAll = (event) => {
-  //   if (event.target.checked) {
-  //     const allIds = purchaseReturnPending.map(item => item.id);
-  //     const amounts = purchaseReturnPending.reduce((acc, item) => ({
-  //       ...acc,
-  //       [item.id]: item.total_amount || 0
-  //     }), {});
 
-  //     setSelectedRows(allIds);
-  //     setCnTotalAmount(amounts);
-  //   } else {
-  //     setSelectedRows([]);
-  //     setCnTotalAmount({});
-  //   }
-
-  // };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -935,7 +1101,6 @@ const AddPurchaseBill = () => {
       netAmountCal = Math.floor(adjustedTotalAmount);
       roundOffAmountCal = netAmountCal - adjustedTotalAmount; // calculate the round-off value
     }
-
     setNetAmount(netAmountCal);
     setRoundOffAmount(roundOffAmountCal);
   };
@@ -949,6 +1114,9 @@ const AddPurchaseBill = () => {
       newErrors.finalTotalAmount = "You cannot adjust CN more than the total invoice amount";
       toast.error('You cannot adjust CN more than the total invoice amount');
       setError(newErrors);
+      setSelectedRows([]);
+      setCnTotalAmount({});
+      setCnAmount(0);
       return;
     }
     setFinalCnAmount(cnAmount)
@@ -999,36 +1167,38 @@ const AddPurchaseBill = () => {
     setIsOpenBox(false);
     // setPendingNavigation(null);
   };
-  const handleLeavePage = async () => {
-    try {
-      const params = {
-        start_date: localStorage.getItem('StartFilterDate'),
-        end_date: localStorage.getItem('EndFilterDate'),
-        distributor_id: localStorage.getItem('DistributorId'),
-        type: "1"
-      };
 
-      const response = await axios.post("purches-return-iteam-histroy", {},
-        {
-          params: params,
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  const handleLeavePage = async () => {
+    let data = new FormData();
+    data.append("random_number", localStorage.getItem("RandomNumber"));
+
+    try {
+      const response = await axios.post("item-purchase-delete-all", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (response.status === 200) {
         setUnsavedItems(false);
         setIsOpenBox(false);
-
         setTimeout(() => {
-          history.push(nextPath);
+          if (nextPath) {
+            history.push(nextPath)
+          }
+
         }, 0);
       }
       setIsOpenBox(false);
       setUnsavedItems(false);
-      history.replace(nextPath);
+      localStorage.removeItem("RandomNumber");
+
+      // history.replace(nextPath);
     } catch (error) {
       console.error("Error deleting items:", error);
     }
   };
+
 
   return (
     <>
@@ -1046,7 +1216,7 @@ const AddPurchaseBill = () => {
       />
       <div
         style={{
-          backgroundColor: "rgb(233 228 228)",
+
           height: "calc(99vh - 55px)",
           padding: "0px 20px 0px",
         }}
@@ -1066,7 +1236,7 @@ const AddPurchaseBill = () => {
                   history.push("/purchase/purchasebill");
                 }}
               >
-                Purchase 
+                Purchase
               </span>
               <ArrowForwardIosIcon
                 style={{
@@ -1087,7 +1257,7 @@ const AddPurchaseBill = () => {
               </span>
               <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
             </div>
-            
+
             <div className="headerList">
               {/* <Select
                 labelId="dropdown-label"
@@ -1116,11 +1286,11 @@ const AddPurchaseBill = () => {
               </Button>
             </div>
           </div>
-          <div>
+          <div className="bg-white">
             <div className="firstrow flex">
               <div className="detail">
                 <span className="title mb-2">
-                  Distributor{" "}
+                  Distributor
                   <FaPlusCircle
                     className="darkblue_text cursor-pointer"
                     onClick={() => {
@@ -1254,7 +1424,7 @@ const AddPurchaseBill = () => {
                   )}
                 />
               )}
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto ">
                 <table className="customtable  w-full border-collapse custom-table">
                   <thead>
                     <tr>
@@ -1307,24 +1477,25 @@ const AddPurchaseBill = () => {
                           <td>
                             <TextField
                               id="outlined-number"
-                              type="number"
-                              // inputRef={inputRef1}
-                              // onKeyDown={handleKeyDown}
+                              type="text" // Change to text to better handle custom validation
                               size="small"
                               error={!!errors.unit}
-                              value={unit === 0 ? '' : unit} 
+                              value={unit}
                               sx={{ width: "50px" }}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[eE]/g, '');
-
-                                setUnit(Number(value));
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                setUnit(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+
+                                if (
+                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
                             />
+
                           </td>
                           <td>
                             <TextField
@@ -1338,7 +1509,7 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
-                              
+
                             />
                           </td>
                           <td>
@@ -1365,18 +1536,19 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               value={mrp}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[eE]/g, '');
-
-                                setMRP(e.target.value);
+                                const value = e.target.value;
+                                if (/^\d*\.?\d*$/.test(value)) {
+                                  setMRP(value ? Number(value) : "");
+                                }
                               }}
-
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+                                if (
+                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                  (e.key === '.' && e.target.value.includes('.'))
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
-
-                              
                             />
                           </td>
                           <td>
@@ -1391,12 +1563,15 @@ const AddPurchaseBill = () => {
                               error={!!errors.qty}
                               value={qty}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[eE]/g, '');
-                                setQty(value === "" ? 0 : Number(value));
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                setQty(value ? Number(value) : "");
                               }}
 
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+
+                                if (
+                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
@@ -1413,12 +1588,14 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef6}
                               // onKeyDown={handleKeyDown}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[eE]/g, '');
-
-                                setFree(value === "" ? 0 : Number(value));
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                setFree(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+
+                                if (
+                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
@@ -1434,12 +1611,16 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               value={ptr}
                               error={!!errors.ptr}
-                              onChange={handlePTR}
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+                                if (
+                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                  (e.key === '.' && e.target.value.includes('.'))
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
+                              onChange={handlePTR}
+
                             />
                           </td>
                           <td>
@@ -1451,12 +1632,22 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef8}
                               // onKeyDown={handleKeyDown}
                               value={disc}
-                              onChange={handleSchAmt}
                               onKeyDown={(e) => {
-                                if (['e', 'E'].includes(e.key)) {
+                                if (
+                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                  (e.key === '.' && e.target.value.includes('.'))
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (Number(value) > 100) {
+                                  e.target.value = 100;
+                                }
+                                handleSchAmt(e);
+                              }}
+
                             />
                           </td>
                           <td>
@@ -1467,6 +1658,7 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef9}
                               // onKeyDown={handleKeyDown}
                               value={schAmt}
+
                               disabled
                             />
                           </td>
@@ -1475,7 +1667,8 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               type="number"
                               size="small"
-                              value={base}
+                              value={base === 0 ? '' : base}
+
                               // inputRef={inputRef10}
                               // onKeyDown={handleKeyDown}
                               disabled
@@ -1515,7 +1708,7 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef12}
                               // onKeyDown={handleKeyDown}
                               size="small"
-                              value={loc.toUpperCase()}
+                              value={loc?.toUpperCase()}
                               // error={!!errors.loc}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
@@ -1530,7 +1723,8 @@ const AddPurchaseBill = () => {
                                 type="number"
                                 disabled
                                 size="small"
-                                value={netRate}
+                                value={netRate === 0 ? '' : netRate}
+
                                 sx={{ width: "100px" }}
                               />
                             </td>
@@ -1542,7 +1736,8 @@ const AddPurchaseBill = () => {
                                 type="number"
                                 disabled
                                 size="small"
-                                value={margin}
+                                value={margin === 0 ? '' : margin}
+
                                 sx={{ width: "100px" }}
                                 onChange={(e) => {
                                   setMargin(e.target.value);
@@ -1555,9 +1750,26 @@ const AddPurchaseBill = () => {
                           </td>
                         </tr>
                         <tr>
+                          <td>
+                            <TextField
+                              id="outlined-number"
+                              type="number"
+                              size="small"
+                              value={barcode}
+                              placeholder="scan barcode"
+                              // inputRef={inputRef10}
+                              // onKeyDown={handleKeyDown}
+                              sx={{ width: "250px" }}
+                              onChange={(e) => {
+                                setBarcode(e.target.value)
+
+                              }}
+
+                            />
+                          </td>
                           <td></td>
-                          <td></td>
-                          <td></td>
+
+                          <td> </td>
                           <td></td>
                           <td></td>
                           <td></td>
@@ -1571,6 +1783,7 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td>
+
                             <Button
                               variant="contained"
                               color="success"
@@ -1580,6 +1793,9 @@ const AddPurchaseBill = () => {
                               Add
                             </Button>
                           </td>
+
+
+
                         </tr>
 
                         {ItemPurchaseList?.item?.map((item) => (
@@ -1601,6 +1817,7 @@ const AddPurchaseBill = () => {
                               <DeleteIcon
                                 className="delete-icon bg-none"
                                 onClick={() => deleteOpen(item.id)}
+
                               />
                               {item.iteam_name}
                             </td>
@@ -1621,155 +1838,141 @@ const AddPurchaseBill = () => {
                             <td>{item.total_amount}</td>
                           </tr>
                         ))}
-                        {/* <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal"></td>
-                                            </tr> */}
+
                       </>
                     )}
                   </tbody>
                 </table>
-              </div>
-            </div>
-            <div className="flex gap-10 justify-end mt-4">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  flexDirection: "column",
-                }}
-              >
-                <div>
-                  <label className="font-bold">Total GST : </label>
-                </div>
-
-                <div>
-                  <label className="font-bold">Total Qty </label>
-                </div>
-              </div>
-              <div class="totals-purchase">
-                <div className="font-bold">
-                  {totalGst}
-                </div>
-
-                <div className="font-bold mt-4">
-                  {totalQty}
-                </div>
-              </div>
-              <div
-                className="totals"
-                style={{
-                  display: "flex",
-                  gap: "22px",
-                  flexDirection: "column",
-                }}
-              >
-                <div>
-                  <label className="font-bold">Total Amount : </label>
-                </div>
-                {/* <div>
-                  <label className="font-bold">Other Amount: </label>
-                </div> */}
-                <div>
-                  <label className="font-bold">CN Amount: </label>
-                </div>
-                <div>
-                  <label className="font-bold">Total Margin: </label>
-                </div>
-                <div>
-                  <label className="font-bold">Round off: </label>
-                </div>
-                <div>
-                  <label className="font-bold">Net Amount: </label>
-                </div>
-              </div>
-              <div className="totals">
-                <div>
-                  <span
+                <div className="flex gap-10 justify-end mt-4 ">
+                  <div
                     style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      borderBottom: "2px solid rgb(12, 161, 246)",
+                      display: "flex",
+                      gap: "20px",
+                      flexDirection: "column",
                     }}
                   >
-                    {finalTotalAmount?.toFixed(2)}
-                  </span>
-                </div>
-                {/* <div>
-                  <TextField
-                    value={otherAmt}
-                    onChange={(e) => {
-                      setOtherAmt(e.target.value);
-                      setUnsavedItems(true)
+                    <div>
+                      <label className="font-bold">Total GST : </label>
+                    </div>
 
-                    }}
-                    size="small"
-                    style={{ width: "105px" }}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        height: "35px",
-                        marginTop: "12px"
-                      },
-                    }}
-                  />
-                </div> */}
-                <div className="mt-2">
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      marginTop: "15px",
-                      color: "red",
-                    }}
-                  >
-                    -{finalCnAmount?.toFixed(2)}
-                  </span>
-                  <div className="font-bold mt-3" style={{ fontSize: "22px" }}>
-                    {totalMargin} %
+                    <div>
+                      <label className="font-bold">Total Qty : </label>
+                    </div>
+
+                    <div>
+                      <label className="font-bold">Total Net Profit : </label>
+                    </div>
+
                   </div>
-                </div>
-                <div className="mt-4">
-                  <span
+                  <div class="totals-purchase  text-end ">
+                    <div className="font-bold">
+                      {totalGst ? totalGst : 0}
+                    </div>
 
+                    <div className="font-bold mt-5">
+                      {totalQty ? totalQty : 0}
+                    </div>
+
+                    <div className="font-bold mt-5">
+                      {totalNetRate ? totalNetRate : 0}
+                    </div>
+
+                  </div>
+                  <div
+                    className="totals"
                     style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
+                      display: "flex",
+                      gap: "22px",
+                      flexDirection: "column",
                     }}
                   >
-                           
-                           {roundOffAmount === "0.00"
+                    <div>
+                      <label className="font-bold">Total Amount : </label>
+                    </div>
+
+                    <div>
+                      <label className="font-bold">CN Amount : </label>
+                    </div>
+                    <div>
+                      <label className="font-bold">Profit : </label>
+                    </div>
+
+                    <div>
+                      <label className="font-bold">Round off : </label>
+                    </div>
+                    <div>
+                      <label className="font-bold">Net Amount : </label>
+                    </div>
+                  </div>
+                  <div className="totals text-end ">
+                    <div>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          gap: "22px",
+                          flexDirection: "column",
+
+                        }}
+                      >
+                        {finalTotalAmount?.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <div style={{
+                      marginTop: "23px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          paddingTop: "10px",
+                          color: "red"
+                        }}
+                      >
+                        -{finalCnAmount?.toFixed(2)}
+                      </span>
+
+                    </div>
+                    <div style={{
+                      marginTop: "23px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          paddingTop: "10px",
+                        }}
+                      >
+                        ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
+                      </span>
+
+                    </div>
+                    <div style={{ marginTop: "23px" }}>
+                      <span style={{ fontWeight: 600 }}>
+
+                        {roundOffAmount === "0.00"
                           ? roundOffAmount
                           : roundOffAmount < 0
                             ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                            : `+${Math.abs(roundOffAmount.toFixed(2))}`}
-                  </span>
-                </div>
-                <div className="mt-4">
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                    }}
-                  >
-                    {netAmount.toFixed(2)}
-                  </span>
+                            : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                      </span>
+                    </div>
+                    <div style={{
+                      marginTop: "15px"
+                    }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "22px",
+                        }}
+                      >
+                        {netAmount.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
             </div>
+
           </div>
         </div>
         {/* CN amount PopUp Box */}
@@ -1781,8 +1984,7 @@ const AddPurchaseBill = () => {
             aria-label="close"
             onClick={resetAddDialog}
             sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-          >
-            <CloseIcon />
+          ><CloseIcon />
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -1891,8 +2093,9 @@ const AddPurchaseBill = () => {
                   data-original="#000000"
                 />
               </svg>
-              <h4 className="text-lg font-semibold mt-6">
-                Are you sure you want to delete it?
+              <h4 className="text-lg font-semibold mt-6 first-letter:uppercase">
+                <span style={{ textTransform: "uppercase" }}>A</span>
+                <span style={{ textTransform: "lowercase" }}>re you sure you want to delete it?</span>
               </h4>
             </div>
             <div className="flex gap-5 justify-center">
@@ -1914,41 +2117,44 @@ const AddPurchaseBill = () => {
           </div>
         </div>
         <Prompt
-            when={unsavedItems}
-            message={(location) => {
-              handleNavigation(location.pathname);
-              return false;
-            }}
-          />
-          <div
-            id="modal"
-            value={isOpenBox}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-          >
-            <div />
-            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-              <div className="my-4 logout-icon">
-                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
-              </div>
-              <div className="flex gap-5 justify-center">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                  onClick={handleLeavePage}
-                >
-                  Yes
-                </button>
-                <button
-                  type="button"
-                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                  onClick={LogoutClose}
-                >
-                  Cancel
-                </button>
-              </div>
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            return false;
+          }}
+        />
+        <div
+          id="modal"
+          value={isOpenBox}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
+              <h4 className="text-lg font-semibold mt-6 text-center">
+                <span style={{ textTransform: "uppercase" }}>A</span>
+                <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span>
+              </h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={LogoutClose}
+              >
+                Cancel
+              </button>
             </div>
           </div>
+        </div>
       </div>
     </>
   );

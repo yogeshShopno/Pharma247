@@ -7,9 +7,10 @@ import { saveAs } from 'file-saver';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import DatePicker from 'react-datepicker';
 import { addDays, format, subDays, subMonths } from 'date-fns';
+
 const Gstr1 = () => {
     const history = useHistory()
     const [monthDate, setMonthDate] = useState(new Date());
@@ -19,33 +20,124 @@ const Gstr1 = () => {
     const [nonMovingItemData, setNonMovingItemData] = useState([])
     const excelIcon = process.env.PUBLIC_URL + '/excel.png';
     const [errors, setErrors] = useState({})
-    const [reportType, setReportType] = useState()
-    const downloadPDF = async () => {
-        let data = new FormData()
-        const params = {
-            month_year: monthDate ? format(monthDate, 'MM-yyyy') : '',
+    const [reportType, setReportType] = useState("");
+    const [reportData, setReportData] = useState(null);
+
+    useEffect(() => {
+        if (Array.isArray(reportData) && reportData.length > 0) {
+            exportToCSV(); // Trigger CSV export after `reportData` is updated
         }
+    }, [reportData]);
+    
+    const downloadCSV = async () => {
+        if (!reportType) {
+            toast.error("Please select a report type.");
+            return;
+        }
+    
         try {
-            const response = await axios.post('gst-one?', data, {
-                params: params,
+            let data = new FormData();
+            data.append("date", monthDate ? format(monthDate, 'MM-yyyy') : '');
+            data.append("type", reportType || 0);
+    
+            const response = await axios.post('gst-one-report?', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                responseType: 'blob'
+                responseType: 'blob', // Response is a Blob
             });
-
-            // Create a Blob from the PDF Stream
-            const file = new Blob([response.data], { type: 'application/pdf' });
-
-            // Create a URL for the Blob
-            const fileURL = URL.createObjectURL(file);
-
-            // Open the URL in a new window
-            window.open(fileURL);
+    
+            if (response.status === 200) {
+                setIsLoading(false);
+    
+                // Convert Blob to JSON
+                const text = await response.data.text();
+                const parsedData = JSON.parse(text);
+    
+                if (parsedData?.data) {
+                    setReportData([parsedData.data]); // Update state with parsed data
+                } else {
+                    toast.error('No data available for the selected criteria.');
+                }
+            } else {
+                toast.error('Failed to download records. Please try again.');
+            }
         } catch (error) {
             console.error("API error:", error);
+            toast.error('An error occurred while downloading the CSV.');
         }
-    }
+    };
+    
+    
+
+    const exportToCSV = () => {
+        if (!Array.isArray(reportData) || reportData.length === 0) {
+            toast.error('Apply filter and then after download records.');
+            return;
+        }
+
+        const filteredData = reportData.map(({
+            bill_amount,
+            bill_date,
+            bill_no,
+            bill_net_rate,
+            case_amount,
+            cash_rate,
+            cgst,
+            customer_name,
+            id,
+            igst,
+            sgst,
+            state,
+            taxable_value,
+        }) => ({
+            BillNo: bill_no,
+            BillDate: bill_date,
+            BillAmount: bill_amount,
+            BillNetRate: bill_net_rate,
+            CaseAmount: case_amount,
+            CashRate: cash_rate,
+            CGST: cgst,
+            CustomerName: customer_name,
+            ID: id,
+            IGST: igst,
+            SGST: sgst,
+            State: state,
+            TaxableValue: taxable_value,
+        }));
+
+        const headers = [
+            'BillNo',
+            'BillDate',
+            'BillAmount',
+            'BillNetRate',
+            'CaseAmount',
+            'CashRate',
+            'CGST',
+            'CustomerName',
+            'ID',
+            'IGST',
+            'SGST',
+            'State',
+            'TaxableValue',
+        ];
+
+        const csvRows = [
+            headers,
+            ...filteredData.map(item => headers.map(header => item[header] || '')),
+        ];
+
+        const csvString = csvRows.map(row => row.join(',')).join('\n');
+
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+        if (reportType == 0) {
+            saveAs(blob, 'gstr1Sale.csv');
+        } else if (reportType == 1) {
+            saveAs(blob, 'gstr1SaleReturn.csv');
+
+        }
+    };
 
     return (
         <>
@@ -85,24 +177,44 @@ const Gstr1 = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "100px", height: "380px" }}>
-                                <div className="flex gap-4">
+                            <div style={{ marginTop: "100px", height: "400px" }}>
+                                <div className="flex flex-col gap-2">
+
+                                    <span className="flex  sky_text text-lg">Choose Date</span>
+
+                                    <DatePicker
+                                        className='custom-datepicker '
+                                        selected={monthDate}
+                                        onChange={(newDate) => setMonthDate(newDate)}
+                                        dateFormat="MM/yyyy"
+                                        showMonthYearPicker
+                                        sx={{ width: '200px' }}
+
+                                    />
+
+                                    <span className="flex mt-5 sky_text text-lg" >Report Type </span>
+                                    <Select
+                                        labelId="dropdown-label"
+                                        id="dropdown"
+                                        value={reportType} // Value can be null
+                                        sx={{ width: '187px' }}
+                                        onChange={(e) => setReportType(e.target.value)}
+                                        size="small"
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="" disabled >
+                                            Select Record
+                                        </MenuItem>
+                                        <MenuItem key={0} value="0">sale</MenuItem>
+                                        <MenuItem key={1} value="1">sale return</MenuItem>
+                                    </Select>
+
+                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px", marginBlock: "25px" }} onClick={downloadCSV}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+
                                     <div >
-                                        <span className="flex mb-2 sky_text text-lg">Choose Date</span>
-                                        <div style={{ width: "215px" }}>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={monthDate}
-                                                onChange={(newDate) => setMonthDate(newDate)}
-                                                dateFormat="MM/yyyy"
-                                                showMonthYearPicker
-                                            />
-                                        </div>
                                     </div>
                                 </div>
-                                <div style={{ marginTop: "25px" }}>
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={downloadPDF}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-                                </div>
+
                             </div>
                         </div>
 

@@ -77,6 +77,7 @@ const EditPurchaseBill = () => {
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(null);
+  const [itemEditID, setItemEditID] = useState(0);
   const [selectedEditItem, setSelectedEditItem] = useState(null);
   const [distributorList, setDistributorList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,6 +101,9 @@ const EditPurchaseBill = () => {
   const [openModal, setOpenModal] = useState(false);
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
+  const [barcode, setBarcode] = useState("");
+
+
 
   const [errors, setErrors] = useState({});
   let defaultDate = new Date();
@@ -108,6 +112,32 @@ const EditPurchaseBill = () => {
   const { id, randomNumber } = useParams();
   // const {  } = useParams();
   const [purchase, setPurchase] = useState([]);
+  useEffect(() => {
+    
+    const initialize = async () => {
+      try {
+        await handleLeavePage();
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    initialize(); 
+  }, []);
+
+  useEffect(() => {
+    const total = Object.values(cnTotalAmount)
+      .map(amount => parseFloat(amount) || 0)
+      .reduce((acc, amount) => acc + amount, 0);
+    setCnAmount(total)
+  }, [cnTotalAmount])
+
+ useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
 
   const listDistributor = async () => {
     try {
@@ -150,6 +180,7 @@ const EditPurchaseBill = () => {
     data.append("id", id);
     data.append("random_number", randomNumber);
     data.append("net_amount", netAmount);
+
     const params = {
       id: id,
       random_number: randomNumber,
@@ -164,10 +195,11 @@ const EditPurchaseBill = () => {
       });
 
       const purchaseData = response?.data?.data;
-      console.log("Purchase data fetched: ", purchaseData);
+      //console.log("Purchase data fetched: ", purchaseData);
 
       setPurchase(purchaseData);
       setNetAmount(response?.data?.data.net_amount)
+
       if (purchaseData) {
         //console.log("Distributors array: ", distributors);
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
@@ -254,9 +286,7 @@ const EditPurchaseBill = () => {
     // listOfHistory()
   }, [id]);
 
-
   useEffect(() => {
-
     if (!qty || !ptr || !disc || !gst.name || !free) {
       console.warn("One or more dependencies are undefined");
       return;
@@ -284,7 +314,28 @@ const EditPurchaseBill = () => {
   }, [qty, ptr, disc, gst.name, free]);
 
   // Call the combined function when you want to initiate the data fetching
-
+useEffect(()=>{
+  if (selectedEditItem) {
+    setSearchItem(selectedEditItem.item_name);
+    setUnit(selectedEditItem.weightage);
+    setBatch(selectedEditItem.batch_number);
+    setExpiryDate(selectedEditItem.expiry);
+    setMRP(selectedEditItem.mrp);
+    setQty(selectedEditItem.qty || 0);
+    setFree(selectedEditItem.fr_qty);
+    setPTR(selectedEditItem.ptr);
+    setDisc(selectedEditItem.disocunt);
+    setSchAmt(selectedEditItem.scheme_account);
+    setBase(selectedEditItem.base_price);
+    setGst(
+      gstList.find((option) => option.name === selectedEditItem.gst_name) ||
+      {}
+    );
+    setLoc(selectedEditItem.location);
+    setMargin(selectedEditItem.margin);
+    setNetRate(selectedEditItem.net_rate);
+  }
+},[selectedEditItem])
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/\D/g, "");
@@ -406,7 +457,6 @@ const EditPurchaseBill = () => {
   };
 
   const addPurchaseValidation = async () => {
-
     const newErrors = {};
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
@@ -447,6 +497,10 @@ const EditPurchaseBill = () => {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
+    if (!ItemTotalAmount) {
+      toast.error("Total amount is not available");
+      newErrors.searchItem = "Total amount is not available";
+    }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -454,7 +508,6 @@ const EditPurchaseBill = () => {
     }
     return isValid;
   };
-
   const handleNavigation = (path) => {
     setOpenAddPopUp(false)
     setIsOpenBox(true);
@@ -465,36 +518,122 @@ const EditPurchaseBill = () => {
     setIsOpenBox(false);
     // setPendingNavigation(null);
   };
+
+
+  
   const handleLeavePage = async () => {
-    try {
-      const params = {
-        start_date: localStorage.getItem('StartFilterDate'),
-        end_date: localStorage.getItem('EndFilterDate'),
-        distributor_id: localStorage.getItem('DistributorId'),
-        type: "1"
-      };
-
-      const response = await axios.post("purches-return-iteam-histroy", {},
-        {
-          params: params,
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-      }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
-      history.replace(nextPath);
-    } catch (error) {
+    let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+        try {
+          const response = await axios.post("purches-histroy", data, 
+            {
+            headers: {Authorization: `Bearer ${token}`},
+          });
+    
+          if (response.status === 200) {
+            setUnsavedItems(false);
+            setIsOpenBox(false);
+            setTimeout(() => {
+              if (nextPath) {
+                history.push(nextPath)
+              }
+    
+            }, 0);
+          }
+          setIsOpenBox(false);
+          setUnsavedItems(false);
+          
+          // history.replace(nextPath);
+        }catch (error) {
       console.error("Error deleting items:", error);
     }
   };
+
+
+
+ const handleBarcode = async () => {
+    if (!barcode) {
+      return;
+    }
+    let data = new FormData();
+    // data.append("barcode", barcode);
+
+
+    const params = {
+      random_number: localStorage.getItem("RandomNumber"),
+    };
+    try {
+      const res = axios
+        .post("barcode-batch-list?", { "barcode": barcode }, {
+          // params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // data.append("unit_id", Number(0));
+          // data.append("random_number", localStorage.getItem("RandomNumber"));
+          // data.append("item_id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+          // data.append("weightage", response?.data?.data[0]?.batch_list[0]?.unit ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 1);
+          // data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
+          // data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+          // data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
+          // data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
+          // data.append("free_qty", 0);
+          // data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
+          // data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
+          // data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
+          // data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
+          // data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst ? response?.data?.data[0]?.batch_list[0]?.gst : 0);
+          // data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+          // data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
+          // data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
+          // data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
+
+          // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
+          // setValue.unit_id(response.data.data[0]?.unit)
+
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
+          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
+          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
+          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setGst({
+            id: response?.data?.data[0]?.batch_list[0]?.gst,
+            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
+          });
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+
+          setSelectedEditItemId(response?.data?.data[0]?.id)
+          setItemEditID(response.data.data[0]?.id)
+
+          // setIsEditMode(true)
+
+          // handleAddBarcodeItem(data)
+
+
+
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
 
   const handleEditItem = async () => {
     setUnsavedItems(true);
@@ -505,31 +644,36 @@ const EditPurchaseBill = () => {
       data.append("item_id", selectedEditItemId);
       // data.append("unit_id", value?.unit_id);
     } else {
-      data.append("item_id", value?.id);
-      data.append("unit_id", value?.unit_id);
+      if(barcode){
+        data.append("item_id", ItemId);
+        data.append("unit_id", Number(0));
+
+      }else{
+        data.append("item_id", value?.id);
+        data.append("unit_id", value?.unit_id);
+      }
+      
     }
     data.append("unit_id", unit);
-
     data.append("random_number", randomNumber);
-    data.append("unite", unit);
-    data.append("batch_number", batch);
-    data.append("expiry", expiryDate);
-    data.append("mrp", mrp);
-    data.append("qty", qty);
-    data.append("free_qty", free);
-    data.append("ptr", ptr);
-    data.append("discount", disc);
-    data.append("scheme_account", schAmt);
-    data.append("base_price", base);
-    data.append("gst", gst.id);
-    data.append("location", loc);
-    data.append("margin", margin);
-    data.append("net_amount", netAmount);
-    data.append("cn_amount", finalCnAmount);
-    data.append("net_rate", netRate);
-    data.append("total_amount", ItemTotalAmount);
-    data.append("weightage", unit);
-
+    data.append("unite", !unit?0:unit);
+    data.append("batch_number", !batch?0:batch);
+    data.append("expiry", !expiryDate?0:expiryDate);
+    data.append("mrp", !mrp?0:mrp);
+    data.append("qty", !qty?0:qty);
+    data.append("free_qty", !free?0:free);
+    data.append("ptr", !ptr?0:ptr);
+    data.append("discount", !disc?0:disc);
+    data.append("scheme_account", !schAmt?0:schAmt);
+    data.append("base_price", !base?0:base);
+    data.append("gst", !gst.id?0:gst.id);
+    data.append("location", !loc?0:loc);
+    data.append("margin", !margin?0:margin);
+    data.append("net_amount", !netAmount?0:netAmount);
+    data.append("cn_amount", !finalCnAmount?0:finalCnAmount);
+    data.append("net_rate", !netRate?0:netRate);
+    data.append("total_amount", !ItemTotalAmount?0:ItemTotalAmount);
+    data.append("weightage", !unit?0:unit);
     const params = {
       id: selectedEditItemId,
     };
@@ -568,6 +712,7 @@ const EditPurchaseBill = () => {
       setBatch("");
       setMargin("");
       setLoc("");
+      setBarcode("")
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
         setSelectedRows([]);
@@ -624,6 +769,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           setUnsavedItems(true);
+
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
@@ -648,6 +794,7 @@ const EditPurchaseBill = () => {
     data.append("total_amount", purchase.total_amount);
     data.append("net_amount", netAmount);
     data.append("total_margin", purchase.total_margin)
+    data.append("total_gst", purchase?.total_gst)
     data.append("round_off", roundOffAmount);
     data.append("cn_amount", finalCnAmount)
     data.append("purches_data", JSON.stringify(purchase.item_list));
@@ -720,31 +867,10 @@ const EditPurchaseBill = () => {
       setNetRate(selectedEditItem.net_rate);
     }
   };
-  // const handleEditClick = (item) => {
-  //     setSelectedEditItem(item);
-  //     setIsEditMode(true);
-  //     setSelectedEditItemId(item.id);
-  //     // if (selectedEditItem) {
-  //     setSearchItem(item.item_name)
-  //     setUnit(item.weightage);
-  //     setBatch(item.batch_number);
-  //     setExpiryDate(item.expiry);
-  //     setMRP(item.mrp);
-  //     setQty(item.qty);
-  //     setFree(item.fr_qty);
-  //     setPTR(item.ptr);
-  //     setDisc(item.disocunt);
-  //     setSchAmt(item.scheme_account);
-  //     setBase(item.base_price);
-  //     setGst(gstList.find(option => option.name === item.gst_name) || {});
-  //     setLoc(item.location);
-  //     setMargin(item.margin);
-  //     setNetRate(item.net_rate);
-  //     setItemTotalAmount(item.amount)
-  //     // }
-  // };
+ 
   const handelAddOpen = () => {
     setUnsavedItems(true)
+
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
     purchaseReturnData()
@@ -755,7 +881,10 @@ const EditPurchaseBill = () => {
     // setCnAmount(0)
   }
   const handleKeyDown = (event) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current) {
@@ -913,25 +1042,7 @@ const EditPurchaseBill = () => {
       setCnAmount(0);
     }
   };
-  // const handleRowSelectPending = (id, totalAmount) => {
-  //   const newSelectedRows = selectedRows.includes(id)
-  //     ? selectedRows.filter((rowId) => rowId !== id)
-  //     : [...selectedRows, id];
-
-  //   setSelectedRows(newSelectedRows);
-
-  //   if (newSelectedRows.includes(id)) {
-  //     setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
-  //     setCnAmount((prev) => prev + parseFloat(totalAmount));
-  //   } else {
-  //     setCnTotalAmount((prev) => {
-  //       const updated = { ...prev };
-  //       delete updated[id];
-  //       return updated;
-  //     });
-  //     setCnAmount((prev) => prev - parseFloat(totalAmount));
-  //   }
-  // };
+ 
   const handleRowSelectPending = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)
@@ -940,17 +1051,15 @@ const EditPurchaseBill = () => {
     setSelectedRows(newSelectedRows);
 
     if (newSelectedRows.includes(id)) {
-      // If the row is checked, update the amount
       setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
       setCnAmount((prev) => prev + parseFloat(totalAmount));
     } else {
-      // If the row is unchecked, set cnAmount to 0
       setCnTotalAmount((prev) => {
         const updated = { ...prev };
         delete updated[id];
         return updated;
       });
-      setCnAmount(0);
+      setCnAmount((prev) => prev - parseFloat(totalAmount));
     }
   };
 
@@ -1011,6 +1120,10 @@ const EditPurchaseBill = () => {
       newErrors.finalTotalAmount = "You cannot adjust CN more than the total invoice amount";
       toast.error('You cannot adjust CN more than the total invoice amount');
       setError(newErrors);
+      setError(newErrors);
+      setSelectedRows([]);
+      setCnTotalAmount({});
+      setCnAmount(0);
       return;
     }
     setFinalCnAmount(cnAmount)
@@ -1063,7 +1176,7 @@ const EditPurchaseBill = () => {
       ) : (
         <div
           style={{
-            backgroundColor: "rgb(233 228 228)",
+            
             height: "calc(99vh - 55px)",
             padding: "0px 20px",
           }}
@@ -1298,16 +1411,17 @@ const EditPurchaseBill = () => {
                             error={!!errors.unit}
                             value={unit}
                             sx={{ width: "50px" }}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setUnit(value ? Number(value) : "");
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
                                 e.preventDefault();
                               }
-                            }}
-
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[eE]/g, '');
-
-                              setUnit(Number(value));
                             }}
                           />
                         </td>
@@ -1320,11 +1434,15 @@ const EditPurchaseBill = () => {
                             value={batch}
                             sx={{ width: "90px" }}
                             error={!!errors.batch}
+<<<<<<< HEAD
 
                             onChange={(e) => {
                               const value = e.target.value.replace(/[eE]/g, '');
+=======
+>>>>>>> main
 
-                              setBatch(Number(value));
+                            onChange={(e) => {
+                              setBatch(e.target.value);
                             }}
 
                           />
@@ -1355,14 +1473,27 @@ const EditPurchaseBill = () => {
                             size="small"
                             inputRef={inputRef4}
                             error={!!errors.mrp}
+                            value={mrp}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setMRP(value ? Number(value) : "");
+                              }
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
+<<<<<<< HEAD
                               handleKeyDown(e);
                             }} value={mrp}
                             onChange={(e) => {
                               setMRP(e.target.value);
+=======
+>>>>>>> main
                             }}
                           />
                         </td>
@@ -1373,16 +1504,28 @@ const EditPurchaseBill = () => {
                             sx={{ width: "80px" }}
                             size="small"
                             inputRef={inputRef5}
+<<<<<<< HEAD
                             onKeyDown={(e) => {
                               if (['e', 'E'].includes(e.key)) {
                                 e.preventDefault();
                               }
                               handleKeyDown(e);
                             }} error={!!errors.qty}
+=======
+>>>>>>> main
                             value={qty}
                             onChange={(e) => {
-                              const value = e.target.value;
-                              setQty(value === "" ? 0 : Number(value));
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setQty(value ? Number(value) : "");
+                            }}
+
+                            onKeyDown={(e) => {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
+                                e.preventDefault();
+                              }
                             }}
                           />
                         </td>
@@ -1395,13 +1538,23 @@ const EditPurchaseBill = () => {
                             value={free}
                             inputRef={inputRef6}
                             error={!!errors.free}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              setFree(value ? Number(value) : "");
+                            }}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+
+                              if (
+                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                              ) {
                                 e.preventDefault();
                               }
+<<<<<<< HEAD
                               handleKeyDown(e);
                             }} onChange={(e) => {
                               setFree(e.target.value);
+=======
+>>>>>>> main
                             }}
                           />
                         </td>
@@ -1412,13 +1565,21 @@ const EditPurchaseBill = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef7}
+                            value={ptr}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
+<<<<<<< HEAD
                               handleKeyDown(e);
                             }} value={ptr}
                             error={!!errors.ptr}
+=======
+                            }}
+>>>>>>> main
                             onChange={handlePTR}
                           />
                         </td>
@@ -1430,14 +1591,27 @@ const EditPurchaseBill = () => {
                             type="number"
                             inputRef={inputRef8}
                             onKeyDown={(e) => {
-                              if (['e', 'E'].includes(e.key)) {
+                              if (
+                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                (e.key === '.' && e.target.value.includes('.'))
+                              ) {
                                 e.preventDefault();
                               }
+<<<<<<< HEAD
                               handleKeyDown(e);
                             }} value={disc}
+=======
+                            }}
+                            value={disc}
+>>>>>>> main
                             error={!!errors.disc}
-                            onChange={handleSchAmt}
-                          />
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (Number(value) > 100) {
+                                e.target.value = 100; 
+                              }
+                              handleSchAmt(e); 
+                            }}                          />
                         </td>
                         <td>
                           <TextField
@@ -1450,7 +1624,12 @@ const EditPurchaseBill = () => {
                                 e.preventDefault();
                               }
                               handleKeyDown(e);
+<<<<<<< HEAD
                             }} value={schAmt}
+=======
+                            }}
+                            value={schAmt}
+>>>>>>> main
                             disabled
                           />
                         </td>
@@ -1549,7 +1728,21 @@ const EditPurchaseBill = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={15}></td>
+                        <td><TextField
+                              id="outlined-number"
+                              type="number"
+                              size="small"
+                              value={barcode}
+                              placeholder="scan barcode"
+                           
+                              sx={{ width: "250px" }}
+                              onChange={(e) => {
+                                setBarcode(e.target.value)
+                              }}
+
+                            /></td>
+                        <td colSpan={14}></td>
+
                         <td>
                           <Button
                             variant="contained"
@@ -1611,108 +1804,103 @@ const EditPurchaseBill = () => {
                           <td>{item.amount}</td>
                         </tr>
                       ))}
-                      <tr>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal"></td>
-                        <td className="amounttotal">Total</td>
-                        <td className="amounttotal">
-                          {purchase?.total_amount}
-                        </td>
-                      </tr>
+                     
                     </tbody>
                   </table>
-                </div>
-              </div>
-              <div>
-
-                <div className="flex gap-10 justify-end mt-4 flex-wrap ">
-
+                
+                  <div className="flex gap-10 justify-end mt-5 ">
                   {/* First Column */}
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <label className="font-bold">Total GST: </label>
-                    <label className="font-bold">Total Qty:</label>
-                    <label className="font-bold">Margin: </label>
-                  </div>
-
-                  <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <div className="font-bold">{purchase?.total_gst}</div>
-                    <div className="font-bold">{purchase?.total_qty}</div>
-                    <div className="font-bold">
-                      {purchase?.total_net_rate} ({purchase?.total_margin})%
+                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total GST : </label>
+                      <div className="font-bold">{purchase?.total_gst}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Qty :</label>
+                      <div className="font-bold">{purchase?.total_qty}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Net Profit :</label>
+                      <div className="font-bold">{purchase?.total_net_rate}</div>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                    <div>
-                      <label className="font-bold">Total Amount: </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">CN Amount: </label>
-                    </div>
-
-
-                    <div>
-                      <label className="font-bold">Round off: </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">Net Amount: </label>
-                    </div>
-                  </div>
-
-                  <div class="totals mr-5" style={{ display: 'flex', gap: '23px', flexDirection: 'column', alignItems: "end" }}>
-                    <div>
-                      <span style={{ fontWeight: 600 }}>
+                  {/* Second Column */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+                    {/* Total Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Total Amount : </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
                         {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
                       </span>
                     </div>
+<<<<<<< HEAD
                     <div style={{ marginTop: "2%" }}>
                       <span style={{ fontWeight: 600, color: "red" }}>
+=======
+
+                    {/* CN Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" ,}}>
+                      <label className="font-bold">CN Amount : </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          color :"red"
+                        }}
+                      >
+>>>>>>> main
                         {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
                       </span>
                     </div>
 
-                    {/* <div style={{ marginTop: "2%" }}>
-                     
-                    </div> */}
-                    {/* <div style={{ marginTop: "0%" }}>
-                      <span style={{ fontWeight: 600 }}>
-                      
-                        {roundOffAmount === "0.00" ? roundOffAmount : (roundOffAmount < 0.49 ? `-${roundOffAmount}` : `+${parseFloat(1 - roundOffAmount).toFixed(2)}`)}
-
-                      </span>
-                    </div> */}
-                    <div style={{ marginTop: "0%" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {roundOffAmount === "0.00"
-                          ? roundOffAmount
-                          : roundOffAmount < 0
-                            ? `-${Math.abs(roundOffAmount)}`
-                            : `+${Math.abs(roundOffAmount)}`}
+                    {/* Total Margin Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Profit : </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                       ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
                       </span>
                     </div>
 
-                    <div>
-                      <span style={{ fontWeight: 800, fontSize: '22px' }}>
+                    {/* Round Off Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Round off : </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                        }}
+                      >
+                        {(parseFloat(roundOffAmount) || 0).toFixed(2)}
+                      </span>
+                    </div>
+
+                    {/* Net Amount Row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      <label className="font-bold">Net Amount : </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: "22px",
+                        }}
+                      >
                         {(parseFloat(netAmount) || 0).toFixed(2)}
                       </span>
                     </div>
-
                   </div>
-
-
                 </div>
+                </div>
+
+                
+              </div>
+              <div>
+
 
               </div>
             </div>
@@ -1736,8 +1924,7 @@ const EditPurchaseBill = () => {
                     <thead>
                       <tr>
                         <th>
-                          {
-                            purchase?.cn_bill_list?.length === 0 ? (
+                          {purchase?.cn_bill_list?.length === 0 ? (
                               <input
                                 type="checkbox"
                                 onChange={handleSelectAllPending}
@@ -1935,7 +2122,8 @@ const EditPurchaseBill = () => {
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+                <span style={{ textTransform: "lowercase" }}>re you sure you want to delete it?</span></h4>
               </div>
               <div className="flex gap-5 justify-center">
                 <button
@@ -1949,9 +2137,7 @@ const EditPurchaseBill = () => {
                   type="button"
                   className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                   onClick={LogoutClose}
-                >
-                  Cancel
-                </button>
+                >Cancel</button>
               </div>
             </div>
           </div>

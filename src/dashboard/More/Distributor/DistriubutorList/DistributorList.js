@@ -48,6 +48,7 @@ const DistributerList = () => {
     const [address, setAddress] = useState('')
     const [area, setArea] = useState('')
     const [pincode, setPincode] = useState('')
+    const [state, setState] = useState('')
     const [bankName, setBankName] = useState('')
     const [accountNo, setAccountNo] = useState('')
     const [ifscCode, setIfscCode] = useState('')
@@ -96,6 +97,8 @@ const DistributerList = () => {
         setAddress(row.address);
         setArea(row.area);
         setPincode(row.pincode);
+        setState(row.state);
+
         setBankName(row.bank_name);
         setAccountNo(row.account_no);
         setIfscCode(row.ifsc_code);
@@ -154,6 +157,7 @@ const DistributerList = () => {
         data.append('address', address);
         data.append('area', area);
         data.append('pincode', pincode);
+        data.append('state', state);
         data.append('bank_name', bankName);
         data.append('account_no', accountNo);
         data.append('ifsc_code', ifscCode);
@@ -180,6 +184,8 @@ const DistributerList = () => {
                 setWhatsApp('');
                 setAddress('');
                 setArea('');
+                setState('');
+
                 setPincode('');
                 setBankName('');
                 setAccountNo('');
@@ -603,6 +609,20 @@ const DistributerList = () => {
                                                         size="small"
                                                         value={pincode}
                                                         onChange={(e) => setPincode(e.target.value)}
+                                                        className="w-full"
+                                                        variant="outlined"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col md:flex-row gap-5">
+                                                
+                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                                                    <span className="label darkblue_text">State</span>
+                                                    <TextField
+                                                        id="outlined-multiline-static"
+                                                        size="small"
+                                                        value={state}
+                                                        onChange={(e) => setState(e.target.value)}
                                                         className="w-full"
                                                         variant="outlined"
                                                     />

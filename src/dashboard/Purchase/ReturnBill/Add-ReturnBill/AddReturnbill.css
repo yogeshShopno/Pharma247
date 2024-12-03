@@ -1,0 +1,228 @@
+.main {
+    display: flex;
+    gap: 20px
+}
+
+/* Date Picker Css */
+.css-10o2lyd-MuiStack-root {
+    padding-top: 0px !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    height: 0.5rem !important;
+}
+
+
+.total {
+    background-color: rgb(12, 161, 246);
+    color: white;
+    width: 120px;
+}
+
+.saleTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.saleTable th,
+.saleTable td {
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.saleTable th {
+    color: rgba(4, 76, 157, 1);
+    font-size: 14px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+}
+
+.headerList {
+    display: flex;
+    /* padding-right: 35px; */
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 10px
+}
+
+.title {
+    font-size: 17px;
+    display: flex;
+    gap: 5px;
+    color: rgba(4, 76, 157, 0.6);
+    font-weight: 500;
+    line-height: 17px;
+}
+
+.icon {
+    color: rgb(4, 76, 157);
+    cursor: pointer;
+}
+
+body {
+    font-family: Lato, sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+
+.label {
+    font-weight: 450;
+    font-size: 16px;
+}
+
+.field {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.input {
+    border: 1px solid black;
+    height: 35px;
+    width: 80px;
+}
+
+.info {
+    font-size: 12px;
+    display: flex;
+    gap: 30px;
+}
+
+.customtable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+}
+
+.customtable th,
+.customtable td {
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.customtable th {
+    color: rgba(4, 76, 157, 1);
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+}
+
+
+.table-container {
+    max-height: 205px;
+    overflow-y: auto;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(45deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.delete-icon {
+    color: rgb(170, 31, 31);
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: red;
+    animation: spin 2s linear infinite;
+}
+
+
+.itemList {
+    padding: 5px;
+    font-weight: 600;
+}
+
+
+
+.item-List tr {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-weight: 600;
+    /* border: 1px solid rgba(35, 127, 231, 0.1); */
+}
+
+.item-List th,
+.item-List td {
+    padding: 8px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    /* box-shadow: 0px 0px 5px -2px #1a1d21 !important; */
+}
+
+.item-List th {
+    color: rgba(4, 76, 157, 1);
+    font-size: 15px;
+}
+
+.item-List:hover {
+    background: #ceecfd;
+}
+
+/* Container for each item */
+.item-list {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(221, 78, 90, 0.5) !important;
+    border-radius: 5px;
+}
+
+/* Flex container for item details */
+.item-list .flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* General styles for the labels and values */
+.item-list span {
+    display: block;
+}
+
+/* Optional: Styling for specific item details */
+.item-list .flex span:first-child {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Adjust padding and margin for item details */
+.item-list .flex div {
+    padding: 5px;
+}
+
+/* Background color for the item list */
+.item-list {
+    background: rgba(221, 78, 90, 0.1);
+}
+
+.list-bank {
+    cursor: pointer;
+}
+
+.list-bank.highlighted {
+    background-color: rgb(186 186 173);
+}

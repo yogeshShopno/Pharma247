@@ -1,7 +1,7 @@
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputAdornment, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Input, InputAdornment, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DatePicker from 'react-datepicker';
 import { addMonths, format, set, subDays, subMonths } from 'date-fns';
@@ -23,16 +23,12 @@ import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { FaPowerOff } from "react-icons/fa";
 import { VscDebugStepBack } from "react-icons/vsc";
 
-
-
-
 const AddReturnbill = () => {
     const token = localStorage.getItem("token")
     const history = useHistory();
     const unblockRef = useRef(null);
-    const [unsavedItems, setUnsavedItems] = useState(false);
+    const [unsavedItems, setUnsavedItems] = useState(true);
     const [nextPath, setNextPath] = useState("");
-
     const [isOpenBox, setIsOpenBox] = useState(false);
     const [pendingNavigation, setPendingNavigation] = useState(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -75,7 +71,6 @@ const AddReturnbill = () => {
     const [distributor, setDistributor] = useState(null);
     const [remark, setRemark] = useState('')
     const [expiryDate, setExpiryDate] = useState('');
-
     const [free, setFree] = useState(0)
     const [error, setError] = useState({ distributor: '', returnType: '', billNo: '', startDate: '', endDate: '' });
     const staffOptions = [{ value: 'Owner', id: 1 }, { value: localStorage.getItem('UserName'), id: 2 },]
@@ -98,11 +93,16 @@ const AddReturnbill = () => {
     const [roundOff, setRoundOff] = useState(0.00)
     const [otherAmount, setOtherAmount] = useState(0)
     const [finalAmount, setFinalAmount] = useState(0)
+    const [margin, setMargin] = useState(0)
+    const [totalMargin, setTotalMargin] = useState(0)
+    const [totalNetRate, setTotalNetRate] = useState(0)
+    const [totalGST, setTotalGST] = useState(0)
+    const [totalQty, setTotalQty] = useState(0)
     const [editQty, setEditQty] = useState('')
     const [qty, setQty] = useState(0)
     const [tempQty, setTempQty] = useState('')
-    const [clickedItemIds, setClickedItemIds] = useState([]); // Track clicked item IDs
-
+    const [clickedItemIds, setClickedItemIds] = useState([]); 
+    const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
 
     // const handleKeyDown = (event) => {
     //     if (event.key === 'Enter') {
@@ -144,6 +144,19 @@ const AddReturnbill = () => {
     //         };
     //     }
     // }, [saveValue, history, isOpenBox]);
+ 
+    useEffect(() => {
+    
+        const initialize = async () => {
+          try {
+            await handleLeavePage();
+          } catch (error) {
+            console.error("Error during initialization:", error);
+          }
+        };
+    
+        initialize(); 
+      }, []);
 
     useEffect(() => {
         if (otherAmount !== '') {
@@ -194,41 +207,40 @@ const AddReturnbill = () => {
     };
 
     const handleLeavePage = async () => {
+        let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "0");
+
         try {
-          const params = {
-            start_date: localStorage.getItem('StartFilterDate'),
-            end_date: localStorage.getItem('EndFilterDate'),
-            distributor_id: localStorage.getItem('DistributorId'),
-            type: "1"
-          };
-    
-          const response = await axios.post("purches-return-iteam-histroy", {},
-            {
-              params: params,
-              headers: { Authorization: `Bearer ${token}` },
+            const response = await axios.post("purches-return-iteam-histroy", data,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
+
+                setTimeout(() => {
+                    if(nextPath){
+                        history.push(nextPath);
+}
+                }, 0);
             }
-          );
-          if (response.status === 200) {
-            setUnsavedItems(false);
             setIsOpenBox(false);
-    
-            setTimeout(() => {
-              history.push(nextPath);
-            }, 0);
-          }
-          setIsOpenBox(false);
-          setUnsavedItems(false);
-          history.replace(nextPath);
+            setUnsavedItems(false);
         } catch (error) {
-          console.error("Error deleting items:", error);
+            console.error("Error deleting items:", error);
         }
-      };
+    };
 
 
-      const handleNavigation = (path) => {
+    const handleNavigation = (path) => {
         setIsOpenBox(true);
         setNextPath(path);
-      };
+    };
 
     const handleLogout = async () => {
         await restoreData();
@@ -370,8 +382,6 @@ const AddReturnbill = () => {
         const today = new Date();
         // Set time to 00:00:00 to compare only date part
         today.setHours(0, 0, 0, 0);
-
-
         // Disable dates that are greater than today
         return date > today;
     };
@@ -390,20 +400,17 @@ const AddReturnbill = () => {
             purches_return_id: ItemId ? ItemId : '',
             type: 0
         };
-        try {
-            await axios.post("purches-return-iteam-delete?", data, {
+        try {await axios.post("purches-return-iteam-delete?", data, {
                 params: params,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-            }
-            ).then((response) => {
+            }).then((response) => {
                 setUnsavedItems(true)
                 purcheseReturnFilter();
                 setIsDelete(false);
-            })
-        } catch (error) {
+            })} catch (error) {
             console.error("API error:", error);
         }
     }
@@ -414,7 +421,6 @@ const AddReturnbill = () => {
         if (!distributor) newErrors.distributor = 'distributor is required';
         if (!startDate) newErrors.startDate = 'start date is required';
         if (!endDate) newErrors.endDate = 'end date is required';
-
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -427,8 +433,8 @@ const AddReturnbill = () => {
 
     const handleInputChange = (e) => {
         const value = e.target.value;
-        setSearchQuery(value); // Update the state first
-        purcheseReturnFilter(value); // Call the filter function with the updated value
+        setSearchQuery(value);
+        purcheseReturnFilter(value);
     };
 
     const purcheseReturnFilter = async (value) => {
@@ -439,7 +445,6 @@ const AddReturnbill = () => {
         data.append("distributor_id", distributor.id ? distributor.id : '');
         data.append("search", value ? value : "");
         // console.log(searchQuery,"value")
-
         try {
             await axios.post("purches-return-filter?", data, {
                 headers: {
@@ -447,13 +452,17 @@ const AddReturnbill = () => {
                 },
             }
             ).then((response) => {
-                setTempQty(response.data.data.item_list)
                 setReturnItemList(response.data.data)
                 setFinalAmount(response.data.data?.final_amount)
                 setNetAmount(response.data.data?.final_amount)
+                setTotalMargin(Number(response.data.data?.total_margin))
+                setMargin(Number(response.data.data?.margin))
+                setTotalNetRate(response.data.data?.total_net_rate)
+                setTotalGST(response.data.data?.total_gst)
+                setTotalQty(response.data.data?.total_qty)
+
                 // batchListAPI();
                 // setIsLoading(false);
-                //console.log(response.data.data.item_list)
             })
             localStorage.setItem('StartFilterDate', format(startDate, 'MM/yy'));
             localStorage.setItem('EndFilterDate', format(endDate, 'MM/yy'));
@@ -479,12 +488,11 @@ const AddReturnbill = () => {
         // Calculate total scheme amount
         const totalSchAmt = parseFloat((((ptr * inputDiscount) / 100) * qty).toFixed(2));
         setSchAmt(totalSchAmt);
-        console.log(schAmt, "schAmt");
         // Calculate total base
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
         // setBase(totalBase); // Uncomment if needed
     };
-    
+
     const removeItem = () => {
         setUnit('')
         setBatch('')
@@ -499,7 +507,7 @@ const AddReturnbill = () => {
         setLoc('')
         setItemTotalAmount(0)
     }
-    
+
     const handleSubmit = () => {
         const newErrors = {};
         if (!distributor) {
@@ -516,7 +524,7 @@ const AddReturnbill = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-       
+
         submitPurchaseData();
         setIsOpenBox(false)
         setPendingNavigation(null);
@@ -524,7 +532,6 @@ const AddReturnbill = () => {
 
     const submitPurchaseData = async () => {
         const hasUncheckedItems = returnItemList?.item_list.every(item => item.iss_check === false)
-        console.log('hasUncheckedItems :>> ', hasUncheckedItems);
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
         }
@@ -542,8 +549,9 @@ const AddReturnbill = () => {
             data.append('payment_type', paymentType ? paymentType : '');
             // data.append('other_amount', otherAmt || 0);
             data.append('other_amount', otherAmount ? otherAmount : '' || 0);
-
+            data.append('total_gst', totalGST ? totalGST : '' || 0);
             data.append('net_amount', netAmount ? netAmount : '');
+            data.append('net_rate', totalNetRate ? totalNetRate : '');
             data.append('round_off', roundOff ? roundOff : '');
             data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
             data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
@@ -589,8 +597,6 @@ const AddReturnbill = () => {
     };
 
 
-    // Add this to your state declarations
-    const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
 
 
 
@@ -605,14 +611,14 @@ const AddReturnbill = () => {
     };
 
 
-    const handleQtyChange = (e) => {
-        const inputQty = Number(e.target.value);
+    const handleQtyChange = (value) => {
+        // const inputQty = Number(e.target.value);
 
         const availableStockForEdit = initialTotalStock - free;
 
-        if (inputQty <= availableStockForEdit && inputQty >= 0) {
-            setQty(inputQty);
-        } else if (inputQty > availableStockForEdit) {
+        if (value <= availableStockForEdit && value >= 0) {
+            setQty(value);
+        } else if (value > availableStockForEdit) {
             setQty(availableStockForEdit);
             toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
@@ -626,9 +632,9 @@ const AddReturnbill = () => {
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
 
-        if (!free) newErrors.free = 'Free quantity is required';
+        // if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
-        if (!disc) newErrors.disc = 'Discount is required';
+        // if (!disc) newErrors.disc = 'Discount is required';
         if (!gst.name) newErrors.gst = 'GST is required';
         // if (!loc) newErrors.loc = 'Location is required';
 
@@ -699,22 +705,23 @@ const AddReturnbill = () => {
     };
 
     const handleEditItem = async () => {
-           
+
         setUnsavedItems(true);
         let data = new FormData();
         data.append('purches_return_id', selectedEditItemId ? selectedEditItemId : '')
-        data.append('iteam_id', itemPurchaseId ? itemPurchaseId : '')
+        data.append('iteam_id', itemPurchaseId ? itemPurchaseId : 0)
+        data.append("weightage", unit ? unit : 0)
         data.append("batch", batch ? batch : '')
         data.append("exp_dt", expiryDate ? expiryDate : '')
         data.append("mrp", mrp ? mrp : '')
         data.append("ptr", ptr ? ptr : '')
-        data.append("fr_qty", free ? free : '')
-        data.append("qty", qty ? qty : '')
-        data.append("disocunt", disc ? disc : '')
+        data.append("qty", qty ? qty : 0)
+        data.append("fr_qty", free ? free : 0)
+        data.append("disocunt", disc ? disc : 0)
         data.append('gst', gst.id ? gst.id : '')
-        data.append('location', loc ? loc : '')
+        data.append('location', loc ? loc : 0)
         data.append('amount', ItemTotalAmount ? ItemTotalAmount : '')
-        data.append("weightage", unit ? unit : '')
+
         const params = {
             id: selectedEditItemId
         };
@@ -751,21 +758,23 @@ const AddReturnbill = () => {
     }
 
     const handleOtherAmount = (event) => {
-        setUnsavedItems(true)
-        let value = Number(event.target.value) || "";
+        setUnsavedItems(true);
+
+        let value = event.target.value;
+
+        value = Number(value) || "";
+
         if (value < -finalAmount) {
             value = -finalAmount;
         }
+
+        // Update the state
         setOtherAmount(value);
     };
 
 
-    const handleMinQty = (e) => {
-        console.log(e, "event")
-        if (qty > e) {
-            setQty(e)
-        }
-    }
+
+   
 
 
     return (
@@ -785,7 +794,7 @@ const AddReturnbill = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
+                <div style={{  height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '600px', gap: '7px' }}>
@@ -797,7 +806,7 @@ const AddReturnbill = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Select
+                                {/* <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
@@ -810,7 +819,7 @@ const AddReturnbill = () => {
                                     {bankData?.map(option => (
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
-                                </Select>
+                                </Select> */}
                                 <Button variant="contained" style={{ background: "rgb(4, 76, 157)" }} onClick={handleSubmit}>Save</Button>
                             </div>
                         </div>
@@ -901,6 +910,8 @@ const AddReturnbill = () => {
                                     >
                                         <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
                                     </Button>
+                                  
+
                                 </div>
                                 <div>
                                 </div>
@@ -924,10 +935,9 @@ const AddReturnbill = () => {
                                         onChange={(e) => { setRemark(e.target.value) }}
                                     />
                                 </div>
-                            </div>
-                            <div className='overflow-x-auto mt-4 '>
-                                <table className="w-full border-collapse custom-table">
-                                    <thead>
+                                <div className='overflow-x-auto mt-4 w-full '>
+                            <table className="customtable w-full border-collapse custom-table ">
+                            <thead>
                                         <tr>
                                             <th >Item Name</th>
                                             <th >Unit</th>
@@ -968,12 +978,14 @@ const AddReturnbill = () => {
                                                         value={unit}
                                                         sx={{ width: '80px' }}
                                                         onChange={(e) => {
-                                                            const value = e.target.value.replace(/[eE]/g, '');
-                            
-                                                            setUnit(Number(value));
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setUnit(value ? Number(value) : "");
                                                           }}
                                                           onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
                                                               e.preventDefault();
                                                             }
                                                           }}
@@ -984,7 +996,7 @@ const AddReturnbill = () => {
 
                                                     <TextField
                                                         id="outlined-number"
-                                                        type="number"
+
                                                         // inputRef={inputRef1}
                                                         // onKeyDown={handleKeyDown}
                                                         size="small"
@@ -1020,7 +1032,20 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.mrp}
                                                         value={mrp}
-                                                        onChange={(e) => { setMRP(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                              setMRP(value ? Number(value) : "");
+                                                            }
+                                                          }}
+                                                          onKeyDown={(e) => {
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
                                                     />
                                                 </td>
                                                 <td>
@@ -1034,7 +1059,19 @@ const AddReturnbill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.qty}
                                                         value={qty}
-                                                        onChange={handleQtyChange}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            handleQtyChange(value ? Number(value) : "");
+                                                          }}
+                            
+                                                          onKeyDown={(e) => {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
 
                                                     // onChange={(e) => {
                                                     //     const inputQty = Number(e.target.value); // Convert the input value to a number
@@ -1060,7 +1097,18 @@ const AddReturnbill = () => {
                                                         // inputRef={inputRef6}
                                                         // onKeyDown={handleKeyDown}
                                                         error={!!errors.free}
-                                                        onChange={(e) => { setFree(e.target.value) }}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            setFree(value ? Number(value) : "");
+                                                          }}
+                                                          onKeyDown={(e) => {
+                            
+                                                            if (
+                                                              ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                                            ) {
+                                                              e.preventDefault();
+                                                            }
+                                                          }}
                                                     />
 
 
@@ -1076,10 +1124,13 @@ const AddReturnbill = () => {
                                                         value={ptr}
                                                         error={!!errors.ptr}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
                                                               e.preventDefault();
                                                             }
-                                                          }}   
+                                                          }}
                                                         onChange={(e) => setPTR(e.target.value)}
                                                     />
                                                 </td>
@@ -1094,12 +1145,20 @@ const AddReturnbill = () => {
                                                         value={disc}
                                                         error={!!errors.disc}
                                                         onKeyDown={(e) => {
-                                                            if (['e', 'E'].includes(e.key)) {
+                                                            if (
+                                                              ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                              (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
                                                               e.preventDefault();
                                                             }
-                                                          }} 
-                                                          
-                                                        onChange={handleSchAmt} />
+                                                          }}
+                                                          onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (Number(value) > 100) {
+                                                              e.target.value = 100; 
+                                                            }
+                                                            handleSchAmt(e); 
+                                                          }}/>
                                                 </td>
                                                 <td>
                                                     <Select
@@ -1207,89 +1266,106 @@ const AddReturnbill = () => {
                                                     <td>{item.amount}</td>
                                                 </tr>
                                             ))}
-                                            < tr >
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Total</td>
-                                                <td className="amounttotal">{finalAmount}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Other Amount</td>
-                                                <td className="amounttotal">
-                                                    <TextField
-                                                        id="outlined-number"
-                                                        size="small"
-                                                        value={otherAmount===0?"":otherAmount}
-                                                        type="number"
-                                                        sx={{ width: '100px' }}
-                                                        onChange={handleOtherAmount}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Round Off</td>
-                                                {/* <td className="amounttotal">
 
-                                                    {roundOff < 0.49 ? `-${roundOff}` : parseFloat(1 - roundOff)?.toFixed(2)}
-
-                                                </td> */}
-                                                <td className="amounttotal">
-                                                    {roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal"></td>
-                                                <td className="amounttotal">Net Amount</td>
-                                                {/* <td className="amounttotal">{netAmount ? parseInt(Number(netAmount).toFixed(2)) : 0} */}
-                                                <td className="amounttotal">{netAmount}
-
-                                                </td>
-                                            </tr>
                                         </>
                                         )}
                                     </tbody>
                                 </table>
                             </div>
+                            </div>
+                            <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                            <div>
+                                <label className="font-bold">Total GST : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold">Total Qty : </label>
+                            </div>
+                            <div>
+                                {/* <label className="font-bold"> Net Rate: </label> */}
+                            </div>
+                        </div>
+                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+
+                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
+                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
+                                {/* <span style={{ fontWeight: 600 }}>{totalNetRate}</span> */}
+
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                            <div>
+                                <label className="font-bold">Total Amount : </label>
+                            </div>
+
+                            <div>
+                                <label className="font-bold">Other Amount : </label>
+                            </div>
+
+                            <div>
+                                <label className="font-bold">Net Rate : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold">Round Off : </label>
+                            </div>
+                            <div>
+                                <label className="font-bold" >Net Amount : </label>
+                            </div>
+                        </div>
+                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
+
+                            <div>
+                                <span style={{ fontWeight: 600 }}>{finalAmount ? finalAmount : 0}</span>
+                            </div>
+                            {/* <div>
+                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                                '& .MuiInputBase-root': {
+                                                    height: '35px'
+                                                },
+                                            }} />
+                                        </div> */}
+
+                            <div>
+                                <Input
+                                    type="number"
+                                    value={otherAmount}
+                                    onChange={handleOtherAmount}
+                                    size="small"
+                                    style={{
+                                        width: "70px",
+                                        background: "none",
+                                        borderBottom: "1px solid gray",
+                                        justifyItems: "end",
+                                        outline: "none",
+                                    }} sx={{
+                                        '& .MuiInputBase-root': {
+                                            height: '35px',
+                                        },
+                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                    }} />
+                            </div>
+                            {/* <div className='mt-2'>
+                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : (margin.toFixed(2))} &nbsp;({!totalMargin ? 0 : (totalMargin).toFixed(2)})%</span>
+                            </div> */}
+                            <div className='mt-2'>
+  <span style={{ fontWeight: 600 }}>{totalNetRate}</span>                            </div>
+                            <div className='mt-1'>
+                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                            </div>
+                            <div>
+                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                            </div>
+                        </div>
+                    </div>
+                            
                         </div>
                     </div >
+                    
                 </div >
+
+
             }
             <Dialog open={open}>
                 <DialogContent style={{ fontSize: '20px', }}>
@@ -1339,13 +1415,13 @@ const AddReturnbill = () => {
             <div
                 id="modal"
                 value={isOpenBox}
-                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-            >
+                className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`} >
                 <div />
                 <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                        <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                        <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
+                        <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
                     </div>
                     <div className="flex gap-5 justify-center">
                         <button
@@ -1365,41 +1441,41 @@ const AddReturnbill = () => {
                     </div>
                 </div>
                 <Prompt
-          when={unsavedItems}
-          message={(location) => {
-            handleNavigation(location.pathname);
-            return false;
-          }}
-        />
-        <div
-          id="modal"
-          value={isOpenBox}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-        >
-          <div />
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <div className="my-4 logout-icon">
-              <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-              <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-                onClick={handleLeavePage}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                onClick={LogoutClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+                    when={unsavedItems}
+                    message={(location) => {
+                        handleNavigation(location.pathname);
+                        return false;
+                    }}
+                />
+                <div
+                    id="modal"
+                    value={isOpenBox}
+                    className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+                >
+                    <div />
+                    <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                        <div className="my-4 logout-icon">
+                            <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
+                            <h4 className="text-lg font-semibold mt-6 text-center">Are you sure you want to leave this page ?</h4>
+                        </div>
+                        <div className="flex gap-5 justify-center">
+                            <button
+                                type="submit"
+                                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                                onClick={handleLeavePage}
+                            >
+                                Yes
+                            </button>
+                            <button
+                                type="button"
+                                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                                onClick={LogoutClose}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     )

@@ -214,7 +214,7 @@ const CustomerView = () => {
                             </Tabs>
 
                             {tabValue === 0 && (
-                                <div>
+                                <div style={{ margin: "25px" }}>
                                     <div className="mx-4 my-2 ">
                                         <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>
                                             Rs.{tableData?.sales_amount ? tableData?.sales_amount : 0}
@@ -271,7 +271,7 @@ const CustomerView = () => {
                             )}
 
                             {tabValue === 1 && (
-                                <div>
+                                <div  style={{ margin: "25px" }}>
                                     <div className="mx-4 my-2 ">
                                         <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{tableData?.sales_return_amount ? tableData?.sales_return_amount : 0}</span></Typography>
                                     </div>

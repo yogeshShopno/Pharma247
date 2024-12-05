@@ -12,7 +12,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import '../Edit-SaleBill/edit.css';
+import '../../../../App.css';
 import { Prompt, useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import HistoryIcon from "@mui/icons-material/History";
 import { MenuItem, Select } from "@mui/material";
@@ -39,8 +39,9 @@ const EditSaleBill = () => {
     { id: 1, label: "Cash" },
     { id: 3, label: "UPI" },
   ];
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState(null);
   const [doctor, setDoctor] = useState("");
+
   const pickupOptions = [
     { id: 1, label: "Pickup" },
     { id: 2, label: "Delivery" },
@@ -102,6 +103,9 @@ const EditSaleBill = () => {
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [uniqueId, setUniqueId] = useState([])
+  const [barcode, setBarcode] = useState("");
+  const [itemEditID, setItemEditID] = useState(0);
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -120,23 +124,7 @@ const EditSaleBill = () => {
 
     setExpiryDate(inputValue);
   };
-useEffect(()=>{
-  if (selectedEditItem) {
-    setSearchItem(selectedEditItem.iteam_name);
-    setSearchItemID(selectedEditItem.item_id);
-    setUnit(selectedEditItem.unit);
-    setBatch(selectedEditItem.batch);
-    setExpiryDate(selectedEditItem.exp);
-    setMRP(selectedEditItem.mrp);
-    setQty(item.qty);
-    // setBase(item.base);
-    setBase(selectedEditItem.base);
-    setOrder(selectedEditItem.order);
-    setGst(selectedEditItem.gst);
-    setLoc(selectedEditItem.location);
-    setItemAmount(selectedEditItem.net_rate);
-  }
-},[selectedEditItem])
+
   useEffect(() => {
     const discount = (totalAmount * finalDiscount) / 100;
     setDiscountAmount(discount.toFixed(2));
@@ -167,6 +155,7 @@ useEffect(()=>{
       const due = givenAmt - calculatedNetAmount;
       setDueAmount(due.toFixed(2));
     }
+
   }, [totalAmount, finalDiscount, otherAmt, givenAmt, tempOtherAmt]);
 
   const handleOtherAmtChange = (e) => {
@@ -241,23 +230,29 @@ useEffect(()=>{
     }
   };
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
+
   const saleBillGetBySaleID = async (doctorData, customerData) => {
 
     let data = new FormData();
-    data.append("id", id);
-    data.append("payment_name", paymentType);
-    const params = {
-      id: id ? id : '',
-      random_number: randomNumber ? randomNumber : '',
-    };
+    data.append("id", id || '');
+    data.append("random_number", randomNumber || '');
+    data.append("total_gst", totalgst || '')
+
+
     try {
       const response = await axios.post("sales-edit-details?", data, {
-        params: params,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const record = response.data.data;
+
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
       setAddress(record.customer_address);
@@ -268,7 +263,6 @@ useEffect(()=>{
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
       }
-      // setOtherAmt(record.other_amount)
       const salesItem = response.data.data.sales_item;
       if (salesItem && salesItem.length > 0) {
         const fetchedRandomNumber = salesItem[0].random_number;
@@ -280,15 +274,17 @@ useEffect(()=>{
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
-      const foundDoctor = doctorData.find(
-        (option) => option.id == record.doctor_id
-      );
-      setDoctor(foundDoctor);
+      setCustomer(response.data.data.customer_name)
+      console.log('customer :>> ', customer);
 
-      const foundCustomer = customerData.find(
-        (option) => option.id == record.customer_id
-      );
-      setCustomer(foundCustomer);
+      if (record.doctor_name && record.doctor_name !== "-") {
+        const foundDoctor = doctorData.find(
+          (option) => option.name === record.doctor_name
+        );
+        setDoctor(foundDoctor || "");
+      } else {
+        setDoctor("");
+      }
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -330,7 +326,8 @@ useEffect(()=>{
         },
       });
       const customerData = response.data.data;
-      setCustomerDetails(customerData);
+      setCustomerDetails(response.data.data);
+      setCustomer(response.data.data[0] || '');
       setIsLoading(false);
       return customerData;
     } catch (error) {
@@ -342,7 +339,7 @@ useEffect(()=>{
 
   const batchList = async () => {
     let data = new FormData();
-    data.append("iteam_id", itemId);
+    data.append("iteam_id", itemId || '');
     const params = {
       iteam_id: itemId ? itemId : '',
     };
@@ -375,6 +372,7 @@ useEffect(()=>{
 
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
+
     setSearchItem(itemName);
     setItemId(newValue?.id);
     setIsVisible(true);
@@ -389,71 +387,30 @@ useEffect(()=>{
       setUnit("");
       setBatch("");
     }
+    if (isVisible && value && !batch) {
+      const element = tableRef.current
+      element.focus()
+    }
   };
-
-  // useEffect(() => {
-  //   const savedState = localStorage.getItem("unsavedItems");
-  //   if (savedState === "false") {
-  //     setUnsavedItems(true);
-  //   }
-
-  //   return () => {
-  //     localStorage.setItem("unsavedItems", unsavedItems.toString());
-  //   };
-  // }, [unsavedItems]);
-
-  // useEffect(() => {
-  //   const params = {
-  //     random_number: randomNumber,
-  //   };
-  //   const response = axios.post("sales-history", {}, {
-  //     params: params,
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   })
-  //   if (response.status === 200) {
-  //     setUnsavedItems(false);
-  //     setOpenModal(false);
-  //     setTimeout(() => {
-  //       history.push(nextPath);
-  //     }, 0);
-  //   }
-  // }, [])
-
-  useEffect(() => {
-    handleLeavePage()
-  }, [])
 
   const handleNavigation = (path) => {
     setOpenModal(true);
     setNextPath(path);
-    // setUnsavedItems(true)
   };
 
   const handleLeavePage = () => {
     let data = new FormData();
-    data.append("random_number",randomNumber)
+    data.append("random_number", randomNumber || '')
+
     setOpenModal(false);
     setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
+
     try {
-      // const params = {
-      //   random_number: randomNumber,
-      // };
-      const response = axios.post("sales-history", data,   {
-        // params: params,
+      const response = axios.post("sales-history", data, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        // if (response.status === 200) {
-        //   setUnsavedItems(false);
-        //   setOpenModal(false);
-        //   setTimeout(() => {
-        //     history.push(nextPath);
-        //   }, 0);
-        // }
-        // setUnsavedItems(false);
-        // setOpenModal(false);
-        // history.replace(nextPath);
         .then((response) => {
-          // setSaleAllData([]);
           setUnsavedItems(false);
           setOpenModal(false);
           if (nextPath) {
@@ -472,53 +429,34 @@ useEffect(()=>{
 
   const handleEditClick = (item) => {
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
-    // console.log(existingItem, "existingItem")
 
     if (!existingItem) {
-      setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty:  item.total_stock }]);
-      setTempQty(item.total_stock);
+      setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+      setTempQty(item.qty);
     } else {
       setTempQty(existingItem.qty);
 
     }
-    // Set the selected item for editing
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-    // setBase(item.base);
+    setSearchItem(item.iteam_name);
+    setSearchItemID(item.item_id);
 
     if (selectedEditItem) {
-      setSearchItem(selectedEditItem.iteam_name);
-      setSearchItemID(selectedEditItem.item_id);
       setUnit(selectedEditItem.unit);
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
       setQty(item.qty);
+      // setQty(selectedEditItem.qty);
       setBase(item.base);
       // setBase(selectedEditItem.base);
       setOrder(selectedEditItem.order);
-      setGst(selectedEditItem.gst);
+      setGst(selectedEditItem.gst_name);
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
     }
-    // setSelectedEditItem({ ...item });
-    // setIsEditMode(true);
-    // setSelectedEditItemId(item.id);
-    // setBase(item.base);
-    // if (selectedEditItem) {
-    //   setSearchItem(selectedEditItem.iteam_name);
-    //   setUnit(item.unit);
-    //   setBatch(item.batch);
-    //   setExpiryDate(item.exp);
-    //   setMRP(item.mrp);
-    //   setQty(item.qty);
-    //   setOrder(item.order);
-    //   setGst(item.gst);
-    //   setLoc(item.location);
-    //   setItemAmount(item.net_rate);
-    // }
-    // setSearchItem(item.iteam_name);
   };
 
 
@@ -562,6 +500,7 @@ useEffect(()=>{
     setQty(event.qty);
     setLoc(event.location);
   };
+
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setSaleItemId(Id);
@@ -569,7 +508,7 @@ useEffect(()=>{
 
   const handleSearch = async () => {
     let data = new FormData();
-    data.append("search", searchItem);
+    data.append("search", searchItem || '');
     const params = {
       search: searchItem ? searchItem : ''
     };
@@ -584,20 +523,16 @@ useEffect(()=>{
         })
         .then((response) => {
           setItemList(response.data.data.data);
-          //console.log(data);
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
   useEffect(() => {
-    if (!unsavedItems) {
-      saleBillGetBySaleID();
-    }
+    saleBillGetBySaleID();
   }, [unsavedItems]);
 
   useEffect(() => {
-    // Reset state when component loads
     setUnsavedItems(false);
     setOpenModal(false);
   }, []);
@@ -610,8 +545,7 @@ useEffect(()=>{
       });
       toast.success("Item deleted successfully!");
       setUnsavedItems(true);
-      // setItemSaleList();
-      // Fetch updated data after delete
+      localStorage.setItem("unsavedItems", "true");
       saleBillGetBySaleID();
       setIsDelete(false);
 
@@ -621,34 +555,91 @@ useEffect(()=>{
     }
   };
 
+  useEffect(() => {
+    const unsaved = localStorage.getItem("unsavedItems");
+    if (unsaved === "true") {
+      setUnsavedItems(true);
+    }
+  }, []);
 
+  const handleBarcode = async () => {
+    if (!barcode) {
+      return;
+    }
+    let data = new FormData();
+    // data.append("barcode", barcode);
+
+
+    const params = {
+      random_number: localStorage.getItem("RandomNumber"),
+    };
+    try {
+      const res = axios
+        .post("barcode-batch-list?", { "barcode": barcode }, {
+          // params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log('object :>> ', response?.data?.data[0]?.batch_list);
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+          setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+          setTempQty(response?.data?.data[0]?.batch_list[0]?.stock)
+          // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+          // setFinalDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
+          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+          setNetRateAmount(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+
+          setSelectedEditItemId(response?.data?.data[0]?.id)
+          setItemEditID(response.data.data[0]?.id)
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
 
   const addSaleItem = async () => {
     setUnsavedItems(true);
     let data = new FormData();
     if (isEditMode == true) {
-      data.append("item_id", searchItemID);
+      data.append("item_id", searchItemID ? Number(searchItemID) : '');
     } else {
-      data.append("item_id", value.id);
+      if (barcode) {
+        data.append("item_id", itemId)
+      } else {
+        data.append("item_id", value && value.id ? Number(value.id) : '');
+      }
     }
-    data.append("qty", qty);
-    data.append("exp", expiryDate);
-    data.append("gst", gst);
-    data.append("mrp", mrp);
-    data.append("unit", unit);
-    data.append("random_number", randomNumber);
-    data.append("batch", batch);
-    data.append("location", loc);
-    data.append("base", base);
-    data.append("amt", itemAmount);
-    data.append("net_rate", itemAmount);
-    data.append("order", order);
-    data.append("total_base", totalBase);
-    data.append("payment_name", paymentType);
 
+    data.append("id", selectedEditItemId ? Number(selectedEditItemId) : '');
+    data.append("qty", qty || '');
+    data.append("exp", expiryDate || '');
+    data.append("gst", gst || '');
+    data.append("mrp", mrp || '');
+    data.append("unit", unit || '');
+    data.append("random_number", Number(randomNumber || ''));
+    data.append("batch", batch || '');
+    data.append("location", loc || '');
+    data.append("base", base || '');
+    data.append("amt", itemAmount || '');
+    data.append("net_rate", itemAmount || '');
+    data.append("order", order || '');
+    data.append("total_base", totalBase || '');
+    data.append("total_gst", totalgst || '')
 
     const params = {
-      id: selectedEditItemId ? selectedEditItemId : '',
+      id: Number(selectedEditItemId) || '',
     };
     try {
       const response = isEditMode
@@ -663,8 +654,6 @@ useEffect(()=>{
             Authorization: `Bearer ${token}`,
           },
         });
-      //console.log("response", response);
-      // saleItemList();
       saleBillGetBySaleID();
       setSearchItem(null);
       setUnit("");
@@ -676,9 +665,10 @@ useEffect(()=>{
       setGst("");
       setBatch("");
       setLoc("");
+      setBarcode("")
       setIsEditMode(false);
+      setIsVisible(false);
     } catch (e) {
-      //console.log(e);
     }
   };
 
@@ -696,8 +686,8 @@ useEffect(()=>{
     setItemAmount(0);
     if (isNaN(itemAmount)) {
       setItemAmount(0);
-    }};
-    
+    }
+  };
   const handleUpdate = () => {
     setUnsavedItems(false);
 
@@ -720,27 +710,26 @@ useEffect(()=>{
     data.append("status", "Completed");
     data.append("bill_date", saleAllData?.bill_date);
     data.append("customer_address", address || "");
-    data.append("doctor_id", doctor?.id);
-    // data.append('total_gst', '0')
+    data.append("doctor_id", doctor?.id || '');
     data.append("igst", "0");
-    data.append("cgst", saleAllData?.cgst);
-    data.append("sgst", saleAllData?.sgst);
+    data.append("cgst", saleAllData?.cgst || '');
+    data.append("sgst", saleAllData?.sgst || '');
     data.append("given_amount", givenAmt || 0);
     data.append("due_amount", dueAmount || 0);
     data.append("total_base", totalBase);
     data.append("pickup", pickup);
     data.append("owner_name", "0");
-    data.append("payment_name", location.state.paymentType);
+    data.append("payment_name", location.state.paymentType || '');
     data.append("product_list", JSON.stringify(saleAllData?.sales_item));
-    data.append("net_amount", netAmount);
-    data.append("other_amount", tempOtherAmt);
-    data.append("total_discount", finalDiscount);
-    data.append("discount_amount", discountAmount);
-    data.append("total_amount", totalAmount);
-    data.append("round_off", roundOff);
-    data.append("margin_net_profit", marginNetProfit);
-    data.append("net_rate", netRateAmount);
-    data.append("margin", margin);
+    data.append("net_amount", netAmount || 0);
+    data.append("other_amount", tempOtherAmt || 0);
+    data.append("total_discount", finalDiscount || '');
+    data.append("discount_amount", discountAmount || 0);
+    data.append("total_amount", totalAmount || 0);
+    data.append("round_off", roundOff || 0);
+    data.append("margin_net_profit", marginNetProfit || 0);
+    data.append("net_rate", netRateAmount || 0);
+    data.append("margin", margin || 0);
     const params = {
       id: id || '',
     };
@@ -753,8 +742,6 @@ useEffect(()=>{
           },
         })
         .then((response) => {
-          //console.log(response.data);
-          //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/salelist");
@@ -763,7 +750,6 @@ useEffect(()=>{
     } catch (error) {
       console.error("API error:", error);
     }
-
   };
 
   const handleDraft = () => {
@@ -786,7 +772,6 @@ useEffect(()=>{
     data.append("bill_date", saleAllData?.bill_date ? saleAllData?.bill_date : "");
     data.append("customer_address", address || "");
     data.append("doctor_id", doctor?.id ? doctor?.id : '');
-    // data.append('total_gst', '0')
     data.append("igst", "0");
     data.append("cgst", saleAllData?.cgst ? saleAllData?.cgst : '');
     data.append("sgst", saleAllData?.sgst ? saleAllData?.sgst : '');
@@ -814,8 +799,6 @@ useEffect(()=>{
           },
         })
         .then((response) => {
-          //console.log(response.data);
-          //console.log("response===>", response.data);
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/salelist");
@@ -825,6 +808,58 @@ useEffect(()=>{
       console.error("API error:", error);
     }
   };
+
+
+  const handleMouseEnter = (e) => {
+    const hoveredRow = e.currentTarget;
+    setHighlightedRowId(hoveredRow);
+  };
+
+  const handleTableKeyDown = (e) => {
+
+    const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
+    let currentIndex = rows.findIndex(row => row === document.activeElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
+        rows[nextIndex]?.focus();
+        setHighlightedRowId(rows[nextIndex]?.dataset.id);
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+        rows[prevIndex]?.focus();
+        setHighlightedRowId(rows[prevIndex]?.dataset.id);
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (currentIndex >= 0 && rows[currentIndex]) {
+        const itemId = rows[currentIndex].getAttribute("data-id");
+        const item = batchListData.find((item) => String(item.id) === String(itemId));
+        if (item) {
+          handlePassData(item);
+          setHighlightedRowId(itemId);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isVisible && tableRef.current) {
+      const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
+      if (firstRow) {
+        firstRow.focus();
+        setHighlightedRowId(firstRow.getAttribute("data-id"));
+      }
+    }
+  }, [isVisible, batchListData]);
+
+
 
   return (
     <>
@@ -895,30 +930,12 @@ useEffect(()=>{
                     id="dropdown"
                     value={location.state.paymentType}
                     sx={{ minWidth: "200px" }}
-                    disabled  // Keeps the label disabled
+                    disabled
                     size="small"
                     className="Payment_Value"
                   >
-                    {/* {location.state.paymentType} */}
                   </input>
 
-
-                  {/* <Select
-                    labelId="dropdown-label"
-                    id="dropdown"
-                    value={pickup}
-                    sx={{ minWidth: "150px" }}
-                    onChange={(e) => {
-                      setPickup(e.target.value);
-                    }}
-                    size="small"
-                  >
-                    {pickupOptions.map((option) => (
-                      <MenuItem key={option.id} value={option.label}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select> */}
                   <input
                     labelId="dropdown-label"
                     id="dropdown"
@@ -928,25 +945,7 @@ useEffect(()=>{
                     disabled
                     size="small"
                   >
-                    {/* {pickupOptions.map((option) => (
-                      <MenuItem key={option.id} value={option.label}>
-                        {option.label}
-                      </MenuItem>
-                    ))} */}
                   </input>
-                  {/* <Button
-                    variant="contained"
-                    sx={{
-                      gap: "5px",
-                      display: "flex",
-                      textTransform: "none",
-                      background: "gray",
-                    }}
-                    onClick={handleDraft}
-                  >
-                    <SaveAsIcon /> Draft
-                  </Button> */}
-
                   <Button
                     variant="contained"
                     sx={{
@@ -955,6 +954,7 @@ useEffect(()=>{
                     }}
                     onClick={handleUpdate}
                   >
+                    {" "}
                     Update
                   </Button>
                 </div>
@@ -975,8 +975,8 @@ useEffect(()=>{
                           marginLeft: "15px",
                         }}
                       >
-                        Bill No
-                        <span style={{ marginLeft: "35px" }}> Bill Date</span>
+                        Bill No{" "}
+                        <span style={{ marginLeft: "35px" }}> Bill Date</span>{" "}
                       </div>
                       <div className="flex gap-5">
                         <div
@@ -990,7 +990,7 @@ useEffect(()=>{
                             width: "19%",
                           }}
                         >
-                          {saleAllData.bill_no}
+                          {saleAllData.bill_no}{" "}
                         </div>
                         <div
                           style={{
@@ -1036,13 +1036,11 @@ useEffect(()=>{
                       Customer Mobile / Name
                     </span>
                     <Autocomplete
-                      value={customer || {}}
-                      onChange={handleCustomerOption}
+                      value={customer} // Ensure `customer` is a valid object from `customerDetails`.
                       options={customerDetails}
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.name === value.name
-                      }
+                      // getOptionLabel={(option) => option.name || ""}
+                      isOptionEqualToValue={(option, value) => option.name === value.name}
+                      disabled
                       sx={{
                         width: "100%",
                         minWidth: {
@@ -1060,7 +1058,7 @@ useEffect(()=>{
                       renderOption={(props, option) => (
                         <ListItem {...props}>
                           <ListItemText
-                            primary={`${option.name} `}
+                            primary={`${option.name}`}
                             secondary={`Mobile No: ${option.phone_number}`}
                           />
                         </ListItem>
@@ -1084,37 +1082,6 @@ useEffect(()=>{
                       )}
                     />
                   </div>
-                  {/* <div className="detail">
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
-                      }}
-                    >
-                      Address
-                    </span>
-                    <TextField
-                      id="outlined-basic"
-                      value={address}
-                      onChange={(e) => {
-                        setAddress(e.target.value);
-                      }}
-                      sx={{
-                        width: 300,
-                        "& .MuiInputBase-root": {
-                          height: 45,
-                          fontSize: "1.10rem",
-                        },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "10px 14px",
-                        },
-                      }}
-                      variant="outlined"
-                    />
-                  </div> */}
-
                   <div className="detail">
                     <span
                       className="heading mb-2"
@@ -1199,8 +1166,13 @@ useEffect(()=>{
                         renderOption={(props, option) => (
                           <ListItem {...props}>
                             <ListItemText
-                              primary={`${option.iteam_name} - ${option.stock}`}
-                              secondary={`weightage: ${option.weightage}`}
+                              // primary={`${option.iteam_name} - ${option.stock}`}
+                              // secondary={`weightage: ${option.weightage}`}
+                              primary={`${option.iteam_name},(${option.company})`}
+                              secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                              sx={{
+                                '& .MuiTypography-root': { fontSize: '1.1rem' }
+                              }}
                             />
                           </ListItem>
                         )}
@@ -1245,20 +1217,6 @@ useEffect(()=>{
                         )}
                       />
                     </Box>
-                    {/* {customer && (
-                      <Button
-                        variant="contained"
-                        sx={{
-                          textTransform: "none",
-                          background: "rgb(4, 76, 157)",
-                          marginTop: "15px",
-                        }}
-                        size="small"
-                      >
-                        <HistoryIcon />
-                        Purchase History
-                      </Button>
-                    )} */}
                     {isVisible && value && !batch && (
                       <Box
                         sx={{
@@ -1271,10 +1229,14 @@ useEffect(()=>{
                           position: "absolute",
                           zIndex: 1,
                         }}
+                        id="tempId"
+
                       >
                         <div
                           className="custom-scroll-sale "
                           style={{ width: "100%" }}
+                          tabIndex={0} onKeyDown={handleTableKeyDown}
+                          ref={tableRef}
                         >
                           <table
                             ref={tableRef}
@@ -1298,14 +1260,16 @@ useEffect(()=>{
                                 <>
                                   {batchListData?.map((item) => (
                                     <tr
-                                      className="cursor-pointer saleTable custom-hover"
+                                      className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
                                       key={item.id}
+                                      data-id={item.id}
+                                      tabIndex={0}
                                       style={{
-                                        border:
-                                          "1px solid rgba(4, 76, 157, 0.1)",
-                                        padding: 55,
+                                        border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
                                       }}
+
                                       onClick={() => handlePassData(item)}
+                                      onMouseEnter={handleMouseEnter}
                                     >
                                       <td className=" text-base font-semibold">
                                         {item.iteam_name}
@@ -1353,7 +1317,7 @@ useEffect(()=>{
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1362,7 +1326,8 @@ useEffect(()=>{
                           <th>Base</th>
                           <th>GST% </th>
                           <th>QTY </th>
-                          <th>Order
+                          <th>
+                            Order{" "}
                             <Tooltip title="Please Enter only (o)" arrow>
                               <Button>
                                 <GoInfo
@@ -1377,7 +1342,7 @@ useEffect(()=>{
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1444,6 +1409,7 @@ useEffect(()=>{
                               value={base}
                               onChange={(e) => {
                                 setBase(e.target.value);
+                                localStorage.setItem("unsavedItems", "true");
                               }}
                             />
                           </td>
@@ -1472,8 +1438,11 @@ useEffect(()=>{
                                   e.preventDefault();
                                 }
                               }}
-                              // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
-                              onChange={(e) => { handleQty(e.target.value) }}
+                              onChange={(e) => {
+                                handleQty(e.target.value);
+                                localStorage.setItem("unsavedItems", "true");
+
+                              }}
 
                               InputProps={{
                                 inputProps: { style: { textAlign: 'right' } },
@@ -1482,24 +1451,14 @@ useEffect(()=>{
                             />
                           </td>
                           <td>
-                            {/* <TextField
-                                                            id="outlined-number"
-                                                            sx={{ width: '80px' }}
-                                                            size="small"
-                                                            value={order}
-                                                            onChange={(e) => { setOrder(e.target.value) }}
-                                                        /> */}
                             <TextField
                               id="outlined-number"
                               sx={{ width: "80px" }}
                               size="small"
-                              // inputRef={inputRef6}
-                              // onKeyDown={handleKeyDown}
                               value={order}
                               onChange={handleChange}
                             />
                           </td>
-
                           <td>
                             <TextField
                               id="outlined-number"
@@ -1514,17 +1473,23 @@ useEffect(()=>{
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                          <td><TextField
+                            id="outlined-number"
+                            type="number"
+                            size="small"
+                            value={barcode}
+                            placeholder="scan barcode"
+
+                            sx={{ width: "250px" }}
+                            onChange={(e) => {
+                              setBarcode(e.target.value);
+                              localStorage.setItem("unsavedItems", "true");
+                            }}
+
+                          /></td>
+                          <td colSpan={9}></td>
+
                           <td>
                             <Button
                               variant="contained"
@@ -1550,13 +1515,22 @@ useEffect(()=>{
                                 gap: "8px",
                               }}
                             >
+
                               <BorderColorIcon
                                 color="primary"
                                 className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevents row click
+                                  handleEditClick(item); // Explicitly set value for editing
+                                }}
                               />
+
                               <DeleteIcon
                                 className="delete-icon"
-                                onClick={() => deleteOpen(item.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteOpen(item.id); // Only triggers delete
+                                }}
                               />
                               {item.iteam_name}
                             </td>
@@ -1565,7 +1539,7 @@ useEffect(()=>{
                             <td>{item.exp}</td>
                             <td>{item.mrp}</td>
                             <td>{item.base}</td>
-                            <td>{item.gst}</td>
+                            <td>{item.gst_name}</td>
                             <td>{item.qty}</td>
                             <td>{item.order}</td>
                             <td>{item.location}</td>
@@ -1608,29 +1582,6 @@ useEffect(()=>{
                     flexDirection: "column",
                   }}
                 >
-                  {/* <div>
-                    <label className="font-bold">SGST : </label>
-                  </div>
-                  <div>
-                    <label className="font-bold">CGST : </label>
-                  </div>
-                  <div>
-                    <label className="font-bold">IGST : </label>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "column",
-                    alignItems: "end"
-
-                  }}
-                >
-                  <div className="font-bold">{saleAllData?.sgst}</div>
-                  <div className="font-bold">{saleAllData?.cgst}</div>
-                  // {/* <div className="font-bold">{saleAllData?.igst}</div> 
-                  <div className="font-bold">0.0</div>*/}
                 </div>
                 <div
                   style={{
@@ -1676,22 +1627,15 @@ useEffect(()=>{
                       onChange={(e) => {
                         let newValue = e.target.value;
 
-                        // if (newValue >= 0 && newValue <= 100) {
-                        //   setFinalDiscount(e.target.value);
-                        //   setUnsavedItems(true)
-                        //   localStorage.setItem('RandomNumber', randomNumber)
-                        // }
                         if (newValue > 100) {
                           setFinalDiscount(100);
                         } else if (newValue >= 0) {
-                          // If the value is valid (0 to 100), update the state
                           setFinalDiscount(newValue);
                         }
                         setUnsavedItems(true);
                         localStorage.setItem('RandomNumber', randomNumber);
                       }}
                       onKeyPress={(e) => {
-                        // Allow numbers, backspace, and decimal point
                         if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
                           e.preventDefault();
                         }
@@ -1714,8 +1658,16 @@ useEffect(()=>{
                       value={tempOtherAmt || otherAmt}
                       onChange={handleOtherAmtChange}
                       onKeyPress={(e) => {
-                        // Allow numbers, backspace, and decimal point
+                        const value = e.target.value;
+                        const isMinusKey = e.key === '-';
+
+                        // Allow Backspace and numeric keys
                         if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+
+                        // Allow only one '-' at the beginning of the input value
+                        if (isMinusKey && value.includes('-')) {
                           e.preventDefault();
                         }
                       }}
@@ -1759,8 +1711,6 @@ useEffect(()=>{
                           fontSize: "22px"
                         }}
                       >
-                        {/* {(Number(netAmount) || 0).toFixed(2)} */}
-
                         {Number(netAmount).toFixed(2)}
                       </span>
                     </div>
@@ -1828,11 +1778,11 @@ useEffect(()=>{
       </div>
 
       <Prompt
-        when={unsavedItems} // Triggers only if there are unsaved changes
+        when={unsavedItems}
         message={(location) => {
           handleNavigation(location.pathname);
           setOpenModal(true);
-          return false; // Prevent automatic navigation
+          return false;
         }}
       />
       <div

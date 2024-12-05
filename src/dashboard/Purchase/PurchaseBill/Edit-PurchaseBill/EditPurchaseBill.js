@@ -103,8 +103,6 @@ const EditPurchaseBill = () => {
   const [nextPath, setNextPath] = useState("");
   const [barcode, setBarcode] = useState("");
 
-
-
   const [errors, setErrors] = useState({});
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);

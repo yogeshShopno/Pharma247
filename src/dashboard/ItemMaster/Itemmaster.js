@@ -700,11 +700,11 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Item Name</label>
                 <Autocomplete
-                  value={value} // The value selected from the list or entered by the user
-                  inputValue={searchItem.toUpperCase()} // The current input value
+                  value={value}
+                  inputValue={searchItem.toUpperCase()} 
                   sx={{ width: 350 }}
                   size="small"
-                  onChange={handleOptionChange} // Handles option selection from the dropdown
+                  onChange={handleOptionChange} 
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.iteam_name

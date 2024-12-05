@@ -36,8 +36,6 @@ const usePermissions = () => {
 };
 export default usePermissions;
 
-
-
 export const hasPermission = (permissions, permissionKey) => {
   //console.log(permissions.some(permission => permission[permissionKey] === true));
 

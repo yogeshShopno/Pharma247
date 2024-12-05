@@ -90,6 +90,8 @@ import DrugGroup from './dashboard/More/DrugGroup/DrugGroup';
 import LogSessions from './dashboard/profile/Staff-Sessions/LogActivity';
 import LogActivity from './dashboard/profile/Staff-Sessions/LogActivity';
 import Gstr2 from './dashboard/More/Reports/GstReport/Gstr2';
+import Reconciliation from './dashboard/More/Reconciliation/reconciliation';
+import ReconciliationManage from './dashboard/profile/Staff-Sessions/ReconciliationManage';
 
 
 function App() {
@@ -167,6 +169,11 @@ function App() {
           <Route path='/more/DistributorList'>
             <Protected>
               <DistributerList />
+            </Protected>
+          </Route>
+          <Route path='/more/reconciliation'>
+            <Protected>
+              <Reconciliation />
             </Protected>
           </Route>
           <Route path='/Resports'>
@@ -445,6 +452,11 @@ function App() {
           <Route path='/Staff-sessions/manage-staffrole'>
             <Protected>
               <ManageStaffRole />
+            </Protected>
+          </Route>
+          <Route path='/Staff-sessions/reconciliation-manage'>
+            <Protected>
+              <ReconciliationManage />
             </Protected>
           </Route>
           <Route path='/Staff-sessions/sessions'>

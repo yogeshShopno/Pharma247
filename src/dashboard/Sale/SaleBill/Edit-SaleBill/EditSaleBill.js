@@ -339,7 +339,7 @@ const EditSaleBill = () => {
 
   const batchList = async () => {
     let data = new FormData();
-    data.append("iteam_id", itemId);
+    data.append("iteam_id", itemId || '');
     const params = {
       iteam_id: itemId ? itemId : '',
     };
@@ -400,7 +400,7 @@ const EditSaleBill = () => {
 
   const handleLeavePage = () => {
     let data = new FormData();
-    data.append("random_number", randomNumber)
+    data.append("random_number", randomNumber || '')
 
     setOpenModal(false);
     setUnsavedItems(false);
@@ -508,7 +508,7 @@ const EditSaleBill = () => {
 
   const handleSearch = async () => {
     let data = new FormData();
-    data.append("search", searchItem);
+    data.append("search", searchItem || '');
     const params = {
       search: searchItem ? searchItem : ''
     };
@@ -710,26 +710,26 @@ const EditSaleBill = () => {
     data.append("status", "Completed");
     data.append("bill_date", saleAllData?.bill_date);
     data.append("customer_address", address || "");
-    data.append("doctor_id", doctor?.id);
+    data.append("doctor_id", doctor?.id || '');
     data.append("igst", "0");
-    data.append("cgst", saleAllData?.cgst);
-    data.append("sgst", saleAllData?.sgst);
+    data.append("cgst", saleAllData?.cgst || '');
+    data.append("sgst", saleAllData?.sgst || '');
     data.append("given_amount", givenAmt || 0);
     data.append("due_amount", dueAmount || 0);
     data.append("total_base", totalBase);
     data.append("pickup", pickup);
     data.append("owner_name", "0");
-    data.append("payment_name", location.state.paymentType);
+    data.append("payment_name", location.state.paymentType || '');
     data.append("product_list", JSON.stringify(saleAllData?.sales_item));
-    data.append("net_amount", netAmount);
-    data.append("other_amount", tempOtherAmt);
-    data.append("total_discount", finalDiscount);
-    data.append("discount_amount", discountAmount);
-    data.append("total_amount", totalAmount);
-    data.append("round_off", roundOff);
-    data.append("margin_net_profit", marginNetProfit);
-    data.append("net_rate", netRateAmount);
-    data.append("margin", margin);
+    data.append("net_amount", netAmount || 0);
+    data.append("other_amount", tempOtherAmt || 0);
+    data.append("total_discount", finalDiscount || '');
+    data.append("discount_amount", discountAmount || 0);
+    data.append("total_amount", totalAmount || 0);
+    data.append("round_off", roundOff || 0);
+    data.append("margin_net_profit", marginNetProfit || 0);
+    data.append("net_rate", netRateAmount || 0);
+    data.append("margin", margin || 0);
     const params = {
       id: id || '',
     };

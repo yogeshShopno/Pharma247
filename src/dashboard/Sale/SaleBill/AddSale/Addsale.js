@@ -679,26 +679,26 @@ const Addsale = () => {
         data.append("bill_date", selectedDate.format('YYYY-MM-DD') ? selectedDate.format('YYYY-MM-DD') : '')
         data.append("customer_address", address || '')
         data.append("doctor_id", doctor?.id ? doctor?.id : '');
-        data.append('igst', ItemSaleList?.igst)
+        data.append('igst', ItemSaleList?.igst || '')
         data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) ? ((ItemSaleList?.cgst).toFixed(2)) : '')
         data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) ? ((ItemSaleList?.sgst).toFixed(2)) : '')
         data.append('given_amount', givenAmt || 0)//no
         data.append('due_amount', dueAmount || 0)//no
-        data.append('total_base', totalBase)
-        data.append('round_off', roundOff)
+        data.append('total_base', totalBase || 0)
+        data.append('round_off', roundOff || 0)
         data.append('pickup', pickup ? pickup : '')
         data.append('owner_name', '0')
         data.append('payment_name', paymentType ? paymentType : '')
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
-        data.append('net_amount', netAmount.toFixed(2))
-        data.append('other_amount', otherAmt)
-        data.append('total_discount', finalDiscount)
+        data.append('net_amount', netAmount.toFixed(2) || 0)
+        data.append('other_amount', otherAmt || 0)
+        data.append('total_discount', finalDiscount || '')
         data.append('discount_amount', discountAmount ? discountAmount : '')
-        data.append('total_amount', totalAmount)
-        data.append('other_amount', otherAmt)
-        data.append('margin_net_profit', marginNetProfit)
-        data.append('margin', totalMargin)
-        data.append('net_rate', totalNetRate)
+        data.append('total_amount', totalAmount || 0)
+        data.append('other_amount', otherAmt || 0)
+        data.append('margin_net_profit', marginNetProfit || 0)
+        data.append('margin', totalMargin || 0)
+        data.append('net_rate', totalNetRate || 0)
         data.append("mrp", mrp ? mrp : '')
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
@@ -748,7 +748,7 @@ const Addsale = () => {
 
     const handleLeavePage = () => {
         let data = new FormData();
-        data.append('random_number', localStorage.getItem('RandomNumber'))
+        data.append('random_number', localStorage.getItem('RandomNumber') || '')
         setOpenModal(false);
         setUnsavedItems(false);
 
@@ -788,10 +788,10 @@ const Addsale = () => {
         data.append('payment_name', paymentType ? paymentType : "")
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
         data.append('net_amount', netAmount.toFixed(2))
-        data.append('other_amount', otherAmt)
+        data.append('other_amount', otherAmt || 0)
         data.append('total_discount', finalDiscount ? finalDiscount : '')
-        data.append('other_amount', otherAmt)
-        data.append('total_amount', totalAmount)
+        data.append('other_amount', otherAmt || 0)
+        data.append('total_amount', totalAmount || 0)
         try {
             await axios.post("create-sales", data, {
                 headers: {
@@ -812,7 +812,7 @@ const Addsale = () => {
 
     const batchList = async () => {
         let data = new FormData();
-        data.append("iteam_id", itemId);
+        data.append("iteam_id", itemId || '');
         const params = {
             iteam_id: itemId ? itemId : ''
         };

@@ -1317,7 +1317,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1342,7 +1342,7 @@ const EditSaleBill = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1473,31 +1473,23 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <td><TextField
-                          id="outlined-number"
-                          type="number"
-                          size="small"
-                          value={barcode}
-                          placeholder="scan barcode"
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                          <td><TextField
+                            id="outlined-number"
+                            type="number"
+                            size="small"
+                            value={barcode}
+                            placeholder="scan barcode"
 
-                          sx={{ width: "250px" }}
-                          onChange={(e) => {
-                            setBarcode(e.target.value);
-                            localStorage.setItem("unsavedItems", "true");
-                          }}
+                            sx={{ width: "250px" }}
+                            onChange={(e) => {
+                              setBarcode(e.target.value);
+                              localStorage.setItem("unsavedItems", "true");
+                            }}
 
-                        /></td>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          /></td>
+                          <td colSpan={9}></td>
+
                           <td>
                             <Button
                               variant="contained"

@@ -24,7 +24,9 @@ import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { encryptData } from "../componets/cryptoUtils";
+
 const Header = () => {
+
   const history = useHistory();
   const permissions = usePermissions();
   const [openModal, setOpenModal] = useState(false);
@@ -43,7 +45,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     let data = new FormData()
-    
+
     try {
       await axios.post('log-out', data, {
         headers: {
@@ -112,7 +114,6 @@ const Header = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-
       })
     }
     catch (error) {
@@ -437,6 +438,16 @@ const Header = () => {
                               </span>
                             </Link>
                           </li>}
+
+                        <li className="block border-b-2">
+                          <Link to='/more/reconciliation'>
+                            <span
+                              className="bg-white hover:bg-lime-900   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              href=""
+                            >
+                              Reconciliation                              </span>
+                          </Link>
+                        </li>
                         <Link to='/Resports'>
                           <li className="block border-b-2">
                             <span
@@ -807,6 +818,7 @@ const Header = () => {
                         Adjust Stock
                       </span></Link>
                   </div>}
+
                 <div className="dropdown relative" >
                   <button
                     style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
@@ -918,6 +930,17 @@ const Header = () => {
                           </span>
                         </Link>
                       </li>}
+
+                    <li className="block border-b border-black">
+                      <Link to='/more/reconciliation'>
+                        <span
+                          className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                          href=""
+                        >
+                          Reconciliation                          </span>
+                      </Link>
+                    </li>
+
                     <Link to='/Resports'>
                       <li className="block border-b border-black">
                         <span
@@ -928,6 +951,8 @@ const Header = () => {
                         </span>
                       </li>
                     </Link>
+
+
                     {hasPermission(permissions, "manage expense view") &&
                       <Link to='/more/expense-manage'>
                         <li className="block">

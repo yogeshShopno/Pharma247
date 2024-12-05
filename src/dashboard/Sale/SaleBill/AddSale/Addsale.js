@@ -2,6 +2,7 @@ import Header from "../../../Header"
 import React, { useState, useRef, useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
+import '../../../../App.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -50,14 +51,17 @@ const Addsale = () => {
         { id: 1, label: 'Cash' },
         { id: 2, label: 'UPI' }]
     const pickupOptions = [{ id: 1, label: 'Pickup' }, { id: 2, label: 'Delivery' }]
+    const userId = localStorage.getItem("userId");
     const [customer, setCustomer] = useState('')
     const [paymentType, setPaymentType] = useState('cash');
     const [pickup, setPickup] = useState('Pickup')
+    const [id, setId] = useState('')
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
-    const [selectedEditItemId, setSelectedEditItemId] = useState(null);
+    const [selectedEditItemId, setSelectedEditItemId] = useState('');
     const [mrp, setMRP] = useState('');
-    const [base, setBase] = useState('')
+    const [base, setBase] = useState('');
+    const [barcode, setBarcode] = useState("");
     const [batchListData, setBatchListData] = useState([]);
     const [doctorName, setDoctorName] = useState('');
     const [customerName, setCustomerName] = useState('')
@@ -71,13 +75,14 @@ const Addsale = () => {
     const [order, setOrder] = useState('');
     const [roundOff, setRoundOff] = useState(0);
     const [uniqueId, setUniqueId] = useState([])
-
+    const [itemEditID, setItemEditID] = useState(0);
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
     const [unit, setUnit] = useState('')
     const [finalDiscount, setFinalDiscount] = useState(0)
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [openPurchaseHistoryPopUp, setOpenPurchaseHistoryPopUp] = useState(false);
+    const [highlightedRowId, setHighlightedRowId] = useState(null);
     const [openCustomer, setOpenCustomer] = useState(false)
     const [doctor, setDoctor] = useState('');
     const [clinic, setClinic] = useState();
@@ -115,6 +120,7 @@ const Addsale = () => {
     const [nextPath, setNextPath] = useState("");
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
+    const [barcodeItemName, setBarcodeItemName] = useState('');
 
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -147,52 +153,15 @@ const Addsale = () => {
         setOpenPurchaseHistoryPopUp(true)
         lastPurchseHistory()
         setSearchItemID(id)
-        //console.log("jsdf", id);
     }
-    // const ListOfDoctor = async () => {
-    //     let data = new FormData();
-
-    //     setIsLoading(true);
-    //     try {
-    //         await axios.post("doctor-list", data, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //         }
-    //         ).then((response) => {
-    //             setDoctorData(response.data.data)
-    //             setIsLoading(false);
-    //         })
-    //     } catch (error) {
-    //         setIsLoading(false);
-    //         console.error("API error:", error);
-    //     }
-    // }
-    // useEffect(() => {
-    //     // Calculate discountAmount
-    //     const discount = (totalAmount * finalDiscount) / 100;
-    //     setDiscountAmount(discount.toFixed(2));
-
-    //     // Calculate final netAmount
-    //     const finalNetAmount = totalAmount - discount + Number(otherAmt);
-    //     setNetAmount(finalNetAmount.toFixed(2));
-
-    //     // Calculate due amount
-    //     const due = givenAmt - finalNetAmount;
-    //     setDueAmount(due.toFixed(2));
-    // }, [totalAmount, finalDiscount, otherAmt, givenAmt]);
-
     useEffect(() => {
         const discount = (totalAmount * finalDiscount) / 100;
         setDiscountAmount(discount.toFixed(2));
 
-        // Check for valid otherAmt input
         if (otherAmt < 0 && Math.abs(otherAmt) > totalAmount) {
-            setOtherAmt(''); // Reset if the negative amount exceeds the total amount
+            setOtherAmt('');
         } else {
             let calculatedNetAmount = totalAmount - discount + Number(otherAmt);
-
-            // Ensure the calculated net amount doesn't go below 0
             if (calculatedNetAmount < 0) {
                 setOtherAmt(-(totalAmount - discount));
                 calculatedNetAmount = 0;
@@ -217,11 +186,9 @@ const Addsale = () => {
         const value = e.target.value;
         const numericValue = isNaN(value) || value === '' ? '' : Number(value);
 
-        // If the input is a positive value, allow normal input
         if (numericValue >= 0) {
             setOtherAmt(numericValue);
         } else {
-            // For negative values, limit the input to only those that do not exceed the negative totalAmount
             const negativeLimit = -totalAmount;
             if (numericValue < negativeLimit) {
                 setOtherAmt(negativeLimit);
@@ -332,15 +299,6 @@ const Addsale = () => {
         }
     }, [itemId, base, qty]);
 
-    // useEffect(() => {
-    //     const discountAmount = (totalAmount * finalDiscount) / 100;
-    //     const finalAmount = totalAmount - discountAmount;
-    //     setNetAmount(finalAmount.toFixed(2));
-    //     const due = givenAmt - netAmount
-    //     setDueAmount(due.toFixed(2))
-    // }, [totalAmount, finalDiscount, givenAmt, netAmount]);
-
-
     const handleSearch = async () => {
         let data = new FormData();
         data.append("search", searchItem);
@@ -403,7 +361,6 @@ const Addsale = () => {
     }
     const handleInputChange = (event, newInputValue) => {
         setSearchItem(newInputValue);
-        console.log('searchItem :>> ', searchItem);
         handleSearch(newInputValue);
         setUnsavedItems(true);
 
@@ -435,6 +392,11 @@ const Addsale = () => {
             setUnit('');
             setBatch('');
         }
+
+        if (isVisible && value && !batch) {
+            const element = tableRef.current
+            element.focus()
+        }
     };
 
     const handlePassData = (event) => {
@@ -446,7 +408,7 @@ const Addsale = () => {
         setMRP(event.mrp);
         setMaxQty(event.stock);
         setBase(event.mrp);
-        setGst(event.gst);
+        setGst(event.gst_name);
         setQty(event.qty);
         setLoc(event.location)
     }
@@ -567,6 +529,131 @@ const Addsale = () => {
         }
         draftSaleData();
     }
+
+    const handleEditClick = (item) => {
+        if (!item) return; // Ensure the item is valid.
+
+        // const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        // if (!existingItem) {
+        //     setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+        //     setMaxQty(item.qty);
+        // } else {
+        //     setMaxQty(existingItem.qty);
+        // }
+
+        setSelectedEditItem(item);
+        setIsEditMode(true);
+        setSelectedEditItemId(item.id);
+        setBarcodeItemName(item.iteam_name);
+        setSearchItem(item.iteam_name);
+        setItemEditID(item.item_id);
+        setLoc(item.location);
+
+        if (selectedEditItem) {
+            // setSearchItem(selectedEditItem.iteam_name);
+            setUnit(selectedEditItem.unit);
+            setBatch(selectedEditItem.batch);
+            setExpiryDate(selectedEditItem.exp);
+            setMRP(selectedEditItem.mrp);
+            setQty(item.qty);
+            setBase(item.base);
+            setGst(selectedEditItem.gst_name);
+            setOrder(selectedEditItem.order);
+            setItemAmount(selectedEditItem.net_rate);
+        }
+    };
+
+    const saleItemList = async () => {
+        let data = new FormData();
+        const params = {
+            random_number: localStorage.getItem('RandomNumber') || ''
+        };
+        try {
+            const res = await axios.post("sales-item-list?", data, {
+                params: params,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            ).then((response) => {
+                console.log('response-------- :>> ', response.data.data.sales_item);
+                setItemSaleList(response.data.data);
+                setTotalAmount(response.data.data.sales_amount)
+                setTotalBase(response.data.data.total_base)
+                setTotalgst(response.data.data.total_gst)
+                setMarginNetProfit(response.data.data.margin_net_profit)
+                setTotalMargin(response.data.data.total_margin)
+                setTotalNetRate(response.data.data.total_net_rate)
+            })
+        } catch (error) {
+            console.error("API error:", error);
+        }
+
+    }
+    const handleBarcode = async () => {
+        if (!barcode) {
+            return;
+        }
+        try {
+            const res = axios
+                .post("barcode-batch-list?", { "barcode": barcode }, {
+                    // params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    console.log('response.data.data :>> ', response.data.data);
+                    setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+                    setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+                    setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+                    setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+                    setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+                    setMaxQty(response?.data?.data[0]?.batch_list[0]?.stock)
+                    setPtr(response?.data?.data[0]?.batch_list[0]?.ptr)
+                    setDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
+                    setBase(response?.data?.data[0]?.batch_list[0]?.base)
+                    setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+                    setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+                    setTotalMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+                    setTotalNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                    setBarcodeItemName(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+                    setId(response?.data?.data[0]?.batch_list[0]?.id)
+                    setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+                    console.log(response?.data?.data[0]?.batch_list[0], itemId)
+
+                    setSelectedEditItemId(response?.data?.data[0]?.batch_list[0]?.id)
+
+                    setItemEditID(response.data.data[0]?.id)
+
+                    setUnsavedItems(true)
+
+                    // const batch = response?.data?.data[0]?.batch_list[0];
+                    // if (batch) {
+                    //     setUnit(batch.unit);
+                    //     setBatch(batch.batch_name);
+                    //     setExpiryDate(batch.expiry_date);
+                    //     setMRP(batch.mrp);
+                    //     setQty(batch.purchase_qty);
+                    //     setPtr(batch.ptr);
+                    //     setDiscount(batch.discount);
+                    //     setBase(batch.base);
+                    //     setGst(batch.gst_name);
+                    //     setLoc(batch.location);
+                    //     setTotalMargin(batch.margin);
+                    //     setTotalNetRate(batch.net_rate);
+                    //     setSearchItem(batch.iteam_name);
+                    //     setItemId(batch.item_id);
+                    //     setSelectedEditItemId(batch.id);
+                    // }
+                    // setIsEditMode(true)
+                });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
     const handleSubmit = () => {
         setUnsavedItems(false);
         const newErrors = {};
@@ -585,41 +672,36 @@ const Addsale = () => {
     }
     const submitSaleData = async () => {
         let data = new FormData();
-        //       const updatedSalesItemList = ItemSaleList.sales_item.map(item => ({
-        //     ...item,
-        //     total_stock: item.qty // Assuming `qty` is the quantity you want to use as total_qty
-        // }));
         data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
         data.append("customer_id", customer?.id ? customer?.id : '');
         data.append("status", 'Completed');
         data.append("bill_date", selectedDate.format('YYYY-MM-DD') ? selectedDate.format('YYYY-MM-DD') : '')
         data.append("customer_address", address || '')
         data.append("doctor_id", doctor?.id ? doctor?.id : '');
-        data.append('total_gst', '0')
-        data.append('igst', ItemSaleList?.igst)
+        data.append('igst', ItemSaleList?.igst || '')
         data.append('cgst', ((ItemSaleList?.cgst).toFixed(2)) ? ((ItemSaleList?.cgst).toFixed(2)) : '')
         data.append('sgst', ((ItemSaleList?.sgst).toFixed(2)) ? ((ItemSaleList?.sgst).toFixed(2)) : '')
         data.append('given_amount', givenAmt || 0)//no
         data.append('due_amount', dueAmount || 0)//no
-        data.append('total_base', totalBase)
-        data.append('round_off', roundOff)
+        data.append('total_base', totalBase || 0)
+        data.append('round_off', roundOff || 0)
         data.append('pickup', pickup ? pickup : '')
         data.append('owner_name', '0')
         data.append('payment_name', paymentType ? paymentType : '')
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
-        // data.append('product_list', JSON.stringify(updatedSalesItemList) ? JSON.stringify(updatedSalesItemList) : ''); // Include total_qty
-        data.append('net_amount', netAmount.toFixed(2))
-        data.append('other_amount', otherAmt)
-        data.append('total_discount', finalDiscount)
+        data.append('net_amount', netAmount.toFixed(2) || 0)
+        data.append('other_amount', otherAmt || 0)
+        data.append('total_discount', finalDiscount || '')
         data.append('discount_amount', discountAmount ? discountAmount : '')
-        data.append('total_amount', totalAmount)
-        data.append('other_amount', otherAmt)
-        data.append('margin_net_profit', marginNetProfit)
-        data.append('margin', totalMargin)
-        data.append('net_rate', totalNetRate)
+        data.append('total_amount', totalAmount || 0)
+        data.append('other_amount', otherAmt || 0)
+        data.append('margin_net_profit', marginNetProfit || 0)
+        data.append('margin', totalMargin || 0)
+        data.append('net_rate', totalNetRate || 0)
         data.append("mrp", mrp ? mrp : '')
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
+        data.append("total_gst", totalgst || '')
 
         try {
             await axios.post("create-sales", data, {
@@ -630,7 +712,6 @@ const Addsale = () => {
             ).then((response) => {
 
                 localStorage.removeItem('RandomNumber');
-                //console.log("response===>", response.data);
                 toast.success(response.data.message);
                 setTimeout(() => {
                     history.push('/salelist');
@@ -640,41 +721,22 @@ const Addsale = () => {
             console.error("API error:", error);
         }
     }
-
-    // useEffect(() => {
-    //     const savedState = localStorage.getItem("unsavedItems");
-    //     if (savedState === "false") {
-    //         setUnsavedItems(true);
-    //     }
-    //     return () => {
-    //         localStorage.setItem("unsavedItems", unsavedItems.toString());
-    //     };
-    // }, [unsavedItems]);
-
-    // useEffect(() => {
-    //     let data = new FormData();
-
-    //     const params = {
-    //         random_number: localStorage.getItem('RandomNumber')
-    //     };
-    //     axios.post("all-sales-item-delete", data, {
-    //         params: params,
-    //         headers: { Authorization: `Bearer ${token}` }
-    //     })
-    // }, [])
-
     useEffect(() => {
         generateRandomNumber()
         let data = new FormData();
+        data.append("random_number", localStorage.getItem('RandomNumber') || '')
 
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
         axios.post("all-sales-item-delete", data, {
-            params: params,
             headers: { Authorization: `Bearer ${token}` }
         })
     }, [])
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            handleBarcode();
+        }, 1000);
+        return () => clearTimeout(timeoutId);
+    }, [barcode]);
 
     const handleNavigation = (path) => {
         setOpenModal(true);
@@ -683,23 +745,22 @@ const Addsale = () => {
         setNextPath(path);
     };
 
-    // Handle leaving page after user confirms in modal
     const handleLeavePage = () => {
         let data = new FormData();
+        data.append('random_number', localStorage.getItem('RandomNumber') || '')
         setOpenModal(false);
         setUnsavedItems(false);
 
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
+        // const params = {
+        //     random_number: localStorage.getItem('RandomNumber')
+        // };
         axios.post("all-sales-item-delete", data, {
-            params: params,
+            // params: params,
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(() => {
                 setOpenModal(false);
-                setUnsavedItems(false); // Reset unsaved changes
-                // localStorage.setItem("unsavedItems", unsavedItems.toString());
+                setUnsavedItems(false);
                 history.push(nextPath);
             })
             .catch(error => {
@@ -715,7 +776,6 @@ const Addsale = () => {
         data.append("bill_date", selectedDate.format('YYYY-MM-DD') ? selectedDate.format('YYYY-MM-DD') : '')
         data.append("customer_address", address || '')
         data.append("doctor_id", doctor.id ? doctor.id : "");
-        data.append('total_gst', '0')
         data.append('igst', '0')
         data.append('cgst', '0')
         data.append('sgst', '0')
@@ -727,10 +787,10 @@ const Addsale = () => {
         data.append('payment_name', paymentType ? paymentType : "")
         data.append('product_list', JSON.stringify(ItemSaleList.sales_item) ? JSON.stringify(ItemSaleList.sales_item) : '')
         data.append('net_amount', netAmount.toFixed(2))
-        data.append('other_amount', otherAmt)
+        data.append('other_amount', otherAmt || 0)
         data.append('total_discount', finalDiscount ? finalDiscount : '')
-        data.append('other_amount', otherAmt)
-        data.append('total_amount', totalAmount)
+        data.append('other_amount', otherAmt || 0)
+        data.append('total_amount', totalAmount || 0)
         try {
             await axios.post("create-sales", data, {
                 headers: {
@@ -738,9 +798,7 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data);
                 localStorage.removeItem('RandomNumber');
-                //console.log("response===>", response.data);
                 toast.success(response.data.message);
                 setTimeout(() => {
                     history.push('/salelist');
@@ -751,10 +809,9 @@ const Addsale = () => {
         }
     }
 
-
     const batchList = async () => {
         let data = new FormData();
-        data.append("iteam_id", itemId);
+        data.append("iteam_id", itemId || '');
         const params = {
             iteam_id: itemId ? itemId : ''
         };
@@ -786,26 +843,14 @@ const Addsale = () => {
     }
 
     const generateRandomNumber = () => {
-        const number = Math.floor(Math.random() * 100000) + 1;
-        setRandomNumber(number);
-        if (localStorage.getItem('RandomNumber') == null) {
-            localStorage.setItem('RandomNumber', number)
+        if (localStorage.getItem("RandomNumber") == null) {
+            const number = Math.floor(Math.random() * 100000) + 1;
+            setRandomNumber(number);
+            localStorage.setItem("RandomNumber", number);
         } else {
-            localStorage.setItem('RandomNumber', localStorage.getItem("RandomNumber"))
-            //console.log(localStorage.getItem("RandomNumber"));
+            return;
         }
     };
-
-    // useEffect(() => {
-    //     generateRandomNumber();
-    // }, [])
-
-    const clearSearch = () => {
-        setSearchItem('');
-        // setItemList([]);
-        // setValue('');
-    };
-
 
     const addItemValidation = () => {
         setUnsavedItems(true);
@@ -813,23 +858,37 @@ const Addsale = () => {
             toast.error('Please Select any Item Name')
         } else {
             addSaleItem();
-            clearSearch();
+            setIsVisible(false);
+            setSearchItem('')
+            setBarcodeItemName('')
         }
     }
 
     const addSaleItem = async () => {
         generateRandomNumber();
         let data = new FormData();
-        data.append("id", selectedEditItemId ? selectedEditItemId : '')
-        data.append('item_id', value && value.id ? value.id : '')
-        // data.append('item_id', value.id ? value.id : '')
+
+        if (isEditMode === true) {
+            data.append("item_id", itemEditID)
+        }
+        else {
+            if (barcode) {
+                data.append('item_id', itemId)
+            } else {
+                data.append('item_id', value && value.id ? value.id : '')
+            }
+        }
+
+        // data.append("id", selectedEditItemId ? selectedEditItemId : '')
+        data.append("user_id", userId);
+        // data.append("item_id", barcode ? itemId : value?.id || '');
+        data.append("id", selectedEditItemId || '');
         data.append("qty", qty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
         data.append("unit", unit ? unit : '');
-        data.append("random_number", localStorage.getItem('RandomNumber') ? localStorage.getItem('RandomNumber') : '');
-        data.append("unit", unit ? unit : '')
+        data.append("random_number", Number(localStorage.getItem('RandomNumber')) || '');
         data.append("batch", batch ? batch : '')
         data.append('location', loc ? loc : '')
         data.append("base", base ? base : '')
@@ -839,9 +898,12 @@ const Addsale = () => {
         data.append("order", order ? order : '')
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
+        data.append("total_gst", totalgst || '')
+
         const params = {
             id: selectedEditItemId || ''
         };
+
         try {
             const response = isEditMode
                 ? await axios.post("sales-item-edit?", data, {
@@ -855,9 +917,8 @@ const Addsale = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-            console.log("response", response);
+
             saleItemList();
-            clearSearch();
             setUnit('')
             setBatch('')
             setExpiryDate('');
@@ -866,151 +927,27 @@ const Addsale = () => {
             setBase('')
             setGst('')
             setBatch('')
+            setBarcode("")
             setLoc('')
             setIsEditMode(false);
         }
         catch (e) {
-            //console.log(e)
         }
     }
 
-    const [editQty, setEditQty] = useState(0);
-    const [initialStock, setInitialStock] = useState(0);
-    const [free, setFree] = useState(0);
-
-    // const handleEditClick = (item) => {
-    //     setSelectedEditItem(item);
-    //     setIsEditMode(true);
-    //     setSelectedEditItemId(item.id);
-    //     setSearchItem(item.iteam_name);
-    //     // setFree(item.purchase_free_qty);
-    //     // setInitialTotalStock(item.stock);
-    //     // setQty(item.qty);
-    //     setQty(item.qty);
-    //     setEditQty(item.qty);
-    //     setFree(item.purchase_free_qty);
-    //     setInitialStock(item.stock); // Set initial stock
-
-    //     if (selectedEditItem) {
-    //         setUnit(selectedEditItem.unit);
-    //         setBatch(selectedEditItem.batch);
-    //         setExpiryDate(selectedEditItem.exp);
-    //         setMRP(selectedEditItem.mrp);
-    //         setQty(selectedEditItem.qty);
-    //         setBase(selectedEditItem.base);
-    //         setGst(selectedEditItem.gst);
-    //         setLoc(selectedEditItem.location);
-    //         setOrder(selectedEditItem.order);
-    //         setItemAmount(selectedEditItem.net_rate);
-    //     }
-    // };
-
     const handleQtyChange = (e) => {
+        console.log('maxQt***', maxQty);
+
+
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
+            console.log('if***');
             setQty(enteredValue);
         } else {
+            console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }
-    }
-
-    const handleEditClick = (item) => {
-
-        const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        // console.log(existingItem, "existingItem")
-
-        if (!existingItem) {
-            // If the ID is unique, add the item to uniqueId and set tempQty
-            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-            setMaxQty(item.qty);
-        } else {
-            setMaxQty(existingItem.qty);
-
-        }
-
-
-        setSelectedEditItem(item);
-        setIsEditMode(true);
-        setSelectedEditItemId(item.id);
-        setSearchItem(item.iteam_name);
-
-        console.log('item.iteam_name :>> ', item.iteam_name);
-        // setQty(item.qty);
-        // setEditQty(item.qty);
-        // setFree(Number(item.purchase_free_qty)); // Ensure free is a number
-        // setInitialStock(Number(item.stock)); // Ensure stock is a number
-
-        if (selectedEditItem) {
-            setUnit(selectedEditItem.unit);
-            setBatch(selectedEditItem.batch);
-            setExpiryDate(selectedEditItem.exp);
-            setMRP(selectedEditItem.mrp);
-            setQty(item.qty);
-            setBase(item.base);
-            setGst(selectedEditItem.gst);
-            setLoc(selectedEditItem.location);
-            setOrder(selectedEditItem.order);
-            setItemAmount(selectedEditItem.net_rate);
-        }
-    };
-
-    // const handleQtyChange = (e) => {
-    //     const inputQty = e.target.value ? Number(e.target.value) : 0; // Check for empty input and handle safely
-
-    //     // Ensure availableStockForEdit is always a valid number
-    //     const availableStockForEdit = Math.max(0, initialStock - free);
-
-    //     // Set qty based on valid input values
-    //     if (inputQty <= availableStockForEdit && inputQty >= 0) {
-    //         setQty(inputQty);
-    //     } else if (inputQty > availableStockForEdit) {
-    //         setQty(availableStockForEdit);
-    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
-    //     }
-    // };
-    // const handleQtyChange = (e) => {
-    //     const inputQty = Number(e.target.value);
-    //     const availableStockForEdit = initialTotalStock - free;
-
-    //     if (inputQty <= availableStockForEdit) {
-    //         setQty(inputQty);  // Valid input, update the qty
-    //     } else {
-    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
-    //         setQty(availableStockForEdit);  // Set to max available stock
-    //     }
-
-    // };
-
-
-
-    const saleItemList = async () => {
-        let data = new FormData();
-        const params = {
-            random_number: localStorage.getItem('RandomNumber') ? localStorage.getItem('RandomNumber') : ''
-        };
-        try {
-            const res = await axios.post("sales-item-list?", data, {
-                params: params,
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-            ).then((response) => {
-                setItemSaleList(response.data.data);
-                // console.log('response.data.data :>> ', response.data.data);
-                setTotalAmount(response.data.data.sales_amount)
-                setTotalBase(response.data.data.total_base)
-                setTotalgst(response.data.data.total_gst)
-                setMarginNetProfit(response.data.data.margin_net_profit)
-                setTotalMargin(response.data.data.total_margin)
-                setTotalNetRate(response.data.data.total_net_rate)
-            })
-        } catch (error) {
-            console.error("API error:", error);
-        }
-
     }
 
     const deleteOpen = (Id) => {
@@ -1035,6 +972,7 @@ const Addsale = () => {
         }
         setIsEditMode(false)
     }
+
     const handleDeleteItem = async (saleItemId) => {
         if (!saleItemId) return;
         let data = new FormData();
@@ -1059,12 +997,56 @@ const Addsale = () => {
         }
     }
 
-    // const handleOtherAmtChange = (e) => {
-    //     const value = e.target.value;
-    //     // Allow both positive and negative values
-    //     const numericValue = isNaN(value) || value === '' ? 0 : Number(value);
-    //     setOtherAmt(numericValue); // Update otherAmt state
-    // };
+    const handleMouseEnter = (e) => {
+        const hoveredRow = e.currentTarget;
+        setHighlightedRowId(hoveredRow);
+    };
+
+    const handleTableKeyDown = (e) => {
+
+        const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
+        let currentIndex = rows.findIndex(row => row === document.activeElement);
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            if (rows.length > 0) {
+                const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
+                rows[nextIndex]?.focus();
+                setHighlightedRowId(rows[nextIndex]?.dataset.id);
+            }
+        }
+        if (e.key === "ArrowUp") {
+            e.preventDefault();
+            if (rows.length > 0) {
+                const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+                rows[prevIndex]?.focus();
+                setHighlightedRowId(rows[prevIndex]?.dataset.id);
+            }
+        }
+
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (currentIndex >= 0 && rows[currentIndex]) {
+                const itemId = rows[currentIndex].getAttribute("data-id");
+                const item = batchListData.find((item) => String(item.id) === String(itemId));
+                if (item) {
+                    handlePassData(item);
+                    setHighlightedRowId(itemId);
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (isVisible && tableRef.current) {
+            const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
+            if (firstRow) {
+                firstRow.focus();
+                setHighlightedRowId(firstRow.getAttribute("data-id"));
+            }
+        }
+    }, [isVisible, batchListData]);
+
+
 
     return (
         <>
@@ -1126,7 +1108,6 @@ const Addsale = () => {
                                         <MenuItem key={option.id} value={option.label}>{option.label}</MenuItem>
                                     ))}
                                 </Select>
-                                {/* <Button variant="contained" sx={{ gap: '5px', display: 'flex', textTransform: 'none', background: "gray" }} onClick={handleDraft}><SaveAsIcon /> Draft</Button> */}
                                 <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }} onClick={handleSubmit}> Submit</Button>
 
                             </div>
@@ -1184,13 +1165,13 @@ const Addsale = () => {
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
+
                                     <Autocomplete
                                         value={customer}
                                         onChange={handleCustomerOption}
                                         inputValue={searchQuery}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchQuery(newInputValue);
-                                            // setUnsavedItems(true);
                                         }}
                                         options={customerDetails}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
@@ -1220,12 +1201,6 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
-                                                // onChange={(e) => {
-                                                //     setUnsavedItems(true); 
-                                                //     if (params.inputProps.onChange) {
-                                                //         params.inputProps.onChange(e); 
-                                                //     }
-                                                // }}
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -1251,24 +1226,6 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                {/* <div className="detail">
-                                    <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
-
-                                    <TextField id="outlined-basic"
-                                        value={address}
-                                        onChange={(e) => { setAddress(e.target.value) }}
-                                        sx={{
-                                            width: 320,
-                                            '& .MuiInputBase-root': {
-                                                height: 55,
-                                                fontSize: '1.10rem',
-                                            },
-                                            '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
-                                            },
-                                        }} variant="outlined" />
-                                </div> */}
-
                                 <div className="detail">
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
@@ -1277,7 +1234,6 @@ const Addsale = () => {
                                         inputValue={searchDoctor}
                                         onInputChange={(event, newInputValue) => {
                                             setSearchDoctor(newInputValue);
-                                            // setUnsavedItems(true);
                                         }}
                                         options={doctorData}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
@@ -1329,108 +1285,9 @@ const Addsale = () => {
                                             />
                                         )}
                                     />
-                                    {/* <Autocomplete
-                                        value={doctor || {}}
-                                        onChange={handleDoctorOption}
-                                        options={doctorData}
-                                        getOptionLabel={(option) => option.name || ''}
-                                        isOptionEqualToValue={(option, value) => option.name === value.name}
-                                        sx={{
-                                            width: '100%',
-                                            minWidth: '400px',
-                                            '& .MuiInputBase-root': {
-                                                height: 20,
-                                                fontSize: '1.10rem',
-                                            },
-                                            '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
-                                            },
-                                        }}
-                                        renderOption={(props, option) => (
-                                            <ListItem {...props}>
-                                                <ListItemText
-                                                    primary={`${option.name} `}
-                                                    secondary={`Clinic Name: ${option.clinic} `}
-                                                />
-                                            </ListItem>
-                                        )}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="outlined"
-                                                placeholder="Search by DR. Name"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    style: { height: 45 },
-                                                }}
-                                                sx={{
-                                                    '& .MuiInputBase-input::placeholder': {
-                                                        fontSize: '1rem',
-                                                        color: 'black',
-                                                    },
-                                                }}
-                                            />
-                                        )}
-                                    /> */}
+
                                 </div>
                                 <table >
-                                    {/* <div className="flex gap-10">
-                                        <Autocomplete
-                                            value={searchItem?.iteam_name}
-                                            sx={{ width: 1190, background: '#ceecfd', borderRadius: '7px' }}
-                                            size="small"
-                                            onChange={handleOptionChange}
-                                            onInputChange={handleInputChange}
-                                            getOptionLabel={(option) => `${option.iteam_name} `}
-                                            options={itemList}
-
-                                            renderOption={(props, option) => (
-                                                <ListItem {...props} >
-                                                    <ListItemText
-                                                        primary={`${option.iteam_name} - ${option.stock}`}
-                                                        secondary={`weightage: ${option.weightage}`}
-                                                    />
-                                                </ListItem>
-                                            )}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    placeholder="Search Item Name..."
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        style: { height: 45 },
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    sx={{
-                                                        '& .MuiOutlinedInput-root': {
-                                                            '& fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&:hover fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&.Mui-focused fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            borderBottom: '1px solid ',
-                                                        },
-                                                        '& .MuiInputBase-input::placeholder': {
-                                                            fontSize: '1rem',
-                                                            color: 'black',
-                                                        },
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                        {customer &&
-                                            <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }} size="small" onClick={handleOpenDialog}> <HistoryIcon />Purchase History</Button>}
-                                    </div> */}
-
                                     <Box
                                         sx={{
                                             display: 'flex',
@@ -1453,19 +1310,14 @@ const Addsale = () => {
                                             }}
                                         >
                                             <Autocomplete
-                                                // value={searchItem}
                                                 value={searchItem?.iteam_name}
+                                                blurOnSelect
                                                 size="small"
                                                 sx={{ fontSize: "1.5rem" }}
                                                 onChange={handleOptionChange}
                                                 onInputChange={handleInputChange}
-                                                // onKeyDown={(e) => {
-                                                //     if (e.key === " ") { // Detect spacebar press
-                                                //         handleSearch(searchItem);
-                                                //     }
-                                                // }}
-                                                getOptionLabel={(option) => `${option.iteam_name || ''} `}
                                                 options={itemList}
+                                                getOptionLabel={(option) => `${option.iteam_name || ''} `}
                                                 renderOption={(props, option) => (
                                                     <ListItem {...props}
                                                     >
@@ -1483,6 +1335,7 @@ const Addsale = () => {
                                                     <TextField
                                                         {...params}
                                                         variant="outlined"
+                                                        id="searchResults"
                                                         placeholder="Search Item Name..."
                                                         InputProps={{
                                                             ...params.InputProps,
@@ -1527,8 +1380,12 @@ const Addsale = () => {
                                             backgroundColor: 'white',
                                             position: 'absolute',
                                             zIndex: 1
-                                        }}>
-                                            <div className="custom-scroll-sale" style={{ width: '100%' }}>
+                                        }}
+                                            id="tempId"
+                                        >
+                                            <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
+                                                ref={tableRef}
+                                            >
                                                 <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
                                                         <tr className="customtable">
@@ -1545,10 +1402,16 @@ const Addsale = () => {
                                                             <>
                                                                 {batchListData.map(item => (
                                                                     <tr
-                                                                        className="cursor-pointer saleTable custom-hover"
+                                                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
                                                                         key={item.id}
-                                                                        style={{ border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px' }}
-                                                                        onClick={() => handlePassData(item)}>
+                                                                        data-id={item.id}
+                                                                        tabIndex={0}
+                                                                        style={{
+                                                                            border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                                                        }}
+                                                                        onClick={() => handlePassData(item)}
+                                                                        onMouseEnter={handleMouseEnter}
+                                                                    >
                                                                         <td className="text-base font-semibold">{item.iteam_name}</td>
                                                                         <td className="text-base font-semibold">{item.batch_number}</td>
                                                                         <td className="text-base font-semibold">{item.unit}</td>
@@ -1557,7 +1420,7 @@ const Addsale = () => {
                                                                         <td className="text-base font-semibold">{item.location}</td>
                                                                     </tr>
                                                                 ))}
-                                                            </>:
+                                                            </> :
                                                             <tr>
                                                                 <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                             </tr>
@@ -1571,18 +1434,17 @@ const Addsale = () => {
 
                                 </table>
 
-                                {/* {value && */}
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr>
+                                            <tr style={{borderBottom: '1px solid lightgray' }}>
                                                 <th className="w-1/4">Item Name</th>
-                                                <th >Unit </th>
-                                                <th >Batch </th>
-                                                <th >Expiry</ th>
+                                                <th >Unit</th>
+                                                <th >Batch</th>
+                                                <th >Expiry</th>
                                                 <th >MRP</th>
                                                 <th>Base</th>
-                                                <th >GST%  </th>
+                                                <th >GST%</th>
                                                 <th >QTY </th>
                                                 <th  >Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
@@ -1594,10 +1456,10 @@ const Addsale = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                            <tr style={{borderBottom: '1px solid lightgray' }}>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
-                                                    {searchItem}
+                                                    {searchItem || barcodeItemName}
                                                 </td>
                                                 <td>
 
@@ -1698,15 +1560,12 @@ const Addsale = () => {
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
-                                                        // inputRef={inputRef6}
-                                                        // onKeyDown={handleKeyDown}
                                                         value={order}
                                                         onChange={(e) => {
                                                             const value = e.target.value.toUpperCase();
                                                             if (value === '' || value === 'O') {
                                                                 setOrder(value);
                                                             }
-                                                            // setOrder(e.target.value)
                                                         }}
                                                     />
                                                 </td>
@@ -1725,17 +1584,26 @@ const Addsale = () => {
                                                 </td>
                                                 <td className="total">{itemAmount}</td>
                                             </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
+                                                <td>
+                                                    <TextField
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        size="small"
+                                                        value={barcode}
+                                                        placeholder="scan barcode"
+                                                        // inputRef={inputRef10}
+                                                        // onKeyDown={handleKeyDown}
+                                                        sx={{ width: "250px" }}
+                                                        onChange={(e) => {
+                                                            setBarcode(e.target.value)
+
+                                                        }}
+
+                                                    />
+                                                </td>
+                                                <td colSpan={9}></td>
+
                                                 <td >
                                                     <Button variant="contained" color="success" marginRight="20px" onClick={addItemValidation}><ControlPointIcon />Add</Button>
                                                 </td>
@@ -1747,9 +1615,15 @@ const Addsale = () => {
                                                     <td style={{
                                                         display: 'flex', gap: '8px',
                                                     }}>
-                                                        < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                                                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
-                                                        {item.iteam_name}
+                                                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item)
+                                                        }} />
+                                                        <DeleteIcon className="delete-icon" onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            deleteOpen(item.id)
+                                                        }} />
+                                                        {item.iteam_name || barcodeItemName}
                                                     </td>
                                                     <td>{item.unit}</td>
                                                     <td>{item.batch}</td>
@@ -1783,64 +1657,6 @@ const Addsale = () => {
                                         <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)}%)</span>
                                         <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
                                     </div>
-                                    {/* <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <div>
-                                            <label className="font-bold">Given Amount: </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Net Amount : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold text-red">Due Amount: </label>
-                                        </div>
-                                    </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column' }} >
-                                        <TextField size="small"
-                                            value={givenAmt}
-                                            onChange={(e) => { setGivenAmt(e.target.value) }}
-                                            style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px',
-                                                },
-                                            }} />
-                                        <span className="font-bold ">{netAmount}</span>
-                                        <span className="font-bold text-red-500">{dueAmount}</span>
-                                    </div> */}
-                                    {/* <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <div>
-                                            <label className="font-bold">SGST : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">CGST : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">IGST : </label>
-                                        </div>
-
-                                    </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                        <div className="font-bold">
-                                            {((ItemSaleList?.sgst).toFixed(2))}
-                                        </div>
-                                        <div className="font-bold">
-                                            {((ItemSaleList?.cgst).toFixed(2))}
-                                        </div>
-                                        <div>
-                                            <Input size="small" style={{
-                                                width: "70px",
-                                                background: "none",
-                                                borderBottom: "1px solid gray",
-                                                outline: "none",
-                                                justifyItems: "end"
-                                            }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px'
-                                                },
-                                                "& .MuiInputBase-input": { textAlign: "end" }
-
-                                            }} />
-                                        </div>
-                                    </div> */}
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <div>
                                             <label className="font-bold">Total Amount : </label>
@@ -1870,7 +1686,6 @@ const Addsale = () => {
                                             <Input type="number"
                                                 value={finalDiscount}
                                                 onKeyPress={(e) => {
-                                                    // Allow numbers, backspace, and decimal point
                                                     if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
                                                         e.preventDefault();
                                                     }
@@ -1903,12 +1718,19 @@ const Addsale = () => {
                                         </div>
 
                                         <div>
-                                            <Input type="number" value={otherAmt} onKeyPress={(e) => {
-                                                // Allow numbers, backspace, and decimal point
-                                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                                    e.preventDefault();
-                                                }
-                                            }}
+                                            <Input type="number" value={otherAmt}
+                                                onKeyPress={(e) => {
+                                                    const value = e.target.value;
+                                                    const isMinusKey = e.key === '-';
+
+                                                    if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                        e.preventDefault();
+                                                    }
+
+                                                    if (isMinusKey && value.includes('-')) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
                                                 onChange={handleOtherAmtChange} size="small" style={{
                                                     width: "70px",
                                                     background: "none",
@@ -1930,11 +1752,6 @@ const Addsale = () => {
                                         </div>
                                         <div>
                                             <span >{!roundOff ? 0 : roundOff}</span>
-                                            {/* {roundOff === "0.00"
-                                                ? roundOff
-                                                : roundOff.toFixed(2) < 0
-                                                    ? `-${Math.abs((roundOff).toFixed(2))}`
-                                                    : `-${Math.abs(roundOff).toFixed(2)}`} */}
                                         </div>
                                         <div>
                                             <span style={{ fontWeight: 800, fontSize: '22px' }}>{netAmount}</span>
@@ -1944,7 +1761,6 @@ const Addsale = () => {
                         </div>
                     </div>
                 </div>
-                {/* Add doctor  */}
                 <Dialog open={openAddPopUp}>
                     <DialogTitle id="alert-dialog-title" className="sky_text">
                         Add Doctor
@@ -2050,13 +1866,12 @@ const Addsale = () => {
 
                     </DialogActions>
                 </Dialog>
-                {/* purchase history */}
                 <Dialog open={openPurchaseHistoryPopUp}
                     sx={{
                         "& .MuiDialog-container": {
                             "& .MuiPaper-root": {
                                 width: "65%",
-                                maxWidth: "1900px",  // Set your width here
+                                maxWidth: "1900px",
                             },
                         },
                     }}>
@@ -2112,7 +1927,6 @@ const Addsale = () => {
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
-                {/* Delete PopUP */}
                 <div id="modal" value={IsDelete}
                     className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
                         }`}>
@@ -2150,10 +1964,10 @@ const Addsale = () => {
             </div >
 
             <Prompt
-                when={unsavedItems} // Triggers only if there are unsaved changes
+                when={unsavedItems}
                 message={(location) => {
                     handleNavigation(location.pathname);
-                    return false; // Prevent automatic navigation
+                    return false;
                 }}
             />
             <div
@@ -2163,21 +1977,6 @@ const Addsale = () => {
             >
                 <div />
 
-                {/* <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500"
-                        viewBox="0 0 24 24" onClick={() => setOpenModal(false)}>
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                    </svg>
-
-                    <div className="my-4 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                            <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                            <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                        </svg>
-                        <h5 className="text-lg font-semibold mt-9" style={{ fontSize: "0.9rem" }}> Are you sure you want to leave this page ?</h5>
-                    </div> */}
                 <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />

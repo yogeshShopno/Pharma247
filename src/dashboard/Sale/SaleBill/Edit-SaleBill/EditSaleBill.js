@@ -12,7 +12,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import '../Edit-SaleBill/edit.css';
+import '../../../../App.css';
 import { Prompt, useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import HistoryIcon from "@mui/icons-material/History";
 import { MenuItem, Select } from "@mui/material";
@@ -39,8 +39,9 @@ const EditSaleBill = () => {
     { id: 1, label: "Cash" },
     { id: 3, label: "UPI" },
   ];
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState(null);
   const [doctor, setDoctor] = useState("");
+
   const pickupOptions = [
     { id: 1, label: "Pickup" },
     { id: 2, label: "Delivery" },
@@ -102,6 +103,9 @@ const EditSaleBill = () => {
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [uniqueId, setUniqueId] = useState([])
+  const [barcode, setBarcode] = useState("");
+  const [itemEditID, setItemEditID] = useState(0);
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -178,12 +182,12 @@ const EditSaleBill = () => {
 
   };
   useEffect(() => {
-    // const initializeData = async () => {
-    //   await ListOfDoctor();
-    //   await customerAllData();
-
-    // };
-    // initializeData();
+    const initializeData = async () => {
+      const doctorData = await ListOfDoctor();
+      const customerData = await customerAllData();
+      await saleBillGetBySaleID(doctorData, customerData);
+    };
+    initializeData();
     BankList();
     const handleClickOutside = (event) => {
       if (tableRef.current && !tableRef.current.contains(event.target)) {
@@ -226,6 +230,13 @@ const EditSaleBill = () => {
     }
   };
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
+
   const saleBillGetBySaleID = async (doctorData, customerData) => {
 
     let data = new FormData();
@@ -241,6 +252,7 @@ const EditSaleBill = () => {
         },
       });
       const record = response.data.data;
+
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
       setAddress(record.customer_address);
@@ -262,15 +274,17 @@ const EditSaleBill = () => {
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
-      const foundDoctor = doctorData.find(
-        (option) => option.id == record.doctor_id
-      );
-      setDoctor(foundDoctor);
+      setCustomer(response.data.data.customer_name)
+      console.log('customer :>> ', customer);
 
-      const foundCustomer = customerData.find(
-        (option) => option.id == record.customer_id
-      );
-      setCustomer(foundCustomer);
+      if (record.doctor_name && record.doctor_name !== "-") {
+        const foundDoctor = doctorData.find(
+          (option) => option.name === record.doctor_name
+        );
+        setDoctor(foundDoctor || "");
+      } else {
+        setDoctor("");
+      }
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -312,7 +326,8 @@ const EditSaleBill = () => {
         },
       });
       const customerData = response.data.data;
-      setCustomerDetails(customerData);
+      setCustomerDetails(response.data.data);
+      setCustomer(response.data.data[0] || '');
       setIsLoading(false);
       return customerData;
     } catch (error) {
@@ -372,6 +387,10 @@ const EditSaleBill = () => {
       setUnit("");
       setBatch("");
     }
+    if (isVisible && value && !batch) {
+      const element = tableRef.current
+      element.focus()
+    }
   };
 
   const handleNavigation = (path) => {
@@ -421,10 +440,10 @@ const EditSaleBill = () => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
+    setSearchItem(item.iteam_name);
+    setSearchItemID(item.item_id);
 
     if (selectedEditItem) {
-      setSearchItem(selectedEditItem.iteam_name);
-      setSearchItemID(selectedEditItem.item_id);
       setUnit(selectedEditItem.unit);
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
@@ -543,6 +562,52 @@ const EditSaleBill = () => {
     }
   }, []);
 
+  const handleBarcode = async () => {
+    if (!barcode) {
+      return;
+    }
+    let data = new FormData();
+    // data.append("barcode", barcode);
+
+
+    const params = {
+      random_number: localStorage.getItem("RandomNumber"),
+    };
+    try {
+      const res = axios
+        .post("barcode-batch-list?", { "barcode": barcode }, {
+          // params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log('object :>> ', response?.data?.data[0]?.batch_list);
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+          setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+          setTempQty(response?.data?.data[0]?.batch_list[0]?.stock)
+          // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+          // setFinalDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
+          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+          setNetRateAmount(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+
+          setSelectedEditItemId(response?.data?.data[0]?.id)
+          setItemEditID(response.data.data[0]?.id)
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
 
   const addSaleItem = async () => {
     setUnsavedItems(true);
@@ -550,8 +615,13 @@ const EditSaleBill = () => {
     if (isEditMode == true) {
       data.append("item_id", searchItemID ? Number(searchItemID) : '');
     } else {
-      data.append("item_id", value && value.id ? Number(value.id) : '');
+      if (barcode) {
+        data.append("item_id", itemId)
+      } else {
+        data.append("item_id", value && value.id ? Number(value.id) : '');
+      }
     }
+
     data.append("id", selectedEditItemId ? Number(selectedEditItemId) : '');
     data.append("qty", qty || '');
     data.append("exp", expiryDate || '');
@@ -595,7 +665,9 @@ const EditSaleBill = () => {
       setGst("");
       setBatch("");
       setLoc("");
+      setBarcode("")
       setIsEditMode(false);
+      setIsVisible(false);
     } catch (e) {
     }
   };
@@ -736,6 +808,58 @@ const EditSaleBill = () => {
       console.error("API error:", error);
     }
   };
+
+
+  const handleMouseEnter = (e) => {
+    const hoveredRow = e.currentTarget;
+    setHighlightedRowId(hoveredRow);
+  };
+
+  const handleTableKeyDown = (e) => {
+
+    const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
+    let currentIndex = rows.findIndex(row => row === document.activeElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
+        rows[nextIndex]?.focus();
+        setHighlightedRowId(rows[nextIndex]?.dataset.id);
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+        rows[prevIndex]?.focus();
+        setHighlightedRowId(rows[prevIndex]?.dataset.id);
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (currentIndex >= 0 && rows[currentIndex]) {
+        const itemId = rows[currentIndex].getAttribute("data-id");
+        const item = batchListData.find((item) => String(item.id) === String(itemId));
+        if (item) {
+          handlePassData(item);
+          setHighlightedRowId(itemId);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isVisible && tableRef.current) {
+      const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
+      if (firstRow) {
+        firstRow.focus();
+        setHighlightedRowId(firstRow.getAttribute("data-id"));
+      }
+    }
+  }, [isVisible, batchListData]);
+
+
 
   return (
     <>
@@ -912,13 +1036,11 @@ const EditSaleBill = () => {
                       Customer Mobile / Name
                     </span>
                     <Autocomplete
-                      value={customer || {}}
-                      onChange={handleCustomerOption}
+                      value={customer} // Ensure `customer` is a valid object from `customerDetails`.
                       options={customerDetails}
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.name === value.name
-                      }
+                      // getOptionLabel={(option) => option.name || ""}
+                      isOptionEqualToValue={(option, value) => option.name === value.name}
+                      disabled
                       sx={{
                         width: "100%",
                         minWidth: {
@@ -936,7 +1058,7 @@ const EditSaleBill = () => {
                       renderOption={(props, option) => (
                         <ListItem {...props}>
                           <ListItemText
-                            primary={`${option.name} `}
+                            primary={`${option.name}`}
                             secondary={`Mobile No: ${option.phone_number}`}
                           />
                         </ListItem>
@@ -1044,8 +1166,13 @@ const EditSaleBill = () => {
                         renderOption={(props, option) => (
                           <ListItem {...props}>
                             <ListItemText
-                              primary={`${option.iteam_name} - ${option.stock}`}
-                              secondary={`weightage: ${option.weightage}`}
+                              // primary={`${option.iteam_name} - ${option.stock}`}
+                              // secondary={`weightage: ${option.weightage}`}
+                              primary={`${option.iteam_name},(${option.company})`}
+                              secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                              sx={{
+                                '& .MuiTypography-root': { fontSize: '1.1rem' }
+                              }}
                             />
                           </ListItem>
                         )}
@@ -1102,10 +1229,14 @@ const EditSaleBill = () => {
                           position: "absolute",
                           zIndex: 1,
                         }}
+                        id="tempId"
+
                       >
                         <div
                           className="custom-scroll-sale "
                           style={{ width: "100%" }}
+                          tabIndex={0} onKeyDown={handleTableKeyDown}
+                          ref={tableRef}
                         >
                           <table
                             ref={tableRef}
@@ -1129,14 +1260,16 @@ const EditSaleBill = () => {
                                 <>
                                   {batchListData?.map((item) => (
                                     <tr
-                                      className="cursor-pointer saleTable custom-hover"
+                                      className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
                                       key={item.id}
+                                      data-id={item.id}
+                                      tabIndex={0}
                                       style={{
-                                        border:
-                                          "1px solid rgba(4, 76, 157, 0.1)",
-                                        padding: 55,
+                                        border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
                                       }}
+
                                       onClick={() => handlePassData(item)}
+                                      onMouseEnter={handleMouseEnter}
                                     >
                                       <td className=" text-base font-semibold">
                                         {item.iteam_name}
@@ -1340,6 +1473,20 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
+                        <td><TextField
+                          id="outlined-number"
+                          type="number"
+                          size="small"
+                          value={barcode}
+                          placeholder="scan barcode"
+
+                          sx={{ width: "250px" }}
+                          onChange={(e) => {
+                            setBarcode(e.target.value);
+                            localStorage.setItem("unsavedItems", "true");
+                          }}
+
+                        /></td>
                         <tr>
                           <td></td>
                           <td></td>
@@ -1376,7 +1523,7 @@ const EditSaleBill = () => {
                                 gap: "8px",
                               }}
                             >
-                              
+
                               <BorderColorIcon
                                 color="primary"
                                 className="cursor-pointer"

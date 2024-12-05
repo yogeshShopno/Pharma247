@@ -29,19 +29,17 @@ input[type="number"] {
 }
 
 @media (max-width: 640px) {
-
-  body>aside,
-  body>main {
+  body > aside,
+  body > main {
     grid-area: stack;
   }
 }
 
 .bg {
-  background-color: #628A2F;
+  background-color: #628a2f;
 }
 
 .shadow {
-
   box-shadow: 0 4px 6px rgba(2, 1, 1, 0.1);
 }
 
@@ -74,7 +72,7 @@ input[type="number"] {
     transition: transform var(--duration) var(--easeOutExpo);
   }
 
-  #sidenav-open:target~main {
+  #sidenav-open:target ~ main {
     filter: blur(0.5em);
     z-index: -1;
   }
@@ -104,7 +102,6 @@ input[type="number"] {
   }
 }
 
-
 #modal {
   animation: slideIn 0.5s forwards;
 }
@@ -128,12 +125,10 @@ input[type="number"] {
 
 .sky_text {
   color: rgb(12, 161, 246);
-
 }
 
 .bg_sky {
   background-color: rgb(12, 161, 246);
-
 }
 
 .bg_darkblue {
@@ -141,12 +136,12 @@ input[type="number"] {
 }
 
 .darkblue_text {
-  color: rgb(4, 76, 157)
+  color: rgb(4, 76, 157);
 }
 
 .close-icon:before,
 .close-icon:after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 2px;
@@ -171,15 +166,13 @@ input[type="number"] {
 }
 
 .border-static {
-  border: 1px solid rgba(17, 17, 17, .2);
+  border: 1px solid rgba(17, 17, 17, 0.2);
 }
 
 .placeholder-color::placeholder {
   color: rgb(241, 241, 241);
   font-size: small;
 }
-
-
 
 @keyframes slideIn2 {
   from {
@@ -192,7 +185,6 @@ input[type="number"] {
     opacity: 1;
   }
 }
-
 
 @keyframes slideOut2 {
   from {
@@ -229,7 +221,6 @@ input[type="number"] {
   font-size: 16px;
 }
 
-
 .progress {
   position: absolute;
   bottom: 0;
@@ -260,7 +251,7 @@ body {
 }
 
 .green {
-  background-color: #0AC18E;
+  background-color: #0ac18e;
 }
 
 .text-green-600 {
@@ -285,13 +276,12 @@ body {
   justify-content: center;
   font-size: 38px;
   align-items: center;
-  box-shadow: 0 12px 13px rgba(112, 111, 211, .4);
+  box-shadow: 0 12px 13px rgba(112, 111, 211, 0.4);
   transform: rotate(25deg);
   margin: 20px 0 0 25px;
-
 }
 
-.nofound{
+.nofound {
   width: 80px;
   height: 80px;
 }
@@ -301,7 +291,6 @@ body {
   background-repeat: no-repeat;
   background-position: 100%;
 }
-
 
 .custom-scroll {
   width: 300px;
@@ -328,7 +317,6 @@ body {
   transform: scale(1.1);
 }
 
-
 .custom-hover {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -339,14 +327,49 @@ body {
   color: white;
 }
 
+.highlighted-row {
+  background-color: #84a15d !important;
+  box-shadow: 0 12px 13px rgba(60, 136, 77, 0.4) !important;
+  color: white !important;
+  outline: none;
+}
+
 .custom-scroll-sale {
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
   max-height: 150px;
   width: 100%;
   height: 400px;
   overflow-y: auto;
   z-index: 1;
   background: white;
+}
+
+.Payment_Value {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4375em;
+  letter-spacing: 0.00938em;
+  color: rgb(85 85 85 / 87%);
+  box-sizing: border-box;
+  position: relative;
+  cursor: text;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border: 1px solid #bfbfbf;
+  text-align: center;
 }
 
 .scroll-two::-webkit-scrollbar-thumb {
@@ -390,11 +413,10 @@ body {
 
 .text-green-500 {
   /* background-color: rgb(192 233 207); */
-  color: green
-    /* border-radius: 10px; */
-    /* display: grid; */
+  color: green;
+  /* border-radius: 10px; */
+  /* display: grid; */
 }
-
 
 .hover-yellow {
   color: initial;
@@ -408,7 +430,7 @@ body {
 }
 
 .hover-report:hover {
-  background-color: rgba(12, 161, 246, .1);
+  background-color: rgba(12, 161, 246, 0.1);
 }
 
 .heart-icon {
@@ -436,7 +458,7 @@ body {
 }
 
 .custom-box-report {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   height: 180px;
   text-align: center;
   width: 155px;
@@ -448,11 +470,11 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 25px;
-  box-shadow: 0 2px 4px rgba(17, 17, 17, .1);
+  box-shadow: 0 2px 4px rgba(17, 17, 17, 0.1);
 }
 
 .custom-box-report:hover {
-  box-shadow: 0 16px 32px rgba(17, 17, 17, .2);
+  box-shadow: 0 16px 32px rgba(17, 17, 17, 0.2);
   border: 1px solid #0ca1f6;
 }
 
@@ -541,7 +563,7 @@ body {
   height: 35px;
   line-height: 32px;
   padding: 0 15px;
-  background-color: rgba(12, 161, 246, .1);
+  background-color: rgba(12, 161, 246, 0.1);
 }
 
 @keyframes ringBell {
@@ -580,44 +602,45 @@ body {
   width: 55px;
   height: 55px;
   background-repeat: no-repeat;
-  background-image: linear-gradient(#FFF 50px, transparent 0),
-    linear-gradient(#FFF 50px, transparent 0),
-    linear-gradient(#FFF 50px, transparent 0),
-    linear-gradient(#FFF 50px, transparent 0),
-    linear-gradient(#FFF 50px, transparent 0),
-    linear-gradient(#FFF 50px, transparent 0);
+  background-image: linear-gradient(#fff 50px, transparent 0),
+    linear-gradient(#fff 50px, transparent 0),
+    linear-gradient(#fff 50px, transparent 0),
+    linear-gradient(#fff 50px, transparent 0),
+    linear-gradient(#fff 50px, transparent 0),
+    linear-gradient(#fff 50px, transparent 0);
   background-size: 5px 40px;
-  background-position: 0px center, 10px center, 20px center, 30px center, 40px center, 50px center;
+  background-position: 0px center, 10px center, 20px center, 30px center,
+    40px center, 50px center;
   animation: spikeUp 1s linear infinite alternate;
 }
 
 @keyframes spikeUp {
   0% {
-    background-size: 5px 40px
+    background-size: 5px 40px;
   }
 
   16% {
-    background-size: 5px 55px, 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 40px
+    background-size: 5px 55px, 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 40px;
   }
 
   33% {
-    background-size: 5px 40px, 5px 55px, 5px 40px, 5px 40px, 5px 40px, 5px 40px
+    background-size: 5px 40px, 5px 55px, 5px 40px, 5px 40px, 5px 40px, 5px 40px;
   }
 
   50% {
-    background-size: 5px 40px, 5px 40px, 5px 55px, 5px 40px, 5px 40px, 5px 40px
+    background-size: 5px 40px, 5px 40px, 5px 55px, 5px 40px, 5px 40px, 5px 40px;
   }
 
   66% {
-    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 55px, 5px 40px, 5px 40px
+    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 55px, 5px 40px, 5px 40px;
   }
 
   83% {
-    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 55px, 5px 40px
+    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 55px, 5px 40px;
   }
 
   100% {
-    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 55px
+    background-size: 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 40px, 5px 55px;
   }
 }
 
@@ -676,27 +699,27 @@ body {
   @apply bg-contain bg-no-repeat;
 }
 
-.orderStatus{
-  background:rgba(98, 138, 47, 0.15);
+.orderStatus {
+  background: rgba(98, 138, 47, 0.15);
   /* opacity:0.15; */
-  padding:5px 10px;
-  border-radius:5px;
-  color:#628A2F
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #628a2f;
 }
 
-.pendingStatus{
-  background:rgba(246, 166, 9, 0.15);
+.pendingStatus {
+  background: rgba(246, 166, 9, 0.15);
   /* opacity:0.15; */
-  padding:5px 10px;
-  border-radius:5px;
-  color:#F6A609
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #f6a609;
 }
 
-.dueStatus{
-  background:rgba(246, 9, 9, 0.15);
+.dueStatus {
+  background: rgba(246, 9, 9, 0.15);
   /* opacity:0.15; */
-  padding:5px 10px;
-  border-radius:5px;
-  color:#f60909
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #f60909;
 }
 /* Additional styles */

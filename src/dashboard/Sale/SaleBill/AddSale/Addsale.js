@@ -2,7 +2,7 @@ import Header from "../../../Header"
 import React, { useState, useRef, useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
-import './style.css';
+import '../../../../App.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -51,14 +51,17 @@ const Addsale = () => {
         { id: 1, label: 'Cash' },
         { id: 2, label: 'UPI' }]
     const pickupOptions = [{ id: 1, label: 'Pickup' }, { id: 2, label: 'Delivery' }]
+    const userId = localStorage.getItem("userId");
     const [customer, setCustomer] = useState('')
     const [paymentType, setPaymentType] = useState('cash');
     const [pickup, setPickup] = useState('Pickup')
+    const [id, setId] = useState('')
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
     const [selectedEditItemId, setSelectedEditItemId] = useState('');
     const [mrp, setMRP] = useState('');
-    const [base, setBase] = useState('')
+    const [base, setBase] = useState('');
+    const [barcode, setBarcode] = useState("");
     const [batchListData, setBatchListData] = useState([]);
     const [doctorName, setDoctorName] = useState('');
     const [customerName, setCustomerName] = useState('')
@@ -72,13 +75,14 @@ const Addsale = () => {
     const [order, setOrder] = useState('');
     const [roundOff, setRoundOff] = useState(0);
     const [uniqueId, setUniqueId] = useState([])
-
+    const [itemEditID, setItemEditID] = useState(0);
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
     const [unit, setUnit] = useState('')
     const [finalDiscount, setFinalDiscount] = useState(0)
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [openPurchaseHistoryPopUp, setOpenPurchaseHistoryPopUp] = useState(false);
+    const [highlightedRowId, setHighlightedRowId] = useState(null);
     const [openCustomer, setOpenCustomer] = useState(false)
     const [doctor, setDoctor] = useState('');
     const [clinic, setClinic] = useState();
@@ -116,6 +120,7 @@ const Addsale = () => {
     const [nextPath, setNextPath] = useState("");
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
+    const [barcodeItemName, setBarcodeItemName] = useState('');
 
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -524,6 +529,132 @@ const Addsale = () => {
         }
         draftSaleData();
     }
+
+    const handleEditClick = (item) => {
+        if (!item) return; // Ensure the item is valid.
+
+        // const existingItem = uniqueId.find((obj) => obj.id === item.id);
+        // if (!existingItem) {
+        //     setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
+        //     setMaxQty(item.qty);
+        // } else {
+        //     setMaxQty(existingItem.qty);
+        // }
+
+        setSelectedEditItem(item);
+        setIsEditMode(true);
+        setSelectedEditItemId(item.id);
+        setBarcodeItemName(item.iteam_name);
+        setSearchItem(item.iteam_name);
+        setItemEditID(item.item_id);
+        setLoc(item.location);
+
+        if (selectedEditItem) {
+            // setSearchItem(selectedEditItem.iteam_name);
+            setUnit(selectedEditItem.unit);
+            setBatch(selectedEditItem.batch);
+            setExpiryDate(selectedEditItem.exp);
+            setMRP(selectedEditItem.mrp);
+            setQty(item.qty);
+            setBase(item.base);
+            setGst(selectedEditItem.gst_name);
+            setOrder(selectedEditItem.order);
+            setItemAmount(selectedEditItem.net_rate);
+        }
+    };
+
+    const saleItemList = async () => {
+        let data = new FormData();
+        const params = {
+            random_number: localStorage.getItem('RandomNumber') || ''
+        };
+        try {
+            const res = await axios.post("sales-item-list?", data, {
+                params: params,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            ).then((response) => {
+                console.log('response-------- :>> ', response.data.data.sales_item);
+                setItemSaleList(response.data.data);
+                setTotalAmount(response.data.data.sales_amount)
+                setTotalBase(response.data.data.total_base)
+                setTotalgst(response.data.data.total_gst)
+                setMarginNetProfit(response.data.data.margin_net_profit)
+                setTotalMargin(response.data.data.total_margin)
+                setTotalNetRate(response.data.data.total_net_rate)
+            })
+        } catch (error) {
+            console.error("API error:", error);
+        }
+
+    }
+    const handleBarcode = async () => {
+        if (!barcode) {
+            return;
+        }
+        try {
+            const res = axios
+                .post("barcode-batch-list?", { "barcode": barcode }, {
+                    // params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    console.log('response.data.data :>> ', response.data.data);
+
+                    setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+                    setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+                    setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+                    setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
+                    setQty(response?.data?.data[0]?.batch_list[0]?.qty)
+                    setMaxQty(response?.data?.data[0]?.batch_list[0]?.stock)
+                    setPtr(response?.data?.data[0]?.batch_list[0]?.ptr)
+                    setDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
+                    setBase(response?.data?.data[0]?.batch_list[0]?.base)
+                    setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+                    setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+                    setTotalMargin(response?.data?.data[0]?.batch_list[0]?.margin)
+                    setTotalNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                    setBarcodeItemName(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+                    setId(response?.data?.data[0]?.batch_list[0]?.id)
+                    setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+                    console.log(response?.data?.data[0]?.batch_list[0], itemId)
+
+                    setSelectedEditItemId(response?.data?.data[0]?.batch_list[0]?.id)
+
+                    setItemEditID(response.data.data[0]?.id)
+
+                    setUnsavedItems(true)
+
+                    // const batch = response?.data?.data[0]?.batch_list[0];
+                    // if (batch) {
+                    //     setUnit(batch.unit);
+                    //     setBatch(batch.batch_name);
+                    //     setExpiryDate(batch.expiry_date);
+                    //     setMRP(batch.mrp);
+                    //     setQty(batch.purchase_qty);
+                    //     setPtr(batch.ptr);
+                    //     setDiscount(batch.discount);
+                    //     setBase(batch.base);
+                    //     setGst(batch.gst_name);
+                    //     setLoc(batch.location);
+                    //     setTotalMargin(batch.margin);
+                    //     setTotalNetRate(batch.net_rate);
+                    //     setSearchItem(batch.iteam_name);
+                    //     setItemId(batch.item_id);
+                    //     setSelectedEditItemId(batch.id);
+                    // }
+                    // setIsEditMode(true)
+                });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
     const handleSubmit = () => {
         setUnsavedItems(false);
         const newErrors = {};
@@ -601,6 +732,13 @@ const Addsale = () => {
         })
     }, [])
 
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            handleBarcode();
+        }, 1000);
+        return () => clearTimeout(timeoutId);
+    }, [barcode]);
+
     const handleNavigation = (path) => {
         setOpenModal(true);
         setOpenCustomer(false);
@@ -610,14 +748,15 @@ const Addsale = () => {
 
     const handleLeavePage = () => {
         let data = new FormData();
+        data.append('random_number', localStorage.getItem('RandomNumber'))
         setOpenModal(false);
         setUnsavedItems(false);
 
-        const params = {
-            random_number: localStorage.getItem('RandomNumber')
-        };
+        // const params = {
+        //     random_number: localStorage.getItem('RandomNumber')
+        // };
         axios.post("all-sales-item-delete", data, {
-            params: params,
+            // params: params,
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(() => {
@@ -705,12 +844,12 @@ const Addsale = () => {
     }
 
     const generateRandomNumber = () => {
-        const number = Math.floor(Math.random() * 100000) + 1;
-        setRandomNumber(number);
-        if (localStorage.getItem('RandomNumber') == null) {
-            localStorage.setItem('RandomNumber', number)
+        if (localStorage.getItem("RandomNumber") == null) {
+            const number = Math.floor(Math.random() * 100000) + 1;
+            setRandomNumber(number);
+            localStorage.setItem("RandomNumber", number);
         } else {
-            localStorage.setItem('RandomNumber', localStorage.getItem("RandomNumber"))
+            return;
         }
     };
 
@@ -721,21 +860,36 @@ const Addsale = () => {
         } else {
             addSaleItem();
             setIsVisible(false);
+            setSearchItem('')
+            setBarcodeItemName('')
         }
     }
 
     const addSaleItem = async () => {
         generateRandomNumber();
         let data = new FormData();
-        data.append("id", selectedEditItemId ? selectedEditItemId : '')
-        data.append('item_id', value && value.id ? value.id : '')
+
+        if (isEditMode === true) {
+            data.append("item_id", itemEditID)
+        }
+        else {
+            if (barcode) {
+                data.append('item_id', itemId)
+            } else {
+                data.append('item_id', value && value.id ? value.id : '')
+            }
+        }
+
+        // data.append("id", selectedEditItemId ? selectedEditItemId : '')
+        data.append("user_id", userId);
+        // data.append("item_id", barcode ? itemId : value?.id || '');
+        data.append("id", selectedEditItemId || '');
         data.append("qty", qty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
         data.append("unit", unit ? unit : '');
-        data.append("random_number", localStorage.getItem('RandomNumber') || '');
-        data.append("unit", unit ? unit : '')
+        data.append("random_number", Number(localStorage.getItem('RandomNumber')) || '');
         data.append("batch", batch ? batch : '')
         data.append('location', loc ? loc : '')
         data.append("base", base ? base : '')
@@ -750,6 +904,7 @@ const Addsale = () => {
         const params = {
             id: selectedEditItemId || ''
         };
+
         try {
             const response = isEditMode
                 ? await axios.post("sales-item-edit?", data, {
@@ -763,6 +918,7 @@ const Addsale = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+
             saleItemList();
             setUnit('')
             setBatch('')
@@ -772,6 +928,7 @@ const Addsale = () => {
             setBase('')
             setGst('')
             setBatch('')
+            setBarcode("")
             setLoc('')
             setIsEditMode(false);
         }
@@ -780,69 +937,18 @@ const Addsale = () => {
     }
 
     const handleQtyChange = (e) => {
+        console.log('maxQt***', maxQty);
+
+
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
+            console.log('if***');
             setQty(enteredValue);
         } else {
+            console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }
-    }
-
-    const handleEditClick = (item) => {
-
-        const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        if (!existingItem) {
-            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-            setMaxQty(item.qty);
-        } else {
-            setMaxQty(existingItem.qty);
-        }
-
-        setSelectedEditItem(item);
-        setIsEditMode(true);
-        setSelectedEditItemId(item.id);
-        setSearchItem(item.iteam_name);
-
-        if (selectedEditItem) {
-            setUnit(selectedEditItem.unit);
-            setBatch(selectedEditItem.batch);
-            setExpiryDate(selectedEditItem.exp);
-            setMRP(selectedEditItem.mrp);
-            setQty(item.qty);
-            setBase(item.base);
-            setGst(selectedEditItem.gst_name);
-            setLoc(selectedEditItem.location);
-            setOrder(selectedEditItem.order);
-            setItemAmount(selectedEditItem.net_rate);
-        }
-    };
-    const saleItemList = async () => {
-        let data = new FormData();
-        const params = {
-            random_number: localStorage.getItem('RandomNumber') ? localStorage.getItem('RandomNumber') : ''
-        };
-        try {
-            const res = await axios.post("sales-item-list?", data, {
-                params: params,
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-            ).then((response) => {
-                setItemSaleList(response.data.data);
-                setTotalAmount(response.data.data.sales_amount)
-                setTotalBase(response.data.data.total_base)
-                setTotalgst(response.data.data.total_gst)
-                setMarginNetProfit(response.data.data.margin_net_profit)
-                setTotalMargin(response.data.data.total_margin)
-                setTotalNetRate(response.data.data.total_net_rate)
-            })
-        } catch (error) {
-            console.error("API error:", error);
-        }
-
     }
 
     const deleteOpen = (Id) => {
@@ -867,6 +973,7 @@ const Addsale = () => {
         }
         setIsEditMode(false)
     }
+
     const handleDeleteItem = async (saleItemId) => {
         if (!saleItemId) return;
         let data = new FormData();
@@ -893,7 +1000,7 @@ const Addsale = () => {
 
     const handleMouseEnter = (e) => {
         const hoveredRow = e.currentTarget;
-        highlightRow(hoveredRow);
+        setHighlightedRowId(hoveredRow);
     };
 
     const handleTableKeyDown = (e) => {
@@ -905,7 +1012,7 @@ const Addsale = () => {
             if (rows.length > 0) {
                 const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
                 rows[nextIndex]?.focus();
-                highlightRow(rows[nextIndex]);
+                setHighlightedRowId(rows[nextIndex]?.dataset.id);
             }
         }
         if (e.key === "ArrowUp") {
@@ -913,7 +1020,7 @@ const Addsale = () => {
             if (rows.length > 0) {
                 const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
                 rows[prevIndex]?.focus();
-                highlightRow(rows[prevIndex]);
+                setHighlightedRowId(rows[prevIndex]?.dataset.id);
             }
         }
 
@@ -924,31 +1031,22 @@ const Addsale = () => {
                 const item = batchListData.find((item) => String(item.id) === String(itemId));
                 if (item) {
                     handlePassData(item);
-
-                    highlightRow(rows[currentIndex]);
+                    setHighlightedRowId(itemId);
                 }
             }
         }
     };
 
-
-    const highlightRow = (row) => {
-        const previouslyHighlighted = document.querySelector(".highlighted-row");
-        if (previouslyHighlighted) {
-            previouslyHighlighted.classList.remove("highlighted-row");
-        }
-
-        row.classList.add("highlighted-row");
-    };
-
-
     useEffect(() => {
         if (isVisible && tableRef.current) {
             const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
-            firstRow?.focus();
-            highlightRow(firstRow);
+            if (firstRow) {
+                firstRow.focus();
+                setHighlightedRowId(firstRow.getAttribute("data-id"));
+            }
         }
     }, [isVisible, batchListData]);
+
 
 
     return (
@@ -1305,11 +1403,13 @@ const Addsale = () => {
                                                             <>
                                                                 {batchListData.map(item => (
                                                                     <tr
-                                                                        className="cursor-pointer saleTable custom-hover"
+                                                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
                                                                         key={item.id}
                                                                         data-id={item.id}
                                                                         tabIndex={0}
-                                                                        style={{ border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none" }}
+                                                                        style={{
+                                                                            border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                                                        }}
                                                                         onClick={() => handlePassData(item)}
                                                                         onMouseEnter={handleMouseEnter}
                                                                     >
@@ -1321,7 +1421,7 @@ const Addsale = () => {
                                                                         <td className="text-base font-semibold">{item.location}</td>
                                                                     </tr>
                                                                 ))}
-                                                            </>:
+                                                            </> :
                                                             <tr>
                                                                 <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                             </tr>
@@ -1340,12 +1440,12 @@ const Addsale = () => {
                                         <thead>
                                             <tr>
                                                 <th className="w-1/4">Item Name</th>
-                                                <th >Unit </th>
-                                                <th >Batch </th>
-                                                <th >Expiry</ th>
+                                                <th >Unit</th>
+                                                <th >Batch</th>
+                                                <th >Expiry</th>
                                                 <th >MRP</th>
                                                 <th>Base</th>
-                                                <th >GST%  </th>
+                                                <th >GST%</th>
                                                 <th >QTY </th>
                                                 <th  >Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
@@ -1360,7 +1460,7 @@ const Addsale = () => {
                                             <tr>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
-                                                    {searchItem}
+                                                    {searchItem || barcodeItemName}
                                                 </td>
                                                 <td>
 
@@ -1485,6 +1585,23 @@ const Addsale = () => {
                                                 </td>
                                                 <td className="total">{itemAmount}</td>
                                             </tr>
+                                            <td>
+                                                <TextField
+                                                    id="outlined-number"
+                                                    type="number"
+                                                    size="small"
+                                                    value={barcode}
+                                                    placeholder="scan barcode"
+                                                    // inputRef={inputRef10}
+                                                    // onKeyDown={handleKeyDown}
+                                                    sx={{ width: "250px" }}
+                                                    onChange={(e) => {
+                                                        setBarcode(e.target.value)
+
+                                                    }}
+
+                                                />
+                                            </td>
                                             <tr>
                                                 <td></td>
                                                 <td></td>
@@ -1507,9 +1624,15 @@ const Addsale = () => {
                                                     <td style={{
                                                         display: 'flex', gap: '8px',
                                                     }}>
-                                                        < BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                                                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
-                                                        {item.iteam_name}
+                                                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item)
+                                                        }} />
+                                                        <DeleteIcon className="delete-icon" onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            deleteOpen(item.id)
+                                                        }} />
+                                                        {item.iteam_name || barcodeItemName}
                                                     </td>
                                                     <td>{item.unit}</td>
                                                     <td>{item.batch}</td>

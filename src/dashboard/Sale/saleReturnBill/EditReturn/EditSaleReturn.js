@@ -34,7 +34,8 @@ const EditSaleReturn = () => {
         { id: 1, label: 'Cash' },
 
         { id: 3, label: 'UPI' },]
-    const [customer, setCustomer] = useState('')
+    const [customer, setCustomer] = useState(null)
+    
     const [isVisible, setIsVisible] = useState(true);
     const { id, randomNumber } = useParams();
     const [selectedEditItem, setSelectedEditItem] = useState(null);
@@ -187,6 +188,13 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
+            console.log('record :>> ', record);
+            setCustomer(response.data.data.customer_name)
+            // const foundCustomer = customerData.find(
+            //     (option) => option.name === record.customer_name
+            // );
+            // setCustomer(foundCustomer || "");
+
             setSaleReturnItems(response.data.data);
             setTotalBase(response.data.data.total_base)
             setTotalMargin(response.data.data.total_margin)
@@ -204,10 +212,19 @@ const EditSaleReturn = () => {
                 setRandomNum(salesItem[0].random_number)
             }
 
-            const foundCustomer = customerData.find(option => option.id == record.customer_id);
-            setCustomer(foundCustomer);
-            const foundDoctor = doctorData.find(option => option.id == record.doctor_id);
-            setDoctor(foundDoctor);
+            // const foundCustomer = customerData.find(option => option.id == record.customer_id);
+            // setCustomer(foundCustomer);
+            if (record.doctor_name && record.doctor_name !== "-") {
+                // Find the doctor in doctorData
+                const foundDoctor = doctorData.find(
+                    (option) => option.name === record.doctor_name
+                );
+                // If a doctor is found, set it, otherwise set doctor to null
+                setDoctor(foundDoctor || "");
+            } else {
+                // If doctor_name is "-" or missing, set doctor to ""
+                setDoctor("");
+            }
             setNetAmount((response.data.data.net_amount))
 
             setOtherAmt((response.data.data.other_amount))
@@ -227,7 +244,9 @@ const EditSaleReturn = () => {
                 },
             });
             const doctorData = response.data.data;
-            setDoctorData(doctorData);
+            setDoctorData(response.data.data);
+            setDoctor(response.data.data[0] || null)
+            console.log('response.data.data[0] :>> ', response.data.data[0]);
             setIsLoading(false);
             return doctorData;
         } catch (error) {
@@ -246,8 +265,12 @@ const EditSaleReturn = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            // setCustomerDetails(customerData);
             const customerData = response.data.data;
-            setCustomerDetails(customerData);
+            setCustomerDetails(response.data.data);
+            setCustomer(response.data.data[0] || '');
+            console.log('customer :>> ', response.data.data[0]);
+
             setIsLoading(false);
             return customerData;
         } catch (error) {
@@ -633,11 +656,12 @@ const EditSaleReturn = () => {
                                     </div>
                                     <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name</span>
+                                       
                                         <Autocomplete
                                             value={customer}
                                             options={customerDetails}
                                             disabled
-                                            getOptionLabel={(option) => option.name || ''}
+                                            // getOptionLabel={(option) => option.name || ''}
                                             isOptionEqualToValue={(option, value) => option.id === value.id}
                                             sx={{
                                                 width: '100%',
@@ -665,6 +689,8 @@ const EditSaleReturn = () => {
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
+                                            value={customer}
+
                                                     variant="outlined"
                                                     placeholder="Search by Mobile, Name"
                                                     InputProps={{
@@ -680,6 +706,30 @@ const EditSaleReturn = () => {
                                                 />
                                             )}
                                         />
+                                        {/* <input
+                                            labelId="dropdown-label"
+                                            id="dropdown"
+                                            value={customer}
+                                            sx={{
+                                                width: "100%",
+                                                minWidth: {
+                                                    xs: "320px",
+                                                    sm: "400px",
+                                                },
+                                                "& .MuiInputBase-root": {
+                                                    height: 20,
+                                                    fontSize: "1.10rem",
+                                                },
+                                                "& .MuiAutocomplete-inputRoot": {
+                                                    padding: "10px 14px",
+                                                },
+                                            }}
+                                            disabled
+                                            size="small"
+                                            className="Payment_Value"
+                                            style={{ height: "100%" }}
+                                        >
+                                        </input> */}
                                         {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                     </div>
                                     <div className="detail">
@@ -703,10 +753,10 @@ const EditSaleReturn = () => {
                                     <div className="detail">
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor </span>
                                         <Autocomplete
-                                            value={doctor || {}}
+                                            value={doctor || ''}
                                             onChange={handleDoctorOption}
                                             options={doctorData}
-                                            disabled
+                                            // disabled
                                             getOptionLabel={(option) => option.name || ''}
                                             isOptionEqualToValue={(option, value) => option.name === value.name}
                                             sx={{

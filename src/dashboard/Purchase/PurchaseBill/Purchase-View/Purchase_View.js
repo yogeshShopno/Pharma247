@@ -154,11 +154,11 @@ const PurchaseView = () => {
                 <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: "rgba(12, 161, 246, 1)", display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "150px" }}>{data.bill_no}</span>
+                            <span style={{ color: "var(--color2)", display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "150px" }}>{data.bill_no}</span>
                             {/* {permissions.some(permission => permission["purchase bill edit"]) && ( */}
 
                             {hasPermission(permissions, "purchase bill edit") && (
@@ -176,7 +176,7 @@ const PurchaseView = () => {
                                             </Button>
                                         )
                                     }
-                                    <Button variant="contained" onClick={() => {history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                    <Button style={{ background: "var(--color1)" }} variant="contained" onClick={() => {history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />Edit</Button>
                                 </div>
                             )}
                         </div>
@@ -318,7 +318,7 @@ const PurchaseView = () => {
                     </div>
                     {/* CN List PopUp Box */}
                     <Dialog open={openAddPopUp} >
-                        <DialogTitle id="alert-dialog-title" className="sky_text">
+                        <DialogTitle id="alert-dialog-title" className="secondary">
                             {header}
                         </DialogTitle>
                         <IconButton

@@ -128,7 +128,7 @@ const ReportsMain = () => {
                 >
                     <Box>
                         <h1 className="text-2xl flex items-center justify-start font-semibold p-2 mb-4" style={{ color: "rgb(4, 76, 157)" }}>Reports
-                            <BsLightbulbFill className="ml-4 sky_text hover-yellow" />
+                            <BsLightbulbFill className="ml-4 secondary hover-yellow" />
                         </h1>
                     </Box>
                     {hasPermission(permissions, "report accounting") &&

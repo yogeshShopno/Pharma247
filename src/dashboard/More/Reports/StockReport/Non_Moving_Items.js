@@ -95,12 +95,12 @@ const Non_Moving_items = () => {
                     <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "200px" }}> Non Moving Items Report
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "200px" }}> Non Moving Items Report
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
+                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                         </div>
                         <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
@@ -112,7 +112,7 @@ const Non_Moving_items = () => {
                                 </div>
                             </div>
                             <div style={{ marginTop: "100px", height: "380px" }}>
-                                <span className="text-xl sky_text">Non Moving Time Duration </span>
+                                <span className="text-xl secondary">Non Moving Time Duration </span>
                                 <div style={{ width: "50%" }}>
                                     <TextField
                                         id="outlined-basic"

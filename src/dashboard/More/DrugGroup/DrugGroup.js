@@ -304,8 +304,8 @@ const DrugGroup = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='darkblue_text' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '110px' }} >Drug Group</span>
-                                <BsLightbulbFill className="w-6 h-6 sky_text hover-yellow " />
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '110px' }} >Drug Group</span>
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
                                 <Button variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
@@ -402,7 +402,7 @@ const DrugGroup = () => {
                             },
                         },
                     }}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         {header}
                     </DialogTitle>
                     <IconButton
@@ -417,7 +417,7 @@ const DrugGroup = () => {
                             <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <span className="label darkblue_text">Drug Group Name</span>
+                                        <span className="label primary">Drug Group Name</span>
                                         {/* <TextField
                                             id="outlined-multiline-static"
                                             size="small"
@@ -474,7 +474,7 @@ const DrugGroup = () => {
                         },
                     }}
                 >
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         DrugGroup Related Items
                     </DialogTitle>
                     <IconButton

@@ -1226,7 +1226,7 @@ const AddPurchaseBill = () => {
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
-                  color: "rgba(12, 161, 246, 1)",
+                  color: "var(--color1)",
                   alignItems: "center",
                   fontWeight: 700,
                   fontSize: "20px",
@@ -1242,12 +1242,12 @@ const AddPurchaseBill = () => {
                 style={{
                   fontSize: "18px",
                   marginTop: "8px",
-                  color: "rgba(4, 76, 157, 1)",
+                  color: "var(--color1)",
                 }}
               />
               <span
                 style={{
-                  color: "rgba(4, 76, 157, 1)",
+                  color: "var(--color1)",
                   alignItems: "center",
                   fontWeight: 700,
                   fontSize: "20px",
@@ -1255,7 +1255,7 @@ const AddPurchaseBill = () => {
               >
                 New
               </span>
-              <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+              <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
             </div>
 
             <div className="headerList">
@@ -1279,7 +1279,7 @@ const AddPurchaseBill = () => {
               </Select> */}
               <Button
                 variant="contained"
-                style={{ background: "rgb(4, 76, 157)" }}
+                style={{ background: "var(--color1)" }}
                 onClick={handleSubmit}
               >
                 Save
@@ -1292,7 +1292,7 @@ const AddPurchaseBill = () => {
                 <span className="title mb-2">
                   Distributor
                   <FaPlusCircle
-                    className="darkblue_text cursor-pointer"
+                    className="primary cursor-pointer"
                     onClick={() => {
                       history.push("../../more/addDistributer");
                     }}
@@ -1379,7 +1379,10 @@ const AddPurchaseBill = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  style={{ textTransform: 'none', marginTop: "25px" }}
+
+                  style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
+
+                
                   onClick={handelAddOpen}
                   disabled={!distributor || ItemPurchaseList?.item?.length === 0}
                 >
@@ -1786,7 +1789,8 @@ const AddPurchaseBill = () => {
 
                             <Button
                               variant="contained"
-                              color="success"
+                              style={{ backgroundColor: "var(--color1)" }}
+
                               onClick={handleAddButtonClick}
                             >
                               <ControlPointIcon />
@@ -1977,7 +1981,7 @@ const AddPurchaseBill = () => {
         </div>
         {/* CN amount PopUp Box */}
         <Dialog open={openAddPopUp} >
-          <DialogTitle id="alert-dialog-title" className="sky_text">
+          <DialogTitle id="alert-dialog-title" className="secondary">
             {header}
           </DialogTitle>
           <IconButton

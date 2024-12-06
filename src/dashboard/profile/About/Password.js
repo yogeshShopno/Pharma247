@@ -128,7 +128,7 @@ const Password = () => {
                         <div className="pt-8 pl-8 w-full">
                             <div>
                                 <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-5" style={{ color: "rgb(4, 76, 157)", marginBottom: "25px" }}>Update Password
-                                    <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                    <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                 </h1>
                             </div>
 

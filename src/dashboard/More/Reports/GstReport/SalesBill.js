@@ -173,12 +173,12 @@ const SalesBill = () => {
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
                     <div className="flex gap-2 pb-2">
                         <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                             </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '17px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "100px" }}> GST Sales Bill
+                            <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "100px" }}> GST Sales Bill
                             </span>
-                            <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
+                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
                             <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
@@ -258,8 +258,8 @@ const SalesBill = () => {
                             </div>
                             <div>
                                 <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                    <span className="darkblue_text text-xl">Total</span>
-                                    <p className="sky_text text-xl">Rs.{total}</p>
+                                    <span className="primary text-xl">Total</span>
+                                    <p className="secondary text-xl">Rs.{total}</p>
                                 </div>
                             </div>
                         </div>
@@ -294,7 +294,7 @@ const SalesBill = () => {
                                 <div className="mt-4 space-x-1" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                                     <button
                                         onClick={handlePrevious}
-                                        className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                                        className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                                             }`}
                                         disabled={currentPage === 1}
                                     >
@@ -304,7 +304,7 @@ const SalesBill = () => {
                                         <button
                                             key={i}
                                             onClick={() => handleClick(i + 1)}
-                                            className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1 ? 'bg_darkblue text-white' : 'bg-gray-200 text-gray-700'
+                                            className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1 ? 'secondary-bg text-white' : 'bg-gray-200 text-gray-700'
                                                 }`}
                                         >
                                             {i + 1}
@@ -312,7 +312,7 @@ const SalesBill = () => {
                                     ))}
                                     <button
                                         onClick={handleNext}
-                                        className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`}
+                                        className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
                                         disabled={currentPage === totalPages}
                                     >
                                         Next

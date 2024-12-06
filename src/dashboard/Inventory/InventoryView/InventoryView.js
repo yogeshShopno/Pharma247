@@ -788,9 +788,9 @@ const InventoryView = () => {
                     <div className='p-5' >
                         <div >
                             <div style={{ display: 'flex', gap: '4px' }}>
-                                <span className="text-blue-500 text-2xl sky_text cursor-pointer" onClick={(() => history.push('/inventory'))}  >Inventory</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '8px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span className="darkblue_text text-lg flex mt-1" style={{ minWidth: '250px', width: 'auto' }}>{itemAllData?.iteam_name} <BsLightbulbFill className="ml-2 w-6 h-6 sky_text hover-yellow" /> </span>
+                                <span className="text-blue-500 text-2xl secondary cursor-pointer" onClick={(() => history.push('/inventory'))}  >Inventory</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '8px', color: "var(--color1)" }} />
+                                <span className="primary text-lg flex mt-1" style={{ minWidth: '250px', width: 'auto' }}>{itemAllData?.iteam_name} <BsLightbulbFill className="ml-2 w-6 h-6 secondary hover-yellow" /> </span>
                                 <div className='headerList mt-2' >
                                     <Button variant="contained" color="primary" style={{ marginBottom: '7px' }} onClick={() => handleEditOpen()}><MdEdit className="w-7 h-6  p-1 cursor-pointer" />Item Edit</Button>
                                 </div>
@@ -828,7 +828,7 @@ const InventoryView = () => {
                                     <div >
                                         <table >
                                             <thead>
-                                                <tr className="darkblue_text text-sm border border-blue-800 font-bold">
+                                                <tr className="primary text-sm border border-blue-800 font-bold">
                                                     <td className="px-12 py-2">Current Stock</td>
                                                     <td className="px-12 py-2">Default Disc.</td>
                                                     <td className="px-12 py-2">Location</td>
@@ -848,7 +848,7 @@ const InventoryView = () => {
                                     <div>
                                         <table className="border-collapse w-full">
                                             <thead>
-                                                <tr className="darkblue_text text-sm border border-blue-800 font-bold">
+                                                <tr className="primary text-sm border border-blue-800 font-bold">
                                                     <td className="px-12 py-2">Min.Qty</td>
                                                     <td className="px-12 py-2">Max.Qty</td>
                                                     <td className="px-12 py-2">GST</td>
@@ -892,7 +892,7 @@ const InventoryView = () => {
                                                 checked={hideZeroQuantity}
                                                 onChange={handleCheckboxChange}
                                             />
-                                            <span style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '15px', fontWeight: 800, marginLeft: '10px' }}> Hide Zero Quantity</span>
+                                            <span style={{ color: 'var(--color1)', fontSize: '15px', fontWeight: 800, marginLeft: '10px' }}> Hide Zero Quantity</span>
                                         </div>
 
                                         <div className="overflow-x-auto">
@@ -1508,7 +1508,7 @@ const InventoryView = () => {
                 </div>
 
                 <Dialog open={openAddPopUp}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Edit Inventory Details
                     </DialogTitle>
                     <IconButton
@@ -1522,7 +1522,7 @@ const InventoryView = () => {
                         <DialogContentText id="alert-dialog-description">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div className="flex flex-col">
-                                    <span className="label darkblue_text">Packaging In</span>
+                                    <span className="label primary">Packaging In</span>
                                     <Select
                                         labelId="dropdown-label"
                                         id="dropdown"
@@ -1540,7 +1540,7 @@ const InventoryView = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <span className="label darkblue_text">Category</span>
+                                    <span className="label primary">Category</span>
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -1560,7 +1560,7 @@ const InventoryView = () => {
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="label darkblue_text">Company Name</span>
+                                    <span className="label primary">Company Name</span>
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -1579,7 +1579,7 @@ const InventoryView = () => {
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="label darkblue_text">DrugGroup</span>
+                                    <span className="label primary">DrugGroup</span>
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -1598,7 +1598,7 @@ const InventoryView = () => {
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="label darkblue_text">Location</span>
+                                    <span className="label primary">Location</span>
                                     <TextField
                                         id="outlined-multiline-static"
                                         size="small"

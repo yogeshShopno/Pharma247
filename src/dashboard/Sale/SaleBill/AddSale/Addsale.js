@@ -1068,10 +1068,10 @@ const Addsale = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', fontWeight: 700, fontSize: '20px' }}>New</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', fontWeight: 700, fontSize: '20px' }}>New</span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Select
@@ -1164,7 +1164,7 @@ const Addsale = () => {
                                     </div>
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
                                         value={customer}
@@ -1227,7 +1227,7 @@ const Addsale = () => {
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
                                         onChange={handleDoctorOption}
@@ -1762,7 +1762,7 @@ const Addsale = () => {
                     </div>
                 </div>
                 <Dialog open={openAddPopUp}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Doctor
                     </DialogTitle>
                     <IconButton
@@ -1778,7 +1778,7 @@ const Addsale = () => {
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Doctor Name</span>
+                                            <span className="label primary mb-4" >Doctor Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1790,7 +1790,7 @@ const Addsale = () => {
                                             variant="outlined"
                                         />
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >Clinic Name</span>
+                                            <span className="label primary" >Clinic Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1815,7 +1815,7 @@ const Addsale = () => {
                 </Dialog>
                 {/* add Customer */}
                 <Dialog open={openCustomer}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Customer
                     </DialogTitle>
                     <IconButton
@@ -1831,7 +1831,7 @@ const Addsale = () => {
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Customer Name</span>
+                                            <span className="label primary mb-4" >Customer Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1843,7 +1843,7 @@ const Addsale = () => {
                                             variant="outlined"
                                         />
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >Mobile Number</span>
+                                            <span className="label primary" >Mobile Number</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1875,7 +1875,7 @@ const Addsale = () => {
                             },
                         },
                     }}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Item Purchase History
                     </DialogTitle>
                     <IconButton

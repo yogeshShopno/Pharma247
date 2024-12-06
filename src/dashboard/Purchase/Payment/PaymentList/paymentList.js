@@ -437,7 +437,7 @@ const PaymentList = () => {
             </div> :
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                     <div className='py-3' style={{ display: 'flex', gap: '2px' }}>
-                        <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', minWidth: '250px', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Purchase Payment</span>
+                        <span style={{ color: 'var(--color2)', display: 'flex', minWidth: '250px', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Purchase Payment</span>
                         {hasPermission(permissions, "purchase payment create") && (
                             <div className="headerList pr-4">
                                 <Button variant="contained" size='small' style={{ fontSize: '12px' }} onClick={handelAddOpen} ><AddIcon />Add New Payment</Button>
@@ -535,7 +535,7 @@ const PaymentList = () => {
                         <div className='mt-4 space-x-1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                             <button
                                 onClick={handlePrevious}
-                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                                     }`}
                                 disabled={currentPage === 1}
                             >
@@ -559,7 +559,7 @@ const PaymentList = () => {
                             )}
                             <button
                                 onClick={() => handleClick(currentPage)}
-                                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                             >
                                 {currentPage}
                             </button>
@@ -573,7 +573,7 @@ const PaymentList = () => {
                             )}
                             <button
                                 onClick={handleNext}
-                                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                                     }`}
                                 disabled={filteredList.length === 0}
                             >

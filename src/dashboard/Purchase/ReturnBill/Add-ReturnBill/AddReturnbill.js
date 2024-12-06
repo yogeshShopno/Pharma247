@@ -798,12 +798,12 @@ const AddReturnbill = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '600px', gap: '7px' }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "rgba(4, 76, 157, 1)" }} />
-                                <span className='hover:text-blue-900' style={{ color: '#044c9d', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '18px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')} >Purchase Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "rgba(4, 76, 157, 1)" }} />
-                                <span className='darkblue_text' style={{ display: 'flex', alignItems: 'center', alignItems: 'center', fontWeight: 600, fontSize: '18px' }}>New </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "var(--color1)" }} />
+                                <span className='hover:text-blue-900' style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '18px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')} >Purchase Return</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "var(--color1)" }} />
+                                <span className='primary' style={{ display: 'flex', alignItems: 'center', alignItems: 'center', fontWeight: 600, fontSize: '18px' }}>New </span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 {/* <Select
@@ -904,7 +904,7 @@ const AddReturnbill = () => {
                                             minHeight: '38px',
                                             alignItems: "center",
                                             marginTop: "24px",
-                                            background: "rgba(4, 76, 157, 1)"
+                                            background: "var(--color1)"
                                         }}
                                         onClick={() => filterData(searchItem)}
                                     >

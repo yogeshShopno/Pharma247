@@ -138,8 +138,8 @@ const AddDistributer = () => {
                 <Form ref={formRef}>
                     <div className=' p-12 rounded-md shadow-md md:p-12 lg:px-16 h-full'>
                         <div className='mb-12 flex justify-between'>
-                            <h1 className="text-2xl font-bold darkblue_text">Add New Distributor</h1>
-                            <h1 className="text-xl font-bold darkblue_text cursor-pointer" onClick={() => history.push('/more/DistributorList')}> <ReplyAllIcon className='mb-2 mr-2' />Distributor List</h1>
+                            <h1 className="text-2xl font-bold primary">Add New Distributor</h1>
+                            <h1 className="text-xl font-bold primary cursor-pointer" onClick={() => history.push('/more/DistributorList')}> <ReplyAllIcon className='mb-2 mr-2' />Distributor List</h1>
                         </div>
 
                         <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
@@ -158,7 +158,7 @@ const AddDistributer = () => {
                                         type="text"
                                     />
 
-                                    <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700  hover:bg-blue-600 focus:ring-4 bg-blue-900">
+                                    <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">
                                         <span>Change</span>
                                         <span class="sr-only">Search</span>
                                     </div>
@@ -361,7 +361,7 @@ const AddDistributer = () => {
                         </div>
                         <div className="border-b-2 border-blue-400 my-8 "></div>
                         <div>
-                            <h1 className="text-2xl font-bold mb-12 darkblue_text">Add Bank Details</h1>
+                            <h1 className="text-2xl font-bold mb-12 primary">Add Bank Details</h1>
                             <div>
                                 <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                                     <div>
@@ -380,7 +380,7 @@ const AddDistributer = () => {
                                                 type="text"
                                             />
 
-                                            <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white bg-blue-900 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 hover:bg-blue-600 cursor-pointer">
+                                            <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white  border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg rounded-e-lg border  cursor-pointer">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                                 </svg>
@@ -426,7 +426,7 @@ const AddDistributer = () => {
                                 <div className="text-center my-8">
                                     <button
                                         type="submit"
-                                        className="py-2 min-w-16 px-5 h-10  text-white rounded-lg bg-blue-900 ml-2"
+                                        className="py-2 min-w-16 px-5 h-10  text-white rounded-lg primary-bg ml-2"
                                     >
                                         Add
                                     </button>

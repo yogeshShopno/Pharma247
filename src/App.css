@@ -1,9 +1,36 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+#root {
+  --color1: #3f6212;  
+  --color2: #628A2F;  
+  --color3: #9BB770;  
+  --color4: #F6A609;  
+  --color5: #FFB822;  
+  --color6: #F31C1C;  
+ 
+}
+
+.primary{
+  color: #3f6212;
+}
+.primary-bg{
+  background-color: #3f6212;
+}
+.secondary{
+  color: #628A2F;
+}
+.secondary-bg{
+  color: #628A2F;
+
+}
+.primhover:hover{
+  background-color: #628A2F;
+}
+
 
 .custom-dropdown {
-  background-color: rgb(206, 144, 52);
+  background-color: #FFB822;
 }
 
 .width {
@@ -36,7 +63,7 @@ input[type="number"] {
 }
 
 .bg {
-  background-color: #628a2f;
+  background-color:var(--color1);
 }
 
 .shadow {
@@ -123,21 +150,13 @@ input[type="number"] {
   cursor: pointer;
 }
 
-.sky_text {
-  color: rgb(12, 161, 246);
+
+
+.secondary-bg {
+  background-color: var(--color2);
+  color: white;
 }
 
-.bg_sky {
-  background-color: rgb(12, 161, 246);
-}
-
-.bg_darkblue {
-  background-color: rgb(4, 76, 157);
-}
-
-.darkblue_text {
-  color: rgb(4, 76, 157);
-}
 
 .close-icon:before,
 .close-icon:after {
@@ -421,11 +440,11 @@ body {
 .hover-yellow {
   color: initial;
   transition: color 0.3s ease-in-out;
-  color: rgb(12, 161, 246);
+  color: var(--color2);
 }
 
 .hover-yellow:hover {
-  color: #e8eb47;
+  color: var(--color5);
   box-shadow: 0 0 55px 2px rgba(255, 255, 0, 0.4);
 }
 
@@ -438,7 +457,7 @@ body {
 }
 
 .hover-report li:hover .heart-icon svg {
-  color: rgb(207, 29, 29);
+  color: var(--color6);
 }
 
 .reportMain-icon {
@@ -450,11 +469,9 @@ body {
 }
 
 .report-icon {
-  width: 40px;
-  height: 40px;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 6px;
+  width: 20px;
+  height: 18px;
 }
 
 .custom-box-report {
@@ -475,7 +492,7 @@ body {
 
 .custom-box-report:hover {
   box-shadow: 0 16px 32px rgba(17, 17, 17, 0.2);
-  border: 1px solid #0ca1f6;
+  border: 1px solid var(--color1);
 }
 
 .css-9mgopn-MuiDivider-root {

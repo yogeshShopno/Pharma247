@@ -261,16 +261,16 @@ const Purchasebill = () => {
       </div> :
         <div style={{ height: 'calc(99vh - 55px)', padding: '0px 20px 0px', padding: "0px 20px 0px", }} >
           <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
+            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
             {hasPermission(permissions, "purchase bill create") && (<>
-              <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-              <Button variant="contained" size='small' style={{ background: "rgb(4, 76, 157", fontSize: '12px' }} onClick={goIntoAdd}><AddIcon />New</Button>
+              <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+              <Button variant="contained" size='small' style={{ background: "var(--color1)", fontSize: '12px' }} onClick={goIntoAdd}><AddIcon />New</Button>
             </>
             )}
             <div className="headerList">
               <Button
                 variant="contained"
-                style={{ background: "rgb(4, 76, 157)" }}
+                style={{ background: "var(--color1)" }}
                 onClick={()=>{setOpenAddPopUp(true)}}
               >
                 Generate PDF
@@ -312,7 +312,7 @@ const Purchasebill = () => {
                       minHeight: '38px',
                       alignItems: "center",
                       marginTop: "24px",
-                      background: "rgba(4, 76, 157, 1)"
+                      background: "var(--color1)"
                     }}
                     onClick={() => purchaseBillList(currentPage)}
                   >
@@ -402,7 +402,7 @@ const Purchasebill = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                   }`}
                 disabled={currentPage === 1}
               >
@@ -426,7 +426,7 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
               >
                 {currentPage}
               </button>
@@ -440,8 +440,7 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -484,7 +483,7 @@ const Purchasebill = () => {
                   alignItems: "center",
                   height: '41px',
                   marginTop: "19px",
-                  background: "rgba(4, 76, 157, 1)"
+                  background: "var(--color1)"
                 }}
                 onClick={() => purchaseBillList(currentPage)}
               >
@@ -557,7 +556,7 @@ const Purchasebill = () => {
             <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                   }`}
                 disabled={currentPage === 1}
               >
@@ -581,7 +580,7 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
               >
                 {currentPage}
               </button>
@@ -595,7 +594,7 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                   }`}
                 disabled={filteredList.length === 0}
               >
@@ -652,7 +651,7 @@ const Purchasebill = () => {
             },
           }}
           >
-            <DialogTitle id="alert-dialog-title" className="sky_text">
+            <DialogTitle id="alert-dialog-title" className="secondary">
               Genrate PDF
             </DialogTitle>
             <IconButton

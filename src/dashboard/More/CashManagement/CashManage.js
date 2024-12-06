@@ -164,8 +164,8 @@ const CashManage = () => {
                     <div style={{ backgroundColor: 'rgb(239 239 239)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                         <div className='pt-4' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', marginBottom: "10px", alignItems: 'center' }}>
-                                <span className='darkblue_text' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '180px' }} >Cash Management</span>
-                                <BsLightbulbFill className="w-6 h-6 sky_text hover-yellow " />
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '180px' }} >Cash Management</span>
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList" style={{ marginBottom: "10px" }}>
                                 <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="pdf Icon" />Download</Button>
@@ -206,10 +206,10 @@ const CashManage = () => {
                             <div className="flex flex-col md:flex-row gap-6 bg-gray-200 p-3 rounded-lg mt-4 md:mt-0">
                                 <div>
                                     <div className="relative">
-                                        <h2 className="sky_text font-medium text-xl ml-6"><FaArrowDown className="absolute left-0 bg-blue-500 text-white rounded-full p-1 mt-1" />Total In</h2>
+                                        <h2 className="secondary font-medium text-xl ml-6"><FaArrowDown className="absolute left-0 bg-blue-500 text-white rounded-full p-1 mt-1" />Total In</h2>
                                     </div>
                                     <div className="flex">
-                                        <h2 className="sky_text font-bold text-xl ml-6">Rs.{parseInt(cashManageDetails.credit).toFixed(2)}</h2>
+                                        <h2 className="secondary font-bold text-xl ml-6">Rs.{parseInt(cashManageDetails.credit).toFixed(2)}</h2>
                                     </div>
                                 </div>
                                 <div>
@@ -222,10 +222,10 @@ const CashManage = () => {
                                 </div>
                                 <div >
                                     <div className="relative">
-                                        <h2 className="darkblue_text font-medium text-xl ml-6">Net</h2>
+                                        <h2 className="primary font-medium text-xl ml-6">Net</h2>
                                     </div>
                                     <div className="flex">
-                                        <h2 className="sky_text font-bold text-xl ml-6">Rs.{parseInt(cashManageDetails.total).toFixed(2)}</h2>
+                                        <h2 className="secondary font-bold text-xl ml-6">Rs.{parseInt(cashManageDetails.total).toFixed(2)}</h2>
                                     </div>
                                 </div>
                             </div>

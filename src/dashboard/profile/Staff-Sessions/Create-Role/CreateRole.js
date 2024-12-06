@@ -169,7 +169,7 @@ const CreateRole = () => {
                         <div className="p-6 w-full">
                             <div className="flex justify-between">
                                 <div>
-                                    <h1 className="text-2xl flex items-center darkblue_text font-semibold p-2 mb-5" style={{ marginBottom: "25px" }}>
+                                    <h1 className="text-2xl flex items-center primary font-semibold p-2 mb-5" style={{ marginBottom: "25px" }}>
                                         <ArrowBackIosIcon className="cursor-pointer text-black" onClick={() => history.push('/Staff-sessions/manage-staffrole')} />
                                         {id ? 'Edit Role' : 'Create Role'}
                                     </h1>
@@ -181,7 +181,7 @@ const CreateRole = () => {
                             <div>
                                 <div>
                                     <div className="flex gap-1">
-                                        <span className="darkblue_text mb-2 font-semibold">Role Name</span>
+                                        <span className="primary mb-2 font-semibold">Role Name</span>
                                         <span className="text-red-600 text-xl">*</span>
                                     </div>
                                     <TextField id="standard-basic"
@@ -196,14 +196,14 @@ const CreateRole = () => {
                                 </div>
                             </div>
                             <div className="mt-4 flex gap-1">
-                                <span className="sky_text font-bold text-xl">Permission</span>
+                                <span className="secondary font-bold text-xl">Permission</span>
                                 <span className="text-red-600 text-xl">*</span>
                             </div>
 
                             <div className="mt-2 w-full">
                                 {Object.keys(permissionList).map((role, index) => (
                                     <div key={index}>
-                                        <h2 className="darkblue_text text-xl flex items-center">
+                                        <h2 className="primary text-xl flex items-center">
                                             <PlayArrowIcon className="text-black" />
                                             <span>{role}</span>
                                             <Checkbox
@@ -238,7 +238,7 @@ const CreateRole = () => {
                             {/* <div className="mt-2 w-full">
                                 {Object.keys(permissionList).map((role, index) => (
                                     <div key={index}>
-                                        <h2 className="darkblue_text text-xl">
+                                        <h2 className="primary text-xl">
                                             <PlayArrowIcon className="text-black" />
                                             <span>{role}</span>
                                             <Checkbox

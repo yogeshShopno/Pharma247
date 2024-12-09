@@ -331,8 +331,8 @@ const StaffMember = () => {
                     <div className="p-8 w-full">
                         <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-2xl flex items-center darkblue_text font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }}>Staff Member
-                                    <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }}>Staff Member
+                                    <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                 </h1>
                             </div>
 
@@ -371,7 +371,7 @@ const StaffMember = () => {
                                         })}
                                         <td className="flex justify-center">
                                             {hasPermission(permissions, "staff members edit") &&
-                                                <BorderColorIcon className="darkblue_text mr-3" onClick={() => handelEditOpen(item)} />}
+                                                <BorderColorIcon className="primary mr-3" onClick={() => handelEditOpen(item)} />}
                                             {hasPermission(permissions, "staff members activation") && (
                                                 <Tooltip title="Deactivate" className="">
                                                     {item.status == 'Active' ?
@@ -388,7 +388,7 @@ const StaffMember = () => {
                 </Box>
             }
             <Dialog open={openAddPopUp} >
-                <DialogTitle id="alert-dialog-title" className="sky_text">
+                <DialogTitle id="alert-dialog-title" className="secondary">
                     {header}
                 </DialogTitle>
                 <IconButton
@@ -403,7 +403,7 @@ const StaffMember = () => {
                         <div className="p-2">
                             <div className="flex gap-6">
                                 <div >
-                                    <span className="flex darkblue_text mb-2 font-medium">Full Name</span>
+                                    <span className="flex primary mb-2 font-medium">Full Name</span>
                                     <TextField id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
@@ -414,7 +414,7 @@ const StaffMember = () => {
 
                                 </div>
                                 <div >
-                                    <span className="flex darkblue_text mb-2 font-medium">Mobile No</span>
+                                    <span className="flex primary mb-2 font-medium">Mobile No</span>
                                     <TextField id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
@@ -430,7 +430,7 @@ const StaffMember = () => {
                         <div className="p-2">
                             <div className="flex gap-6">
                                 <div>
-                                    <span className="flex darkblue_text mb-2 font-medium">Assign Role</span>
+                                    <span className="flex primary mb-2 font-medium">Assign Role</span>
                                     <FormControl sx={{ minWidth: 250 }} size="small">
                                         <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
                                         <Select
@@ -451,7 +451,7 @@ const StaffMember = () => {
                                     </FormControl>
                                 </div>
                                 <div >
-                                    <span className="flex darkblue_text mb-2 font-medium">Email ID</span>
+                                    <span className="flex primary mb-2 font-medium">Email ID</span>
                                     <TextField id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
@@ -466,7 +466,7 @@ const StaffMember = () => {
                         <div className="p-2">
                             <div className="flex gap-6">
                                 <div >
-                                    <span className="flex darkblue_text mb-2 font-medium">Password</span>
+                                    <span className="flex primary mb-2 font-medium">Password</span>
                                     <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
                                         <OutlinedInput
                                             value={password}
@@ -491,7 +491,7 @@ const StaffMember = () => {
                                     </FormControl>
                                 </div>
                                 <div >
-                                    <span className="flex darkblue_text mb-2 font-medium">Re-enter Password</span>
+                                    <span className="flex primary mb-2 font-medium">Re-enter Password</span>
                                     <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
                                         <OutlinedInput
                                             value={reEnterPassword}

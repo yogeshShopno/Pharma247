@@ -893,7 +893,7 @@ const EditSaleBill = () => {
                 <div style={{ display: "flex", gap: "7px" }}>
                   <span
                     style={{
-                      color: "rgba(12, 161, 246, 1)",
+                      color: "var(--color2)",
                       alignItems: "center",
                       fontWeight: 700,
                       fontSize: "20px",
@@ -909,12 +909,12 @@ const EditSaleBill = () => {
                     style={{
                       fontSize: "18px",
                       marginTop: "9px",
-                      color: "rgba(4, 76, 157, 1)",
+                      color: "var(--color1)",
                     }}
                   />
                   <span
                     style={{
-                      color: "rgba(4, 76, 157, 1)",
+                      color: "var(--color1)",
                       alignItems: "center",
                       fontWeight: 700,
                       fontSize: "20px",
@@ -922,7 +922,7 @@ const EditSaleBill = () => {
                   >
                     Edit
                   </span>
-                  <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                  <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                 </div>
                 <div className="headerList">
                   <input
@@ -1030,7 +1030,7 @@ const EditSaleBill = () => {
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
+                        color: "var(--color1)",
                       }}
                     >
                       Customer Mobile / Name
@@ -1088,7 +1088,7 @@ const EditSaleBill = () => {
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
+                        color: "var(--color1)",
                       }}
                     >
                       Doctor

@@ -3,7 +3,7 @@
     --EASE_IN_QUAD: cubic-bezier(0.55, 0.085, 0.68, 0.53);
     --EASE_OUT_QUAD: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     
-    --COLOR_UI_PHARMACY: #237db5;
+    --COLOR_UI_PHARMACY: #324933;
     --loaderPill_DURATION: 3500ms;
 }
 
@@ -44,7 +44,6 @@
     border-radius: 15px;
     border: 1px solid var(--COLOR_UI_PHARMACY);
     background-image: linear-gradient(to right, var(--COLOR_UI_PHARMACY) 50%, #ffffff 50%);
-    
 }
 
 .loaderPill-floor {

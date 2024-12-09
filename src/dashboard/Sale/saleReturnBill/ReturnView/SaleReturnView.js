@@ -111,12 +111,12 @@ const SaleReturnView = () => {
                         <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                             <div>
                                 <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                                    <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                                    <span style={{ color: 'rgba(4, 76, 157, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                                    <span style={{ color: 'rgba(4, 76, 157, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
-                                    <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                    <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                                    <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                                    <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
+                                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                                     {hasPermission(permissions, "sale return bill edit") && (
                                         <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
                                             <Button variant="contained" onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>

@@ -50,11 +50,11 @@ const ReconciliationManage = () => {
                         <div className="p-8  w-full">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-2xl flex items-center darkblue_text font-semibold  p-2  mr-4"  >Manage Reconciliation Audit
-                                    <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2  mr-4"  >Manage Reconciliation Audit
+                                    <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
 
                                         <Switch
-                                            className="darkblue_text"
+                                            className="primary"
                                             {...label}
                                             sx={{
                                                 '& .MuiSwitch-switchBase.Mui-checked': {

@@ -246,16 +246,16 @@ const ReturnList = () => {
             </div> :
                 <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                     <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                        <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
-                        <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                        <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '18px' }}>Return</span>
+                        <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
+                        <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                        <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '18px' }}>Return</span>
                         {hasPermission(permissions, "purchase return bill create") && (
-                            <Button variant="contained" size='small' style={{ background: "rgb(4, 76, 157", fontSize: '12px' }} onClick={goIntoAdd}><AddIcon />New</Button>
+                            <Button variant="contained" size='small' style={{ background: "var(--color1)", fontSize: '12px' }} onClick={goIntoAdd}><AddIcon />New</Button>
                         )}
                         <div className="headerList">
                             <Button
                                 variant="contained"
-                                style={{ background: "rgb(4, 76, 157)" }}
+                                style={{ background: "var(--color1) " }}
                                 onClick={() => { setOpenAddPopUp(true) }}
                             >
                                 Generate PDF
@@ -376,7 +376,7 @@ const ReturnList = () => {
                                                                         <div className="flex justify-center items-center h-auto">
                                                                             <div className="bg-white rounded-lg w-full max-w-3xl">
                                                                                 <div className="flex justify-between items-center">
-                                                                                    <DialogTitle id="alert-dialog-title" className="sky_text" >
+                                                                                    <DialogTitle id="alert-dialog-title" className="secondary" >
                                                                                         CN Bill
                                                                                     </DialogTitle>
                                                                                     <IconButton
@@ -443,7 +443,7 @@ const ReturnList = () => {
                         <div className="flex justify-center mt-4">
                             <button
                                 onClick={handlePrevious}
-                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                                     }`}
                                 disabled={currentPage === 1}
                             >
@@ -467,7 +467,7 @@ const ReturnList = () => {
                             )}
                             <button
                                 onClick={() => handleClick(currentPage)}
-                                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                             >
                                 {currentPage}
                             </button>
@@ -481,7 +481,7 @@ const ReturnList = () => {
                             )}
                             <button
                                 onClick={handleNext}
-                                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
                                     }`}
                                 disabled={filteredList.length === 0}
                             >
@@ -538,7 +538,7 @@ const ReturnList = () => {
                             },
                         }}
                     >
-                        <DialogTitle id="alert-dialog-title" className="sky_text">
+                        <DialogTitle id="alert-dialog-title" className="secondary">
                             Genrate PDF
                         </DialogTitle>
                         <IconButton

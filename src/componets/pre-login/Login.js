@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
@@ -15,32 +15,43 @@ const Login = () => {
     const handleMouseDownPassword = (event) => event.preventDefault();
 
     const handleClickPassword = () => setShowPasswordIcon((show) => !show);
+    
+    
+  
+      const handleLogin = (event) => {
+        if (event.key === 'Enter') {
+          validateAndSubmit();
+        }
+      };
 
-    const handleLogin = () => {
+      const validateAndSubmit  = (event) => {
+  
         const newErrors = {};
 
         if (!mobileNumber) {
-            newErrors.mobileNumber = 'mobile No is required';
-            toast.error('Mobile Number is required');
+          newErrors.mobileNumber = 'Mobile Number is required';
+          toast.error('Mobile Number is required');
         }
         if (!password) {
-            newErrors.password = 'Password is required';
-            toast.error('Password is required');
+          newErrors.password = 'Password is required';
+          toast.error('Password is required');
+        } else if (!/^\d{10}$/.test(mobileNumber)) {
+          newErrors.mobileNumber = 'Mobile Number must be 10 digits';
+          toast.error('Mobile Number must be 10 digits');
         }
-        else if (!/^\d{10}$/.test(mobileNumber)) {
-            newErrors.mobileNumber = 'mobile number must be 10 digits';
-            toast.error('Mobile number must be 10 digits');
-        }
+    
         setErrors(newErrors);
+    
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-            //console.log('add')
-            handleSubmit();
+          handleSubmit();
         }
     };
 
 
     const handleSubmit = async () => {
+        console.log('Form Submitted');
+
         let data = new FormData();
         data.append('mobile_number', mobileNumber)
         data.append('password', password)
@@ -67,6 +78,18 @@ const Login = () => {
             console.error('API error:', error);
         }
     };
+    
+    useEffect(() => {
+        const inputElements = document.querySelectorAll('input');
+        inputElements.forEach((input) => {
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    
+        document.addEventListener('keydown', handleLogin);
+        return () => {
+          document.removeEventListener('keydown', handleLogin);
+        };
+      }, [mobileNumber, password]);
 
     return (
         <>
@@ -103,6 +126,7 @@ const Login = () => {
                             <OutlinedInput
                                 type="number"
                                 value={mobileNumber}
+                           
                                 onChange={(e) => setMobileNumber(e.target.value)}
                                 className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
                                 size="small"
@@ -126,6 +150,7 @@ const Login = () => {
                                     id="outlined-basic"
                                     type={showPasswordIcon ? 'text' : 'password'}
                                     onChange={(e) => setPassword(e.target.value)}
+                            
                                     endAdornment={
                                         <InputAdornment position="end" sx={{ size: "small" }}>
                                             <IconButton
@@ -150,7 +175,9 @@ const Login = () => {
                             </a>
                         </div>
                         <div className="mt-8">
-                            <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" onClick={handleLogin} >
+                            <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" 
+                                    onClick={validateAndSubmit}
+                                    >
                                 Login
                             </Button>
                         </div>

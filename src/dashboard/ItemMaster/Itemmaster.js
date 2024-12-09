@@ -385,10 +385,10 @@ const Itemmaster = () => {
       newErrors.pack = "Enter Pack No.";
       toast.error(newErrors.pack);
     }
-    if (packaging.length == 0) {
-      newErrors.packaging = "Select any Packaging.";
-      toast.error(newErrors.packaging);
-    }
+    // if (packaging.length == 0) {
+    //   newErrors.packaging = "Select any Packaging.";
+    //   toast.error(newErrors.packaging);
+    // }
     // if (!location) {
     //   newErrors.location = 'Location is required.'
     //   toast.error(newErrors.location);
@@ -404,10 +404,10 @@ const Itemmaster = () => {
       newErrors.drugGroup = "Drug Group is required.";
       toast.error(newErrors.drugGroup);
     }
-    if (!selectedCategory) {
-      newErrors.selectedCategory = "Category is required.";
-      toast.error(newErrors.selectedCategory);
-    }
+    // if (!selectedCategory) {
+    //   newErrors.selectedCategory = "Category is required.";
+    //   toast.error(newErrors.selectedCategory);
+    // }
     setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -671,7 +671,7 @@ const Itemmaster = () => {
           <div className="flex justify-between">
             <h1
               style={{
-                color: "rgba(4,76,157)",
+                color: "var(--color1)",
                 alignItems: "center",
                 fontWeight: 700,
                 fontSize: "20px",
@@ -682,15 +682,14 @@ const Itemmaster = () => {
             <Button
               variant="contained"
               style={{
-                background: "gray",
+                background: "var(--color1)",
                 display: "flex",
                 gap: "10px",
                 borderRadius: "0",
               }}
               onClick={openFileUpload}
             >
-              <CloudUploadIcon /> Import
-            </Button>
+              <CloudUploadIcon /> Import</Button>
           </div>
           <div
             className="mainform bg-white rounded-lg"
@@ -701,10 +700,10 @@ const Itemmaster = () => {
                 <label className="label">Item Name</label>
                 <Autocomplete
                   value={value}
-                  inputValue={searchItem.toUpperCase()} 
+                  inputValue={searchItem.toUpperCase()}
                   sx={{ width: 350 }}
                   size="small"
-                  onChange={handleOptionChange} 
+                  onChange={handleOptionChange}
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.iteam_name
@@ -731,28 +730,7 @@ const Itemmaster = () => {
                 {/* {error.item && <span style={{ color: 'red', fontSize: '14px', fontSize: '14px' }}>{error.item}</span>} */}
               </div>
 
-              <div className="fields">
-                <label className="label">Packaging In</label>
-                <Select
-                  labelId="dropdown-label"
-                  id="dropdown"
-                  value={packaging}
-                  sx={{ minWidth: "250px" }}
-                  onChange={handlePackagingChange}
-                  size="small"
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Packaging
-                  </MenuItem>
-                  {packList.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.packging_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
-              </div>
+
 
               {/* <div className="fields">
                 <label className="label">Unit</label>
@@ -801,40 +779,11 @@ const Itemmaster = () => {
                 />
                 {/* {error.pack && <span style={{ color: 'red', fontSize: '14px' }}>{error.pack}</span>} */}
               </div>
-            </div>
-
-            <div className="row border-b-2 border-blue-400 pb-6">
               <div className="fields">
                 <div
                   style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                 >
-                  <label className="label">Category </label>
-                  {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
-                </div>
-                <Box sx={{ minWidth: 350 }}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={categoryList}
-                      size="small"
-                      value={selectedCategory}
-                      sx={{ width: 350 }}
-                      onChange={(e, value) => setSelectedCategory(value)}
-                      getOptionLabel={(option) => option.category_name}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select Category " />
-                      )}
-                    />
-                  </FormControl>
-                </Box>
-              </div>
-
-              <div className="fields">
-                <div
-                  style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                >
-                  <label className="label">DrugGroup </label>
+                  <label className="label">Drug Group </label>
                   <FaPlusCircle
                     className="mt-1.5 cursor-pointer"
                     onClick={() => setOpenDrugGroup(true)}
@@ -856,41 +805,9 @@ const Itemmaster = () => {
                   />
                 </FormControl>
               </div>
-
-              <div className="fields">
-                <label className="label">Location</label>
-                {/* <TextField
-                  id="outlined-number"
-                  label="Location"
-                  style={{ width: '350px' }}
-                  size="small"
-                  value={location.toUpperCase()}
-                  onChange={(e) => { setLocation(e.target.value) }}
-                /> */}
-
-                <Autocomplete
-                  value={locationvalue}
-                  inputValue={location}
-                  sx={{ width: 350 }}
-                  size="small"
-                  onChange={handleLocationOptionChange}
-                  onInputChange={handleLocationInputChange}
-                  getOptionLabel={(option) =>
-                    typeof option === "string" ? option : option
-                  }
-                  options={locationList}
-                  renderOption={(props, option) => (
-                    <ListItem {...props}>
-                      <ListItemText primary={option} />
-                    </ListItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Select Location" />
-                  )}
-                  freeSolo
-                />
-              </div>
             </div>
+
+            <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}></div>
 
             <div className="row ">
               <div className="fields">
@@ -948,7 +865,7 @@ const Itemmaster = () => {
                     )}
                   />
                   {error.selectedSuppliers && (
-                    <span style={{ color: "red", fontSize: "14px" }}>
+                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
                       {error.selectedSuppliers}
                     </span>
                   )}
@@ -977,7 +894,7 @@ const Itemmaster = () => {
               </div>
             </div>
 
-            <div className="row border-b-2 border-blue-400 pb-6">
+            <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}>
               <div className="fields">
                 <label className="label">MRP</label>
                 <TextField
@@ -990,6 +907,39 @@ const Itemmaster = () => {
                   onChange={(e) => {
                     setMRP(e.target.value);
                   }}
+                />
+              </div>
+              <div className="fields">
+                <label className="label">Location</label>
+                {/* <TextField
+                  id="outlined-number"
+                  label="Location"
+                  style={{ width: '350px' }}
+                  size="small"
+                  value={location.toUpperCase()}
+                  onChange={(e) => { setLocation(e.target.value) }}
+                /> */}
+
+                <Autocomplete
+                  value={locationvalue}
+                  inputValue={location}
+                  sx={{ width: 350 }}
+                  size="small"
+                  onChange={handleLocationOptionChange}
+                  onInputChange={handleLocationInputChange}
+                  getOptionLabel={(option) =>
+                    typeof option === "string" ? option : option
+                  }
+                  options={locationList}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText primary={option} />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Location" />
+                  )}
+                  freeSolo
                 />
               </div>
               <div className="fields">
@@ -1079,11 +1029,65 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-            </div>
 
-            <div>
+              
+
+
+            </div>
+            <div className="row"> 
+            <div className="fields">
+                <label className="label">Packaging In</label>
+                <Select
+                  labelId="dropdown-label"
+                  id="dropdown"
+                  value={packaging}
+                  sx={{ minWidth: "250px" }}
+                  onChange={handlePackagingChange}
+                  size="small"
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Packaging
+                  </MenuItem>
+                  {packList.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.packging_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
+              </div>
+
+              <div className="fields">
+                <div
+                  style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                >
+                  <label className="label">Category </label>
+                  {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
+                </div>
+                <Box sx={{ minWidth: 350 }}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={categoryList}
+                      size="small"
+                      value={selectedCategory}
+                      sx={{ width: 350 }}
+                      onChange={(e, value) => setSelectedCategory(value)}
+                      getOptionLabel={(option) => option.category_name}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select Category " />
+                      )}
+                    />
+                  </FormControl>
+                </Box>
+              </div>
+              </div>
+            <div >
+            <div className="row border-b-2 pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
               <div>
-                <h1 className="product" style={{ color: "rgb(4,76,157)" }}>
+                <h1 className="product " style={{ color: "var(--color1)" }}>
                   Product Images
                 </h1>
               </div>
@@ -1104,7 +1108,7 @@ const Itemmaster = () => {
                     />
                     {selectedFrontFile == null ? (
                       <div className="UploadClass">
-                        <img src={tablet} width="40%" height="40%" />
+                        <img src="./tablet.png" width="40%" height="40%" />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1126,14 +1130,14 @@ const Itemmaster = () => {
                       <Button
                         variant="contained"
                         component="span"
-                        style={{ padding: "7px", background: "rgb(4,76,157)" }}
+                        style={{ padding: "7px", background: "var(--color1)" }}
                       >
                         Choose Photo
                       </Button>
                     </label>
                   </div>
                   {error.selectedFrontFile && (
-                    <span style={{ color: "red", fontSize: "14px" }}>
+                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
                       {error.selectedFrontFile}
                     </span>
                   )}
@@ -1154,7 +1158,7 @@ const Itemmaster = () => {
                     />
                     {selectedBackFile == null ? (
                       <div className="UploadClass">
-                        <img src={tablet} width="40%" height="40%" />
+                        <img src="./tablet.png" width="40%" height="40%" />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1176,14 +1180,14 @@ const Itemmaster = () => {
                       <Button
                         variant="contained"
                         component="span"
-                        style={{ padding: "7px", background: "rgb(4,76,157)" }}
+                        style={{ padding: "7px", background: "var(--color1)" }}
                       >
                         Choose Photo
                       </Button>
                     </label>
                   </div>
                   {error.selectedBackFile && (
-                    <span style={{ color: "red", fontSize: "14px" }}>
+                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
                       {error.selectedBackFile}
                     </span>
                   )}
@@ -1205,7 +1209,7 @@ const Itemmaster = () => {
                     />
                     {selectedMRPFile == null ? (
                       <div className="UploadClass">
-                        <img src={tablet} width="40%" height="40%" />
+                        <img src="./tablet.png" width="40%" height="40%" />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1224,19 +1228,20 @@ const Itemmaster = () => {
                       <Button
                         variant="contained"
                         component="span"
-                        style={{ padding: "7px", background: "rgb(4,76,157)" }}
+                        style={{ padding: "7px", background: "var(--color1)" }}
                       >
                         Choose Photo
                       </Button>
                     </label>
                   </div>
                   {error.selectedMRPFile && (
-                    <span style={{ color: "red", fontSize: "14px" }}>
+                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
                       {error.selectedMRPFile}
                     </span>
                   )}
                 </div>
               </div>
+
             </div>
 
             <div className="row">
@@ -1262,11 +1267,11 @@ const Itemmaster = () => {
             <div>
               <Button
                 variant="contained"
-                color="primary"
-                style={{ margin: "10px", background: "rgb(4,76,157)" }}
+                style={{ margin: "10px", background: "var(--color1)" }}
                 onClick={handleSubmit}
               >Submit</Button>
-              <Button variant="contained" color="error" onClick={resetData}>
+
+              <Button variant="contained" style={{ margin: "10px", background: "var(--color6)" }} onClick={resetData}>
                 Cancel
               </Button>
             </div>
@@ -1300,7 +1305,9 @@ const Itemmaster = () => {
             onClick={submitCategory}
             variant="contained"
             disabled={!categoryName}
-            color="primary"
+            style={{ background: "var(--color1)" }}
+
+
           >
             Submit
           </Button>
@@ -1333,7 +1340,8 @@ const Itemmaster = () => {
             variant="contained"
             onClick={submitDrugGroup}
             disabled={!drugGroupName}
-            color="primary"
+            style={{ margin: "10px", background: "var(--color1)" }}
+
           >
             Submit
           </Button>
@@ -1366,7 +1374,8 @@ const Itemmaster = () => {
             onClick={submitCompany}
             variant="contained"
             disabled={!companyName}
-            color="primary"
+            style={{ background: "var(--color1)" }}
+
           >
             Submit
           </Button>
@@ -1374,7 +1383,7 @@ const Itemmaster = () => {
       </Dialog>
       {/*Bulk Item Data Added  */}
       <Dialog open={openFile} className="custom-dialog">
-        <DialogTitle id="alert-dialog-title">Import Item</DialogTitle>
+        <DialogTitle className="primary">Import Item</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleFileClose}
@@ -1389,7 +1398,7 @@ const Itemmaster = () => {
         </IconButton>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <div className="darkblue_text">Item File Upload</div>
+            <div className="primary">Item File Upload</div>
             <div
               style={{ display: "flex", gap: "15px", flexDirection: "column" }}
             >
@@ -1404,7 +1413,7 @@ const Itemmaster = () => {
                 <span className="errorFile">*select only .csv File.</span>
               </div>
               <div>
-                <a onClick={handleDownload} className="downloadFile">
+                <a onClick={handleDownload} className="primary font-bold	">
                   Sample File Download
                 </a>
               </div>
@@ -1414,8 +1423,14 @@ const Itemmaster = () => {
         <DialogActions>
           <Button
             autoFocus
-            variant="contained"
-            color="success"
+            style={{
+              background: "var(--color1)",
+              display: "flex",
+              color: "success",
+              gap: "10px",
+              borderRadius: "0",
+            }}
+            type="success"
             onClick={handleFileUpload}
           >
             Save

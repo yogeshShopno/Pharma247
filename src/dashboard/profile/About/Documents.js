@@ -152,7 +152,7 @@
 //                             <div className="flex justify-between">
 //                                 <div>
 //                                     <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-5" style={{ color: "rgb(4, 76, 157)", marginTop: "25px" }}>Documents
-//                                         <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+//                                         <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
 //                                     </h1>
 //                                 </div>
 //                                 {/* <div>
@@ -163,10 +163,10 @@
 //                                 {/* {document.map((item,index) => */}
 //                                 <div className="flex flex-wrap w-9/12 justify-between flex-row items-center mb-5">
 //                                     <div>
-//                                         <span className="darkblue_text font-semibold ">Drug License</span>
+//                                         <span className="primary font-semibold ">Drug License</span>
 //                                     </div>
 //                                     <div>
-//                                         <span className="darkblue_text flex">License Number</span>
+//                                         <span className="primary flex">License Number</span>
 //                                         <TextField
 //                                             required
 //                                             id="outlined-number"
@@ -179,7 +179,7 @@
 //                                         {/* <span className="font-semibold">{document[0]?.license_no ? document[0]?.license_no : '-'}</span> */}
 //                                     </div>
 //                                     <div>
-//                                         <span className="darkblue_text flex">License Expiry Date</span>
+//                                         <span className="primary flex">License Expiry Date</span>
 //                                         <DatePicker
 //                                             className="custom-datepicker w-full"
 //                                             //   selected={startDate}
@@ -200,10 +200,10 @@
 //                                 {/* )} */}
 //                                 <div className="flex flex-wrap w-9/12 justify-between items-center mb-5">
 //                                     <div>
-//                                         <span className="darkblue_text font-semibold">Food License</span>
+//                                         <span className="primary font-semibold">Food License</span>
 //                                     </div>
 //                                     <div>
-//                                         <span className="darkblue_text flex">License Number</span>
+//                                         <span className="primary flex">License Number</span>
 //                                         <TextField
 //                                             required
 //                                             id="outlined-number"
@@ -216,7 +216,7 @@
 //                                         {/* <span className="font-semibold">{document[1]?.license_no ? document[1]?.license_no : '-'}</span> */}
 //                                     </div>
 //                                     <div>
-//                                         <span className="darkblue_text flex">License Expiry Date</span>
+//                                         <span className="primary flex">License Expiry Date</span>
 //                                         <DatePicker
 //                                             className="custom-datepicker w-full"
 //                                             //   selected={startDate}
@@ -234,10 +234,10 @@
 //                                 </div>
 //                                 <div className="flex flex-wrap w-9/12 justify-between items-center mb-5">
 //                                     <div>
-//                                         <span className="darkblue_text font-semibold ">GSTN</span>
+//                                         <span className="primary font-semibold ">GSTN</span>
 //                                     </div>
 //                                     <div className="pl-12">
-//                                         <span className="darkblue_text flex ">License Number</span>
+//                                         <span className="primary flex ">License Number</span>
 //                                         <TextField
 //                                             required
 //                                             id="outlined-number"
@@ -250,7 +250,7 @@
 //                                         {/* <span className="font-semibold">{document[2]?.license_no ? document[2]?.license_no : '-'}</span> */}
 //                                     </div>
 //                                     <div>
-//                                         <span className="darkblue_text flex">License Expiry Date</span>
+//                                         <span className="primary flex">License Expiry Date</span>
 //                                         <DatePicker
 //                                             className="custom-datepicker w-full"
 //                                             //   selected={startDate}
@@ -273,7 +273,7 @@
 //                         </div>
 //                     </Box>
 //                     <Dialog open={openAddPopUp}  >
-//                         <DialogTitle id="alert-dialog-title" className="sky_text">
+//                         <DialogTitle id="alert-dialog-title" className="secondary">
 //                             {header}
 //                         </DialogTitle>
 //                         <IconButton
@@ -287,7 +287,7 @@
 //                             <DialogContentText id="alert-dialog-description">
 //                                 <div className="w-full flex gap-8 p-2">
 //                                     <div className="w-1/2 " >
-//                                         <span className="flex darkblue_text mb-2 font-medium">License Name</span>
+//                                         <span className="flex primary mb-2 font-medium">License Name</span>
 //                                         <FormControl sx={{ minWidth: 250 }} size="small">
 //                                             <InputLabel id="demo-select-small-label">License Name</InputLabel>
 //                                             <Select
@@ -309,7 +309,7 @@
 
 //                                         </FormControl>
 //                                         <div className="mt-6" >
-//                                             <span className="flex darkblue_text mb-2 font-medium">
+//                                             <span className="flex primary mb-2 font-medium">
 //                                                 License Expiry Date
 //                                             </span>
 //                                             <div className="detail">
@@ -324,7 +324,7 @@
 //                                             </div>
 //                                         </div>
 //                                         <div className="my-4">
-//                                             <span className="darkblue_text font-medium">Upload Image</span>
+//                                             <span className="primary font-medium">Upload Image</span>
 //                                         </div>
 //                                         {/* <div class="flex items-center justify-center w-44">
 //                                             <label for="upload-photo-file" class="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
@@ -370,7 +370,7 @@
 //                                     </div>
 //                                     <div className="w-1/2">
 //                                         <div >
-//                                             <span className="flex darkblue_text mb-2 font-medium">License No</span>
+//                                             <span className="flex primary mb-2 font-medium">License No</span>
 //                                             <TextField id="standard-basic"
 //                                                 size="small"
 //                                                 // sx={{ width: 200 }}
@@ -562,7 +562,7 @@ const Documents = () => {
                             <div className="flex justify-between">
                                 <div>
                                     <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-6" style={{ color: "rgb(4, 76, 157)", marginTop: "25px" }}>Documents
-                                        <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                        <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                     </h1>
                                 </div>
 
@@ -571,12 +571,12 @@ const Documents = () => {
                             <div className="flex flex-wrap justify-around">
                                 <div className="w-2/5 flex-col justify-evenly align-center">
                                     <div>
-                                        <span className="darkblue_text text-lg font-bold">Drug License No.20</span>
+                                        <span className="primary text-lg font-bold">Drug License No.20</span>
                                     </div>
                                     <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
                                         <span>
                                             <div className="mb-4">
-                                                <span className="darkblue_text flex">License Number</span>
+                                                <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number"
@@ -588,7 +588,7 @@ const Documents = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <span className="darkblue_text flex">License Expiry Date</span>
+                                                <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
                                                     selected={licenseExpiryDate}
@@ -621,12 +621,12 @@ const Documents = () => {
                                 </div>
                                 <div className="w-2/5 flex-col justify-evenly align-center">
                                     <div>
-                                        <span className="darkblue_text text-lg font-bold">Drug License No.21</span>
+                                        <span className="primary text-lg font-bold">Drug License No.21</span>
                                     </div>
                                     <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
                                         <span>
                                             <div className="mb-4">
-                                                <span className="darkblue_text flex">License Number</span>
+                                                <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-two"
@@ -638,7 +638,7 @@ const Documents = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <span className="darkblue_text flex">License Expiry Date</span>
+                                                <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
                                                     selected={licenseExpiryDateTwo}
@@ -674,12 +674,12 @@ const Documents = () => {
                             <div className="flex justify-around flex-wrap">
                                 <div className="w-2/5 flex-col justify-evenly align-center">
                                     <div>
-                                        <span className="darkblue_text text-lg font-bold">FSSAI No. (Optional)</span>
+                                        <span className="primary text-lg font-bold">FSSAI No. (Optional)</span>
                                     </div>
                                     <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
                                         <span>
                                             <div className="mb-4">
-                                                <span className="darkblue_text flex">License Number</span>
+                                                <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-three"
@@ -691,7 +691,7 @@ const Documents = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <span className="darkblue_text flex">License Expiry Date</span>
+                                                <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
                                                     selected={licenseExpiryDateThree}
@@ -724,12 +724,12 @@ const Documents = () => {
                                 </div>
                                 <div className="w-2/5 flex-col justify-evenly align-center">
                                     <div>
-                                        <span className="darkblue_text text-lg font-bold">GSTN (Optional)</span>
+                                        <span className="primary text-lg font-bold">GSTN (Optional)</span>
                                     </div>
                                     <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
                                         <span>
                                             <div className="mb-4">
-                                                <span className="darkblue_text flex">License Number</span>
+                                                <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-four"
@@ -741,7 +741,7 @@ const Documents = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <span className="darkblue_text flex">License Expiry Date</span>
+                                                <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
                                                     selected={licenseExpiryDateFour}

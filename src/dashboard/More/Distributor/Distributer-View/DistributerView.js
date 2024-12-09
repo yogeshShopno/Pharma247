@@ -72,11 +72,11 @@ const DistributerView = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/more/DistributorList') }} className="cursor-pointer" >Distributor</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/more/DistributorList') }} className="cursor-pointer" >Distributor</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View </span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
                         </div>
                     </div>
                     <div>
@@ -140,7 +140,7 @@ const DistributerView = () => {
                                                 <td key={column.id} className={`text-lg ${column.id === 'due_amount' ? 'text-red-500' : 'text-dark'}`} >
                                                     {/* {item[column.id]} */}
                                                     {column.id === 'bill_no' ? (
-                                                        <a href={`/purchase/view/${item.purches_id}`} target='_blank' className="text-blue-500">
+                                                        <a href={`/purchase/view/${item.purches_id}`} target='_blank' className="primary">
                                                             {item[column.id]}
                                                         </a>
                                                     ) : (

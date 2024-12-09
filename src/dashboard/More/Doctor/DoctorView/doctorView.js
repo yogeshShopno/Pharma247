@@ -97,14 +97,14 @@ const DoctorView = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div >
                         <div className='py-3' style={{ display: 'flex', gap: '5px', alignItems: "center" }} >
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => { history.push('/more/doctors') })} >Doctors</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', color: "rgba(4, 76, 157, 1)" }} />
+                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => { history.push('/more/doctors') })} >Doctors</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                             <div className='flex'>
-                                <div className='w-8 h-8 rounded-full flex items-center justify-center bg_sky'>
+                                <div className='w-8 h-8 rounded-full flex items-center justify-center secondary-bg'>
                                     <FaUser className='text-white w-4 h-4' />
                                 </div>
                             </div>
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '18px', minWidth: '200px' }}> {doctorDetails.name}</span>
+                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '18px', minWidth: '200px' }}> {doctorDetails.name}</span>
 
                         </div>
                     </div>
@@ -148,7 +148,7 @@ const DoctorView = () => {
                             {tabValue === 0 && (
                                 <div>
                                     <div className="mx-4 my-2 ">
-                                        <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0} </span></Typography>
+                                        <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0} </span></Typography>
                                     </div>
                                     <div className="overflow-x-auto">
                                         <table className="w-full border-collapse custom-table">
@@ -190,7 +190,7 @@ const DoctorView = () => {
                             {tabValue === 1 && (
                                 <div>
                                     <div className="mx-4 my-2 ">
-                                        <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales_return?.length > 0 ? doctorDetails?.sales_return[0]?.total_amount : 0} </span></Typography>
+                                        <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales_return?.length > 0 ? doctorDetails?.sales_return[0]?.total_amount : 0} </span></Typography>
                                     </div>
                                     <div className="overflow-x-auto">
                                         <table className="w-full border-collapse custom-table">

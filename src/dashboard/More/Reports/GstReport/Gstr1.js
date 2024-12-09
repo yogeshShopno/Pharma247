@@ -160,13 +160,13 @@ const Gstr1 = () => {
                     <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-1 Report
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-1 Report
 
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
+                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                         </div>
                         <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
@@ -180,7 +180,7 @@ const Gstr1 = () => {
                             <div style={{ marginTop: "100px", height: "400px" }}>
                                 <div className="flex flex-col gap-2">
 
-                                    <span className="flex  sky_text text-lg">Choose Date</span>
+                                    <span className="flex  secondary text-lg">Choose Date</span>
 
                                     <DatePicker
                                         className='custom-datepicker '
@@ -192,7 +192,7 @@ const Gstr1 = () => {
 
                                     />
 
-                                    <span className="flex mt-5 sky_text text-lg" >Report Type </span>
+                                    <span className="flex mt-5 secondary text-lg" >Report Type </span>
                                     <Select
                                         labelId="dropdown-label"
                                         id="dropdown"

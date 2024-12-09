@@ -371,22 +371,27 @@ const DistributerList = () => {
                     <div>
                         <div style={{ display: 'flex', gap: '4px', marginBottom: "13px" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }} className="mt-2">
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '150px' }} >Distributor List</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow align-center" />
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '150px' }} >Distributor List</span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
                             </div>
                             <div className="headerList mt-2">
                                 {hasPermission(permissions, "distributor import") &&
                                     <div >
-                                        <Button variant="contained" style={{ background: 'gray', display: 'flex', gap: '10px' }} onClick={openFilePopUP} ><CloudUploadIcon /> Import</Button>
+                                        <Button variant="contained" style={{ background: 'var(--color1)', display: 'flex', gap: '10px' }} onClick={openFilePopUP} ><CloudUploadIcon /> Import</Button>
                                     </div>}
                                 {hasPermission(permissions, "distributor create") &&
                                     <div>
-                                        <Button variant="contained" color="primary" onClick={() => { history.push('/more/addDistributer') }}> <AddIcon className="mr-2" />Add Distributor</Button>
+                                        <Button variant="contained" style={{ background: 'var(--color1)' }}  onClick={() => { history.push('/more/addDistributer') }}> <AddIcon className="mr-2" />Add Distributor</Button>
                                     </div>}
                                 {hasPermission(permissions, "distributor download") &&
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }}
+                                    <Button variant="contained" style={{ background: 'var(--color1)',  color: 'white', textTransform: 'none', paddingLeft: "35px" }}
                                         onClick={exportToExcel}
-                                    > <img src={excelIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>}
+
+                                    >    <img src="/csv-file.png"
+                  className="report-icon absolute mr-10"
+                  alt="csv Icon"
+                />
+                Download</Button>}
                             </div>
 
                         </div>
@@ -442,9 +447,9 @@ const DistributerList = () => {
                                                     );
                                                 })}
                                                 <td className="d-flex gap-2">
-                                                    <VisibilityIcon style={{ color: "#1976d2" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
+                                                    <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
                                                     {hasPermission(permissions, "distributor edit") && (
-                                                        <BorderColorIcon color="primary" onClick={() => handleEditOpen(row)} />)}
+                                                        <BorderColorIcon style={{ color: "var(--color1)" }}  onClick={() => handleEditOpen(row)} />)}
                                                 </td>
                                             </tr>
                                         );
@@ -452,7 +457,7 @@ const DistributerList = () => {
                             </tbody>
                         </table>
                         <div className='mt-4 space-x-1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`} disabled={currentPage === 1} >Previous </button>
+                            <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`} disabled={currentPage === 1} >Previous </button>
                             {currentPage > 2 && (
                                 <button
                                     onClick={() => handleClick(currentPage - 2)}
@@ -471,7 +476,7 @@ const DistributerList = () => {
                             )}
                             <button
                                 onClick={() => handleClick(currentPage)}
-                                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                             >
                                 {currentPage}
                             </button>
@@ -483,7 +488,7 @@ const DistributerList = () => {
                                     {currentPage + 1}
                                 </button>
                             )}
-                            <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`}
+                            <button onClick={handleNext}  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' :   ' text-white'}`}
                                 disabled={filteredList.length === 0}>
                                 Next </button>
                         </div>
@@ -511,7 +516,7 @@ const DistributerList = () => {
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-1">
-                                                        <span className="label darkblue_text">GST/IN Number</span>
+                                                        <span className="label primary">GST/IN Number</span>
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
@@ -526,7 +531,7 @@ const DistributerList = () => {
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-1">
-                                                        <span className="label darkblue_text">Distributor Name</span>
+                                                        <span className="label primary">Distributor Name</span>
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
@@ -542,7 +547,7 @@ const DistributerList = () => {
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Email ID</span>
+                                                    <span className="label primary">Email ID</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -554,7 +559,7 @@ const DistributerList = () => {
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-1">
-                                                        <span className="label darkblue_text">Mobile No</span>
+                                                        <span className="label primary">Mobile No</span>
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <OutlinedInput
@@ -570,7 +575,7 @@ const DistributerList = () => {
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Whatsapp No.</span>
+                                                    <span className="label primary">Whatsapp No.</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -581,7 +586,7 @@ const DistributerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text"> Address</span>
+                                                    <span className="label primary"> Address</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -594,7 +599,7 @@ const DistributerList = () => {
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Area</span>
+                                                    <span className="label primary">Area</span>
                                                     <TextField
                                                         value={area}
                                                         onChange={(e) => setArea(e.target.value)}
@@ -603,7 +608,7 @@ const DistributerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Pincode</span>
+                                                    <span className="label primary">Pincode</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -617,7 +622,7 @@ const DistributerList = () => {
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">State</span>
+                                                    <span className="label primary">State</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -630,7 +635,7 @@ const DistributerList = () => {
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">  Distributor Drug License No.</span>
+                                                    <span className="label primary">  Distributor Drug License No.</span>
                                                     <OutlinedInput
                                                         type="text"
                                                         value={distributorDrugLicenseNo}
@@ -641,7 +646,7 @@ const DistributerList = () => {
                                                 </div>
 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Food Licence No.</span>
+                                                    <span className="label primary">Food Licence No.</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -657,7 +662,7 @@ const DistributerList = () => {
                                             <div className="flex flex-col md:flex-row gap-5">
 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Credit Due Days</span>
+                                                    <span className="label primary">Credit Due Days</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -669,7 +674,7 @@ const DistributerList = () => {
                                                 </div>
 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Bank Name</span>
+                                                    <span className="label primary">Bank Name</span>
                                                     <TextField
                                                         value={bankName}
                                                         onChange={(e) => setBankName(e.target.value)}
@@ -682,7 +687,7 @@ const DistributerList = () => {
                                             <div className="flex flex-col md:flex-row gap-5">
 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Account No.</span>
+                                                    <span className="label primary">Account No.</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -693,7 +698,7 @@ const DistributerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">IFSC Code</span>
+                                                    <span className="label primary">IFSC Code</span>
                                                     <TextField
                                                         value={ifscCode}
                                                         onChange={(e) => setIfscCode(e.target.value)}
@@ -720,7 +725,7 @@ const DistributerList = () => {
                     </Dialog>
 
                     <Dialog open={openUpload} className="custom-dialog">
-                        <DialogTitle id="alert-dialog-title " className="sky_text">
+                        <DialogTitle id="alert-dialog-title " className="secondary">
                             Import Distributor
                         </DialogTitle>
                         <div className="px-6 ">
@@ -739,7 +744,7 @@ const DistributerList = () => {
                         <DialogContent>
 
                             <DialogContentText id="alert-dialog-description">
-                                <div className="darkblue_text">Item File Upload</div>
+                                <div className="primary">Item File Upload</div>
                                 <div style={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
                                     <div>
 
@@ -773,7 +778,7 @@ const DistributerList = () => {
                             },
                         }}
                     >
-                        <DialogTitle id="alert-dialog-title" className="sky_text">
+                        <DialogTitle id="alert-dialog-title" className="secondary">
                             {header}
                         </DialogTitle>
                         <IconButton
@@ -789,7 +794,7 @@ const DistributerList = () => {
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <div className="mb-1" >
-                                                <span className="label darkblue_text mb-4" >Distributor GST/IN Number</span>
+                                                <span className="label primary mb-4" >Distributor GST/IN Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -804,7 +809,7 @@ const DistributerList = () => {
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <div className="mb-1" >
-                                                <span className="label darkblue_text" >Distributor Name</span>
+                                                <span className="label primary" >Distributor Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -820,7 +825,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Email ID</span>
+                                            <span className="label primary">Email ID</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -832,7 +837,7 @@ const DistributerList = () => {
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
                                             <div className="mb-1" >
-                                                <span className="label darkblue_text" >Mobile No</span>
+                                                <span className="label primary" >Mobile No</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <OutlinedInput
@@ -848,7 +853,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Whatsapp No.</span>
+                                            <span className="label primary">Whatsapp No.</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -859,7 +864,7 @@ const DistributerList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text"> Address</span>
+                                            <span className="label primary"> Address</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -872,7 +877,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Area
+                                            <span className="label primary">Area
                                             </span>
                                             <TextField
                                                 value={area}
@@ -882,7 +887,7 @@ const DistributerList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Pincode</span>
+                                            <span className="label primary">Pincode</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -895,7 +900,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">
+                                            <span className="label primary">
                                                 Bank Name</span>
                                             <TextField
                                                 value={bankName}
@@ -905,7 +910,7 @@ const DistributerList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Account No.</span>
+                                            <span className="label primary">Account No.</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -918,7 +923,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">
+                                            <span className="label primary">
                                                 IFSC Code</span>
                                             <TextField
                                                 value={ifscCode}
@@ -928,7 +933,7 @@ const DistributerList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Food Licence No.</span>
+                                            <span className="label primary">Food Licence No.</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"
@@ -941,7 +946,7 @@ const DistributerList = () => {
                                     </div>
                                     <div className="flex gap-5">
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">
+                                            <span className="label primary">
                                                 Distributor Drug License No.</span>
                                             <OutlinedInput
                                                 type="number"
@@ -952,7 +957,7 @@ const DistributerList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span className="label darkblue_text">Credit Due Days</span>
+                                            <span className="label primary">Credit Due Days</span>
                                             <TextField
                                                 id="outlined-multiline-static"
                                                 size="small"

@@ -132,7 +132,7 @@ const AboutInfo = () => {
                   style={{ color: "rgb(4, 76, 157)" }}
                 >
                   About Pharmacy
-                  <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                  <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                 </h1>
               </div>
               <Box className="aboutPharmacy">

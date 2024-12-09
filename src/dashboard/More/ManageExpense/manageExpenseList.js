@@ -334,7 +334,7 @@ const ManageExpense = () => {
                                 <div style={{ display: 'flex', gap: '7px', marginBottom: "10px", alignItems: 'center' }}>
                                     <span style={{ color: 'rgb(4, 76, 157)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '165px' }} >Manage Expense
                                     </span>
-                                    <BsLightbulbFill className="w-6 h-6 sky_text hover-yellow" />
+                                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList" style={{ marginBottom: "10px" }}>
                                     <Button variant="contained" color="primary" style={{ textTransform: 'none' }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
@@ -480,7 +480,7 @@ const ManageExpense = () => {
                             },
                         }}
                         >
-                            <DialogTitle id="alert-dialog-title" className="sky_text">
+                            <DialogTitle id="alert-dialog-title" className="secondary">
                                 Add Expense
                             </DialogTitle>
                             <IconButton
@@ -694,7 +694,7 @@ const ManageExpense = () => {
                         </Dialog> */}
 
                         <Dialog open={openAddPopUp}>
-                            <DialogTitle id="alert-dialog-title" className="sky_text">
+                            <DialogTitle id="alert-dialog-title" className="secondary">
                                 Add Expense
                             </DialogTitle>
                             <IconButton

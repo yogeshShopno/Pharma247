@@ -843,10 +843,10 @@ console.log(initialTotalStock,"initialTotalStock")
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '500px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
+                                <span style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: '#044c9d', fontWeight: 600, fontSize: '18px' }}>Edit </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 {/* <Select

@@ -53,7 +53,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { toast, ToastContainer } from "react-toastify";
 import { format, subDays } from "date-fns";
 const InventoryList = () => {
-  const csvIcon = process.env.PUBLIC_URL + "/csv.png";
+  const csvIcon = process.env.PUBLIC_URL + "/csv-file.png";
   const [searchItem, setSearchItem] = useState("");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -473,7 +473,7 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
-console.log(newValue,"newValue")
+    console.log(newValue, "newValue")
     setSelectedCompany(newValue?.company_name)
   };
 
@@ -788,15 +788,15 @@ console.log(newValue,"newValue")
             <Box>
               <h1
                 className="text-2xl flex items-center justify-start p-2"
-                style={{ color: "rgb(4, 76, 157)" }}
+                style={{ color: "var(--color1)" }}
               >
                 Inventory
-                <BsLightbulbFill className="ml-4 sky_text" />
+                <BsLightbulbFill className="ml-4 var(--color1)" />
               </h1>
             </Box>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }} sx={{ my: 0 }}>
+                <Typography style={{ color: "var(--color1)" }} sx={{ my: 0 }}>
                   Items
                 </Typography>
               </AccordionSummary>
@@ -842,7 +842,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Category</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Category</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -868,7 +868,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>
+                <Typography style={{ color: "var(--color1)" }}>
                   Packging Type
                 </Typography>
               </AccordionSummary>
@@ -896,7 +896,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Expiry</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Expiry</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -957,7 +957,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Stock</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Stock</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -996,7 +996,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Company</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Company</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1030,7 +1030,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Drug Group</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Drug Group</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1064,7 +1064,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>GST</Typography>
+                <Typography style={{ color: "var(--color1)" }}>GST</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1090,7 +1090,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Location</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Location</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1125,7 +1125,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>HSN Code</Typography>
+                <Typography style={{ color: "var(--color1)" }}>HSN Code</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1144,7 +1144,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>Margin%</Typography>
+                <Typography style={{ color: "var(--color1)" }}>Margin%</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1176,7 +1176,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>MRP</Typography>
+                <Typography style={{ color: "var(--color1)" }}>MRP</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1208,7 +1208,7 @@ console.log(newValue,"newValue")
             </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "#044c9d" }}>PTR</Typography>
+                <Typography style={{ color: "var(--color1)" }}>PTR</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <ListItem disablePadding>
@@ -1240,11 +1240,11 @@ console.log(newValue,"newValue")
             </Accordion>
             <Divider />
           </Box>
-          <Box className="flex justify-around">
+          <Box className="flex justify-around mt-8">
             <Button
               variant="contained"
               style={{
-                background: "#1E90FF",
+                background: "var(--color6)",
                 outline: "none",
                 boxShadow: "none",
               }}
@@ -1256,7 +1256,8 @@ console.log(newValue,"newValue")
             <Button
               variant="contained"
               style={{
-                backgroundColor: "#044c9d",
+                background: "var(--color1)",
+
                 color: "white",
                 size: "large",
               }}
@@ -1266,7 +1267,7 @@ console.log(newValue,"newValue")
             </Button>
           </Box>
         </Box>
-        <Box className="p-5 " sx={{ width: "100%"  }}>
+        <Box className="p-5 " sx={{ width: "100%" }}>
           <div className="flex flex-wrap  justify-between mb-4 relative">
             <TextField
               id="outlined-basic"
@@ -1280,7 +1281,7 @@ console.log(newValue,"newValue")
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                     <SearchIcon />
+                    <SearchIcon />
                   </InputAdornment>
                 ),
                 type: "search",
@@ -1292,7 +1293,7 @@ console.log(newValue,"newValue")
                 variant="contained"
                 className="mt-4 absolute"
                 style={{
-                  backgroundColor: "#044c9d",
+                  backgroundColor: "var(--color1)",
                   color: "white",
                   textTransform: "none",
                   size: "small",
@@ -1304,20 +1305,19 @@ console.log(newValue,"newValue")
               <Button
                 variant="contained"
                 style={{
-                  background: "rgb(12 246 75 / 16%)",
-                  fontWeight: 900,
-                  color: "black",
+                  background: "var(--color1)",
+                  color: "white",
                   textTransform: "none",
                   paddingLeft: "35px",
                 }}
                 onClick={handleFilterData}
               >
 
-                <img
-                  src={csvIcon}
+<img src="/csv-file.png"
                   className="report-icon absolute mr-10"
                   alt="csv Icon"
                 />
+
                 Download
               </Button>
 
@@ -1325,7 +1325,7 @@ console.log(newValue,"newValue")
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
-                style={{ textTransform: "none" }}
+                style={{ background: "var(--color1)", textTransform: "none" }}
                 variant="contained"
               >
                 More <KeyboardArrowDownIcon />
@@ -1344,7 +1344,7 @@ console.log(newValue,"newValue")
             </div>
           </div>
           {data.length > 0 ? (
-            <TableContainer component={Paper} style={{ width: "100%",paddingInline:"25px",paddingBlock:"15px" }}>
+            <TableContainer component={Paper} style={{ width: "100%", paddingInline: "25px", paddingBlock: "15px" }}>
               <table className="custom-table custom-table-invantory  cusror-pointer">
                 <thead >
                   <tr>
@@ -1412,7 +1412,7 @@ console.log(newValue,"newValue")
                         onClick={() => sortByColumn("barcode")}
                       />
                     </th>
-                   
+
 
                     {/* <th onClick={() => sortByColumn("totalptr")}>Total PTR <SwapVertIcon /></th> */}
                   </tr>
@@ -1442,7 +1442,7 @@ console.log(newValue,"newValue")
                         <div className="itemContainer flex items-center">
                           <div className="image-container flex mr-5">
                             <img
-                              src={item.front_photo ? item.front_photo : tablet}
+                              src={item.front_photo ? item.front_photo : "./tablet.png"}
                               alt={item.front_photo ? "Pharma" : "Tablet"}
                               className="w-10 h-10 ml-2 object-cover cursor-pointer"
                             />
@@ -1482,13 +1482,21 @@ console.log(newValue,"newValue")
                         // onClick={() => {
                         //   history.push(`/inventoryView/${item.id}`);
                         // }}
-                         
                         >
-                        <AssignmentIcon className="mr-5" onClick={(e) => {
-                            e.stopPropagation();
-                            handelAddOpen(item);
-                          }} />
-                        {item.stock == "null" ? "-" : item.stock}
+                          <span>
+                          <img
+                            src="./approve.png"
+                            className="report-icon inline "
+                            alt="csv Icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handelAddOpen(item);
+                            }}
+                          />
+
+                          {item.stock == "null" ? "-" : item.stock}
+                          </span>
+                         
                         </td>
                       </Tooltip>
                       {/* <td
@@ -1519,7 +1527,7 @@ console.log(newValue,"newValue")
                       >
                         {item.barcode == "null" ? "-" : item.barcode}
                       </td>
-                      
+
                     </tr>
                   ))}
                 </tbody>
@@ -1549,7 +1557,7 @@ console.log(newValue,"newValue")
         </Box>
       </Box>
       <Dialog open={openAddPopUp}>
-        <DialogTitle id="alert-dialog-title" className="sky_text">
+        <DialogTitle id="alert-dialog-title" className="primary">
           Stock Adjustment
         </DialogTitle>
         <IconButton
@@ -1572,7 +1580,7 @@ console.log(newValue,"newValue")
             >
               <div className="flex gap-4">
                 <div>
-                  <span className="title mb-2">Adjustment Date</span>
+                  <span className="title primary mb-2">Adjustment Date</span>
                   <DatePicker
                     className="custom-datepicker "
                     selected={adjustmentDate}
@@ -1740,8 +1748,13 @@ console.log(newValue,"newValue")
               autoFocus
               variant="contained"
               className="p-5"
-              color="success"
               onClick={validateForm}
+              style={{
+                color:"white",
+                background: "#3f6212",
+                outline: "none",
+                boxShadow: "none",
+              }}
             >
               Save
             </Button>
@@ -1750,6 +1763,12 @@ console.log(newValue,"newValue")
               variant="contained"
               onClick={resetAddDialog}
               color="error"
+              style={{
+                color:"white",
+                background: "#F31C1C",
+                outline: "none",
+                boxShadow: "none",
+              }}
             >
               Cancel
             </Button>
@@ -1759,7 +1778,7 @@ console.log(newValue,"newValue")
 
       {/* Bulk Edit */}
       <Dialog open={openEdit}>
-        <DialogTitle id="alert-dialog-title" className="sky_text">
+        <DialogTitle id="alert-dialog-title" className="primary">
           Bulk Edit
         </DialogTitle>
         <IconButton
@@ -1829,7 +1848,7 @@ console.log(newValue,"newValue")
               color="success"
               onClick={validateBulkForm}
             >
-              Save
+              Saved
             </Button>
             <Button
               autoFocus
@@ -1857,12 +1876,16 @@ console.log(newValue,"newValue")
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus variant="contained" onClick={validateBulkOrder}>
+          <Button className="primary-bg"
+            color="success"
+          
+          autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes
           </Button>
           <Button
             autoFocus
             variant="outlined"
+            color="error"
             onClick={() => setBulkOrder(false)}
           >
             No
@@ -1872,7 +1895,7 @@ console.log(newValue,"newValue")
 
       {/* Bulk Print QR */}
       {/* <Dialog open={openEdit} >
-                <DialogTitle id="alert-dialog-title" className="sky_text">
+                <DialogTitle id="alert-dialog-title" className="secondary">
                     Bulk Edit
                 </DialogTitle>
                 <IconButton

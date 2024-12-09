@@ -619,7 +619,7 @@ const AddPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!batch) newErrors.batch = "Batch is required";
+    // if (!batch) newErrors.batch = "Batch is required";
     if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -1508,7 +1508,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={batch}
                               sx={{ width: "90px" }}
-                              error={!!errors.batch}
+                              // error={!!errors.batch}
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}

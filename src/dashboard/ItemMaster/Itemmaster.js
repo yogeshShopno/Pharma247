@@ -385,10 +385,10 @@ const Itemmaster = () => {
       newErrors.pack = "Enter Pack No.";
       toast.error(newErrors.pack);
     }
-    if (packaging.length == 0) {
-      newErrors.packaging = "Select any Packaging.";
-      toast.error(newErrors.packaging);
-    }
+    // if (packaging.length == 0) {
+    //   newErrors.packaging = "Select any Packaging.";
+    //   toast.error(newErrors.packaging);
+    // }
     // if (!location) {
     //   newErrors.location = 'Location is required.'
     //   toast.error(newErrors.location);
@@ -404,10 +404,10 @@ const Itemmaster = () => {
       newErrors.drugGroup = "Drug Group is required.";
       toast.error(newErrors.drugGroup);
     }
-    if (!selectedCategory) {
-      newErrors.selectedCategory = "Category is required.";
-      toast.error(newErrors.selectedCategory);
-    }
+    // if (!selectedCategory) {
+    //   newErrors.selectedCategory = "Category is required.";
+    //   toast.error(newErrors.selectedCategory);
+    // }
     setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -700,10 +700,10 @@ const Itemmaster = () => {
                 <label className="label">Item Name</label>
                 <Autocomplete
                   value={value}
-                  inputValue={searchItem.toUpperCase()} 
+                  inputValue={searchItem.toUpperCase()}
                   sx={{ width: 350 }}
                   size="small"
-                  onChange={handleOptionChange} 
+                  onChange={handleOptionChange}
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.iteam_name
@@ -730,28 +730,7 @@ const Itemmaster = () => {
                 {/* {error.item && <span style={{ color: 'red', fontSize: '14px', fontSize: '14px' }}>{error.item}</span>} */}
               </div>
 
-              <div className="fields">
-                <label className="label">Packaging In</label>
-                <Select
-                  labelId="dropdown-label"
-                  id="dropdown"
-                  value={packaging}
-                  sx={{ minWidth: "250px" }}
-                  onChange={handlePackagingChange}
-                  size="small"
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Packaging
-                  </MenuItem>
-                  {packList.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.packging_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
-              </div>
+
 
               {/* <div className="fields">
                 <label className="label">Unit</label>
@@ -800,40 +779,11 @@ const Itemmaster = () => {
                 />
                 {/* {error.pack && <span style={{ color: 'red', fontSize: '14px' }}>{error.pack}</span>} */}
               </div>
-            </div>
-
-<div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}>
               <div className="fields">
                 <div
                   style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                 >
-                  <label className="label">Category </label>
-                  {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
-                </div>
-                <Box sx={{ minWidth: 350 }}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={categoryList}
-                      size="small"
-                      value={selectedCategory}
-                      sx={{ width: 350 }}
-                      onChange={(e, value) => setSelectedCategory(value)}
-                      getOptionLabel={(option) => option.category_name}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select Category " />
-                      )}
-                    />
-                  </FormControl>
-                </Box>
-              </div>
-
-              <div className="fields">
-                <div
-                  style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                >
-                  <label className="label">DrugGroup </label>
+                  <label className="label">Drug Group </label>
                   <FaPlusCircle
                     className="mt-1.5 cursor-pointer"
                     onClick={() => setOpenDrugGroup(true)}
@@ -855,41 +805,9 @@ const Itemmaster = () => {
                   />
                 </FormControl>
               </div>
-
-              <div className="fields">
-                <label className="label">Location</label>
-                {/* <TextField
-                  id="outlined-number"
-                  label="Location"
-                  style={{ width: '350px' }}
-                  size="small"
-                  value={location.toUpperCase()}
-                  onChange={(e) => { setLocation(e.target.value) }}
-                /> */}
-
-                <Autocomplete
-                  value={locationvalue}
-                  inputValue={location}
-                  sx={{ width: 350 }}
-                  size="small"
-                  onChange={handleLocationOptionChange}
-                  onInputChange={handleLocationInputChange}
-                  getOptionLabel={(option) =>
-                    typeof option === "string" ? option : option
-                  }
-                  options={locationList}
-                  renderOption={(props, option) => (
-                    <ListItem {...props}>
-                      <ListItemText primary={option} />
-                    </ListItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Select Location" />
-                  )}
-                  freeSolo
-                />
-              </div>
             </div>
+
+            <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}></div>
 
             <div className="row ">
               <div className="fields">
@@ -977,7 +895,7 @@ const Itemmaster = () => {
             </div>
 
             <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}>
-            <div className="fields">
+              <div className="fields">
                 <label className="label">MRP</label>
                 <TextField
                   required
@@ -989,6 +907,39 @@ const Itemmaster = () => {
                   onChange={(e) => {
                     setMRP(e.target.value);
                   }}
+                />
+              </div>
+              <div className="fields">
+                <label className="label">Location</label>
+                {/* <TextField
+                  id="outlined-number"
+                  label="Location"
+                  style={{ width: '350px' }}
+                  size="small"
+                  value={location.toUpperCase()}
+                  onChange={(e) => { setLocation(e.target.value) }}
+                /> */}
+
+                <Autocomplete
+                  value={locationvalue}
+                  inputValue={location}
+                  sx={{ width: 350 }}
+                  size="small"
+                  onChange={handleLocationOptionChange}
+                  onInputChange={handleLocationInputChange}
+                  getOptionLabel={(option) =>
+                    typeof option === "string" ? option : option
+                  }
+                  options={locationList}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText primary={option} />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Location" />
+                  )}
+                  freeSolo
                 />
               </div>
               <div className="fields">
@@ -1078,11 +1029,65 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-            </div>
 
-            <div>
+              
+
+
+            </div>
+            <div className="row"> 
+            <div className="fields">
+                <label className="label">Packaging In</label>
+                <Select
+                  labelId="dropdown-label"
+                  id="dropdown"
+                  value={packaging}
+                  sx={{ minWidth: "250px" }}
+                  onChange={handlePackagingChange}
+                  size="small"
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Packaging
+                  </MenuItem>
+                  {packList.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.packging_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
+              </div>
+
+              <div className="fields">
+                <div
+                  style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                >
+                  <label className="label">Category </label>
+                  {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
+                </div>
+                <Box sx={{ minWidth: 350 }}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={categoryList}
+                      size="small"
+                      value={selectedCategory}
+                      sx={{ width: 350 }}
+                      onChange={(e, value) => setSelectedCategory(value)}
+                      getOptionLabel={(option) => option.category_name}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select Category " />
+                      )}
+                    />
+                  </FormControl>
+                </Box>
+              </div>
+              </div>
+            <div >
+            <div className="row border-b-2 pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
               <div>
-                <h1 className="product" style={{ color: "var(--color1)" }}>
+                <h1 className="product " style={{ color: "var(--color1)" }}>
                   Product Images
                 </h1>
               </div>
@@ -1236,6 +1241,7 @@ const Itemmaster = () => {
                   )}
                 </div>
               </div>
+
             </div>
 
             <div className="row">
@@ -1299,9 +1305,9 @@ const Itemmaster = () => {
             onClick={submitCategory}
             variant="contained"
             disabled={!categoryName}
-            style={{  background: "var(--color1)" }}
+            style={{ background: "var(--color1)" }}
 
-           
+
           >
             Submit
           </Button>
@@ -1368,7 +1374,7 @@ const Itemmaster = () => {
             onClick={submitCompany}
             variant="contained"
             disabled={!companyName}
-            style={{background: "var(--color1)" }}
+            style={{ background: "var(--color1)" }}
 
           >
             Submit
@@ -1420,7 +1426,7 @@ const Itemmaster = () => {
             style={{
               background: "var(--color1)",
               display: "flex",
-              color:"success",
+              color: "success",
               gap: "10px",
               borderRadius: "0",
             }}

@@ -703,6 +703,7 @@ const Itemmaster = () => {
                   inputValue={searchItem.toUpperCase()}
                   sx={{ width: 350 }}
                   size="small"
+                   
                   onChange={handleOptionChange}
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
@@ -715,7 +716,8 @@ const Itemmaster = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" />
+                    <TextField {...params} label="Search Item Name" autoFocus />
+
                   )}
                   freeSolo // Allows the user to type values not in the list
                 />

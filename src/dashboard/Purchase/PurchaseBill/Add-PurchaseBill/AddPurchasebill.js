@@ -257,65 +257,7 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  // const handleBarcode = async () => {
-  //   if (!barcode) {
-  //     return;
-  //   }
-  //   let data = new FormData();
-  //   data.append("barcode", barcode);
-
-  //   const params = {
-  //     random_number: localStorage.getItem("RandomNumber"),
-  //   };
-  //   try {
-  //     const res = axios
-  //       .post("barcode-batch-list?", data, {
-  //         // params: params,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         // console.log(response?.data?.data[0]?.id,"response")
-  //         setValue(response?.data?.data[0]?.id)
-  //         // setValue.unit_id(response.data.data[0]?.unit)
-
-  //         setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
-  //         setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-  //         setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-  //         // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-  //         setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
-  //         setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
-  //         setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-  //         setQty(response?.data?.data[0]?.batch_list[0]?.qty)
-  //         setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-  //         setBase(response?.data?.data[0]?.batch_list[0]?.base)
-  //         setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
-  //         setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-  //         setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-  //         setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-
-  //         setGst({
-  //           id: response?.data?.data[0]?.batch_list[0]?.gst,
-  //           name: response?.data?.data[0]?.batch_list[0]?.gst_name,
-  //         });
-
-  //         setSelectedEditItemId(response?.data?.data[0]?.id)
-  //         setItemEditID(response.data.data[0]?.id)
-  //         setIsEditMode(true)
-  //         const timeoutId = setTimeout(() => {
-  //           handleAddButtonClick()
-  //         }, 1000);
-  //         return () => clearTimeout(timeoutId);
-
-  //         // handleAddItem()
-
-  //       });
-  //   } catch (error) {
-  //     console.error("API error:", error);
-  //   }
-  // };
+  
   const handleBarcode = async () => {
     if (!barcode) {
       return;
@@ -363,7 +305,7 @@ const AddPurchaseBill = () => {
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
           setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
           setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
+          setQty(response?.data?.data[0]?.batch_list[0]?.unit)
           setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
           setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
           setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
@@ -969,12 +911,11 @@ const AddPurchaseBill = () => {
   };
 
   const handleInputChange = (event, newInputValue) => {
-    setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    setSearchItem(newInputValue.toUpperCase());
+    handleSearch(newInputValue.toUpperCase());
   };
 
   const handleOptionChange = (event, newValue) => {
-    console.log(newValue)
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
@@ -1311,7 +1252,9 @@ const AddPurchaseBill = () => {
                   onChange={handleDistributorChange}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params}
+                  autoFocus
+                  />}
                 />
                 {error.distributor && (
                   <span style={{ color: "red", fontSize: "12px" }}>
@@ -1340,7 +1283,7 @@ const AddPurchaseBill = () => {
                   style={{ width: "250px" }}
                   value={billNo}
                   onChange={(e) => {
-                    setbillNo(e.target.value);
+                    setbillNo(e.target.value.toUpperCase());
                   }}
                 />
                 {error.billNo && (

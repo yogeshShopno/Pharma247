@@ -4,47 +4,61 @@ import axios from 'axios';
 import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast, ToastContainer } from 'react-toastify';
+
 const Login = () => {
     const logo = process.env.PUBLIC_URL + 'pharmalogo.png';
     const [mobileNumber, setMobileNumber] = useState('');
     const [password, setPassword] = useState('');
+
     const [errors, setErrors] = useState({});
     const [showPasswordIcon, setShowPasswordIcon] = useState(false)
 
     const history = useHistory();
+    const [role, setRole] = useState("");
+
     const handleMouseDownPassword = (event) => event.preventDefault();
 
     const handleClickPassword = () => setShowPasswordIcon((show) => !show);
-    
-    
-  
-      const handleLogin = (event) => {
-        if (event.key === 'Enter') {
-          validateAndSubmit();
-        }
-      };
 
-      const validateAndSubmit  = (event) => {
-  
+    useEffect(() => {
+       const roles = localStorage.getItem('role')
+        if (roles == "Owner") {
+            history.push("/admindashboard")
+            console.log("f1")
+        } else if (roles == "Staff") {
+            history.push("/more/reconciliation")
+            console.log("4")
+        }
+
+    }, [])
+
+    const handleLogin = (event) => {
+        if (event.key === 'Enter') {
+            validateAndSubmit();
+        }
+    };
+
+    const validateAndSubmit = (event) => {
+
         const newErrors = {};
 
         if (!mobileNumber) {
-          newErrors.mobileNumber = 'Mobile Number is required';
-          toast.error('Mobile Number is required');
+            newErrors.mobileNumber = 'Mobile Number is required';
+            toast.error('Mobile Number is required');
         }
         if (!password) {
-          newErrors.password = 'Password is required';
-          toast.error('Password is required');
+            newErrors.password = 'Password is required';
+            toast.error('Password is required');
         } else if (!/^\d{10}$/.test(mobileNumber)) {
-          newErrors.mobileNumber = 'Mobile Number must be 10 digits';
-          toast.error('Mobile Number must be 10 digits');
+            newErrors.mobileNumber = 'Mobile Number must be 10 digits';
+            toast.error('Mobile Number must be 10 digits');
         }
-    
+
         setErrors(newErrors);
-    
+
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-          handleSubmit();
+            handleSubmit();
         }
     };
 
@@ -56,21 +70,31 @@ const Login = () => {
         data.append('mobile_number', mobileNumber)
         data.append('password', password)
         try {
-            await axios.post('login', data, {
-            }).then((response) => {
-                if (response.data.status === 200) {
-                    localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem('userId', response.data.data.id);
-                    localStorage.setItem('UserName', response.data.data.name);
-                    toast.success(response.data.message)
+            const response = await axios.post('login', data);
+
+            if (response.data.status === 200) {
+                const { token, id, name, role, iss_audit } = response.data.data;
+                localStorage.setItem('token', token);
+                localStorage.setItem('userId', id);
+                localStorage.setItem('UserName', name);
+                localStorage.setItem('role', role)
+                toast.success(response.data.message)
+
+                setRole(role)
+
+                if (role === "Owner") {
                     setTimeout(() => {
                         history.push('/admindashboard');
                     }, 3000);
+                } else if (role === "Staff" && iss_audit === "true") {
+                    setTimeout(() => {
+                        history.push('/more/reconciliation');
+                    }, 3000);
                 }
-                else {
-                    toast.error(response.data.message)
-                }
-            });
+            } else {
+                toast.error(response.data.message);
+            }
+
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message)
@@ -78,18 +102,18 @@ const Login = () => {
             console.error('API error:', error);
         }
     };
-    
+
     useEffect(() => {
         const inputElements = document.querySelectorAll('input');
         inputElements.forEach((input) => {
-          input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('input', { bubbles: true }));
         });
-    
+
         document.addEventListener('keydown', handleLogin);
         return () => {
-          document.removeEventListener('keydown', handleLogin);
+            document.removeEventListener('keydown', handleLogin);
         };
-      }, [mobileNumber, password]);
+    }, [mobileNumber, password]);
 
     return (
         <>
@@ -126,7 +150,7 @@ const Login = () => {
                             <OutlinedInput
                                 type="number"
                                 value={mobileNumber}
-                           
+
                                 onChange={(e) => setMobileNumber(e.target.value)}
                                 className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
                                 size="small"
@@ -150,7 +174,7 @@ const Login = () => {
                                     id="outlined-basic"
                                     type={showPasswordIcon ? 'text' : 'password'}
                                     onChange={(e) => setPassword(e.target.value)}
-                            
+
                                     endAdornment={
                                         <InputAdornment position="end" sx={{ size: "small" }}>
                                             <IconButton
@@ -175,9 +199,9 @@ const Login = () => {
                             </a>
                         </div>
                         <div className="mt-8">
-                            <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" 
-                                    onClick={validateAndSubmit}
-                                    >
+                            <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                                onClick={validateAndSubmit}
+                            >
                                 Login
                             </Button>
                         </div>
@@ -195,7 +219,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            
+
         </>
     );
 };

@@ -1273,6 +1273,7 @@ const InventoryList = () => {
               id="outlined-basic"
               value={searchItem}
               size="small"
+              autoFocus
               sx={{ width: "75%", marginTop: "5px" }}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -1312,8 +1313,7 @@ const InventoryList = () => {
                 }}
                 onClick={handleFilterData}
               >
-
-<img src="/csv-file.png"
+                <img src="/csv-file.png"
                   className="report-icon absolute mr-10"
                   alt="csv Icon"
                 />
@@ -1484,19 +1484,19 @@ const InventoryList = () => {
                         // }}
                         >
                           <span>
-                          <img
-                            src="./approve.png"
-                            className="report-icon inline "
-                            alt="csv Icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handelAddOpen(item);
-                            }}
-                          />
+                            <img
+                              src="./approve.png"
+                              className="report-icon inline mr-2"
+                              alt="csv Icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handelAddOpen(item);
+                              }}
+                            />
 
-                          {item.stock == "null" ? "-" : item.stock}
+                            {item.stock == "null" ? "-" : item.stock}
                           </span>
-                         
+
                         </td>
                       </Tooltip>
                       {/* <td
@@ -1750,7 +1750,7 @@ const InventoryList = () => {
               className="p-5"
               onClick={validateForm}
               style={{
-                color:"white",
+                color: "white",
                 background: "#3f6212",
                 outline: "none",
                 boxShadow: "none",
@@ -1764,7 +1764,7 @@ const InventoryList = () => {
               onClick={resetAddDialog}
               color="error"
               style={{
-                color:"white",
+                color: "white",
                 background: "#F31C1C",
                 outline: "none",
                 boxShadow: "none",
@@ -1878,8 +1878,8 @@ const InventoryList = () => {
         <DialogActions>
           <Button className="primary-bg"
             color="success"
-          
-          autoFocus variant="contained" onClick={validateBulkOrder}>
+
+            autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes
           </Button>
           <Button

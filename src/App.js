@@ -93,11 +93,69 @@ import Gstr2 from './dashboard/More/Reports/GstReport/Gstr2';
 import Reconciliation from './dashboard/More/Reconciliation/reconciliation';
 import ReconciliationManage from './dashboard/profile/Staff-Sessions/ReconciliationManage';
 
+import CssBaseline from '@mui/material/CssBaseline'; // Reset default styles
+// import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@material-tailwind/react';
+import theme from './theme';
+import { useEffect } from 'react';
+
 
 function App() {
+  useEffect(() => {
+    // Inject CSS to style all MUI TextField components
+    const style = document.createElement('style');
+    style.innerHTML = `
+      /* Change default border color for Outlined TextFields */
+      .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+        border-color: #3f6212; /* Default border color */
+      }
+
+      /* Change border color on hover for Outlined TextFields */
+      .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+        border-color: #3f6212; /* Hover border color */
+      }
+
+      /* Change border color when focused for Outlined TextFields */
+      .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: #3f6212; /* Focused border color */
+      }
+
+      /* Change label colors */
+      .MuiInputLabel-root {
+        color: #3f6212; /* Default label color */
+      }
+      
+      .MuiInputLabel-root.Mui-focused {
+        color: #3f6212; /* Focused label color */
+      }
+
+      /* Change underline color for Standard TextFields */
+      .MuiInput-underline:before {
+        border-bottom: 2px solid #3f6212; /* Default underline color */
+      }
+
+      .MuiInput-underline:hover:not(.Mui-disabled):before {
+        border-bottom: 2px solid #3f6212; /* Hover underline color */
+      }
+
+      .MuiInput-underline:after {
+        border-bottom: 2px solid #3f6212; /* Focused underline color */
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Cleanup function to remove the styles on unmount
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
 
   return (
     <div className="App">
+            <CssBaseline />
+
+          <ThemeProvider theme={theme}>
       
       <Router>
         <Switch>
@@ -491,6 +549,7 @@ function App() {
           </Route> */}
         </Switch>
       </Router>
+      </ThemeProvider>
     </div>
   );
 }

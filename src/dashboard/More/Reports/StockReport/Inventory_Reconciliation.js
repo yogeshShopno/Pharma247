@@ -1,15 +1,46 @@
 import Header from "../../../Header"
 import { BsLightbulbFill } from "react-icons/bs"
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { Button } from "@mui/material";
+import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
+
 import DatePicker from 'react-datepicker';
 import { format, subDays } from 'date-fns';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
-import { FormControl, InputAdornment, InputLabel, MenuItem, MenuList, Select, TextField } from "@mui/material"
+import { FormControl, MenuList, } from "@mui/material"
 import Loader from "../../../../componets/loader/Loader";
-
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import {
+    Box,
+    ListItem,
+    Divider,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+    TextField,
+    TableContainer,
+    TablePagination,
+    Paper,
+    InputAdornment,
+    IconButton,
+    Button,
+    Tooltip,
+    Autocomplete,
+    Menu,
+} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    Select,
+} from "@mui/material";
 const Inventory_Reconciliation = () => {
     const history = useHistory()
     const token = localStorage.getItem("token");
@@ -17,24 +48,263 @@ const Inventory_Reconciliation = () => {
     const [endDate, setEndDate] = useState(new Date())
     const [isLoading, setIsLoading] = useState(false);
     const [stockStatus, setStockStatus] = useState()
+    const [reportData, setReportData] = useState({});
+    const [reportType, setReportType] = useState("");
+    const [isDownload, setIsDownload] = useState(false);
+
+
+    const [itemId, setItemId] = useState(null);
+
+    const [openAddPopUp, setOpenAddPopUp] = useState(false);
+    const [openPrintQR, setOpenPrintQR] = useState(false);
+    const [stock, setStock] = useState("");
+    const [adjustStockListData, setAdjustStockListData] = useState([]);
+    const [unit, setUnit] = useState("");
+    const [remainingStock, setRemainingStock] = useState("");
+    const [batchListData, setBatchListData] = useState([]);
+    const [selectedCompany, setSelectedCompany] = useState(null);
+    const [expiry, setExpiry] = useState("");
+    const [mrp, setMrp] = useState("");
+    const [selectedItem, setSelectedItem] = useState();
+
+
+    const [batch, setBatch] = useState();
+    const [stockAdjust, setStockAdjust] = useState("");
+    const [adjustmentDate, setAdjustDate] = useState(new Date());
+    const [purchaseItemData, setpurchaseItemData] = useState([]);
+    const [companyList, setCompanyList] = useState([]);
+    const [errors, setErrors] = useState({});
+    const [locationBulk, setLocationBulk] = useState();
+    const [drugGroupList, setDrugGroupList] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [bulkOrder, setBulkOrder] = useState(false);
+    const [barcode, setBarcode] = useState();
+
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleRegisterColumns = [
-        { id: 'date', label: 'Date', minWidth: 100 },
-        { id: 'reportedBy', label: 'Reported By', minWidth: 100 },
-        { id: "itemName", label: "Item Name", minWidth: 100 },
-        { id: "unit", label: "Unit", minWidth: 100 },
-        { id: 'manu', label: "Manuf.", minWidth: 100 },
-        { id: 'location', label: 'Location', minWidth: 100 },
-        { id: 'mrp', label: 'MRP', minWidth: 100 },
-        { id: 'reportedStock', label: 'Reported Stock', minWidth: 100 },
-        { id: 'systemStock', label: 'System Stock', minWidth: 100 },
-        { id: 'rsImpact', label: 'Rs. Impact', minWidth: 100 },
+        { id: 'id', label: 'Sr No.', },
+        { id: 'reported_by', label: 'reported by', },
+        { id: 'location', label: 'Location', },
+        { id: 'unit', label: 'Unit', },
+        { id: 'iteam_name', label: 'Item Name', },
+        { id: 'physical_stock', label: 'Reported Stock', },
+        { id: 'current_stock', label: 'System Stock', },
+        { id: 'mrp', label: 'MRP', },
+        // { id: 'company_name', label: 'company name', },
+        { id: 'rsImpact', label: 'Rs. Impact', },
+        { id: 'AdjustStock', label: 'Adjust Stock', },
+
     ];
-    const [tableData, setTabledata] = useState([
-        // { billno: "15", billdate: "25/12/2012", customerName: "mehul pativala", batch: "152", itemname: "moxiclav 625", unit: "12", expiry: "02/26", free: "5", Qty: "2", amount: "520", netprofit: "251" },
-        // { billno: "15", billdate: "25/12/2012", customerName: "mehul pativala", batch: "152", itemname: "moxiclav 625", unit: "12", expiry: "02/26", free: "5", Qty: "2", amount: "520", netprofit: "251" },
-        // { billno: "15", billdate: "25/12/2012", customerName: "mehul pativala", batch: "152", itemname: "moxiclav 625", unit: "12", expiry: "02/26", free: "5", Qty: "2", amount: "520", netprofit: "251" },
-    ])
+
+    useEffect(() => {
+        if (reportData && typeof reportData === "object") {
+            if (isDownload) {
+                exportToCSV();
+            }
+        }
+    }, [reportData]);
+
+    useEffect(() => {
+        setRemainingStock(stockAdjust - stock)
+    }, [stockAdjust]);
+
+    const handleBatchData = (event, newValue) => {
+        const batch = newValue ? newValue.batch_name : "";
+        setBatch(batch);
+        setUnit(newValue?.unit);
+        setExpiry(newValue?.expiry_date);
+        setMrp(newValue?.mrp);
+        setStock(newValue?.qty);
+        console.log(newValue, "newValue")
+        setSelectedCompany(newValue?.company_name)
+    };
+
+
+    const resetAddDialog = () => {
+        setOpenAddPopUp(false);
+        setBatch();
+        setSelectedCompany();
+        setSelectedItem();
+        setUnit("");
+        setExpiry("");
+        setMrp("");
+        setStock("");
+        setStockAdjust("");
+        setRemainingStock("");
+        setAdjustDate(new Date());
+    };
+
+    const handleOptionChange = (event, newValue) => {
+        const itemName = newValue ? newValue.iteam_name : "";
+        setSelectedItem(itemName);
+        setItemId(newValue?.id);
+    };
+    const validateForm = async () => {
+        const newErrors = {};
+
+        if (!batchListData.iteam_name) {
+            newErrors.selectedItem = "select any Item Name.";
+            toast.error(newErrors.selectedItem);
+        } else if (!batchListData.batch_number) {
+            newErrors.batch = "Batch Number is required";
+            toast.error(newErrors.batch);
+        } else if (!batchListData.company_name) {
+            newErrors.selectedCompany = "select any Company Name";
+            toast.error(newErrors.selectedCompany);
+        } else if (!stockAdjust) {
+            newErrors.stockAdjust = "please Enter any Adjust Stock Number";
+            toast.error(newErrors.stockAdjust);
+        }
+        setErrors(newErrors);
+        if (Object.keys(newErrors).length === 0) {
+            adjustStockAddData();
+        } else {
+            return Object.keys(newErrors).length === 0;
+        }
+    };
+
+    const adjustStockAddData = async () => {
+        let data = new FormData();
+        setIsLoading(true);
+        data.append(
+            "adjustment_date",
+            adjustmentDate ? format(adjustmentDate, "yyyy-MM-dd") : ""
+        );
+        data.append("item_name", batchListData.item_id);
+        data.append("batch", batchListData.batch);
+        data.append("company", batchListData.company_id);
+        data.append("unite", batchListData.unit);
+        data.append("expiry", batchListData.expiry_date);
+        data.append("mrp", batchListData.mrp);
+        data.append("stock", batchListData.stock);
+        data.append("stock_adjust", stockAdjust);
+        data.append("remaining_stock", remainingStock);
+
+        try {
+            await axios
+                .post("adjust-stock", data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    setIsLoading(false);
+                    toast.success(response.data.message);
+                    setOpenAddPopUp(false);
+                    setBatch();
+                    setSelectedCompany();
+                    // adjustStockList();
+                    setSelectedItem();
+                    setUnit("");
+                    setExpiry("");
+                    setMrp("");
+                    setStock("");
+                    setStockAdjust("");
+                    setRemainingStock("");
+                    setAdjustDate(new Date());
+                });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+    const ItemvisebatchList = async (itemId) => {
+
+        try {
+            let data = new FormData();
+            data.append("iteam_id", itemId);
+            const params = {
+                iteam_id: itemId,
+            };
+            const res = await axios.post("batch-list?", data, {
+                // params: params,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setBatchListData(response.data.data[0]);
+                    console.log(response.data.data[0].iteam_name)
+                });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+
+    const getData = async () => {
+        setIsDownload(true);
+        try {
+            let data = new FormData();
+            data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
+            data.append("end_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
+            data.append("status", (stockStatus));
+
+            const response = await axios.post("reconciliation-report?", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200 && response.data) {
+                const parsedData = response.data;
+                if (parsedData?.data) {
+                    setReportData(parsedData.data);
+                    // toast.success("please wait ...downloading is in progress!")
+                } else {
+                    toast.error("No data available for the selected criteria.");
+                }
+            } else {
+                // toast.error("Failed to download records. Please try again.");
+            }
+        } catch (error) {
+            console.error("API error:", error);
+            toast.error("An error occurred while downloading the CSV.");
+        } finally {
+            setIsDownload(false);
+        }
+    };
+    const exportToCSV = () => {
+        if (!reportData || reportData.length === 0) {
+            toast.error("No data available for download.");
+            return;
+        }
+
+        const headers = GstSaleRegisterColumns.map((col) => col.label).join(',');
+
+        const rows = reportData.map((row) => {
+            return GstSaleRegisterColumns.map((column) => {
+                if (column.id === 'rsImpact') {
+                    const rsImpact = (
+                        (parseFloat(row.mrp || 0) * parseFloat(row.physical_stock || 0)) -
+                        (parseFloat(row.mrp || 0) * parseFloat(row.current_stock || 0))
+                    ).toFixed(2);
+                    return rsImpact;
+                }
+                return row[column.id] ? row[column.id] : '-';
+            }).join(',');
+        });
+
+        const csvContent = [headers, ...rows].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Reconciliation_Report.csv';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        toast.success("CSV downloaded successfully!");
+    };
+
+    const handelAddOpen = (item) => {
+        setOpenAddPopUp(true);
+        ItemvisebatchList(item.iteam_id)
+    };
+
     return (
         <>
             <div>
@@ -65,7 +335,21 @@ const Inventory_Reconciliation = () => {
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={exportToCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button>
                                 </div>
                             </div>
                             <div className="bg-white ">
@@ -105,44 +389,78 @@ const Inventory_Reconciliation = () => {
                                                     <MenuItem value="" disabled>
                                                         Stock Status
                                                     </MenuItem>
-                                                    <MenuItem value="sale">All</MenuItem>
-                                                    <MenuItem value="saleReturn">Corrent Stock</MenuItem>
-                                                    <MenuItem value="purchaseReturn">MisMatch Stock</MenuItem>
+                                                    <MenuItem value="0">All</MenuItem>
+                                                    <MenuItem value="1">Correct Stock</MenuItem>
+                                                    <MenuItem value="2">MisMatch Stock</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </div>
                                         <div className="mt-6">
-                                            <Button variant="contained">
+                                            <Button style={{
+                                                background: "var(--color1)",
+                                            }} onClick={getData} variant="contained">
+
                                                 Go
                                             </Button>
                                         </div>
                                     </div>
                                 </div>
-                                {tableData.length > 0 ?
+                                {reportData.length > 0 ?
                                     <div>
-                                        <div className="overflow-x-auto mt-4">
-                                            <table className="table-cashManage w-full border-collapse">
+                                        <div className="overflow-x-auto m-8">
+                                            <table className="table-cashManage   border-collapse">
                                                 <thead>
                                                     <tr>
                                                         {GstSaleRegisterColumns.map((column) => (
-                                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                                {column.label}
+                                                            <th key={column.id}
+                                                            // style={{ minWidth: column.minWidth }}
+                                                            >{column.label}
                                                             </th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {tableData?.map((item, index) => (
-                                                        <tr key={index} >
+                                                    {reportData.map((row, index) => (
+                                                        <tr key={index}>
                                                             {GstSaleRegisterColumns.map((column) => (
-                                                                <td key={column.id}>
-                                                                    {item[column.id] && item[column.id].charAt(0).toUpperCase() + item[column.id].slice(1)}
+                                                                <td key={column.id} >
+
+                                                                    {column.id === 'rsImpact' ? (
+                                                                        (() => {
+                                                                            const rsImpact = (
+                                                                                (parseFloat(row.mrp || 0) * parseFloat(row.physical_stock || 0)) -
+                                                                                (parseFloat(row.mrp || 0) * parseFloat(row.current_stock || 0))
+                                                                            ).toFixed(2);
+
+                                                                            return (
+                                                                                <Tooltip
+                                                                                    title="click to adjust"
+                                                                                    placement="left-start"
+                                                                                    arrow>
+                                                                                        <span onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        handelAddOpen(row);
+                                                                                    }} style={{ color: rsImpact >= 0 ? 'var(--color1)' : 'var(--color6)' }}>
+                                                                                        <img src="/approve.png"
+                                                                                            className="report-icon inline mr-2"
+                                                                                            alt="csv Icon"
+                                                                                            
+                                                                                        />
+
+                                                                                        {rsImpact}
+                                                                                    </span></Tooltip>
+
+                                                                            );
+                                                                        })()
+                                                                    ) : (
+                                                                        row[column.id]
+                                                                            ? row[column.id].charAt(0).toUpperCase() + row[column.id].slice(1)
+                                                                            : '-'
+                                                                    )}
                                                                 </td>
                                                             ))}
-
                                                         </tr>
                                                     ))}
-
                                                 </tbody>
                                             </table>
                                         </div>
@@ -156,14 +474,256 @@ const Inventory_Reconciliation = () => {
                                             <span className="text-gray-500 font-semibold">Oops !</span>
                                             <p className="text-gray-500 font-semibold">No Items found with your search criteria.</p>
                                         </div>
-                                    </div>
-
-                                }
+                                    </div>}
                             </div>
 
                         </div>
                     }
                 </div>
+                <Dialog open={openAddPopUp}>
+                    <DialogTitle id="alert-dialog-title" className="primary">
+                        Stock Adjustment
+                    </DialogTitle>
+                    <IconButton
+                        aria-label="close"
+                        onClick={resetAddDialog}
+                        sx={{
+                            position: "absolute",
+                            right: 12,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            <div
+                                className="flex"
+                                style={{ flexDirection: "column", gap: "19px" }}
+                            >
+                                <div className="flex gap-4">
+                                    <div>
+                                        <span className="title primary mb-2">Adjustment Date</span>
+                                        <DatePicker
+                                            className="custom-datepicker "
+                                            selected={adjustmentDate}
+                                            onChange={(newDate) => setAdjustDate(newDate)}
+                                            dateFormat="dd/MM/yyyy"
+                                            minDate={subDays(new Date(), 15)} //
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="title mb-2">Item Name</span>
+                                        <TextField
+                                            id="outlined-number"
+                                            // type="number"
+                                            disabled
+                                            sx={{ width: "195px" }}
+                                            size="small"
+                                            value={batchListData.iteam_name}
+
+                                        />
+
+                                        {/* <Autocomplete
+                                            disablePortal
+                                            id="combo-box-demo"
+                                            options={purchaseItemData}
+                                            size="small"
+                                            // value={itemName}
+                                            onChange={handleOptionChange}
+                                            disabled
+                                            sx={{ width: 200 }}
+                                            getOptionLabel={(option) => option.iteam_name}
+                                            
+                                        /> */}
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div>
+                                        <span className="title mb-2">Batch</span>
+                                        <TextField
+                                            id="outlined-number"
+                                            // type="number"
+                                            disabled
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            value={batchListData.batch_name}
+
+                                        />
+                                        {/* <Autocomplete
+                                            disablePortal
+                                            id="combo-box-demo"
+                                            options={batchListData}
+                                            size="small"
+                                            value={batchListData.batch_name}
+                                            onChange={handleBatchData}
+                                            sx={{ width: 200 }}
+                                            getOptionLabel={(option) => option.batch_number}
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Select Batch" />
+                                            )}
+                                        /> */}
+                                    </div>
+
+                                    <div>
+                                        <span className="title mb-2">Company</span>
+                                        <TextField
+                                            id="outlined-number"
+                                            // type="number"
+                                            disabled
+                                            sx={{ width: "275px" }}
+                                            size="small"
+                                            value={batchListData.company_name}
+
+                                        />
+                                        {/* <Autocomplete
+                                            disablePortal
+                                            id="combo-box-demo"
+                                            options={companyList}
+                                            size="small"
+                                            disabled
+                                            value={selectedCompany}
+                                            onChange={(e, value) => setSelectedCompany(value)}
+                                            sx={{ width: 200 }}
+                                            getOptionLabel={(option) => option.company_name}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                label="Select Company"
+                                                />
+                                            )}
+                                        /> */}
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div>
+                                        <span className="title mb-2">Unit</span>
+                                        <TextField
+                                            disabled
+                                            required
+                                            id="outlined-number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            value={batchListData.unit}
+                                            onChange={(e) => setUnit(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="title mb-2">Expiry</span>
+                                        <TextField
+                                            id="outlined-number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            disabled
+                                            value={batchListData.expiry_date}
+                                            onChange={(e) => {
+                                                setExpiry(e.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="title mb-2">MRP</span>
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            disabled
+                                            value={batchListData.mrp}
+                                            onChange={(e) => {
+                                                setMrp(e.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div>
+                                        <span className="title mb-2">Stock </span>
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            disabled
+                                            value={batchListData.stock}
+                                            onChange={(e) => {
+                                                setStock(e.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="title mb-2">Stock Adjusted </span>
+                                        {/* <TextField
+                                        id="outlined-number"
+                                        type="number"
+                                        sx={{ width: '130px' }}
+                                        size="small"
+                                        value={stockAdjust}
+                                        onChange={(e) => { setStockAdjust(e.target.value) }}
+                                    /> */}
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            value={stockAdjust}
+                                            onChange={(e) => {
+                                                const value = parseFloat(e.target.value);
+                                                setStockAdjust(value);
+
+                                                // setStockAdjust(value > 0 ? -value : value);
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="title mb-2">Remaining Stock </span>
+                                        <TextField
+                                            disabled
+                                            id="outlined-number"
+                                            type="number"
+                                            sx={{ width: "130px" }}
+                                            size="small"
+                                            value={remainingStock}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <div className="flex gap-4 mr-4 pb-4">
+                            <Button
+                                autoFocus
+                                variant="contained"
+                                className="p-5"
+                                onClick={validateForm}
+                                style={{
+                                    color: "white",
+                                    background: "#3f6212",
+                                    outline: "none",
+                                    boxShadow: "none",
+                                }}
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                autoFocus
+                                variant="contained"
+                                onClick={resetAddDialog}
+                                color="error"
+                                style={{
+                                    color: "white",
+                                    background: "#F31C1C",
+                                    outline: "none",
+                                    boxShadow: "none",
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </DialogActions>
+                </Dialog>
             </div>
         </>
     )

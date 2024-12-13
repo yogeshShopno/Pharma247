@@ -54,6 +54,9 @@ const AddDistributer = () => {
             formRef.current.reset();
         }
     };
+
+  
+
     return (
         <div>
 
@@ -156,6 +159,7 @@ const AddDistributer = () => {
                                         className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline uppercase"
                                         name='gst_number'
                                         type="text"
+                                      
                                     />
 
                                     <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">

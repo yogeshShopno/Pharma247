@@ -915,11 +915,11 @@ useEffect(()=>{
   };
 
   const handleOptionChange = (event, newValue) => {
-    setValue(newValue);
+    setValue(newValue.toUpperCase());
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName);
+    setSearchItem(itemName.toUpperCase());
     setAutocompleteDisabled(true);
-    handleSearch(itemName);
+    handleSearch(itemName.toUpperCase());
   };
 
   const handlePTR = (e) => {
@@ -1362,7 +1362,7 @@ useEffect(()=>{
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" />
+                    <TextField {...params} label="Search Item Name" autoFocus />
                   )}
                 />
 

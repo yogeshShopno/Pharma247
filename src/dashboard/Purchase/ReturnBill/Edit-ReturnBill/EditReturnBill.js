@@ -1258,6 +1258,7 @@ console.log(initialTotalStock,"initialTotalStock")
                                                     <TextField
                                                         id="outlined-basic"
                                                         size="small"
+                                                        autoFocus
                                                         sx={{ width: "75%", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}

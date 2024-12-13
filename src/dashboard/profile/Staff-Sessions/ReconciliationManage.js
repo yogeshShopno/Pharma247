@@ -1,167 +1,224 @@
 import { useEffect, useState } from "react";
-import Loader from "../../../componets/loader/Loader"
-import Header from "../../Header"
+
+import Loader from "../../../componets/loader/Loader";
+import Header from "../../Header";
 import ProfileView from "../ProfileView";
-import { Box, Button, Switch, TextField } from "@mui/material";
+import { Box, Switch, TextField, Button, Tab, Tabs, Typography } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-
 const ReconciliationManage = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [count,setCount] = useState(10)
- // Variables for the three sections (percentages)
- const value1 = 30; // e.g., 30%
- const value2 = 45; // e.g., 45%
- const value3 = 25; // e.g., 25%
+  const token = localStorage.getItem("token");
 
- // Calculate cumulative percentages
- const total = value1 + value2 + value3;
- const percentage1 = (value1 / total) * 100;
- const percentage2 = (value2 / total) * 100;
- const percentage3 = (value3 / total) * 100;
+  const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [reconciliationData, setReconciliationData] = useState({});
+  const [toggle, setToggle] = useState(false);
 
- // Stroke offsets for the chart
- const offset1 = 25; // Start point for full circle offset
- const offset2 = offset1 - percentage1; // Second segment offset
- const offset3 = offset2 - percentage2; // Third segment offset
-    const label = { inputProps: { 'aria-label': 'Switch demo' } };
-  
-    const handleCount = (type) => {
-        if (type === 0) {
-          setCount((prevCount) => prevCount - 1);
-        } else if (type === 1) {
-          setCount((prevCount) => prevCount + 1);
-        }
-      };
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
-  
-    return (
-        <>
-            <Header />
-            {isLoading ? <div className="loader-container ">
-                <Loader />
-            </div> :
+  useEffect(() => {
+    getData()
+  }, []);
+
+  useEffect(() => {
+    console.log(toggle, "Toggle state updated"); // Log toggle whenever it updates
+  }, [toggle]);
+
+  const getData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post("reconciliation-iteam-list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = res.data.data;
+      console.log(data.iss_audit, "Raw iss_audit from API"); // Debug API value
+      console.log(typeof data.iss_audit, "Type of iss_audit from API"); // Debug its type
+
+      setReconciliationData(data);
+      setCount(Number(data.iteam_count));
+
+      // Explicitly convert to boolean
+      setToggle(data.iss_audit === true || data.iss_audit === "true" || data.iss_audit === 1);
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+  const updateReconciliation = async () => {
+    const formData = new FormData();
+    formData.append("iss_audit", toggle);
+    formData.append("iteam_count", count);
+
+    try {
+      setIsLoading(true);
+      const res = await axios.post("reconciliation-list", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.status === 200) {
+        toast.success("Updated successfully");
+        getData(); // Refresh data after update
+      }
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+  const handleRestart = async () => {
+    try {
+      await axios.post("reconciliation-restart", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("reconciliation restarted")
+
+    } catch (error) {
+      console.error("API error while updating:", error);
+    }
+  };
+
+
+
+  return (
+    <>
+      <Header />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {isLoading ? (
+        <div className="loader-container">
+          <Loader />
+        </div>
+      ) : (
+        <div>
+          <Box sx={{ display: "flex" }}>
+            <ProfileView />
+            <div className="p-8 w-full">
+              <div className="flex justify-between items-center">
                 <div>
-                    <Box sx={{ display: "flex" }}>
-                        <ProfileView />
-                        <div className="p-8  w-full">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2  mr-4"  >Manage Reconciliation Audit
-                                    <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
+                  <h1 className="text-2xl flex items-center primary font-semibold p-2 mr-4">
+                    Manage Reconciliation Audit
+                    <BsLightbulbFill className="ml-4 secondary hover-yellow" />
 
-                                        <Switch
-                                            className="primary"
-                                            {...label}
-                                            sx={{
-                                                '& .MuiSwitch-switchBase.Mui-checked': {
-                                                    color: '#044C9D',
-                                                },
-                                                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                                    backgroundColor: '#044C9D',
-                                                },
-                                            }}
-                                        />
-                                    </h1>
-                                </div>
-
-                                <div className="flex items-center">
-
-                                    <RemoveIcon
-                                     sx={{
-                                        backgroundColor: '#044C9D', 
-                                        color: 'white',
-                                        borderRadius: '50%', 
-                                        padding: '8px',
-                                        width: '35px',
-                                        height: '35px', 
-
-                                      }}
-                                      onClick={()=>handleCount(0)}
-
-                                     />
-
-                                    <TextField 
-
-                                        id="outlined-number"
-                                        placeholder="Item Count "
-                                        value={count}
-                                        type="number"
-                                        style={{ width: "45px",marginInline:"5px" }}
-                                        size="small"
-                                        onChange={(e)=> {let enterdInput=e.target.value; setCount(Number(enterdInput))}}
-                                       
-                                          
-                                    />
-                                    <AddIcon 
-                                     sx={{
-                                        backgroundColor: '#044C9D', 
-                                        color: 'white',
-                                        borderRadius: '50%', 
-                                        padding: '8px',
-                                        width: '35px',
-                                        height: '35px', 
-                                      }}
-                                      onClick={()=>handleCount(1)}
-                                      />
-                                    {/* <Button variant="contained" color="primary" style={{ textTransform: 'none', marginBottom: "25px" }}> <AddIcon className="mr-2" />Create Role</Button> */}
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </Box>
-                    <div className="flex justify-center items-center">
-      <svg width="250" height="250" viewBox="0 0 36 36" className="inline-block">
-        {/* Background circle */}
-        <circle
-          cx="28"
-          cy="28"
-          r="15.915"
-          fill="none"
-          className="stroke-gray-200"
-          strokeWidth="3"
-        />
-        {/* First segment */}
-        <circle
-          cx="28"
-          cy="28"
-          r="15.915"
-          fill="none"
-          className="stroke-blue-500"
-          strokeWidth="3"
-          strokeDasharray={`${percentage1} ${100 - percentage1}`}
-          strokeDashoffset={offset1}
-        />
-        {/* Second segment */}
-        <circle
-          cx="28"
-          cy="28"
-          r="15.915"
-          fill="none"
-          className="stroke-green-500"
-          strokeWidth="3"
-          strokeDasharray={`${percentage2} ${100 - percentage2}`}
-          strokeDashoffset={offset2}
-        />
-        {/* Third segment */}
-        <circle
-          cx="28"
-          cy="28"
-          r="15.915"
-          fill="none"
-          className="stroke-red-500"
-          strokeWidth="3"
-          strokeDasharray={`${percentage3} ${100 - percentage3}`}
-          strokeDashoffset={offset3}
-        />
-      </svg>
-    </div>
+                  </h1>
                 </div>
-            }
-        </>
-    )
-}
-export default ReconciliationManage
+
+              </div>
+
+              <div className="flex flex-col items-start mt-6 p-4 bg-white rounded-lg shadow-lg w-80">
+
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Daily Item Counts:</span>
+                  <TextField
+                    id="outlined-number"
+                    placeholder="Item Count"
+                    value={count}
+                    type="number"
+                    style={{ width: "50px", marginInline: "5px" }}
+                    size="small"
+                    className="border border-gray-300 rounded px-2 py-1"
+                    onChange={(e) => {
+                      const newCount = Number(e.target.value);
+                      setCount(newCount);
+                    }}
+                  />
+                </div>
+
+                {/* Turn On Reconciliation */}
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Turn on reconciliation:</span>
+                  <Switch
+                    checked={toggle}
+                    sx={{
+                      "& .MuiSwitch-track": {
+                        backgroundColor: "lightgray",
+                      },
+                      "&.Mui-checked .MuiSwitch-track": {
+                        backgroundColor: "var(--color1) !important",
+                      },
+                      "& .MuiSwitch-thumb": {
+                        backgroundColor: "var(--color1)",
+                      },
+                      "&.Mui-checked .MuiSwitch-thumb": {
+                        backgroundColor: "var(--color1)",
+                      },
+                    }}
+                    onChange={() => {
+                      console.log(!toggle, "Switch toggled");
+                      setToggle(!toggle);
+                    }}
+                  />
+
+
+                </div>
+
+                {/* Restart Reconciliation */}
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Restart reconciliation:</span>
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color6)",
+                      color: "white",
+                    }}
+                    className="px-4 py-2 text-sm rounded-lg shadow hover:opacity-90"
+                    onClick={handleRestart}
+                  >
+                    Restart
+                  </Button>
+                </div>
+
+                {/* Submit Button */}
+                <div className="w-full">
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color1)",
+                      color: "white",
+                    }}
+                    className="w-full py-2 text-sm font-medium rounded-lg shadow hover:opacity-90"
+                    onClick={updateReconciliation}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
+
+            </div>
+
+          </Box>
+
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ReconciliationManage;

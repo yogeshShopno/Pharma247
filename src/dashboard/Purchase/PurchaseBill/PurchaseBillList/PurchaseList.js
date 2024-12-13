@@ -290,6 +290,7 @@ const Purchasebill = () => {
                       selected={startDate}
                       onChange={(newDate) => setStartDate(newDate)}
                       dateFormat="dd/MM/yyyy"
+
                     />
                   </div>
                 </div>
@@ -677,6 +678,7 @@ const Purchasebill = () => {
                                 selected={PdfstartDate}
                                 onChange={(newDate) => setPdfStartDate(newDate)}
                                 dateFormat="dd/MM/yyyy"
+                                autoFocus
                               />
                             </div>
                           </div>

@@ -146,7 +146,11 @@ const ReconciliationManage = () => {
                     className="border border-gray-300 rounded px-2 py-1"
                     onChange={(e) => {
                       const newCount = Number(e.target.value);
+                      if(newCount>24){
+                        toast.error("can not set more than 24")
+                      }else{
                       setCount(newCount);
+                      }
                     }}
                   />
                 </div>

@@ -382,13 +382,14 @@ const Purchasebill = () => {
                         <td>
                           <div className="flex gap-2 items-center">
                             <VisibilityIcon
-                              className="cursor-pointer text-blue-500"
+                              className="cursor-pointer primary hover:secondary"
                               onClick={() => history.push(`/purchase/view/${row.id}`)}
                             />
-                            <FaFilePdf className="text-gray-700 hover:text-black" onClick={() => pdfGenerator(row.id)} />
+                            <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                             {hasPermission(permissions, "purchase bill delete") && (
                               <DeleteIcon
-                                className="cursor-pointer text-red-500"
+                              style={{color:"#F31C1C"}}
+                                className="cursor-pointer "
                                 onClick={() => deleteOpen(row.id)}
                               />
                             )}

@@ -1297,7 +1297,13 @@ console.log(initialTotalStock,"initialTotalStock")
                                             {tableData?.item_list?.map((item) => (
                                                 <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
                                                     <td>
-                                                        <Checkbox
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                             checked={item.iss_check}
                                                             onClick={(event) => event.stopPropagation()}
                                                             onChange={(event) => handleChecked(item.id, event.target.checked)}

@@ -289,7 +289,10 @@ const ReturnList = () => {
                                                 </div>
                                             </th>
                                         ))}
+                                        <th></th>
                                         <th>Action</th>
+
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -429,10 +432,11 @@ const ReturnList = () => {
                                                         </td>
 
                                                         <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer', alignItems: "center" }}>
-                                                            < VisibilityIcon color="primary" className='cursor-pointer' onClick={() => { history.push(`/return/view/${row.id}`) }} />
-                                                            <FaFilePdf className="text-gray-700 hover:text-black" onClick={() => pdfGenerator(row.id)} />
+                                                            < VisibilityIcon  className='cursor-pointer cursor-pointer primary hover:secondary' onClick={() => { history.push(`/return/view/${row.id}`) }} />
+                                                            <FaFilePdf className="primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                                                             {hasPermission(permissions, "purchase return bill delete") && (
-                                                                <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
+                                                                <DeleteIcon style={{color:"#F31C1C"}}
+                                                                 className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
                                                         </td>
                                                     </tr>
                                                 );

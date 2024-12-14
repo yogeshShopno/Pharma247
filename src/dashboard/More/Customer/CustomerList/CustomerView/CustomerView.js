@@ -327,7 +327,7 @@ const CustomerView = () => {
                         <div className="flex justify-center items-center h-auto">
                             <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
                                 <div className="flex justify-between items-center">
-                                    <DialogTitle id="alert-dialog-title" className="text-sky-500">
+                                    <DialogTitle id="alert-dialog-title" className="primary">
                                         Change Payment Mode
                                     </DialogTitle>
                                     <IconButton

@@ -18,6 +18,8 @@ import { toast, ToastContainer } from "react-toastify";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+
 import usePermissions, { hasPermission } from "../../../../componets/permission";
 const columns = [
     { id: 'name', label: 'Name', minWidth: 10 },
@@ -371,7 +373,7 @@ const DistributerList = () => {
                     <div>
                         <div style={{ display: 'flex', gap: '4px', marginBottom: "13px" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }} className="mt-2">
-                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '150px' }} >Distributor List</span>
+                                <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '150px' }} >Distributor List</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
                             </div>
                             <div className="headerList mt-2">
@@ -381,17 +383,17 @@ const DistributerList = () => {
                                     </div>}
                                 {hasPermission(permissions, "distributor create") &&
                                     <div>
-                                        <Button variant="contained" style={{ background: 'var(--color1)' }}  onClick={() => { history.push('/more/addDistributer') }}> <AddIcon className="mr-2" />Add Distributor</Button>
+                                        <Button variant="contained" style={{ background: 'var(--color1)' }} onClick={() => { history.push('/more/addDistributer') }}> <AddIcon className="mr-2" />Add Distributor</Button>
                                     </div>}
                                 {hasPermission(permissions, "distributor download") &&
-                                    <Button variant="contained" style={{ background: 'var(--color1)',  color: 'white', textTransform: 'none', paddingLeft: "35px" }}
+                                    <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px" }}
                                         onClick={exportToExcel}
 
                                     >    <img src="/csv-file.png"
-                  className="report-icon absolute mr-10"
-                  alt="csv Icon"
-                />
-                Download</Button>}
+                                        className="report-icon absolute mr-10"
+                                        alt="csv Icon"
+                                        />
+                                        Download</Button>}
                             </div>
 
                         </div>
@@ -449,7 +451,7 @@ const DistributerList = () => {
                                                 <td className="d-flex gap-2">
                                                     <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
                                                     {hasPermission(permissions, "distributor edit") && (
-                                                        <BorderColorIcon style={{ color: "var(--color1)" }}  onClick={() => handleEditOpen(row)} />)}
+                                                        <BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
                                                 </td>
                                             </tr>
                                         );
@@ -488,7 +490,7 @@ const DistributerList = () => {
                                     {currentPage + 1}
                                 </button>
                             )}
-                            <button onClick={handleNext}  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' :   ' text-white'}`}
+                            <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : ' text-white'}`}
                                 disabled={filteredList.length === 0}>
                                 Next </button>
                         </div>
@@ -499,7 +501,7 @@ const DistributerList = () => {
                         <div className="flex justify-center items-center h-auto">
                             <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
                                 <div className="flex justify-between items-center">
-                                    <DialogTitle id="alert-dialog-title" className="text-sky-500">
+                                    <DialogTitle id="alert-dialog-title" className="primary">
                                         {header}
                                     </DialogTitle>
                                     <IconButton
@@ -620,7 +622,7 @@ const DistributerList = () => {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
-                                                
+
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">State</span>
                                                     <TextField
@@ -713,7 +715,7 @@ const DistributerList = () => {
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button autoFocus variant="contained" color="success" onClick={editDistributor}>
+                                    <Button autoFocus variant="contained"  style={{ backgroundColor: "#3f6212", color: "white" }} onClick={editDistributor}>
                                         Update
                                     </Button>
                                     <Button autoFocus variant="contained" color="error" onClick={resetAddDialog}>
@@ -725,7 +727,7 @@ const DistributerList = () => {
                     </Dialog>
 
                     <Dialog open={openUpload} className="custom-dialog">
-                        <DialogTitle id="alert-dialog-title " className="secondary">
+                        <DialogTitle id="alert-dialog-title " className="primary">
                             Import Distributor
                         </DialogTitle>
                         <div className="px-6 ">
@@ -744,7 +746,7 @@ const DistributerList = () => {
                         <DialogContent>
 
                             <DialogContentText id="alert-dialog-description">
-                                <div className="primary">Item File Upload</div>
+                                <div className="secondary">Item File Upload</div>
                                 <div style={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
                                     <div>
 
@@ -752,16 +754,22 @@ const DistributerList = () => {
                                         <span className='errorFile'>*select only .csv File</span>
                                     </div>
                                     <div>
-
-                                        <a href="#" onClick={handleDownload} className='downloadFile'>
+                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                                            <CloudDownloadIcon className="mr-2" />
                                             Sample File Download
-                                        </a>
+                                        </Button>
+
+
                                     </div>
                                 </div>
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button autoFocus variant="contained" color="success" onClick={uploadDistributorFile}>
+                            <Button
+                                autoFocus
+                                style={{ backgroundColor: "#3f6212", color: "white" }}
+                                variant="contained"
+                                onClick={uploadDistributorFile}>
                                 Save
                             </Button>
                         </DialogActions>

@@ -820,7 +820,7 @@ const AddReturnbill = () => {
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
                                 </Select> */}
-                                <Button variant="contained" style={{ background: "rgb(4, 76, 157)" }} onClick={handleSubmit}>Save</Button>
+                                <Button variant="contained" style={{ background: "var(--color1)" }} onClick={handleSubmit}>Save</Button>
                             </div>
                         </div>
                         <div className="bg-white">
@@ -1223,13 +1223,19 @@ const AddReturnbill = () => {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td><Button variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button>
+                                                <td><Button style={{ background: "var(--color1)" }} variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button>
                                                 </td>
                                             </tr>
 
                                             {/* all select */}
                                             {/* {returnItemList?.item_list?.length > 0 && (
-                                                <Checkbox
+                                                <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                     checked={returnItemList?.item_list?.every(item => item.iss_check)}
                                                     onChange={(event) => handleSelectAll(event.target.checked)}
                                                 />
@@ -1240,7 +1246,13 @@ const AddReturnbill = () => {
                                                         display: 'flex', gap: '8px', alignItems: 'center'
                                                     }}>
                                                         <td>
-                                                            <Checkbox
+                                                            <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                                 // key={item.id}
                                                                 checked={item?.iss_check}
                                                                 onClick={(event) => {
@@ -1316,7 +1328,7 @@ const AddReturnbill = () => {
                         <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
 
                             <div>
-                                <span style={{ fontWeight: 600 }}>{finalAmount ? finalAmount : 0}</span>
+                                <span   style={{ fontWeight: 600, color:"var(--color1)"  }}>{finalAmount ? finalAmount : 0}</span>
                             </div>
                             {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{

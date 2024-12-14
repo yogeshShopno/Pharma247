@@ -762,7 +762,7 @@ const DoctorList = () => {
                   <div className="flex justify-between items-center">
                     <DialogTitle
                       id="alert-dialog-title"
-                      className="text-sky-500"
+                      className="primary"
                     >
                       {header}
                     </DialogTitle>

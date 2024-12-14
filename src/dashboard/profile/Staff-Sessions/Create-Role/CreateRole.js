@@ -206,7 +206,13 @@ const CreateRole = () => {
                                         <h2 className="primary text-xl flex items-center">
                                             <PlayArrowIcon className="text-black" />
                                             <span>{role}</span>
-                                            <Checkbox
+                                            <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                 {...label}
                                                 checked={permissionList[role].every(permission => roleChecked[permission])}
                                                 onChange={(event) => {
@@ -222,7 +228,13 @@ const CreateRole = () => {
                                         <div className="pl-8">
                                             {permissionList[role].map((permission, index) => (
                                                 <div key={index} className="flex items-center gap-2">
-                                                    <Checkbox
+                                                    <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                         {...label}
                                                         checked={roleChecked[permission] || false}
                                                         onChange={(event) => handleCheckboxChange(event, permission)}
@@ -241,7 +253,13 @@ const CreateRole = () => {
                                         <h2 className="primary text-xl">
                                             <PlayArrowIcon className="text-black" />
                                             <span>{role}</span>
-                                            <Checkbox
+                                            <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                 {...label}
                                                 checked={permissionList[role].every(permission => roleChecked[permission])}
                                                 onChange={(event) => {
@@ -257,7 +275,13 @@ const CreateRole = () => {
                                         <div className="flex pl-8  gap-4">
                                             {permissionList[role].map((permission, index) => (
                                                 <div key={index} className="flex items-center gap-2">
-                                                    <Checkbox
+                                                    <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                         {...label}
                                                         checked={roleChecked[permission] || false}
                                                         onChange={(event) => handleCheckboxChange(event, permission)}

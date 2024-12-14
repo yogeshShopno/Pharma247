@@ -216,25 +216,55 @@ const SaleSummary = () => {
                                                         All Payment Mode
                                                     </MenuItem>
                                                     {/* <MenuItem value="">
-                                                        <Checkbox checked={paymentMode.length === allOptions.length} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.length === allOptions.length} />
                                                         <ListItemText primary="All" />
                                                     </MenuItem> */}
                                                     <MenuItem value="cash">
-                                                        <Checkbox checked={paymentMode.indexOf('cash') > -1} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('cash') > -1} />
                                                         <ListItemText primary="Cash" />
                                                     </MenuItem>
                                                     <MenuItem value="credit">
-                                                        <Checkbox checked={paymentMode.indexOf('credit') > -1} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('credit') > -1} />
                                                         <ListItemText primary="Credit" />
                                                     </MenuItem>
                                                     {bankData?.map((option) => (
                                                         <MenuItem key={option.id} value={option.id}>
-                                                            <Checkbox checked={paymentMode.indexOf(option.id) > -1} />
+                                                            <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf(option.id) > -1} />
                                                             <ListItemText primary={option.bank_name} />
                                                         </MenuItem>
                                                     ))}
                                                     <MenuItem value="loyaltyPoints">
-                                                        <Checkbox checked={paymentMode.indexOf('loyaltyPoints') > -1} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('loyaltyPoints') > -1} />
                                                         <ListItemText primary="Loyalty Points" />
                                                     </MenuItem>
                                                 </Select>

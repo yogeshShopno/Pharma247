@@ -332,13 +332,29 @@ const ManageExpense = () => {
                         <div style={{ backgroundColor: 'rgb(239 239 239)', padding: '0px 20px 0px' }}>
                             <div className='pt-4' style={{ display: 'flex', gap: '4px' }}>
                                 <div style={{ display: 'flex', gap: '7px', marginBottom: "10px", alignItems: 'center' }}>
-                                    <span style={{ color: 'rgb(4, 76, 157)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '165px' }} >Manage Expense
+                                    <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '165px' }} >Manage Expense
                                     </span>
                                     <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList" style={{ marginBottom: "10px" }}>
-                                    <Button variant="contained" color="primary" style={{ textTransform: 'none' }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>
+                                    <Button variant="contained" style={{ textTransform: 'none' ,background:"var(--color1)" }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
+                                     <Button
+                                                    variant="contained"
+                                                    style={{
+                                                      background: "var(--color1)",
+                                                      color: "white",
+                                                      textTransform: "none",
+                                                      paddingLeft: "35px",
+                                                    }}
+                                                    onClick={handlePdf}
+                                                  >
+                                                    <img src="/csv-file.png"
+                                                      className="report-icon absolute mr-10"
+                                                      alt="csv Icon"
+                                                    />
+                                    
+                                                    Download
+                                                  </Button>
                                 </div>
                             </div>
                             <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0">
@@ -714,6 +730,15 @@ const ManageExpense = () => {
                                                     aria-labelledby="demo-radio-buttons-group-label"
                                                     defaultValue="items"
                                                     name="radio-buttons-group"
+                                                    sx={{
+                                                        color: "var(--color1)", // Apply color to labels
+                                                        '& .MuiRadio-root': {
+                                                          color: "var(--color2)", // Unchecked radio button color
+                                                        },
+                                                        '& .Mui-checked': {
+                                                          color: "var(--color1)", // Checked radio button color
+                                                        },
+                                                      }}
                                                     value={selectedOption}
                                                     onChange={(e) => setSelectedOption(e.target.value)}
                                                 >
@@ -762,6 +787,15 @@ const ManageExpense = () => {
                                                         value={selectedGSTOption}
                                                         onChange={handleGSTOption}
                                                         className="flex"
+                                                        sx={{
+                                                            color: "var(--color1)", // Apply color to labels
+                                                            '& .MuiRadio-root': {
+                                                              color: "var(--color2)", // Unchecked radio button color
+                                                            },
+                                                            '& .Mui-checked': {
+                                                              color: "var(--color1)", // Checked radio button color
+                                                            },
+                                                          }}
                                                     >
                                                         <FormControlLabel value="with_GST" control={<Radio />} label="With GST" />
                                                         <FormControlLabel value="withOut_GST" control={<Radio />} label="Without GST" />

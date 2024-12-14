@@ -55,6 +55,8 @@ const Header = () => {
       ).then((response) => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+
         history.push('/')
       })
     } catch (error) {

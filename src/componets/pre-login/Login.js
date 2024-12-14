@@ -73,7 +73,7 @@ const Login = () => {
             const response = await axios.post('login', data);
 
             if (response.data.status === 200) {
-                const { token, id, name, role, iss_audit } = response.data.data;
+                const { token, id, name, role, iss_audit,status } = response.data.data;
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', id);
                 localStorage.setItem('UserName', name);
@@ -86,12 +86,16 @@ const Login = () => {
                     setTimeout(() => {
                         history.push('/admindashboard');
                     }, 3000);
-                } else if (role === "Staff" && iss_audit === "true") {
+                } else if (role === "Staff" && iss_audit === "true" && status === false) {
                     setTimeout(() => {
                         history.push('/more/reconciliation');
                     }, 3000);
+                }else{
+                    history.push('/admindashboard');
+
                 }
             } else {
+
                 toast.error(response.data.message);
             }
 

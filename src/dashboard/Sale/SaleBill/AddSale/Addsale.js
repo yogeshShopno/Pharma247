@@ -50,11 +50,11 @@ const Addsale = () => {
     const paymentOptions = [
         { id: 1, label: 'Cash' },
         { id: 2, label: 'UPI' }]
-    const pickupOptions = [{ id: 1, label: 'Pickup' }, { id: 2, label: 'Delivery' }]
+    const pickupOptions = [{ id: 1, label: 'Counter' }, { id: 2, label: 'Pickup' }, { id: 3, label: 'Delivery' }]
     const userId = localStorage.getItem("userId");
     const [customer, setCustomer] = useState('')
     const [paymentType, setPaymentType] = useState('cash');
-    const [pickup, setPickup] = useState('Pickup')
+    const [pickup, setPickup] = useState('Counter')
     const [id, setId] = useState('')
     const [error, setError] = useState({ customer: '' });
     const [expiryDate, setExpiryDate] = useState('');
@@ -92,6 +92,8 @@ const Addsale = () => {
     let defaultDate = new Date()
     const [IsDelete, setIsDelete] = useState(false);
     const [searchItem, setSearchItem] = useState('')
+    const [selectedOption, setSelectedOption] = useState(null);
+
     const [itemList, setItemList] = useState([])
     const [customerDetails, setCustomerDetails] = useState([])
     const [doctorData, setDoctorData] = useState([])
@@ -375,6 +377,7 @@ const Addsale = () => {
     const handleOptionChange = (event, newValue) => {
         setUnsavedItems(true);
 
+        setSelectedOption(newValue);
         setValue(newValue);
         const itemName = newValue ? newValue.iteam_name : '';
 
@@ -557,7 +560,7 @@ const Addsale = () => {
             setMRP(selectedEditItem.mrp);
             setQty(item.qty);
             setBase(item.base);
-            setGst(selectedEditItem.gst_name);
+            setGst(item.gst_name);
             setOrder(selectedEditItem.order);
             setItemAmount(selectedEditItem.net_rate);
         }
@@ -861,6 +864,7 @@ const Addsale = () => {
             setIsVisible(false);
             setSearchItem('')
             setBarcodeItemName('')
+            setSelectedOption(null);
         }
     }
 
@@ -929,7 +933,9 @@ const Addsale = () => {
             setBatch('')
             setBarcode("")
             setLoc('')
+            setOrder('')
             setIsEditMode(false);
+            setSelectedOption(null);
         }
         catch (e) {
         }
@@ -1310,7 +1316,7 @@ const Addsale = () => {
                                             }}
                                         >
                                             <Autocomplete
-                                                value={searchItem?.iteam_name}
+                                                value={selectedOption}
                                                 blurOnSelect
                                                 size="small"
                                                 sx={{ fontSize: "1.5rem" }}
@@ -1319,12 +1325,16 @@ const Addsale = () => {
                                                 options={itemList}
                                                 getOptionLabel={(option) => `${option.iteam_name || ''} `}
                                                 renderOption={(props, option) => (
-                                                    <ListItem {...props}
-                                                    >
-
+                                                    <ListItem {...props}>
                                                         <ListItemText
-                                                            primary={`${option.iteam_name},(${option.company})`}
-                                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                                            primary={`${option.iteam_name}, (${option.company})`}
+                                                            secondary={
+                                                                <>
+                                                                    <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                                                    ₹: {option.mrp || 0},
+                                                                    <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                                                </>
+                                                            }
                                                             sx={{
                                                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                                                             }}
@@ -1437,7 +1447,7 @@ const Addsale = () => {
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -1456,7 +1466,7 @@ const Addsale = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                     {searchItem || barcodeItemName}

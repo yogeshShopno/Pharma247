@@ -87,6 +87,8 @@ const EditSaleBill = () => {
   const [ItemSaleList, setItemSaleList] = useState({ sales_item: [] });
   let defaultDate = new Date();
   const [searchItem, setSearchItem] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
+
   const [itemList, setItemList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
   const [doctorData, setDoctorData] = useState([]);
@@ -274,13 +276,13 @@ const EditSaleBill = () => {
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
-   // setCustomer(response.data.data.customer_name)
-   const foundCustomer = customerData.find(
-    (option) => option.name === record.customer_name
-  );
-  setCustomer(foundCustomer || '');
+      // setCustomer(response.data.data.customer_name)
+      const foundCustomer = customerData.find(
+        (option) => option.name === record.customer_name
+      );
+      setCustomer(foundCustomer || '');
 
-  if (record.doctor_name && record.doctor_name !== "-") {
+      if (record.doctor_name && record.doctor_name !== "-") {
         const foundDoctor = doctorData.find(
           (option) => option.name === record.doctor_name
         );
@@ -373,6 +375,7 @@ const EditSaleBill = () => {
   const handleOptionChange = (event, newValue) => {
     setUnsavedItems(true);
 
+    setSelectedOption(newValue);
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
 
@@ -456,7 +459,7 @@ const EditSaleBill = () => {
       setBase(item.base);
       // setBase(selectedEditItem.base);
       setOrder(selectedEditItem.order);
-      setGst(selectedEditItem.gst_name);
+      setGst(item.gst_name);
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
     }
@@ -671,6 +674,8 @@ const EditSaleBill = () => {
       setBarcode("")
       setIsEditMode(false);
       setIsVisible(false);
+      setSelectedOption(null);
+
     } catch (e) {
     }
   };
@@ -1160,7 +1165,7 @@ const EditSaleBill = () => {
                       }}
                     >
                       <Autocomplete
-                        value={searchItem?.iteam_name}
+                        value={selectedOption}
                         size="small"
                         onChange={handleOptionChange}
                         onInputChange={handleInputChange}
@@ -1172,7 +1177,14 @@ const EditSaleBill = () => {
                               // primary={`${option.iteam_name} - ${option.stock}`}
                               // secondary={`weightage: ${option.weightage}`}
                               primary={`${option.iteam_name},(${option.company})`}
-                              secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                              // secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                              secondary={
+                                <>
+                                  <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                  ₹: {option.mrp || 0},
+                                  <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                </>
+                              }
                               sx={{
                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                               }}
@@ -1320,7 +1332,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1345,7 +1357,7 @@ const EditSaleBill = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1476,7 +1488,7 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td><TextField
                             id="outlined-number"
                             type="number"
@@ -1692,7 +1704,7 @@ const EditSaleBill = () => {
 
                     />
                     <div className="">
-                    <span>
+                      <span>
                         {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                       </span>
                     </div>

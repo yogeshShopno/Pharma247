@@ -631,25 +631,6 @@ const Addsale = () => {
 
                     setUnsavedItems(true)
 
-                    // const batch = response?.data?.data[0]?.batch_list[0];
-                    // if (batch) {
-                    //     setUnit(batch.unit);
-                    //     setBatch(batch.batch_name);
-                    //     setExpiryDate(batch.expiry_date);
-                    //     setMRP(batch.mrp);
-                    //     setQty(batch.purchase_qty);
-                    //     setPtr(batch.ptr);
-                    //     setDiscount(batch.discount);
-                    //     setBase(batch.base);
-                    //     setGst(batch.gst_name);
-                    //     setLoc(batch.location);
-                    //     setTotalMargin(batch.margin);
-                    //     setTotalNetRate(batch.net_rate);
-                    //     setSearchItem(batch.iteam_name);
-                    //     setItemId(batch.item_id);
-                    //     setSelectedEditItemId(batch.id);
-                    // }
-                    // setIsEditMode(true)
                 });
         } catch (error) {
             console.error("API error:", error);
@@ -1358,7 +1339,7 @@ const Addsale = () => {
                                                                 },
                                                                 '&.Mui-focused fieldset': {
                                                                     border: 'none',
-                                                                },
+                                                                },  
                                                                 borderBottom: '1px solid ',
                                                             },
                                                             '& .MuiInputBase-input::placeholder': {
@@ -1434,11 +1415,11 @@ const Addsale = () => {
                                     }
 
                                 </table>
-
+                                
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -1457,7 +1438,7 @@ const Addsale = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                     {searchItem || barcodeItemName}
@@ -1587,7 +1568,7 @@ const Addsale = () => {
                                             </tr>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
-                                                    <TextField
+                                                <TextField
                                                         id="outlined-number"
                                                         type="number"
                                                         size="small"
@@ -1655,7 +1636,7 @@ const Addsale = () => {
                                     <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                         <span style={{ fontWeight: 600 }}> {totalgst} </span>
                                         <span style={{ fontWeight: 600 }}>{totalBase} </span>
-                                        <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)}%)</span>
+                                        <span style={{ fontWeight: 600 }}>₹ {marginNetProfit || 0} ({Number(totalMargin || 0).toFixed(2)}%)</span>
                                         <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
                                     </div>
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
@@ -1748,9 +1729,9 @@ const Addsale = () => {
                                         </div>
 
                                         <div className="mt-1">
-                                            <span>-{discountAmount}</span>
-
+                                            {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                                         </div>
+
                                         <div>
                                             <span >{!roundOff ? 0 : roundOff}</span>
                                         </div>

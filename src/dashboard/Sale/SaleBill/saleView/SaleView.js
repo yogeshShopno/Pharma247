@@ -52,13 +52,12 @@ const SaleView = () => {
             setCurrentIndex(index);
             saleBillGetByID(saleData[index].id);
         }
-        //console.log('purchase', saleData);
     }, [id, saleData]);
 
-    useEffect(()=>{
-        localStorage.removeItem("RandomNumber")
-    },[])
-    
+    // useEffect(() => {
+    //     localStorage.removeItem("RandomNumber")
+    // }, [])
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'ArrowRight') {
@@ -278,7 +277,9 @@ const SaleView = () => {
                                 </div>
                                 <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
                                     <span style={{ fontWeight: 600 }}>{tableData?.total_amount}</span>
-                                    <span style={{ fontWeight: 600, color: "red" }}>-{tableData?.discount_amount} ({tableData?.total_discount}%)</span>
+                                    <span style={{ fontWeight: 600, color: "red" }}>{tableData?.discount_amount !== 0 && <span>{tableData?.discount_amount > 0 ? `-${tableData?.discount_amount}` : tableData?.discount_amount}</span>} ({tableData?.total_discount}%)</span>
+
+
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
                                     <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.round_off}</span> */}

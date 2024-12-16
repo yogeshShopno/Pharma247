@@ -39,7 +39,7 @@ const EditSaleBill = () => {
     { id: 1, label: "Cash" },
     { id: 3, label: "UPI" },
   ];
-  const [customer, setCustomer] = useState(null);
+  const [customer, setCustomer] = useState('');
   const [doctor, setDoctor] = useState("");
 
   const pickupOptions = [
@@ -274,8 +274,11 @@ const EditSaleBill = () => {
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
-      setCustomer(response.data.data.customer_name)
-      console.log('customer :>> ', customer);
+      // setCustomer(response.data.data.customer_name)
+      const foundCustomer = customerData.find(
+        (option) => option.name === record.customer_name
+      );
+      setCustomer(foundCustomer || '');
 
       if (record.doctor_name && record.doctor_name !== "-") {
         const foundDoctor = doctorData.find(
@@ -1038,7 +1041,7 @@ const EditSaleBill = () => {
                     <Autocomplete
                       value={customer} // Ensure `customer` is a valid object from `customerDetails`.
                       options={customerDetails}
-                      // getOptionLabel={(option) => option.name || ""}
+                      getOptionLabel={(option) => option.name || ""}
                       isOptionEqualToValue={(option, value) => option.name === value.name}
                       disabled
                       sx={{
@@ -1317,7 +1320,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1342,7 +1345,7 @@ const EditSaleBill = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1473,7 +1476,7 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td><TextField
                             id="outlined-number"
                             type="number"
@@ -1690,7 +1693,7 @@ const EditSaleBill = () => {
                     />
                     <div className="">
                       <span>
-                        -{discountAmount}
+                        {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                       </span>
                     </div>
                     <div className="">

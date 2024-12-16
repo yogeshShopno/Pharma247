@@ -482,8 +482,8 @@ const CustomerList = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                     <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                         <div style={{ display: 'flex', flexWrap: 'wrap', width: '500px', gap: '7px' }}>
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>Customers</span>
-                            <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>Customers</span>
+                            <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
                             {hasPermission(permissions, "customer import") &&
@@ -496,7 +496,7 @@ const CustomerList = () => {
                     </div>
                     <div className="bg-white p-4">
                         <div className="flex flex-wrap gap-6">
-                            <Chip label="Due Only" color="primary"
+                            <Chip label="Due Only" style={{ backgroundColor: "#3f6212", color: "white" }} 
                                 value={chipState.value}
                                 variant={chipState.variant}
                                 onClick={handleChipClick} />
@@ -515,15 +515,33 @@ const CustomerList = () => {
                                         Customer Due Payment
                                     </MenuItem>
                                     <MenuItem value="dueOnly">
-                                        <Checkbox checked={paymentMode.indexOf('dueOnly') > -1} />
+                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('dueOnly') > -1} />
                                         <ListItemText primary="Due Only" />
                                     </MenuItem>
                                     <MenuItem value="active">
-                                        <Checkbox checked={paymentMode.indexOf('active') > -1} />
+                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('active') > -1} />
                                         <ListItemText primary="Active" />
                                     </MenuItem>
                                     <MenuItem value="deactivate">
-                                        <Checkbox checked={paymentMode.indexOf('deactivate') > -1} />
+                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={paymentMode.indexOf('deactivate') > -1} />
                                         <ListItemText primary="Deactivate" />
                                     </MenuItem>
                                 </Select>
@@ -535,7 +553,7 @@ const CustomerList = () => {
                                     style={{
                                         minHeight: '38px',
                                         alignItems: "center",
-                                        background: "rgba(4, 76, 157, 1)"
+                                        background: "var(--color1)"
                                     }}
                                 // onClick={filterData}
                                 >
@@ -662,7 +680,7 @@ const CustomerList = () => {
                             </table>
                         </div>
                         <div className='mt-4 space-x-1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`} disabled={currentPage === 1} >Previous </button>
+                            <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`} disabled={currentPage === 1} >Previous </button>
                             {currentPage > 2 && (
                                 <button
                                     onClick={() => handleClick(currentPage - 2)}
@@ -681,7 +699,7 @@ const CustomerList = () => {
                             )}
                             <button
                                 onClick={() => handleClick(currentPage)}
-                                className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                             >
                                 {currentPage}
                             </button>
@@ -693,7 +711,7 @@ const CustomerList = () => {
                                     {currentPage + 1}
                                 </button>
                             )}
-                            <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`}
+                            <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
                                 disabled={filteredList.length === 0}>
                                 Next </button>
                         </div>
@@ -701,7 +719,7 @@ const CustomerList = () => {
 
                     {/* File Upload Popup */}
                     <Dialog open={openUpload} className="custom-dialog">
-                        <DialogTitle id="alert-dialog-title " className="sky_text">
+                        <DialogTitle id="alert-dialog-title " className="secondary">
                             Import Customer
                         </DialogTitle>
                         <div className="px-6 ">
@@ -720,7 +738,7 @@ const CustomerList = () => {
                         <DialogContent>
 
                             <DialogContentText id="alert-dialog-description">
-                                <div className="darkblue_text">Item File Upload</div>
+                                <div className="primary">Item File Upload</div>
                                 <div style={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
                                     <div>
 
@@ -756,7 +774,7 @@ const CustomerList = () => {
                         <div className="flex justify-center items-center h-auto">
                             <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
                                 <div className="flex justify-between items-center">
-                                    <DialogTitle id="alert-dialog-title" className="text-sky-500">
+                                    <DialogTitle id="alert-dialog-title" className="primary">
                                         {header}
                                     </DialogTitle>
                                     <IconButton
@@ -774,7 +792,7 @@ const CustomerList = () => {
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-2" >
-                                                        <span className="label darkblue_text mb-4" >Customer Name</span>
+                                                        <span className="label primary mb-4" >Customer Name</span>
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
@@ -789,7 +807,7 @@ const CustomerList = () => {
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-2" >
-                                                        <span className="label darkblue_text mb-4" >Mobile No</span>
+                                                        <span className="label primary mb-4" >Mobile No</span>
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <OutlinedInput
@@ -806,7 +824,7 @@ const CustomerList = () => {
 
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Email ID</span>
+                                                    <span className="label primary">Email ID</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -817,7 +835,7 @@ const CustomerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Amount</span>
+                                                    <span className="label primary">Amount</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -832,7 +850,7 @@ const CustomerList = () => {
 
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Area</span>
+                                                    <span className="label primary">Area</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -843,7 +861,7 @@ const CustomerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">City</span>
+                                                    <span className="label primary">City</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -857,7 +875,7 @@ const CustomerList = () => {
 
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">Address</span>
+                                                    <span className="label primary">Address</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"
@@ -869,7 +887,7 @@ const CustomerList = () => {
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label darkblue_text">State</span>
+                                                    <span className="label primary">State</span>
                                                     <TextField
                                                         id="outlined-multiline-static"
                                                         size="small"

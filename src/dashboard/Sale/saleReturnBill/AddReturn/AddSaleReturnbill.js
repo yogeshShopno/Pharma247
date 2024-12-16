@@ -656,10 +656,10 @@ const Salereturn = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <span className="cursor-pointer" style={{ color: 'rgba(12, 161, 246, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "115px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "115px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Select
@@ -730,7 +730,7 @@ const Salereturn = () => {
                                     </div>
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name</span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
                                     <Autocomplete
                                         value={customer}
                                         onChange={handleCustomerOption}
@@ -793,7 +793,7 @@ const Salereturn = () => {
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor </span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
                                         onChange={handleDoctorOption}
@@ -858,7 +858,7 @@ const Salereturn = () => {
                                 <div className='flex items-center gap-4'>
                                     <div className='flex gap-8 pb-4'>
                                         <div >
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Start Date</span>
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date</span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={startDate}
@@ -873,7 +873,7 @@ const Salereturn = () => {
                                         </div>
 
                                         <div>
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>End Date</span>
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={endDate}
@@ -896,7 +896,7 @@ const Salereturn = () => {
                                             alignItems: "center",
                                             height: '41px',
                                             marginTop: "7px",
-                                            background: "rgba(4, 76, 157, 1)"
+                                            background: "var(--color1)"
                                         }}
                                         onClick={validfilter}
                                     >
@@ -905,7 +905,7 @@ const Salereturn = () => {
                                 </div>
 
                                 {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
                                     <TextField id="outlined-basic"
                                         value={address}
@@ -1146,7 +1146,13 @@ const Salereturn = () => {
                                                                     display: 'flex', gap: '8px', alignItems: "center"
                                                                 }}>
                                                                     <td>
-                                                                        <Checkbox
+                                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                                             key={item.id}
                                                                             checked={item?.iss_check}
                                                                             onClick={(event) => {

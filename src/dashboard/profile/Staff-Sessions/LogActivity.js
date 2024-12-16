@@ -70,8 +70,8 @@ const LogActivity = () => {
                         <div className="p-8 w-full">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-2xl flex items-center darkblue_text font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Log Activity
-                                        <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Log Activity
+                                        <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                     </h1>
                                 </div>
                             </div>

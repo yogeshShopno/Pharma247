@@ -54,12 +54,12 @@ const PurchaseRegister = () => {
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '20px 20px 0px' }}>
                     <div style={{ display: 'flex', gap: '4px' }}>
                         <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                             </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '17px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "200px" }}>  GST Purchase Register
+                            <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "200px" }}>  GST Purchase Register
                             </span>
-                            <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
+                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList" style={{ marginBottom: "10px" }}>
                             <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} ><img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
@@ -134,8 +134,8 @@ const PurchaseRegister = () => {
                             </div>
                             <div>
                                 <div className="flex gap-5 ml-auto">
-                                    <span className="darkblue_text text-xl">Total</span>
-                                    <p className="sky_text text-xl">Rs.639.75</p>
+                                    <span className="primary text-xl">Total</span>
+                                    <p className="secondary text-xl">Rs.639.75</p>
                                 </div>
                             </div>
                         </div>

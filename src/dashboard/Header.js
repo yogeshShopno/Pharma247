@@ -24,7 +24,9 @@ import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { encryptData } from "../componets/cryptoUtils";
+
 const Header = () => {
+
   const history = useHistory();
   const permissions = usePermissions();
   const [openModal, setOpenModal] = useState(false);
@@ -43,7 +45,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     let data = new FormData()
-    
+
     try {
       await axios.post('log-out', data, {
         headers: {
@@ -53,6 +55,8 @@ const Header = () => {
       ).then((response) => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+
         history.push('/')
       })
     } catch (error) {
@@ -112,7 +116,6 @@ const Header = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-
       })
     }
     catch (error) {
@@ -169,7 +172,7 @@ const Header = () => {
                     {hasPermission(permissions, "Item master view") && (
                       <div>
                         <button
-                          className="text-white font-semibold py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                          className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                           data-toggle="dropdown"
                         >
                           <Link to="/itemmaster">
@@ -183,7 +186,7 @@ const Header = () => {
                     )}
                     <div>
                       <button
-                        className="text-white font-semibold py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md  primhover inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <Link to='/inventory'>
@@ -196,7 +199,7 @@ const Header = () => {
                     </div>
                     <div className="dropdown relative ">
                       <button
-                        className="text-white font-semibold py-2 px-4   hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                        className="text-white font-semibold py-2 px-4    primhover hover:rounded-md primhover  inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1 ">Purchase</span>
@@ -257,7 +260,7 @@ const Header = () => {
                     </div>
                     <div className="dropdown relative">
                       <button
-                        className="text-white font-semibold py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1">Sales</span>
@@ -310,7 +313,7 @@ const Header = () => {
                       <Link to='/OrderList'>
                         <span
                           href=""
-                          className="text-white font-semibold py-2 hover:bg-lime-800  px-4 transition-all  hover:rounded-md inline-flex items-center"
+                          className="text-white font-semibold py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
                         >
                           Order List
                         </span></Link>
@@ -321,7 +324,7 @@ const Header = () => {
                         <Link to='/adjustStock'>
                           <span
                             href=""
-                            className="text-white font-semibold py-2 hover:bg-lime-800  px-4 transition-all  hover:rounded-md inline-flex items-center"
+                            className="text-white font-semibold py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
                           >
                             Adjust Stock
                           </span></Link>
@@ -329,7 +332,7 @@ const Header = () => {
                     }
                     <div className="dropdown relative" >
                       <button
-                        className="text-white font-semibold py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1">Mores</span>
@@ -437,6 +440,16 @@ const Header = () => {
                               </span>
                             </Link>
                           </li>}
+
+                        <li className="block border-b-2">
+                          <Link to='/more/reconciliation'>
+                            <span
+                              className="bg-white hover:bg-lime-900   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              href=""
+                            >
+                              Reconciliation                              </span>
+                          </Link>
+                        </li>
                         <Link to='/Resports'>
                           <li className="block border-b-2">
                             <span
@@ -494,7 +507,7 @@ const Header = () => {
                       >
 
                         <Box display="flex" justifyContent="space-between" alignItems="center" borderBottom='1px solid rgba(0,0,0,40%)'>
-                          <h1 className="text-2xl p-2 darkblue_text" >Notifications</h1>
+                          <h1 className="text-2xl p-2 primary" >Notifications</h1>
                           <div>
                             <DoneAllIcon style={{ cursor: "pointer" }} />
                           </div>
@@ -650,7 +663,7 @@ const Header = () => {
                   <div>
                     <button
                       style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
-                      className="text-white font-semibold py-2  w-full px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                      className="text-white font-semibold py-2  w-full px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                       data-toggle="dropdown"
                     >
                       <Link to="/itemmaster">
@@ -664,7 +677,7 @@ const Header = () => {
                 <div>
                   <button
                     style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
-                    className="text-white font-semibold  w-full py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                    className="text-white font-semibold  w-full py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                     data-toggle="dropdown"
                   >
                     <Link to='/inventory'>
@@ -678,7 +691,7 @@ const Header = () => {
                 <div className="dropdown relative ">
                   <button
                     style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
-                    className="text-white font-semibold py-2  w-full  px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                    className="text-white font-semibold py-2  w-full  px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                     data-toggle="dropdown"
                   >
                     <span className="mr-1">Purchase</span>
@@ -738,7 +751,7 @@ const Header = () => {
                 <div className="dropdown relative">
                   <button
                     style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
-                    className="text-white font-semibold py-2  w-full px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                    className="text-white font-semibold py-2  w-full px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                     data-toggle="dropdown"
                   >
                     <span className="mr-1">Sales</span>
@@ -791,7 +804,7 @@ const Header = () => {
                     <span
                       style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
                       href=""
-                      className="text-white font-semibold w-full  py-2 hover:bg-lime-800  px-4 transition-all  hover:rounded-md inline-flex items-center"
+                      className="text-white font-semibold w-full  py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
                     >
                       Order List
                     </span></Link>
@@ -802,15 +815,16 @@ const Header = () => {
                       <span
                         style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
                         href=""
-                        className="text-white font-semibold  w-full  py-2 hover:bg-lime-800  px-4 transition-all  hover:rounded-md inline-flex items-center"
+                        className="text-white font-semibold  w-full  py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
                       >
                         Adjust Stock
                       </span></Link>
                   </div>}
+
                 <div className="dropdown relative" >
                   <button
                     style={{ borderBottom: '1px solid rgb(0 0 0 / 40%)' }}
-                    className="text-white font-semibold   w-full  py-2 px-4 transition-all hover:bg-lime-800 hover:rounded-md inline-flex items-center"
+                    className="text-white font-semibold   w-full  py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                     data-toggle="dropdown"
                   >
                     <span className="mr-1">Mores</span>
@@ -918,6 +932,17 @@ const Header = () => {
                           </span>
                         </Link>
                       </li>}
+
+                    <li className="block border-b border-black">
+                      <Link to='/more/reconciliation'>
+                        <span
+                          className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                          href=""
+                        >
+                          Reconciliation                          </span>
+                      </Link>
+                    </li>
+
                     <Link to='/Resports'>
                       <li className="block border-b border-black">
                         <span
@@ -928,6 +953,8 @@ const Header = () => {
                         </span>
                       </li>
                     </Link>
+
+
                     {hasPermission(permissions, "manage expense view") &&
                       <Link to='/more/expense-manage'>
                         <li className="block">

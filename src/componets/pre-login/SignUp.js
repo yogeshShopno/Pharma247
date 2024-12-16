@@ -532,10 +532,10 @@ const SignUp = () => {
               </div>
             </form> :
             <form onSubmit={handleSubmitOTP}>
-              <h5 className="text-3xl font-semibold text-center sky_text my-3">Verify OTP</h5>
+              <h5 className="text-3xl font-semibold text-center secondary my-3">Verify OTP</h5>
               <div>
                 <div>
-                  <label htmlFor="otp" className="block my-2 text-sm font-semibold darkblue_text">OTP</label>
+                  <label htmlFor="otp" className="block my-2 text-sm font-semibold primary">OTP</label>
                   <OutlinedInput
                     type="number"
                     value={otp}
@@ -547,7 +547,7 @@ const SignUp = () => {
 
                 </div>
                 <div>
-                  <span className="flex darkblue_text font-semibold my-2 font-medium">Password</span>
+                  <span className="flex primary font-semibold my-2 font-medium">Password</span>
                   <FormControl variant="outlined">
                     <OutlinedInput
                       value={password}
@@ -572,11 +572,11 @@ const SignUp = () => {
                   </FormControl>
                 </div>
                 <div className='flex justify-end'>
-                  <button type="button" className='darkblue_text my-2'>Resend OTP</button>
+                  <button type="button" className='primary my-2'>Resend OTP</button>
                 </div>
                 <button
                   type="submit"
-                  className="w-full text-white mb-5 bg_darkblue hover:bg-blue-500 rounded-md text-lg px-5 py-3 text-center mt-5"
+                  className="w-full text-white mb-5 secondary-bg hover:bg-blue-500 rounded-md text-lg px-5 py-3 text-center mt-5"
                 >
                   Register
                 </button>

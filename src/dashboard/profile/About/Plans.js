@@ -51,16 +51,16 @@ const Plans = () => {
         <div className="p-8 w-full">
           <div>
             <h1
-              className="text-2xl flex items-center darkblue_text font-semibold  p-2 mb-5"
+              className="text-2xl flex items-center primary font-semibold  p-2 mb-5"
               style={{ marginBottom: "25px" }}
             >
               Active Plan
-              <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+              <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
             </h1>
           </div>
           <div>
             <h1
-              className="text-2xl flex items-center  font-semibold  p-2 mb-5 sky_text"
+              className="text-2xl flex items-center  font-semibold  p-2 mb-5 secondary"
               style={{ marginBottom: "25px" }}
             >
               History
@@ -84,7 +84,7 @@ const Plans = () => {
                     <td key={column.id}>{item[column.id]}</td>
                   ))}
                   <td>
-                    <GetAppIcon className="darkblue_text" />
+                    <GetAppIcon className="primary" />
                   </td>
                 </tr>
               ))}

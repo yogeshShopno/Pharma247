@@ -843,10 +843,10 @@ console.log(initialTotalStock,"initialTotalStock")
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '500px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
+                                <span style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: '#044c9d', fontWeight: 600, fontSize: '18px' }}>Edit </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 {/* <Select
@@ -1258,6 +1258,7 @@ console.log(initialTotalStock,"initialTotalStock")
                                                     <TextField
                                                         id="outlined-basic"
                                                         size="small"
+                                                        autoFocus
                                                         sx={{ width: "75%", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
@@ -1296,7 +1297,13 @@ console.log(initialTotalStock,"initialTotalStock")
                                             {tableData?.item_list?.map((item) => (
                                                 <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
                                                     <td>
-                                                        <Checkbox
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                             checked={item.iss_check}
                                                             onClick={(event) => event.stopPropagation()}
                                                             onChange={(event) => handleChecked(item.id, event.target.checked)}

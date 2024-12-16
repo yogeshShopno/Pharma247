@@ -468,7 +468,7 @@ const DoctorList = () => {
               >
                 <span
                   style={{
-                    color: "rgba(12, 161, 246, 1)",
+                    color: "var(--color2)",
                     display: "flex",
                     fontWeight: 700,
                     fontSize: "20px",
@@ -476,7 +476,7 @@ const DoctorList = () => {
                 >
                   Doctors
                 </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
                 {hasPermission(permissions, "doctor import") && (
@@ -641,7 +641,7 @@ const DoctorList = () => {
                   className={`mx-1 px-3 py-1 rounded ${
                     currentPage === 1
                       ? "bg-gray-200 text-gray-700"
-                      : "bg_darkblue text-white"
+                      : "secondary-bg text-white"
                   }`}
                   disabled={currentPage === 1}
                 >
@@ -665,7 +665,7 @@ const DoctorList = () => {
                 )}
                 <button
                   onClick={() => handleClick(currentPage)}
-                  className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                 >
                   {currentPage}
                 </button>
@@ -682,7 +682,7 @@ const DoctorList = () => {
                   className={`mx-1 px-3 py-1 rounded ${
                     currentPage === rowsPerPage
                       ? "bg-gray-200 text-gray-700"
-                      : "bg_darkblue text-white"
+                      : "secondary-bg text-white"
                   }`}
                   disabled={filteredList.length === 0}
                 >
@@ -693,7 +693,7 @@ const DoctorList = () => {
 
             {/* File Upload Popup */}
             <Dialog open={openUpload}>
-              <DialogTitle id="alert-dialog-title" className="sky_text">
+              <DialogTitle id="alert-dialog-title" className="secondary">
                 Import Doctor
               </DialogTitle>
               <div className="px-6 ">
@@ -762,7 +762,7 @@ const DoctorList = () => {
                   <div className="flex justify-between items-center">
                     <DialogTitle
                       id="alert-dialog-title"
-                      className="text-sky-500"
+                      className="primary"
                     >
                       {header}
                     </DialogTitle>
@@ -780,7 +780,7 @@ const DoctorList = () => {
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <div className="mb-1">
-                              <span className="label darkblue_text mb-4">
+                              <span className="label primary mb-4">
                                 Doctor Name
                               </span>
                               <span className="text-red-600 ml-1">*</span>
@@ -821,7 +821,7 @@ const DoctorList = () => {
                           </div>
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <div className="mb-1">
-                              <span className="label darkblue_text">
+                              <span className="label primary">
                                 Clinic Name
                               </span>
                               {/* <span className="text-red-600 ml-1">*</span> */}
@@ -845,7 +845,7 @@ const DoctorList = () => {
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                            <span className="label darkblue_text">
+                            <span className="label primary">
                               Email ID
                             </span>
                             <TextField
@@ -866,7 +866,7 @@ const DoctorList = () => {
                             }}
                           >
                             <div className="mb-1">
-                              <span className="label darkblue_text">
+                              <span className="label primary">
                                 Mobile No
                               </span>
                               {/* <span className="text-red-600 ml-1">*</span> */}
@@ -892,7 +892,7 @@ const DoctorList = () => {
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                            <span className="label darkblue_text">
+                            <span className="label primary">
                               Licence No.
                             </span>
                             <OutlinedInput
@@ -906,7 +906,7 @@ const DoctorList = () => {
                             />
                           </div>
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                            <span className="label darkblue_text">Address</span>
+                            <span className="label primary">Address</span>
                             <TextField
                               id="outlined-multiline-static"
                               size="small"

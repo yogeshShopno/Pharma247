@@ -507,32 +507,32 @@ const BankAccount = () => {
                                         <div>
                                             <div className="firstrow flex" style={{ background: "none" }} >
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold ">Bank Name</span>
+                                                    <span className="primary font-bold ">Bank Name</span>
                                                     <span className="font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">Bank Account Number</span>
+                                                    <span className="primary font-bold">Bank Account Number</span>
                                                     <span className="font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">Account Type</span>
+                                                    <span className="primary font-bold">Account Type</span>
                                                     <span className="font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">IFSC Code</span>
+                                                    <span className="primary font-bold">IFSC Code</span>
                                                     <span className="font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">Branch Name</span>
+                                                    <span className="primary font-bold">Branch Name</span>
                                                     <span className="font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
 
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">Account Holder Name</span>
+                                                    <span className="primary font-bold">Account Holder Name</span>
                                                     <span className="font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
                                                 </div>
                                                 <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="darkblue_text font-bold">Current Balance</span>
+                                                    <span className="primary font-bold">Current Balance</span>
                                                     <span className="font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
                                                 </div>
                                             </div>
@@ -716,31 +716,31 @@ const BankAccount = () => {
                                     <Box sx={{ marginTop: "20px" }}>
                                         <div className="firstrow flex flex-wrap" style={{ background: "none" }}>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Bank Name</span>
+                                                <span className="primary font-bold">Bank Name</span>
                                                 <span className="font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Bank Account Number</span>
+                                                <span className="primary font-bold">Bank Account Number</span>
                                                 <span className="font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Account Type</span>
+                                                <span className="primary font-bold">Account Type</span>
                                                 <span className="font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">IFSC Code</span>
+                                                <span className="primary font-bold">IFSC Code</span>
                                                 <span className="font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Branch Name</span>
+                                                <span className="primary font-bold">Branch Name</span>
                                                 <span className="font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Account Holder Name</span>
+                                                <span className="primary font-bold">Account Holder Name</span>
                                                 <span className="font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="darkblue_text font-bold">Current Balance</span>
+                                                <span className="primary font-bold">Current Balance</span>
                                                 <span className="font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
                                             </div>
                                         </div>
@@ -833,7 +833,7 @@ const BankAccount = () => {
                         },
                     }}
                 >
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Bank Account
                     </DialogTitle>
                     <IconButton
@@ -849,7 +849,7 @@ const BankAccount = () => {
                                 <div className="flex gap-5 ">
                                     <div  >
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Bank Name</span>
+                                            <span className="label primary mb-4" >Bank Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -865,7 +865,7 @@ const BankAccount = () => {
                                     </div>
                                     <div>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >Account Type</span>
+                                            <span className="label primary" >Account Type</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -883,7 +883,7 @@ const BankAccount = () => {
                                 <div className="flex gap-5">
                                     <div >
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Opening Balance</span>
+                                            <span className="label primary mb-4" >Opening Balance</span>
                                         </div>
                                         <TextField
                                             id="outlined-multiline-static"
@@ -896,7 +896,7 @@ const BankAccount = () => {
                                     </div>
                                     <div>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >As of Date</span>
+                                            <span className="label primary" >As of Date</span>
                                         </div>
                                         <div className="detail">
                                             <div style={{ width: "215px" }}>
@@ -922,7 +922,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5 my-4">
                                         <div >
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text mb-4" >Bank Account Number</span>
+                                                <span className="label primary mb-4" >Bank Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -938,7 +938,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text" >Re-Enter Account Number</span>
+                                                <span className="label primary" >Re-Enter Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -956,7 +956,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5 my-4">
                                         <div >
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text mb-4" >IFSC Code</span>
+                                                <span className="label primary mb-4" >IFSC Code</span>
                                                 <span className="text-red-600 ml-1">*</span>
 
                                             </div>
@@ -973,7 +973,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text" >Branch Name</span>
+                                                <span className="label primary" >Branch Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <div className="detail">
@@ -996,7 +996,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5">
                                         <div >
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text mb-4" >Account Holder Name</span>
+                                                <span className="label primary mb-4" >Account Holder Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
 
                                             </div>
@@ -1012,7 +1012,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2" >
-                                                <span className="label darkblue_text" >UPI ID</span>
+                                                <span className="label primary" >UPI ID</span>
                                             </div>
                                             <div className="detail">
                                                 <TextField
@@ -1055,7 +1055,7 @@ const BankAccount = () => {
                         },
                     }}
                 >
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Bank Account
                     </DialogTitle>
                     <IconButton
@@ -1071,7 +1071,7 @@ const BankAccount = () => {
                                 <div className="flex gap-5 " style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
                                     <div>
                                         <div className="mb-2">
-                                            <span className="label darkblue_text mb-4">Bank Name</span>
+                                            <span className="label primary mb-4">Bank Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1087,7 +1087,7 @@ const BankAccount = () => {
                                     </div>
                                     <div>
                                         <div className="mb-2">
-                                            <span className="label darkblue_text">Account Type</span>
+                                            <span className="label primary">Account Type</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1105,7 +1105,7 @@ const BankAccount = () => {
                                 <div className="flex gap-5" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
                                     <div>
                                         <div className="mb-2">
-                                            <span className="label darkblue_text mb-4">Opening Balance</span>
+                                            <span className="label primary mb-4">Opening Balance</span>
                                         </div>
                                         <TextField
                                             id="outlined-multiline-static"
@@ -1119,7 +1119,7 @@ const BankAccount = () => {
                                     </div>
                                     <div>
                                         <div className="mb-2">
-                                            <span className="label darkblue_text">As of Date</span>
+                                            <span className="label primary">As of Date</span>
                                         </div>
                                         <div className="detail">
                                             <div style={{ width: fullScreen ? "100%" : "215px" }}>
@@ -1144,7 +1144,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5 my-4" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text mb-4">Bank Account Number</span>
+                                                <span className="label primary mb-4">Bank Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -1160,7 +1160,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text">Re-Enter Account Number</span>
+                                                <span className="label primary">Re-Enter Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -1178,7 +1178,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5 my-4" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text mb-4">IFSC Code</span>
+                                                <span className="label primary mb-4">IFSC Code</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -1194,7 +1194,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text">Branch Name</span>
+                                                <span className="label primary">Branch Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <div className="detail">
@@ -1214,7 +1214,7 @@ const BankAccount = () => {
                                     <div className="flex gap-5" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text mb-4">Account Holder Name</span>
+                                                <span className="label primary mb-4">Account Holder Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
@@ -1230,7 +1230,7 @@ const BankAccount = () => {
                                         </div>
                                         <div>
                                             <div className="mb-2">
-                                                <span className="label darkblue_text">UPI ID</span>
+                                                <span className="label primary">UPI ID</span>
                                             </div>
                                             <div className="detail">
                                                 <TextField
@@ -1258,7 +1258,7 @@ const BankAccount = () => {
                 {/* className="custom-dialog" */}
                 {/* Add Fund Dialog Box */}
                 <Dialog open={openAddPopUpAdjust} >
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Adjust Balance
                     </DialogTitle>
                     <IconButton
@@ -1310,7 +1310,7 @@ const BankAccount = () => {
                             <div className="detail mb-4 ">
                                 <div className="flex justify-between gap-5">
                                     <div className="mb-2">
-                                        <span className="label darkblue_text">Current Balance</span>
+                                        <span className="label primary">Current Balance</span>
                                         <div >
                                             <OutlinedInput
                                                 type="number"
@@ -1324,7 +1324,7 @@ const BankAccount = () => {
                                         </div>
                                     </div>
                                     <div className="mb-2">
-                                        <span className="label darkblue_text">Date</span>
+                                        <span className="label primary">Date</span>
                                         <div >
                                             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
@@ -1352,7 +1352,7 @@ const BankAccount = () => {
                             <div className="detail mb-4 ">
                                 <div className="flex justify-between gap-5">
                                     <div className="mb-2">
-                                        <span className="label darkblue_text">Enter Amount</span>
+                                        <span className="label primary">Enter Amount</span>
                                         <div>
                                             <OutlinedInput
                                                 type="number"
@@ -1366,7 +1366,7 @@ const BankAccount = () => {
                                         </div>
                                     </div>
                                     <div className="mb-2">
-                                        <span className="label darkblue_text">Latest Balance</span>
+                                        <span className="label primary">Latest Balance</span>
                                         <div>
                                             <OutlinedInput
                                                 type="number"

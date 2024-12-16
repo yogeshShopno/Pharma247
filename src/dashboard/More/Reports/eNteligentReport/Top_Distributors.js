@@ -113,12 +113,12 @@ const Top_Distributor = () => {
                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
                         <div className="flex gap-2 pb-2">
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "110px" }}> Top Distributors
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "110px" }}> Top Distributors
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 sky_text hover-yellow" />
+                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList" >
                                 <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV} > <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>

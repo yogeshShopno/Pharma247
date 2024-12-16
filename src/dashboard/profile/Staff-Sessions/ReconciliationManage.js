@@ -1,0 +1,228 @@
+import { useEffect, useState } from "react";
+
+import Loader from "../../../componets/loader/Loader";
+import Header from "../../Header";
+import ProfileView from "../ProfileView";
+import { Box, Switch, TextField, Button, Tab, Tabs, Typography } from "@mui/material";
+import { BsLightbulbFill } from "react-icons/bs";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
+const ReconciliationManage = () => {
+  const token = localStorage.getItem("token");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [reconciliationData, setReconciliationData] = useState({});
+  const [toggle, setToggle] = useState(false);
+
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
+
+  useEffect(() => {
+    getData()
+  }, []);
+
+  useEffect(() => {
+    console.log(toggle, "Toggle state updated"); // Log toggle whenever it updates
+  }, [toggle]);
+
+  const getData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post("reconciliation-iteam-list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = res.data.data;
+      console.log(data.iss_audit, "Raw iss_audit from API"); // Debug API value
+      console.log(typeof data.iss_audit, "Type of iss_audit from API"); // Debug its type
+
+      setReconciliationData(data);
+      setCount(Number(data.iteam_count));
+
+      // Explicitly convert to boolean
+      setToggle(data.iss_audit === true || data.iss_audit === "true" || data.iss_audit === 1);
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+  const updateReconciliation = async () => {
+    const formData = new FormData();
+    formData.append("iss_audit", toggle);
+    formData.append("iteam_count", count);
+
+    try {
+      setIsLoading(true);
+      const res = await axios.post("reconciliation-list", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.status === 200) {
+        toast.success("Updated successfully");
+        getData(); // Refresh data after update
+      }
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+  const handleRestart = async () => {
+    try {
+      await axios.post("reconciliation-restart", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("reconciliation restarted")
+
+    } catch (error) {
+      console.error("API error while updating:", error);
+    }
+  };
+
+
+
+  return (
+    <>
+      <Header />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {isLoading ? (
+        <div className="loader-container">
+          <Loader />
+        </div>
+      ) : (
+        <div>
+          <Box sx={{ display: "flex" }}>
+            <ProfileView />
+            <div className="p-8 w-full">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-2xl flex items-center primary font-semibold p-2 mr-4">
+                    Manage Reconciliation Audit
+                    <BsLightbulbFill className="ml-4 secondary hover-yellow" />
+
+                  </h1>
+                </div>
+
+              </div>
+
+              <div className="flex flex-col items-start mt-6 p-4 bg-white rounded-lg shadow-lg w-80">
+
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Daily Item Counts:</span>
+                  <TextField
+                    id="outlined-number"
+                    placeholder="Item Count"
+                    value={count}
+                    type="number"
+                    style={{ width: "50px", marginInline: "5px" }}
+                    size="small"
+                    className="border border-gray-300 rounded px-2 py-1"
+                    onChange={(e) => {
+                      const newCount = Number(e.target.value);
+                      if(newCount>24){
+                        toast.error("can not set more than 24")
+                      }else{
+                      setCount(newCount);
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Turn On Reconciliation */}
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Turn on reconciliation:</span>
+                  <Switch
+                    checked={toggle}
+                    sx={{
+                      "& .MuiSwitch-track": {
+                        backgroundColor: "lightgray",
+                      },
+                      "&.Mui-checked .MuiSwitch-track": {
+                        backgroundColor: "var(--color1) !important",
+                      },
+                      "& .MuiSwitch-thumb": {
+                        backgroundColor: "var(--color1)",
+                      },
+                      "&.Mui-checked .MuiSwitch-thumb": {
+                        backgroundColor: "var(--color1)",
+                      },
+                    }}
+                    onChange={() => {
+                      console.log(!toggle, "Switch toggled");
+                      setToggle(!toggle);
+                    }}
+                  />
+
+
+                </div>
+
+                {/* Restart Reconciliation */}
+                <div className="flex flex-row justify-between items-center w-full mb-4">
+                  <span className="text-gray-700 font-medium">Restart reconciliation:</span>
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color6)",
+                      color: "white",
+                    }}
+                    className="px-4 py-2 text-sm rounded-lg shadow hover:opacity-90"
+                    onClick={handleRestart}
+                  >
+                    Restart
+                  </Button>
+                </div>
+
+                {/* Submit Button */}
+                <div className="w-full">
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color1)",
+                      color: "white",
+                    }}
+                    className="w-full py-2 text-sm font-medium rounded-lg shadow hover:opacity-90"
+                    onClick={updateReconciliation}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
+
+            </div>
+
+          </Box>
+
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ReconciliationManage;

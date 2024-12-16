@@ -181,14 +181,14 @@ const ReturnView = () => {
                 <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: '150px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData?.bill_no}</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: '150px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData?.bill_no}</span>
                             {hasPermission(permissions, "purchase return bill edit") && (
-                                <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                    <Button variant="contained" color='primary' onClick={() => {history.push('/return/edit/' + tableData.id)}} >< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' ,}}>
+                                    <Button  style={{ backgroundColor: 'var(--color1)', }} variant="contained" onClick={() => {history.push('/return/edit/' + tableData.id)}} >< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
                                 </div>)}
                         </div>
                     </div>

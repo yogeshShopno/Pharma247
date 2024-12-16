@@ -132,8 +132,8 @@ const ManageStaffRole = () => {
                         <div className="p-8 w-full">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-2xl flex items-center darkblue_text font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Manage Staff Roles
-                                        <BsLightbulbFill className="ml-4 sky_text  hover-yellow" />
+                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Manage Staff Roles
+                                        <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                     </h1>
                                 </div>
 
@@ -171,8 +171,8 @@ const ManageStaffRole = () => {
                                             })}
                                             <td className="flex justify-center">
                                                 <div className="flex" >
-                                                    <VisibilityIcon className="darkblue_text mr-3 " onClick={() => handelAddOpen(item.id)} />
-                                                    <BorderColorIcon className="darkblue_text mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
+                                                    <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
+                                                    <BorderColorIcon className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
                                                     <Tooltip title="Deactivate" className="">
                                                         {item.status == 'Active' ?
                                                             <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
@@ -187,7 +187,7 @@ const ManageStaffRole = () => {
                         </div>
                     </Box>
                     <Dialog open={openAddPopUp} sx={{ '& .MuiDialog-paper': { maxWidth: '1000px', width: '50%' } }} >
-                        <DialogTitle id="alert-dialog-title" className="sky_text">
+                        <DialogTitle id="alert-dialog-title" className="secondary">
                             {header}
                         </DialogTitle>
                         <IconButton

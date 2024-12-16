@@ -30,6 +30,8 @@ const debounce = (func, delay) => {
   };
 };
 
+
+
 const AddPurchaseBill = () => {
   const searchItemField = useRef();
   const inputRef1 = useRef();
@@ -83,7 +85,9 @@ const AddPurchaseBill = () => {
   const userId = localStorage.getItem("userId");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
+
   const [ItemId, setItemId] = useState(0);
+
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(0);
@@ -94,7 +98,8 @@ const AddPurchaseBill = () => {
   const [otherAmt, setOtherAmt] = useState(0);
   const [batchListData, setBatchListData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
-  const [header, setHeader] = useState('');
+  const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
+
   const [selectedRows, setSelectedRows] = useState([]);
   const [purchaseReturnPending, setPurchaseReturnPending] = useState([])
   const [finalPurchaseReturnList, setFinalPurchaseReturnList] = useState([]);
@@ -108,6 +113,11 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
+
+  const [addItemName, setAddItemName] = useState("");
+  const [addBarcode, setAddBarcode] = useState("");
+  const [addUnit, setAddUnit] = useState("");
+  const [barcodeBatch, setBarcodeBatch] = useState("");
 
 
   const paymentOptions = [
@@ -129,9 +139,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     generateRandomNumber()
-
     const initialize = async () => {
-
       try {
         await handleLeavePage();
       } catch (error) {
@@ -191,7 +199,6 @@ const AddPurchaseBill = () => {
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
-
     // Calculate totalAmount
     const totalAmount = parseFloat(
       (totalBase + (totalBase * gst.name) / 100).toFixed(2)
@@ -213,7 +220,8 @@ const AddPurchaseBill = () => {
     // Margin Caluculation
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-  }, [qty, ptr, disc, gst.name, free]);
+
+  }, [qty, ptr, disc, gst.name, free,ItemTotalAmount,barcodeBatch]);
 
   useEffect(() => {
     const total = Object.values(cnTotalAmount)
@@ -257,65 +265,7 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  // const handleBarcode = async () => {
-  //   if (!barcode) {
-  //     return;
-  //   }
-  //   let data = new FormData();
-  //   data.append("barcode", barcode);
 
-  //   const params = {
-  //     random_number: localStorage.getItem("RandomNumber"),
-  //   };
-  //   try {
-  //     const res = axios
-  //       .post("barcode-batch-list?", data, {
-  //         // params: params,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         // console.log(response?.data?.data[0]?.id,"response")
-  //         setValue(response?.data?.data[0]?.id)
-  //         // setValue.unit_id(response.data.data[0]?.unit)
-
-  //         setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
-  //         setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-  //         setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-  //         // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-  //         setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
-  //         setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
-  //         setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-  //         setQty(response?.data?.data[0]?.batch_list[0]?.qty)
-  //         setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-  //         setBase(response?.data?.data[0]?.batch_list[0]?.base)
-  //         setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
-  //         setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-  //         setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-  //         setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-
-  //         setGst({
-  //           id: response?.data?.data[0]?.batch_list[0]?.gst,
-  //           name: response?.data?.data[0]?.batch_list[0]?.gst_name,
-  //         });
-
-  //         setSelectedEditItemId(response?.data?.data[0]?.id)
-  //         setItemEditID(response.data.data[0]?.id)
-  //         setIsEditMode(true)
-  //         const timeoutId = setTimeout(() => {
-  //           handleAddButtonClick()
-  //         }, 1000);
-  //         return () => clearTimeout(timeoutId);
-
-  //         // handleAddItem()
-
-  //       });
-  //   } catch (error) {
-  //     console.error("API error:", error);
-  //   }
-  // };
   const handleBarcode = async () => {
     if (!barcode) {
       return;
@@ -358,93 +308,124 @@ const AddPurchaseBill = () => {
 
           // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
           // setValue.unit_id(response.data.data[0]?.unit)
-
-          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+        
+          setBarcodeBatch(response?.data?.data[0])
+          setUnit(Number(response?.data?.data[0]?.batch_list[0]?.unit))
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
           setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
-          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
-          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
-          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-          setBase(response?.data?.data[0]?.batch_list[0]?.base)
-          setGst({
-            id: response?.data?.data[0]?.batch_list[0]?.gst,
-            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
-          });
+          setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
+          setQty(Number(response?.data?.data[0]?.batch_list[0]?.unit))
+          setFree(Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty))
+          setPTR(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
+          setDisc(Number(response?.data?.data[0]?.batch_list[0]?.discount))
+          setSchAmt(Number(response?.data?.data[0]?.batch_list[0]?.scheme_account))
+          setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
+          setGst(Number( response?.data?.data[0]?.batch_list[0]?.gst));
           setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+          setMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
+          setNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
+          setSearchItem(response?.data?.data[0]?.iteam_name)
 
-          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
-          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+          setItemId(Number(response.data.data[0]?.id))
+          setItemEditID(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
+          setSelectedEditItemId(Number(response?.data?.data[0]?.id))
+          setItemEditID(Number(response.data.data[0]?.id))
+          
+          setTimeout(() => {
+            if(ItemTotalAmount !=0){
+              handleBarcodeItem()
 
-          setSelectedEditItemId(response?.data?.data[0]?.id)
-          setItemEditID(response.data.data[0]?.id)
-          // setIsEditMode(true)
+            }
+          }, 1000);
 
+         
           // handleAddBarcodeItem(data)
-
-
-
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
 
-  // const handleAddBarcodeItem = async (data) => {
-  //   const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
-  //   // data.append("total_amount", totalAmount);
-  //   const params = {
-  //     id: selectedEditItemId,
-  //   };
-  //   try {
-  //     const response = await axios.post("item-purchase", data, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     //console.log("response", response);
-  //     setUnsavedItems(true);
-  //     setItemTotalAmount(0);
-  //     setDeleteAll(true);
-  //     itemPurchaseList();
-  //     setUnit("");
-  //     setBatch("");
-  //     setExpiryDate("");
-  //     setMRP("");
-  //     setQty("");
-  //     setFree("");
-  //     setPTR("");
-  //     setGst("");
-  //     setDisc("");
-  //     setBase("");
-  //     setNetRate("");
-  //     setSchAmt("");
-  //     setBatch("");
-  //     setMargin("");
-  //     setLoc("");
+  const handleBarcodeItem = async () => {
+    setUnsavedItems(true)
+    let data = new FormData();
 
-  //     if (ItemTotalAmount <= finalCnAmount) {
-  //       setFinalCnAmount(0);
-  //       setSelectedRows([]);
-  //       setCnTotalAmount({});
-  //     }
-  //     // setNetAmount(totalAmount)
-  //     // handleCalNetAmount()
-  //     setIsEditMode(false);
-  //     setSelectedEditItemId(null);
-  //     searchItemField.current.focus();
-  //     setValue("");
-  //     setSearchItem("");
-  //     // setAutocompleteDisabled(false);
-  //   } catch (e) {
-  //     //console.log(e);
-  //   }
-  // };
+    
+    data.append("random_number", localStorage.getItem("RandomNumber"));
+    data.append("weightage", unit ? Number(unit) : 1);
+    data.append("batch_number", batch ? batch : 0);
+    data.append("expiry", expiryDate);
+    data.append("mrp", mrp ? mrp : 0);
+    data.append("qty", qty ? qty : 0);
+    data.append("free_qty", free ? free : 0);
+    data.append("ptr", ptr ? ptr : 0);
+    data.append("discount", disc ? disc : 0);
+    data.append("scheme_account", schAmt ? schAmt : 0);
+    data.append("base_price", base ? base : 0);
+    data.append("gst", gst.id);
+    data.append("location", loc ? loc : 0);
+    data.append("margin", margin ? margin : 0);
+    data.append("net_rate", netRate ? netRate : 0);
+    data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+    
+
+    data.append("item_id", ItemId);
+    data.append("unit_id", Number(0));
+    data.append("user_id", userId);
+    data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+    data.append("total_amount", ItemTotalAmount ? ItemTotalAmount : 0);
+   
+    const params = {
+      id: selectedEditItemId,
+    };
+    try {
+      const response = await axios.post("item-purchase", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      //console.log("response", response);
+
+      setItemTotalAmount(0);
+      setDeleteAll(true);
+      itemPurchaseList();
+      setUnit("");
+      setBatch("");
+      setExpiryDate("");
+      setMRP("");
+      setQty("");
+      setFree("");
+      setPTR("");
+      setGst("");
+      setDisc("");
+      setBase("");
+      setNetRate("");
+      setSchAmt("");
+      setBatch("");
+      setMargin("");
+      setLoc("");
+
+      if (ItemTotalAmount <= finalCnAmount) {
+        setFinalCnAmount(0);
+        setSelectedRows([]);
+        setCnTotalAmount({});
+      }
+      // setNetAmount(totalAmount)
+      // handleCalNetAmount()
+      setIsEditMode(false);
+      setSelectedEditItemId(null);
+
+      setBarcode("")
+      setValue("")
+      // Reset Autocomplete field
+      setValue("");
+      setSearchItem("");
+
+      // setAutocompleteDisabled(false);
+    } catch (e) {
+      //console.log(e);
+    }
+  }
 
   const handlePopState = () => {
     let data = new FormData();
@@ -619,7 +600,7 @@ const AddPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!batch) newErrors.batch = "Batch is required";
+    // if (!batch) newErrors.batch = "Batch is required";
     if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -682,10 +663,12 @@ const AddPurchaseBill = () => {
       data.append("unit_id", unitEditID);
     } else {
       if (barcode) {
+
         data.append("item_id", ItemId);
         data.append("unit_id", Number(0));
 
       } else {
+
         data.append("item_id", value.id);
 
         data.append("unit_id", Number(value.unit_id));
@@ -766,10 +749,59 @@ const AddPurchaseBill = () => {
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
-     
+
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
+    }
+  };
+
+  const handleAddNewItem = async () => {
+    let formData = new FormData();
+    formData.append("item_name", addItemName ? addItemName : "");
+    formData.append("unite", addUnit ? addUnit : "");
+    formData.append("weightage", addUnit ? addUnit : "");
+    formData.append("pack", addUnit ? "1" + addUnit : "");
+    formData.append("barcode", addBarcode ? addBarcode : "");
+
+    formData.append("packaging_id", "");
+    formData.append("drug_group", "");
+    formData.append("gst", "");
+    formData.append("location", "");
+    formData.append("mrp", "");
+    formData.append("minimum", "");
+    formData.append("maximum", "");
+    formData.append("discount", "");
+    formData.append("margin", "");
+    formData.append("hsn_code", "");
+    formData.append("message", "");
+    formData.append("item_category_id", "");
+    formData.append("pahrma", "");
+    formData.append("distributer", "");
+    formData.append("front_photo", "");
+    formData.append("back_photo", "");
+    formData.append("mrp_photo", "");
+
+    try {
+      const response = await axios.post("create-iteams", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.status === 200) {
+        //console.log("response===>", response.data);
+        toast.success(response.data.message);
+        setOpenAddItemPopUp(false)
+      } else if (response.data.status === 400) {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Please try again later");
+      }
     }
   };
 
@@ -915,6 +947,57 @@ const AddPurchaseBill = () => {
 
   }, [selectedEditItem]);
 
+  // useEffect(() => {
+  //   if (barcodeBatch) {
+  //     setUnitEditID(barcodeBatch.unit_id);
+  //     setUnit(barcodeBatch.unit);
+  //     setBatch(barcodeBatch.batch_number);
+  //     setExpiryDate(barcodeBatch.expiry_date);
+  //     setMRP(barcodeBatch.mrp);
+  //     setQty(barcodeBatch.qty);
+  //     setFree(barcodeBatch.purchase_free_qty);
+  //     setPTR(barcodeBatch.ptr);
+  //     setDisc(barcodeBatch.discount);
+  //     setSchAmt(barcodeBatch.scheme_account);
+  //     setBase(barcodeBatch.base_price);
+  //     setGst(barcodeBatch.gst);
+  //     setLoc(barcodeBatch.location);
+  //     setMargin(barcodeBatch.margin);
+  //     setNetRate(barcodeBatch.net_rate);
+  //     setSearchItem(barcodeBatch.iteam_name);
+  //     setItemEditID(barcodeBatch.item_id);
+
+  //   }
+  //   const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+  //   setSchAmt(totalSchAmt);
+
+  //   // Calculate totalBase
+  //   const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+  //   setItemTotalAmount(0);
+  //   setBase(totalBase);
+  //   // Calculate totalAmount
+  //   const totalAmount = parseFloat(
+  //     (totalBase + (totalBase * gst.name) / 100).toFixed(2)
+  //   );
+  //   if (totalAmount) {
+  //     setItemTotalAmount(totalAmount);
+  //   } else {
+  //     setItemTotalAmount(0);
+  //   }
+
+  //   // Net Rate calculation
+  //   const numericQty = parseFloat(qty) || 0;
+  //   const numericFree = parseFloat(free) || 0;
+  //   const netRate = parseFloat(
+  //     (totalAmount / (numericQty + numericFree)).toFixed(2)
+  //   );
+  //   setNetRate(netRate);
+
+  //   // Margin Caluculation
+  //   const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
+  //   setMargin(Margin);
+  // }, [barcodeBatch]);
+
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -950,12 +1033,17 @@ const AddPurchaseBill = () => {
 
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
-    setHeader('Add Amount');
     purchaseReturnData();
   }
+  const handelAddItemOpen = () => {
+    setUnsavedItems(true)
+    setOpenAddItemPopUp(true);
+  }
+
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
+    setOpenAddItemPopUp(false);
     // setCnAmount(0);
     // setSelectedRows("")
     // setCnTotalAmount("")
@@ -969,12 +1057,11 @@ const AddPurchaseBill = () => {
   };
 
   const handleInputChange = (event, newInputValue) => {
-    setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    setSearchItem(newInputValue.toUpperCase());
+    handleSearch(newInputValue.toUpperCase());
   };
 
   const handleOptionChange = (event, newValue) => {
-    console.log(newValue)
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
@@ -1226,7 +1313,7 @@ const AddPurchaseBill = () => {
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
-                  color: "rgba(12, 161, 246, 1)",
+                  color: "var(--color1)",
                   alignItems: "center",
                   fontWeight: 700,
                   fontSize: "20px",
@@ -1242,12 +1329,12 @@ const AddPurchaseBill = () => {
                 style={{
                   fontSize: "18px",
                   marginTop: "8px",
-                  color: "rgba(4, 76, 157, 1)",
+                  color: "var(--color1)",
                 }}
               />
               <span
                 style={{
-                  color: "rgba(4, 76, 157, 1)",
+                  color: "var(--color1)",
                   alignItems: "center",
                   fontWeight: 700,
                   fontSize: "20px",
@@ -1255,7 +1342,7 @@ const AddPurchaseBill = () => {
               >
                 New
               </span>
-              <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+              <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
             </div>
 
             <div className="headerList">
@@ -1279,7 +1366,7 @@ const AddPurchaseBill = () => {
               </Select> */}
               <Button
                 variant="contained"
-                style={{ background: "rgb(4, 76, 157)" }}
+                style={{ background: "var(--color1)" }}
                 onClick={handleSubmit}
               >
                 Save
@@ -1292,7 +1379,7 @@ const AddPurchaseBill = () => {
                 <span className="title mb-2">
                   Distributor
                   <FaPlusCircle
-                    className="darkblue_text cursor-pointer"
+                    className="primary cursor-pointer"
                     onClick={() => {
                       history.push("../../more/addDistributer");
                     }}
@@ -1311,7 +1398,9 @@ const AddPurchaseBill = () => {
                   onChange={handleDistributorChange}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params}
+                    autoFocus
+                  />}
                 />
                 {error.distributor && (
                   <span style={{ color: "red", fontSize: "12px" }}>
@@ -1340,7 +1429,7 @@ const AddPurchaseBill = () => {
                   style={{ width: "250px" }}
                   value={billNo}
                   onChange={(e) => {
-                    setbillNo(e.target.value);
+                    setbillNo(e.target.value.toUpperCase());
                   }}
                 />
                 {error.billNo && (
@@ -1379,7 +1468,10 @@ const AddPurchaseBill = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  style={{ textTransform: 'none', marginTop: "25px" }}
+
+                  style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
+
+
                   onClick={handelAddOpen}
                   disabled={!distributor || ItemPurchaseList?.item?.length === 0}
                 >
@@ -1424,6 +1516,17 @@ const AddPurchaseBill = () => {
                   )}
                 />
               )}
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "var(--color1)" }}
+
+                onClick={handelAddItemOpen}
+              >
+                <ControlPointIcon className="mr-2" />
+                Add New Item
+              </Button>
+
+
               <div className="overflow-x-auto ">
                 <table className="customtable  w-full border-collapse custom-table">
                   <thead>
@@ -1505,7 +1608,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={batch}
                               sx={{ width: "90px" }}
-                              error={!!errors.batch}
+                              // error={!!errors.batch}
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
@@ -1786,10 +1889,11 @@ const AddPurchaseBill = () => {
 
                             <Button
                               variant="contained"
-                              color="success"
+                              style={{ backgroundColor: "var(--color1)" }}
+
                               onClick={handleAddButtonClick}
                             >
-                              <ControlPointIcon />
+                              <ControlPointIcon className="mr-2" />
                               Add
                             </Button>
                           </td>
@@ -1977,8 +2081,8 @@ const AddPurchaseBill = () => {
         </div>
         {/* CN amount PopUp Box */}
         <Dialog open={openAddPopUp} >
-          <DialogTitle id="alert-dialog-title" className="sky_text">
-            {header}
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Add Amount
           </DialogTitle>
           <IconButton
             aria-label="close"
@@ -2059,6 +2163,98 @@ const AddPurchaseBill = () => {
             <Button autoFocus variant="contained" color="success" onClick={handleCnAmount} >
               Save
             </Button>
+          </DialogActions>
+        </Dialog >
+        {/* add item  PopUp Box */}
+
+        <Dialog open={openAddItemPopUp} >
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Add New Item
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={resetAddDialog}
+            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+          ><CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+
+              <div className="bg-white">
+                <div
+                  className="mainform bg-white rounded-lg"
+                  style={{ padding: "20px" }}
+                >
+                  <div className="row">
+                    <div className="fields">
+                      <label className="label secondary">Item Name</label>
+                      <TextField
+                        id="outlined-number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addItemName}
+                        onChange={(e) => setAddItemName(e.target.value)}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label  secondary">Barcode</label>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addBarcode}
+                        onChange={(e) => setAddBarcode(Number(e.target.value))}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label secondary">Unit</label>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addUnit}
+                        onChange={(e) => setAddUnit(e.target.value)}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label secondary">Pack</label>
+                      <TextField
+                        disabled
+                        id="outlined-number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={`1 * ${addUnit} `}
+                      />
+                    </div>
+
+
+                  </div>
+                </div>
+
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#3f6212",
+                "&:hover": {
+                  backgroundColor: "#3f6212", // Keep the hover color same
+                },
+              }}
+              onClick={handleAddNewItem}
+
+            >
+              <ControlPointIcon className="mr-2" />
+              Add New Item
+            </Button>
+
           </DialogActions>
         </Dialog >
         {/* Delete PopUP */}

@@ -32,10 +32,10 @@ const ProfileView = () => {
         <>
             <div>
                 <Box
-                    className="custom-scroll "
+                    className="custom-scroll"
                     sx={{
                         width: 350,
-                        height: 550,
+                        height: 600,
                         overflowY: 'auto',
                         bgcolor: 'rgba(153, 153, 153, 0.1)',
                         padding: '15px'
@@ -111,12 +111,19 @@ const ProfileView = () => {
                                                 Manage Staff Roles
                                             </li>
                                         )}
-
+                                        {hasPermission(permissions, "staff members view") && (
+                                            <li
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${selectedItem === 'Reconciliation' ? 'selected' : ''}`}
+                                                onClick={() => handleItemClick('/Staff-sessions/reconciliation-manage', 'Reconciliation')}
+                                            >
+                                                Reconciliation
+                                            </li>
+                                        )}
+                                                                     
                                         <li
                                             className={`font-semibold p-2 cursor-pointer flex justify-between ${selectedItem === 'Log Activity' ? 'selected' : ''}`}
                                             onClick={() => handleItemClick('/Staff-sessions/sessions', 'Log Activity')}
-                                        >
-                                            Log Activity
+                                        >Log Activity
                                         </li>
                                     </ul>
                                     {/* {/ ))} /} */}

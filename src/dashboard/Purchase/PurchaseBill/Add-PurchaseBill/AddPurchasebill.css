@@ -14,7 +14,7 @@
 
 
 .total {
-    background-color: rgb(12, 161, 246);
+    background-color:#628A2F;
     color: white;
     width: 120px;
 }
@@ -32,7 +32,7 @@
 }
 
 .saleTable th {
-    color: rgba(4, 76, 157, 1);
+    color: var(--color1);
     font-size: 14px;
     border-bottom: 1px solid;
     border-top: 1px solid;
@@ -51,13 +51,13 @@
     font-size: 17px;
     display: flex;
     gap: 5px;
-    color: rgba(4, 76, 157, 0.6);
+    color: #628A2F;
     font-weight: 500;
     line-height: 17px;
 }
 
 .icon {
-    color: rgb(4, 76, 157);
+    color: #628A2F;;
     cursor: pointer;
 }
 
@@ -113,7 +113,7 @@ header {
 }
 
 .customtable th {
-    color: rgba(4, 76, 157, 1);
+    color: var(--color1);
     font-size: 14px;
     letter-spacing: 0.2px;
     border-bottom: 1px solid;
@@ -137,7 +137,7 @@ header {
 }
 
 .delete-icon {
-    color: rgb(170, 31, 31);
+    color: var(--color6);
     cursor: pointer;
 }
 
@@ -172,7 +172,7 @@ header {
 }
 
 .item-List th {
-    color: rgba(4, 76, 157, 1);
+    color: var(--color1);
     font-size: 15px;
 }
 

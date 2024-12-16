@@ -161,11 +161,11 @@ const CustomerView = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} className="cursor-pointer" onClick={(() => { history.push('/more/customer') })} >Customers</span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "rgba(4, 76, 157, 1)" }} />
-                            <span style={{ color: 'rgba(4, 76, 157, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} className="cursor-pointer" onClick={(() => { history.push('/more/customer') })} >Customers</span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View </span>
+                            <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
+                            <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
                         </div>
                     </div>
                     <div>
@@ -216,7 +216,7 @@ const CustomerView = () => {
                             {tabValue === 0 && (
                                 <div style={{ margin: "25px" }}>
                                     <div className="mx-4 my-2 ">
-                                        <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>
+                                        <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>
                                             Rs.{tableData?.sales_amount ? tableData?.sales_amount : 0}
                                         </span></Typography>
                                     </div>
@@ -273,7 +273,7 @@ const CustomerView = () => {
                             {tabValue === 1 && (
                                 <div  style={{ margin: "25px" }}>
                                     <div className="mx-4 my-2 ">
-                                        <Typography style={{ color: 'rgba(4, 76, 157, 1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{tableData?.sales_return_amount ? tableData?.sales_return_amount : 0}</span></Typography>
+                                        <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{tableData?.sales_return_amount ? tableData?.sales_return_amount : 0}</span></Typography>
                                     </div>
                                     <div className="overflow-x-auto mt-4">
                                         <table className="w-full border-collapse custom-table">
@@ -327,7 +327,7 @@ const CustomerView = () => {
                         <div className="flex justify-center items-center h-auto">
                             <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
                                 <div className="flex justify-between items-center">
-                                    <DialogTitle id="alert-dialog-title" className="text-sky-500">
+                                    <DialogTitle id="alert-dialog-title" className="primary">
                                         Change Payment Mode
                                     </DialogTitle>
                                     <IconButton

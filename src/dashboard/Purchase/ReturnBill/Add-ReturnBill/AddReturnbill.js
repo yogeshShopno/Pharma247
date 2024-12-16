@@ -798,12 +798,12 @@ const AddReturnbill = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '600px', gap: '7px' }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "rgba(4, 76, 157, 1)" }} />
-                                <span className='hover:text-blue-900' style={{ color: '#044c9d', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '18px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')} >Purchase Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "rgba(4, 76, 157, 1)" }} />
-                                <span className='darkblue_text' style={{ display: 'flex', alignItems: 'center', alignItems: 'center', fontWeight: 600, fontSize: '18px' }}>New </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "var(--color1)" }} />
+                                <span className='hover:text-blue-900' style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '18px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')} >Purchase Return</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '10px', alignItems: 'center', color: "var(--color1)" }} />
+                                <span className='primary' style={{ display: 'flex', alignItems: 'center', alignItems: 'center', fontWeight: 600, fontSize: '18px' }}>New </span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 {/* <Select
@@ -820,7 +820,7 @@ const AddReturnbill = () => {
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
                                 </Select> */}
-                                <Button variant="contained" style={{ background: "rgb(4, 76, 157)" }} onClick={handleSubmit}>Save</Button>
+                                <Button variant="contained" style={{ background: "var(--color1)" }} onClick={handleSubmit}>Save</Button>
                             </div>
                         </div>
                         <div className="bg-white">
@@ -840,7 +840,7 @@ const AddReturnbill = () => {
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <TextField {...params} />}
+                                        renderInput={(params) => <TextField {...params}  autoFocus />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                     {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
@@ -904,7 +904,7 @@ const AddReturnbill = () => {
                                             minHeight: '38px',
                                             alignItems: "center",
                                             marginTop: "24px",
-                                            background: "rgba(4, 76, 157, 1)"
+                                            background: "var(--color1)"
                                         }}
                                         onClick={() => filterData(searchItem)}
                                     >
@@ -1223,13 +1223,19 @@ const AddReturnbill = () => {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td><Button variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button>
+                                                <td><Button style={{ background: "var(--color1)" }} variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button>
                                                 </td>
                                             </tr>
 
                                             {/* all select */}
                                             {/* {returnItemList?.item_list?.length > 0 && (
-                                                <Checkbox
+                                                <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                     checked={returnItemList?.item_list?.every(item => item.iss_check)}
                                                     onChange={(event) => handleSelectAll(event.target.checked)}
                                                 />
@@ -1240,7 +1246,13 @@ const AddReturnbill = () => {
                                                         display: 'flex', gap: '8px', alignItems: 'center'
                                                     }}>
                                                         <td>
-                                                            <Checkbox
+                                                            <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                                 // key={item.id}
                                                                 checked={item?.iss_check}
                                                                 onClick={(event) => {
@@ -1316,7 +1328,7 @@ const AddReturnbill = () => {
                         <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
 
                             <div>
-                                <span style={{ fontWeight: 600 }}>{finalAmount ? finalAmount : 0}</span>
+                                <span   style={{ fontWeight: 600, color:"var(--color1)"  }}>{finalAmount ? finalAmount : 0}</span>
                             </div>
                             {/* <div>
                                             <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{

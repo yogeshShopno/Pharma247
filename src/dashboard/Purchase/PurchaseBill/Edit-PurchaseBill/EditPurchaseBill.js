@@ -103,8 +103,6 @@ const EditPurchaseBill = () => {
   const [nextPath, setNextPath] = useState("");
   const [barcode, setBarcode] = useState("");
 
-
-
   const [errors, setErrors] = useState({});
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
@@ -917,11 +915,11 @@ useEffect(()=>{
   };
 
   const handleOptionChange = (event, newValue) => {
-    setValue(newValue);
+    setValue(newValue.toUpperCase());
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName);
+    setSearchItem(itemName.toUpperCase());
     setAutocompleteDisabled(true);
-    handleSearch(itemName);
+    handleSearch(itemName.toUpperCase());
   };
 
   const handlePTR = (e) => {
@@ -1182,7 +1180,7 @@ useEffect(()=>{
               <div style={{ display: "flex", gap: "7px" }}>
                 <span
                   style={{
-                    color: "rgba(12, 161, 246, 1)",
+                    color: "var(--color2)",
                     alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
@@ -1198,12 +1196,12 @@ useEffect(()=>{
                   style={{
                     fontSize: "18px",
                     marginTop: "8px",
-                    color: "rgba(4, 76, 157, 1)",
+                    color: "var(--color1)",
                   }}
                 />
                 <span
                   style={{
-                    color: "rgba(4, 76, 157, 1)",
+                    color: "var(--color1)",
                     alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
@@ -1211,7 +1209,7 @@ useEffect(()=>{
                 >
                   Edit
                 </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
                 {/* <Select
@@ -1236,6 +1234,8 @@ useEffect(()=>{
                   variant="contained"
                   color="primary"
                   onClick={handleUpdateSubmit}
+                  style={{ background: "var(--color1)" }}
+
                 >
                   Update
                 </Button>
@@ -1329,8 +1329,10 @@ useEffect(()=>{
                 <Button
                   variant="contained"
                   color="primary"
-                  style={{ textTransform: 'none', marginTop: "25px" }}
+                  // style={{ }}
                   onClick={handelAddOpen}
+                  style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
+
                 >
                   <AddIcon className="mr-2" />
                   CN Adjust
@@ -1360,7 +1362,7 @@ useEffect(()=>{
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" />
+                    <TextField {...params} label="Search Item Name" autoFocus />
                   )}
                 />
 
@@ -1700,7 +1702,7 @@ useEffect(()=>{
                           <Button
                             variant="contained"
                             color="success"
-                            style={{ display: "flex", gap: "5px" }}
+                            style={{ display: "flex", gap: "5px",background:"var(--color1)" }}
                             onClick={addPurchaseValidation}
                           >
                             <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
@@ -1847,7 +1849,7 @@ useEffect(()=>{
           </div>
           {/* Cn Adjust Edit Revert PopUp Box*/}
           <Dialog open={openAddPopUp} className="custom-dailog" >
-            <DialogTitle id="alert-dialog-title" className="sky_text">
+            <DialogTitle id="alert-dialog-title" className="secondary">
               {header}
             </DialogTitle>
             <IconButton

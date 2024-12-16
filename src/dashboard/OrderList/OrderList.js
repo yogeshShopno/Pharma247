@@ -298,11 +298,11 @@ const OrderList = () => {
                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
                             <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "100px" }}  >Order List</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "100px" }}  >Order List</span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Button variant="contained" color="primary" style={{ display: 'flex', gap: '0px' }} onClick={handelAddOpen}><AddIcon className="ml-2" /> Place Order</Button>
+                                <Button variant="contained" style={{ display: 'flex', gap: '0px',background:"var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" /> Place Order</Button>
                             </div>
                         </div>
 
@@ -380,7 +380,7 @@ const OrderList = () => {
                                             minHeight: '45px',
                                             alignItems: "center",
                                             marginTop: "25px",
-                                            background: "rgba(4, 76, 157, 1)"
+                                            background: "var(--color1)"
                                         }}
                                     >
                                         <FilterAltIcon size='large' className="text-white text-lg" /> Filter
@@ -453,7 +453,7 @@ const OrderList = () => {
                                     </tbody>
                                 </table>
                                 <div className='mt-4 space-x-1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                                    <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`} disabled={currentPage === 1} >Previous </button>
+                                    <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`} disabled={currentPage === 1} >Previous </button>
                                     {currentPage > 2 && (
                                         <button
                                             onClick={() => handleClick(currentPage - 2)}
@@ -472,7 +472,7 @@ const OrderList = () => {
                                     )}
                                     <button
                                         onClick={() => handleClick(currentPage)}
-                                        className="mx-1 px-3 py-1 rounded bg_darkblue text-white"
+                                        className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                                     >
                                         {currentPage}
                                     </button>
@@ -484,7 +484,7 @@ const OrderList = () => {
                                             {currentPage + 1}
                                         </button>
                                     )}
-                                    <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'bg_darkblue text-white'}`}
+                                    <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
                                         disabled={filteredList.length === 0}>
                                         Next </button>
                                 </div>
@@ -500,7 +500,7 @@ const OrderList = () => {
                                     },
                                 },
                             }}>
-                            <DialogTitle id="alert-dialog-title" className="sky_text">
+                            <DialogTitle id="alert-dialog-title" className="secondary">
                                 Item Purchase History
                             </DialogTitle>
                             <div className="px-6 " >
@@ -560,7 +560,7 @@ const OrderList = () => {
                         </Dialog>
 
                         <Dialog open={openAddPopUpPlaceOrder}>
-                            <DialogTitle id="alert-dialog-title" className="sky_text">
+                            <DialogTitle id="alert-dialog-title" className="primary">
                                 Place Order
                             </DialogTitle>
                             <IconButton
@@ -594,7 +594,13 @@ const OrderList = () => {
                                                 }}
                                             >
                                                 <MenuItem key="select-all" value="select-all">
-                                                    <Checkbox
+                                                    <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                         checked={items.length === onlineOrder.length}
                                                         indeterminate={items.length > 0 && items.length < onlineOrder.length}
                                                     />
@@ -602,7 +608,13 @@ const OrderList = () => {
                                                 </MenuItem>
                                                 {onlineOrder?.map((option) => (
                                                     <MenuItem key={option.item_id} value={option.item_id}>
-                                                        <Checkbox checked={items.indexOf(option.item_id) > -1} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={items.indexOf(option.item_id) > -1} />
                                                         <ListItemText primary={option.iteam_name} />
                                                     </MenuItem>
                                                 ))}
@@ -632,10 +644,10 @@ const OrderList = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button autoFocus variant="contained" className="p-5" color="success" style={{ textTransform: 'none', }} onClick={PlaceOrder} >
+                                <Button  autoFocus variant="contained" className="p-5" style={{ textTransform: 'none',backgroundColor:"#3f6212" }} onClick={PlaceOrder} >
                                     Place Order
                                 </Button>
-                                <Button autoFocus variant="contained" onClick={resetAddDialog} color="error" style={{ textTransform: 'none', }}  >
+                                <Button autoFocus variant="contained" style={{ textTransform: 'none',backgroundColor:"#F31C1C" }} onClick={resetAddDialog}  >
                                     Cancel
                                 </Button>
                             </DialogActions>

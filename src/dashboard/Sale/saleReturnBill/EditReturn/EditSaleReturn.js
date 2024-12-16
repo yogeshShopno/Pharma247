@@ -615,11 +615,11 @@ const EditSaleReturn = () => {
                         <div>
                             <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                                 <div style={{ display: 'flex', gap: '5px' }}>
-                                    <span className="cursor-pointer" style={{ color: 'rgba(12, 161, 246, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "125px" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "rgba(4, 76, 157, 1)" }} />
-                                    <span style={{ color: 'rgba(4, 76, 157, 1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>Edit </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "rgba(4, 76, 157, 1)" }} />
-                                    <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                    <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "125px" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "var(--color1)" }} />
+                                    <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>Edit </span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "var(--color1)" }} />
+                                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                                 </div>
 
                                 <div className="headerList">
@@ -655,7 +655,7 @@ const EditSaleReturn = () => {
                                         </div>
                                     </div>
                                     <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name</span>
+                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
                                        
                                         <Autocomplete
                                             value={customer}
@@ -733,7 +733,7 @@ const EditSaleReturn = () => {
                                         {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                     </div>
                                     <div className="detail">
-                                        <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Address</span>
+                                        <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
                                         <TextField id="outlined-basic"
                                             value={address}
@@ -751,7 +751,7 @@ const EditSaleReturn = () => {
                                     </div>
 
                                     <div className="detail">
-                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor </span>
+                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>
                                         <Autocomplete
                                             value={doctor || ''}
                                             onChange={handleDoctorOption}

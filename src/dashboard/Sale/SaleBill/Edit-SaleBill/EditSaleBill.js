@@ -274,13 +274,13 @@ const EditSaleBill = () => {
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
-      // setCustomer(response.data.data.customer_name)
-      const foundCustomer = customerData.find(
-        (option) => option.name === record.customer_name
-      );
-      setCustomer(foundCustomer || '');
+   // setCustomer(response.data.data.customer_name)
+   const foundCustomer = customerData.find(
+    (option) => option.name === record.customer_name
+  );
+  setCustomer(foundCustomer || '');
 
-      if (record.doctor_name && record.doctor_name !== "-") {
+  if (record.doctor_name && record.doctor_name !== "-") {
         const foundDoctor = doctorData.find(
           (option) => option.name === record.doctor_name
         );
@@ -896,7 +896,7 @@ const EditSaleBill = () => {
                 <div style={{ display: "flex", gap: "7px" }}>
                   <span
                     style={{
-                      color: "rgba(12, 161, 246, 1)",
+                      color: "var(--color2)",
                       alignItems: "center",
                       fontWeight: 700,
                       fontSize: "20px",
@@ -912,12 +912,12 @@ const EditSaleBill = () => {
                     style={{
                       fontSize: "18px",
                       marginTop: "9px",
-                      color: "rgba(4, 76, 157, 1)",
+                      color: "var(--color1)",
                     }}
                   />
                   <span
                     style={{
-                      color: "rgba(4, 76, 157, 1)",
+                      color: "var(--color1)",
                       alignItems: "center",
                       fontWeight: 700,
                       fontSize: "20px",
@@ -925,7 +925,7 @@ const EditSaleBill = () => {
                   >
                     Edit
                   </span>
-                  <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                  <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                 </div>
                 <div className="headerList">
                   <input
@@ -1033,7 +1033,7 @@ const EditSaleBill = () => {
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
+                        color: "var(--color1)",
                       }}
                     >
                       Customer Mobile / Name
@@ -1091,7 +1091,7 @@ const EditSaleBill = () => {
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
-                        color: "rgba(4, 76, 157, 1)",
+                        color: "var(--color1)",
                       }}
                     >
                       Doctor
@@ -1320,7 +1320,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{ borderBottom: '1px solid lightgray' }}>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1345,7 +1345,7 @@ const EditSaleBill = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{ borderBottom: '1px solid lightgray' }}>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1476,7 +1476,7 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <tr style={{ borderBottom: '1px solid lightgray' }}>
+                        <tr style={{borderBottom: '1px solid lightgray' }}>
                           <td><TextField
                             id="outlined-number"
                             type="number"
@@ -1692,7 +1692,7 @@ const EditSaleBill = () => {
 
                     />
                     <div className="">
-                      <span>
+                    <span>
                         {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                       </span>
                     </div>

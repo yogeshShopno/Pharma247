@@ -606,7 +606,6 @@ const Addsale = () => {
                 })
                 .then((response) => {
                     console.log('response.data.data :>> ', response.data.data);
-
                     setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
                     setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
                     setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
@@ -631,6 +630,25 @@ const Addsale = () => {
 
                     setUnsavedItems(true)
 
+                    // const batch = response?.data?.data[0]?.batch_list[0];
+                    // if (batch) {
+                    //     setUnit(batch.unit);
+                    //     setBatch(batch.batch_name);
+                    //     setExpiryDate(batch.expiry_date);
+                    //     setMRP(batch.mrp);
+                    //     setQty(batch.purchase_qty);
+                    //     setPtr(batch.ptr);
+                    //     setDiscount(batch.discount);
+                    //     setBase(batch.base);
+                    //     setGst(batch.gst_name);
+                    //     setLoc(batch.location);
+                    //     setTotalMargin(batch.margin);
+                    //     setTotalNetRate(batch.net_rate);
+                    //     setSearchItem(batch.iteam_name);
+                    //     setItemId(batch.item_id);
+                    //     setSelectedEditItemId(batch.id);
+                    // }
+                    // setIsEditMode(true)
                 });
         } catch (error) {
             console.error("API error:", error);
@@ -1050,10 +1068,10 @@ const Addsale = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'rgba(12, 161, 246, 1)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "rgba(4, 76, 157, 1)" }} />
-                                <span style={{ color: 'rgba(4, 76, 157, 1)', fontWeight: 700, fontSize: '20px' }}>New</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 sky_text hover-yellow" />
+                                <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "var(--color1)" }} />
+                                <span style={{ color: 'var(--color1)', fontWeight: 700, fontSize: '20px' }}>New</span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Select
@@ -1146,7 +1164,7 @@ const Addsale = () => {
                                     </div>
                                 </div>
                                 <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Customer Mobile / Name <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
                                         value={customer}
@@ -1209,7 +1227,7 @@ const Addsale = () => {
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
                                 <div className="detail">
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "rgba(4, 76, 157, 1)" }}>Doctor <FaPlusCircle className="icon darkblue_text" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
                                         onChange={handleDoctorOption}
@@ -1339,7 +1357,7 @@ const Addsale = () => {
                                                                 },
                                                                 '&.Mui-focused fieldset': {
                                                                     border: 'none',
-                                                                },  
+                                                                },
                                                                 borderBottom: '1px solid ',
                                                             },
                                                             '& .MuiInputBase-input::placeholder': {
@@ -1415,11 +1433,11 @@ const Addsale = () => {
                                     }
 
                                 </table>
-                                
+
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{borderBottom: '1px solid lightgray' }}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -1438,7 +1456,7 @@ const Addsale = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{borderBottom: '1px solid lightgray' }}>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                     {searchItem || barcodeItemName}
@@ -1568,7 +1586,7 @@ const Addsale = () => {
                                             </tr>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
-                                                <TextField
+                                                    <TextField
                                                         id="outlined-number"
                                                         type="number"
                                                         size="small"
@@ -1731,7 +1749,6 @@ const Addsale = () => {
                                         <div className="mt-1">
                                             {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                                         </div>
-
                                         <div>
                                             <span >{!roundOff ? 0 : roundOff}</span>
                                         </div>
@@ -1744,7 +1761,7 @@ const Addsale = () => {
                     </div>
                 </div>
                 <Dialog open={openAddPopUp}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Doctor
                     </DialogTitle>
                     <IconButton
@@ -1760,7 +1777,7 @@ const Addsale = () => {
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Doctor Name</span>
+                                            <span className="label primary mb-4" >Doctor Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1772,7 +1789,7 @@ const Addsale = () => {
                                             variant="outlined"
                                         />
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >Clinic Name</span>
+                                            <span className="label primary" >Clinic Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1797,7 +1814,7 @@ const Addsale = () => {
                 </Dialog>
                 {/* add Customer */}
                 <Dialog open={openCustomer}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Add Customer
                     </DialogTitle>
                     <IconButton
@@ -1813,7 +1830,7 @@ const Addsale = () => {
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text mb-4" >Customer Name</span>
+                                            <span className="label primary mb-4" >Customer Name</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1825,7 +1842,7 @@ const Addsale = () => {
                                             variant="outlined"
                                         />
                                         <div className="mb-2" >
-                                            <span className="label darkblue_text" >Mobile Number</span>
+                                            <span className="label primary" >Mobile Number</span>
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
@@ -1857,7 +1874,7 @@ const Addsale = () => {
                             },
                         },
                     }}>
-                    <DialogTitle id="alert-dialog-title" className="sky_text">
+                    <DialogTitle id="alert-dialog-title" className="secondary">
                         Item Purchase History
                     </DialogTitle>
                     <IconButton

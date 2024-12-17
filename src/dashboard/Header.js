@@ -450,6 +450,15 @@ const Header = () => {
                               Reconciliation                              </span>
                           </Link>
                         </li>
+                        <li className="block border-b-2">
+                          <Link to='/more/loyaltypoints'>
+                            <span
+                              className="bg-white hover:bg-lime-900   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              href=""
+                            >
+                              Loyalty Point                              </span>
+                          </Link>
+                        </li>
                         <Link to='/Resports'>
                           <li className="block border-b-2">
                             <span

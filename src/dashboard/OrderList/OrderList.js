@@ -429,7 +429,7 @@ const OrderList = () => {
                                                 <tr key={row.code} className="hover:bg-gray-100">
                                                     <td className="py-2 px-4">{startIndex + index}</td>
                                                     {OnlineOrdercolumns.map((column) => {
-                                                        const value = row[column.id];
+                                                        const value = row[column.id] || '-';
                                                         const isStatus = column.id === 'y_n';
                                                         const statuscolor = isStatus && value === 'Order' ? 'orderStatus' : isStatus && value === 'Pending' ? 'pendingStatus' : 'text-black';
                                                         return (

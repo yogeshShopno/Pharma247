@@ -35,7 +35,7 @@ const EditSaleReturn = () => {
 
         { id: 3, label: 'UPI' },]
     const [customer, setCustomer] = useState(null)
-    
+
     const [isVisible, setIsVisible] = useState(true);
     const { id, randomNumber } = useParams();
     const [selectedEditItem, setSelectedEditItem] = useState(null);
@@ -613,12 +613,12 @@ const EditSaleReturn = () => {
                 <div>
                     <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                         <div>
-                            <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                                <div style={{ display: 'flex', gap: '5px' }}>
+                            <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                                <div style={{ display: 'flex', gap: '5px', alignItems: "center" }}>
                                     <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "125px" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "var(--color1)" }} />
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                     <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>Edit </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '11px', color: "var(--color1)" }} />
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                     <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                                 </div>
 
@@ -638,14 +638,14 @@ const EditSaleReturn = () => {
                                             <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                         ))}
                                     </Select>
-                                    <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }} onClick={handleUpdate}> Update</Button>
+                                    <Button variant="contained" sx={{ background: "var(--color1)" }} onClick={handleUpdate}> Update</Button>
 
                                 </div>
                             </div>
                             <div className="border-b">
                                 <div className="firstrow flex">
                                     <div className="detail mt-1" style={{ width: '250px' }}>
-                                        <div className="detail  p-2 rounded-md" style={{ background: "#044c9d", width: "100%" }} >
+                                        <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-5">
                                                 <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', marginLeft: "15px", fontWeight: "bold", width: '19%' }}>{saleReturnItems.bill_no}  </div>
@@ -656,7 +656,7 @@ const EditSaleReturn = () => {
                                     </div>
                                     <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
-                                       
+
                                         <Autocomplete
                                             value={customer}
                                             options={customerDetails}
@@ -689,7 +689,7 @@ const EditSaleReturn = () => {
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                            value={customer}
+                                                    value={customer}
 
                                                     variant="outlined"
                                                     placeholder="Search by Mobile, Name"
@@ -1005,6 +1005,12 @@ const EditSaleReturn = () => {
                                                         }}>
                                                             <td>
                                                                 <Checkbox
+                                                                    sx={{
+                                                                        color: "var(--color2)", // Color for unchecked checkboxes
+                                                                        '&.Mui-checked': {
+                                                                            color: "var(--color1)", // Color for checked checkboxes
+                                                                        },
+                                                                    }}
                                                                     key={item.id}
                                                                     checked={item?.iss_check} // Use the item’s iss_check value to control the checkbox state
                                                                     onClick={(event) => {

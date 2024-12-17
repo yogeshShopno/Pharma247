@@ -654,10 +654,10 @@ const Salereturn = () => {
                 />
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
                                 <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "115px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "var(--color1)" }} />
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
@@ -676,15 +676,15 @@ const Salereturn = () => {
                                         <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                     ))}
                                 </Select>
-                                {/* <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }} onClick={handleSubmit}> Submit</Button>
+                                {/* <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
+                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
 
                             </div>
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex">
                                 <div className="detail mt-1" >
-                                    <div className="detail  p-2 rounded-md" style={{ background: "#044c9d", width: "100%" }} >
+                                    <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-1">
@@ -1146,13 +1146,13 @@ const Salereturn = () => {
                                                                     display: 'flex', gap: '8px', alignItems: "center"
                                                                 }}>
                                                                     <td>
-                                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                                                                        <Checkbox
+                                                                            sx={{
+                                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                                '&.Mui-checked': {
+                                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                                },
+                                                                            }}
                                                                             key={item.id}
                                                                             checked={item?.iss_check}
                                                                             onClick={(event) => {
@@ -1251,12 +1251,12 @@ sx={{
                                                 onKeyPress={(e) => {
                                                     const value = e.target.value;
                                                     const isMinusKey = e.key === '-';
-                                            
+
                                                     // Allow Backspace and numeric keys
                                                     if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
                                                         e.preventDefault();
                                                     }
-                                            
+
                                                     // Allow only one '-' at the beginning of the input value
                                                     if (isMinusKey && value.includes('-')) {
                                                         e.preventDefault();

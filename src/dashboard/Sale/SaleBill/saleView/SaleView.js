@@ -271,6 +271,7 @@ const SaleView = () => {
                                     <label className="font-bold">Total Amount : </label>
                                     <label className="font-bold">Discount (%) : </label>
                                     <label className="font-bold">Other Amount : </label>
+                                    <label className="font-bold">Loyalty Points : </label>
                                     <label className="font-bold">Round Off : </label>
                                     {/* <label className="font-bold">Discount Amount : </label> */}
                                     <label className="font-bold" >Net Amount : </label>
@@ -282,6 +283,7 @@ const SaleView = () => {
 
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
                                     <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
+                                    <span style={{ fontWeight: 600 }}>{tableData?.roylti_point}</span>
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.round_off}</span> */}
                                     <span style={{ fontWeight: 600 }}>
                                         {/* {tableData?.round_off === "0.00"

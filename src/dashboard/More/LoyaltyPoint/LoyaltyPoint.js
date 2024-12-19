@@ -8,8 +8,8 @@ import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button,  TextField } from "@mui/material";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl} from '@mui/material';
+import { Button, TextField } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl } from '@mui/material';
 import { TablePagination } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
@@ -17,8 +17,8 @@ import IconButton from '@mui/material/IconButton';
 const LoyaltyPoint = () => {
     const token = localStorage.getItem("token");
     const loyaltyPointLabel = [
-        { id: 'maximum', label: 'Maximum Amount', minWidth: 100 },
         { id: 'minimum', label: 'Minimum Amount', minWidth: 100 },
+        { id: 'maximum', label: 'Maximum Amount', minWidth: 100 },
         { id: 'percent', label: 'Percentage', minWidth: 100 },
     ];
 
@@ -110,6 +110,11 @@ const LoyaltyPoint = () => {
                 toast.error(newErrors.minimumAmount)
             }
 
+            if (Number(maximumAmount) <= Number(minimumAmount)) {
+                newErrors.amountMismatch = 'Maximum amount must be greater than minimum amount';
+                toast.error(newErrors.amountMismatch);
+            }
+            
             setErrors(newErrors);
             const isValid = Object.keys(newErrors).length === 0;
             if (isValid) {
@@ -138,8 +143,8 @@ const LoyaltyPoint = () => {
 
     const AddLoyaltyPoint = async () => {
         let data = new FormData();
-        data.append('maximum', maximumAmount);
         data.append('minimum', minimumAmount);
+        data.append('maximum', maximumAmount);
         data.append('percent', percentage);
 
         try {
@@ -198,26 +203,25 @@ const LoyaltyPoint = () => {
 
     const loyaltyPointDelete = async (id) => {
         let data = new FormData();
-        data.append("id", loyaltyPointID);
+        data.append("id", id);  // Use 'id' directly instead of loyaltyPointID
 
         try {
-            await axios.post("loyalti-point-delete",
-                data,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            ).then((response) => {
-                setIsLoading(true)
-                LoyaltyPointList();
-                toast.success(response.data.message);
-            })
+            const response = await axios.post("loyalti-point-delete", data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setIsLoading(true);
+            LoyaltyPointList();  // Refresh the list
+            toast.success(response.data.message);
         } catch (error) {
             console.error("Error deleting item:", error);
+            if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message);
+            }
         }
     };
-
     const deleteOpen = (loyaltyPointID) => {
         setDeleteDrugGroupId(loyaltyPointID);
         setIsDelete(true);
@@ -232,6 +236,7 @@ const LoyaltyPoint = () => {
         if (!deleteDrugGroupId) return;
         await loyaltyPointDelete(deleteDrugGroupId);
         setIsDelete(false);
+        
     };
 
     return (
@@ -398,15 +403,16 @@ const LoyaltyPoint = () => {
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ display: 'flex', gap: '2%' }}>
+
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
                                                     type="number"
-                                                    value={maximumAmount}
+                                                    value={minimumAmount}
                                                     onChange={(e) => {
                                                         e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                                        setMaximumAmount(e.target.value)
+                                                        setMinimumAmount(e.target.value)
                                                     }}
-                                                    label="Maximum"
+                                                    label="Minimum"
                                                     variant="outlined"
                                                     size="medium"
                                                     sx={{
@@ -419,12 +425,12 @@ const LoyaltyPoint = () => {
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
                                                     type="number"
-                                                    value={minimumAmount}
+                                                    value={maximumAmount}
                                                     onChange={(e) => {
                                                         e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                                        setMinimumAmount(e.target.value)
+                                                        setMaximumAmount(e.target.value)
                                                     }}
-                                                    label="Minimum"
+                                                    label="Maximum"
                                                     variant="outlined"
                                                     size="medium"
                                                     sx={{

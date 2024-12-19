@@ -126,7 +126,7 @@ const Addsale = () => {
     const [barcodeItemName, setBarcodeItemName] = useState('');
     const [loyaltyPoints, setLoyaltyPoints] = useState([]);
     const [loyaltyVal, setLoyaltyVal] = useState(0);
-
+    const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
     const [addItemName, setAddItemName] = useState("");
     const [addBarcode, setAddBarcode] = useState("");
     const [addUnit, setAddUnit] = useState("");
@@ -177,7 +177,7 @@ const Addsale = () => {
             //     calculatedNetAmount = 0;
             // }
 
-            let loyaltyPointsDeduction = loyaltyVal;
+            let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
             let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
             if (calculatedNetAmount < 0) {
@@ -235,16 +235,18 @@ const Addsale = () => {
         if (searchQuery) {
             const customerAllData = async () => {
                 let data = new FormData();
-                const params = {
-                    search: searchQuery ? searchQuery : ""
-                };
+                // const params = {
+                //     search: searchQuery ? searchQuery : ""
+                // };
+                const name = searchQuery.split(" [")[0];
+                data.append("search", name);
                 setIsLoading(true);
                 try {
                     const response = await axios.post(
                         "list-customer?",
                         data,
                         {
-                            params: params,
+                            // params: params,
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
@@ -400,13 +402,14 @@ const Addsale = () => {
 
     const customerAllData = async (searchQuery) => {
         let data = new FormData();
-        const params = {
-            search: searchQuery ? searchQuery : ""
-        }
+        // const params = {
+        //     search: searchQuery ? searchQuery : ""
+        // }
+        data.append("search", searchQuery);
         setIsLoading(true);
         try {
             await axios.post("list-customer?", data, {
-                params: params,
+                // params: params,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -449,31 +452,19 @@ const Addsale = () => {
 
     };
 
-
-    const fetchLoyaltyPoints = async (customerId) => {
-        let data = new FormData();
-        const params = { customer_id: customerId };
-
-        try {
-            const response = await axios.get('loyalti-point-list', data, {
-                params: params,
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            // Assuming response.data.data contains the loyalty points
-            setLoyaltyPoints(response.data.data);
-        } catch (error) {
-            console.error('Error fetching loyalty points:', error);
-        }
-    };
-
     const handleCustomerOption = (event, newValue) => {
         setCustomer(newValue);
         setUnsavedItems(true);
+
         if (newValue) {
-            const customerId = newValue.id; // Assuming `newValue` has the customer object
-            fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
+            const points = newValue.roylti_point || 0;
+            setLoyaltyPoints(points);
+
+            setMaxLoyaltyPoints(points);
+            console.log('newValue.roylti_point :>> ', points);
         } else {
-            setLoyaltyVal(0);
+            setLoyaltyPoints(0);
+            setMaxLoyaltyPoints(0);
         }
     };
 
@@ -893,7 +884,7 @@ const Addsale = () => {
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
-        data.append("roylti_point", loyaltyVal)
+        data.append("roylti_point", loyaltyVal || loyaltyPoints)
 
         try {
             const response = await axios.post("create-sales", data, {
@@ -1989,8 +1980,19 @@ const Addsale = () => {
 
                                         <div className="mt-1">
                                             <Input type="number"
-                                                value={loyaltyVal}
-                                                onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                value={loyaltyVal || loyaltyPoints}
+                                                // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+
+                                                    const numericValue = Math.floor(Number(value));
+
+                                                    if (numericValue >= 0 && numericValue <= maxLoyaltyPoints) {
+                                                      setLoyaltyVal(numericValue);
+                                                    } else if (numericValue < 0) {
+                                                      setLoyaltyVal(0); 
+                                                    }
+                                                }}
                                                 onKeyPress={(e) => {
                                                     const value = e.target.value;
                                                     const isMinusKey = e.key === '-';

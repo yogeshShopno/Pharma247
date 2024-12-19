@@ -34,45 +34,29 @@ const AddDistributer = () => {
     const [foodLicence, setFoodLicence] = useState('');
     const [durgLicence, setDurgLicence] = useState('');
     const [dueDays, setDueDays] = useState('');
+    const [isEditMode, setIsEditMode] = useState('');
 
+    const handleSubmit = () => {
+        if (isEditMode == false) {
+            //  Add Customer 
+            const newErrors = {};
+            if (!distributorName) newErrors.customer = 'Customer is required';
+            if (!GSTNumber) newErrors.GSTNumber = 'GST Number is required';
 
+            if (!mobileno) {
+                newErrors.mobileno = 'Mobile No is required';
+            } else if (!/^\d{10}$/.test(mobileno)) {
+                newErrors.mobileno = 'Mobile number must be 10 digits';
+            }
 
-    // const handleSubmit = () => {
-    //     if (isEditMode == false) {
-    //         //  Add Customer 
-    //         const newErrors = {};
-    //         if (!distributorName) newErrors.customer = 'Customer is required';
-    //         if (!state) newErrors.customer = 'State is required';
-
-    //         if (!mobileno) {
-    //             newErrors.mobileno = 'Mobile No is required';
-    //         } else if (!/^\d{10}$/.test(mobileno)) {
-    //             newErrors.mobileno = 'Mobile number must be 10 digits';
-    //         }
-
-    //         setErrors(newErrors);
-    //         const isValid = Object.keys(newErrors).length === 0;
-    //         if (isValid) {
-    //             AddCustomerRecord();
-    //         }
-    //         return isValid;
-    //     }
-    //     else {
-    //         const newErrors = {};
-    //         if (!customer) newErrors.customer = 'Customer is required';
-    //         if (!mobileNo) {
-    //             newErrors.mobileNo = 'Mobile No is required';
-    //         } else if (!/^\d{10}$/.test(mobileNo)) {
-    //             newErrors.mobileNo = 'Mobile number must be 10 digits';
-    //         }
-    //         setErrors(newErrors);
-    //         const isValid = Object.keys(newErrors).length === 0;
-    //         if (isValid) {
-    //             EditCustomerRecord();
-    //         }
-    //         return isValid;
-    //     }
-    // };
+            setError(newErrors);
+            const isValid = Object.keys(newErrors).length === 0;
+            if (isValid) {
+                AddDistributor();
+            }
+        }
+        
+    };
 
     const AddDistributor = async () => {
         const token = localStorage.getItem("token");
@@ -112,9 +96,6 @@ const AddDistributer = () => {
             // console.error("API error:", error);
         }
     }
-
-
-
 
     return (
         <div>
@@ -413,14 +394,9 @@ sx={{
                                     value={durgLicence}
                                     onChange={(e) => {
                                         const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                                        setDurgLicence(value); // Update the state with the new value
+                                        setDurgLicence(value); 
                                     }}
-                                    onBlur={() => {
-                                        const regex = /^\d{2}[A-Z]\s[A-Z]{2}\s[A-Z]{3}\s\d{5}$/;
-                                        if (!regex.test(durgLicence)) {
-                                            alert("Invalid format. Please use the format '20B GJ MEH 99505'.");
-                                        }
-                                    }} />
+                                   />
                                 <div name="distributor_durg_distributor" />
                             </div>
                             <div>

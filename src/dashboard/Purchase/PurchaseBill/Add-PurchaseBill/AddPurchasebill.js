@@ -33,7 +33,7 @@ const debounce = (func, delay) => {
 
 
 const AddPurchaseBill = () => {
-  const searchItemField = useRef();
+  const searchItemField = useRef("");
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();
@@ -113,7 +113,9 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
-
+    
+  const [selectedOption, setSelectedOption] = useState(null);
+  
   const [addItemName, setAddItemName] = useState("");
   const [addBarcode, setAddBarcode] = useState("");
   const [addUnit, setAddUnit] = useState("");
@@ -339,8 +341,8 @@ const AddPurchaseBill = () => {
           const handleBarcodeItem = async () => {
             setUnsavedItems(true)
             let data = new FormData();
-            
-            
+
+
             data.append("random_number", localStorage.getItem("RandomNumber"));
             data.append("weightage", Number(response?.data?.data[0]?.batch_list[0]?.unit));
             data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_name ? response?.data?.data[0]?.batch_list[0]?.batch_name : 0);
@@ -349,14 +351,14 @@ const AddPurchaseBill = () => {
             data.append("qty", Number(response?.data?.data[0]?.batch_list[0]?.unit) ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 0);
             data.append("free_qty", Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) ? Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) : 0);
             data.append("ptr", Number(response?.data?.data[0]?.batch_list[0]?.ptr) ? Number(response?.data?.data[0]?.batch_list[0]?.ptr) : 0);
-            data.append("discount", Number(response?.data?.data[0]?.batch_list[0]?.discount)?Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
+            data.append("discount", Number(response?.data?.data[0]?.batch_list[0]?.discount) ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
             data.append("scheme_account", Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
             data.append("base_price", Number(response?.data?.data[0]?.batch_list[0]?.base) ? Number(response?.data?.data[0]?.batch_list[0]?.base) : 0);
             data.append("gst", Number(response?.data?.data[0]?.batch_list[0]?.gst));
             data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
             data.append("margin", Number(response?.data?.data[0]?.batch_list[0]?.margin) ? Number(response?.data?.data[0]?.batch_list[0]?.margin) : 0);
             data.append("net_rate", Number(response?.data?.data[0]?.batch_list[0]?.net_rate) ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate) : 0);
-         
+
             data.append("item_id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
             data.append("unit_id", Number(0));
             data.append("user_id", userId);
@@ -364,7 +366,7 @@ const AddPurchaseBill = () => {
             data.append("id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
 
             data.append("total_amount", Number(response?.data?.data[0]?.batch_list[0]?.total_amount) ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount) : 0);
-        
+
             const params = {
               id: selectedEditItemId,
             };
@@ -375,7 +377,7 @@ const AddPurchaseBill = () => {
                 },
               });
               //console.log("response", response);
-        
+
               setItemTotalAmount(0);
               setDeleteAll(true);
               itemPurchaseList();
@@ -394,7 +396,7 @@ const AddPurchaseBill = () => {
               setBatch("");
               setMargin("");
               setLoc("");
-        
+
               if (ItemTotalAmount <= finalCnAmount) {
                 setFinalCnAmount(0);
                 setSelectedRows([]);
@@ -404,21 +406,18 @@ const AddPurchaseBill = () => {
               // handleCalNetAmount()
               setIsEditMode(false);
               setSelectedEditItemId(null);
-        
+
               setBarcode("")
               setValue("")
               // Reset Autocomplete field
               setValue("");
               setSearchItem("");
-        
+
               // setAutocompleteDisabled(false);
             } catch (e) {
               //console.log(e);
             }
           }
-
-
-
         });
     } catch (error) {
       console.error("API error:", error);
@@ -631,6 +630,7 @@ const AddPurchaseBill = () => {
         .then((response) => {
           const batchData = response.data.data;
           setBatchListData(response.data.data);
+          console.log(response.data.data)
           if (batchData.length > 0) {
             setUnit(batchData[0].unit);
             setBatch(batchData[0].batch_name);
@@ -664,7 +664,11 @@ const AddPurchaseBill = () => {
     }
   };
 
+
+
   const handleAddButtonClick = async () => {
+
+
     generateRandomNumber()
     const newErrors = {};
     const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
@@ -788,8 +792,9 @@ const AddPurchaseBill = () => {
           },
         });
       //console.log("response", response);
+      setSelectedOption(null);
 
-
+      setSearchItem("")
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
@@ -819,7 +824,6 @@ const AddPurchaseBill = () => {
       setIsEditMode(false);
       setSelectedEditItemId(null);
 
-      searchItemField.current.focus();
       setBarcode("")
       setValue("")
       // Reset Autocomplete field
@@ -1027,27 +1031,27 @@ const AddPurchaseBill = () => {
 
   }, [selectedEditItem]);
 
-//   useEffect(() => {
-//     if (addBarcode) {
-//       setUnitEditID(barcodeBatch.unit_id);
-//       setUnit(barcodeBatch.unit);
-//       setBatch(barcodeBatch.batch_number);
-//       setExpiryDate(barcodeBatch.expiry_date);
-//       setMRP(barcodeBatch.mrp);
-//       setQty(barcodeBatch.qty);
-//       setFree(barcodeBatch.purchase_free_qty);
-//       setPTR(barcodeBatch.ptr);
-//       setDisc(barcodeBatch.discount);
-//       setSchAmt(barcodeBatch.scheme_account);
-//       setBase(barcodeBatch.base_price);
-//       setGst(barcodeBatch.gst);
-//       setLoc(barcodeBatch.location);
-//       setMargin(barcodeBatch.margin);
-//       setNetRate(barcodeBatch.net_rate);
-//       setSearchItem(barcodeBatch.iteam_name);
-//       setItemEditID(barcodeBatch.item_id);
-//     }
-// }, [addBarcode]);
+  //   useEffect(() => {
+  //     if (addBarcode) {
+  //       setUnitEditID(barcodeBatch.unit_id);
+  //       setUnit(barcodeBatch.unit);
+  //       setBatch(barcodeBatch.batch_number);
+  //       setExpiryDate(barcodeBatch.expiry_date);
+  //       setMRP(barcodeBatch.mrp);
+  //       setQty(barcodeBatch.qty);
+  //       setFree(barcodeBatch.purchase_free_qty);
+  //       setPTR(barcodeBatch.ptr);
+  //       setDisc(barcodeBatch.discount);
+  //       setSchAmt(barcodeBatch.scheme_account);
+  //       setBase(barcodeBatch.base_price);
+  //       setGst(barcodeBatch.gst);
+  //       setLoc(barcodeBatch.location);
+  //       setMargin(barcodeBatch.margin);
+  //       setNetRate(barcodeBatch.net_rate);
+  //       setSearchItem(barcodeBatch.iteam_name);
+  //       setItemEditID(barcodeBatch.item_id);
+  //     }
+  // }, [addBarcode]);
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
@@ -1114,11 +1118,20 @@ const AddPurchaseBill = () => {
 
   const handleOptionChange = (event, newValue) => {
     setValue(newValue);
+    setSelectedOption(newValue);
+
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
+
     setId(newValue?.id);
     setAutocompleteDisabled(true);
     handleSearch(itemName);
+  };
+
+  const clearAutocomplete = () => {
+    setSearchItem(null); // Reset the value
+    if (searchItemField.current) {
+    }
   };
 
   const handlePTR = (e) => {
@@ -1532,7 +1545,9 @@ const AddPurchaseBill = () => {
               </div>
               {isAutocompleteDisabled && (
                 <Autocomplete
-                  value={searchItem?.iteam_name}
+                value={selectedOption}
+
+                  // value={searchItem?.iteam_name}
                   sx={{ width: 570 }}
                   size="small"
                   onChange={handleOptionChange}
@@ -1560,7 +1575,7 @@ const AddPurchaseBill = () => {
                     <TextField
                       {...params}
                       label="Search Item Name"
-                      inputRef={searchItemField}
+                      value={searchItem?.iteam_name}
                     />
                   )}
                 />
@@ -1837,10 +1852,10 @@ const AddPurchaseBill = () => {
                               value={gst.name}
                               sx={{ minWidth: "80px" }}
                               onChange={(e) => {
-                                const selectedOption = gstList.find(
+                                const selectedGST = gstList.find(
                                   (option) => option.name === e.target.value
                                 );
-                                setGst(selectedOption);
+                                setGst(selectedGST);
                               }}
                               size="small"
                               displayEmpty
@@ -1931,7 +1946,7 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td>
-
+ 
                             <Button
                               variant="contained"
                               style={{ backgroundColor: "var(--color1)" }}

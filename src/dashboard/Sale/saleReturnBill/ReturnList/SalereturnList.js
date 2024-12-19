@@ -21,8 +21,9 @@ import CloseIcon from '@mui/icons-material/Close';
 const columns = [
     { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
     { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-    { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
-    { id: 'phone_number', label: 'Mobile No ', minWidth: 100 },
+    // { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
+    // { id: 'phone_number', label: 'Mobile No ', minWidth: 100 },
+    { id: 'customer_info', label: 'Customer Info', minWidth: 200 }, // Updated column
     { id: 'payment_name', label: 'Payment Mode', minWidth: 100 },
     { id: 'net_amount', label: 'Bill Amount', minWidth: 100 },
 ];
@@ -118,11 +119,33 @@ const SalereturnList = () => {
         setSearchTerms(newSearchTerms);
     };
 
-    const filteredList = paginatedData.filter(row => {
-        return searchTerms.every((term, index) => {
-            const value = row[columns[index].id];
-            return String(value).toLowerCase().includes(term.toLowerCase());
-        });
+    // const filteredList = paginatedData.filter(row => {
+    //     return searchTerms.every((term, index) => {
+    //         const value = row[columns[index].id];
+    //         return String(value).toLowerCase().includes(term.toLowerCase());
+    //     });
+    // });
+    const filteredList = tableData.filter(row => {
+        const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
+        const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
+        const customerName = row.customer_name ? row.customer_name.toLowerCase() : '';
+        const mobileNumber = String(row.phone_number).toLowerCase();
+        const paymentName = row.payment_name ? row.payment_name.toLowerCase() : '';
+        const netAmt = String(row.net_amount).toLowerCase();
+
+        const billNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : '';
+        const billDateSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : '';
+        const customerSearchTerm = searchTerms[2].toLowerCase();
+        const paymentSearchTerm = searchTerms[3] ? searchTerms[3].toLowerCase() : '';
+        const netAmtSearchTerm = searchTerms[4] ? String(searchTerms[4]).toLowerCase() : '';
+        return (
+            (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
+            (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
+            (customerName.includes(customerSearchTerm) || mobileNumber.includes(customerSearchTerm)) &&
+
+            (paymentName.includes(paymentSearchTerm) || paymentSearchTerm === '') &&
+            (netAmt.includes(netAmtSearchTerm) || netAmtSearchTerm === '')
+        );
     });
 
     const goIntoAdd = () => {
@@ -193,18 +216,18 @@ const SalereturnList = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" , alignItems: "center"}} >
+                        <div className='py-3' style={{ display: 'flex', gap: '4px' , alignItems: "center"}}>
                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap" }} >Sales Return</span>
                             {hasPermission(permissions, "sale return bill create") && (<>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '7px', color: "var(--color1)" }} />
-                                <Button variant="contained" size='small' style={{ backgroundColor: 'rgb(4, 76, 157)', fontSize: '12px', marginLeft: "5px" }} onClick={goIntoAdd} ><AddIcon />New  </Button>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                <Button variant="contained" size='small' style={{ backgroundColor: 'var(--color1)', fontSize: '12px', marginLeft: "5px" }} onClick={goIntoAdd} ><AddIcon />New  </Button>
                             </>
                             )}
                             <div className="headerList">
                                 <Button
                                     variant="contained"
-                                    style={{ background: "rgb(4, 76, 157)" }}
+                                    style={{ background: "var(--color1)" }}
                                     onClick={() => { setOpenAddPopUp(true) }}
                                 >
                                     Generate PDF
@@ -220,11 +243,11 @@ const SalereturnList = () => {
                                             <tr>
                                                 <th>SR. No</th>
                                                 {columns.map((column, index) => (
-                                                    <th key={column.id} style={{ minWidth: column.minWidth }} onClick={() => sortByColumn(column.id)}>
+                                                    <th key={column.id} style={{ minWidth: column.minWidth }} >
                                                         <div className='headerStyle'>
                                                             <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                             <TextField
-                                                                label={`Search ${column.label}`}
+                                                                label='Type Here'
                                                                 id="filled-basic"
                                                                 size="small"
                                                                 sx={{ width: '150px' }}
@@ -244,37 +267,40 @@ const SalereturnList = () => {
                                                         No data found
                                                     </td>
                                                 </tr>
-                                            ) : (filteredList
-                                                .map((row, index) => {
-                                                    return (
-                                                        <tr hover role="checkbox" tabIndex={-1} key={row.code}  >
-                                                            <td>
-                                                                {startIndex + index}
-                                                            </td>
-                                                            {columns.map((column) => {
-                                                                const value = row[column.id];
-                                                                return (
-                                                                    <td key={column.id} align={column.align} onClick={() => { history.push("/SaleReturn/View/" + row.id) }}>
-                                                                        {column.format && typeof value === 'number'
-                                                                            ? column.format(value)
-                                                                            : value}
-                                                                    </td>
+                                            ) : (filteredList.map((row, index) => (
+                                                <tr hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                    <td>
+                                                        {startIndex + index}
+                                                    </td>
+                                                    {columns.map((column) => {
 
-                                                                );
-                                                            })}
-                                                            <td>
-                                                                <div className="flex gap-5 justify-center">
-                                                                    <VisibilityIcon className='cursor-pointer' onClick={() => { history.push(`/purchase/view/${row.id}`) }} color="primary" />
-                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black'
-                                                                        onClick={() => pdfGenerator(row.id)}
-                                                                    />
-                                                                    {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }))
-                                            }
+                                                        if (column.id === 'customer_info') {
+                                                            const name = row.customer_name ? row.customer_name : '';
+                                                            const mobileNumber = row.phone_number ? row.phone_number : '';
+                                                            return (
+                                                                <td key={column.id} onClick={() => { history.push("/SaleReturn/View/" + row.id) }}>
+                                                                    {name && mobileNumber ? `${name} / ${mobileNumber}` : name || mobileNumber || '-'}
+                                                                </td>
+                                                            );
+                                                        }
+                                                        else {
+                                                            return (
+                                                                <td key={column.id} onClick={() => { history.push("/SaleReturn/View/" + row.id) }}>
+                                                                    {row[column.id]}
+                                                                </td>
+                                                            );
+                                                        }
+                                                    })}
+                                                    <td>
+                                                        <div className="flex gap-5 justify-center">
+                                                            <VisibilityIcon className='cursor-pointer' onClick={() => { history.push(`/purchase/view/${row.id}`) }} color="primary" />
+                                                            <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black'
+                                                                onClick={() => pdfGenerator(row.id)}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )))}
                                         </tbody>
                                     </table>
                                 </div>

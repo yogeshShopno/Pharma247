@@ -235,15 +235,12 @@ const Addsale = () => {
         if (searchQuery) {
             const customerAllData = async () => {
                 let data = new FormData();
-                // const params = {
-                //     search: searchQuery ? searchQuery : ""
-                // };
                 const name = searchQuery.split(" [")[0];
                 data.append("search", name);
                 setIsLoading(true);
                 try {
                     const response = await axios.post(
-                        "list-customer?",
+                        "list-customer",
                         data,
                         {
                             // params: params,
@@ -372,20 +369,15 @@ const Addsale = () => {
     const handleSearch = async () => {
         let data = new FormData();
         data.append("search", searchItem);
-        const params = {
-            search: searchItem ? searchItem : ''
-        };
         try {
-            const res = await axios.post("item-search?", data, {
-                params: params,
+            const res = await axios.post("item-search", data, {
+                // Do not set Content-Type; Axios will handle it automatically
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-            }
-            ).then((response) => {
-                setItemList(response.data.data.data);
-            })
+            });
+            setItemList(res.data.data.data);
+            console.log(res.data.data.data);
         } catch (error) {
             console.error("API error:", error);
         }
@@ -402,22 +394,18 @@ const Addsale = () => {
 
     const customerAllData = async (searchQuery) => {
         let data = new FormData();
-        // const params = {
-        //     search: searchQuery ? searchQuery : ""
-        // }
         data.append("search", searchQuery);
         setIsLoading(true);
         try {
-            await axios.post("list-customer?", data, {
+            const response = await axios.post("list-customer", data, {
                 // params: params,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
-            ).then((response) => {
-                setCustomerDetails(response.data.data)
-                setIsLoading(false);
-            })
+            );
+            setCustomerDetails(response.data.data)
+            setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -1988,9 +1976,9 @@ const Addsale = () => {
                                                     const numericValue = Math.floor(Number(value));
 
                                                     if (numericValue >= 0 && numericValue <= maxLoyaltyPoints) {
-                                                      setLoyaltyVal(numericValue);
+                                                        setLoyaltyVal(numericValue);
                                                     } else if (numericValue < 0) {
-                                                      setLoyaltyVal(0); 
+                                                        setLoyaltyVal(0);
                                                     }
                                                 }}
                                                 onKeyPress={(e) => {

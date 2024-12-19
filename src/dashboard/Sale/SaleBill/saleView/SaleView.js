@@ -52,12 +52,11 @@ const SaleView = () => {
             setCurrentIndex(index);
             saleBillGetByID(saleData[index].id);
         }
-        //console.log('purchase', saleData);
     }, [id, saleData]);
 
-    useEffect(() => {
-        localStorage.removeItem("RandomNumber")
-    }, [])
+    // useEffect(() => {
+    //     localStorage.removeItem("RandomNumber")
+    // }, [])
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -125,17 +124,17 @@ const SaleView = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                    <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px",alignItems:"center" }} >
                         <div>
-                            <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
+                            <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer' }} onClick={() => { history.push('/salelist') }}>Sale</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                                <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
+                                <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
                                 {hasPermission(permissions, "sale bill edit") && (
                                     <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                        <Button variant="contained" onClick={() => { history.push({ pathname: '/salebill/edit/' + tableData.id + '/' + tableData?.sales_item[0].random_number, state: { paymentType } }) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                        <Button variant="contained" style={{backgroundColor:"var(--color1)"}} onClick={() => { history.push({ pathname: '/salebill/edit/' + tableData.id + '/' + tableData?.sales_item[0].random_number, state: { paymentType } }) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                     </div>)}
                             </div>
                         </div>
@@ -278,7 +277,9 @@ const SaleView = () => {
                                 </div>
                                 <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
                                     <span style={{ fontWeight: 600 }}>{tableData?.total_amount}</span>
-                                    <span style={{ fontWeight: 600, color: "red" }}>-{tableData?.discount_amount} ({tableData?.total_discount}%)</span>
+                                    <span style={{ fontWeight: 600, color: "red" }}>{tableData?.discount_amount !== 0 && <span>{tableData?.discount_amount > 0 ? `-${tableData?.discount_amount}` : tableData?.discount_amount}</span>} ({tableData?.total_discount}%)</span>
+
+
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
                                     <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
                                     {/* <span style={{ fontWeight: 600 }}>{tableData?.round_off}</span> */}

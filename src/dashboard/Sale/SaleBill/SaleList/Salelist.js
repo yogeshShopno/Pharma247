@@ -22,8 +22,9 @@ import DatePicker from 'react-datepicker';
 const columns = [
     { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
     { id: 'bill_date', label: 'Bill Date', minWidth: 50 },
-    { id: 'name', label: 'Customer Name', minWidth: 100 },
-    { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
+    // { id: 'name', label: 'Customer Name', minWidth: 100 },
+    // { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
+    { id: 'customer_info', label: 'Customer Info', minWidth: 200 }, 
     { id: "payment_name", label: 'Payment Mode', minWidth: 100 },
     { id: 'status', label: 'Status', minWidth: 100 },
     { id: 'net_amt', label: 'Bill Amount', minWidth: 100 },
@@ -87,11 +88,57 @@ const Salelist = () => {
         setSearchTerms(newSearchTerms);
     };
 
+    // const filteredList = tableData.filter(row => {
+    //     return searchTerms.every((term, index) => {
+    //         const value = row[columns[index].id];
+    //         return String(value).toLowerCase().includes(term.toLowerCase());
+    //     });
+    // });
+
+    // const filteredList = tableData.filter(row => {
+    //     const paymentName = row.payment_name.toLowerCase();
+    //     const status = row.status.toLowerCase();
+    //     const netAmt = row.net_amt.toLowerCase();
+
+    //     const customerName = row.name.toLowerCase();
+    //     const mobileNumber = String(row.mobile_numbr).toLowerCase();
+    //     const combinedSearchTerm = searchTerms[2].toLowerCase(); // Assuming `customer_info` is the 3rd column now
+    //     return (
+    //         customerName.includes(combinedSearchTerm) ||
+    //         mobileNumber.includes(combinedSearchTerm)
+
+    //     ) && searchTerms.slice(0, 2).every((term, index) => {
+    //         const value = row[columns[index].id];
+    //         return String(value).toLowerCase().includes(term.toLowerCase());
+    //     });
+
+    // });
+
     const filteredList = tableData.filter(row => {
-        return searchTerms.every((term, index) => {
-            const value = row[columns[index].id];
-            return String(value).toLowerCase().includes(term.toLowerCase());
-        });
+        const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
+        const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
+        const customerName = row.name ? row.name.toLowerCase() : '';
+        const mobileNumber = String(row.mobile_numbr).toLowerCase();
+        const paymentName = row.payment_name ? row.payment_name.toLowerCase() : '';
+        const status = row.status ? row.status.toLowerCase() : '';
+        const netAmt = String(row.net_amt).toLowerCase();
+
+
+        const billNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : ''; 
+        const billDateSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : ''; 
+        const customerSearchTerm = searchTerms[2].toLowerCase();
+        const paymentSearchTerm = searchTerms[3] ? searchTerms[3].toLowerCase() : ''; 
+        const statusSearchTerm = searchTerms[4] ? searchTerms[4].toLowerCase() : ''; 
+        const netAmtSearchTerm = searchTerms[5] ? String(searchTerms[5]).toLowerCase() : ''; 
+        return (
+            (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
+            (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
+            (customerName.includes(customerSearchTerm) || mobileNumber.includes(customerSearchTerm)) &&
+
+            (paymentName.includes(paymentSearchTerm) || paymentSearchTerm === '') &&
+            (status.includes(statusSearchTerm) || statusSearchTerm === '') &&
+            (netAmt.includes(netAmtSearchTerm) || netAmtSearchTerm === '')
+        );
     });
 
     const goIntoAdd = () => {
@@ -119,11 +166,6 @@ const Salelist = () => {
 
     useEffect(() => {
         saleBillList();
-        //     // if (tableData.length > 0) {
-        //     // const count = tableData[0].count + 1;
-        //     // setStartIndex(count);
-        //     localStorage.setItem('BillNo', tableData[0]?.count + 1);
-        //     // }
     }, [])
 
     const saleBillList = async (currentPage) => {
@@ -232,18 +274,18 @@ const Salelist = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} className="justify-between" >
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" , alignItems: "center"}} className="justify-between" >
+                        <div className='py-3' style={{ display: 'flex', gap: '4px' , alignItems: "center"}}>
                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Sales</span>
                             {hasPermission(permissions, "sale bill create") && (<>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '7px', color: "var(--color1)" }} />
-                                <Button variant="contained" size='small' style={{ backgroundColor: 'rgb(4, 76, 157)', fontSize: '12px' }} onClick={goIntoAdd} ><AddIcon />New  </Button>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px',  color: "var(--color1)" }} />
+                                <Button variant="contained" size='small' style={{ backgroundColor: 'var(--color1)', fontSize: '12px' }} onClick={goIntoAdd} ><AddIcon />New  </Button>
                             </>
                             )}
                             <div className="headerList">
                                 <Button
                                     variant="contained"
-                                    style={{ background: "rgb(4, 76, 157)" }}
+                                    style={{ background: "var(--color1)" }}
                                     onClick={() => { setOpenAddPopUp(true) }}
                                 >
                                     Generate PDF
@@ -262,7 +304,8 @@ const Salelist = () => {
                                                     <div className='headerStyle'>
                                                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
-                                                            label={`Search ${column.label}`}
+                                                            // label={`Search ${column.label}`}
+                                                            label='Type Here'
                                                             id="filled-basic"
                                                             size="small"
                                                             sx={{ width: '150px' }}
@@ -283,38 +326,33 @@ const Salelist = () => {
                                                 </td>
                                             </tr>
                                         ) :
-                                            (filteredList
-                                                .map((row, index) => {
+                                            (
+                                                filteredList.map((row, index) => {
                                                     return (
-                                                        <tr hover tabIndex={-1} key={row.code} >
-                                                            <td>
-                                                                {startIndex + index}
-                                                            </td>
+                                                        <tr key={row.id}>
+                                                            <td>{startIndex + index}</td>
                                                             {columns.map((column) => {
-                                                                const isStatus = column.id === 'status';
-                                                                const value = row[column.id];
-                                                                const statusClass = isStatus && value === 'due' ? 'dueStatus' : isStatus && value === 'Paid' ? 'orderStatus' : 'text-black';
-                                                                return (
-                                                                    <td key={column.id}
-                                                                        className={`text-lg `}
-                                                                        align={column.align} onClick={() => { history.push("/salebill/view/" + row.id) }}>
-                                                                        <span className={`text ${isStatus && statusClass}`}>
-                                                                            {column.format && typeof value === 'number'
-                                                                                ? column.format(value)
-                                                                                : value}
-                                                                        </span>
-                                                                    </td>
-                                                                );
+                                                                if (column.id === 'customer_info') {
+                                                                    const name = row.name ? row.name : '';
+                                                                    const mobileNumber = row.mobile_numbr ? row.mobile_numbr : '';
+                                                                    return (
+                                                                        <td key={column.id} onClick={() => { history.push("/salebill/view/" + row.id) }}>
+                                                                            {name && mobileNumber ? `${name} / ${mobileNumber}` : name || mobileNumber || '-'}
+                                                                        </td>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <td key={column.id} onClick={() => { history.push("/salebill/view/" + row.id) }}>
+                                                                            {row[column.id]}
+                                                                        </td>
+                                                                    );
+                                                                }
                                                             })}
                                                             <td>
                                                                 <div className="flex gap-4">
-                                                                    < VisibilityIcon color="primary" className='cursor-pointer view' onClick={() => { history.push(`/salebill/view/${row.id}`) }} />
-                                                                    <FaFilePdf className='w-5 h-5 text-gray-700 hover:text-black'
-                                                                        onClick={() => pdfGenerator(row.id)}
-                                                                    />
-                                                                    {/* <DeleteIcon className="delete-icon" onClick={() => deleteOpen(row.id)} /> */}
+                                                                    <VisibilityIcon color="primary" onClick={() => { history.push(`/salebill/view/${row.id}`) }} />
+                                                                    <FaFilePdf className="w-5 h-5 text-gray-700 hover:text-black" onClick={() => pdfGenerator(row.id)} />
                                                                 </div>
-
                                                             </td>
                                                         </tr>
                                                     );

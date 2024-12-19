@@ -139,20 +139,20 @@ const ReturnView = () => {
     //         console.error("API error:", error);
     //     }
     // }
-    
+
     const handleLeavePage = async () => {
         let data = new FormData();
-            data.append("start_date", localStorage.getItem("StartFilterDate"));
-            data.append("end_date", localStorage.getItem("EndFilterDate"));
-            data.append("distributor_id", localStorage.getItem("DistributorId"));
-            data.append("type", "1");
-            try {
-              const response = await axios.post("purches-return-iteam-histroy", data, 
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+        try {
+            const response = await axios.post("purches-return-iteam-histroy", data,
                 {
-                headers: {Authorization: `Bearer ${token}`},
-              });
-        
-              if (response.status === 200) {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+            if (response.status === 200) {
                 // setUnsavedItems(false);
                 // setIsOpenBox(false);
 
@@ -160,17 +160,17 @@ const ReturnView = () => {
                 //   if (nextPath) {
                 //     history.push(nextPath)
                 //   }
-        
+
                 // }, 0);
-              }
+            }
             //   setIsOpenBox(false);
             //   setUnsavedItems(false);
-        
-              // history.replace(nextPath);
-            }catch (error) {
-          console.error("Error deleting items:", error);
+
+            // history.replace(nextPath);
+        } catch (error) {
+            console.error("Error deleting items:", error);
         }
-      };
+    };
 
     return (
         <>
@@ -178,17 +178,17 @@ const ReturnView = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: '150px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: '170px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
                             <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
                             <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
                             <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '9px', color: "var(--color1)" }} />
                             <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData?.bill_no}</span>
                             {hasPermission(permissions, "purchase return bill edit") && (
-                                <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' ,}}>
-                                    <Button  style={{ backgroundColor: 'var(--color1)', }} variant="contained" onClick={() => {history.push('/return/edit/' + tableData.id)}} >< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
+                                <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px', }}>
+                                    <Button style={{ backgroundColor: 'var(--color1)', }} variant="contained" onClick={() => { history.push('/return/edit/' + tableData.id) }} >< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
                                 </div>)}
                         </div>
                     </div>
@@ -273,60 +273,60 @@ const ReturnView = () => {
                                                 </tr>
                                             ))}
 
-                                                                                  </tbody>
+                                        </tbody>
                                     }
                                 </table>
                                 <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10" >
-                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                    <label className="font-bold">Total GST : </label>
-                                    <label className="font-bold">Total Qty : </label>
-                                    {/* <label className="font-bold">Total Net Rate : </label> */}
-                                </div>
-                                <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                    <span style={{ fontWeight: 600 }}>{tableData?.total_gst?tableData?.total_gst:0} </span>
-                                    <span style={{ fontWeight: 600 }}> {tableData?.total_qty?tableData?.total_qty:0} </span>
-                                    {/* <span style={{ fontWeight: 600 }}>{tableData?.total_net_rate}</span> */}
-                                </div>
+                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                        <label className="font-bold">Total GST : </label>
+                                        <label className="font-bold">Total Qty : </label>
+                                        {/* <label className="font-bold">Total Net Rate : </label> */}
+                                    </div>
+                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                        <span style={{ fontWeight: 600 }}>{tableData?.total_gst ? tableData?.total_gst : 0} </span>
+                                        <span style={{ fontWeight: 600 }}> {tableData?.total_qty ? tableData?.total_qty : 0} </span>
+                                        {/* <span style={{ fontWeight: 600 }}>{tableData?.total_net_rate}</span> */}
+                                    </div>
 
 
-                              
 
-                                <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                    <label className="font-bold">Total Amount : </label>
-                                    <label className="font-bold">Other Amount : </label>
-                                    <label className="font-bold">Round Off : </label>
-                                    <label className="font-bold">Net Rate :  </label>
 
-                                    
-                                    <label className="font-bold" >Net Amount : </label>
-                                </div>
-                                <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
-                                    <span style={{ fontWeight: 600 }}>{tableData?.total_amount?tableData?.total_amount:0}</span>
-                                    <span style={{ fontWeight: 600, }}>{isNaN(Number(tableData?.other_amount))
-                                                        ? tableData?.other_amount || "N/A" 
-                                                        : Number(tableData?.other_amount).toFixed(2)}</span>
+                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                        <label className="font-bold">Total Amount : </label>
+                                        <label className="font-bold">Other Amount : </label>
+                                        <label className="font-bold">Round Off : </label>
+                                        <label className="font-bold">Net Rate :  </label>
 
-                                 
-                                    <span style={{ fontWeight: 600 }}> 
-                                    {roundOff === "0.00"
+
+                                        <label className="font-bold" >Net Amount : </label>
+                                    </div>
+                                    <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                                        <span style={{ fontWeight: 600 }}>{tableData?.total_amount ? tableData?.total_amount : 0}</span>
+                                        <span style={{ fontWeight: 600, }}>{isNaN(Number(tableData?.other_amount))
+                                            ? tableData?.other_amount || "N/A"
+                                            : Number(tableData?.other_amount).toFixed(2)}</span>
+
+
+                                        <span style={{ fontWeight: 600 }}>
+                                            {roundOff === "0.00"
                                                 ? roundOff
                                                 : roundOff < 0
                                                     ? `-${Math.abs(roundOff)}`
                                                     : `+${Math.abs(roundOff)}`}
-                                    </span>
-                                    {/* <span style={{ fontWeight: 600 }}>₹{tableData?.total_net_rate} ({tableData?.total_margin}%)</span> */}
-                                    <span style={{ fontWeight: 600 }}>{(tableData?.total_net_rate)?(tableData?.total_net_rate):0} </span>
+                                        </span>
+                                        {/* <span style={{ fontWeight: 600 }}>₹{tableData?.total_net_rate} ({tableData?.total_margin}%)</span> */}
+                                        <span style={{ fontWeight: 600 }}>{(tableData?.total_net_rate) ? (tableData?.total_net_rate) : 0} </span>
 
 
-                                    <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount?tableData?.net_amount:0}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount ? tableData?.net_amount : 0}</span>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
-                           
+
                         </div>
-                        
+
                     </div>
-                   
+
 
                 </div>
             }

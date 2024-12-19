@@ -89,12 +89,12 @@ const BankAccount = () => {
 
     const [reduceclicked, setReduceClicked] = useState(false);
     const Reducebutton = reduceclicked
-        ? { color: 'white', background: 'red', textTransform: 'none', borderRadius: 50 }
-        : { color: 'red', border: '1px solid red', textTransform: 'none', borderRadius: 50 };
+        ? { color: 'white', background: '#F31C1C', textTransform: 'none', borderRadius: 50 }
+        : { color: '#F31C1C', border: '1px solid #F31C1C', textTransform: 'none', borderRadius: 50 };
 
     const Addbutton = clicked
-        ? { color: 'white', background: 'green', textTransform: 'none', borderRadius: 50 }
-        : { color: 'green', border: '1px solid green', textTransform: 'none', borderRadius: 50 };
+        ? { color: 'white', background: '#628A2F', textTransform: 'none', borderRadius: 50 }
+        : { color: '#628A2F', border: '1px solid #628A2F', textTransform: 'none', borderRadius: 50 };
 
     const handleAddBtn = () => {
         setClicked(prevState => !prevState);
@@ -692,7 +692,8 @@ const BankAccount = () => {
                             <div className="flex flex-wrap justify-end py-3 gap-2">
                                 <Button
                                     variant="contained"
-                                    sx={{ textTransform: "none" }}
+                                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }}
+                                   
                                     className="mr-auto"
                                     onClick={() => { setOpenAddPopUpAdjust(true) }}
                                 >
@@ -700,12 +701,16 @@ const BankAccount = () => {
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    sx={{ textTransform: "none", margin: { xs: '10px 0', sm: '0 10px' } }}
+                                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }}
                                     onClick={() => { setOpenAddPopUp(true) }}
                                 >
                                     <AddIcon />Add New Bank
                                 </Button>
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>
+                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  > 
+                                    <img src="/csv-file.png"
+                                    className="report-icon absolute mr-10"
+                                    alt="csv Icon"
+                                />Download</Button>
                             </div>
                             {isLoading ? (
                                 <div className="loader-container">
@@ -1135,7 +1140,7 @@ const BankAccount = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="border-1 text-black font-bold flex justify-between items-center">
+                            <div className="border-1 text-black font-bold secondary flex justify-between items-center">
                                 Add Bank Details
                                 <Switch checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} />
                             </div>
@@ -1250,7 +1255,7 @@ const BankAccount = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" onClick={handleAddBank}>
+                        <Button style={{background:"#3f6212"}} autoFocus variant="contained" onClick={handleAddBank}>
                             Save
                         </Button>
                     </DialogActions>
@@ -1273,7 +1278,7 @@ const BankAccount = () => {
                         <DialogContentText id="alert-dialog-description">
 
                             <div className="detail mb-4">
-                                <span className="ExpenseBoxSubTitle">Payment Mode</span>
+                                <span className="primary">Payment Mode</span>
                                 <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
@@ -1291,7 +1296,7 @@ const BankAccount = () => {
                                 {errors.paymentType && <div className="error">{errors.paymentType}</div>}
                             </div>
                             <div className="detail mb-4">
-                                <span className="ExpenseBoxSubTitle mb-4">Add or Reduce</span>
+                                <span className="primary mb-4">Add or Reduce</span>
                                 <div className="ml-4 flex">
                                     <div className="mr-4">
                                         <Button autoFocus style={Addbutton} onClick={handleAddBtn} >
@@ -1382,7 +1387,7 @@ const BankAccount = () => {
                             </div>
 
                             <div className="detail mb-4">
-                                <span className="ExpenseBoxSubTitle">Remarks</span>
+                                <span className="primary">Remarks</span>
                                 <div>
                                     <OutlinedInput
                                         value={remarks}
@@ -1398,7 +1403,7 @@ const BankAccount = () => {
                     </DialogContent>
 
                     <DialogActions>
-                        <Button autoFocus variant="contained" onClick={handleAdjustBalance} >
+                        <Button style={{ backgroundColor: "#3f6212", color: "white" }} autoFocus variant="contained" onClick={handleAdjustBalance} >
                             Save
                         </Button>
 

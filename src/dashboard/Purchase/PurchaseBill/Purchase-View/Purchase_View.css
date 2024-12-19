@@ -163,7 +163,7 @@
 }
 
 .custom-table th {
-    color:var(--color1);
+    color: var(--color1);
     font-size: 14px;
     border-bottom: 1px solid;
 }
@@ -178,11 +178,11 @@
 }
 
 .data {
-    color:var(--color1);
+    color: var(--color1);
     font-weight: 600;
     /* max-width: 156px; */
     text-wrap: wrap;
-    width:330px;
+    width: 330px;
     text-overflow: ellipsis;
     /* white-space: nowrap; */
     display: inline-block;

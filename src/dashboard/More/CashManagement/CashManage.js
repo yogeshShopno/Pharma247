@@ -168,7 +168,10 @@ const CashManage = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList" style={{ marginBottom: "10px" }}>
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="pdf Icon" />Download</Button>
+                                <Button variant="contained"  style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  onClick={handlePdf} ><img src="/csv-file.png"
+                                    className="report-icon absolute mr-10"
+                                    alt="csv Icon"
+                                />Download</Button>
                             </div>
                         </div>
                         <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0">
@@ -196,9 +199,11 @@ const CashManage = () => {
                                         variant="contained"
                                         size="small"
                                         onClick={CaseManageMentList}
-                                        className="mt-4 md:mt-0 min-h-[41px] h-[41px] bg-blue-700 text-white flex items-center justify-center"
+                                        className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
+                                        style={{background:"#3f6212"}}
                                     >
-                                        <FilterAltIcon className="text-white text-lg" /> Filter
+                                        <FilterAltIcon className="text-white text-lg" />
+                                        Filter
                                     </Button>
                                 </div>
                             </div>

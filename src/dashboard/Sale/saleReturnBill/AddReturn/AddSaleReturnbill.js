@@ -1146,13 +1146,13 @@ const Salereturn = () => {
                                                                     display: 'flex', gap: '8px', alignItems: "center"
                                                                 }}>
                                                                     <td>
-                                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                                                                        <Checkbox
+                                                                            sx={{
+                                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                                '&.Mui-checked': {
+                                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                                },
+                                                                            }}
                                                                             key={item.id}
                                                                             checked={item?.iss_check}
                                                                             onClick={(event) => {
@@ -1251,12 +1251,12 @@ sx={{
                                                 onKeyPress={(e) => {
                                                     const value = e.target.value;
                                                     const isMinusKey = e.key === '-';
-                                            
+
                                                     // Allow Backspace and numeric keys
                                                     if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
                                                         e.preventDefault();
                                                     }
-                                            
+
                                                     // Allow only one '-' at the beginning of the input value
                                                     if (isMinusKey && value.includes('-')) {
                                                         e.preventDefault();

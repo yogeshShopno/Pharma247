@@ -860,14 +860,14 @@ const InventoryList = () => {
                       <FormControlLabel
                         key={category.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
-                         
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
+
                             checked={selectedCategoryIds.includes(category.id)}
                             onChange={(event) =>
                               handleCheckboxChange(event, category.id)
@@ -895,13 +895,13 @@ sx={{
                       <FormControlLabel
                         key={packging.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedPackgingIds.includes(packging.id)}
                             onChange={(event) =>
                               handleCheckboxPackging(event, packging.id)
@@ -931,29 +931,29 @@ sx={{
                       >
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes("expired")}
                               value="expired"
-                              
+
                             />
                           }
                           label="Expired"
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_month"
                               )}
@@ -964,13 +964,13 @@ sx={{
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_two_month"
                               )}
@@ -981,13 +981,13 @@ sx={{
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_three_month"
                               )}
@@ -1129,13 +1129,13 @@ sx={{
                       <FormControlLabel
                         key={gst.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedGstIds.includes(gst.id)}
                             onChange={(event) =>
                               handleCheckboxChangeGst(event, gst.id)
@@ -1332,7 +1332,7 @@ sx={{
         <Box className="p-5 " sx={{ width: "100%" }}>
           <div className="flex flex-wrap  justify-between mb-4 relative">
             <TextField
-           
+
               id="outlined-basic"
               value={searchItem}
               size="small"
@@ -1940,13 +1940,13 @@ sx={{
         </DialogContent>
         <DialogActions>
           <Button className="primary-bg"
-          style={{ backgroundColor: "#3f6212" }}
+            style={{ backgroundColor: "#3f6212" }}
 
             autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes
           </Button>
           <Button
-            style={{ backgroundColor: "#F31C1C" ,color:"white"  }}
+            style={{ backgroundColor: "#F31C1C", color: "white" }}
             autoFocus
 
             variant="outlined"

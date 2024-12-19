@@ -21,6 +21,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { toast, ToastContainer } from "react-toastify";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 const CustomerList = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -487,19 +488,24 @@ const CustomerList = () => {
                         </div>
                         <div className="headerList">
                             {hasPermission(permissions, "customer import") &&
-                                <Button variant="contained" style={{ background: 'gray', display: 'flex', gap: '10px' }} onClick={openFilePopUP} ><CloudUploadIcon /> Import</Button>}
+                                <Button variant="contained" style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }} onClick={openFilePopUP} ><CloudUploadIcon /> Import</Button>}
                             {hasPermission(permissions, "customer create") &&
-                                <Button variant="contained" color="primary" style={{ display: 'flex', gap: '0px' }} onClick={handelAddOpen}><AddIcon /> Add</Button>}
+                                <Button variant="contained" color="primary" style={{ background: 'var(--color1)', display: 'flex', gap: '0px' }} onClick={handelAddOpen}><AddIcon /> Add</Button>}
                             {hasPermission(permissions, "customer download") &&
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToExcel}> <img src={excelIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>}
+                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }} onClick={exportToExcel}>
+                                    <img src="/csv-file.png"
+                                    className="report-icon absolute mr-10"
+                                    alt="csv Icon"
+                                />Download</Button>}
                         </div>
                     </div>
                     <div className="bg-white p-4">
                         <div className="flex flex-wrap gap-6">
-                            <Chip label="Due Only" style={{ backgroundColor: "#3f6212", color: "white" }} 
+                            <Chip label="Due Only" style={{ backgroundColor: "#3f6212", color: "white" }}
                                 value={chipState.value}
                                 variant={chipState.variant}
                                 onClick={handleChipClick} />
+                          
                             {/* <FormControl sx={{ minWidth: 240 }} size="small">
                                 <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
                                 <Select
@@ -606,9 +612,9 @@ sx={{
 
                                                         // Apply red color if the column is 'due_amount' and status is 'due'
                                                         if (column.id === 'total_amount' && row.status === 'due') {
-                                                            style.color = 'red';
+                                                            style.color = 'var(--color6)';
                                                         } else if (column.id === 'total_amount' && row.status === '') {
-                                                            style.color = 'green';
+                                                            style.color = 'var(--color2)';
                                                         }
 
                                                         // Lowercase email if it's not already in lowercase
@@ -627,9 +633,10 @@ sx={{
                                                     })}
 
                                                     <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer' }}>
-                                                        <VisibilityIcon style={{ color: "#1976d2" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
+                                                        <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
                                                         {hasPermission(permissions, "customer edit") && row.name !== 'Direct Customers' && (
-                                                            <BorderColorIcon color="primary" onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
+                                                            <BorderColorIcon
+                              style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
                                                     </td>
                                                 </tr>
                                             );
@@ -669,7 +676,8 @@ sx={{
                                                     <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer' }}>
                                                         <VisibilityIcon style={{ color: "#1976d2" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
                                                         {hasPermission(permissions, "customer edit") && (
-                                                            <BorderColorIcon color="primary" onClick={() => handleEditOpen(row)} />)}
+                                                            <BorderColorIcon
+                              style={{ color: "var(--color1)" }} color="primary" onClick={() => handleEditOpen(row)} />)}
                                                     </td>
                                                 </tr>
                                             );
@@ -719,7 +727,7 @@ sx={{
 
                     {/* File Upload Popup */}
                     <Dialog open={openUpload} className="custom-dialog">
-                        <DialogTitle id="alert-dialog-title " className="secondary">
+                        <DialogTitle id="alert-dialog-title " className="primary">
                             Import Customer
                         </DialogTitle>
                         <div className="px-6 ">
@@ -747,9 +755,11 @@ sx={{
                                     </div>
                                     <div>
 
-                                        <a href="#" onClick={handleDownload} className='downloadFile'>
+                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  className='downloadFile'>
+                                        <CloudDownloadIcon className="mr-2" />
+
                                             Sample File Download
-                                        </a>
+                                        </Button>
                                     </div>
                                 </div>
                             </DialogContentText>
@@ -788,8 +798,8 @@ sx={{
                                 </div>
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        <div className="flex flex-col gap-5">
-                                            <div className="flex flex-col md:flex-row gap-5">
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col md:flex-row gap-4">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <div className="mb-2" >
                                                         <span className="label primary mb-4" >Customer Name</span>
@@ -822,7 +832,7 @@ sx={{
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col md:flex-row gap-5">
+                                            <div className="flex flex-col md:flex-row gap-4">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Email ID</span>
                                                     <TextField
@@ -848,7 +858,7 @@ sx={{
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col md:flex-row gap-5">
+                                            <div className="flex flex-col md:flex-row gap-4">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Area</span>
                                                     <TextField
@@ -873,7 +883,7 @@ sx={{
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col md:flex-row gap-5">
+                                            <div className="flex flex-col md:flex-row gap-4">
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Address</span>
                                                     <TextField
@@ -903,7 +913,7 @@ sx={{
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button autoFocus variant="contained" className="p-5" color="success" onClick={Addcustomer}>
+                                    <Button variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} autoFocus className="p-5" onClick={Addcustomer}>
                                         {buttonLabel}
                                     </Button>
                                     <Button autoFocus variant="contained" onClick={resetAddDialog} color="error"  >

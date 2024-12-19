@@ -451,7 +451,8 @@ const DistributerList = () => {
                                                 <td className="d-flex gap-2">
                                                     <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
                                                     {hasPermission(permissions, "distributor edit") && (
-                                                        <BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
+                                                        <BorderColorIcon
+                               style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
                                                 </td>
                                             </tr>
                                         );
@@ -715,7 +716,7 @@ const DistributerList = () => {
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button autoFocus variant="contained"  style={{ backgroundColor: "#3f6212", color: "white" }} onClick={editDistributor}>
+                                    <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} onClick={editDistributor}>
                                         Update
                                     </Button>
                                     <Button autoFocus variant="contained" color="error" onClick={resetAddDialog}>

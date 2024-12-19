@@ -419,28 +419,28 @@ const Itemmaster = () => {
 
   const submitItemRecord = async () => {
     let formData = new FormData();
-    formData.append("item_name", searchItem?searchItem:"");
-    formData.append("packaging_id", packaging?packaging:"");
-    formData.append("unite", unit?unit:"");
-    formData.append("weightage", weightage?weightage:"");
-    formData.append("pack", pack?pack:"");
-    formData.append("drug_group", drugGroup?drugGroup.id:"");
-    formData.append("gst", gst?gst:"");
-    formData.append("location", location?location:"");
-    formData.append("mrp", MRP?MRP:"");
-    formData.append("barcode", barcode?barcode:"");
-    formData.append("minimum", min?min:"");
-    formData.append("maximum", max?max:"");
-    formData.append("discount", disc?disc:"");
-    formData.append("margin", margin?margin:"");
-    formData.append("hsn_code", hsn_code?hsn_code:"");
-    formData.append("message", message?message:"");
-    formData.append("item_category_id", selectedCategory?selectedCategory.id:"");
-    formData.append("pahrma", selectedCompany?selectedCompany.id:"");
-    formData.append("distributer", selectedSuppliers?selectedSuppliers.id:"");
-    formData.append("front_photo", selectedFrontFile?selectedFrontFile:"");
-    formData.append("back_photo", selectedBackFile?selectedBackFile:"");
-    formData.append("mrp_photo", selectedMRPFile?selectedMRPFile:"");
+    formData.append("item_name", searchItem ? searchItem : "");
+    formData.append("packaging_id", packaging ? packaging : "");
+    formData.append("unite", unit ? unit : "");
+    formData.append("weightage", weightage ? weightage : "");
+    formData.append("pack", pack ? pack : "");
+    formData.append("drug_group", drugGroup ? drugGroup.id : "");
+    formData.append("gst", gst ? gst : "");
+    formData.append("location", location ? location : "");
+    formData.append("mrp", MRP ? MRP : "");
+    formData.append("barcode", barcode ? barcode : "");
+    formData.append("minimum", min ? min : "");
+    formData.append("maximum", max ? max : "");
+    formData.append("discount", disc ? disc : "");
+    formData.append("margin", margin ? margin : "");
+    formData.append("hsn_code", hsn_code ? hsn_code : "");
+    formData.append("message", message ? message : "");
+    formData.append("item_category_id", selectedCategory ? selectedCategory.id : "");
+    formData.append("pahrma", selectedCompany ? selectedCompany.id : "");
+    formData.append("distributer", selectedSuppliers ? selectedSuppliers.id : "");
+    formData.append("front_photo", selectedFrontFile ? selectedFrontFile : "");
+    formData.append("back_photo", selectedBackFile ? selectedBackFile : "");
+    formData.append("mrp_photo", selectedMRPFile ? selectedMRPFile : "");
     try {
       const response = await axios.post("create-iteams", formData, {
         headers: {
@@ -704,7 +704,7 @@ const Itemmaster = () => {
                   inputValue={searchItem.toUpperCase()}
                   sx={{ width: 350 }}
                   size="small"
-                   
+
                   onChange={handleOptionChange}
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
@@ -1033,12 +1033,12 @@ const Itemmaster = () => {
                 />
               </div>
 
-              
+
 
 
             </div>
-            <div className="row"> 
-            <div className="fields">
+            <div className="row">
+              <div className="fields">
                 <label className="label">Packaging In</label>
                 <Select
                   labelId="dropdown-label"
@@ -1086,9 +1086,9 @@ const Itemmaster = () => {
                   </FormControl>
                 </Box>
               </div>
-              </div>
+            </div>
             <div >
-            <div className="row border-b-2 pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
+              <div className="row border-b-2 pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
               <div>
                 <h1 className="product " style={{ color: "var(--color1)" }}>
                   Product Images
@@ -1342,12 +1342,12 @@ const Itemmaster = () => {
             variant="contained"
             onClick={submitDrugGroup}
             disabled={!drugGroupName}
-            style={{ margin: "10px", background: "#3f6212",color:"white" }}
+            style={{ margin: "10px", background: "#3f6212", color: "white" }}
 
           >
             Submit
           </Button>
-          <Button   style={{ background: "#F31C1C" ,color:"white"}} onClick={handleCloseDrugGroup}>Cancel</Button>
+          <Button style={{ background: "#F31C1C", color: "white" }} onClick={handleCloseDrugGroup}>Cancel</Button>
 
         </DialogActions>
       </Dialog>
@@ -1372,20 +1372,20 @@ const Itemmaster = () => {
           </div>
         </DialogContent>
         <DialogActions>
-         
+
           <Button
             type="submit"
             onClick={submitCompany}
             variant="contained"
             disabled={!companyName}
-            style={{ background: "#3f6212" ,color:"white"}}
+            style={{ background: "#3f6212", color: "white" }}
           >
             Submit
           </Button>
           <Button
-                      style={{ background: "#F31C1C" ,color:"white"}}
+            style={{ background: "#F31C1C", color: "white" }}
 
-          onClick={handleCloseCompany}>Cancel</Button>
+            onClick={handleCloseCompany}>Cancel</Button>
         </DialogActions>
       </Dialog>
       {/*Bulk Item Data Added  */}
@@ -1420,8 +1420,8 @@ const Itemmaster = () => {
                 <span className="errorFile">*select only .csv File.</span>
               </div>
               <div>
-                <Button onClick={handleDownload}  style={{backgroundColor: "#3f6212" ,color:"white"  }}  >
-                  <CloudDownloadIcon className="mr-2"/>
+                <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                  <CloudDownloadIcon className="mr-2" />
                   Sample File Download
                 </Button>
               </div>
@@ -1431,8 +1431,8 @@ const Itemmaster = () => {
         <DialogActions>
           <Button
             autoFocus
-            style={{backgroundColor: "#3f6212" ,color:"white"  }}
-        
+            style={{ backgroundColor: "#3f6212", color: "white" }}
+
             type="success"
             onClick={handleFileUpload}
           >

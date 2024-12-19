@@ -37,6 +37,7 @@
   align-items: center;
   flex-direction: column;
 }
+
 .profile-upload {
   width: 200px;
   border: 2px dashed #919191;
@@ -49,6 +50,7 @@
   align-items: center;
   flex-direction: column;
 }
+
 .fields {
   display: flex;
   flex-wrap: wrap;
@@ -99,17 +101,9 @@
   gap: 20px;
 }
 
-.ExpenseBoxTitle {
-  color: rgb(4, 76, 157);
-  font-weight: 600;
-}
-
-.ExpenseBoxSubTitle {
-  color: rgb(4, 76, 157);
-}
 
 .error {
-  color: red;
+  color: var(--color6);
   font-size: 12px;
 }
 
@@ -168,5 +162,5 @@
 }
 
 .errorFile {
-  color: red;
+  color: var(--color6);
 }

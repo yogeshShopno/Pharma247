@@ -253,16 +253,16 @@ const Company = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '90px' ,}} >Company</span>
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '90px', }} >Company</span>
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
                                 <Button variant="contained" style={{ background: 'var(--color1)' }} size='small' onClick={handelAddOpen} > <AddIcon />Add Company</Button>
                             </div>
                         </div>
-                        <div className="bg-white" style={{ paddingInline:"25px",paddingBlock:"15px" }}>
+                        <div className="bg-white" style={{ paddingInline: "25px", paddingBlock: "15px" }}>
                             <table className="custom-table " >
-                                <thead  style={{ background: "rgba(153, 153, 153, 0.1)"}} >
+                                <thead style={{ background: "rgba(153, 153, 153, 0.1)" }} >
                                     <tr >
                                         <th>SR No.</th>
                                         {companyColumns.map((column) => (
@@ -376,7 +376,7 @@ const Company = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} 
+                        <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}

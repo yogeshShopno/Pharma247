@@ -153,402 +153,402 @@ function App() {
 
   return (
     <div className="App">
-            <CssBaseline />
+      <CssBaseline />
 
-          <ThemeProvider theme={theme}>
-      
-      <Router>
-        <Switch>
-          <Route exact path='/'>
-            <Login />
-          </Route>
-          <Route path='/Register'>
-            <SignUp />
-          </Route>
-          <Route path='/forgotPassword'>
-            <Forgot />
-          </Route>
-          <Route path='/admindashboard'>
-            <Protected>
-              <Dashboard />
-            </Protected>
-            <Adminprotected />
-          </Route>
-          <Route path='/itemmaster'>
-            <Protected>
-              <Itemmaster />
-            </Protected>
-          </Route>
-          <Route path='/inventory'>
-            <Protected>
-              <InventoryList />
-            </Protected>
-          </Route>
-          <Route path='/inventoryView/:id'>
-            <Protected>
-              <InventoryView />
-            </Protected>
-          </Route>
-          <Route path='/more/catagory'>
-            <Protected>
-              <Catagory />
-            </Protected>
-          </Route>
-          <Route path='/more/package'>
-            <Protected>
-              <Package />
-            </Protected>
-          </Route>
-          <Route path='/more/customer'>
-            <Protected>
-              <CustomerList />
-            </Protected>
-          </Route>
-          <Route path='/more/customerView/:id'>
-            <Protected>
-              <CustomerView />
-            </Protected>
-          </Route>
-          <Route path='/more/doctors'>
-            <Protected>
-              <DoctorList />
-            </Protected>
-          </Route>
-          <Route path='/more/doctor/:id'>
-            <Protected>
-              <DoctorView />
-            </Protected>
-          </Route>
-          <Route path='/more/addDistributer'>
-            <Protected>
-              <AddDistributer />
-            </Protected>
-          </Route>
-          <Route path='/more/DistributorList'>
-            <Protected>
-              <DistributerList />
-            </Protected>
-          </Route>
-          <Route path='/more/reconciliation'>
-            <Protected>
-              <Reconciliation />
-            </Protected>
-          </Route>
-          <Route path='/Resports'>
-            <ReportsMain />
-          </Route>
-          <Route path='/DistributerView/:id'>
-            <Protected>
-              <DistributerView />
-            </Protected>
-          </Route>
-          <Route path='/purchase/paymentList'>
-            <Protected>
-              <PaymentList />
-            </Protected>
-          </Route>
-          <Route path='/purchase/purchasebill'>
-            <Protected>
-              <PurchaseList />
-            </Protected>
-          </Route>
-          <Route path='/purchase/view/:id'>
-            <Protected>
-              <PurchaseView />
-            </Protected>
-          </Route>
-          <Route path='/purchase/edit/:id/:randomNumber'>
-            <Protected>
-              <EditPurchaseBill />
-            </Protected>
-          </Route>
-          <Route path='/purchase/return'>
-            <Protected>
-              <ReturnList />
-            </Protected>
-          </Route>
-          <Route path='/return/view/:id'>
-            <Protected>
-              <ReturnView />
-            </Protected>
-          </Route>
-          <Route path='/return/edit/:id'>
-            <Protected>
-              <EditReturnBill />
-            </Protected>
-          </Route>
-          <Route path='/purchase/return'>
-            <Protected>
-              <ReturnList />
-            </Protected>
-          </Route>
-          <Route path='/popUpbox'>
-            <PopUp />
-          </Route>
-          <Route path='/purchase/addPurchaseBill'>
-            <Protected>
-              <AddPurchaseBill />
-            </Protected>
-          </Route>
-          <Route path='/return/add'>
-            <Protected>
-              <AddReturnbill />
-            </Protected>
-          </Route>
-          <Route path='/purchase/purchasereturn'>
-            <Purchasereturn />
-          </Route>
-          <Route path='/purchase/addPurchaseReturn'>
-            <Protected>
-              <AddPurchaseReturn />
-            </Protected>
-          </Route>
-          <Route path='/salelist'>
-            <Salelist />
-          </Route>
-          <Route path='/addsale'>
-            <Addsale />
-          </Route>
-          <Route path='/salebill/view/:id'>
-            <SaleView />
-          </Route>
-          <Route path='/salebill/edit/:id/:randomNumber'>
-            <EditSaleBill />
-          </Route>
-          <Route path='/saleReturn/list'>
-            <SalereturnList />
-          </Route>
-          <Route path='/saleReturn/Add'>
-            <Salereturn />
-          </Route>
-          <Route path='/SaleReturn/View/:id'>
-            <SaleReturnView />
-          </Route>
-          <Route path='/SaleReturn/Edit/:id'>
-            <EditSaleReturn />
-          </Route>
-          <Route path='/profile'>
-            <ProfileView />
-          </Route>
-          <Route path='/OrderList'>
-            <OrderList />
-          </Route>
-          <Route path='/more/Cashmanagement'>
-            <CashManage />
-          </Route>
+      <ThemeProvider theme={theme}>
 
-          <Route path='/more/expense-manage'>
-            <Protected>
-              <ManageExpense />
-            </Protected>
-          </Route>
-          <Route path='/more/BankAccountdetails'>
-            <Protected>
-              <BankAccount />
-            </Protected>
-          </Route>
-          <Route path='/Report/margin-report/item-wise'>
-            <Protected>
-              <ItemWiseMargin />
-            </Protected>
-          </Route>
-          <Route path='/Report/margin-report/bill-item-wise-margin'>
-            <Protected>
-              <BillItemWiseMargin />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-purchase-register'>
-            <Protected>
-              <PurchaseRegister />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-purchase-bills'>
-            <Protected>
-              <PurchaseBillReport />
-            </Protected>
-          </Route>
-          <Route path='/adjustStock'>
-            <Protected>
-              <AdjustStock />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-sales-register'>
-            <Protected>
-              <SalesRegister />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-sales-bills'>
-            <Protected>
-              <SalesBill />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-hsn-wise'>
-            <Protected>
-              <HsnWiseGst />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-GSTR1'>
-            <Protected>
-              <Gstr1 />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-GSTR2'>
-            <Protected>
-              <Gstr2 />
-            </Protected>
-          </Route>
-          <Route path='/Reports/gst-GSTR-3B'>
-            <Protected>
-              <Gstr_3B />
-            </Protected>
-          </Route>
-          <Route path='/Reports/day-wise-summary'>
-            <Protected>
-              <DayWiseSummary />
-            </Protected>
-          </Route>
-          <Route path='/Reports/account-purchase-payment-summary'>
-            <Protected>
-              <PurchasePaymentSummary />
-            </Protected>
-          </Route>
-          <Route path='/Reports/others-item-doctor-wise'>
-            <Protected>
-              <DoctorItemWise />
-            </Protected>
-          </Route>
-          <Route path='/Reports/others-company-items-analysis'>
-            <Protected>
-              <CompanyItemWise />
-            </Protected>
-          </Route>
-          <Route path='/Reports/others-staff-wise-activity-summary'>
-            <Protected>
-              <StaffWiseActivity />
-            </Protected>
-          </Route>
-          <Route path='/Reports/others-sales-summary-report'>
-            <Protected>
-              <SaleSummary />
-            </Protected>
-          </Route>
-          <Route path='/Reports/stock-purchase-return-report'>
-            <Protected>
-              <Purchase_Return_Report />
-            </Protected>
-          </Route>
-          <Route path='/Reports/stock-inventory-reconciliation'>
-            <Protected>
-              <Inventory_Reconciliation />
-            </Protected>
-          </Route>
-          <Route path='/Reports/stock-item-batchwise'>
-            <Protected>
-              <Item_Batch_wiseStock />
-            </Protected>
-          </Route>
-          <Route path='/Reports/stock-non-moving'>
-            <Protected>
-              <Non_Moving_items />
-            </Protected>
-          </Route>
-          <Route path='/Reports/stock-stock-adjustment'>
-            <Protected>
-              <Stock_AdjustMent_Report />
-            </Protected>
-          </Route>
-          <Route path='/Reports/monthly-sales-overview'>
-            <Protected>
-              <Monthly_sales_Overview />
-            </Protected>
-          </Route>
-          <Route path='/Reports/top-selling-items'>
-            <Protected>
-              <Top_Selling_Items />
-            </Protected>
-          </Route>
-          <Route path='/Reports/top-customers'>
-            <Protected>
-              <Top_Customers />
-            </Protected>
-          </Route>
-          <Route path='/Reports/top-distributors'>
-            <Protected>
-              <Top_Distributor />
-            </Protected>
-          </Route>
-          <Route path='/about-info'>
-            <Protected>
-              <AboutInfo />
-            </Protected>
-          </Route>
-          <Route path='/documents'>
-            <Protected>
-              <Documents />
-            </Protected>
-          </Route>
-          <Route path='/security'>
-            <Protected>
-              <Security />
-            </Protected>
-          </Route>
-          <Route path='/plans'>
-            <Protected>
-              <Plans />
-            </Protected>
-          </Route>
-          <Route path='/password'>
-            <Protected>
-              <Password />
-            </Protected>
-          </Route>
-          <Route path='/Staff-sessions/staff-member'>
-            <Protected>
-              <StaffMember />
-            </Protected>
-          </Route>
-          <Route path='/Staff-sessions/manage-staffrole'>
-            <Protected>
-              <ManageStaffRole />
-            </Protected>
-          </Route>
-          <Route path='/Staff-sessions/reconciliation-manage'>
-            <Protected>
-              <ReconciliationManage />
-            </Protected>
-          </Route>
-          <Route path='/Staff-sessions/sessions'>
-            <Protected>
-              <Sessions />
-            </Protected>
-          </Route>
-          <Route path='/add-roles'>
-            <Protected>
-              <CreateRole />
-            </Protected>
-          </Route>
-          <Route path='/edit-role/:id'>
-            <Protected>
-              <CreateRole />
-            </Protected>
-          </Route>
-          <Route path='/errorPage'>
-            <ErrorPage />
-          </Route>
-          <Route path='/more/company'>
-            <Company />
-          </Route>
-          <Route path='/more/drug-group'>
-            <DrugGroup />
-          </Route>
-          <Route path='/Staff-sessions/sessions'>
-            <LogActivity />
-          </Route>
-          {/* <Route path='/mehul'>
+        <Router>
+          <Switch>
+            <Route exact path='/'>
+              <Login />
+            </Route>
+            <Route path='/Register'>
+              <SignUp />
+            </Route>
+            <Route path='/forgotPassword'>
+              <Forgot />
+            </Route>
+            <Route path='/admindashboard'>
+              <Protected>
+                <Dashboard />
+              </Protected>
+              <Adminprotected />
+            </Route>
+            <Route path='/itemmaster'>
+              <Protected>
+                <Itemmaster />
+              </Protected>
+            </Route>
+            <Route path='/inventory'>
+              <Protected>
+                <InventoryList />
+              </Protected>
+            </Route>
+            <Route path='/inventoryView/:id'>
+              <Protected>
+                <InventoryView />
+              </Protected>
+            </Route>
+            <Route path='/more/catagory'>
+              <Protected>
+                <Catagory />
+              </Protected>
+            </Route>
+            <Route path='/more/package'>
+              <Protected>
+                <Package />
+              </Protected>
+            </Route>
+            <Route path='/more/customer'>
+              <Protected>
+                <CustomerList />
+              </Protected>
+            </Route>
+            <Route path='/more/customerView/:id'>
+              <Protected>
+                <CustomerView />
+              </Protected>
+            </Route>
+            <Route path='/more/doctors'>
+              <Protected>
+                <DoctorList />
+              </Protected>
+            </Route>
+            <Route path='/more/doctor/:id'>
+              <Protected>
+                <DoctorView />
+              </Protected>
+            </Route>
+            <Route path='/more/addDistributer'>
+              <Protected>
+                <AddDistributer />
+              </Protected>
+            </Route>
+            <Route path='/more/DistributorList'>
+              <Protected>
+                <DistributerList />
+              </Protected>
+            </Route>
+            <Route path='/more/reconciliation'>
+              <Protected>
+                <Reconciliation />
+              </Protected>
+            </Route>
+            <Route path='/Resports'>
+              <ReportsMain />
+            </Route>
+            <Route path='/DistributerView/:id'>
+              <Protected>
+                <DistributerView />
+              </Protected>
+            </Route>
+            <Route path='/purchase/paymentList'>
+              <Protected>
+                <PaymentList />
+              </Protected>
+            </Route>
+            <Route path='/purchase/purchasebill'>
+              <Protected>
+                <PurchaseList />
+              </Protected>
+            </Route>
+            <Route path='/purchase/view/:id'>
+              <Protected>
+                <PurchaseView />
+              </Protected>
+            </Route>
+            <Route path='/purchase/edit/:id/:randomNumber'>
+              <Protected>
+                <EditPurchaseBill />
+              </Protected>
+            </Route>
+            <Route path='/purchase/return'>
+              <Protected>
+                <ReturnList />
+              </Protected>
+            </Route>
+            <Route path='/return/view/:id'>
+              <Protected>
+                <ReturnView />
+              </Protected>
+            </Route>
+            <Route path='/return/edit/:id'>
+              <Protected>
+                <EditReturnBill />
+              </Protected>
+            </Route>
+            <Route path='/purchase/return'>
+              <Protected>
+                <ReturnList />
+              </Protected>
+            </Route>
+            <Route path='/popUpbox'>
+              <PopUp />
+            </Route>
+            <Route path='/purchase/addPurchaseBill'>
+              <Protected>
+                <AddPurchaseBill />
+              </Protected>
+            </Route>
+            <Route path='/return/add'>
+              <Protected>
+                <AddReturnbill />
+              </Protected>
+            </Route>
+            <Route path='/purchase/purchasereturn'>
+              <Purchasereturn />
+            </Route>
+            <Route path='/purchase/addPurchaseReturn'>
+              <Protected>
+                <AddPurchaseReturn />
+              </Protected>
+            </Route>
+            <Route path='/salelist'>
+              <Salelist />
+            </Route>
+            <Route path='/addsale'>
+              <Addsale />
+            </Route>
+            <Route path='/salebill/view/:id'>
+              <SaleView />
+            </Route>
+            <Route path='/salebill/edit/:id/:randomNumber'>
+              <EditSaleBill />
+            </Route>
+            <Route path='/saleReturn/list'>
+              <SalereturnList />
+            </Route>
+            <Route path='/saleReturn/Add'>
+              <Salereturn />
+            </Route>
+            <Route path='/SaleReturn/View/:id'>
+              <SaleReturnView />
+            </Route>
+            <Route path='/SaleReturn/Edit/:id'>
+              <EditSaleReturn />
+            </Route>
+            <Route path='/profile'>
+              <ProfileView />
+            </Route>
+            <Route path='/OrderList'>
+              <OrderList />
+            </Route>
+            <Route path='/more/Cashmanagement'>
+              <CashManage />
+            </Route>
+
+            <Route path='/more/expense-manage'>
+              <Protected>
+                <ManageExpense />
+              </Protected>
+            </Route>
+            <Route path='/more/BankAccountdetails'>
+              <Protected>
+                <BankAccount />
+              </Protected>
+            </Route>
+            <Route path='/Report/margin-report/item-wise'>
+              <Protected>
+                <ItemWiseMargin />
+              </Protected>
+            </Route>
+            <Route path='/Report/margin-report/bill-item-wise-margin'>
+              <Protected>
+                <BillItemWiseMargin />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-purchase-register'>
+              <Protected>
+                <PurchaseRegister />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-purchase-bills'>
+              <Protected>
+                <PurchaseBillReport />
+              </Protected>
+            </Route>
+            <Route path='/adjustStock'>
+              <Protected>
+                <AdjustStock />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-sales-register'>
+              <Protected>
+                <SalesRegister />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-sales-bills'>
+              <Protected>
+                <SalesBill />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-hsn-wise'>
+              <Protected>
+                <HsnWiseGst />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-GSTR1'>
+              <Protected>
+                <Gstr1 />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-GSTR2'>
+              <Protected>
+                <Gstr2 />
+              </Protected>
+            </Route>
+            <Route path='/Reports/gst-GSTR-3B'>
+              <Protected>
+                <Gstr_3B />
+              </Protected>
+            </Route>
+            <Route path='/Reports/day-wise-summary'>
+              <Protected>
+                <DayWiseSummary />
+              </Protected>
+            </Route>
+            <Route path='/Reports/account-purchase-payment-summary'>
+              <Protected>
+                <PurchasePaymentSummary />
+              </Protected>
+            </Route>
+            <Route path='/Reports/others-item-doctor-wise'>
+              <Protected>
+                <DoctorItemWise />
+              </Protected>
+            </Route>
+            <Route path='/Reports/others-company-items-analysis'>
+              <Protected>
+                <CompanyItemWise />
+              </Protected>
+            </Route>
+            <Route path='/Reports/others-staff-wise-activity-summary'>
+              <Protected>
+                <StaffWiseActivity />
+              </Protected>
+            </Route>
+            <Route path='/Reports/others-sales-summary-report'>
+              <Protected>
+                <SaleSummary />
+              </Protected>
+            </Route>
+            <Route path='/Reports/stock-purchase-return-report'>
+              <Protected>
+                <Purchase_Return_Report />
+              </Protected>
+            </Route>
+            <Route path='/Reports/stock-inventory-reconciliation'>
+              <Protected>
+                <Inventory_Reconciliation />
+              </Protected>
+            </Route>
+            <Route path='/Reports/stock-item-batchwise'>
+              <Protected>
+                <Item_Batch_wiseStock />
+              </Protected>
+            </Route>
+            <Route path='/Reports/stock-non-moving'>
+              <Protected>
+                <Non_Moving_items />
+              </Protected>
+            </Route>
+            <Route path='/Reports/stock-stock-adjustment'>
+              <Protected>
+                <Stock_AdjustMent_Report />
+              </Protected>
+            </Route>
+            <Route path='/Reports/monthly-sales-overview'>
+              <Protected>
+                <Monthly_sales_Overview />
+              </Protected>
+            </Route>
+            <Route path='/Reports/top-selling-items'>
+              <Protected>
+                <Top_Selling_Items />
+              </Protected>
+            </Route>
+            <Route path='/Reports/top-customers'>
+              <Protected>
+                <Top_Customers />
+              </Protected>
+            </Route>
+            <Route path='/Reports/top-distributors'>
+              <Protected>
+                <Top_Distributor />
+              </Protected>
+            </Route>
+            <Route path='/about-info'>
+              <Protected>
+                <AboutInfo />
+              </Protected>
+            </Route>
+            <Route path='/documents'>
+              <Protected>
+                <Documents />
+              </Protected>
+            </Route>
+            <Route path='/security'>
+              <Protected>
+                <Security />
+              </Protected>
+            </Route>
+            <Route path='/plans'>
+              <Protected>
+                <Plans />
+              </Protected>
+            </Route>
+            <Route path='/password'>
+              <Protected>
+                <Password />
+              </Protected>
+            </Route>
+            <Route path='/Staff-sessions/staff-member'>
+              <Protected>
+                <StaffMember />
+              </Protected>
+            </Route>
+            <Route path='/Staff-sessions/manage-staffrole'>
+              <Protected>
+                <ManageStaffRole />
+              </Protected>
+            </Route>
+            <Route path='/Staff-sessions/reconciliation-manage'>
+              <Protected>
+                <ReconciliationManage />
+              </Protected>
+            </Route>
+            <Route path='/Staff-sessions/sessions'>
+              <Protected>
+                <Sessions />
+              </Protected>
+            </Route>
+            <Route path='/add-roles'>
+              <Protected>
+                <CreateRole />
+              </Protected>
+            </Route>
+            <Route path='/edit-role/:id'>
+              <Protected>
+                <CreateRole />
+              </Protected>
+            </Route>
+            <Route path='/errorPage'>
+              <ErrorPage />
+            </Route>
+            <Route path='/more/company'>
+              <Company />
+            </Route>
+            <Route path='/more/drug-group'>
+              <DrugGroup />
+            </Route>
+            <Route path='/Staff-sessions/sessions'>
+              <LogActivity />
+            </Route>
+            {/* <Route path='/mehul'>
             <AddPurchaseReturn />
           </Route> */}
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
       </ThemeProvider>
     </div>
   );

@@ -55,10 +55,10 @@ const SaleView = () => {
         //console.log('purchase', saleData);
     }, [id, saleData]);
 
-    useEffect(()=>{
+    useEffect(() => {
         localStorage.removeItem("RandomNumber")
-    },[])
-    
+    }, [])
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'ArrowRight') {

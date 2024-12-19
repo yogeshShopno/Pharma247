@@ -1437,7 +1437,7 @@ const Addsale = () => {
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -1456,7 +1456,7 @@ const Addsale = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr style={{borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td >
                                                     <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                     {searchItem || barcodeItemName}
@@ -1615,7 +1615,8 @@ const Addsale = () => {
                                                     <td style={{
                                                         display: 'flex', gap: '8px',
                                                     }}>
-                                                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={(e) => {
+                                                        <BorderColorIcon
+                              style={{ color: "var(--color1)" }} className="cursor-pointer" onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleEditClick(item)
                                                         }} />

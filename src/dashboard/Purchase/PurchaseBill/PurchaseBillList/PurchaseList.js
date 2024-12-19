@@ -57,7 +57,7 @@ const Purchasebill = () => {
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('');
 
-  const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(),15))
+  const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15))
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
 
@@ -66,7 +66,7 @@ const Purchasebill = () => {
     history.push('/purchase/addPurchaseBill')
   }
 
-  
+
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
     purchaseBillList(pageNum);
@@ -188,8 +188,8 @@ const Purchasebill = () => {
 
   const AllPDFGenerate = async () => {
     let data = new FormData();
-    data.append('start_date', PdfstartDate? format(PdfstartDate, 'yyyy-MM-dd') : '');
-    data.append('end_date',PdfendDate? format(PdfendDate, 'yyyy-MM-dd') : '' );
+    data.append('start_date', PdfstartDate ? format(PdfstartDate, 'yyyy-MM-dd') : '');
+    data.append('end_date', PdfendDate ? format(PdfendDate, 'yyyy-MM-dd') : '');
 
     setIsLoading(true);
     try {
@@ -271,7 +271,7 @@ const Purchasebill = () => {
               <Button
                 variant="contained"
                 style={{ background: "var(--color1)" }}
-                onClick={()=>{setOpenAddPopUp(true)}}
+                onClick={() => { setOpenAddPopUp(true) }}
               >
                 Generate PDF
               </Button>
@@ -388,7 +388,7 @@ const Purchasebill = () => {
                             <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                             {hasPermission(permissions, "purchase bill delete") && (
                               <DeleteIcon
-                              style={{color:"#F31C1C"}}
+                                style={{ color: "#F31C1C" }}
                                 className="cursor-pointer "
                                 onClick={() => deleteOpen(row.id)}
                               />
@@ -641,24 +641,24 @@ const Purchasebill = () => {
           </div>
 
           <Dialog open={openAddPopUp}
-           sx={{
-            "& .MuiDialog-container": {
-              "& .MuiPaper-root": {
-                width: "50%",
-                height: "50%",
-                maxWidth: "500px", // Set your width here
-                maxHeight: "80vh", // Set your height here
-                overflowY: "auto", // Enable vertical scrolling if content overflows
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "50%",
+                  height: "50%",
+                  maxWidth: "500px", // Set your width here
+                  maxHeight: "80vh", // Set your height here
+                  overflowY: "auto", // Enable vertical scrolling if content overflows
+                },
               },
-            },
-          }}
+            }}
           >
             <DialogTitle id="alert-dialog-title" className="secondary">
               Genrate PDF
             </DialogTitle>
             <IconButton
               aria-label="close"
-              onClick={()=>{ setOpenAddPopUp(false);}}
+              onClick={() => { setOpenAddPopUp(false); }}
               sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
             >
               <CloseIcon />
@@ -703,11 +703,11 @@ const Purchasebill = () => {
             </DialogContent>
             <DialogActions>
               <Button autoFocus variant="contained" className="p-5" color="success"
-              onClick={()=>{ AllPDFGenerate()}}
+                onClick={() => { AllPDFGenerate() }}
               >
                 Genrate
               </Button>
-              <Button autoFocus variant="contained" onClick={()=>{ setOpenAddPopUp(false)}} color="error"  >
+              <Button autoFocus variant="contained" onClick={() => { setOpenAddPopUp(false) }} color="error"  >
                 Cancel
               </Button>
             </DialogActions>

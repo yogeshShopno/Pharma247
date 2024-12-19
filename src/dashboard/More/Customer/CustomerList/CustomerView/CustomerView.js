@@ -47,7 +47,7 @@ const CustomerView = () => {
     // const [searchSaleReturnTerms, setSearchSaleReturnTerms] = useState(initialsaleReturnSearchTerms);
     // const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [tabValue, setTabValue] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
     // const paginatedData = CustomerDetail.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
     const totalPages = Math.ceil(CustomerDetail.length / rowsPerPage);
     useEffect(() => {
@@ -207,9 +207,24 @@ const CustomerView = () => {
 
                     <div className="p-6">
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} >
-                            <Tabs value={tabValue} onChange={handleChange} style={{ marginBottom: "10px" }}>
-                                <Tab label="Sale" sx={{ mx: 2 }} />
-                                <Tab label="Sales Return" sx={{ mx: 2 }} />
+                            <Tabs value={tabValue} TabIndicatorProps={{
+                                style: {
+                                    backgroundColor: "var(--color1)",
+                                    color: "var(--color1)",
+                                },
+                            }} onChange={handleChange} style={{ marginBottom: "10px" }}>
+                                <Tab label="Sale" sx={{
+                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
+                                    "&.Mui-selected": {
+                                        color: "var(--color1)",
+                                    },
+                                }} />
+
+                                <Tab label="Sales Return" sx={{
+                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)", "&.Mui-selected": {
+                                        color: "var(--color1)",
+                                    }
+                                }} />
 
                             </Tabs>
 
@@ -229,7 +244,7 @@ const CustomerView = () => {
                                                             {column.label}
                                                         </th>
                                                     ))}
-                                                    <th>Action</th>
+                                                    {/* <th>Action</th> */}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -239,7 +254,7 @@ const CustomerView = () => {
                                                             <td key={column.id}>
                                                                 {column.id === 'bill_no' ? (
                                                                     <span
-                                                                        style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                                                                        style={{ cursor: 'pointer', color: '#628A2F', }}
                                                                         onClick={() => viewBill(item)}
                                                                     >
                                                                         {item[column.id]}
@@ -251,7 +266,8 @@ const CustomerView = () => {
                                                         ))}
                                                         {item?.payment_mode == 'credit' &&
                                                             <td>
-                                                                <BorderColorIcon color="primary" onClick={() => handleEditOpen(item)} />
+                                                                <BorderColorIcon
+                              style={{ color: "var(--color1)" }}  onClick={() => handleEditOpen(item)} />
                                                             </td>}
                                                     </tr>
                                                 ))}
@@ -271,7 +287,7 @@ const CustomerView = () => {
                             )}
 
                             {tabValue === 1 && (
-                                <div  style={{ margin: "25px" }}>
+                                <div style={{ margin: "25px" }}>
                                     <div className="mx-4 my-2 ">
                                         <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{tableData?.sales_return_amount ? tableData?.sales_return_amount : 0}</span></Typography>
                                     </div>

@@ -724,7 +724,7 @@ const ManageExpense = () => {
                                 <DialogContentText id="alert-dialog-description">
                                     <div className="flex flex-col lg:flex-row gap-4 mb-3">
                                         <div className="w-full lg:w-1/3 border-b lg:border-b-0 lg:border-r border-blue-700">
-                                            <span className="ExpenseBoxTitle">Category</span>
+                                            <span className="primary">Category</span>
                                             <FormControl>
                                                 <RadioGroup
                                                     aria-labelledby="demo-radio-buttons-group-label"
@@ -914,7 +914,7 @@ const ManageExpense = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button autoFocus variant="contained" color="success" onClick={handleAddExpense}>
+                                <Button autoFocus variant="contained"  style={{background:"#3f6212"}} onClick={handleAddExpense}>
                                     Save
                                 </Button>
                             </DialogActions>

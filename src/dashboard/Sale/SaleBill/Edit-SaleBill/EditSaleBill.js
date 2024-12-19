@@ -49,6 +49,7 @@ const EditSaleBill = () => {
   const location = useLocation();
   const { paymentType: initialPayment } = location.state
   const [paymentType, setPaymentType] = useState(initialPayment || '');
+    const [loyaltyVal, setLoyaltyVal] = useState(0);
 
   const [error, setError] = useState({ customer: "" });
   const [itemAmount, setItemAmount] = useState(0);
@@ -88,6 +89,7 @@ const EditSaleBill = () => {
   let defaultDate = new Date();
   const [searchItem, setSearchItem] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+    const [loyaltyPoints, setLoyaltyPoints] = useState([]);
 
   const [itemList, setItemList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
@@ -137,13 +139,23 @@ const EditSaleBill = () => {
       setOtherAmt(0);
       setTempOtherAmt(0);
     } else {
-      let calculatedNetAmount = totalAmount - discount + Number(tempOtherAmt);
+      // let calculatedNetAmount = totalAmount - discount + Number(tempOtherAmt);
+
+      // if (calculatedNetAmount < 0) {
+      //   setOtherAmt(-(totalAmount - discount));
+      //   setTempOtherAmt(-(totalAmount - discount));
+      //   calculatedNetAmount = 0;
+      // }
+
+      let loyaltyPointsDeduction = loyaltyVal; 
+      let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
       if (calculatedNetAmount < 0) {
-        setOtherAmt(-(totalAmount - discount));
-        setTempOtherAmt(-(totalAmount - discount));
-        calculatedNetAmount = 0;
+          setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+          setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+          calculatedNetAmount = 0;
       }
+
       const decimalPart = Number((calculatedNetAmount % 1).toFixed(2));
       const roundedDecimal = decimalPart;
       if (decimalPart < 0.50) {
@@ -458,7 +470,7 @@ const EditSaleBill = () => {
       // setQty(selectedEditItem.qty);
       setBase(item.base);
       // setBase(selectedEditItem.base);
-      setOrder(selectedEditItem.order);
+      setOrder(item.order);
       setGst(item.gst_name);
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
@@ -482,10 +494,32 @@ const EditSaleBill = () => {
 
   }
 
+  
+  const fetchLoyaltyPoints = async (customerId) => {
+    let data = new FormData();
+    const params = { customer_id: customerId };
+
+    try {
+        const response = await axios.get('loyalti-point-list', data, {
+            params: params,
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        // Assuming response.data.data contains the loyalty points
+        setLoyaltyPoints(response.data.data);
+    } catch (error) {
+        console.error('Error fetching loyalty points:', error);
+    }
+};
   const handleCustomerOption = (event, newValue) => {
     setUnsavedItems(true);
 
     setCustomer(newValue);
+    if (newValue) {
+      const customerId = newValue.id; // Assuming `newValue` has the customer object
+      fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
+  } else {
+      setLoyaltyVal(0);
+  }
   };
 
   const handleDoctorOption = (event, newValue) => {
@@ -671,6 +705,7 @@ const EditSaleBill = () => {
       setGst("");
       setBatch("");
       setLoc("");
+      setOrder('');
       setBarcode("")
       setIsEditMode(false);
       setIsVisible(false);
@@ -738,6 +773,8 @@ const EditSaleBill = () => {
     data.append("margin_net_profit", marginNetProfit || 0);
     data.append("net_rate", netRateAmount || 0);
     data.append("margin", margin || 0);
+    data.append("roylti_point", loyaltyVal)
+
     const params = {
       id: id || '',
     };
@@ -897,8 +934,8 @@ const EditSaleBill = () => {
             }}
           >
             <div>
-              <div className="py-3" style={{ display: "flex", gap: "4px" }}>
-                <div style={{ display: "flex", gap: "7px" }}>
+              <div className="py-3" style={{ display: "flex", gap: "4px" , alignItems: "center"}}>
+                <div style={{ display: "flex", gap: "7px" , alignItems: "center"}}>
                   <span
                     style={{
                       color: "var(--color2)",
@@ -916,7 +953,6 @@ const EditSaleBill = () => {
                   <ArrowForwardIosIcon
                     style={{
                       fontSize: "18px",
-                      marginTop: "9px",
                       color: "var(--color1)",
                     }}
                   />
@@ -958,7 +994,7 @@ const EditSaleBill = () => {
                     variant="contained"
                     sx={{
                       textTransform: "none",
-                      background: "rgb(4, 76, 157)",
+                      background: "var(--color1)",
                     }}
                     onClick={handleUpdate}
                   >
@@ -972,7 +1008,7 @@ const EditSaleBill = () => {
                   <div className="detail mt-1" style={{ width: "250px" }}>
                     <div
                       className="detail  p-2 rounded-md"
-                      style={{ background: "#044c9d", width: "100%" }}
+                      style={{ background: "var(--color1)", width: "100%" }}
                     >
                       <div
                         className="heading"
@@ -1046,6 +1082,7 @@ const EditSaleBill = () => {
                     <Autocomplete
                       value={customer} // Ensure `customer` is a valid object from `customerDetails`.
                       options={customerDetails}
+                      onChange={handleCustomerOption}
                       getOptionLabel={(option) => option.name || ""}
                       isOptionEqualToValue={(option, value) => option.name === value.name}
                       disabled
@@ -1177,14 +1214,14 @@ const EditSaleBill = () => {
                               // primary={`${option.iteam_name} - ${option.stock}`}
                               // secondary={`weightage: ${option.weightage}`}
                               primary={`${option.iteam_name},(${option.company})`}
-                              // secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                              secondary={
-                                <>
-                                  <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                  ₹: {option.mrp || 0},
-                                  <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                </>
-                              }
+                              secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                              // secondary={
+                              //   <>
+                              //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                              //     ₹: {option.mrp || 0},
+                              //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                              //   </>
+                              // }
                               sx={{
                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                               }}
@@ -1615,6 +1652,9 @@ const EditSaleBill = () => {
                     <label className="font-bold">Other Amount : </label>
                   </div>
                   <div>
+                    <label className="font-bold">Loyalty Points : </label>
+                  </div>
+                  <div>
                     <label className="font-bold">Discount Amount : </label>
                   </div>
                   <div>
@@ -1672,6 +1712,42 @@ const EditSaleBill = () => {
                       type="number"
                       value={tempOtherAmt || otherAmt}
                       onChange={handleOtherAmtChange}
+                      onKeyPress={(e) => {
+                        const value = e.target.value;
+                        const isMinusKey = e.key === '-';
+
+                        // Allow Backspace and numeric keys
+                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+
+                        // Allow only one '-' at the beginning of the input value
+                        if (isMinusKey && value.includes('-')) {
+                          e.preventDefault();
+                        }
+                      }}
+                      size="small"
+                      style={{
+                        width: "70px",
+                        background: "none",
+                        borderBottom: "1px solid gray",
+                        outline: "none",
+                        justifyItems: "end"
+
+                      }}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: "35px",
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" },
+                      }}
+
+                    />
+                    <Input
+                      type="number"
+                      value={loyaltyVal}
+                      onChange={(e) => { setLoyaltyVal(e.target.value) }}
+
                       onKeyPress={(e) => {
                         const value = e.target.value;
                         const isMinusKey = e.key === '-';

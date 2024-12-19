@@ -166,11 +166,6 @@ const Salelist = () => {
 
     useEffect(() => {
         saleBillList();
-        //     // if (tableData.length > 0) {
-        //     // const count = tableData[0].count + 1;
-        //     // setStartIndex(count);
-        //     localStorage.setItem('BillNo', tableData[0]?.count + 1);
-        //     // }
     }, [])
 
     const saleBillList = async (currentPage) => {

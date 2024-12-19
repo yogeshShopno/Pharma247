@@ -93,6 +93,7 @@ const Addsale = () => {
     const [IsDelete, setIsDelete] = useState(false);
     const [searchItem, setSearchItem] = useState('')
     const [selectedOption, setSelectedOption] = useState(null);
+    const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
 
     const [itemList, setItemList] = useState([])
     const [customerDetails, setCustomerDetails] = useState([])
@@ -123,7 +124,14 @@ const Addsale = () => {
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
     const [barcodeItemName, setBarcodeItemName] = useState('');
+    const [loyaltyPoints, setLoyaltyPoints] = useState([]);
+    const [loyaltyVal, setLoyaltyVal] = useState(0);
 
+    const [addItemName, setAddItemName] = useState("");
+    const [addBarcode, setAddBarcode] = useState("");
+    const [addUnit, setAddUnit] = useState("");
+    const [barcodeBatch, setBarcodeBatch] = useState("");
+    const [billNo, setBillNo] = useState(localStorage.getItem('BillNo'));
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
         { id: 'qty', label: 'QTY', minWidth: 100 },
@@ -163,11 +171,20 @@ const Addsale = () => {
         if (otherAmt < 0 && Math.abs(otherAmt) > totalAmount) {
             setOtherAmt('');
         } else {
-            let calculatedNetAmount = totalAmount - discount + Number(otherAmt);
+            // let calculatedNetAmount = totalAmount - discount + Number(otherAmt);
+            // if (calculatedNetAmount < 0) {
+            //     setOtherAmt(-(totalAmount - discount));
+            //     calculatedNetAmount = 0;
+            // }
+
+            let loyaltyPointsDeduction = loyaltyVal;
+            let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
+
             if (calculatedNetAmount < 0) {
-                setOtherAmt(-(totalAmount - discount));
+                setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
                 calculatedNetAmount = 0;
             }
+
             const decimalPart = Number((calculatedNetAmount % 1).toFixed(2));
             const roundedDecimal = decimalPart;
             if (decimalPart < 0.50) {
@@ -182,7 +199,7 @@ const Addsale = () => {
             const due = givenAmt - calculatedNetAmount;
             setDueAmount(due.toFixed(2));
         }
-    }, [totalAmount, finalDiscount, otherAmt, givenAmt]);
+    }, [totalAmount, loyaltyVal, finalDiscount, otherAmt, givenAmt, barcodeBatch]);
 
     const handleOtherAmtChange = (e) => {
         const value = e.target.value;
@@ -233,6 +250,7 @@ const Addsale = () => {
                             },
                         }
                     );
+                    console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -301,6 +319,54 @@ const Addsale = () => {
         }
     }, [itemId, base, qty]);
 
+    const handleAddNewItem = async () => {
+        let formData = new FormData();
+        formData.append("item_name", addItemName ? addItemName : "");
+        formData.append("unite", addUnit ? addUnit : "");
+        formData.append("weightage", addUnit ? addUnit : "");
+        formData.append("pack", addUnit ? "1" + addUnit : "");
+        formData.append("barcode", addBarcode ? addBarcode : "");
+
+        formData.append("packaging_id", "");
+        formData.append("drug_group", "");
+        formData.append("gst", "");
+        formData.append("location", "");
+        formData.append("mrp", "");
+        formData.append("minimum", "");
+        formData.append("maximum", "");
+        formData.append("discount", "");
+        formData.append("margin", "");
+        formData.append("hsn_code", "");
+        formData.append("message", "");
+        formData.append("item_category_id", "");
+        formData.append("pahrma", "");
+        formData.append("distributer", "");
+        formData.append("front_photo", "");
+        formData.append("back_photo", "");
+        formData.append("mrp_photo", "");
+
+        try {
+            const response = await axios.post("create-iteams", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.data.status === 200) {
+                //console.log("response===>", response.data);
+                toast.success(response.data.message);
+                setOpenAddItemPopUp(false)
+            } else if (response.data.status === 400) {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Please try again later");
+            }
+        }
+    };
     const handleSearch = async () => {
         let data = new FormData();
         data.append("search", searchItem);
@@ -321,6 +387,15 @@ const Addsale = () => {
         } catch (error) {
             console.error("API error:", error);
         }
+    }
+
+    const resetAddDialog = () => {
+        setOpenAddPopUp(false);
+        setOpenAddItemPopUp(false);
+        // setCnAmount(0);
+        // setSelectedRows("")
+        // setCnTotalAmount("")
+        // setCnAmount(0);
     }
 
     const customerAllData = async (searchQuery) => {
@@ -361,17 +436,45 @@ const Addsale = () => {
             console.error("API error:", error);
         }
     }
+
+    const handelAddItemOpen = () => {
+        setUnsavedItems(true)
+        setOpenAddItemPopUp(true);
+    }
+
     const handleInputChange = (event, newInputValue) => {
+        setUnsavedItems(true);
         setSearchItem(newInputValue);
         handleSearch(newInputValue);
-        setUnsavedItems(true);
 
+    };
+
+
+    const fetchLoyaltyPoints = async (customerId) => {
+        let data = new FormData();
+        const params = { customer_id: customerId };
+
+        try {
+            const response = await axios.get('loyalti-point-list', data, {
+                params: params,
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            // Assuming response.data.data contains the loyalty points
+            setLoyaltyPoints(response.data.data);
+        } catch (error) {
+            console.error('Error fetching loyalty points:', error);
+        }
     };
 
     const handleCustomerOption = (event, newValue) => {
         setCustomer(newValue);
         setUnsavedItems(true);
-
+        if (newValue) {
+            const customerId = newValue.id; // Assuming `newValue` has the customer object
+            fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
+        } else {
+            setLoyaltyVal(0);
+        }
     };
 
     const handleOptionChange = (event, newValue) => {
@@ -561,7 +664,7 @@ const Addsale = () => {
             setQty(item.qty);
             setBase(item.base);
             setGst(item.gst_name);
-            setOrder(selectedEditItem.order);
+            setOrder(item.order);
             setItemAmount(selectedEditItem.net_rate);
         }
     };
@@ -609,30 +712,37 @@ const Addsale = () => {
                 })
                 .then((response) => {
                     console.log('response.data.data :>> ', response.data.data);
-                    setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
+                    setBarcodeBatch(response?.data?.data[0])
+                    setUnit(Number(response?.data?.data[0]?.unit))
                     setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
                     setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-                    setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-                    setQty(response?.data?.data[0]?.batch_list[0]?.qty)
-                    setMaxQty(response?.data?.data[0]?.batch_list[0]?.stock)
-                    setPtr(response?.data?.data[0]?.batch_list[0]?.ptr)
-                    setDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
-                    setBase(response?.data?.data[0]?.batch_list[0]?.base)
-                    setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
-                    setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-                    setTotalMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-                    setTotalNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                    setBarcodeItemName(response?.data?.data[0]?.batch_list[0]?.iteam_name)
-                    setId(response?.data?.data[0]?.batch_list[0]?.id)
-                    setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+                    setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
+                    setQty(Number(response?.data?.data[0]?.batch_list[0]?.qty))
+                    setMaxQty(Number(response?.data?.data[0]?.batch_list[0]?.stock))
+                    setPtr(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
+                    setDiscount(Number(response?.data?.data[0]?.batch_list[0]?.discount))
+                    setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
+                    setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst_name));
+                    setLoc(response?.data?.data[0]?.batch_list[0]?.location);
+                    setTotalMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
+                    setTotalNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
+                    setBarcodeItemName(response?.data?.data[0]?.iteam_name);
+                    setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
+                    setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
                     console.log(response?.data?.data[0]?.batch_list[0], itemId)
 
-                    setSelectedEditItemId(response?.data?.data[0]?.batch_list[0]?.id)
+                    setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
 
-                    setItemEditID(response.data.data[0]?.id)
+                    setItemEditID(Number(response.data.data[0]?.id))
+
+                    setTimeout(() => {
+                        if (totalAmount != 0) {
+                            handleBarcodeItem()
+
+                        }
+                    }, 1000);
 
                     setUnsavedItems(true)
-
                     // const batch = response?.data?.data[0]?.batch_list[0];
                     // if (batch) {
                     //     setUnit(batch.unit);
@@ -657,6 +767,83 @@ const Addsale = () => {
             console.error("API error:", error);
         }
     };
+
+    const handleBarcodeItem = async () => {
+        setUnsavedItems(true)
+        let data = new FormData();
+
+
+        data.append("random_number", localStorage.getItem("RandomNumber"));
+        data.append("weightage", unit ? Number(unit) : 1);
+        data.append("batch_number", batch ? batch : 0);
+        data.append("expiry", expiryDate);
+        data.append("mrp", mrp ? mrp : 0);
+        data.append("qty", qty ? qty : 0);
+        data.append("free_qty", maxQty ? maxQty : 0);
+        data.append("ptr", ptr ? ptr : 0);
+        data.append("discount", discount ? discount : 0);
+        data.append("base_price", base ? base : 0);
+        data.append("gst", gst.id);
+        data.append("location", loc ? loc : 0);
+        data.append("margin", totalMargin ? totalMargin : 0);
+        data.append("net_rate", totalNetRate ? totalNetRate : 0);
+        data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+
+
+        data.append("item_id", itemId);
+        data.append("unit_id", Number(0));
+        data.append("user_id", userId);
+        data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+        data.append("total_amount", totalAmount ? totalAmount : 0);
+
+        const params = {
+            id: selectedEditItemId,
+        };
+        try {
+            const response = await axios.post("item-purchase", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("response", response);
+
+            setTotalAmount(0);
+            setUnit("");
+            setBatch("");
+            setExpiryDate("");
+            setMRP("");
+            setQty("");
+            setMaxQty("");
+            setPtr("");
+            setGst("");
+            setDiscount("");
+            setTotalBase("");
+            setTotalNetRate("");
+            setBatch("");
+            setTotalMargin("");
+            setLoc("");
+            setBarcodeItemName("")
+
+            //   if (totalAmount) {
+            //     setSelectedRows([]);
+            //   }
+            // setNetAmount(totalAmount)
+            // handleCalNetAmount()
+            setIsEditMode(false);
+            setSelectedEditItemId(null);
+
+            setBarcode("")
+            setValue("")
+            // Reset Autocomplete field
+            setValue("");
+            setSearchItem("");
+
+            // setAutocompleteDisabled(false);
+        } catch (e) {
+            //console.log(e);
+        }
+    }
+
     const handleSubmit = () => {
         setUnsavedItems(false);
         const newErrors = {};
@@ -673,9 +860,10 @@ const Addsale = () => {
         }
         submitSaleData();
     }
-    const submitSaleData = async () => {
+    const submitSaleData = (async () => {
         let data = new FormData();
-        data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
+        // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
+        data.append("bill_no", billNo);
         data.append("customer_id", customer?.id ? customer?.id : '');
         data.append("status", 'Completed');
         data.append("bill_date", selectedDate.format('YYYY-MM-DD') ? selectedDate.format('YYYY-MM-DD') : '')
@@ -705,25 +893,40 @@ const Addsale = () => {
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
+        data.append("roylti_point", loyaltyVal)
 
         try {
-            await axios.post("create-sales", data, {
+            const response = await axios.post("create-sales", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
-            ).then((response) => {
-
-                localStorage.removeItem('RandomNumber');
+            );
+            if (response.data.status === 200) {
+                setBillNo(billNo + 1);
                 toast.success(response.data.message);
+                localStorage.removeItem('RandomNumber');
                 setTimeout(() => {
                     history.push('/salelist');
                 }, 2000);
-            })
+            } else if (response.data.status === 400) {
+                toast.error(response.data.message);
+            }
+
+            // .then((response) => {
+            //     localStorage.removeItem('RandomNumber');
+            //     setTimeout(() => {
+            //         history.push('/salelist');
+            //     }, 2000);
+            // })
         } catch (error) {
-            console.error("API error:", error);
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Please try again later");
+            }
         }
-    }
+    })
     useEffect(() => {
         generateRandomNumber()
         let data = new FormData();
@@ -743,12 +946,12 @@ const Addsale = () => {
 
     const handleNavigation = (path) => {
         setOpenModal(true);
-        setOpenCustomer(false);
-        setOpenAddPopUp(false);
+        // setOpenCustomer(false);
+        // setOpenAddPopUp(false);
         setNextPath(path);
     };
 
-    const handleLeavePage = () => {
+    const handleLeavePage = async () => {
         let data = new FormData();
         data.append('random_number', localStorage.getItem('RandomNumber') || '')
         setOpenModal(false);
@@ -757,18 +960,31 @@ const Addsale = () => {
         // const params = {
         //     random_number: localStorage.getItem('RandomNumber')
         // };
-        axios.post("all-sales-item-delete", data, {
-            // params: params,
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(() => {
+        try {
+            const response = await axios.post("all-sales-item-delete", data, {
+                // params: params,
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.status === 200) {
                 setOpenModal(false);
                 setUnsavedItems(false);
-                history.push(nextPath);
-            })
-            .catch(error => {
-                console.error("Error deleting items:", error);
-            });
+                setTimeout(() => {
+                    if (nextPath) {
+                        history.push(nextPath)
+                    }
+                }, 0);
+            }
+
+            setOpenModal(false);
+            setUnsavedItems(false);
+            localStorage.removeItem("RandomNumber");
+
+            // history.replace(nextPath);
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }
+
+
     };
 
     const draftSaleData = async () => {
@@ -922,6 +1138,7 @@ const Addsale = () => {
                     },
                 });
 
+            setTotalAmount(0)
             saleItemList();
             setUnit('')
             setBatch('')
@@ -1072,10 +1289,10 @@ const Addsale = () => {
                 />
                 <div style={{ backgroundColor: '#f0f0f0', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <div style={{ display: 'flex', gap: '7px', }}>
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '8px', color: "var(--color1)" }} />
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', fontWeight: 700, fontSize: '20px' }}>New</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
@@ -1114,14 +1331,14 @@ const Addsale = () => {
                                         <MenuItem key={option.id} value={option.label}>{option.label}</MenuItem>
                                     ))}
                                 </Select>
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)" }} onClick={handleSubmit}> Submit</Button>
+                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
 
                             </div>
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
                                 <div className="detail mt-1" >
-                                    <div className="detail  p-2 rounded-md" style={{ background: "#044c9d", width: "100%" }} >
+                                    <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-1">
@@ -1154,7 +1371,7 @@ const Addsale = () => {
                                                             color: 'white',
                                                             width: '40px',
                                                             height: '40px',
-                                                            backgroundColor: "#0ca1f6",
+                                                            backgroundColor: "#6aa420",
                                                             padding: "10px",
                                                             borderRadius: "50%",
                                                             alignItems: "center"
@@ -1328,13 +1545,14 @@ const Addsale = () => {
                                                     <ListItem {...props}>
                                                         <ListItemText
                                                             primary={`${option.iteam_name}, (${option.company})`}
-                                                            secondary={
-                                                                <>
-                                                                    <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                                                    ₹: {option.mrp || 0},
-                                                                    <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                                                </>
-                                                            }
+                                                            // secondary={
+                                                            //     <>
+                                                            //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                                            //         ₹: {option.mrp || 0},
+                                                            //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                                            //     </>
+                                                            // }
+                                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
                                                             sx={{
                                                                 '& .MuiTypography-root': { fontSize: '1.1rem' }
                                                             }}
@@ -1443,6 +1661,16 @@ const Addsale = () => {
                                     }
 
                                 </table>
+
+                                <Button
+                                    variant="contained"
+                                    style={{ backgroundColor: "var(--color1)" }}
+
+                                    onClick={handelAddItemOpen}
+                                >
+                                    <ControlPointIcon className="mr-2" />
+                                    Add New Item
+                                </Button>
 
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1678,6 +1906,9 @@ const Addsale = () => {
                                             <label className="font-bold">Other Amount : </label>
                                         </div>
                                         <div>
+                                            <label className="font-bold">Loyalty Points : </label>
+                                        </div>
+                                        <div>
                                             <label className="font-bold">Discount Amount : </label>
                                         </div>
                                         <div>
@@ -1756,6 +1987,36 @@ const Addsale = () => {
                                                 }} />
                                         </div>
 
+                                        <div className="mt-1">
+                                            <Input type="number"
+                                                value={loyaltyVal}
+                                                onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                onKeyPress={(e) => {
+                                                    const value = e.target.value;
+                                                    const isMinusKey = e.key === '-';
+
+                                                    if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                        e.preventDefault();
+                                                    }
+
+                                                    if (isMinusKey && value.includes('-')) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                size="small" style={{
+                                                    width: "70px",
+                                                    background: "none",
+                                                    borderBottom: "1px solid gray",
+                                                    justifyItems: "end",
+                                                    outline: "none",
+                                                }} sx={{
+                                                    '& .MuiInputBase-root': {
+                                                        height: '35px',
+                                                    },
+                                                    "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                }} />
+                                        </div>
                                         <div className="mt-1">
                                             {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
                                         </div>
@@ -1936,6 +2197,98 @@ const Addsale = () => {
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
+
+                <Dialog open={openAddItemPopUp} >
+                    <DialogTitle id="alert-dialog-title" className="secondary">
+                        Add New Item
+                    </DialogTitle>
+                    <IconButton
+                        aria-label="close"
+                        onClick={resetAddDialog}
+                        sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                    ><CloseIcon />
+                    </IconButton>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+
+                            <div className="bg-white">
+                                <div
+                                    className="mainform bg-white rounded-lg"
+                                    style={{ padding: "20px" }}
+                                >
+                                    <div className="row">
+                                        <div className="fields">
+                                            <label className="label secondary">Item Name</label>
+                                            <TextField
+                                                id="outlined-number"
+                                                size="small"
+                                                sx={{ minWidth: "150px" }}
+                                                value={addItemName}
+                                                onChange={(e) => setAddItemName(e.target.value)}
+
+                                            />
+                                        </div>
+                                        <div className="fields">
+                                            <label className="label  secondary">Barcode</label>
+                                            <TextField
+                                                id="outlined-number"
+                                                type="number"
+                                                size="small"
+                                                sx={{ minWidth: "150px" }}
+                                                value={addBarcode}
+                                                onChange={(e) => setAddBarcode(Number(e.target.value))}
+
+                                            />
+                                        </div>
+                                        <div className="fields">
+                                            <label className="label secondary">Unit</label>
+                                            <TextField
+                                                id="outlined-number"
+                                                type="number"
+                                                size="small"
+                                                sx={{ minWidth: "150px" }}
+                                                value={addUnit}
+                                                onChange={(e) => setAddUnit(e.target.value)}
+
+                                            />
+                                        </div>
+                                        <div className="fields">
+                                            <label className="label secondary">Pack</label>
+                                            <TextField
+                                                disabled
+                                                id="outlined-number"
+                                                size="small"
+                                                sx={{ minWidth: "150px" }}
+                                                value={`1 * ${addUnit} `}
+                                            />
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#3f6212",
+                                "&:hover": {
+                                    backgroundColor: "#3f6212", // Keep the hover color same
+                                },
+                            }}
+                            onClick={handleAddNewItem}
+
+                        >
+                            <ControlPointIcon className="mr-2" />
+                            Add New Item
+                        </Button>
+
+                    </DialogActions>
+                </Dialog >
+
                 <div id="modal" value={IsDelete}
                     className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
                         }`}>
@@ -2003,9 +2356,7 @@ const Addsale = () => {
                             type="button"
                             className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
                             onClick={() => setOpenModal(false)}
-
                         >
-
                             Cancel
                         </button>
                     </div>

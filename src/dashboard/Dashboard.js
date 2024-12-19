@@ -99,7 +99,7 @@ const Dashboard = () => {
         }
       }
       ).then((response) => {
-    //    console.log(response.data.data)
+        //    console.log(response.data.data)
         setIsLoading(false)
         const initialData = response.data.data;
         setRecord(initialData);
@@ -126,7 +126,7 @@ const Dashboard = () => {
         }));
 
         setData(formattedData);
-  //      console.log('Ayus', formattedData);
+        //      console.log('Ayus', formattedData);
 
         setBilldata(billData);
         setCustomer(initialData?.top_customer)
@@ -134,7 +134,7 @@ const Dashboard = () => {
         setDistributor(initialData?.top_distributor)
       })
     } catch (error) {
-   //   console.error('Error fetching dashboard data:', error);
+      //   console.error('Error fetching dashboard data:', error);
       setIsLoading(false);
     }
   }

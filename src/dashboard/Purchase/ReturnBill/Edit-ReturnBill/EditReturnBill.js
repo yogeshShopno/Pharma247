@@ -139,7 +139,7 @@ const EditReturnBill = () => {
 
     //     initialize();
     // }, []);
-    
+
     useEffect(() => {
         const initializeData = async () => {
             setIsLoading(true);
@@ -196,7 +196,7 @@ const EditReturnBill = () => {
             setItemTotalAmount(selectedEditItem.amount)
         }
     }, [selectedEditItem])
-   
+
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
@@ -280,7 +280,7 @@ const EditReturnBill = () => {
     //     listOfGst();
     //     BankList();
     // }, [])
-   
+
 
     const listDistributor = async () => {
         try {
@@ -543,7 +543,7 @@ const EditReturnBill = () => {
         setSelectedEditItemId(item.id);
         setQty(item.qty)
         setInitialTotalStock(item.total_stock);
-console.log(initialTotalStock,"initialTotalStock")
+        console.log(initialTotalStock, "initialTotalStock")
 
     };
     // const handleQty = (value) => {
@@ -565,7 +565,7 @@ console.log(initialTotalStock,"initialTotalStock")
         // const inputQty = Number(e.target.value);
         // setQty(inputQty);
 
-        const availableStockForEdit = initialTotalStock-free ;
+        const availableStockForEdit = initialTotalStock - free;
 
         if (value <= availableStockForEdit && value >= 0) {
             setQty(value);
@@ -589,7 +589,7 @@ console.log(initialTotalStock,"initialTotalStock")
         }
 
     }
-   
+
 
     const EditReturnItem = async () => {
         setUnsavedItems(true)
@@ -608,7 +608,7 @@ console.log(initialTotalStock,"initialTotalStock")
         // }
         // if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
-      
+
         if (!disc) newErrors.disc = 'Discount is required';
 
         if (!gst.name) newErrors.gst = 'GST is required';
@@ -637,7 +637,7 @@ console.log(initialTotalStock,"initialTotalStock")
         data.append("qty", qty == null ? "0" : qty)
         data.append("disocunt", disc == null ? "0" : disc)
         data.append('gst', gst.id == null ? "0" : gst.id)
-        data.append('location', loc == null ? "0"  :loc )
+        data.append('location', loc == null ? "0" : loc)
         data.append('amount', ItemTotalAmount == null ? "0" : ItemTotalAmount)
         data.append("weightage", unit == null ? "0" : unit)
         data.append("unit", unit == null ? "0" : unit)
@@ -844,9 +844,9 @@ console.log(initialTotalStock,"initialTotalStock")
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', width: '500px', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: '#044c9d', fontWeight: 600, fontSize: '18px' }}>Edit </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                <span style={{ color: 'var(--color1)', fontWeight: 600, fontSize: '18px' }}>Edit </span>
                             </div>
                             <div className="headerList">
                                 {/* <Select
@@ -864,8 +864,8 @@ console.log(initialTotalStock,"initialTotalStock")
                                     ))}
                                 </Select> */}
                                 <Button
+                                style={{ background: 'var(--color1)' }}
                                     variant="contained"
-                                    color="success"
                                     onClick={() => handleReturnUpdate(checkedItems)}  >
                                     Update
                                 </Button>
@@ -1285,8 +1285,8 @@ console.log(initialTotalStock,"initialTotalStock")
                                                 <td></td>
                                                 <td></td>
                                                 <td >
-                                                    <Button variant="contained" color="success"
-                                                        style={{ display: 'flex', gap: '5px' }}
+                                                    <Button variant="contained" 
+                                                       style={{ background: 'var(--color1)' }}
                                                         onClick={EditReturnItem}
                                                     ><EditIcon sx={{ fontSize: 18 }} />Edit</Button>
                                                 </td>
@@ -1298,11 +1298,18 @@ console.log(initialTotalStock,"initialTotalStock")
                                                 <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
                                                     <td>
                                                         <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }}
                                                             checked={item.iss_check}
                                                             onClick={(event) => event.stopPropagation()}
                                                             onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                         />
-                                                        <BorderColorIcon color="primary" onClick={() => handleEditClick(item)} />
+                                                        <BorderColorIcon
+                              style={{ color: "var(--color1)" }}  onClick={() => handleEditClick(item)} />
                                                         <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         {item.item_name}
                                                     </td>
@@ -1314,7 +1321,7 @@ console.log(initialTotalStock,"initialTotalStock")
                                                     <td>{item.fr_qty}</td>
                                                     <td>{item.ptr}</td>
                                                     <td>{item.disocunt}</td>
-                                                     <td>{item.gst_name}</td>
+                                                    <td>{item.gst_name}</td>
                                                     <td>{item.location}</td>
                                                     <td>{item.amount}</td>
                                                 </tr>
@@ -1410,7 +1417,7 @@ console.log(initialTotalStock,"initialTotalStock")
                                                 <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
                                             </div>
                                             <div>
-                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                                <span className='primary font-bold ' >{!netAmount ? 0 : netAmount}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1473,13 +1480,13 @@ console.log(initialTotalStock,"initialTotalStock")
                         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                             <div className="my-4 logout-icon">
                                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
-                                    <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span></h4>
+                                <h4 className="text-lg font-semibold mt-6 text-center">
+                                    <span style={{ textTransform: "none" }}>Are you sure you want to leave this page?</span></h4>
                             </div>
                             <div className="flex gap-5 justify-center">
                                 <button
                                     type="submit"
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                                     onClick={handleLeavePage}
                                 >
                                     Yes

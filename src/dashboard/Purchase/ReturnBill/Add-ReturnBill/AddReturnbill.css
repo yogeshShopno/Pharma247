@@ -14,7 +14,7 @@
 
 
 .total {
-    background-color:#628A2F;
+    background-color: #628A2F;
 
     color: white;
     width: 120px;
@@ -52,13 +52,15 @@
     font-size: 17px;
     display: flex;
     gap: 5px;
-    color: #628A2F;;
+    color: #628A2F;
+    ;
     font-weight: 500;
     line-height: 17px;
 }
 
 .icon {
-    color:#628A2F;;
+    color: #628A2F;
+    ;
     cursor: pointer;
 }
 
@@ -138,7 +140,8 @@ header {
 }
 
 .delete-icon {
-    color: rgb(170, 31, 31);
+    color: var(--color6);
+
     cursor: pointer;
 }
 

@@ -195,7 +195,7 @@ const SalereturnList = () => {
                 </div> :
                     <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px',whiteSpace:"nowrap" }} >Sales Return</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap" }} >Sales Return</span>
                             {hasPermission(permissions, "sale return bill create") && (<>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', marginTop: '7px', color: "var(--color1)" }} />
                                 <Button variant="contained" size='small' style={{ backgroundColor: 'rgb(4, 76, 157)', fontSize: '12px', marginLeft: "5px" }} onClick={goIntoAdd} ><AddIcon />New  </Button>

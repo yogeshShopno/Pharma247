@@ -371,7 +371,8 @@ const StaffMember = () => {
                                         })}
                                         <td className="flex justify-center">
                                             {hasPermission(permissions, "staff members edit") &&
-                                                <BorderColorIcon className="primary mr-3" onClick={() => handelEditOpen(item)} />}
+                                                <BorderColorIcon
+                              style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />}
                                             {hasPermission(permissions, "staff members activation") && (
                                                 <Tooltip title="Deactivate" className="">
                                                     {item.status == 'Active' ?

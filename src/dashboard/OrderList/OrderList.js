@@ -560,7 +560,7 @@ const OrderList = () => {
                         </Dialog>
 
                         <Dialog open={openAddPopUpPlaceOrder}>
-                            <DialogTitle id="alert-dialog-title" className="secondary">
+                            <DialogTitle id="alert-dialog-title" className="primary">
                                 Place Order
                             </DialogTitle>
                             <IconButton
@@ -594,7 +594,13 @@ const OrderList = () => {
                                                 }}
                                             >
                                                 <MenuItem key="select-all" value="select-all">
-                                                    <Checkbox
+                                                    <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }}
                                                         checked={items.length === onlineOrder.length}
                                                         indeterminate={items.length > 0 && items.length < onlineOrder.length}
                                                     />
@@ -602,7 +608,13 @@ const OrderList = () => {
                                                 </MenuItem>
                                                 {onlineOrder?.map((option) => (
                                                     <MenuItem key={option.item_id} value={option.item_id}>
-                                                        <Checkbox checked={items.indexOf(option.item_id) > -1} />
+                                                        <Checkbox 
+sx={{
+    color: "var(--color2)", // Color for unchecked checkboxes
+    '&.Mui-checked': {
+      color: "var(--color1)", // Color for checked checkboxes
+    },
+  }} checked={items.indexOf(option.item_id) > -1} />
                                                         <ListItemText primary={option.iteam_name} />
                                                     </MenuItem>
                                                 ))}
@@ -632,10 +644,10 @@ const OrderList = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button autoFocus variant="contained" className="p-5" color="success" style={{ textTransform: 'none', }} onClick={PlaceOrder} >
+                                <Button  autoFocus variant="contained" className="p-5" style={{ textTransform: 'none',backgroundColor:"#3f6212" }} onClick={PlaceOrder} >
                                     Place Order
                                 </Button>
-                                <Button autoFocus variant="contained" onClick={resetAddDialog} color="error" style={{ textTransform: 'none', }}  >
+                                <Button autoFocus variant="contained" style={{ textTransform: 'none',backgroundColor:"#F31C1C" }} onClick={resetAddDialog}  >
                                     Cancel
                                 </Button>
                             </DialogActions>

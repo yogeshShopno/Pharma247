@@ -27,6 +27,7 @@ const Reconciliation = () => {
   const [data, setData] = useState([]);
   const [itemCount, setIteamCount] = useState(0);
   const [isAudit, setIsAudit] = useState("");
+  const [status, setStatus] = useState("");
   const [stockData, setStockData] = useState([]);
   const history = useHistory();
 
@@ -96,10 +97,13 @@ const Reconciliation = () => {
         })
         .then((response) => {
           setData(response.data.data.data);
-          const {iteam_count,iss_audit}=(response.data.data);
+          const {iteam_count,iss_audit,status}=(response.data.data);
 
           setIteamCount(iteam_count)
           setIsAudit(iss_audit)
+          setStatus(status)
+
+       
           if (response.data.data.data.length == 0) {
             toast.error("No Record Found");
           }

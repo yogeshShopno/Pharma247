@@ -1317,7 +1317,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1342,7 +1342,7 @@ const EditSaleBill = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td>
                             <DeleteIcon
                               className="delete-icon"
@@ -1473,7 +1473,7 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
-                        <tr style={{borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td><TextField
                             id="outlined-number"
                             type="number"
@@ -1497,7 +1497,8 @@ const EditSaleBill = () => {
                               style={{ display: "flex", gap: "5px" }}
                               onClick={addSaleItem}
                             >
-                              <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
+                              <BorderColorIcon
+                              style={{ color: "var(--color1)" }} className="w-7 h-6 text-white  p-1 cursor-pointer" />
                               Edit
                             </Button>
                           </td>
@@ -1517,8 +1518,8 @@ const EditSaleBill = () => {
                             >
 
                               <BorderColorIcon
-                                color="primary"
-                                className="cursor-pointer"
+                              style={{ color: "var(--color1)" }}
+                              className="cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation(); // Prevents row click
                                   handleEditClick(item); // Explicitly set value for editing

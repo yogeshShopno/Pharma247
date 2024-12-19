@@ -808,6 +808,15 @@ const InventoryList = () => {
                       defaultValue="items"
                       name="radio-buttons-group"
                       value={selectedOption}
+                      sx={{
+                        color: "var(--color1)", // Apply color to labels
+                        '& .MuiRadio-root': {
+                          color: "var(--color2)", // Unchecked radio button color
+                        },
+                        '& .Mui-checked': {
+                          color: "var(--color1)", // Checked radio button color
+                        },
+                      }}
                       onChange={(e) => setSelectedOption(e.target.value)}
                     >
                       <FormControlLabel
@@ -852,6 +861,13 @@ const InventoryList = () => {
                         key={category.id}
                         control={
                           <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
+
                             checked={selectedCategoryIds.includes(category.id)}
                             onChange={(event) =>
                               handleCheckboxChange(event, category.id)
@@ -880,6 +896,12 @@ const InventoryList = () => {
                         key={packging.id}
                         control={
                           <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedPackgingIds.includes(packging.id)}
                             onChange={(event) =>
                               handleCheckboxPackging(event, packging.id)
@@ -910,8 +932,15 @@ const InventoryList = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes("expired")}
                               value="expired"
+
                             />
                           }
                           label="Expired"
@@ -919,6 +948,12 @@ const InventoryList = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_month"
                               )}
@@ -930,6 +965,12 @@ const InventoryList = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_two_month"
                               )}
@@ -941,6 +982,12 @@ const InventoryList = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_three_month"
                               )}
@@ -966,6 +1013,15 @@ const InventoryList = () => {
                       aria-labelledby="demo-radio-buttons-group-label"
                       defaultValue="items"
                       name="radio-buttons-group"
+                      sx={{
+                        color: "var(--color1)", // Apply color to labels
+                        '& .MuiRadio-root': {
+                          color: "var(--color2)", // Unchecked radio button color
+                        },
+                        '& .Mui-checked': {
+                          color: "var(--color1)", // Checked radio button color
+                        },
+                      }}
                       value={selectedOptionStock}
                       onChange={(e) => setSelectedOptionStock(e.target.value)}
                     >
@@ -1074,6 +1130,12 @@ const InventoryList = () => {
                         key={gst.id}
                         control={
                           <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedGstIds.includes(gst.id)}
                             onChange={(event) =>
                               handleCheckboxChangeGst(event, gst.id)
@@ -1270,6 +1332,7 @@ const InventoryList = () => {
         <Box className="p-5 " sx={{ width: "100%" }}>
           <div className="flex flex-wrap  justify-between mb-4 relative">
             <TextField
+
               id="outlined-basic"
               value={searchItem}
               size="small"
@@ -1866,7 +1929,7 @@ const InventoryList = () => {
       <Dialog open={bulkOrder}>
         <DialogTitle>
           <WarningAmberRoundedIcon
-            sx={{ color: "red", marginBottom: "5px", fontSize: "2.5rem" }}
+            sx={{ color: "#F31C1C", marginBottom: "5px", fontSize: "2.5rem" }}
           />
           Warning
         </DialogTitle>
@@ -1877,15 +1940,16 @@ const InventoryList = () => {
         </DialogContent>
         <DialogActions>
           <Button className="primary-bg"
-            color="success"
+            style={{ backgroundColor: "#3f6212" }}
 
             autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes
           </Button>
           <Button
+            style={{ backgroundColor: "#F31C1C", color: "white" }}
             autoFocus
+
             variant="outlined"
-            color="error"
             onClick={() => setBulkOrder(false)}
           >
             No

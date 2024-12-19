@@ -363,16 +363,16 @@ const AdjustStock = () => {
             </div> :
 
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
-                    <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                        <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }}>
-                            <span style={{ color: 'rgb(12, 161, 246)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}>  Adjust Stock
-                            </span>
-                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                    <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
+                        <div style={{ display: 'flex', gap: '7px', }}>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "130px", textWrap: "nowrap" }}  > Adjust Stock</span>
+                            <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
-                            <Button variant="contained" color="primary" onClick={handelAddOpen}> <AddIcon className="mr-2" />Adjust Stock</Button>
+                            <Button variant="contained" style={{ display: 'flex', gap: '0px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" />  Adjust Stock</Button>
                         </div>
                     </div>
+
                     <div className="firstrow p-4">
                         <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                             <div className="detail" >
@@ -396,7 +396,9 @@ const AdjustStock = () => {
                                 />
                             </div>
                             <div>
-                                <Button variant="contained" onClick={adjustStockList}
+                                <Button
+                                    style={{ background: "var(--color1)" }}
+                                    variant="contained" onClick={adjustStockList}
                                     className="min-h-[41px] h-[41px] mt-6 bg-[#044C9D] text-white flex items-center justify-center"
                                 >
                                     Go
@@ -737,10 +739,10 @@ const AdjustStock = () => {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button autoFocus variant="contained" className="p-5" color="success" onClick={validateForm}>
+                            <Button style={{ background: "#3f6212" }} autoFocus variant="contained" className="p-5" onClick={validateForm}>
                                 Save
                             </Button>
-                            <Button autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
+                            <Button style={{ background: "#F31C1C" }} autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
                                 Cancel
                             </Button>
                         </DialogActions>

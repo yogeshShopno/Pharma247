@@ -304,11 +304,11 @@ const DrugGroup = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '110px' }} >Drug Group</span>
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '120px' }} >Drug Group</span>
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
-                                <Button variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
+                                <Button  style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
                             </div>
                         </div>
                         <div className="firstrow p-4">
@@ -334,7 +334,7 @@ const DrugGroup = () => {
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
                                 <div>
-                                    <Button variant="contained" onClick={openBillDetails}>Search</Button>
+                                    <Button  style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
                             </div>
                             <div className="overflow-x-auto mt-4">
@@ -371,7 +371,7 @@ const DrugGroup = () => {
 
                                                     <td>
                                                         <div className="px-2">
-                                                            < BorderColorIcon color="primary" onClick={() => handleEditOpen(item)} />
+                                                            < BorderColorIcon style={{ color: "var(--color1)" }}onClick={() => handleEditOpen(item)} />
                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         </div>
                                                     </td>
@@ -452,12 +452,12 @@ const DrugGroup = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" className="p-5" color="success"
+                        <Button autoFocus variant="contained" className="p-5" style={{ backgroundColor: "#3f6212", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}
                         </Button>
-                        <Button autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
+                        <Button autoFocus variant="contained" onClick={resetAddDialog} style={{ backgroundColor: "#F31C1C", color: "white" }} >
                             Cancel
                         </Button>
                     </DialogActions>

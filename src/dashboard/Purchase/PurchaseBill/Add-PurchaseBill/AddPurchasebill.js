@@ -30,6 +30,8 @@ const debounce = (func, delay) => {
   };
 };
 
+
+
 const AddPurchaseBill = () => {
   const searchItemField = useRef();
   const inputRef1 = useRef();
@@ -83,7 +85,9 @@ const AddPurchaseBill = () => {
   const userId = localStorage.getItem("userId");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
+
   const [ItemId, setItemId] = useState(0);
+
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(0);
@@ -94,7 +98,8 @@ const AddPurchaseBill = () => {
   const [otherAmt, setOtherAmt] = useState(0);
   const [batchListData, setBatchListData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
-  const [header, setHeader] = useState('');
+  const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
+
   const [selectedRows, setSelectedRows] = useState([]);
   const [purchaseReturnPending, setPurchaseReturnPending] = useState([])
   const [finalPurchaseReturnList, setFinalPurchaseReturnList] = useState([]);
@@ -109,6 +114,10 @@ const AddPurchaseBill = () => {
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
 
+  const [addItemName, setAddItemName] = useState("");
+  const [addBarcode, setAddBarcode] = useState("");
+  const [addUnit, setAddUnit] = useState("");
+  const [barcodeBatch, setBarcodeBatch] = useState("");
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -129,9 +138,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     generateRandomNumber()
-
     const initialize = async () => {
-
       try {
         await handleLeavePage();
       } catch (error) {
@@ -145,8 +152,10 @@ const AddPurchaseBill = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       handleBarcode();
-    }, 1000);
+    }, 100);
     return () => clearTimeout(timeoutId);
+    // handleBarcode();
+
   }, [barcode]);
 
   // useEffect(() => {
@@ -191,7 +200,6 @@ const AddPurchaseBill = () => {
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
-
     // Calculate totalAmount
     const totalAmount = parseFloat(
       (totalBase + (totalBase * gst.name) / 100).toFixed(2)
@@ -213,7 +221,8 @@ const AddPurchaseBill = () => {
     // Margin Caluculation
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-  }, [qty, ptr, disc, gst.name, free]);
+
+  }, [qty, ptr, disc, gst.name, free, ItemTotalAmount, barcodeBatch]);
 
   useEffect(() => {
     const total = Object.values(cnTotalAmount)
@@ -257,14 +266,13 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  
+
   const handleBarcode = async () => {
     if (!barcode) {
       return;
     }
-    let data = new FormData();
+    // let data = new FormData();
     // data.append("barcode", barcode);
-
 
     const params = {
       random_number: localStorage.getItem("RandomNumber"),
@@ -300,34 +308,114 @@ const AddPurchaseBill = () => {
 
           // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
           // setValue.unit_id(response.data.data[0]?.unit)
+          console.log(barcodeBatch, "response")
+          // setBarcodeBatch(response?.data?.data[0])
+          // setUnit(Number(response?.data?.data[0]?.batch_list[0]?.unit))
+          // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+          // setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+          // setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
+          // setQty(Number(response?.data?.data[0]?.batch_list[0]?.unit))
+          // setFree(Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty))
+          // setPTR(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
+          // setDisc(Number(response?.data?.data[0]?.batch_list[0]?.discount))
+          // setSchAmt(Number(response?.data?.data[0]?.batch_list[0]?.scheme_account))
+          // setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
+          // setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst));
+          // setLoc(response?.data?.data[0]?.batch_list[0]?.location)
+          // setMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
+          // setNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
+          // setSearchItem(response?.data?.data[0]?.iteam_name)
 
-          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
-          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-          setQty(response?.data?.data[0]?.batch_list[0]?.unit)
-          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
-          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
-          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-          setBase(response?.data?.data[0]?.batch_list[0]?.base)
-          setGst({
-            id: response?.data?.data[0]?.batch_list[0]?.gst,
-            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
-          });
-          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+          // setItemId(Number(response.data.data[0]?.id))
+          // setItemEditID(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
+          // setSelectedEditItemId(Number(response?.data?.data[0]?.id))
+          // setItemEditID(Number(response.data.data[0]?.id))
 
-          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
-          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+          setTimeout(() => {
+            handleBarcodeItem()
+            // handleAddItem()
+          }, 100);
 
-          setSelectedEditItemId(response?.data?.data[0]?.id)
-          setItemEditID(response.data.data[0]?.id)
-          // setIsEditMode(true)
+          const handleBarcodeItem = async () => {
+            setUnsavedItems(true)
+            let data = new FormData();
+            
+            
+            data.append("random_number", localStorage.getItem("RandomNumber"));
+            data.append("weightage", Number(response?.data?.data[0]?.batch_list[0]?.unit));
+            data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_name ? response?.data?.data[0]?.batch_list[0]?.batch_name : 0);
+            data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+            data.append("mrp", Number(response?.data?.data[0]?.batch_list[0]?.mrp) ? Number(response?.data?.data[0]?.batch_list[0]?.mrp) : 0);
+            data.append("qty", Number(response?.data?.data[0]?.batch_list[0]?.unit) ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 0);
+            data.append("free_qty", Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) ? Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) : 0);
+            data.append("ptr", Number(response?.data?.data[0]?.batch_list[0]?.ptr) ? Number(response?.data?.data[0]?.batch_list[0]?.ptr) : 0);
+            data.append("discount", Number(response?.data?.data[0]?.batch_list[0]?.discount)?Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
+            data.append("scheme_account", Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
+            data.append("base_price", Number(response?.data?.data[0]?.batch_list[0]?.base) ? Number(response?.data?.data[0]?.batch_list[0]?.base) : 0);
+            data.append("gst", Number(response?.data?.data[0]?.batch_list[0]?.gst));
+            data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+            data.append("margin", Number(response?.data?.data[0]?.batch_list[0]?.margin) ? Number(response?.data?.data[0]?.batch_list[0]?.margin) : 0);
+            data.append("net_rate", Number(response?.data?.data[0]?.batch_list[0]?.net_rate) ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate) : 0);
+         
+            data.append("item_id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
+            data.append("unit_id", Number(0));
+            data.append("user_id", userId);
 
-          // handleAddBarcodeItem(data)
+            data.append("id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
+
+            data.append("total_amount", Number(response?.data?.data[0]?.batch_list[0]?.total_amount) ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount) : 0);
+        
+            const params = {
+              id: selectedEditItemId,
+            };
+            try {
+              const response = await axios.post("item-purchase", data, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+              //console.log("response", response);
+        
+              setItemTotalAmount(0);
+              setDeleteAll(true);
+              itemPurchaseList();
+              setUnit("");
+              setBatch("");
+              setExpiryDate("");
+              setMRP("");
+              setQty("");
+              setFree("");
+              setPTR("");
+              setGst("");
+              setDisc("");
+              setBase("");
+              setNetRate("");
+              setSchAmt("");
+              setBatch("");
+              setMargin("");
+              setLoc("");
+        
+              if (ItemTotalAmount <= finalCnAmount) {
+                setFinalCnAmount(0);
+                setSelectedRows([]);
+                setCnTotalAmount({});
+              }
+              // setNetAmount(totalAmount)
+              // handleCalNetAmount()
+              setIsEditMode(false);
+              setSelectedEditItemId(null);
+        
+              setBarcode("")
+              setValue("")
+              // Reset Autocomplete field
+              setValue("");
+              setSearchItem("");
+        
+              // setAutocompleteDisabled(false);
+            } catch (e) {
+              //console.log(e);
+            }
+          }
 
 
 
@@ -337,9 +425,32 @@ const AddPurchaseBill = () => {
     }
   };
 
-  // const handleAddBarcodeItem = async (data) => {
-  //   const totalAmount = isNaN(ItemTotalAmount) ? 0 : ItemTotalAmount;
-  //   // data.append("total_amount", totalAmount);
+  // const handleBarcodeItem = async () => {
+
+  //   setUnsavedItems(true)
+  //   let data = new FormData();
+  //   data.append("random_number", localStorage.getItem("RandomNumber"));
+  //   data.append("weightage", unit ? Number(unit) : 1);
+  //   data.append("batch_number", batch ? batch : 0);
+  //   data.append("expiry", expiryDate);
+  //   data.append("mrp", mrp ? mrp : 0);
+  //   data.append("qty", qty ? qty : 0);
+  //   data.append("free_qty", free ? free : 0);
+  //   data.append("ptr", ptr ? ptr : 0);
+  //   data.append("discount", disc ? disc : 0);
+  //   data.append("scheme_account", schAmt ? schAmt : 0);
+  //   data.append("base_price", base ? base : 0);
+  //   data.append("gst", gst.id);
+  //   data.append("location", loc ? loc : 0);
+  //   data.append("margin", margin ? margin : 0);
+  //   data.append("net_rate", netRate ? netRate : 0);
+  //   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+  //   data.append("item_id", ItemId);
+  //   data.append("unit_id", Number(0));
+  //   data.append("user_id", userId);
+  //   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+  //   data.append("total_amount", ItemTotalAmount ? ItemTotalAmount : 0);
+
   //   const params = {
   //     id: selectedEditItemId,
   //   };
@@ -350,7 +461,7 @@ const AddPurchaseBill = () => {
   //       },
   //     });
   //     //console.log("response", response);
-  //     setUnsavedItems(true);
+
   //     setItemTotalAmount(0);
   //     setDeleteAll(true);
   //     itemPurchaseList();
@@ -379,14 +490,18 @@ const AddPurchaseBill = () => {
   //     // handleCalNetAmount()
   //     setIsEditMode(false);
   //     setSelectedEditItemId(null);
-  //     searchItemField.current.focus();
+
+  //     setBarcode("")
+  //     setValue("")
+  //     // Reset Autocomplete field
   //     setValue("");
   //     setSearchItem("");
+
   //     // setAutocompleteDisabled(false);
   //   } catch (e) {
   //     //console.log(e);
   //   }
-  // };
+  // }
 
   const handlePopState = () => {
     let data = new FormData();
@@ -475,7 +590,6 @@ const AddPurchaseBill = () => {
           setTotalQty(response.data.data.total_qty)
           setTotalMargin(response.data.data.total_margin)
           setMarginNetProfit(response.data.data.margin_net_profit)
-
           setTotalNetRate(response.data.data.total_net_rate)
           handleCalNetAmount(response.data.data.total_price)
           // setNetAmount(response.data.data.total_price)
@@ -489,10 +603,10 @@ const AddPurchaseBill = () => {
     const today = new Date();
     // Set time to 00:00:00 to compare only date part
     today.setHours(0, 0, 0, 0);
-
     // Disable dates that are greater than today
     return date > today;
   };
+
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
@@ -614,6 +728,7 @@ const AddPurchaseBill = () => {
     }
     return isValid;
   };
+
   const handleAddItem = async () => {
 
     setUnsavedItems(true)
@@ -624,10 +739,12 @@ const AddPurchaseBill = () => {
       data.append("unit_id", unitEditID);
     } else {
       if (barcode) {
+
         data.append("item_id", ItemId);
         data.append("unit_id", Number(0));
 
       } else {
+
         data.append("item_id", value.id);
 
         data.append("unit_id", Number(value.unit_id));
@@ -708,10 +825,63 @@ const AddPurchaseBill = () => {
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
-     
+
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
+    }
+  };
+
+  const handleAddNewItem = async () => {
+    if (!addItemName && !addUnit && !addBarcode) {
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append("item_name", addItemName ? addItemName : "");
+    formData.append("unite", addUnit ? addUnit : "");
+    formData.append("weightage", addUnit ? addUnit : "");
+    formData.append("pack", addUnit ? "1" + addUnit : "");
+    formData.append("barcode", addBarcode ? addBarcode : "");
+
+    formData.append("packaging_id", "");
+    formData.append("drug_group", "");
+    formData.append("gst", "");
+    formData.append("location", "");
+    formData.append("mrp", "");
+    formData.append("minimum", "");
+    formData.append("maximum", "");
+    formData.append("discount", "");
+    formData.append("margin", "");
+    formData.append("hsn_code", "");
+    formData.append("message", "");
+    formData.append("item_category_id", "");
+    formData.append("pahrma", "");
+    formData.append("distributer", "");
+    formData.append("front_photo", "");
+    formData.append("back_photo", "");
+    formData.append("mrp_photo", "");
+
+    try {
+      const response = await axios.post("create-iteams", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.status === 200) {
+        //console.log("response===>", response.data);
+        toast.success(response.data.message);
+        setOpenAddItemPopUp(false)
+      } else if (response.data.status === 400) {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Please try again later");
+      }
     }
   };
 
@@ -857,6 +1027,28 @@ const AddPurchaseBill = () => {
 
   }, [selectedEditItem]);
 
+//   useEffect(() => {
+//     if (addBarcode) {
+//       setUnitEditID(barcodeBatch.unit_id);
+//       setUnit(barcodeBatch.unit);
+//       setBatch(barcodeBatch.batch_number);
+//       setExpiryDate(barcodeBatch.expiry_date);
+//       setMRP(barcodeBatch.mrp);
+//       setQty(barcodeBatch.qty);
+//       setFree(barcodeBatch.purchase_free_qty);
+//       setPTR(barcodeBatch.ptr);
+//       setDisc(barcodeBatch.discount);
+//       setSchAmt(barcodeBatch.scheme_account);
+//       setBase(barcodeBatch.base_price);
+//       setGst(barcodeBatch.gst);
+//       setLoc(barcodeBatch.location);
+//       setMargin(barcodeBatch.margin);
+//       setNetRate(barcodeBatch.net_rate);
+//       setSearchItem(barcodeBatch.iteam_name);
+//       setItemEditID(barcodeBatch.item_id);
+//     }
+// }, [addBarcode]);
+
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -892,12 +1084,17 @@ const AddPurchaseBill = () => {
 
     setOpenAddPopUp(true);
     //console.log(distributor, '145');
-    setHeader('Add Amount');
     purchaseReturnData();
   }
+  const handelAddItemOpen = () => {
+    setUnsavedItems(true)
+    setOpenAddItemPopUp(true);
+  }
+
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
+    setOpenAddItemPopUp(false);
     // setCnAmount(0);
     // setSelectedRows("")
     // setCnTotalAmount("")
@@ -1253,7 +1450,7 @@ const AddPurchaseBill = () => {
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => <TextField {...params}
-                  autoFocus
+                    autoFocus
                   />}
                 />
                 {error.distributor && (
@@ -1325,16 +1522,14 @@ const AddPurchaseBill = () => {
 
                   style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
 
-                
+
                   onClick={handelAddOpen}
                   disabled={!distributor || ItemPurchaseList?.item?.length === 0}
                 >
                   <AddIcon className="mr-2" />
                   CN Adjust
                 </Button>
-
               </div>
-
               {isAutocompleteDisabled && (
                 <Autocomplete
                   value={searchItem?.iteam_name}
@@ -1370,6 +1565,17 @@ const AddPurchaseBill = () => {
                   )}
                 />
               )}
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "var(--color1)" }}
+
+                onClick={handelAddItemOpen}
+              >
+                <ControlPointIcon className="mr-2" />
+                Add New Item
+              </Button>
+
+
               <div className="overflow-x-auto ">
                 <table className="customtable  w-full border-collapse custom-table">
                   <thead>
@@ -1670,7 +1876,6 @@ const AddPurchaseBill = () => {
                                 disabled
                                 size="small"
                                 value={netRate === 0 ? '' : netRate}
-
                                 sx={{ width: "100px" }}
                               />
                             </td>
@@ -1683,7 +1888,6 @@ const AddPurchaseBill = () => {
                                 disabled
                                 size="small"
                                 value={margin === 0 ? '' : margin}
-
                                 sx={{ width: "100px" }}
                                 onChange={(e) => {
                                   setMargin(e.target.value);
@@ -1710,11 +1914,9 @@ const AddPurchaseBill = () => {
                                 setBarcode(e.target.value)
 
                               }}
-
                             />
                           </td>
                           <td></td>
-
                           <td> </td>
                           <td></td>
                           <td></td>
@@ -1736,13 +1938,10 @@ const AddPurchaseBill = () => {
 
                               onClick={handleAddButtonClick}
                             >
-                              <ControlPointIcon />
+                              <ControlPointIcon className="mr-2" />
                               Add
                             </Button>
                           </td>
-
-
-
                         </tr>
 
                         {ItemPurchaseList?.item?.map((item) => (
@@ -1751,6 +1950,7 @@ const AddPurchaseBill = () => {
                             className="item-List "
                             onClick={() => handleEditClick(item)}
                           >
+
                             <td
                               style={{
                                 display: "flex",
@@ -1758,10 +1958,12 @@ const AddPurchaseBill = () => {
                               }}
                             >
                               <BorderColorIcon
-                                color="primary"
+                                style={{ color: "var(--color1)" }}
                                 onClick={() => handleEditClick(item)}
                               />
                               <DeleteIcon
+                                style={{ color: "var(--color6)" }}
+
                                 className="delete-icon bg-none"
                                 onClick={() => deleteOpen(item.id)}
 
@@ -1925,7 +2127,7 @@ const AddPurchaseBill = () => {
         {/* CN amount PopUp Box */}
         <Dialog open={openAddPopUp} >
           <DialogTitle id="alert-dialog-title" className="secondary">
-            {header}
+            Add Amount
           </DialogTitle>
           <IconButton
             aria-label="close"
@@ -2008,6 +2210,98 @@ const AddPurchaseBill = () => {
             </Button>
           </DialogActions>
         </Dialog >
+        {/* add item  PopUp Box */}
+
+        <Dialog open={openAddItemPopUp} >
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Add New Item
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={resetAddDialog}
+            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+          ><CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+
+              <div className="bg-white">
+                <div
+                  className="mainform bg-white rounded-lg"
+                  style={{ padding: "20px" }}
+                >
+                  <div className="row">
+                    <div className="fields">
+                      <label className="label secondary">Item Name</label>
+                      <TextField
+                        id="outlined-number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addItemName}
+                        onChange={(e) => setAddItemName(e.target.value)}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label  secondary">Barcode</label>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addBarcode}
+                        onChange={(e) => setAddBarcode(Number(e.target.value))}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label secondary">Unit</label>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={addUnit}
+                        onChange={(e) => setAddUnit(e.target.value)}
+
+                      />
+                    </div>
+                    <div className="fields">
+                      <label className="label secondary">Pack</label>
+                      <TextField
+                        disabled
+                        id="outlined-number"
+                        size="small"
+                        sx={{ minWidth: "150px" }}
+                        value={`1 * ${addUnit} `}
+                      />
+                    </div>
+
+
+                  </div>
+                </div>
+
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#3f6212",
+                "&:hover": {
+                  backgroundColor: "#3f6212",
+                },
+              }}
+              onClick={handleAddNewItem}
+
+            >
+              <ControlPointIcon className="mr-2" />
+              Add New Item
+            </Button>
+
+          </DialogActions>
+        </Dialog >
         {/* Delete PopUP */}
         <div
           id="modal"
@@ -2041,8 +2335,8 @@ const AddPurchaseBill = () => {
                 />
               </svg>
               <h4 className="text-lg font-semibold mt-6 first-letter:uppercase">
-                <span style={{ textTransform: "uppercase" }}>A</span>
-                <span style={{ textTransform: "lowercase" }}>re you sure you want to delete it?</span>
+
+                <span style={{ textTransform: "none" }}>Are you sure you want to delete it?</span>
               </h4>
             </div>
             <div className="flex gap-5 justify-center">
@@ -2080,14 +2374,13 @@ const AddPurchaseBill = () => {
             <div className="my-4 logout-icon">
               <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
               <h4 className="text-lg font-semibold mt-6 text-center">
-                <span style={{ textTransform: "uppercase" }}>A</span>
-                <span style={{ textTransform: "lowercase" }}>re you sure you want to leave this page?</span>
+                <span style={{ textTransform: "none" }}>Are you sure you want to leave this page?</span>
               </h4>
             </div>
             <div className="flex gap-5 justify-center">
               <button
                 type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                 onClick={handleLeavePage}
               >
                 Yes

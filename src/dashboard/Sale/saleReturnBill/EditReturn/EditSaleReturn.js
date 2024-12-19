@@ -35,7 +35,7 @@ const EditSaleReturn = () => {
 
         { id: 3, label: 'UPI' },]
     const [customer, setCustomer] = useState(null)
-    
+
     const [isVisible, setIsVisible] = useState(true);
     const { id, randomNumber } = useParams();
     const [selectedEditItem, setSelectedEditItem] = useState(null);
@@ -656,7 +656,7 @@ const EditSaleReturn = () => {
                                     </div>
                                     <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
-                                       
+
                                         <Autocomplete
                                             value={customer}
                                             options={customerDetails}
@@ -689,7 +689,7 @@ const EditSaleReturn = () => {
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                            value={customer}
+                                                    value={customer}
 
                                                     variant="outlined"
                                                     placeholder="Search by Mobile, Name"
@@ -1005,6 +1005,12 @@ const EditSaleReturn = () => {
                                                         }}>
                                                             <td>
                                                                 <Checkbox
+                                                                    sx={{
+                                                                        color: "var(--color2)", // Color for unchecked checkboxes
+                                                                        '&.Mui-checked': {
+                                                                            color: "var(--color1)", // Color for checked checkboxes
+                                                                        },
+                                                                    }}
                                                                     key={item.id}
                                                                     checked={item?.iss_check} // Use the item’s iss_check value to control the checkbox state
                                                                     onClick={(event) => {

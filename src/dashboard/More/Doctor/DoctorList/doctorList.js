@@ -40,6 +40,8 @@ import { toast, ToastContainer } from "react-toastify";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+
 const DoctorList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
@@ -314,7 +316,7 @@ const DoctorList = () => {
       if (
         fileType === "application/vnd.ms-excel" ||
         fileType ===
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         fileType === "text/csv"
       ) {
         setFile(selectedFile);
@@ -468,7 +470,7 @@ const DoctorList = () => {
               >
                 <span
                   style={{
-                    color: "var(--color2)",
+                    color: "var(--color1)",
                     display: "flex",
                     fontWeight: 700,
                     fontSize: "20px",
@@ -482,7 +484,7 @@ const DoctorList = () => {
                 {hasPermission(permissions, "doctor import") && (
                   <Button
                     variant="contained"
-                    style={{ background: "gray", display: "flex", gap: "10px" }}
+                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px' }}
                     onClick={openFilePopUP}
                   >
                     <CloudUploadIcon /> Import
@@ -491,31 +493,24 @@ const DoctorList = () => {
                 {hasPermission(permissions, "doctor create") && (
                   <Button
                     variant="contained"
-                    color="primary"
-                    style={{ display: "flex", gap: "0px" }}
+
+                    style={{background: 'var(--color1)', display: "flex", gap: "0px" }}
                     onClick={handelAddOpen}
                   >
-                    <AddIcon /> Add
+                    <AddIcon /> Add Doctor
                   </Button>
                 )}
                 {hasPermission(permissions, "doctor download") && (
                   <Button
                     variant="contained"
-                    color="success"
-                    style={{
-                      background: "rgb(12 246 75 / 16%)",
-                      fontWeight: 900,
-                      color: "black",
-                      textTransform: "none",
-                      paddingLeft: "35px",
-                    }}
+
+                    style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px" }}
                     onClick={exportToCSV}
                   >
-                    <img
-                      src={excelIcon}
-                      className="report-icon absolute mr-10"
-                      alt="excel Icon"
-                    />
+                    <img src="/csv-file.png"
+                                        className="report-icon absolute mr-10"
+                                        alt="csv Icon"
+                                        />
                     Download
                   </Button>
                 )}
@@ -609,14 +604,16 @@ const DoctorList = () => {
                               }}
                             >
                               <VisibilityIcon
-                                style={{ color: "#1976d2" }}
+                                style={{ color: "var(--color1)" }}
+
                                 onClick={() => {
                                   history.push(`/more/doctor/${row.id}`);
                                 }}
                               />
                               {hasPermission(permissions, "doctor edit") && (
                                 <BorderColorIcon
-                                  color="primary"
+                                  style={{ color: "var(--color1)" }}
+
                                   onClick={() => handleEditOpen(row)}
                                 />
                               )}
@@ -638,11 +635,10 @@ const DoctorList = () => {
               >
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -679,11 +675,10 @@ const DoctorList = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
                   disabled={filteredList.length === 0}
                 >
                   Next
@@ -693,7 +688,7 @@ const DoctorList = () => {
 
             {/* File Upload Popup */}
             <Dialog open={openUpload}>
-              <DialogTitle id="alert-dialog-title" className="secondary">
+              <DialogTitle id="alert-dialog-title" className="primary">
                 Import Doctor
               </DialogTitle>
               <div className="px-6 ">
@@ -716,7 +711,7 @@ const DoctorList = () => {
               </IconButton>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  <div>Item File Upload</div>
+                  <div className="secondary">Item File Upload</div>
                   <div
                     style={{
                       display: "flex",
@@ -737,9 +732,11 @@ const DoctorList = () => {
                       </span>
                     </div>
                     <div>
-                      <a onClick={handleDownload} className="downloadFile">
+                      <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className="downloadFile">
+                      <CloudDownloadIcon className="mr-2" />
+
                         Sample File Download
-                      </a>
+                      </Button>
                     </div>
                   </div>
                 </DialogContentText>
@@ -748,7 +745,7 @@ const DoctorList = () => {
                 <Button
                   autoFocus
                   variant="contained"
-                  color="success"
+                  color="primary"
                   onClick={uploadDoctorFile}
                 >
                   Save
@@ -762,7 +759,7 @@ const DoctorList = () => {
                   <div className="flex justify-between items-center">
                     <DialogTitle
                       id="alert-dialog-title"
-                      className="text-sky-500"
+                      className="primary"
                     >
                       {header}
                     </DialogTitle>
@@ -926,13 +923,14 @@ const DoctorList = () => {
                     <Button
                       autoFocus
                       variant="contained"
-                      color="success"
+                      style={{ backgroundColor: "#3f6212", color: "white" }}
                       onClick={AddDoctor}
                     >
                       {buttonLabel}
                     </Button>
                     <Button
                       autoFocus
+                      
                       variant="contained"
                       color="error"
                       onClick={resetAddDialog}

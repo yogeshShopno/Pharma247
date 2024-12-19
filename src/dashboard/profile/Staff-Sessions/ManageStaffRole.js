@@ -172,7 +172,8 @@ const ManageStaffRole = () => {
                                             <td className="flex justify-center">
                                                 <div className="flex" >
                                                     <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
-                                                    <BorderColorIcon className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
+                                                    <BorderColorIcon
+                              style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
                                                     <Tooltip title="Deactivate" className="">
                                                         {item.status == 'Active' ?
                                                             <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :

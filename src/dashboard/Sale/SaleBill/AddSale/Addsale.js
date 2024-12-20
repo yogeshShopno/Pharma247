@@ -366,22 +366,22 @@ const Addsale = () => {
             }
         }
     };
-    const handleSearch = async () => {
+    const handleSearch = async (searchItem) => {
         let data = new FormData();
         data.append("search", searchItem);
         try {
             const res = await axios.post("item-search", data, {
-                // Do not set Content-Type; Axios will handle it automatically
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setItemList(res.data.data.data);
             console.log(res.data.data.data);
+            return res.data.data.data
         } catch (error) {
             console.error("API error:", error);
         }
-    }
+    };
 
     const resetAddDialog = () => {
         setOpenAddPopUp(false);
@@ -1520,8 +1520,9 @@ const Addsale = () => {
                                                 onInputChange={handleInputChange}
                                                 options={itemList}
                                                 getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                filterOptions={(option, state) => { return itemList }}
                                                 renderOption={(props, option) => (
-                                                    <ListItem {...props}>
+                                                    <ListItem {...props} key={option.id}>
                                                         <ListItemText
                                                             primary={`${option.iteam_name}, (${option.company})`}
                                                             // secondary={

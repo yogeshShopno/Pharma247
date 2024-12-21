@@ -1534,7 +1534,7 @@ const EditSaleBill = () => {
                             <Button
                               variant="contained"
                               color="success"
-                              style={{ display: "flex", gap: "5px" }}
+                              style={{ display: "flex", gap: "5px", backgroundColor: "var(--color1)" }}
                               onClick={addSaleItem}
                             >
                               <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />

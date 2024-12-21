@@ -551,7 +551,7 @@ const Addsale = () => {
         setMaxQty(event.stock);
         setBase(event.mrp);
         setGst(event.gst_name);
-        setQty(event.qty);
+        // setQty(event.qty);
         setLoc(event.location)
     }
 
@@ -1884,7 +1884,7 @@ const Addsale = () => {
                                                 <td colSpan={9}></td>
 
                                                 <td >
-                                                    <Button variant="contained" color="success" marginRight="20px" onClick={addItemValidation}><ControlPointIcon />Add</Button>
+                                                    <Button className="gap-2" variant="contained" color="success" marginRight="20px" onClick={addItemValidation} style={{ backgroundColor: 'var(--color1)' }}><ControlPointIcon />Add</Button>
                                                 </td>
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (

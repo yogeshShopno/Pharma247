@@ -166,6 +166,7 @@ const Salelist = () => {
 
     useEffect(() => {
         saleBillList();
+        localStorage.removeItem('RandomNumber');
     }, [])
 
     const saleBillList = async (currentPage) => {

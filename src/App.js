@@ -144,6 +144,9 @@ function App() {
         border-bottom: 2px solid #3f6212; /* Hover underline color */
       }
 
+      .css-1z6833-MuiButtonBase-root-MuiButton-root:hover{
+      background-color: #3f6212;
+      }
       .MuiInput-underline:after {
         border-bottom: 2px solid #3f6212; /* Focused underline color */
       }

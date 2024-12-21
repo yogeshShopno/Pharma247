@@ -420,7 +420,7 @@ const OrderList = () => {
                                     <tbody>
                                         {filteredList.length === 0 ? (
                                             <tr>
-                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500">
+                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500" style={{textAlign:"center"}}>
                                                     No data found
                                                 </td>
                                             </tr>

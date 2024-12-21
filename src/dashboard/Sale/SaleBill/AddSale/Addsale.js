@@ -366,6 +366,30 @@ const Addsale = () => {
             }
         }
     };
+    // const handleSearch = async (searchItem) => {
+    //     let data = new FormData();
+    //     data.append("search", searchItem);
+    //     try {
+    //         const res = await axios.post("item-search", data, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+
+    //         setItemList(res.data.data.data);
+
+    //         res.data.data.data.forEach(item => {
+    //             if (item.stock === 0) {
+    //                 fetchItemDrugGroup(searchItem);
+    //             }
+    //         });
+
+    //         return res.data.data.data;
+    //     } catch (error) {
+    //         console.error("API error:", error);
+    //     }
+    // };
+
     const handleSearch = async (searchItem) => {
         let data = new FormData();
         data.append("search", searchItem);
@@ -375,11 +399,44 @@ const Addsale = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setItemList(res.data.data.data);
-            console.log(res.data.data.data);
-            return res.data.data.data
+
+            const items = res.data.data.data;
+            setItemList(items);
+
+            // Check if all items have stock equal to zero
+            const allOutOfStock = items.every(item => item.stock === 0);
+
+            // Only fetch drug group if all items are out of stock
+            if (allOutOfStock) {
+                fetchItemDrugGroup(searchItem);
+            }
+
+            return items;
         } catch (error) {
             console.error("API error:", error);
+        }
+    };
+
+    const fetchItemDrugGroup = async (searchItem) => {
+        let data = new FormData();
+        data.append("search", searchItem);
+        try {
+            const res = await axios.post("iteam-drug-group", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (res.data) {
+                console.log('Item Drug Group Data:', res.data.data.data);
+                if (res.data.data) {
+                    const filteredItems = res.data.data.data.filter(item => item.stock > 0);
+                    setItemList(filteredItems);
+                    console.log('Filtered itemList:', filteredItems);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching item-drug-group:", error);
         }
     };
 
@@ -956,7 +1013,7 @@ const Addsale = () => {
 
             setOpenModal(false);
             setUnsavedItems(false);
-            localStorage.removeItem("RandomNumber");
+            localStorage.removeItem('RandomNumber');
 
             // history.replace(nextPath);
         } catch (error) {
@@ -1077,7 +1134,6 @@ const Addsale = () => {
                 data.append('item_id', value && value.id ? value.id : '')
             }
         }
-
         // data.append("id", selectedEditItemId ? selectedEditItemId : '')
         data.append("user_id", userId);
         // data.append("item_id", barcode ? itemId : value?.id || '');
@@ -1094,8 +1150,8 @@ const Addsale = () => {
         data.append('amt', itemAmount ? itemAmount : '')
         data.append('net_rate', itemAmount ? itemAmount : '')
         data.append('total_amount', totalAmount)
-        data.append("order", order ? order : '')
         data.append("ptr", ptr ? ptr : '')
+        data.append("order", order ? order : '');
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
 
@@ -1138,15 +1194,20 @@ const Addsale = () => {
     }
 
     const handleQtyChange = (e) => {
-        console.log('maxQt***', maxQty);
+        // console.log('maxQt***', maxQty);
 
 
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
-            console.log('if***');
+            // console.log('if***');
             setQty(enteredValue);
+            if (enteredValue === 1) {
+                setOrder('O');
+            } else {
+                setOrder('');
+            }
         } else {
-            console.log('else***');
+            // console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }

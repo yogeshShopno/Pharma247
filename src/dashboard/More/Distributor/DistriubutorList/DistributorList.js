@@ -437,14 +437,14 @@ const DistributerList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredList.length === 0 ? (
+                                {tableData.length === 0 ? (
                                     <tr>
                                         <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
                                             No data found
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredList.map((row, index) => {
+                                    tableData.map((row, index) => {
                                         return (
                                             <tr hover tabIndex={-1} key={row.code} >
                                                 <td>
@@ -475,42 +475,53 @@ const DistributerList = () => {
                                     }))}
                             </tbody>
                         </table>
-                        <div className='mt-4 space-x-1' style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <button onClick={handlePrevious} className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`} disabled={currentPage === 1} >Previous </button>
-                            {currentPage > 2 && (
-                                <button
-                                    onClick={() => handleClick(currentPage - 2)}
-                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                >
-                                    {currentPage - 2}
-                                </button>
-                            )}
-                            {currentPage > 1 && (
-                                <button
-                                    onClick={() => handleClick(currentPage - 1)}
-                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                >
-                                    {currentPage - 1}
-                                </button>
-                            )}
-                            <button
-                                onClick={() => handleClick(currentPage)}
-                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                            >
-                                {currentPage}
-                            </button>
-                            {currentPage < totalPages && (
-                                <button
-                                    onClick={() => handleClick(currentPage + 1)}
-                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                >
-                                    {currentPage + 1}
-                                </button>
-                            )}
-                            <button onClick={handleNext} className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : ' text-white'}`}
-                                disabled={filteredList.length === 0}>
-                                Next </button>
-                        </div>
+                        <div className="flex justify-center mt-4">
+              <button
+                onClick={handlePrevious}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                  }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {currentPage > 2 && (
+                <button
+                  onClick={() => handleClick(currentPage - 2)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage - 2}
+                </button>
+              )}
+              {currentPage > 1 && (
+                <button
+                  onClick={() => handleClick(currentPage - 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button
+                onClick={() => handleClick(currentPage)}
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => handleClick(currentPage + 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              <button
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
+                disabled={filteredList.length === 0}
+              >
+                Next
+              </button>
+            </div>
 
                     </div>
 

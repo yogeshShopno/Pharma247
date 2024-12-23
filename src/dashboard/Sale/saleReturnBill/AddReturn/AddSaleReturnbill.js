@@ -656,7 +656,7 @@ const Salereturn = () => {
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
-                                <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "115px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
+                                <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
@@ -717,11 +717,14 @@ const Salereturn = () => {
                                                             color: 'white',
                                                             width: '40px',
                                                             height: '40px',
-                                                            backgroundColor: "#0ca1f6",
+                                                            backgroundColor: "#6aa420",
                                                             padding: "10px",
                                                             borderRadius: "50%",
                                                             alignItems: "center"
                                                         },
+                                                        '& .MuiAutocomplete-input': {
+                                                            padding: "0.5px 4px 7.5px 5px"
+                                                        }
                                                     }}
                                                 />
                                             </div>

@@ -29,9 +29,7 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
-
 const Addsale = () => {
-    
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
     const inputRef2 = useRef();
@@ -128,7 +126,7 @@ const Addsale = () => {
     const [barcodeItemName, setBarcodeItemName] = useState('');
     const [loyaltyPoints, setLoyaltyPoints] = useState([]);
     const [loyaltyVal, setLoyaltyVal] = useState(0);
-
+    const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
     const [addItemName, setAddItemName] = useState("");
     const [addBarcode, setAddBarcode] = useState("");
     const [addUnit, setAddUnit] = useState("");
@@ -166,13 +164,6 @@ const Addsale = () => {
         lastPurchseHistory()
         setSearchItemID(id)
     }
-    
-     useEffect(()=>{
-        if(openModal){
-            setSelectedOption(null)
-        }
-     },[openModal])
-
     useEffect(() => {
         const discount = (totalAmount * finalDiscount) / 100;
         setDiscountAmount(discount.toFixed(2));
@@ -186,7 +177,7 @@ const Addsale = () => {
             //     calculatedNetAmount = 0;
             // }
 
-            let loyaltyPointsDeduction = loyaltyVal;
+            let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
             let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
             if (calculatedNetAmount < 0) {
@@ -244,22 +235,21 @@ const Addsale = () => {
         if (searchQuery) {
             const customerAllData = async () => {
                 let data = new FormData();
-                const params = {
-                    search: searchQuery ? searchQuery : ""
-                };
+                const name = searchQuery.split(" [")[0];
+                data.append("search", name);
                 setIsLoading(true);
                 try {
                     const response = await axios.post(
-                        "list-customer?",
+                        "list-customer",
                         data,
                         {
-                            params: params,
+                            // params: params,
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }
                     );
-                    console.log('response.data.data :>> ', response.data.data);
+                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -376,27 +366,78 @@ const Addsale = () => {
             }
         }
     };
-    const handleSearch = async () => {
+    // const handleSearch = async (searchItem) => {
+    //     let data = new FormData();
+    //     data.append("search", searchItem);
+    //     try {
+    //         const res = await axios.post("item-search", data, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+
+    //         setItemList(res.data.data.data);
+
+    //         res.data.data.data.forEach(item => {
+    //             if (item.stock === 0) {
+    //                 fetchItemDrugGroup(searchItem);
+    //             }
+    //         });
+
+    //         return res.data.data.data;
+    //     } catch (error) {
+    //         console.error("API error:", error);
+    //     }
+    // };
+
+    const handleSearch = async (searchItem) => {
         let data = new FormData();
         data.append("search", searchItem);
-        const params = {
-            search: searchItem ? searchItem : ''
-        };
         try {
-            const res = await axios.post("item-search?", data, {
-                params: params,
+            const res = await axios.post("item-search", data, {
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
+            });
+
+            const items = res.data.data.data;
+            setItemList(items);
+
+            const allOutOfStock = items.every(item => item.stock === 0);
+
+            if (allOutOfStock) {
+                console.log('Search Item-------');
+                fetchItemDrugGroup(searchItem);
             }
-            ).then((response) => {
-                setItemList(response.data.data.data);
-            })
+
+            return items;
         } catch (error) {
             console.error("API error:", error);
         }
-    }
+    };
+
+    const fetchItemDrugGroup = async (searchItem) => {
+        let data = new FormData();
+        data.append("search", searchItem);
+        try {
+            const res = await axios.post("iteam-drug-group", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (res.data) {
+                console.log('Item Drug Group Data:', res.data.data.data);
+                if (res.data.data) {
+                    const filteredItems = res.data.data.data.filter(item => item.stock > 0);
+                    setItemList(filteredItems);
+                    console.log('Filtered itemList:', filteredItems);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching item-drug-group:", error);
+        }
+    };
 
     const resetAddDialog = () => {
         setOpenAddPopUp(false);
@@ -409,21 +450,18 @@ const Addsale = () => {
 
     const customerAllData = async (searchQuery) => {
         let data = new FormData();
-        const params = {
-            search: searchQuery ? searchQuery : ""
-        }
+        data.append("search", searchQuery);
         setIsLoading(true);
         try {
-            await axios.post("list-customer?", data, {
-                params: params,
+            const response = await axios.post("list-customer", data, {
+                // params: params,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
-            ).then((response) => {
-                setCustomerDetails(response.data.data)
-                setIsLoading(false);
-            })
+            );
+            setCustomerDetails(response.data.data)
+            setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -458,34 +496,18 @@ const Addsale = () => {
 
     };
 
-
-    const fetchLoyaltyPoints = async (customerId) => {
-        let data = new FormData();
-        const params = { customer_id: customerId };
-
-        try {
-            const response = await axios.get('loyalti-point-list', data, {
-                params: params,
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            // Assuming response.data.data contains the loyalty points
-            setLoyaltyPoints(response.data.data);
-            if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-              }      
-        } catch (error) {
-            console.error('Error fetching loyalty points:', error);
-        }
-    };
-
     const handleCustomerOption = (event, newValue) => {
         setCustomer(newValue);
         setUnsavedItems(true);
+
         if (newValue) {
-            const customerId = newValue.id; // Assuming `newValue` has the customer object
-            fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
+            const points = newValue.roylti_point || 0;
+            setLoyaltyPoints(points);
+
+            setMaxLoyaltyPoints(points);
         } else {
+            setLoyaltyPoints(0);
+            setMaxLoyaltyPoints(0);
             setLoyaltyVal(0);
         }
     };
@@ -528,7 +550,7 @@ const Addsale = () => {
         setMaxQty(event.stock);
         setBase(event.mrp);
         setGst(event.gst_name);
-        setQty(event.qty);
+        // setQty(event.qty);
         setLoc(event.location)
     }
 
@@ -696,7 +718,7 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                console.log('response-------- :>> ', response.data.data.sales_item);
+                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
@@ -906,7 +928,7 @@ const Addsale = () => {
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
-        data.append("roylti_point", loyaltyVal)
+        data.append("roylti_point", loyaltyVal || loyaltyPoints)
 
         try {
             const response = await axios.post("create-sales", data, {
@@ -922,6 +944,15 @@ const Addsale = () => {
                 setTimeout(() => {
                     history.push('/salelist');
                 }, 2000);
+
+                const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) === 1);
+
+                if (lowStockItems.length > 0) {
+                    bulkOrderData();
+                    console.log('Low stock items:', lowStockItems);
+                }
+
+
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
@@ -959,7 +990,6 @@ const Addsale = () => {
 
     const handleNavigation = (path) => {
         setOpenModal(true);
-        setSelectedOption(null);
         // setOpenCustomer(false);
         // setOpenAddPopUp(false);
         setNextPath(path);
@@ -991,7 +1021,7 @@ const Addsale = () => {
 
             setOpenModal(false);
             setUnsavedItems(false);
-            localStorage.removeItem("RandomNumber");
+            localStorage.removeItem('RandomNumber');
 
             // history.replace(nextPath);
         } catch (error) {
@@ -1082,7 +1112,7 @@ const Addsale = () => {
             localStorage.setItem("RandomNumber", number);
         } else {
             return;
-        } 
+        }
     };
 
     const addItemValidation = () => {
@@ -1102,6 +1132,12 @@ const Addsale = () => {
         generateRandomNumber();
         let data = new FormData();
 
+        if (!qty || qty <= 0) {
+            // Notify the user to enter a valid quantity
+            toast.error("Please enter a valid quantity.");
+            return; // Exit the function early
+        }
+
         if (isEditMode === true) {
             data.append("item_id", itemEditID)
         }
@@ -1112,12 +1148,12 @@ const Addsale = () => {
                 data.append('item_id', value && value.id ? value.id : '')
             }
         }
-
         // data.append("id", selectedEditItemId ? selectedEditItemId : '')
         data.append("user_id", userId);
         // data.append("item_id", barcode ? itemId : value?.id || '');
         data.append("id", selectedEditItemId || '');
         data.append("qty", qty || '')
+        data.append("max_qty", maxQty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
@@ -1129,14 +1165,17 @@ const Addsale = () => {
         data.append('amt', itemAmount ? itemAmount : '')
         data.append('net_rate', itemAmount ? itemAmount : '')
         data.append('total_amount', totalAmount)
-        data.append("order", order ? order : '')
         data.append("ptr", ptr ? ptr : '')
+        data.append("order", order ? order : '');
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
 
         const params = {
             id: selectedEditItemId || ''
         };
+
+        // const currentQty = !isEditMode ? qty : 0;
+        // const quantityDifference = maxQty - currentQty;
 
         try {
             const response = isEditMode
@@ -1152,36 +1191,69 @@ const Addsale = () => {
                     },
                 });
 
-            setTotalAmount(0)
-            saleItemList();
-            setUnit('')
-            setBatch('')
-            setExpiryDate('');
-            setMRP('')
-            setQty('')
-            setBase('')
-            setGst('')
-            setBatch('')
-            setBarcode("")
-            setLoc('')
-            setOrder('')
-            setIsEditMode(false);
-            setSelectedOption(null);
+            if (!isEditMode && response.data.status === 200) {
+                setTotalAmount(0)
+                saleItemList();
+                setUnit('')
+                setBatch('')
+                setExpiryDate('');
+                setMRP('')
+                setQty('')
+                setBase('')
+                setGst('')
+                setBatch('')
+                setBarcode("")
+                setLoc('')
+                setOrder('')
+                setIsEditMode(false);
+
+            } else {
+                toast.error(response.data.message);
+            }
+
+
+            // if (quantityDifference === 1) {
+            //     bulkOrderData();
+            // }
+
         }
         catch (e) {
         }
     }
 
-    const handleQtyChange = (e) => {
-        console.log('maxQt***', maxQty);
+    const bulkOrderData = async () => {
+        let data = new FormData();
 
+        data.append("item_id", value.id ? value.id : '');
+
+        try {
+            const response = await axios.post("online-bulck-order", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            toast.success(response.data.message);
+            // handleSearch();
+
+        } catch (error) {
+            setIsLoading(false);
+            console.error("API error:", error);
+            toast.error("Failed to place bulk order.");
+        }
+    };
+
+    const handleQtyChange = (e) => {
 
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
-            console.log('if***');
             setQty(enteredValue);
+            // if (enteredValue === 1) {
+            //     setOrder('O');
+            // } else {
+            //     setOrder('');
+            // }
         } else {
-            console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }
@@ -1301,9 +1373,9 @@ const Addsale = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ backgroundColor: '#f0f0f0', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
@@ -1351,7 +1423,7 @@ const Addsale = () => {
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
-                                <div className="detail mt-1" >
+                                <div className="detail mt-1 custommedia" >
                                     <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
@@ -1400,7 +1472,7 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
@@ -1416,10 +1488,12 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            minWidth: {
-                                                xs: '320px',
-                                                sm: '400px',
-                                            },
+                                            // minWidth: {
+                                            //     xs: '350px',
+                                            //     sm: '500px',
+                                            //     md: '500px',
+                                            //     lg: '400px',
+                                            // },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1463,7 +1537,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail">
+                                <div className="detail custommedia" style={{ width: '100%' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1478,10 +1552,12 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            minWidth: {
-                                                xs: '320px',
-                                                sm: '400px',
-                                            },
+                                            // minWidth: {
+                                            //     xs: '350px',
+                                            //     sm: '500px',
+                                            //     md: '500px',
+                                            //     lg: '400px',
+                                            // },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1524,7 +1600,8 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                <table >
+                                <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
+                                <table style={{ maxWidth: '50%', width: '100%' }} >
                                     <Box
                                         sx={{
                                             display: 'flex',
@@ -1536,28 +1613,29 @@ const Addsale = () => {
                                         <Box
                                             sx={{
                                                 flex: '1 1 auto',
-                                                minWidth: {
-                                                    xs: '350px',
-                                                    sm: '500px',
-                                                    md: '1000px',
-                                                },
+                                                // minWidth: {
+                                                //     xs: '350px',
+                                                //     sm: '500px',
+                                                //     md: '806px',
+                                                //     lg: '1000px'
+                                                // },
                                                 width: '100%',
                                                 background: '#ceecfd',
                                                 borderRadius: '7px',
-                                                zIndex:1,
                                             }}
                                         >
                                             <Autocomplete
                                                 value={selectedOption}
                                                 blurOnSelect
                                                 size="small"
-                                                sx={{ fontSize: "1.5rem" ,zIndex:1}}
+                                                sx={{ fontSize: "1.5rem" }}
                                                 onChange={handleOptionChange}
                                                 onInputChange={handleInputChange}
                                                 options={itemList}
                                                 getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                filterOptions={(option, state) => { return itemList }}
                                                 renderOption={(props, option) => (
-                                                    <ListItem {...props}>
+                                                    <ListItem {...props} key={option.id}>
                                                         <ListItemText
                                                             primary={`${option.iteam_name}, (${option.company})`}
                                                             // secondary={
@@ -1686,6 +1764,7 @@ const Addsale = () => {
                                     <ControlPointIcon className="mr-2" />
                                     Add New Item
                                 </Button>
+                                </div>
 
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1699,11 +1778,14 @@ const Addsale = () => {
                                                 <th>Base</th>
                                                 <th >GST%</th>
                                                 <th >QTY </th>
-                                                <th  >Order
+
+                                                <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
-                                                        <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                                                        <Button style={{ justifyContent: 'left' }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                                                     </Tooltip>
+                                                </div>
                                                 </th>
+
                                                 <th >Loc.</ th>
                                                 <th >Amount </th>
                                             </tr>
@@ -1858,7 +1940,7 @@ const Addsale = () => {
                                                 <td colSpan={9}></td>
 
                                                 <td >
-                                                    <Button variant="contained" color="success" marginRight="20px" onClick={addItemValidation}><ControlPointIcon />Add</Button>
+                                                    <Button className="gap-2" variant="contained" color="success" marginRight="20px" onClick={addItemValidation} style={{ backgroundColor: 'var(--color1)' }}><ControlPointIcon />Add</Button>
                                                 </td>
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (
@@ -2002,10 +2084,23 @@ const Addsale = () => {
                                                 }} />
                                         </div>
 
-                                        <div className="mt-1">
+                                        <div className="">
                                             <Input type="number"
-                                                value={loyaltyVal}
-                                                onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                value={loyaltyVal || loyaltyPoints}
+                                                // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+
+                                                    const numericValue = Math.floor(Number(value));
+
+                                                    if (numericValue >= 0 && numericValue <= maxLoyaltyPoints) {
+                                                        setLoyaltyVal(numericValue);
+                                                        setLoyaltyPoints(numericValue);
+                                                    } else if (numericValue < 0) {
+                                                        setLoyaltyVal(0);
+                                                        setLoyaltyPoints(0);
+                                                    }
+                                                }}
                                                 onKeyPress={(e) => {
                                                     const value = e.target.value;
                                                     const isMinusKey = e.key === '-';
@@ -2350,11 +2445,12 @@ const Addsale = () => {
             <div
                 id="modal"
                 value={openModal}
+                style={{ zIndex: 9999 }}
                 className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
             >
                 <div />
 
-                <div className="w-full max-w-md bg-white shadow-lg z-1 rounded-md p-4 relative ">
+                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
                         <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
@@ -2364,7 +2460,8 @@ const Addsale = () => {
                             type="submit"
                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
                             onClick={handleLeavePage}
-                        >Yes
+                        >
+                            Yes
                         </button>
                         <button
                             type="button"
@@ -2375,7 +2472,7 @@ const Addsale = () => {
                         </button>
                     </div>
                 </div>
-            </div>
+            </div >
 
         </>
     )

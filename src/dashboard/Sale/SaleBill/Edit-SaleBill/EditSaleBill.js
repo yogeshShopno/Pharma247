@@ -1742,7 +1742,7 @@ const EditSaleBill = () => {
                         if (numericValue >= 0 && numericValue <= maxValue) {
                           setLoyaltyVal(numericValue);
                         } else if (numericValue < 0) {
-                          setLoyaltyVal(0); 
+                          setLoyaltyVal(0);
                         }
                       }}
 
@@ -1876,6 +1876,7 @@ const EditSaleBill = () => {
       <div
         id="modal"
         value={openModal}
+        style={{ zIndex: 9999 }}
         className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
       >
         <div />

@@ -293,7 +293,7 @@ const Forgot = () => {
                                 </div>
 
                                 <div className="mt-4">
-                                    <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                                    <Button style={{backgroundColor:"var(--color1)"}} variant="contained" className=" text-white font-bold py-2 px-4 w-full rounded "
                                         onClick={handleForgotDetails}
                                     >
                                         Next
@@ -306,7 +306,7 @@ const Forgot = () => {
                                     >
                                         Already have an account?
                                         <Link to="/">
-                                            <span className="text-blue-700"> Login</span></Link>
+                                            <span className="secondary"> Login</span></Link>
                                     </a>
                                 </div>
                             </>

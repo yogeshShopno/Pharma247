@@ -41,6 +41,7 @@ import {
     MenuItem,
     Select,
 } from "@mui/material";
+import React from "react";
 const Inventory_Reconciliation = () => {
     const history = useHistory()
     const token = localStorage.getItem("token");
@@ -52,6 +53,7 @@ const Inventory_Reconciliation = () => {
     const [reportType, setReportType] = useState("");
     const [isDownload, setIsDownload] = useState(false);
 
+    const [tableData, setTableData] = useState([]);
 
     const [itemId, setItemId] = useState(null);
 
@@ -66,8 +68,6 @@ const Inventory_Reconciliation = () => {
     const [expiry, setExpiry] = useState("");
     const [mrp, setMrp] = useState("");
     const [selectedItem, setSelectedItem] = useState();
-
-
     const [batch, setBatch] = useState();
     const [stockAdjust, setStockAdjust] = useState("");
     const [adjustmentDate, setAdjustDate] = useState(new Date());
@@ -80,6 +80,22 @@ const Inventory_Reconciliation = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [bulkOrder, setBulkOrder] = useState(false);
     const [barcode, setBarcode] = useState();
+
+    const columns = [
+        { id: 'sr_no', label: 'Sr No.', minWidth: 10 },
+        { id: 'bill_no', label: 'Bill No.', minWidth: 10 },
+        { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
+        { id: 'distributor_name', label: 'Distributor', minWidth: 100 },
+        { id: 'total_amount', label: 'Bill Amount', minWidth: 100 },
+    ];
+
+    const rowsPerPage = 10;
+    const initialSearchTerms = columns.map(() => '');
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(tableData.length / rowsPerPage);
+    const paginatedData = tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+    const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
 
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleRegisterColumns = [
@@ -105,9 +121,40 @@ const Inventory_Reconciliation = () => {
         }
     }, [reportData]);
 
+
+
     useEffect(() => {
         setRemainingStock(stockAdjust - stock)
     }, [stockAdjust]);
+
+
+    const handleClick = (pageNum) => {
+        setCurrentPage(pageNum);
+        getData(pageNum);
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            const newPage = currentPage - 1;
+            setCurrentPage(newPage);
+            getData(newPage);
+        }
+    };
+
+    const handleNext = () => {
+        console.log("currentPage", currentPage);
+        const newPage = currentPage + 1;
+        setCurrentPage(newPage);
+        getData(newPage);
+    };
+
+    //   const filteredList = paginatedData.filter(row => {
+    //     return searchTerms.every((term, index) => {
+    //       const value = row[columns[index].id];
+    //       return String(value).toLowerCase().includes(term.toLowerCase());
+    //     });
+    //   });
+
 
     const handleBatchData = (event, newValue) => {
         const batch = newValue ? newValue.batch_name : "";
@@ -217,7 +264,7 @@ const Inventory_Reconciliation = () => {
             const params = {
                 iteam_id: itemId,
             };
-            const res = await axios.post("batch-list?", data, {
+            const response = await axios.post("batch-list?", data, {
                 // params: params,
                 headers: {
                     "Content-Type": "application/json",
@@ -233,13 +280,14 @@ const Inventory_Reconciliation = () => {
         }
     };
 
-    const getData = async () => {
+    const getData = async (currentPage) => {
         setIsDownload(true);
         try {
             let data = new FormData();
             data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
             data.append("end_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
             data.append("status", (stockStatus));
+            data.append("page", currentPage);
 
             const response = await axios.post("reconciliation-report?", data, {
                 headers: {
@@ -255,8 +303,9 @@ const Inventory_Reconciliation = () => {
                 } else {
                     toast.error("No data available for the selected criteria.");
                 }
-            } else {
-                // toast.error("Failed to download records. Please try again.");
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
         } catch (error) {
             console.error("API error:", error);
@@ -406,65 +455,69 @@ const Inventory_Reconciliation = () => {
                                     </div>
                                 </div>
                                 {reportData.length > 0 ?
-                                    <div>
-                                        <div className="overflow-x-auto m-8">
-                                            <table className="table-cashManage   border-collapse">
-                                                <thead>
-                                                    <tr>
-                                                        {GstSaleRegisterColumns.map((column) => (
-                                                            <th key={column.id}
-                                                            // style={{ minWidth: column.minWidth }}
-                                                            >{column.label}
-                                                            </th>
-                                                        ))}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {reportData.map((row, index) => (
-                                                        <tr key={index}>
+                                    <>
+                                        <div>
+                                            <div className="overflow-x-auto m-8">
+                                                <table className="table-cashManage   border-collapse">
+                                                    <thead>
+                                                        <tr>
                                                             {GstSaleRegisterColumns.map((column) => (
-                                                                <td key={column.id} >
-
-                                                                    {column.id === 'rsImpact' ? (
-                                                                        (() => {
-                                                                            const rsImpact = (
-                                                                                (parseFloat(row.mrp || 0) * parseFloat(row.physical_stock || 0)) -
-                                                                                (parseFloat(row.mrp || 0) * parseFloat(row.current_stock || 0))
-                                                                            ).toFixed(2);
-
-                                                                            return (
-                                                                                <Tooltip
-                                                                                    title="click to adjust"
-                                                                                    placement="left-start"
-                                                                                    arrow>
-                                                                                        <span onClick={(e) => {
-                                                                                        e.stopPropagation();
-                                                                                        handelAddOpen(row);
-                                                                                    }} style={{ color: rsImpact >= 0 ? 'var(--color1)' : 'var(--color6)' }}>
-                                                                                        <img src="/approve.png"
-                                                                                            className="report-icon inline mr-2"
-                                                                                            alt="csv Icon"
-                                                                                            
-                                                                                        />
-
-                                                                                        {rsImpact}
-                                                                                    </span></Tooltip>
-
-                                                                            );
-                                                                        })()
-                                                                    ) : (
-                                                                        row[column.id]
-                                                                            ? row[column.id].charAt(0).toUpperCase() + row[column.id].slice(1)
-                                                                            : '-'
-                                                                    )}
-                                                                </td>
+                                                                <th key={column.id}
+                                                                // style={{ minWidth: column.minWidth }}
+                                                                >{column.label}
+                                                                </th>
                                                             ))}
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        {reportData.map((row, index) => (
+                                                            <tr key={index}>
+                                                                {GstSaleRegisterColumns.map((column) => (
+                                                                    <td key={column.id} >
+
+                                                                        {column.id === 'rsImpact' ? (
+                                                                            (() => {
+                                                                                const rsImpact = (
+                                                                                    (parseFloat(row.mrp || 0) * parseFloat(row.physical_stock || 0)) -
+                                                                                    (parseFloat(row.mrp || 0) * parseFloat(row.current_stock || 0))
+                                                                                ).toFixed(2);
+
+                                                                                return (
+                                                                                    <Tooltip
+                                                                                        title="click to adjust"
+                                                                                        placement="left-start"
+                                                                                        arrow>
+                                                                                        <span onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            handelAddOpen(row);
+                                                                                        }} style={{ color: rsImpact >= 0 ? 'var(--color1)' : 'var(--color6)' }}>
+                                                                                            <img src="/approve.png"
+                                                                                                className="report-icon inline mr-2"
+                                                                                                alt="csv Icon"
+
+                                                                                            />
+
+                                                                                            {rsImpact}
+                                                                                        </span></Tooltip>
+
+                                                                                );
+                                                                            })()
+                                                                        ) : (
+                                                                            row[column.id]
+                                                                                ? row[column.id].charAt(0).toUpperCase() + row[column.id].slice(1)
+                                                                                : '-'
+                                                                        )}
+                                                                    </td>
+                                                                ))}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
                                         </div>
-                                    </div>
+
+                                    </>
                                     :
                                     <div>
                                         <div className="vector-image">
@@ -475,6 +528,53 @@ const Inventory_Reconciliation = () => {
                                             <p className="text-gray-500 font-semibold">No Items found with your search criteria.</p>
                                         </div>
                                     </div>}
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    onClick={handlePrevious}
+                                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                                        }`}
+                                    disabled={currentPage === 1}
+                                >
+                                    Previous
+                                </button>
+                                {currentPage > 2 && (
+                                    <button
+                                        onClick={() => handleClick(currentPage - 2)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage - 2}
+                                    </button>
+                                )}
+                                {currentPage > 1 && (
+                                    <button
+                                        onClick={() => handleClick(currentPage - 1)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage - 1}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => handleClick(currentPage)}
+                                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                                >
+                                    {currentPage}
+                                </button>
+                                {currentPage < totalPages && (
+                                    <button
+                                        onClick={() => handleClick(currentPage + 1)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage + 1}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={handleNext}
+                                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
+                                //    disabled={filteredList.length === 0}
+                                >
+                                    Next
+                                </button>
                             </div>
 
                         </div>

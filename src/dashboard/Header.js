@@ -57,6 +57,8 @@ const Header = () => {
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
 
+        localStorage.clear();
+
         history.push('/')
       })
     } catch (error) {
@@ -116,7 +118,12 @@ const Header = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
+      
     }
     catch (error) {
 

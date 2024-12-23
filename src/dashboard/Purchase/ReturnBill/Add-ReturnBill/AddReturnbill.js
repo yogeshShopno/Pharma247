@@ -228,6 +228,10 @@ const AddReturnbill = () => {
                         history.push(nextPath);
                     }
                 }, 0);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             }
             setIsOpenBox(false);
             setUnsavedItems(false);
@@ -345,6 +349,10 @@ const AddReturnbill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -360,6 +368,10 @@ const AddReturnbill = () => {
             .then((response) => {
                 //console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -374,6 +386,10 @@ const AddReturnbill = () => {
         }).then((response) => {
             localStorage.setItem("distributor", response.data.data.distributor)
             setDistributorList(response.data.data);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+              }      
         }).catch((error) => {
             //console.log("API Error:", error);
         });
@@ -411,6 +427,10 @@ const AddReturnbill = () => {
                 setUnsavedItems(true)
                 purcheseReturnFilter();
                 setIsDelete(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -462,7 +482,10 @@ const AddReturnbill = () => {
                 setTotalNetRate(response.data.data?.total_net_rate)
                 setTotalGST(response.data.data?.total_gst)
                 setTotalQty(response.data.data?.total_qty)
-
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 // batchListAPI();
                 // setIsLoading(false);
             })
@@ -572,6 +595,10 @@ const AddReturnbill = () => {
                     setTimeout(() => {
                         history.push('/purchase/return');
                     }, 2000);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -669,6 +696,10 @@ const AddReturnbill = () => {
             }
             ).then((response) => {
                 console.log(response);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -695,6 +726,9 @@ const AddReturnbill = () => {
                 const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
                 // setSelectAll(allSelected);
                 purcheseReturnFilter();
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
         } catch (error) {
             console.error("API error:", error);
@@ -752,7 +786,11 @@ const AddReturnbill = () => {
             setUnsavedItems(true);
             if (isNaN(ItemTotalAmount)) {
                 setItemTotalAmount(0);
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
+
         }
         catch (e) {
             //console.log(e)
@@ -1368,10 +1406,10 @@ sx={{
                                     <div className='mt-2'>
                                         <span style={{ fontWeight: 600 }}>{totalNetRate}</span>                            </div>
                                     <div className='mt-1'>
-                                        <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                                        <span style={{ fontWeight: 600, }} >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
                                     </div>
                                     <div>
-                                        <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                        <span style={{ fontWeight: 600, fontSize: '22px', color: "var(--color1)" }}>{!netAmount ? 0 : netAmount}</span>
                                     </div>
                                 </div>
                             </div>

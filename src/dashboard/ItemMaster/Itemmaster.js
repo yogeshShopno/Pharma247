@@ -308,15 +308,20 @@ const Itemmaster = () => {
     let data = new FormData();
     data.append("category_name", categoryName);
     try {
-      axios.post("create-itemcategory", data, {
+      const response = axios.post("create-itemcategory", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
       listItemcatagory();
       setOpen(false);
       setCategoryName("");
       setIsLoading(false);
+
     } catch (error) {
       console.error("API error:", error);
     }
@@ -456,6 +461,9 @@ const Itemmaster = () => {
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {

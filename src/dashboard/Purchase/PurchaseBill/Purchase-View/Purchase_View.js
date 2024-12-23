@@ -54,6 +54,9 @@ const PurchaseView = () => {
                 //   }
 
                 // }, 0);
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
             //   setIsOpenBox(false);
             //   setUnsavedItems(false);
@@ -75,7 +78,10 @@ const PurchaseView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 //console.log(tableData)
             })
         } catch (error) {
@@ -139,6 +145,10 @@ const PurchaseView = () => {
                 setData(response.data.data)
                 setRoundOffAmount(response.data.data.round_off)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -310,7 +320,7 @@ const PurchaseView = () => {
                                     </span>
                                     <span style={{ fontWeight: 600 }}>₹{data?.margin_net_profit} &nbsp; (₹{data?.total_margin})</span>
 
-                                    <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{data?.net_amount ? data?.net_amount : 0}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '22px', color: "var(--color1)" }}>{data?.net_amount ? data?.net_amount : 0}</span>
                                 </div>
                             </div>
                         </div>

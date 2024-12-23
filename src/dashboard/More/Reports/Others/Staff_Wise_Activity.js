@@ -65,6 +65,10 @@ const StaffWiseActivity = () => {
                 ).then((response) => {
                     setIsLoading(false);
                     setStaffActivityData(response.data.data)
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);

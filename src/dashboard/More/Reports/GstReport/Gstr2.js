@@ -7,7 +7,7 @@ import { saveAs } from 'file-saver';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import { useEffect, useState } from "react";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import DatePicker from 'react-datepicker';
 import { addDays, format, subDays, subMonths } from 'date-fns';
 
@@ -25,40 +25,44 @@ const Gstr2 = () => {
 
     useEffect(() => {
         if (Array.isArray(reportData) && reportData.length > 0) {
-            exportToCSV(); 
+            exportToCSV();
         }
     }, [reportData]);
 
-     const downloadCSV = async () => {
+    const downloadCSV = async () => {
         if (!reportType) {
             toast.error("Please select a report type.");
             return;
         }
-    
+
         try {
             let data = new FormData();
             data.append("date", monthDate ? format(monthDate, 'MM-yyyy') : '');
             data.append("type", reportType || 0);
-    
+
             const response = await axios.post('gst-two-report?', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                responseType: 'blob', 
+                responseType: 'blob',
             });
-    
+
             if (response.status === 200) {
                 setIsLoading(false);
-    
+
                 const text = await response.data.text();
                 const parsedData = JSON.parse(text);
-    
+
                 if (parsedData?.data) {
                     setReportData([parsedData.data]);
                 } else {
                     toast.error('No data available for the selected criteria.');
                 }
-            } else {
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
+            else {
                 toast.error('Failed to download records. Please try again.');
             }
         } catch (error) {

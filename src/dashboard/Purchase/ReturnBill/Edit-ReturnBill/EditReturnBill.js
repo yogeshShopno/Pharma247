@@ -238,9 +238,13 @@ const EditReturnBill = () => {
                         history.push(nextPath);
                     }
                 }, 0);
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
             setIsOpenBox(false);
             setUnsavedItems(false);
+
         } catch (error) {
             console.error("Error deleting items:", error);
         }
@@ -292,6 +296,10 @@ const EditReturnBill = () => {
             const distributors = response.data.data;
             localStorage.setItem("distributor", JSON.stringify(distributors));
             setDistributorList(distributors);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+              }      
             ////console.log("Distributors fetched: ", distributors);
             return distributors;
         } catch (error) {
@@ -316,6 +324,10 @@ const EditReturnBill = () => {
             ).then((response) => {
                 setBatchList(response.data.data)
                 ////console.log(batchList);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -343,6 +355,10 @@ const EditReturnBill = () => {
                 // localStorage.removeItem('StartFilterDate')
                 // localStorage.removeItem('EndFilterDate')
                 // localStorage.removeItem('DistributorId')
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -360,6 +376,10 @@ const EditReturnBill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -375,6 +395,10 @@ const EditReturnBill = () => {
             .then((response) => {
                 ////console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 ////console.log("API Error:", error);
@@ -427,6 +451,10 @@ const EditReturnBill = () => {
 
             setBillNo(responseData.bill_no || '');
             setRemark(responseData?.remark);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             console.error("API error:", error);
         } finally {
@@ -671,6 +699,10 @@ const EditReturnBill = () => {
             setLoc('')
             setItemTotalAmount(0);
             // setTableData(response.data.data);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         }
         catch (e) {
             ////console.log(e)
@@ -742,6 +774,10 @@ const EditReturnBill = () => {
                 ////console.log(response.data);
                 setSaveValue(true)
                 history.push('/purchase/return');
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -772,6 +808,10 @@ const EditReturnBill = () => {
                 returnBillEditID()
                 setIsDelete(false);
                 setUnsavedItems(true)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -813,6 +853,10 @@ const EditReturnBill = () => {
                 },
             }).then(() => {
                 returnBillEditID()
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             }
             );
             ////console.log(response)
@@ -864,7 +908,7 @@ const EditReturnBill = () => {
                                     ))}
                                 </Select> */}
                                 <Button
-                                style={{ background: 'var(--color1)' }}
+                                    style={{ background: 'var(--color1)' }}
                                     variant="contained"
                                     onClick={() => handleReturnUpdate(checkedItems)}  >
                                     Update
@@ -1285,8 +1329,8 @@ const EditReturnBill = () => {
                                                 <td></td>
                                                 <td></td>
                                                 <td >
-                                                    <Button variant="contained" 
-                                                       style={{ background: 'var(--color1)' }}
+                                                    <Button variant="contained"
+                                                        style={{ background: 'var(--color1)' }}
                                                         onClick={EditReturnItem}
                                                     ><EditIcon sx={{ fontSize: 18 }} />Edit</Button>
                                                 </td>
@@ -1309,7 +1353,7 @@ const EditReturnBill = () => {
                                                             onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                         />
                                                         <BorderColorIcon
-                              style={{ color: "var(--color1)" }}  onClick={() => handleEditClick(item)} />
+                                                            style={{ color: "var(--color1)" }} onClick={() => handleEditClick(item)} />
                                                         <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         {item.item_name}
                                                     </td>
@@ -1414,10 +1458,10 @@ const EditReturnBill = () => {
                                                 <span style={{ fontWeight: 600, }}>{totalNetRate}</span>
                                             </div>
                                             <div className='mt-1'>
-                                                <span >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                                                <span style={{ fontWeight: 600, }} >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
                                             </div>
                                             <div>
-                                                <span className='primary font-bold ' >{!netAmount ? 0 : netAmount}</span>
+                                                <span style={{ fontWeight: 600, fontSize: '22px' }} className='primary ' >{!netAmount ? 0 : netAmount}</span>
                                             </div>
                                         </div>
                                     </div>

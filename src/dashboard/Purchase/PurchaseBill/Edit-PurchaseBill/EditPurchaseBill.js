@@ -147,6 +147,10 @@ const EditPurchaseBill = () => {
       const distributors = response.data.data;
       localStorage.setItem("distributor", JSON.stringify(distributors));
       setDistributorList(distributors);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }      
       //console.log("Distributors fetched: ", distributors);
       return distributors;
     } catch (error) {
@@ -226,6 +230,10 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -388,6 +396,10 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(response.data.data.total_amount)
         //console.log(response.data.data, '123');
         // toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       // setIsLoading(false);
@@ -540,6 +552,9 @@ const EditPurchaseBill = () => {
           }
 
         }, 0);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
       setIsOpenBox(false);
       setUnsavedItems(false);
@@ -720,6 +735,10 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (e) {
       //console.log(e);
     }
@@ -1706,7 +1725,7 @@ const EditPurchaseBill = () => {
                             onClick={addPurchaseValidation}
                           >
                             <BorderColorIcon
-                              style={{ color: "var(--color1)" }} className="w-7 h-6 text-white  p-1 cursor-pointer" />
+                              className="w-7 h-6 text-white  p-1 cursor-pointer" />
                             Edit
                           </Button>
                           {/* <Button variant="contained" color="success" onClick={addPurchaseValidation}><ControlPointIcon />Edit</Button> */}
@@ -1780,7 +1799,7 @@ const EditPurchaseBill = () => {
                         <label className="font-bold">Total Amount : </label>
                         <span
                           style={{
-                            fontWeight: 800,
+                            fontWeight: 600,
                           }}
                         >
                           {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
@@ -1792,8 +1811,8 @@ const EditPurchaseBill = () => {
                         <label className="font-bold">CN Amount : </label>
                         <span
                           style={{
-                            fontWeight: 800,
-                            color: "red"
+                            fontWeight: 600,
+                            color: "#F31C1C"
                           }}
                         >
                           {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
@@ -1805,7 +1824,7 @@ const EditPurchaseBill = () => {
                         <label className="font-bold">Profit : </label>
                         <span
                           style={{
-                            fontWeight: 800,
+                            fontWeight: 600,
                           }}
                         >
                           ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
@@ -1817,7 +1836,7 @@ const EditPurchaseBill = () => {
                         <label className="font-bold">Round off : </label>
                         <span
                           style={{
-                            fontWeight: 800,
+                            fontWeight: 600,
                           }}
                         >
                           {(parseFloat(roundOffAmount) || 0).toFixed(2)}
@@ -1829,8 +1848,10 @@ const EditPurchaseBill = () => {
                         <label className="font-bold">Net Amount : </label>
                         <span
                           style={{
-                            fontWeight: 800,
+                            fontWeight: 600,
                             fontSize: "22px",
+                            color: "#3f6212"
+
                           }}
                         >
                           {(parseFloat(netAmount) || 0).toFixed(2)}
@@ -2065,7 +2086,7 @@ const EditPurchaseBill = () => {
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6 text-center"> 
+                <h4 className="text-lg font-semibold mt-6 text-center">
                   <span style={{ textTransform: "lowercase" }}>Are you sure you want to delete it?</span></h4>
               </div>
               <div className="flex gap-5 justify-center">

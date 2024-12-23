@@ -54,6 +54,10 @@ const SalesBill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -98,6 +102,10 @@ const SalesBill = () => {
                     setIsLoading(false);
                     setSaleGSTData(response.data.data)
                     setTotal(response.data.data.net_amount)
+                    if(response.data.status === 401){ 
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);

@@ -197,6 +197,10 @@ const DistributerList = () => {
                 setCreditDuedays('');
                 // setIsEditMode(false)
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -242,6 +246,10 @@ const DistributerList = () => {
                 DistList();
                 setOpenUpload(false);
                 toast.success(response.data.message)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -270,6 +278,10 @@ const DistributerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -334,6 +346,10 @@ const DistributerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -452,7 +468,7 @@ const DistributerList = () => {
                                                     <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
                                                     {hasPermission(permissions, "distributor edit") && (
                                                         <BorderColorIcon
-                               style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
+                                                            style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
                                                 </td>
                                             </tr>
                                         );

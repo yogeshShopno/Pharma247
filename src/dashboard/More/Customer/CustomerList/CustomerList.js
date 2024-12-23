@@ -108,6 +108,10 @@ const CustomerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -232,6 +236,10 @@ const CustomerList = () => {
                 setAmount('');
                 setAddress('');
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -257,6 +265,10 @@ const CustomerList = () => {
                 customerAllData();
                 setOpenUpload(false);
                 toast.success(response.data.message)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -299,6 +311,10 @@ const CustomerList = () => {
                 setArea('');
                 setAmount('');
                 setAddress('');
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             if (error.response.data.status == 400) {
@@ -424,6 +440,10 @@ const CustomerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -494,9 +514,9 @@ const CustomerList = () => {
                             {hasPermission(permissions, "customer download") &&
                                 <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }} onClick={exportToExcel}>
                                     <img src="/csv-file.png"
-                                    className="report-icon absolute mr-10"
-                                    alt="csv Icon"
-                                />Download</Button>}
+                                        className="report-icon absolute mr-10"
+                                        alt="csv Icon"
+                                    />Download</Button>}
                         </div>
                     </div>
                     <div className="bg-white p-4">
@@ -505,7 +525,7 @@ const CustomerList = () => {
                                 value={chipState.value}
                                 variant={chipState.variant}
                                 onClick={handleChipClick} />
-                          
+
                             {/* <FormControl sx={{ minWidth: 240 }} size="small">
                                 <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
                                 <Select
@@ -636,7 +656,7 @@ sx={{
                                                         <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
                                                         {hasPermission(permissions, "customer edit") && row.name !== 'Direct Customers' && (
                                                             <BorderColorIcon
-                              style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
+                                                                style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
                                                     </td>
                                                 </tr>
                                             );
@@ -755,8 +775,8 @@ sx={{
                                     </div>
                                     <div>
 
-                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  className='downloadFile'>
-                                        <CloudDownloadIcon className="mr-2" />
+                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className='downloadFile'>
+                                            <CloudDownloadIcon className="mr-2" />
 
                                             Sample File Download
                                         </Button>

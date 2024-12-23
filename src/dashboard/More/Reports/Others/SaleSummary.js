@@ -53,6 +53,10 @@ const SaleSummary = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -95,6 +99,10 @@ const SaleSummary = () => {
                     setIsLoading(false);
                     setSaleSummaryData(response.data.data)
                     setTotalSale(response.data.data.total_amount)
+                    if(response.data.status === 401){ 
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);

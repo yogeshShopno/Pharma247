@@ -195,7 +195,7 @@ const Login = () => {
                             </FormControl>
                             <a
                                 href="#"
-                                className="text-x text-gray-500 hover:text-blue-900 text-end w-full mt-2"
+                                className="text-x red text-end w-full mt-2"
                             >
                                 <Link to="/forgotpassword" >
                                     Forget Password?
@@ -203,7 +203,7 @@ const Login = () => {
                             </a>
                         </div>
                         <div className="mt-8">
-                            <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                            <Button variant="contained" style={{backgroundColor:"var(--color1)"}} className="primary-bg text-white font-bold py-2 px-4 w-full rounded hover:primary-bg"
                                 onClick={validateAndSubmit}
                             >
                                 Login
@@ -217,7 +217,7 @@ const Login = () => {
                             >
                                 Don&apos;t have any account yet?
                                 <Link to="/Register">
-                                    <span className="text-blue-700"> Sign Up</span></Link>
+                                    <span className="secondary"> Sign Up</span></Link>
                             </a>
                         </div>
                     </div>

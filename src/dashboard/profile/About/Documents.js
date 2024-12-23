@@ -409,7 +409,11 @@ import Loader from "../../../componets/loader/Loader"
 import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import { cleanDigitSectionValue } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const Documents = () => {
+      const history = useHistory()
+    
     const token = localStorage.getItem("token");
     const [header, setHeader] = useState('');
     const [selectedLicenseName, setSelectedLicenseName] = useState('')
@@ -468,6 +472,10 @@ const Documents = () => {
             }
             // setDocument(data)
             setIsLoading(false);
+            if(response.data.status === 401){ 
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -532,6 +540,10 @@ const Documents = () => {
                 toast.success(response.data.message)
                 fetchAboutDetails();
                 setErrors({})
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);

@@ -29,7 +29,9 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
+
 const Addsale = () => {
+    
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
     const inputRef2 = useRef();
@@ -164,6 +166,13 @@ const Addsale = () => {
         lastPurchseHistory()
         setSearchItemID(id)
     }
+    
+     useEffect(()=>{
+        if(openModal){
+            setSelectedOption(null)
+        }
+     },[openModal])
+
     useEffect(() => {
         const discount = (totalAmount * finalDiscount) / 100;
         setDiscountAmount(discount.toFixed(2));
@@ -461,6 +470,10 @@ const Addsale = () => {
             });
             // Assuming response.data.data contains the loyalty points
             setLoyaltyPoints(response.data.data);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+              }      
         } catch (error) {
             console.error('Error fetching loyalty points:', error);
         }
@@ -946,6 +959,7 @@ const Addsale = () => {
 
     const handleNavigation = (path) => {
         setOpenModal(true);
+        setSelectedOption(null);
         // setOpenCustomer(false);
         // setOpenAddPopUp(false);
         setNextPath(path);
@@ -1068,7 +1082,7 @@ const Addsale = () => {
             localStorage.setItem("RandomNumber", number);
         } else {
             return;
-        }
+        } 
     };
 
     const addItemValidation = () => {
@@ -1530,13 +1544,14 @@ const Addsale = () => {
                                                 width: '100%',
                                                 background: '#ceecfd',
                                                 borderRadius: '7px',
+                                                zIndex:1,
                                             }}
                                         >
                                             <Autocomplete
                                                 value={selectedOption}
                                                 blurOnSelect
                                                 size="small"
-                                                sx={{ fontSize: "1.5rem" }}
+                                                sx={{ fontSize: "1.5rem" ,zIndex:1}}
                                                 onChange={handleOptionChange}
                                                 onInputChange={handleInputChange}
                                                 options={itemList}
@@ -2339,7 +2354,7 @@ const Addsale = () => {
             >
                 <div />
 
-                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                <div className="w-full max-w-md bg-white shadow-lg z-1 rounded-md p-4 relative ">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
                         <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
@@ -2349,8 +2364,7 @@ const Addsale = () => {
                             type="submit"
                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
                             onClick={handleLeavePage}
-                        >
-                            Yes
+                        >Yes
                         </button>
                         <button
                             type="button"

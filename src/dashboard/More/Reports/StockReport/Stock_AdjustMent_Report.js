@@ -69,6 +69,10 @@ const Stock_AdjustMent_Report = () => {
                 setAdjustStockListData(response.data.data.data);
                 setTotal(response.data.data.total_amount)
                 toast.success(response.data.message)
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             toast.success(error.data.message)

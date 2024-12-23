@@ -86,6 +86,10 @@ const Top_Selling_Items = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setTopSaleData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);

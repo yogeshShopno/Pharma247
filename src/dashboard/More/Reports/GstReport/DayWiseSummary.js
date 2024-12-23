@@ -64,6 +64,10 @@ const DayWiseSummary = () => {
                     setIsLoading(false);
                     setDayWiseSummaryData(response.data.data)
                     setTotal(response.data.data.total)
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -119,6 +123,10 @@ const DayWiseSummary = () => {
                     saveAs(blob, 'Sale-DayWise-Summary-Report.xlsx');
                 } else if (reportType == 3) {
                     saveAs(blob, 'Sale-Return-DayWise-Summary-Report.xlsx');
+                }
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
                 }
             } catch (error) {
                 console.error("API error:", error);

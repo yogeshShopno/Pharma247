@@ -18,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
 const Company = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const companyColumns = [
         { id: 'company_name', label: 'Company Name', minWidth: 100 },
@@ -81,6 +83,10 @@ const Company = () => {
                 //console.log("API Response:===", response);
                 setCompanyData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -135,6 +141,9 @@ const Company = () => {
                 setCompanyName('');
                 companyList();
                 toast.success(response.data.message);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
             })
         } catch (error) {
             setIsLoading(false);
@@ -160,6 +169,10 @@ const Company = () => {
                 toast.success(response.data.message);
                 setCompanyName('');
                 setIsEditMode(false)
+
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
 
             })
         } catch (error) {
@@ -208,6 +221,9 @@ const Company = () => {
                 setIsLoading(true)
                 companyList();
                 toast.success(response.data.message);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
             })
         } catch (error) {
             // alert("404 error");

@@ -66,6 +66,10 @@ const HsnWiseGst = () => {
                 } else if (reportType == 3) {
                     saveAs(blob, 'Purchase-Return-GST-HSN-Report.xlsx');
                 }
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             } catch (error) {
                 console.error("API error:", error);

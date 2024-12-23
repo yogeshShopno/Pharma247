@@ -506,6 +506,10 @@ const EditSaleBill = () => {
         });
         // Assuming response.data.data contains the loyalty points
         setLoyaltyPoints(response.data.data);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }      
     } catch (error) {
         console.error('Error fetching loyalty points:', error);
     }

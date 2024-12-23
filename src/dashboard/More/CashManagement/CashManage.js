@@ -12,7 +12,11 @@ import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
 import DatePicker from 'react-datepicker';
 import { format, subDays } from 'date-fns';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const CashManage = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token")
     const cashManageDetailscolumns = [
         { id: 'date', label: 'Date', minWidth: 170 },
@@ -68,6 +72,10 @@ const CashManage = () => {
             ).then((response) => {
                 setIsLoading(false)
                 setCatagory(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -92,6 +100,10 @@ const CashManage = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setCashmageDetails(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -137,7 +149,12 @@ const CashManage = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 // responseType: 'blob', // Ensure the response is in blob format
+
             });
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
 
         } catch (error) {
             console.error("API error:", error);
@@ -168,7 +185,7 @@ const CashManage = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList" style={{ marginBottom: "10px" }}>
-                                <Button variant="contained"  style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  onClick={handlePdf} ><img src="/csv-file.png"
+                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }} onClick={handlePdf} ><img src="/csv-file.png"
                                     className="report-icon absolute mr-10"
                                     alt="csv Icon"
                                 />Download</Button>
@@ -200,7 +217,7 @@ const CashManage = () => {
                                         size="small"
                                         onClick={CaseManageMentList}
                                         className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
-                                        style={{background:"#3f6212"}}
+                                        style={{ background: "#3f6212" }}
                                     >
                                         <FilterAltIcon className="text-white text-lg" />
                                         Filter

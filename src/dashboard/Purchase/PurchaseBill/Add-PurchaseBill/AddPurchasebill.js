@@ -80,9 +80,9 @@ const AddPurchaseBill = () => {
   const [base, setBase] = useState("");
   const [gst, setGst] = useState({ id: "", name: "" });
   const [batch, setBatch] = useState("");
-  const [barcode, setBarcode] = useState("");
   const [gstList, setGstList] = useState([]);
   const userId = localStorage.getItem("userId");
+  const [barcode, setBarcode] = useState("");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
 
@@ -113,9 +113,9 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
-    
+
   const [selectedOption, setSelectedOption] = useState(null);
-  
+
   const [addItemName, setAddItemName] = useState("");
   const [addBarcode, setAddBarcode] = useState("");
   const [addUnit, setAddUnit] = useState("");
@@ -412,7 +412,10 @@ const AddPurchaseBill = () => {
               // Reset Autocomplete field
               setValue("");
               setSearchItem("");
-
+              if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+              }
               // setAutocompleteDisabled(false);
             } catch (e) {
               //console.log(e);
@@ -576,7 +579,7 @@ const AddPurchaseBill = () => {
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
     try {
-      const res = await axios.post("item-purchase-list?", data, {
+      const response = await axios.post("item-purchase-list?", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -593,6 +596,10 @@ const AddPurchaseBill = () => {
           handleCalNetAmount(response.data.data.total_price)
           // setNetAmount(response.data.data.total_price)
           //console.log(ItemPurchaseList);
+          if (response.data.status === 401) {
+            history.push('/');
+            localStorage.clear();
+          }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -829,7 +836,10 @@ const AddPurchaseBill = () => {
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
-
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
@@ -879,11 +889,14 @@ const AddPurchaseBill = () => {
         setOpenAddItemPopUp(false)
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
-      } else {
+      }  else {
         toast.error("Please try again later");
       }
     }
@@ -1074,11 +1087,17 @@ const AddPurchaseBill = () => {
         // setCnTotalAmount(response.data.data.total_amount)
         //console.log(response.data.data, '123');
         // toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.error(error.response.data.message)
+      } else  {
+     
       }
     }
   };
@@ -1339,6 +1358,9 @@ const AddPurchaseBill = () => {
           }
 
         }, 0);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
       setIsOpenBox(false);
       setUnsavedItems(false);
@@ -1377,7 +1399,7 @@ const AddPurchaseBill = () => {
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
-                  color: "var(--color1)",
+                  color: "var(--color2)",
                   alignItems: "center",
                   fontWeight: 700,
                   fontSize: "20px",
@@ -1545,7 +1567,7 @@ const AddPurchaseBill = () => {
               </div>
               {isAutocompleteDisabled && (
                 <Autocomplete
-                value={selectedOption}
+                  value={selectedOption}
 
                   // value={searchItem?.iteam_name}
                   sx={{ width: 570 }}
@@ -1946,7 +1968,7 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td>
- 
+
                             <Button
                               variant="contained"
                               style={{ backgroundColor: "var(--color1)" }}
@@ -2120,12 +2142,15 @@ const AddPurchaseBill = () => {
                       </span>
                     </div>
                     <div style={{
-                      marginTop: "15px"
+                      marginTop: "15px",
+                      font: "var(-color1)"
+
                     }}>
                       <span
                         style={{
                           fontWeight: 600,
                           fontSize: "22px",
+                          color: "#3f6212"
                         }}
                       >
                         {netAmount.toFixed(2)}
@@ -2228,7 +2253,7 @@ const AddPurchaseBill = () => {
         {/* add item  PopUp Box */}
 
         <Dialog open={openAddItemPopUp} >
-          <DialogTitle id="alert-dialog-title" className="secondary">
+          <DialogTitle id="alert-dialog-title" className="primary">
             Add New Item
           </DialogTitle>
           <IconButton

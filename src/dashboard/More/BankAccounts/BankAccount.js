@@ -27,7 +27,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const BankAccount = () => {
+    const history = useHistory()
+
+
     const PassbookColumns = [
         { id: 'date', label: 'Date' },
         { id: 'party_name', label: 'Party Name' },
@@ -210,6 +215,10 @@ const BankAccount = () => {
                     setTimeout(() => {
                         setOpenAddPopUpAdjust(false);
                     }, 3000);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -251,7 +260,12 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankData(response.data.data)
                 setIsLoading(false)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+
         } catch (error) {
             console.error("API error:", error);
         }
@@ -275,6 +289,10 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankDetails(response.data.data)
                 setIsLoading(false)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -319,6 +337,10 @@ const BankAccount = () => {
                     setTimeout(() => {
                         setOpenAddPopUp(false);
                     }, 3000);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -400,7 +422,12 @@ const BankAccount = () => {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+
             });
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             console.error("API error:", error);
         }
@@ -693,7 +720,7 @@ const BankAccount = () => {
                                 <Button
                                     variant="contained"
                                     style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }}
-                                   
+
                                     className="mr-auto"
                                     onClick={() => { setOpenAddPopUpAdjust(true) }}
                                 >
@@ -706,11 +733,11 @@ const BankAccount = () => {
                                 >
                                     <AddIcon />Add New Bank
                                 </Button>
-                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  > 
+                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  >
                                     <img src="/csv-file.png"
-                                    className="report-icon absolute mr-10"
-                                    alt="csv Icon"
-                                />Download</Button>
+                                        className="report-icon absolute mr-10"
+                                        alt="csv Icon"
+                                    />Download</Button>
                             </div>
                             {isLoading ? (
                                 <div className="loader-container">
@@ -1255,7 +1282,7 @@ const BankAccount = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button style={{background:"#3f6212"}} autoFocus variant="contained" onClick={handleAddBank}>
+                        <Button style={{ background: "#3f6212" }} autoFocus variant="contained" onClick={handleAddBank}>
                             Save
                         </Button>
                     </DialogActions>

@@ -28,13 +28,13 @@ const Gstr_3B = () => {
 
     useEffect(() => {
         if (reportData && typeof reportData === "object") {
-            if(isDownload){
+            if (isDownload) {
                 exportToCSV();
 
             }
         }
     }, [reportData]);
-    
+
 
     const downloadCSV = async () => {
         setIsDownload(true);
@@ -42,23 +42,27 @@ const Gstr_3B = () => {
             let data = new FormData();
             data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
             data.append("end_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
-    
+
             const response = await axios.post("gst-three-report?", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             if (response.status === 200 && response.data) {
-                const parsedData = response.data; 
+                const parsedData = response.data;
                 if (parsedData?.data) {
-                    setReportData(parsedData.data); 
+                    setReportData(parsedData.data);
                     toast.success("please wait ...downloading is in progress!")
                     exportToCSV();
                 } else {
                     toast.error("No data available for the selected criteria.");
                 }
-            } else {
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
+            else {
                 toast.error("Failed to download records. Please try again.");
             }
         } catch (error) {
@@ -68,18 +72,18 @@ const Gstr_3B = () => {
             setIsDownload(false);
         }
     };
-    
+
     const exportToCSV = () => {
         if (!reportData || typeof reportData !== "object") {
             toast.error("No data available for download.");
             return;
         }
-    
+
         const { invoice_details, summary, gst_liability } = reportData;
-    
+
         const headers = ["Category", "Sub Category", "Total", "CGST", "SGST", "IGST"];
         const csvRows = [headers.join(",")];
-    
+
         csvRows.push("invoice detail,,,,,");
         csvRows.push(
             ...[
@@ -89,9 +93,9 @@ const Gstr_3B = () => {
                 ["", "Purchase Returns", invoice_details?.purchase_returns?.total || 0, invoice_details?.purchase_returns?.cgst || 0, invoice_details?.purchase_returns?.sgst || 0, invoice_details?.purchase_returns?.igst || 0],
             ].map(row => row.join(","))
         );
-        csvRows.push(","); 
-    
-        csvRows.push("summery,,,,,"); 
+        csvRows.push(",");
+
+        csvRows.push("summery,,,,,");
         csvRows.push(
             ...[
                 ["", "Net Sales", summary?.net_sales?.taxable_amount || 0, summary?.net_sales?.cgst || 0, summary?.net_sales?.sgst || 0, summary?.net_sales?.igst || 0],
@@ -99,18 +103,18 @@ const Gstr_3B = () => {
             ].map(row => row.join(","))
         );
         csvRows.push(",");
-    
-        csvRows.push("GST Liability,,,,,"); 
+
+        csvRows.push("GST Liability,,,,,");
         csvRows.push(
             ["", "GST Liability", gst_liability?.total || 0, gst_liability?.cgst || 0, gst_liability?.sgst || 0, gst_liability?.igst || 0].join(",")
         );
-    
+
         const csvString = csvRows.join("\n");
         const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
         saveAs(blob, "GSTR3B_Report.csv");
     };
-    
-    
+
+
 
     return (
         <>

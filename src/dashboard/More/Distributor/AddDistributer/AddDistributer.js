@@ -55,14 +55,14 @@ const AddDistributer = () => {
                 AddDistributor();
             }
         }
-        
+
     };
 
     const AddDistributor = async () => {
         const token = localStorage.getItem("token");
         const data = new FormData()
         data.append("gst_number", GSTNumber)
-        data.append("distributor_name",distributorName )
+        data.append("distributor_name", distributorName)
         data.append("email", email)
         data.append("mobile_no", mobileno)
         data.append("whatsapp", whatsapp)
@@ -73,8 +73,8 @@ const AddDistributer = () => {
         data.append("bank_name", bankName)
         data.append("account_no", accountNo)
         data.append("ifsc_code", ifsc)
-        data.append("food_licence_no",foodLicence )
-        data.append("distributor_durg_distributor",durgLicence )
+        data.append("food_licence_no", foodLicence)
+        data.append("distributor_durg_distributor", durgLicence)
         data.append("payment_due_days", dueDays)
 
         try {
@@ -84,8 +84,12 @@ const AddDistributer = () => {
                 },
             }
             ).then((response) => {
-               
+
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             // setIsLoading(false);
@@ -394,9 +398,9 @@ sx={{
                                     value={durgLicence}
                                     onChange={(e) => {
                                         const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                                        setDurgLicence(value); 
+                                        setDurgLicence(value);
                                     }}
-                                   />
+                                />
                                 <div name="distributor_durg_distributor" />
                             </div>
                             <div>

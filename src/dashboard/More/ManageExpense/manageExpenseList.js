@@ -18,8 +18,10 @@ import { FaArrowUp } from "react-icons/fa";
 import Alert from '@mui/material/Alert';
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const ManageExpense = () => {
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
     const [startDate, setStartDate] = useState(subDays(new Date(), 15));
     const [endDate, setEndDate] = useState(new Date());
@@ -92,6 +94,10 @@ const ManageExpense = () => {
             ).then((response) => {
                 setCatagoryList(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -112,6 +118,10 @@ const ManageExpense = () => {
             ).then((response) => {
                 setBankData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -216,6 +226,10 @@ const ManageExpense = () => {
                 },
                 // responseType: 'blob', // Ensure the response is in blob format
             });
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
 
             // Create a Blob from the PDF Stream
             // const file = new Blob([response.data], { type: 'application/pdf' });
@@ -254,6 +268,10 @@ const ManageExpense = () => {
                 // setOpenAddPopUp(false);
                 setExpenseData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -303,7 +321,12 @@ const ManageExpense = () => {
                     setTimeout(() => {
                         setOpenAddPopUp(false);
                     }, 2000);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
+               
             } catch (error) {
                 console.error("API error:", error);
             }
@@ -337,24 +360,24 @@ const ManageExpense = () => {
                                     <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList" style={{ marginBottom: "10px" }}>
-                                    <Button variant="contained" style={{ textTransform: 'none' ,background:"var(--color1)" }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
-                                     <Button
-                                                    variant="contained"
-                                                    style={{
-                                                      background: "var(--color1)",
-                                                      color: "white",
-                                                      textTransform: "none",
-                                                      paddingLeft: "35px",
-                                                    }}
-                                                    onClick={handlePdf}
-                                                  >
-                                                    <img src="/csv-file.png"
-                                                      className="report-icon absolute mr-10"
-                                                      alt="csv Icon"
-                                                    />
-                                    
-                                                    Download
-                                                  </Button>
+                                    <Button variant="contained" style={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={handlePdf}
+                                    >
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon"
+                                        />
+
+                                        Download
+                                    </Button>
                                 </div>
                             </div>
                             <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0">
@@ -417,7 +440,7 @@ const ManageExpense = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div  className="overflow-x-auto mt-4" >
+                            <div className="overflow-x-auto mt-4" >
                                 <table className="w-full border-collapse custom-table">
                                     <thead >
                                         <tr>
@@ -733,12 +756,12 @@ const ManageExpense = () => {
                                                     sx={{
                                                         color: "var(--color1)", // Apply color to labels
                                                         '& .MuiRadio-root': {
-                                                          color: "var(--color2)", // Unchecked radio button color
+                                                            color: "var(--color2)", // Unchecked radio button color
                                                         },
                                                         '& .Mui-checked': {
-                                                          color: "var(--color1)", // Checked radio button color
+                                                            color: "var(--color1)", // Checked radio button color
                                                         },
-                                                      }}
+                                                    }}
                                                     value={selectedOption}
                                                     onChange={(e) => setSelectedOption(e.target.value)}
                                                 >
@@ -790,12 +813,12 @@ const ManageExpense = () => {
                                                         sx={{
                                                             color: "var(--color1)", // Apply color to labels
                                                             '& .MuiRadio-root': {
-                                                              color: "var(--color2)", // Unchecked radio button color
+                                                                color: "var(--color2)", // Unchecked radio button color
                                                             },
                                                             '& .Mui-checked': {
-                                                              color: "var(--color1)", // Checked radio button color
+                                                                color: "var(--color1)", // Checked radio button color
                                                             },
-                                                          }}
+                                                        }}
                                                     >
                                                         <FormControlLabel value="with_GST" control={<Radio />} label="With GST" />
                                                         <FormControlLabel value="withOut_GST" control={<Radio />} label="Without GST" />
@@ -914,7 +937,7 @@ const ManageExpense = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button autoFocus variant="contained"  style={{background:"#3f6212"}} onClick={handleAddExpense}>
+                                <Button autoFocus variant="contained" style={{ background: "#3f6212" }} onClick={handleAddExpense}>
                                     Save
                                 </Button>
                             </DialogActions>

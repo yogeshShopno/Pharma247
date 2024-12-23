@@ -33,10 +33,10 @@ const Reconciliation = () => {
 
   const [role, setRole] = useState('')
 
-  
+
   useEffect(() => {
     getItem()
-  setRole(localStorage.getItem('role'))
+    setRole(localStorage.getItem('role'))
 
   }, [])
 
@@ -44,7 +44,7 @@ const Reconciliation = () => {
     // Redirect to another page (update the route as necessary)
     history.push('/another-page');
   };
-  
+
   useEffect(() => {
     // Disable back and forward navigation
     window.history.pushState(null, '', window.location.href);
@@ -58,30 +58,30 @@ const Reconciliation = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [])
-    
+
   const handleData = (value, item) => {
     setStockData((prevData) => {
       const existingItemIndex = prevData.findIndex(
         (dataItem) => dataItem.iteam_id === item.id
       );
-  
+
       if (existingItemIndex !== -1) {
         const updatedData = [...prevData];
         if (value.trim() === "") {
-          updatedData.splice(existingItemIndex, 1); 
+          updatedData.splice(existingItemIndex, 1);
         } else {
           updatedData[existingItemIndex].stock = value;
         }
         return updatedData;
       } else {
-        
+
         return value.trim() === ""
-          ? prevData 
+          ? prevData
           : [...prevData, { iteam_id: item.id, stock: value }];
       }
     });
   };
-  
+
 
   let getItem = async () => {
 
@@ -89,7 +89,7 @@ const Reconciliation = () => {
     try {
       const res = await axios
         .post("reconciliation-iteam-list?", {}, {
-        
+
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -97,13 +97,13 @@ const Reconciliation = () => {
         })
         .then((response) => {
           setData(response.data.data.data);
-          const {iteam_count,iss_audit,status}=(response.data.data);
+          const { iteam_count, iss_audit, status } = (response.data.data);
 
           setIteamCount(iteam_count)
           setIsAudit(iss_audit)
           setStatus(status)
 
-       
+
           if (response.data.data.data.length == 0) {
             toast.error("No Record Found");
           }
@@ -125,18 +125,22 @@ const Reconciliation = () => {
     data.append("iteam_data", JSON.stringify(stockData));
 
     try {
-      const res = await axios.post("reconciliation-iteam-store?", data, {
+      const response = await axios.post("reconciliation-iteam-store?", data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (res.data.status === 200) {
+      if (response.data.status === 200) {
         setStockData([])
-        localStorage.setItem('reconciliation', "true")          
+        localStorage.setItem('reconciliation', "true")
         history.push("/admindashboard")
         toast.success("Data submitted successfully");
+      }
+      else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
       setIsLoading(false);
     } catch (error) {
@@ -170,17 +174,17 @@ const Reconciliation = () => {
               <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
                 <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '135px' }} >Reconciliation</span>
                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
-                
+
               </div>
               <div className="headerList">
-                  <Button style={{
-                    background: "var(--color1)",
-                  }} variant="contained" size='small' onClick={handleSubmit}  >
-                    <AddIcon />Submit</Button>
+                <Button style={{
+                  background: "var(--color1)",
+                }} variant="contained" size='small' onClick={handleSubmit}  >
+                  <AddIcon />Submit</Button>
 
-                    
-                </div>
-                {/* <div className="headerList">
+
+              </div>
+              {/* <div className="headerList">
                   <Button style={{
                     background: "var(--color1)",
                   }} variant="contained" size='small' onClick={handleExit}  >
@@ -191,7 +195,7 @@ const Reconciliation = () => {
 
             </div>
 
-            {isAudit==="true" && role === "Staff" ? (
+            {isAudit === "true" && role === "Staff" ? (
 
               <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 place-content-center align-content-center`}>
 

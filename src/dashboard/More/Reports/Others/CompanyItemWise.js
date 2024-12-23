@@ -70,6 +70,10 @@ const CompanyItemWise = () => {
                 ).then((response) => {
                     setIsLoading(false);
                     setCompanyData(response.data.data)
+                    if(response.data.status === 401){ 
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);

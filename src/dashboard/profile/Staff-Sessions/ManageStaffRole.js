@@ -67,6 +67,10 @@ const ManageStaffRole = () => {
                 setOpenAddPopUpDeactive(false)
                 listOfRolePermission();
                 // setManageStaffRoleData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -114,6 +118,10 @@ const ManageStaffRole = () => {
             }
             ).then((response) => {
                 setRoleHistory(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -173,7 +181,7 @@ const ManageStaffRole = () => {
                                                 <div className="flex" >
                                                     <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
                                                     <BorderColorIcon
-                              style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
+                                                        style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
                                                     <Tooltip title="Deactivate" className="">
                                                         {item.status == 'Active' ?
                                                             <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :

@@ -8,8 +8,11 @@ import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import profileImage from "../../../componets/Images/userProfile.png";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const AboutInfo = () => {
+  const history = useHistory()
+
   const [pharmacyName, setPharmacyName] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [gstN, setGSTN] = useState("");
@@ -53,7 +56,10 @@ const AboutInfo = () => {
         setState(data?.state);
         setSelectedProfileFile(data?.pharmacy_logo)
         setFrontImgUrl(data?.pharmacy_logo)
-      }
+      }else if(response.data.status === 401){ 
+        history.push('/');
+        localStorage.clear();
+    }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -87,6 +93,10 @@ const AboutInfo = () => {
 
       fetchAboutDetails();
       setIsLoading(false);
+      if(response.data.status === 401){ 
+        history.push('/');
+        localStorage.clear();
+    }
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);

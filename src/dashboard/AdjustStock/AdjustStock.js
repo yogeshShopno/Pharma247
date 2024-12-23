@@ -17,8 +17,11 @@ import axios from "axios";
 import SearchIcon from '@mui/icons-material/Search';
 import Loader from "../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const AdjustStock = () => {
+    const history = useHistory()
+
     const stockList = [
         { id: 'adjusted_by', label: 'Adjust By', minWidth: 10 },
         { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 10 },
@@ -161,7 +164,12 @@ const AdjustStock = () => {
             ).then((response) => {
                 setAdjustStockListData(response.data.data.data);
                 setIsLoading(false);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+           
         } catch (error) {
             console.error("API error:", error);
         }
@@ -184,10 +192,13 @@ const AdjustStock = () => {
             ).then((response) => {
                 const data = response.data.data
                 setBatchListData(response.data.data);
-
-
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
+            
         } catch (error) {
             console.error("API error:", error);
         }
@@ -314,7 +325,12 @@ const AdjustStock = () => {
                 setStockAdjust('')
                 setRemainingStock('')
                 setAdjustDate(new Date())
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+          
         } catch (error) {
             console.error("API error:", error);
         }

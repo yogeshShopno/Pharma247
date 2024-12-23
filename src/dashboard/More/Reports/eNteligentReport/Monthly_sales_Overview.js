@@ -49,6 +49,10 @@ const Monthly_sales_Overview = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setMonthlySaleData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);

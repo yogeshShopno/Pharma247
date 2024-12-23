@@ -249,7 +249,7 @@ const Addsale = () => {
                             },
                         }
                     );
-                    console.log('response.data.data :>> ', response.data.data);
+                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -403,11 +403,10 @@ const Addsale = () => {
             const items = res.data.data.data;
             setItemList(items);
 
-            // Check if all items have stock equal to zero
             const allOutOfStock = items.every(item => item.stock === 0);
 
-            // Only fetch drug group if all items are out of stock
             if (allOutOfStock) {
+                console.log('Search Item-------');
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -506,10 +505,10 @@ const Addsale = () => {
             setLoyaltyPoints(points);
 
             setMaxLoyaltyPoints(points);
-            console.log('newValue.roylti_point :>> ', points);
         } else {
             setLoyaltyPoints(0);
             setMaxLoyaltyPoints(0);
+            setLoyaltyVal(0);
         }
     };
 
@@ -719,7 +718,7 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                console.log('response-------- :>> ', response.data.data.sales_item);
+                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
@@ -945,6 +944,15 @@ const Addsale = () => {
                 setTimeout(() => {
                     history.push('/salelist');
                 }, 2000);
+
+                const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) === 1);
+
+                if (lowStockItems.length > 0) {
+                    bulkOrderData();
+                    console.log('Low stock items:', lowStockItems);
+                }
+
+
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
@@ -1124,6 +1132,12 @@ const Addsale = () => {
         generateRandomNumber();
         let data = new FormData();
 
+        if (!qty || qty <= 0) {
+            // Notify the user to enter a valid quantity
+            toast.error("Please enter a valid quantity.");
+            return; // Exit the function early
+        }
+
         if (isEditMode === true) {
             data.append("item_id", itemEditID)
         }
@@ -1139,6 +1153,7 @@ const Addsale = () => {
         // data.append("item_id", barcode ? itemId : value?.id || '');
         data.append("id", selectedEditItemId || '');
         data.append("qty", qty || '')
+        data.append("max_qty", maxQty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
@@ -1159,6 +1174,9 @@ const Addsale = () => {
             id: selectedEditItemId || ''
         };
 
+        // const currentQty = !isEditMode ? qty : 0;
+        // const quantityDifference = maxQty - currentQty;
+
         try {
             const response = isEditMode
                 ? await axios.post("sales-item-edit?", data, {
@@ -1173,41 +1191,69 @@ const Addsale = () => {
                     },
                 });
 
-            setTotalAmount(0)
-            saleItemList();
-            setUnit('')
-            setBatch('')
-            setExpiryDate('');
-            setMRP('')
-            setQty('')
-            setBase('')
-            setGst('')
-            setBatch('')
-            setBarcode("")
-            setLoc('')
-            setOrder('')
-            setIsEditMode(false);
-            setSelectedOption(null);
+            if (!isEditMode && response.data.status === 200) {
+                setTotalAmount(0)
+                saleItemList();
+                setUnit('')
+                setBatch('')
+                setExpiryDate('');
+                setMRP('')
+                setQty('')
+                setBase('')
+                setGst('')
+                setBatch('')
+                setBarcode("")
+                setLoc('')
+                setOrder('')
+                setIsEditMode(false);
+
+            } else {
+                toast.error(response.data.message);
+            }
+
+
+            // if (quantityDifference === 1) {
+            //     bulkOrderData();
+            // }
+
         }
         catch (e) {
         }
     }
 
-    const handleQtyChange = (e) => {
-        // console.log('maxQt***', maxQty);
+    const bulkOrderData = async () => {
+        let data = new FormData();
 
+        data.append("item_id", value.id ? value.id : '');
+
+        try {
+            const response = await axios.post("online-bulck-order", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            toast.success(response.data.message);
+            // handleSearch();
+
+        } catch (error) {
+            setIsLoading(false);
+            console.error("API error:", error);
+            toast.error("Failed to place bulk order.");
+        }
+    };
+
+    const handleQtyChange = (e) => {
 
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
-            // console.log('if***');
             setQty(enteredValue);
-            if (enteredValue === 1) {
-                setOrder('O');
-            } else {
-                setOrder('');
-            }
+            // if (enteredValue === 1) {
+            //     setOrder('O');
+            // } else {
+            //     setOrder('');
+            // }
         } else {
-            // console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }
@@ -2039,8 +2085,10 @@ const Addsale = () => {
 
                                                     if (numericValue >= 0 && numericValue <= maxLoyaltyPoints) {
                                                         setLoyaltyVal(numericValue);
+                                                        setLoyaltyPoints(numericValue);
                                                     } else if (numericValue < 0) {
                                                         setLoyaltyVal(0);
+                                                        setLoyaltyPoints(0);
                                                     }
                                                 }}
                                                 onKeyPress={(e) => {

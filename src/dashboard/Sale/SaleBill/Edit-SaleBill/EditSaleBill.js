@@ -1737,15 +1737,12 @@ const EditSaleBill = () => {
                       onChange={(e) => {
                         const value = e.target.value;
 
-                        // Convert the value to a number
                         const numericValue = Math.floor(Number(value));
 
-                        // Define your max value (e.g., 100)
-                        // Check if the value is non-negative and does not exceed the maximum
                         if (numericValue >= 0 && numericValue <= maxValue) {
                           setLoyaltyVal(numericValue);
                         } else if (numericValue < 0) {
-                          setLoyaltyVal(0); // Prevent negative value
+                          setLoyaltyVal(0); 
                         }
                       }}
 
@@ -1753,7 +1750,6 @@ const EditSaleBill = () => {
                         const value = e.target.value;
                         const isMinusKey = e.key === '-';
 
-                        // Allow Backspace and numeric keys
                         if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
                           e.preventDefault();
                         }

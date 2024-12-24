@@ -49,8 +49,8 @@ const EditSaleBill = () => {
   const location = useLocation();
   const { paymentType: initialPayment } = location.state
   const [paymentType, setPaymentType] = useState(initialPayment || '');
-    const [loyaltyVal, setLoyaltyVal] = useState(0);
-
+  const [loyaltyVal, setLoyaltyVal] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
   const [error, setError] = useState({ customer: "" });
   const [itemAmount, setItemAmount] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
@@ -89,7 +89,7 @@ const EditSaleBill = () => {
   let defaultDate = new Date();
   const [searchItem, setSearchItem] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
-    const [loyaltyPoints, setLoyaltyPoints] = useState([]);
+  const [loyaltyPoints, setLoyaltyPoints] = useState([]);
 
   const [itemList, setItemList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
@@ -147,13 +147,20 @@ const EditSaleBill = () => {
       //   calculatedNetAmount = 0;
       // }
 
-      let loyaltyPointsDeduction = loyaltyVal; 
+      // let loyaltyPointsDeduction = loyaltyVal; 
+      // let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
+
+      // if (calculatedNetAmount < 0) {
+      //     setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+      //     setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+      //     calculatedNetAmount = 0;
+      // }
+      let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
       let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
       if (calculatedNetAmount < 0) {
-          setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
-          setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
-          calculatedNetAmount = 0;
+        setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+        calculatedNetAmount = 0;
       }
 
       const decimalPart = Number((calculatedNetAmount % 1).toFixed(2));
@@ -170,7 +177,7 @@ const EditSaleBill = () => {
       setDueAmount(due.toFixed(2));
     }
 
-  }, [totalAmount, finalDiscount, otherAmt, givenAmt, tempOtherAmt]);
+  }, [totalAmount, loyaltyVal, finalDiscount, otherAmt, givenAmt, tempOtherAmt]);
 
   const handleOtherAmtChange = (e) => {
     const value = e.target.value;
@@ -269,11 +276,13 @@ const EditSaleBill = () => {
 
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
+      setMaxValue(record.roylti_point);
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
       setTotalgst(record.total_gst);
       setTotalAmount(record.sales_amount);
       setRoundOff(record.round_off)
+      setOtherAmt(record.other_amount)
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
       }
@@ -282,6 +291,7 @@ const EditSaleBill = () => {
         const fetchedRandomNumber = salesItem[0].random_number;
         setRandomNum(fetchedRandomNumber);
       }
+      setLoyaltyVal(record.roylti_point);
       setNetAmount(record.net_amount);
       setNetRateAmount(record.total_net_rate);
       setMarginNetProfit(record.margin_net_profit);
@@ -494,36 +504,11 @@ const EditSaleBill = () => {
 
   }
 
-  
-  const fetchLoyaltyPoints = async (customerId) => {
-    let data = new FormData();
-    const params = { customer_id: customerId };
 
-    try {
-        const response = await axios.get('loyalti-point-list', data, {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        // Assuming response.data.data contains the loyalty points
-        setLoyaltyPoints(response.data.data);
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }      
-    } catch (error) {
-        console.error('Error fetching loyalty points:', error);
-    }
-};
   const handleCustomerOption = (event, newValue) => {
     setUnsavedItems(true);
 
     setCustomer(newValue);
-    if (newValue) {
-      const customerId = newValue.id; // Assuming `newValue` has the customer object
-      fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
-  } else {
-      setLoyaltyVal(0);
-  }
   };
 
   const handleDoctorOption = (event, newValue) => {
@@ -938,8 +923,8 @@ const EditSaleBill = () => {
             }}
           >
             <div>
-              <div className="py-3" style={{ display: "flex", gap: "4px" , alignItems: "center"}}>
-                <div style={{ display: "flex", gap: "7px" , alignItems: "center"}}>
+              <div className="py-3" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
                   <span
                     style={{
                       color: "var(--color2)",
@@ -1114,6 +1099,7 @@ const EditSaleBill = () => {
                       )}
                       renderInput={(params) => (
                         <TextField
+                 autoComplete="off"
                           {...params}
                           variant="outlined"
                           placeholder="Search by Mobile, Name"
@@ -1174,6 +1160,7 @@ const EditSaleBill = () => {
                       )}
                       renderInput={(params) => (
                         <TextField
+                 autoComplete="off"
                           {...params}
                           variant="outlined"
                           placeholder="Search by DR. Name"
@@ -1234,6 +1221,7 @@ const EditSaleBill = () => {
                         )}
                         renderInput={(params) => (
                           <TextField
+                 autoComplete="off"
                             {...params}
                             variant="outlined"
                             placeholder="Search Item Name..."
@@ -1408,6 +1396,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               disabled
                               type="number"
@@ -1421,6 +1410,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "110px" }}
@@ -1434,6 +1424,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               disabled
                               size="small"
@@ -1445,6 +1436,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               disabled
                               id="outlined-number"
                               type="number"
@@ -1458,6 +1450,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "120px" }}
@@ -1471,6 +1464,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1484,6 +1478,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "70px" }}
@@ -1508,6 +1503,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "80px" }}
                               size="small"
@@ -1517,6 +1513,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               size="small"
                               disabled
@@ -1531,6 +1528,7 @@ const EditSaleBill = () => {
                         </tr>
                         <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td><TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             size="small"
@@ -1550,7 +1548,7 @@ const EditSaleBill = () => {
                             <Button
                               variant="contained"
                               color="success"
-                              style={{ display: "flex", gap: "5px" }}
+                              style={{ display: "flex", gap: "5px", backgroundColor: "var(--color1)" }}
                               onClick={addSaleItem}
                             >
                               <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
@@ -1750,13 +1748,22 @@ const EditSaleBill = () => {
                     <Input
                       type="number"
                       value={loyaltyVal}
-                      onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        const numericValue = Math.floor(Number(value));
+
+                        if (numericValue >= 0 && numericValue <= maxValue) {
+                          setLoyaltyVal(numericValue);
+                        } else if (numericValue < 0) {
+                          setLoyaltyVal(0);
+                        }
+                      }}
 
                       onKeyPress={(e) => {
                         const value = e.target.value;
                         const isMinusKey = e.key === '-';
 
-                        // Allow Backspace and numeric keys
                         if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
                           e.preventDefault();
                         }

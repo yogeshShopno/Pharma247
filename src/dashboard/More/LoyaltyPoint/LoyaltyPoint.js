@@ -1,69 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import Header from "../../Header";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
-import { FaEdit, FaSlack, FaTrash } from "react-icons/fa";
 import Loader from "../../../componets/loader/Loader";
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Alert, AlertTitle, Autocomplete, Button, ListItem, TextField } from "@mui/material";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select } from '@mui/material';
+import { Button, TextField } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl } from '@mui/material';
 import { TablePagination } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
-
-const DrugGroup = () => {
-    const history = useHistory()
-
+const LoyaltyPoint = () => {
     const token = localStorage.getItem("token");
-    const drugGroupColumns = [
-        { id: 'name', label: 'Drug Group Name', minWidth: 100 },
+    const loyaltyPointLabel = [
+        { id: 'minimum', label: 'Minimum Amount', minWidth: 100 },
+        { id: 'maximum', label: 'Maximum Amount', minWidth: 100 },
+        { id: 'percent', label: 'Percentage', minWidth: 100 },
     ];
-    const [drugGroupData, setDrugGroupData] = useState([])
-    const [filterData, setFilterData] = useState([])
+
+    const [minimumAmount, setMinimumAmount] = useState('');
+    const [maximumAmount, setMaximumAmount] = useState('');
+    const [percentage, setPercentage] = useState('');
+
+    const [loyaltypointData, setLoyaltyPointData] = useState([])
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [header, setHeader] = useState('');
     const [buttonLabel, setButtonLabel] = useState('');
-    const [drugGroupName, setDrugGroupName] = useState('');
-    const [drugGroupFilter, setDrugGroupFilter] = useState(null);
-    const [openItem, setopenItem] = useState(false);
-    const [drugGroupID, setDrugGroupID] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [deleteDrugGroupId, setDeleteDrugGroupId] = useState(null);
+    const [loyaltyPointID, setLoyaltyPointID] = useState(null);
+
     const [IsDelete, setIsDelete] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const startIndex = (currentPage - 1) * rowsPerPage + 1;
 
-    const DrugGroupWiseFilter = [
-        { id: 'Item_name', label: 'Item Name', minWidth: 170, height: 100 },
-        { id: 'company_name', label: 'Company Name', minWidth: 100 },
-        { id: 'stock', label: 'stock', minWidth: 100 },
-    ];
-
     const handelAddOpen = () => {
         setOpenAddPopUp(true);
-        setHeader('Add Drug Group');
+        setHeader('Add Loyalty Point');
         setButtonLabel('Save')
     }
 
     const handleEditOpen = (row) => {
         setOpenAddPopUp(true);
-        setDrugGroupID(row.id);
-        setDrugGroupName(row.name);
+        setLoyaltyPointID(row.id);
+        setMaximumAmount(row.maximum);
+        setMinimumAmount(row.minimum);
+        setPercentage(row.percent);
         setIsEditMode(true);
-        setHeader('Edit Drug Group');
+        setHeader('Edit Loyalty Point');
         setButtonLabel('Update')
-        // setDrugGroupName(row.category_name);
     }
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -75,56 +68,69 @@ const DrugGroup = () => {
     };
 
     const resetAddDialog = () => {
-        setDrugGroupName('');
+        setMaximumAmount('');
+        setMinimumAmount('');
+        setPercentage('');
         setErrors({});
         setOpenAddPopUp(false);
     }
 
     useEffect(() => {
-        DrugGroupList();
+        LoyaltyPointList();
     }, [page, rowsPerPage]);
 
-    const DrugGroupList = () => {
+    const LoyaltyPointList = () => {
         const params = {
             page: page + 1,
             limit: rowsPerPage,
         }
         axios
-            .post("drug-list", {
+            .get("loyalti-point-list", {
                 params: params
             })
             .then((response) => {
-                //console.log("API Response:===", response);
-                setDrugGroupData(response.data.data);
+                setLoyaltyPointData(response.data.data);
                 setIsLoading(false);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
                 setIsLoading(false);
             });
     };
 
     const validData = () => {
         if (isEditMode == false) {
-            //  Add Package 
             const newErrors = {};
-            if (!drugGroupName) {
-                newErrors.drugGroupName = 'Drug Group Name is required';
-                toast.error(newErrors.drugGroupName)
+            if (!maximumAmount) {
+                newErrors.maximumAmount = 'maximum amount is required';
+                toast.error(newErrors.maximumAmount)
             }
+
+            if (!minimumAmount) {
+                newErrors.minimumAmount = 'minimum amount is required';
+                toast.error(newErrors.minimumAmount)
+            }
+
+            if (Number(maximumAmount) <= Number(minimumAmount)) {
+                newErrors.amountMismatch = 'Maximum amount must be greater than minimum amount';
+                toast.error(newErrors.amountMismatch);
+            }
+            
             setErrors(newErrors);
             const isValid = Object.keys(newErrors).length === 0;
             if (isValid) {
-                AddDrugGroup();
+                AddLoyaltyPoint();
             }
             return isValid;
         }
         else {
-            // Edit Package
             const newErrors = {};
-            if (!drugGroupName) {
-                newErrors.drugGroupName = 'Drug Group Name is required';
-                toast.error(newErrors.drugGroupName)
+            if (!maximumAmount) {
+                newErrors.maximumAmount = 'maximum amount is required';
+                toast.error(newErrors.maximumAmount)
+            }
+            if (!minimumAmount) {
+                newErrors.minimumAmount = 'minimum amount is required';
+                toast.error(newErrors.minimumAmount)
             }
             setErrors(newErrors);
             const isValid = Object.keys(newErrors).length === 0;
@@ -135,25 +141,25 @@ const DrugGroup = () => {
         }
     };
 
-    const AddDrugGroup = async () => {
+    const AddLoyaltyPoint = async () => {
         let data = new FormData();
-        data.append('name', drugGroupName);
+        data.append('minimum', minimumAmount);
+        data.append('maximum', maximumAmount);
+        data.append('percent', percentage);
 
         try {
-            await axios.post("drug-group-store", data, {
+            await axios.post("loyalti-point-add", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
             ).then((response) => {
-                DrugGroupList();
                 setOpenAddPopUp(false);
-                setDrugGroupName('');
+                LoyaltyPointList();
+                setMinimumAmount('');
+                setMaximumAmount('');
+                setPercentage('');
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -165,25 +171,25 @@ const DrugGroup = () => {
 
     const EditDrugGroup = async () => {
         let data = new FormData();
-        data.append('id', drugGroupID);
-        data.append('name', drugGroupName);
+        data.append('id', loyaltyPointID);
+        data.append('maximum', maximumAmount);
+        data.append('minimum', minimumAmount);
+        data.append('percent', percentage);
+
         try {
-            await axios.post("drug-group-update", data, {
+            await axios.post("loyalti-point-update", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
-                DrugGroupList();
+                LoyaltyPointList();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
-                setDrugGroupName('');
+                setMaximumAmount('');
+                setMinimumAmount('');
+                setPercentage('');
                 setIsEditMode(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
 
             })
         } catch (error) {
@@ -195,37 +201,29 @@ const DrugGroup = () => {
         }
     }
 
-    const drugGroupDelete = async (id) => {
+    const loyaltyPointDelete = async (id) => {
         let data = new FormData();
-        data.append("id", id);
+        data.append("id", id);  // Use 'id' directly instead of loyaltyPointID
 
         try {
-            //console.log("id", id);
-            await axios.post("drug-group-delete",
-                data,
-                {
-                    headers: {
-                        // Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            ).then((response) => {
-                setIsLoading(true)
-                DrugGroupList();
-                toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
-            })
+            const response = await axios.post("loyalti-point-delete", data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setIsLoading(true);
+            LoyaltyPointList();  // Refresh the list
+            toast.success(response.data.message);
         } catch (error) {
-            // alert("404 error");
             console.error("Error deleting item:", error);
+            if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message);
+            }
         }
     };
-
-    const deleteOpen = (drugGroupID) => {
-        setDeleteDrugGroupId(drugGroupID);
+    const deleteOpen = (loyaltyPointID) => {
+        setDeleteDrugGroupId(loyaltyPointID);
         setIsDelete(true);
     };
 
@@ -236,70 +234,10 @@ const DrugGroup = () => {
 
     const handleDelete = async () => {
         if (!deleteDrugGroupId) return;
-        await drugGroupDelete(deleteDrugGroupId);
+        await loyaltyPointDelete(deleteDrugGroupId);
         setIsDelete(false);
+        
     };
-
-    // const handleOptionChange = (event, newValue) => {
-    //     setDrugGroupName(newValue);
-    //     //console.log(newValue, "145214");
-    // };
-    const handleOptionChange = (event, newValue) => {
-        if (newValue && typeof newValue === 'object') {
-            setDrugGroupName(newValue.name);
-        } else {
-            setDrugGroupName(newValue);
-        }
-    };
-
-    const handleInputChange = (event, newInputValue) => {
-        setDrugGroupName(newInputValue);
-        //console.log(newInputValue + 'mm9');
-    };
-
-    const handleDrugGroupList = (e, value) => {
-        setDrugGroupFilter(value);
-        if (value) {
-            // setDistributorId(value.id);
-            droupGroupFilter(value.id);
-        }
-    }
-
-    const openBillDetails = () => {
-        const newErrors = {};
-        if (!drugGroupFilter) newErrors.distributorValue = 'Distributor is required';
-        setErrors(newErrors);
-        const isValid = Object.keys(newErrors).length === 0;
-        if (isValid) {
-            setopenItem(true);
-            droupGroupFilter();
-        }
-        return isValid;
-    };
-
-    const droupGroupFilter = async () => {
-        let data = new FormData()
-        const params = {
-            id: drugGroupFilter?.id
-        }
-        try {
-            await axios.post('drug-item?', data, {
-                params: params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            }
-            ).then((response) => {
-                setFilterData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
-            })
-        } catch (error) {
-            console.error("API error:", error);
-        }
-    }
 
     return (
         <div >
@@ -323,17 +261,17 @@ const DrugGroup = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '120px' }} >Drug Group</span>
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '120px' }} >loyalty point</span>
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
-                                <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
+                                <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Loyalty point</Button>
                             </div>
                         </div>
                         <div className="firstrow p-4">
 
                             {/* <div className="bg-white"> */}
-                            <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
+                            {/* <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                                 <div className="detail" >
                                     <Autocomplete
                                         value={drugGroupFilter}
@@ -345,24 +283,23 @@ const DrugGroup = () => {
                                             },
                                         }}
                                         size='small'
-                                        onChange={handleDrugGroupList}
+                                        onChange={handleLoyaltyPointList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
                  autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
                                     />
-                                    {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
                                 <div>
                                     <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="overflow-x-auto mt-4">
                                 <table className="w-full border-collapse custom-table">
                                     <thead style={{ background: "rgba(153, 153, 153, 0.1)" }}>
                                         <tr>
                                             <th>SR No.</th>
-                                            {drugGroupColumns.map((column) => (
+                                            {loyaltyPointLabel.map((column) => (
                                                 <th key={column.id} style={{ minWidth: column.minWidth }}>
                                                     {column.label}
                                                 </th>
@@ -370,20 +307,20 @@ const DrugGroup = () => {
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        {drugGroupData.length === 0 ? (
+                                    {/* <tbody>
+                                        {loyaltypointData ? (
                                             <tr>
-                                                <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                                <td colSpan={loyaltyPointLabel.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
                                                     No data found
                                                 </td>
                                             </tr>
                                         ) :
-                                            (drugGroupData?.map((item, index) => (
+                                            (loyaltypointData?.map((item, index) => (
                                                 <tr key={index}>
                                                     <td>
                                                         {startIndex + index}
                                                     </td>
-                                                    {drugGroupColumns.map((column) => (
+                                                    {loyaltyPointLabel.map((column) => (
                                                         <td key={column.id}>
                                                             {item[column.id]}
                                                         </td>
@@ -398,13 +335,42 @@ const DrugGroup = () => {
                                                 </tr>
                                             )))
                                         }
+                                    </tbody> */}
+
+                                    <tbody>
+                                        {loyaltypointData.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={loyaltyPointLabel.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                                    No data found
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            loyaltypointData?.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        {startIndex + index}
+                                                    </td>
+                                                    {loyaltyPointLabel.map((column) => (
+                                                        <td key={column.id}>
+                                                            {item[column.id]}
+                                                        </td>
+                                                    ))}
+                                                    <td>
+                                                        <div className="px-2">
+                                                            <BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(item)} />
+                                                            <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 12]}
                                 component="div"
-                                count={drugGroupData?.[0]?.count}
+                                count={loyaltypointData?.[0]?.count}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 onPageChange={handleChangePage}
@@ -437,37 +403,68 @@ const DrugGroup = () => {
                             <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
                                 <div className="flex gap-10">
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <span className="label primary">Drug Group Name</span>
-                                        {/* <TextField
-                 autoComplete="off"
-                                            id="outlined-multiline-static"
-                                            size="small"
-                                            placeholder="Drug Group Name"
-                                            value={drugGroupName}
-                                            onChange={(e) => { setDrugGroupName(e.target.value) }}
-                                            style={{ minWidth: 450 }}
-                                            variant="outlined"
-                                        /> */}
-                                        <Autocomplete
-                                            value={drugGroupName}
-                                            // inputValue={searchItem.toUpperCase()}  
-                                            sx={{ width: 450 }}
-                                            size="small"
-                                            onChange={handleOptionChange}
-                                            onInputChange={handleInputChange}
-                                            getOptionLabel={(option) => (typeof option === 'string' ? option : option.name)}
-                                            options={drugGroupData}
-                                            renderOption={(props, option) => (
-                                                <ListItem {...props}>
-                                                    <ListItemText primary={option.name} />
-                                                </ListItem>
-                                            )}
-                                            renderInput={(params) => (
+                                        <div style={{ display: 'flex', gap: '2%' }}>
+
+                                            <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
-                 autoComplete="off" autoComplete="off"{...params} />
-                                            )}
-                                            freeSolo
-                                        />
+                 autoComplete="off"
+                                                    type="number"
+                                                    value={minimumAmount}
+                                                    onChange={(e) => {
+                                                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                                        setMinimumAmount(e.target.value)
+                                                    }}
+                                                    label="Minimum"
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    sx={{
+                                                        '& .MuiInputLabel-root.Mui-focused': {
+                                                            color: '#3f6212',
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
+                                                <TextField
+                 autoComplete="off"
+                                                    type="number"
+                                                    value={maximumAmount}
+                                                    onChange={(e) => {
+                                                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                                        setMaximumAmount(e.target.value)
+                                                    }}
+                                                    label="Maximum"
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    sx={{
+                                                        '& .MuiInputLabel-root.Mui-focused': {
+                                                            color: '#3f6212',
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <div className="mt-5">
+                                            <FormControl variant="outlined data-mdb-input-init" sx={{ width: 224 }}>
+                                                <TextField
+                 autoComplete="off"
+                                                    type="number"
+                                                    value={percentage}
+                                                    onChange={(e) => {
+                                                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                                        setPercentage(e.target.value)
+                                                    }}
+                                                    id="percentage-input"
+                                                    label="Percentage %"
+                                                    size="medium"
+                                                    sx={{
+                                                        '& .MuiInputLabel-root.Mui-focused': {
+                                                            color: '#3f6212',
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -483,78 +480,6 @@ const DrugGroup = () => {
                             Cancel
                         </Button>
                     </DialogActions>
-                </Dialog>
-
-
-                <Dialog open={openItem}
-                    sx={{
-                        "& .MuiDialog-container": {
-                            "& .MuiPaper-root": {
-                                width: "50%",
-                                maxWidth: "1500px",  // Set your width here
-                            },
-                        },
-                    }}
-                >
-                    <DialogTitle id="alert-dialog-title" className="secondary">
-                        DrugGroup Related Items
-                    </DialogTitle>
-                    <IconButton
-                        aria-label="close"
-                        onClick={() => {
-                            setopenItem(false);
-                            setDrugGroupFilter(null)
-                        }}
-                        sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500], }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            {filterData.length > 0 ?
-                                <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
-                                    <table className="custom-table" style={{ background: "none" }}>
-                                        <thead  >
-                                            <tr>
-                                                <th>Sr No</th>
-                                                {DrugGroupWiseFilter.map((column, index) => (
-                                                    <th key={column.id} >
-                                                        <div className='headerStyle'>
-                                                            <span>{column.label}</span>
-                                                        </div>
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filterData
-                                                .map((row, index) => {
-                                                    return (
-                                                        <tr hover tabIndex={-1} key={row.code} >
-                                                            <td>{index + 1}</td>
-                                                            {DrugGroupWiseFilter.map((column) => {
-                                                                const value = row[column.id];
-                                                                return (
-                                                                    <td key={column.id} align={column.align}
-                                                                    >
-                                                                        {column.format && typeof value === 'number'
-                                                                            ? column.format(value)
-                                                                            : value}
-                                                                    </td>
-                                                                );
-                                                            })}
-                                                        </tr>
-                                                    );
-                                                })}
-                                        </tbody>
-                                    </table>
-                                </div> :
-                                <div>
-                                    <span>No record Found.</span>
-                                </div>
-                            }
-                        </DialogContentText>
-                    </DialogContent>
                 </Dialog>
 
             </div>
@@ -596,4 +521,4 @@ const DrugGroup = () => {
         </div>
     );
 };
-export default DrugGroup;
+export default LoyaltyPoint;

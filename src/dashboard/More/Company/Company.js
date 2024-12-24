@@ -358,6 +358,7 @@ const Company = () => {
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="label primary">Company Name</span>
                                         {/* <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             placeholder="Company Name"
@@ -382,7 +383,8 @@ const Company = () => {
                                                 </ListItem>
                                             )}
                                             renderInput={(params) => (
-                                                <TextField {...params} />
+                                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                             )}
                                             freeSolo
                                         />

@@ -18,6 +18,7 @@ const saleColumns = [
     { id: 'qty', label: 'Quantity', minWidth: 100 },
     { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
     { id: 'amt', label: 'Bill Amount', minWidth: 100 },
+    { id: 'roylti_point', label: 'Loyalty Points', minWidth: 100 },
 
 ];
 
@@ -198,6 +199,10 @@ const CustomerView = () => {
                             <div className="distributor-detail">
                                 <span className="text-gray-800 font-bold">Total Amount</span>
                                 <span className="data">{tableData.balance ? tableData.balance : '____'}</span>
+                            </div>
+                            <div className="distributor-detail">
+                                <span className="text-gray-800 font-bold">Loyalty Points</span>
+                                <span className="data">{tableData.roylti_point ? tableData.roylti_point : '____'}</span>
                             </div>
                             <div className="distributor-detail">
                                 <span className="text-gray-800 font-bold">Area</span>

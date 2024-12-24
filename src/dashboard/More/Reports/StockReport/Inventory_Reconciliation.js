@@ -616,6 +616,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Item Name</span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -643,6 +644,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Batch</span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -661,7 +663,8 @@ const Inventory_Reconciliation = () => {
                                             sx={{ width: 200 }}
                                             getOptionLabel={(option) => option.batch_number}
                                             renderInput={(params) => (
-                                                <TextField {...params} label="Select Batch" />
+                                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Select Batch" />
                                             )}
                                         /> */}
                                     </div>
@@ -669,6 +672,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Company</span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -689,6 +693,7 @@ const Inventory_Reconciliation = () => {
                                             getOptionLabel={(option) => option.company_name}
                                             renderInput={(params) => (
                                                 <TextField
+                 autoComplete="off"
                                                     {...params}
                                                 label="Select Company"
                                                 />
@@ -700,6 +705,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Unit</span>
                                         <TextField
+                 autoComplete="off"
                                             disabled
                                             required
                                             id="outlined-number"
@@ -712,6 +718,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Expiry</span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             sx={{ width: "130px" }}
                                             size="small"
@@ -725,6 +732,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">MRP</span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -741,6 +749,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Stock </span>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -755,6 +764,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Stock Adjusted </span>
                                         {/* <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         type="number"
                                         sx={{ width: '130px' }}
@@ -763,6 +773,7 @@ const Inventory_Reconciliation = () => {
                                         onChange={(e) => { setStockAdjust(e.target.value) }}
                                     /> */}
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -779,6 +790,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Remaining Stock </span>
                                         <TextField
+                 autoComplete="off"
                                             disabled
                                             id="outlined-number"
                                             type="number"

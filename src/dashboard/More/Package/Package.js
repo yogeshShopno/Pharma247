@@ -395,6 +395,7 @@ const Package = () => {
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span className="label primary">Package Name</span>
                         <TextField
+                 autoComplete="off"
                           id="outlined-multiline-static"
                           size="small"
                           placeholder="Package Name"
@@ -411,6 +412,7 @@ const Package = () => {
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span className="label primary">Unit</span>
                         <TextField
+                 autoComplete="off"
                           id="outlined-multiline-static"
                           size="small"
                           value={units}

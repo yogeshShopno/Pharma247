@@ -1484,7 +1484,9 @@ const AddPurchaseBill = () => {
                   onChange={handleDistributorChange}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params}
+                  renderInput={(params) => <TextField
+                 autoComplete="off"
+                 {...params}
                     autoFocus
                   />}
                 />
@@ -1497,6 +1499,7 @@ const AddPurchaseBill = () => {
               <div className="detail">
                 <span className="title mb-2">Sr No.</span>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   size="small"
                   style={{ width: "200px" }}
@@ -1510,6 +1513,7 @@ const AddPurchaseBill = () => {
               <div className="detail">
                 <span className="title mb-2">Bill No. / Order No.</span>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   size="small"
                   style={{ width: "250px" }}
@@ -1595,6 +1599,7 @@ const AddPurchaseBill = () => {
                   )}
                   renderInput={(params) => (
                     <TextField
+                 autoComplete="off"
                       {...params}
                       label="Search Item Name"
                       value={searchItem?.iteam_name}
@@ -1665,12 +1670,13 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="text" // Change to text to better handle custom validation
                               size="small"
                               error={!!errors.unit}
                               value={unit}
-                              sx={{ width: "50px" }}
+                              sx={{ width: "40px" }}
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g, '');
                                 setUnit(value ? Number(value) : "");
@@ -1688,6 +1694,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef2}
                               // onKeyDown={handleKeyDown}
@@ -1703,6 +1710,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               size="small"
                               sx={{ width: "80px" }}
@@ -1716,6 +1724,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "100px" }}
@@ -1742,6 +1751,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "80px" }}
@@ -1768,6 +1778,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               size="small"
                               type="number"
@@ -1792,6 +1803,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "100px" }}
@@ -1814,6 +1826,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "60px" }}
                               size="small"
@@ -1841,6 +1854,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "90px" }}
                               size="small"
@@ -1853,6 +1867,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               size="small"
@@ -1893,6 +1908,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef12}
                               // onKeyDown={handleKeyDown}
@@ -1908,6 +1924,7 @@ const AddPurchaseBill = () => {
                           <td>
                             <td>
                               <TextField
+                 autoComplete="off"
                                 id="outlined-number"
                                 type="number"
                                 disabled
@@ -1920,6 +1937,7 @@ const AddPurchaseBill = () => {
                           <td>
                             <td>
                               <TextField
+                 autoComplete="off"
                                 id="outlined-number"
                                 type="number"
                                 disabled
@@ -1939,6 +1957,7 @@ const AddPurchaseBill = () => {
                         <tr>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               size="small"
@@ -2274,6 +2293,7 @@ const AddPurchaseBill = () => {
                     <div className="fields">
                       <label className="label secondary">Item Name</label>
                       <TextField
+                 autoComplete="off"
                         id="outlined-number"
                         size="small"
                         sx={{ minWidth: "150px" }}
@@ -2285,6 +2305,7 @@ const AddPurchaseBill = () => {
                     <div className="fields">
                       <label className="label  secondary">Barcode</label>
                       <TextField
+                 autoComplete="off"
                         id="outlined-number"
                         type="number"
                         size="small"
@@ -2297,6 +2318,7 @@ const AddPurchaseBill = () => {
                     <div className="fields">
                       <label className="label secondary">Unit</label>
                       <TextField
+                 autoComplete="off"
                         id="outlined-number"
                         type="number"
                         size="small"
@@ -2309,6 +2331,7 @@ const AddPurchaseBill = () => {
                     <div className="fields">
                       <label className="label secondary">Pack</label>
                       <TextField
+                 autoComplete="off"
                         disabled
                         id="outlined-number"
                         size="small"

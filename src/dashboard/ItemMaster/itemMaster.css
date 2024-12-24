@@ -37,7 +37,6 @@
   align-items: center;
   flex-direction: column;
 }
-
 .profile-upload {
   width: 200px;
   border: 2px dashed #919191;
@@ -54,14 +53,48 @@
 .fields {
   display: flex;
   flex-wrap: wrap;
+  /* flex-direction: column; */
+  margin: 5px;
+  width: 25%;
+}
+
+.four_divv {
+  display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   margin: 5px;
+  width: 25%;
+}
+
+.third_divv {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px;
+  width: 20%;
+}
+
+.secrw_divvv {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px;
+  width: 33.33333333333333%;
+}
+
+.Unit_divvv {
+  width: 25% !important;
+  flex-direction: column;
+}
+
+.product_img_divv {
+  gap: 20px;
 }
 
 .row {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  /* gap: 20px; */
+  /* flex-wrap: wrap; */
 }
 
 .dialog {
@@ -101,9 +134,17 @@
   gap: 20px;
 }
 
+.ExpenseBoxTitle {
+  color: rgb(4, 76, 157);
+  font-weight: 600;
+}
+
+.ExpenseBoxSubTitle {
+  color: rgb(4, 76, 157);
+}
 
 .error {
-  color: var(--color6);
+  color: red;
   font-size: 12px;
 }
 
@@ -162,5 +203,5 @@
 }
 
 .errorFile {
-  color: var(--color6);
+  color: red;
 }

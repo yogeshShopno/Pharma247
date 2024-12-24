@@ -54,7 +54,7 @@ const SalesBill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
@@ -102,7 +102,7 @@ const SalesBill = () => {
                     setIsLoading(false);
                     setSaleGSTData(response.data.data)
                     setTotal(response.data.data.net_amount)
-                    if(response.data.status === 401){ 
+                    if (response.data.status === 401) {
                         history.push('/');
                         localStorage.clear();
                     }
@@ -189,7 +189,21 @@ const SalesBill = () => {
                             <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
-                            <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                            <Button
+                                variant="contained"
+                                style={{
+                                    background: "var(--color1)",
+                                    color: "white",
+                                    textTransform: "none",
+                                    paddingLeft: "35px",
+                                }}
+                                onClick={exportToCSV}>
+                                <img src="/csv-file.png"
+                                    className="report-icon absolute mr-10"
+                                    alt="csv Icon" />
+
+                                Download
+                            </Button>
                         </div>
                     </div>
                     <div className="bg-white">
@@ -204,7 +218,8 @@ const SalesBill = () => {
                                             sx={{ maxWidth: "150px" }}
                                             value={startDate}
                                             onChange={(newDate) => setStartDate(newDate)}
-                                            renderInput={(params) => <TextField {...params} />}
+                                            renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                                         />
                                     </LocalizationProvider> */}
                                     <div style={{ width: "215px" }}>
@@ -260,7 +275,9 @@ const SalesBill = () => {
                                     </FormControl>
                                 </div>
                                 <div>
-                                    <Button variant="contained" onClick={() => handlefilterData(currentPage)}>Go</Button>
+                                    <Button style={{
+                                                background: "var(--color1)",
+                                            }}  variant="contained" onClick={() => handlefilterData(currentPage)}>Go</Button>
                                 </div>
 
                             </div>

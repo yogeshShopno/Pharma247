@@ -24,7 +24,7 @@ const columns = [
     { id: 'bill_date', label: 'Bill Date', minWidth: 50 },
     // { id: 'name', label: 'Customer Name', minWidth: 100 },
     // { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
-    { id: 'customer_info', label: 'Customer Info', minWidth: 200 }, 
+    { id: 'customer_info', label: 'Customer Info', minWidth: 200 },
     { id: "payment_name", label: 'Payment Mode', minWidth: 100 },
     { id: 'status', label: 'Status', minWidth: 100 },
     { id: 'net_amt', label: 'Bill Amount', minWidth: 100 },
@@ -124,12 +124,12 @@ const Salelist = () => {
         const netAmt = String(row.net_amt).toLowerCase();
 
 
-        const billNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : ''; 
-        const billDateSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : ''; 
+        const billNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : '';
+        const billDateSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : '';
         const customerSearchTerm = searchTerms[2].toLowerCase();
-        const paymentSearchTerm = searchTerms[3] ? searchTerms[3].toLowerCase() : ''; 
-        const statusSearchTerm = searchTerms[4] ? searchTerms[4].toLowerCase() : ''; 
-        const netAmtSearchTerm = searchTerms[5] ? String(searchTerms[5]).toLowerCase() : ''; 
+        const paymentSearchTerm = searchTerms[3] ? searchTerms[3].toLowerCase() : '';
+        const statusSearchTerm = searchTerms[4] ? searchTerms[4].toLowerCase() : '';
+        const netAmtSearchTerm = searchTerms[5] ? String(searchTerms[5]).toLowerCase() : '';
         return (
             (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
             (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
@@ -166,6 +166,7 @@ const Salelist = () => {
 
     useEffect(() => {
         saleBillList();
+        localStorage.removeItem('RandomNumber');
     }, [])
 
     const saleBillList = async (currentPage) => {
@@ -274,12 +275,12 @@ const Salelist = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" , alignItems: "center"}} className="justify-between" >
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' , alignItems: "center"}}>
+                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} className="justify-between" >
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Sales</span>
                             {hasPermission(permissions, "sale bill create") && (<>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px',  color: "var(--color1)" }} />
-                                <Button variant="contained" size='small' style={{ backgroundColor: 'var(--color1)', fontSize: '12px' }} onClick={goIntoAdd} ><AddIcon />New  </Button>
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                <Button className="gap-2" variant="contained" size='small' style={{ backgroundColor: 'var(--color1)', fontSize: '12px' }} onClick={goIntoAdd} ><AddIcon />New </Button>
                             </>
                             )}
                             <div className="headerList">
@@ -304,6 +305,7 @@ const Salelist = () => {
                                                     <div className='headerStyle'>
                                                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
+                 autoComplete="off"
                                                             // label={`Search ${column.label}`}
                                                             label='Type Here'
                                                             id="filled-basic"

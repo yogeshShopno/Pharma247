@@ -530,6 +530,7 @@ const DoctorList = () => {
                             </span>
                             <SwapVertIcon />
                             <TextField
+                 autoComplete="off"
                               label={`Search ${column.label}`}
                               id="filled-basic"
                               size="small"
@@ -806,7 +807,8 @@ const DoctorList = () => {
                                 </ListItem>
                               )}
                               renderInput={(params) => (
-                                <TextField {...params} />
+                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                               )}
                               freeSolo
                             />
@@ -824,6 +826,7 @@ const DoctorList = () => {
                               {/* <span className="text-red-600 ml-1">*</span> */}
                             </div>
                             <TextField
+                 autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={clinic}
@@ -846,6 +849,7 @@ const DoctorList = () => {
                               Email ID
                             </span>
                             <TextField
+                 autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={emailId}
@@ -905,6 +909,7 @@ const DoctorList = () => {
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <span className="label primary">Address</span>
                             <TextField
+                 autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={address}

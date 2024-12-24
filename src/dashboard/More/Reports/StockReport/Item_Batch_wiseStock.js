@@ -182,7 +182,21 @@ const Item_Batch_wiseStock = () => {
                                         <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </div>
                                     <div className="headerList">
-                                        <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}><img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                                        <Button
+                                            variant="contained"
+                                            style={{
+                                                background: "var(--color1)",
+                                                color: "white",
+                                                textTransform: "none",
+                                                paddingLeft: "35px",
+                                            }}
+                                            onClick={exportToCSV}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon" />
+
+                                            Download
+                                        </Button>
                                     </div>
                                 </div>
                                 <div className="bg-white ">
@@ -211,6 +225,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }}>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={companyName}
                                                         size="small"
@@ -236,6 +251,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={drugGroup}
                                                         size="small"
@@ -261,6 +277,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={location}
                                                         size="small"
@@ -285,7 +302,9 @@ const Item_Batch_wiseStock = () => {
                                             </div>
 
                                             <div className="mt-6">
-                                                <Button variant="contained" onClick={() => handlefilterData(currentPage)}>
+                                                <Button style={{
+                                                background: "var(--color1)",
+                                            }} variant="contained" onClick={() => handlefilterData(currentPage)}>
                                                     Go
                                                 </Button>
                                             </div>

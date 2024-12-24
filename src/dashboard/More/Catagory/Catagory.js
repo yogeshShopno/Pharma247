@@ -342,6 +342,7 @@ const Catagory = () => {
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span className="label primary">Category Name</span>
                     <TextField
+                 autoComplete="off"
                       id="outlined-multiline-static"
                       size="small"
                       placeholder="Category Name"

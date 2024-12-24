@@ -247,6 +247,7 @@ const SalereturnList = () => {
                                                         <div className='headerStyle'>
                                                             <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                             <TextField
+                 autoComplete="off"
                                                                 label='Type Here'
                                                                 id="filled-basic"
                                                                 size="small"

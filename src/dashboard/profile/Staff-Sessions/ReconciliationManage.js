@@ -149,6 +149,7 @@ const ReconciliationManage = () => {
                 <div className="flex flex-row justify-between items-center w-full mb-4">
                   <span className="text-gray-700 font-medium">Daily Item Counts:</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     placeholder="Item Count"
                     value={count}

@@ -2,38 +2,32 @@
   display: block;
 }
 #root {
-  --color1: #3f6212;  
-  --color2: #628A2F;  
-  --color3: #9BB770;  
-  --color4: #F6A609;  
-  --color5: #FFB822;  
-  --color6: #F31C1C;  
- 
+  --color1: #3f6212;
+  --color2: #628a2f;
+  --color3: #9bb770;
+  --color4: #f6a609;
+  --color5: #ffb822;
+  --color6: #f31c1c;
 }
 
-.primary{
+.primary {
   color: #3f6212;
 }
-
-.red{
-  color: #F31C1C;
-}
-.primary-bg{
+.primary-bg {
   background-color: #3f6212;
 }
-.secondary{
-  color: #628A2F;
+.secondary {
+  color: #628a2f;
 }
-.secondary-bg{
-  background-color: #628A2F;
-
+.secondary-bg {
+  background-color: #628a2f;
 }
-.primhover:hover{
-  background-color: #628A2F;
+.primhover:hover {
+  background-color: #628a2f;
 }
 
 .custom-dropdown {
-  background-color: #FFB822;
+  background-color: #ffb822;
 }
 
 .width {
@@ -66,7 +60,7 @@ input[type="number"] {
 }
 
 .bg {
-  background-color:var(--color1);
+  background-color: var(--color1);
 }
 
 .shadow {
@@ -153,13 +147,10 @@ input[type="number"] {
   cursor: pointer;
 }
 
-
-
 .secondary-bg {
   background-color: var(--color2);
   color: white;
 }
-
 
 .close-icon:before,
 .close-icon:after {
@@ -411,6 +402,7 @@ body {
 }
 
 .scroll-two::-webkit-scrollbar {
+  height: 8px !important;
   width: 8px !important;
 }
 
@@ -706,8 +698,6 @@ body {
   background-repeat: no-repeat;
   margin-left: 102px;
 }
-
-
 
 body {
   @apply bg-gray-100;

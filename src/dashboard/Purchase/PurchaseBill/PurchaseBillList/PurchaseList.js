@@ -62,17 +62,7 @@ const Purchasebill = () => {
 
   const goIntoAdd = () => {
     history.push('/purchase/addPurchaseBill')
-  }
-
-  useEffect(() => {
-    if (tableData.length > 0) {
-      localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
-    } else {
-      localStorage.setItem('Purchase_SrNo', 1);
-    }
-    console.log(tableData, 'tableData');
-
-  }, [tableData]);
+  } 
 
   useEffect(() => {
     purchaseBillList(currentPage);
@@ -122,22 +112,39 @@ const Purchasebill = () => {
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = value;
     setSearchTerms(newSearchTerms);
-  };
+    console.log(newSearchTerms, 'newSearchTerms')
+};
 
-  const filteredList = paginatedData.filter(row => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
+const filteredList = tableData.filter(row => {
+// console.log(row, 'row')
+  const srNo = row.sr_no ? row.sr_no.toLowerCase() : '';
+  const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
+  const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
+  const distributor = row.distributor_name ? row.distributor_name.toLowerCase() : '';
+  const bilAmount = row.total_amount ? row.total_amount.toLowerCase() : '';
 
-  useEffect(() => {
-    if (tableData.length > 0) {
-      localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
-    } else {
-      localStorage.setItem('Purchase_SrNo', 1);
-    }
-  }, [tableData, currentPage]);
+  const srNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : '';
+  const billNoSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : '';
+  const billDateSearchTerm = searchTerms[2] ? String(searchTerms[2]).toLowerCase() : '';
+  const distributorSearchTerm = searchTerms[3]?String(searchTerms[3]).toLowerCase() : '';
+  const billAmountSearchTerm = searchTerms[4] ? String(searchTerms[4]).toLowerCase() : '';
+
+  return (
+    (srNo.includes(srNoSearchTerm) || srNoSearchTerm === '') &&
+      (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
+      (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
+      (distributor.includes(distributorSearchTerm) || distributorSearchTerm) &&
+      (bilAmount.includes(billAmountSearchTerm) || billAmountSearchTerm === '') 
+  );
+});
+
+useEffect(() => {
+  if (tableData.length > 0) {
+    localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
+  } else {
+    localStorage.setItem('Purchase_SrNo', 1);
+  }
+}, [tableData, currentPage]);
 
   useEffect(() => {
     purchaseBillList();
@@ -164,7 +171,7 @@ const Purchasebill = () => {
       }
 
       ).then((response) => {
-        console.log(response.data.data)
+        // console.log(response.data.data)
         setTableData(response.data.data)
         setIsLoading(false);
         if (response.data.status === 401) {
@@ -357,7 +364,7 @@ const Purchasebill = () => {
                 <thead>
                   <tr>
                     {/* <th>SR. No</th> */}
-                    <th></th>
+                    {/* <th></th> */}
                     {columns.map((column, index) => (
                       <th key={column.id} className="text-left">
                         <div className="flex flex-col md:flex-row md:items-center gap-2">
@@ -367,6 +374,7 @@ const Purchasebill = () => {
                             onClick={() => sortByColumn(column.id)}
                           />
                           <TextField
+                 autoComplete="off"
                             label={`Search ${column.label}`}
                             size="small"
                             className="w-full md:w-auto"
@@ -381,19 +389,19 @@ const Purchasebill = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.length === 0 ? (
+                  {filteredList.length === 0 ? (
                     <tr>
                       <td colSpan={columns.length + 1} className="text-center text-gray-500">
                         No data found
                       </td>
                     </tr>
                   ) : (
-                    tableData.map((row, index) => (
+                    filteredList.map((row, index) => (
                       <tr
                         className="cursor-pointer hover:bg-gray-100"
                         key={row.code}
                       >
-                        <td>{startIndex + index}</td>
+                        {/* <td>{startIndex + index}</td> */}
 
                         {columns.map((column) => {
                           const value = row[column.id];
@@ -432,52 +440,53 @@ const Purchasebill = () => {
               </table>
             </div>
             <div className="flex justify-center mt-4">
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
-                disabled={filteredList.length === 0}
-              >
-                Next
-              </button>
-            </div>
+                                <button
+                                    onClick={handlePrevious}
+                                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                                        }`}
+                                    disabled={currentPage === 1}
+                                >
+                                    Previous
+                                </button>
+                                {currentPage > 2 && (
+                                    <button
+                                        onClick={() => handleClick(currentPage - 2)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage - 2}
+                                    </button>
+                                )}
+                                {currentPage > 1 && (
+                                    <button
+                                        onClick={() => handleClick(currentPage - 1)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage - 1}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => handleClick(currentPage)}
+                                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                                >
+                                    {currentPage}
+                                </button>
+                                {currentPage < totalPages && (
+                                    <button
+                                        onClick={() => handleClick(currentPage + 1)}
+                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                    >
+                                        {currentPage + 1}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={handleNext}
+                                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                                        }`}
+                                    disabled={filteredList.length === 0}
+                                >
+                                    Next
+                                </button>
+                            </div>
           </div>
 
 
@@ -651,6 +660,7 @@ export default Purchasebill;
                       <div className='headerStyle'>
                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                         <TextField
+                 autoComplete="off"
                           label={`Search ${column.label}`}
                           id="filled-basic"
                           size="small"

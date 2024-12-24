@@ -178,8 +178,21 @@ const Top_Selling_Items = () => {
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-                            </div>
+                            <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={exportToCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button> </div>
                         </div>
                         <div className="bg-white">
                             <div className="manageExpenseRow" style={{
@@ -216,6 +229,7 @@ const Top_Selling_Items = () => {
                                             getOptionLabel={(option) => option.company_name}
                                             renderInput={(params) => (
                                                 <TextField
+                 autoComplete="off"
                                                     {...params}
                                                     label="Select Company"
                                                 />
@@ -223,7 +237,9 @@ const Top_Selling_Items = () => {
                                         />
                                     </div>
                                     <div className="mt-6">
-                                        <Button variant="contained" onClick={() => handlefilterData(currentPage)} >
+                                        <Button style={{
+                                                background: "var(--color1)",
+                                            }}  variant="contained" onClick={() => handlefilterData(currentPage)} >
                                             Go
                                         </Button>
                                     </div>

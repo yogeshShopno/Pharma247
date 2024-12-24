@@ -571,6 +571,7 @@ const BankAccount = () => {
                                             <div className="flex gap-6 ml-12 mt-6 flex-wrap">
                                                 <div className="detail mt-6" >
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={search}
                                                         size="small"
@@ -783,6 +784,7 @@ const BankAccount = () => {
                                             <div className="flex flex-wrap gap-6 ml-4 sm:ml-12 mt-6">
                                                 <div style={{ marginTop: "25px" }}>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={search}
                                                         size="small"
@@ -885,6 +887,7 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={bankName}
@@ -901,6 +904,7 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={accountType}
@@ -918,6 +922,7 @@ const BankAccount = () => {
                                             <span className="label primary mb-4" >Opening Balance</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={openingBalance}
@@ -958,6 +963,7 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountNumber}
@@ -974,6 +980,7 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={reEnterAccountNumber}
@@ -993,6 +1000,7 @@ const BankAccount = () => {
 
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={ifscCode}
@@ -1010,6 +1018,7 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={branchName}
@@ -1033,6 +1042,7 @@ const BankAccount = () => {
 
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountHolderName}
@@ -1048,6 +1058,7 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={upiId}
@@ -1107,11 +1118,17 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={bankName}
-                                            onChange={(e) => { setBankName(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+
+                                            onChange={(e) => { 
+                                                // Transform to uppercase
+                                                const uppercasedValue = e.target.value.toUpperCase();
+                                                setBankName(uppercasedValue);
+                                            }}
+                                                                                 style={{ minWidth: 250 }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
                                         />
@@ -1123,10 +1140,15 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
+                                            type="text"
                                             value={accountType}
-                                            onChange={(e) => { setAccountType(e.target.value) }}
+                                            onChange={(e) => {  
+                                                const capitalizedValue = e.target.value
+                                                .toLowerCase()
+                                                .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue) }}
                                             style={{ minWidth: 250 }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
@@ -1140,6 +1162,7 @@ const BankAccount = () => {
                                             <span className="label primary mb-4">Opening Balance</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={openingBalance}
@@ -1180,10 +1203,14 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountNumber}
-                                                onChange={(e) => { setAccountNumber(e.target.value) }}
+                                                onChange={(e) => { 
+                                                    const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                                                    
+                                                    setAccountNumber(numericValue) }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
@@ -1196,11 +1223,15 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={reEnterAccountNumber}
-                                                onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                                onChange={(e) => {
+                                                    // Allow only numeric input
+                                                    const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                                                    setReEnterAccountNumber(numericValue);
+                                                }}                                                style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
@@ -1214,10 +1245,11 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={ifscCode}
-                                                onChange={(e) => { setIfscCode(e.target.value) }}
+                                                onChange={(e) => {   const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
@@ -1231,6 +1263,7 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={branchName}
@@ -1250,10 +1283,16 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountHolderName}
-                                                onChange={(e) => { setAccountHolderName(e.target.value) }}
+                                                onChange={(e) => {
+                                                    const capitalizedValue = e.target.value
+                                                .toLowerCase()
+                                                .replace(/\b\w/g, (char) => char.toUpperCase());
+                                                 setAccountHolderName(capitalizedValue)
+                                                 }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
@@ -1266,6 +1305,7 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={upiId}

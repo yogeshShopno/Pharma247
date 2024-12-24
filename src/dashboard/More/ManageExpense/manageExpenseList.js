@@ -604,6 +604,7 @@ const ManageExpense = () => {
                                                         <div className="detail">
                                                             <span className="ExpenseBoxSubTitle">GST(%)</span>
                                                             <TextField
+                 autoComplete="off"
                                                                 required
                                                                 id="outlined-number"
                                                                 type="number"
@@ -618,6 +619,7 @@ const ManageExpense = () => {
                                                         <div className="detail">
                                                             <span className="ExpenseBoxSubTitle">GSTN Number</span>
                                                             <TextField
+                 autoComplete="off"
                                                                 required
                                                                 id="outlined-number"
                                                                 // type="number"
@@ -632,6 +634,7 @@ const ManageExpense = () => {
                                                     <div className="detail">
                                                         <span className="ExpenseBoxSubTitle">Party Name</span>
                                                         <TextField
+                 autoComplete="off"
                                                             required
                                                             id="outlined-number"
                                                             style={{ width: '420px' }}
@@ -650,6 +653,7 @@ const ManageExpense = () => {
                                                 <div className="detail">
                                                     <span className="ExpenseBoxSubTitle">Amount (Excluding GST)</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         id="outlined-number"
                                                         type="number"
@@ -663,6 +667,7 @@ const ManageExpense = () => {
                                                 <div className="detail">
                                                     <span className="ExpenseBoxSubTitle">Total</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         id="outlined-number"
                                                         type="number"
@@ -696,6 +701,7 @@ const ManageExpense = () => {
                                                 <div className="detail">
                                                     <span className="ExpenseBoxSubTitle">Reference No.</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         id="outlined-number"
                                                         type="number"
@@ -712,6 +718,7 @@ const ManageExpense = () => {
                                             <div className="detail">
                                                 <span className="ExpenseBoxSubTitle">Remark</span>
                                                 <TextField
+                 autoComplete="off"
                                                     required
                                                     id="outlined-number"
                                                     style={{ width: '200px' }}
@@ -832,6 +839,7 @@ const ManageExpense = () => {
                                                         <div className="w-full md:w-1/2">
                                                             <span className="ExpenseBoxSubTitle">GST(%)</span>
                                                             <TextField
+                 autoComplete="off"
                                                                 required
 
                                                                 type="number"
@@ -845,6 +853,7 @@ const ManageExpense = () => {
                                                         <div className="w-full md:w-1/2">
                                                             <span className="ExpenseBoxSubTitle">GSTN Number</span>
                                                             <TextField
+                 autoComplete="off"
                                                                 required
                                                                 size="small"
                                                                 value={gstIN}
@@ -856,6 +865,7 @@ const ManageExpense = () => {
                                                     <div className="w-full md:w-1/2">
                                                         <span className="ExpenseBoxSubTitle">Party Name</span>
                                                         <TextField
+                 autoComplete="off"
                                                             required
                                                             size="small"
                                                             value={party}
@@ -871,6 +881,7 @@ const ManageExpense = () => {
                                                     <span className="ExpenseBoxSubTitle">without GST Amount</span>
                                                     {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -882,6 +893,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Total</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -911,6 +923,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Reference No.</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -924,6 +937,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Remark</span>
                                                     <TextField
+                 autoComplete="off"
                                                         required
                                                         size="small"
                                                         value={remark}

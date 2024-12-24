@@ -29,9 +29,7 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
-
 const Addsale = () => {
-    
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
     const inputRef2 = useRef();
@@ -128,7 +126,7 @@ const Addsale = () => {
     const [barcodeItemName, setBarcodeItemName] = useState('');
     const [loyaltyPoints, setLoyaltyPoints] = useState([]);
     const [loyaltyVal, setLoyaltyVal] = useState(0);
-
+    const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
     const [addItemName, setAddItemName] = useState("");
     const [addBarcode, setAddBarcode] = useState("");
     const [addUnit, setAddUnit] = useState("");
@@ -166,13 +164,6 @@ const Addsale = () => {
         lastPurchseHistory()
         setSearchItemID(id)
     }
-    
-     useEffect(()=>{
-        if(openModal){
-            setSelectedOption(null)
-        }
-     },[openModal])
-
     useEffect(() => {
         const discount = (totalAmount * finalDiscount) / 100;
         setDiscountAmount(discount.toFixed(2));
@@ -186,7 +177,7 @@ const Addsale = () => {
             //     calculatedNetAmount = 0;
             // }
 
-            let loyaltyPointsDeduction = loyaltyVal;
+            let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
             let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
             if (calculatedNetAmount < 0) {
@@ -244,22 +235,21 @@ const Addsale = () => {
         if (searchQuery) {
             const customerAllData = async () => {
                 let data = new FormData();
-                const params = {
-                    search: searchQuery ? searchQuery : ""
-                };
+                const name = searchQuery.split(" [")[0];
+                data.append("search", name);
                 setIsLoading(true);
                 try {
                     const response = await axios.post(
-                        "list-customer?",
+                        "list-customer",
                         data,
                         {
-                            params: params,
+                            // params: params,
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }
                     );
-                    console.log('response.data.data :>> ', response.data.data);
+                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -376,27 +366,78 @@ const Addsale = () => {
             }
         }
     };
-    const handleSearch = async () => {
+    // const handleSearch = async (searchItem) => {
+    //     let data = new FormData();
+    //     data.append("search", searchItem);
+    //     try {
+    //         const res = await axios.post("item-search", data, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+
+    //         setItemList(res.data.data.data);
+
+    //         res.data.data.data.forEach(item => {
+    //             if (item.stock === 0) {
+    //                 fetchItemDrugGroup(searchItem);
+    //             }
+    //         });
+
+    //         return res.data.data.data;
+    //     } catch (error) {
+    //         console.error("API error:", error);
+    //     }
+    // };
+
+    const handleSearch = async (searchItem) => {
         let data = new FormData();
         data.append("search", searchItem);
-        const params = {
-            search: searchItem ? searchItem : ''
-        };
         try {
-            const res = await axios.post("item-search?", data, {
-                params: params,
+            const res = await axios.post("item-search", data, {
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
+            });
+
+            const items = res.data.data.data;
+            setItemList(items);
+
+            const allOutOfStock = items.every(item => item.stock === 0);
+
+            if (allOutOfStock) {
+                console.log('Search Item-------');
+                fetchItemDrugGroup(searchItem);
             }
-            ).then((response) => {
-                setItemList(response.data.data.data);
-            })
+
+            return items;
         } catch (error) {
             console.error("API error:", error);
         }
-    }
+    };
+
+    const fetchItemDrugGroup = async (searchItem) => {
+        let data = new FormData();
+        data.append("search", searchItem);
+        try {
+            const res = await axios.post("iteam-drug-group", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (res.data) {
+                console.log('Item Drug Group Data:', res.data.data.data);
+                if (res.data.data) {
+                    const filteredItems = res.data.data.data.filter(item => item.stock > 0);
+                    setItemList(filteredItems);
+                    console.log('Filtered itemList:', filteredItems);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching item-drug-group:", error);
+        }
+    };
 
     const resetAddDialog = () => {
         setOpenAddPopUp(false);
@@ -409,21 +450,18 @@ const Addsale = () => {
 
     const customerAllData = async (searchQuery) => {
         let data = new FormData();
-        const params = {
-            search: searchQuery ? searchQuery : ""
-        }
+        data.append("search", searchQuery);
         setIsLoading(true);
         try {
-            await axios.post("list-customer?", data, {
-                params: params,
+            const response = await axios.post("list-customer", data, {
+                // params: params,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
-            ).then((response) => {
-                setCustomerDetails(response.data.data)
-                setIsLoading(false);
-            })
+            );
+            setCustomerDetails(response.data.data)
+            setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -458,34 +496,18 @@ const Addsale = () => {
 
     };
 
-
-    const fetchLoyaltyPoints = async (customerId) => {
-        let data = new FormData();
-        const params = { customer_id: customerId };
-
-        try {
-            const response = await axios.get('loyalti-point-list', data, {
-                params: params,
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            // Assuming response.data.data contains the loyalty points
-            setLoyaltyPoints(response.data.data);
-            if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-              }      
-        } catch (error) {
-            console.error('Error fetching loyalty points:', error);
-        }
-    };
-
     const handleCustomerOption = (event, newValue) => {
         setCustomer(newValue);
         setUnsavedItems(true);
+
         if (newValue) {
-            const customerId = newValue.id; // Assuming `newValue` has the customer object
-            fetchLoyaltyPoints(customerId); // Fetch loyalty points for the selected customer
+            const points = newValue.roylti_point || 0;
+            setLoyaltyPoints(points);
+
+            setMaxLoyaltyPoints(points);
         } else {
+            setLoyaltyPoints(0);
+            setMaxLoyaltyPoints(0);
             setLoyaltyVal(0);
         }
     };
@@ -528,7 +550,7 @@ const Addsale = () => {
         setMaxQty(event.stock);
         setBase(event.mrp);
         setGst(event.gst_name);
-        setQty(event.qty);
+        // setQty(event.qty);
         setLoc(event.location)
     }
 
@@ -696,7 +718,7 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                console.log('response-------- :>> ', response.data.data.sales_item);
+                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
@@ -906,7 +928,7 @@ const Addsale = () => {
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
-        data.append("roylti_point", loyaltyVal)
+        data.append("roylti_point", loyaltyVal || loyaltyPoints)
 
         try {
             const response = await axios.post("create-sales", data, {
@@ -922,6 +944,15 @@ const Addsale = () => {
                 setTimeout(() => {
                     history.push('/salelist');
                 }, 2000);
+
+                const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) === 1);
+
+                if (lowStockItems.length > 0) {
+                    bulkOrderData();
+                    console.log('Low stock items:', lowStockItems);
+                }
+
+
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
@@ -959,7 +990,6 @@ const Addsale = () => {
 
     const handleNavigation = (path) => {
         setOpenModal(true);
-        setSelectedOption(null);
         // setOpenCustomer(false);
         // setOpenAddPopUp(false);
         setNextPath(path);
@@ -991,7 +1021,7 @@ const Addsale = () => {
 
             setOpenModal(false);
             setUnsavedItems(false);
-            localStorage.removeItem("RandomNumber");
+            localStorage.removeItem('RandomNumber');
 
             // history.replace(nextPath);
         } catch (error) {
@@ -1082,20 +1112,34 @@ const Addsale = () => {
             localStorage.setItem("RandomNumber", number);
         } else {
             return;
-        } 
+        }
     };
 
-    const addItemValidation = () => {
+    const addItemValidation = async () => {
         setUnsavedItems(true);
+        const newErrors = {};
         if (!mrp) {
-            toast.error('Please Select any Item Name')
-        } else {
-            addSaleItem();
+            newErrors.mrp = "Please Select any Item Name";
+            toast.error(newErrors.mrp);
+        }
+        if (!qty || qty <= 0) {
+            // Notify the user to enter a valid quantity
+            newErrors.qty = "Please enter a valid quantity.";
+            toast.error(newErrors.qty);
+        }
+
+        else {
+            // addSaleItem();
             setIsVisible(false);
             setSearchItem('')
             setBarcodeItemName('')
             setSelectedOption(null);
         }
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+            await addSaleItem();
+        }
+        return isValid;
     }
 
     const addSaleItem = async () => {
@@ -1112,12 +1156,12 @@ const Addsale = () => {
                 data.append('item_id', value && value.id ? value.id : '')
             }
         }
-
         // data.append("id", selectedEditItemId ? selectedEditItemId : '')
         data.append("user_id", userId);
         // data.append("item_id", barcode ? itemId : value?.id || '');
         data.append("id", selectedEditItemId || '');
         data.append("qty", qty || '')
+        data.append("max_qty", maxQty || '')
         data.append("exp", expiryDate ? expiryDate : '')
         data.append('gst', gst ? gst : "")
         data.append("mrp", mrp ? mrp : '')
@@ -1129,14 +1173,17 @@ const Addsale = () => {
         data.append('amt', itemAmount ? itemAmount : '')
         data.append('net_rate', itemAmount ? itemAmount : '')
         data.append('total_amount', totalAmount)
-        data.append("order", order ? order : '')
         data.append("ptr", ptr ? ptr : '')
+        data.append("order", order ? order : '');
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
 
         const params = {
             id: selectedEditItemId || ''
         };
+
+        // const currentQty = !isEditMode ? qty : 0;
+        // const quantityDifference = maxQty - currentQty;
 
         try {
             const response = isEditMode
@@ -1166,22 +1213,52 @@ const Addsale = () => {
             setLoc('')
             setOrder('')
             setIsEditMode(false);
-            setSelectedOption(null);
+
+            toast.success(response.data.message);
+
+
+            // if (quantityDifference === 1) {
+            //     bulkOrderData();
+            // }
+
         }
         catch (e) {
         }
     }
 
-    const handleQtyChange = (e) => {
-        console.log('maxQt***', maxQty);
+    const bulkOrderData = async () => {
+        let data = new FormData();
 
+        data.append("item_id", value.id ? value.id : '');
+
+        try {
+            const response = await axios.post("online-bulck-order", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            toast.success(response.data.message);
+            // handleSearch();
+
+        } catch (error) {
+            setIsLoading(false);
+            console.error("API error:", error);
+            toast.error("Failed to place bulk order.");
+        }
+    };
+
+    const handleQtyChange = (e) => {
 
         const enteredValue = Number(e.target.value, 10);
         if (enteredValue <= maxQty) {
-            console.log('if***');
             setQty(enteredValue);
+            // if (enteredValue === 1) {
+            //     setOrder('O');
+            // } else {
+            //     setOrder('');
+            // }
         } else {
-            console.log('else***');
             toast.error("can't add qty more than stock")
             setQty(maxQty);
         }
@@ -1438,6 +1515,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -1500,6 +1578,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -1544,20 +1623,20 @@ const Addsale = () => {
                                                 width: '100%',
                                                 background: '#ceecfd',
                                                 borderRadius: '7px',
-                                                zIndex:1,
                                             }}
                                         >
                                             <Autocomplete
                                                 value={selectedOption}
                                                 blurOnSelect
                                                 size="small"
-                                                sx={{ fontSize: "1.5rem" ,zIndex:1}}
+                                                sx={{ fontSize: "1.5rem" }}
                                                 onChange={handleOptionChange}
                                                 onInputChange={handleInputChange}
                                                 options={itemList}
                                                 getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                filterOptions={(option, state) => { return itemList }}
                                                 renderOption={(props, option) => (
-                                                    <ListItem {...props}>
+                                                    <ListItem {...props} key={option.id}>
                                                         <ListItemText
                                                             primary={`${option.iteam_name}, (${option.company})`}
                                                             // secondary={
@@ -1576,6 +1655,7 @@ const Addsale = () => {
                                                 )}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         variant="outlined"
                                                         id="searchResults"
@@ -1717,6 +1797,7 @@ const Addsale = () => {
                                                 <td>
 
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         type="number"
@@ -1730,6 +1811,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '110px' }}
                                                         size="small"
@@ -1740,6 +1822,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         size="small"
@@ -1753,6 +1836,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         disabled
                                                         id="outlined-number"
                                                         type="number"
@@ -1766,6 +1850,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '120px' }}
@@ -1778,6 +1863,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         disabled
@@ -1791,6 +1877,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '70px' }}
@@ -1810,6 +1897,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
@@ -1825,6 +1913,7 @@ const Addsale = () => {
 
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         inputRef={inputRef9}
@@ -1840,6 +1929,7 @@ const Addsale = () => {
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         size="small"
@@ -1858,7 +1948,7 @@ const Addsale = () => {
                                                 <td colSpan={9}></td>
 
                                                 <td >
-                                                    <Button variant="contained" color="success" marginRight="20px" onClick={addItemValidation}><ControlPointIcon />Add</Button>
+                                                    <Button className="gap-2" variant="contained" color="success" marginRight="20px" onClick={addItemValidation} style={{ backgroundColor: 'var(--color1)' }}><ControlPointIcon />Add</Button>
                                                 </td>
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (
@@ -2004,8 +2094,21 @@ const Addsale = () => {
 
                                         <div className="mt-1">
                                             <Input type="number"
-                                                value={loyaltyVal}
-                                                onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                value={loyaltyVal || loyaltyPoints}
+                                                // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+
+                                                    const numericValue = Math.floor(Number(value));
+
+                                                    if (numericValue >= 0 && numericValue <= maxLoyaltyPoints) {
+                                                        setLoyaltyVal(numericValue);
+                                                        setLoyaltyPoints(numericValue);
+                                                    } else if (numericValue < 0) {
+                                                        setLoyaltyVal(0);
+                                                        setLoyaltyPoints(0);
+                                                    }
+                                                }}
                                                 onKeyPress={(e) => {
                                                     const value = e.target.value;
                                                     const isMinusKey = e.key === '-';
@@ -2067,6 +2170,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={doctorName}
@@ -2079,6 +2183,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={clinic}
@@ -2120,6 +2225,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={customerName}
@@ -2132,6 +2238,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={mobileNo}
@@ -2235,6 +2342,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Item Name</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 size="small"
                                                 sx={{ minWidth: "150px" }}
@@ -2246,6 +2354,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label  secondary">Barcode</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2258,6 +2367,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Unit</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2270,6 +2380,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Pack</label>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 size="small"
@@ -2354,7 +2465,7 @@ const Addsale = () => {
             >
                 <div />
 
-                <div className="w-full max-w-md bg-white shadow-lg z-1 rounded-md p-4 relative ">
+                <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
                     <div className="my-4 logout-icon">
                         <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
                         <h4 className="text-lg font-semibold mt-6 text-center" style={{ textTransform: "none" }}>Are you sure you want to leave this page ?</h4>
@@ -2364,7 +2475,8 @@ const Addsale = () => {
                             type="submit"
                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
                             onClick={handleLeavePage}
-                        >Yes
+                        >
+                            Yes
                         </button>
                         <button
                             type="button"

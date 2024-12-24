@@ -936,9 +936,8 @@ const EditPurchaseBill = () => {
   const handleOptionChange = (event, newValue) => {
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName.toUpperCase());
-    setAutocompleteDisabled(true);
-    handleSearch(itemName.toUpperCase());
+    setSearchItem(itemName);
+    handleSearch(itemName);
   };
 
   const handlePTR = (e) => {
@@ -1278,7 +1277,8 @@ const EditPurchaseBill = () => {
                     onChange={(e, value) => setDistributor(value)}
                     options={distributorList}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                   />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1289,6 +1289,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Sr No.</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     size="small"
                     style={{ width: "200px" }}
@@ -1302,6 +1303,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Bill No. / Order No.</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     disabled
                     size="small"
@@ -1381,7 +1383,8 @@ const EditPurchaseBill = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" autoFocus />
+                    <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Item Name" autoFocus />
                   )}
                 />
 
@@ -1421,6 +1424,7 @@ const EditPurchaseBill = () => {
 
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             inputRef={inputRef1}
@@ -1444,6 +1448,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef2}
                             onKeyDown={handleKeyDown}
@@ -1460,6 +1465,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             size="small"
                             sx={{ width: "80px" }}
@@ -1478,6 +1484,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1503,6 +1510,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "80px" }}
@@ -1526,6 +1534,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             size="small"
                             type="number"
@@ -1549,6 +1558,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1568,6 +1578,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "60px" }}
                             size="small"
@@ -1593,6 +1604,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "90px" }}
                             size="small"
@@ -1609,6 +1621,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             size="small"
@@ -1651,6 +1664,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef12}
                             onKeyDown={handleKeyDown}
@@ -1666,6 +1680,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1678,6 +1693,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1703,6 +1719,7 @@ const EditPurchaseBill = () => {
                       </tr>
                       <tr>
                         <td><TextField
+                 autoComplete="off"
                           id="outlined-number"
                           type="number"
                           size="small"

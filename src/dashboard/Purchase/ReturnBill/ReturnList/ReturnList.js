@@ -296,6 +296,7 @@ const ReturnList = () => {
                                                         onClick={() => sortByColumn(column.id)}
                                                     />
                                                     <TextField
+                 autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"

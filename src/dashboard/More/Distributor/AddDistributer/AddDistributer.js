@@ -1,61 +1,105 @@
 import React, { useState, useRef } from 'react'
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+
+import { TextField } from "@mui/material";
+
 import axios from 'axios';
 
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Header from '../../../Header';
 import { toast, ToastContainer } from 'react-toastify';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+import { Padding } from '@mui/icons-material';
 
-const validate = Yup.object().shape({
-    gst_number: Yup.string()
-        .required("Gst Number  is required"),
-    distributor_name: Yup.string().required("Distributor Name is required"),
-    // email: Yup.string().email("Invalid email").required("Email is Required"),
-    mobile_no: Yup.string()
-        .min(10, "Too Short!")
-        .max(10, "Too Long!")
-        .required("Mobile No is Required"),
-    // address: Yup.string().required("Address is required"),
-    area: Yup.string().required("Area is required"),
-    // pincode: Yup.string()
-    //     .min(6, "Too Short!")
-    //     .max(6, "Too Long!")
-    //     .required("Pincode  is required"),
-    // area: Yup.string().required("Area is required"),
-    // pincode: Yup.string()
-    //     .min(6, "Too Short!")
-    //     .max(6, "Too Long!"),
-    // .required("Pincode  is required"),
-    // bank_name: Yup.string()
-    //     .min(2, "Too Short!")
-    //     .max(50, "Too Long!")
-    //     .required("Bank Name is required"),
-    // account_no: Yup.string().required("Account No is required"),
-    // ifsc_code: Yup.string().required("IFSC code is required"),
-    // food_licence_no: Yup.string().required("Food Licence No is required"),
-    // distributor_durg_distributor: Yup.string().required("Distributor Durg Distributor is required"),
-    payment_due_days: Yup.string().required("Payment Due Days is required"),
 
-});
 const AddDistributer = () => {
     // const [isLoading, setIsLoading] = useState(true);
     const history = useHistory()
     const [error, setError] = useState(null);
 
-    const ErrorMessageComponent = ({ children }) => {
-        return <p className="text-red-500 mt-2">{children}</p>;
-    };
-    const [apiError, setApiError] = useState(null);
-    const formRef = useRef("");
-    const handleReset = () => {
-        if (formRef.current) {
-            formRef.current.reset();
+
+
+
+    const [GSTNumber, setGSTNumber] = useState('');
+    const [distributorName, setiDstributorname] = useState('');
+    const [email, setEmail] = useState('');
+    const [mobileno, setMobileno] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [state, setState] = useState('');
+    const [address, setAddress] = useState('');
+    const [area, setArea] = useState('');
+    const [pincode, setPincode] = useState('');
+    const [bankName, setBankName] = useState('');
+    const [accountNo, setAccountNo] = useState('');
+    const [ifsc, setIfsc] = useState('');
+    const [foodLicence, setFoodLicence] = useState('');
+    const [durgLicence, setDurgLicence] = useState('');
+    const [dueDays, setDueDays] = useState('');
+    const [isEditMode, setIsEditMode] = useState('');
+
+    const handleSubmit = () => {
+        if (isEditMode == false) {
+            //  Add Customer 
+            const newErrors = {};
+            if (!distributorName) newErrors.customer = 'Customer is required';
+            if (!GSTNumber) newErrors.GSTNumber = 'GST Number is required';
+
+            if (!mobileno) {
+                newErrors.mobileno = 'Mobile No is required';
+            } else if (!/^\d{10}$/.test(mobileno)) {
+                newErrors.mobileno = 'Mobile number must be 10 digits';
+            }
+
+            setError(newErrors);
+            const isValid = Object.keys(newErrors).length === 0;
+            if (isValid) {
+                AddDistributor();
+            }
         }
+
     };
 
-  
+    const AddDistributor = async () => {
+        const token = localStorage.getItem("token");
+        const data = new FormData()
+        data.append("gst_number", GSTNumber)
+        data.append("distributor_name", distributorName)
+        data.append("email", email)
+        data.append("mobile_no", mobileno)
+        data.append("whatsapp", whatsapp)
+        data.append("state", state)
+        data.append("address", address)
+        data.append("area", area)
+        data.append("pincode", pincode)
+        data.append("bank_name", bankName)
+        data.append("account_no", accountNo)
+        data.append("ifsc_code", ifsc)
+        data.append("food_licence_no", foodLicence)
+        data.append("distributor_durg_distributor", durgLicence)
+        data.append("payment_due_days", dueDays)
+
+        try {
+            await axios.post("create-distributer", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            ).then((response) => {
+
+                toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
+            })
+        } catch (error) {
+            // setIsLoading(false);
+            if (error.response.data.status == 400) {
+
+                toast.error(error.response.data.message)
+            }
+            // console.error("API error:", error);
+        }
+    }
 
     return (
         <div>
@@ -72,74 +116,12 @@ const AddDistributer = () => {
                 draggable
                 pauseOnHover
             />
-            <Formik
-                initialValues={{
-                    gst_number: "",
-                    distributor_name: "",
-                    email: "",
-                    mobile_no: "",
-                    whatsapp: "",
-                    address: "",
-                    area: "",
-                    pincode: "",
-                    bank_name: "",
-                    account_no: "",
-                    ifsc_code: "",
-                    state: "",
-                    food_licence_no: "",
-                    distributor_durg_distributor: "",
-                    payment_due_days: 15
-                }}
-                validationSchema={validate}
-                onSubmit={async (values, action) => {
-                    const token = localStorage.getItem("token");
-                    const data = new FormData()
-                    data.append("gst_number", values.gst_number)
-                    data.append("distributor_name", values.distributor_name)
-                    data.append("email", values.email)
-                    data.append("mobile_no", values.mobile_no)
-                    data.append("whatsapp", values.whatsapp)
-                    data.append("state", values.state)
-                    data.append("address", values.address)
-                    data.append("area", values.area)
-                    data.append("pincode", values.pincode)
-                    data.append("bank_name", values.bank_name)
-                    data.append("account_no", values.account_no)
-                    data.append("ifsc_code", values.ifsc_code)
-                    data.append("food_licence_no", values.food_licence_no)
-                    data.append("distributor_durg_distributor", values.distributor_durg_distributor)
-                    data.append("payment_due_days", values.payment_due_days)
-                    try {
-                        const response = await axios.post(
-                            "create-distributer",
-                            data,
-                            {
-                                headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    "Content-Type": "multipart/form-data",
-                                },
-                            }
-                        ).then((response) => {
-                            //console.log("response===>", response.data);
-                            toast.success(response.data.message);
-                            setTimeout(() => {
-                                history.push('/more/DistributorList');
-                            }, 2000);
-                        })
-                    } catch (error) {
-                        if (error.response && (error.response.status === 404 || error.response.status === 400)) {
-                            toast.error(error.response.data.message);
+            <div
 
-                        } else {
-                            toast.error('An error occurred');
-                            setApiError('An error occurred');
-                            //console.log('Error:', error);
-                        }
-                    }
-                }}
+
             >
-                <Form ref={formRef}>
-                    <div className=' p-12 rounded-md shadow-md md:p-12 lg:px-16 h-full'>
+                <div>
+                    <div className=' rounded-md shadow-md md:p-12 lg:px-16 h-full'>
                         <div className='mb-12 flex justify-between'>
                             <h1 className="text-2xl font-bold primary">Add New Distributor</h1>
                             <h1 className="text-xl font-bold primary cursor-pointer" onClick={() => history.push('/more/DistributorList')}> <ReplyAllIcon className='mb-2 mr-2' />Distributor List</h1>
@@ -148,19 +130,31 @@ const AddDistributer = () => {
                         <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                             <div >
                                 <label
-                                    className="block text-gray-700 font-bold mb-2"
+                                    className="block  text-gray-700 font-bold mb-2"
                                     htmlFor="gst_number"
                                 >
                                     Distributor GST/IN Number
                                 </label>
 
                                 <div class="relative w-full">
-                                    <Field
-                                        className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline uppercase"
-                                        name='gst_number'
+
+                                    <TextField
+                 autoComplete="off"
+                                        sx={{
+                                            '.MuiInputBase-input': {
+                                                padding: '10px 12px', // Remove padding from the input field
+                                            }
+
+                                        }}
+                                        className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                                        name="gst_number"
                                         type="text"
-                                      
+                                        value={GSTNumber}
+                                        onChange={(e) => setGSTNumber(e.target.value)}
+
+
                                     />
+
 
                                     <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">
                                         <span>Change</span>
@@ -168,10 +162,7 @@ const AddDistributer = () => {
                                     </div>
 
                                 </div>
-                                <ErrorMessage
-                                    name="gst_number"
-                                    component={ErrorMessageComponent}
-                                />
+
                             </div>
                             <div>
                                 <label
@@ -180,12 +171,21 @@ const AddDistributer = () => {
                                 >
                                     Distributor Name
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline uppercase"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    value={distributorName}
+                                    className="appearance-none border rounded-lg px-0 py-0 w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                                     name="distributor_name"
                                     type="text"
+                                    onChange={(e) => setiDstributorname(e.target.value)}
                                 />
-                                <ErrorMessage name="distributor_name" component={ErrorMessageComponent} />
+                                <div name="distributor_name" />
                             </div>
                             <div>
                                 <label
@@ -194,21 +194,30 @@ const AddDistributer = () => {
                                 >
                                     Mobile No.
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name='mobile_no'
                                     type="number"
+                                    value={mobileno}
+                                    onChange={(e) => setMobileno(e.target.value)}
                                 />
-                                <ErrorMessage
+                                <div
                                     name="mobile_no"
-                                    component={ErrorMessageComponent}
+
                                 />
                             </div>
-                            
+
 
                         </div>
                         <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-                            
+
                             {/* <div>
                                 <label
                                     className="block text-gray-700 font-bold mb-2"
@@ -216,12 +225,19 @@ const AddDistributer = () => {
                                 >
                                     Phone
                                 </label>
-                                <Field
+                                <TextField
+                 autoComplete="off" autoComplete="off"
+sx={{
+                                            '.MuiInputBase-input': {
+                                                padding: '10px 12px' , // Remove padding from the input field
+                                            }
+                                          
+                                        }}
                                     className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
                                     name="phone"
                                     type="number"
                                 />
-                                <ErrorMessage name="phone" component={ErrorMessageComponent} />
+                                <div name="phone" />
                             </div> */}
                             <div>
                                 <label
@@ -230,12 +246,21 @@ const AddDistributer = () => {
                                 >
                                     Email ID
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg lowercase w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg lowercase w-full leading-tight focus:outline-none focus:shadow-outline"
                                     name="email"
                                     type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <ErrorMessage name="email" component={ErrorMessageComponent} />
+                                <div name="email" />
                             </div>
                             <div>
                                 <label
@@ -244,10 +269,19 @@ const AddDistributer = () => {
                                 >
                                     Whatsapp No.
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="whatsapp"
                                     type="number"
+                                    value={whatsapp}
+                                    onChange={(e) => { setWhatsapp(e.target.value) }}
                                 />
                             </div>
                             <div>
@@ -257,14 +291,23 @@ const AddDistributer = () => {
                                 >
                                     state
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="state"
                                     type="number"
+                                    value={state}
+                                    onChange={(e) => setState(e.target.value)}
                                 />
-                                  <ErrorMessage
+                                <div
                                     name="state"
-                                    component={ErrorMessageComponent}
+
                                 />
 
                             </div>
@@ -278,14 +321,23 @@ const AddDistributer = () => {
                                 >
                                     Address
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name='address'
                                     type="text"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
                                 />
-                                <ErrorMessage
+                                <div
                                     name="address"
-                                    component={ErrorMessageComponent}
+
                                 />
                             </div>
                             <div>
@@ -295,12 +347,21 @@ const AddDistributer = () => {
                                 >
                                     Area
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="area"
                                     type="text"
+                                    value={area}
+                                    onChange={(e) => setArea(e.target.value)}
                                 />
-                                <ErrorMessage name="area" component={ErrorMessageComponent} />
+                                <div name="area" />
                             </div>
                             <div>
                                 <label
@@ -309,12 +370,21 @@ const AddDistributer = () => {
                                 >
                                     Pincode
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="pincode"
                                     type="number"
+                                    value={pincode}
+                                    onChange={(e) => setPincode(e.target.value)}
                                 />
-                                <ErrorMessage name="pincode" component={ErrorMessageComponent} />
+                                <div name="pincode" />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
@@ -325,12 +395,24 @@ const AddDistributer = () => {
                                 >
                                     Distributor Drug License No.
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline uppercase"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                                     name="distributor_durg_distributor"
                                     type="text"
+                                    value={durgLicence}
+                                    onChange={(e) => {
+                                        const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                        setDurgLicence(value);
+                                    }}
                                 />
-                                <ErrorMessage name="distributor_durg_distributor" component={ErrorMessageComponent} />
+                                <div name="distributor_durg_distributor" />
                             </div>
                             <div>
                                 <label
@@ -339,14 +421,23 @@ const AddDistributer = () => {
                                 >
                                     Food Licence No.
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                                     name='food_licence_no'
                                     type="text"
+                                    value={foodLicence}
+                                    onChange={(e) => setFoodLicence(e.target.value)}
                                 />
-                                <ErrorMessage
+                                <div
                                     name="food_licence_no"
-                                    component={ErrorMessageComponent}
+
                                 />
                             </div>
                             <div>
@@ -356,12 +447,21 @@ const AddDistributer = () => {
                                 >
                                     Credit Due Days
                                 </label>
-                                <Field
-                                    className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                <TextField
+                 autoComplete="off"
+                                    sx={{
+                                        '.MuiInputBase-input': {
+                                            padding: '10px 12px', // Remove padding from the input field
+                                        }
+
+                                    }}
+                                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="payment_due_days"
                                     type="text"
+                                    value={dueDays}
+                                    onChange={(e) => setDueDays(e.target.value)}
                                 />
-                                <ErrorMessage name="payment_due_days" component={ErrorMessageComponent} />
+                                <div name="payment_due_days" />
                             </div>
 
                         </div>
@@ -380,10 +480,19 @@ const AddDistributer = () => {
 
 
                                         <div class="relative w-full">
-                                            <Field
-                                                className="appearance-none border rounded-lg w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                                            <TextField
+                 autoComplete="off"
+                                                sx={{
+                                                    '.MuiInputBase-input': {
+                                                        padding: '10px 12px', // Remove padding from the input field
+                                                    }
+
+                                                }}
+                                                className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                                                 name='bank_name'
                                                 type="text"
+                                                value={bankName}
+                                                onChange={(e) => setBankName(e.target.value)}
                                             />
 
                                             <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white  border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg rounded-e-lg border  cursor-pointer">
@@ -393,9 +502,9 @@ const AddDistributer = () => {
                                             </div>
 
                                         </div>
-                                        <ErrorMessage
+                                        <div
                                             name="bank_name"
-                                            component={ErrorMessageComponent}
+
                                         />
                                     </div>
                                     <div>
@@ -405,12 +514,21 @@ const AddDistributer = () => {
                                         >
                                             Account No.
                                         </label>
-                                        <Field
-                                            className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline"
+                                        <TextField
+                 autoComplete="off"
+                                            sx={{
+                                                '.MuiInputBase-input': {
+                                                    padding: '10px 12px', // Remove padding from the input field
+                                                }
+
+                                            }}
+                                            className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                             name="account_no"
                                             type="number"
+                                            value={accountNo}
+                                            onChange={(e) => setAccountNo(e.target.value)}
                                         />
-                                        <ErrorMessage name="account_no" component={ErrorMessageComponent} />
+                                        <div name="account_no" />
                                     </div>
                                     <div>
                                         <label
@@ -419,12 +537,21 @@ const AddDistributer = () => {
                                         >
                                             IFSC Code
                                         </label>
-                                        <Field
-                                            className="appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none focus:shadow-outline uppercase"
+                                        <TextField
+                 autoComplete="off"
+                                            sx={{
+                                                '.MuiInputBase-input': {
+                                                    padding: '10px 12px', // Remove padding from the input field
+                                                }
+
+                                            }}
+                                            className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline uppercase"
                                             name="ifsc_code"
                                             type="text"
+                                            value={ifsc}
+                                            onChange={(e) => setIfsc(e.target.value)}
                                         />
-                                        <ErrorMessage name="ifsc_code" component={ErrorMessageComponent} />
+                                        <div name="ifsc_code" />
                                     </div>
 
                                 </div>
@@ -433,13 +560,14 @@ const AddDistributer = () => {
                                     <button
                                         type="submit"
                                         className="py-2 min-w-16 px-5 h-10  text-white rounded-lg primary-bg ml-2"
+                                        onClick={AddDistributor}
                                     >
                                         Add
                                     </button>
                                     <button
                                         type="button"
                                         className="py-2 min-w-16 px-5 h-10 text-white rounded-lg bg-red-600 ml-2"
-                                        onClick={handleReset}
+
                                     >
                                         Cancel
                                     </button>
@@ -447,8 +575,8 @@ const AddDistributer = () => {
                             </div>
                         </div>
                     </div>
-                </Form>
-            </Formik>
+                </div>
+            </div>
         </div>
     )
 }

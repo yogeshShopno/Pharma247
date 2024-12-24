@@ -13,8 +13,11 @@ import Loader from "../../componets/loader/Loader";
 import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { toast, ToastContainer } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const OrderList = () => {
+    const history = useHistory()
+
     const rowsPerPage = 10;
     const OnlineOrdercolumns = [
         { id: 'company_name', label: 'Company Name', minWidth: 170, height: 100 },
@@ -100,6 +103,10 @@ const OrderList = () => {
                 setOpenAddPopUpPlaceOrder(false)
                 setItems([])
                 setStatusName({ id: 2, name: 'Order' })
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -127,6 +134,10 @@ const OrderList = () => {
                 setOnlineOrder(response.data.data)
                 setItemName(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -142,6 +153,10 @@ const OrderList = () => {
             }).then((response) => {
                 localStorage.setItem("distributor", response.data.data.distributor)
                 setDistributorList(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             //console.log("API Error:", error);
@@ -156,6 +171,10 @@ const OrderList = () => {
                 },
             }).then((response) => {
                 setStatusOpation(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             //console.log("API Error:", error);
@@ -178,6 +197,10 @@ const OrderList = () => {
             ).then((response) => {
                 setPurchaseHistory(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -302,7 +325,7 @@ const OrderList = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Button variant="contained" style={{ display: 'flex', gap: '0px',background:"var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" /> Place Order</Button>
+                                <Button variant="contained" style={{ display: 'flex', gap: '0px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" /> Place Order</Button>
                             </div>
                         </div>
 
@@ -311,6 +334,7 @@ const OrderList = () => {
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Distributor</span>
                                     {/* <TextField
+                 autoComplete="off"
                                         id="outlined-basic"
                                         value={distributor}
                                         onChange={(e) => setDistributor(e.target.value)}
@@ -332,7 +356,7 @@ const OrderList = () => {
                                         sx={{
                                             width: 'full',
                                             '& .MuiInputBase-root': {
-                                                width: 220,
+                                                width: 350,
                                                 height: 45,
                                                 fontSize: '1.10rem',
                                             },
@@ -346,6 +370,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                                            autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
                                         />}
@@ -354,6 +379,7 @@ const OrderList = () => {
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Company Name</span>
                                     <TextField
+                                        autoComplete="off"
                                         id="outlined-basic"
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
@@ -402,6 +428,7 @@ const OrderList = () => {
                                                         <span>{column.label}</span>
                                                         <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
+                                                            autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"
@@ -594,13 +621,13 @@ const OrderList = () => {
                                                 }}
                                             >
                                                 <MenuItem key="select-all" value="select-all">
-                                                    <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                                                    <Checkbox
+                                                        sx={{
+                                                            color: "var(--color2)", // Color for unchecked checkboxes
+                                                            '&.Mui-checked': {
+                                                                color: "var(--color1)", // Color for checked checkboxes
+                                                            },
+                                                        }}
                                                         checked={items.length === onlineOrder.length}
                                                         indeterminate={items.length > 0 && items.length < onlineOrder.length}
                                                     />
@@ -608,13 +635,13 @@ sx={{
                                                 </MenuItem>
                                                 {onlineOrder?.map((option) => (
                                                     <MenuItem key={option.item_id} value={option.item_id}>
-                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={items.indexOf(option.item_id) > -1} />
+                                                        <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }} checked={items.indexOf(option.item_id) > -1} />
                                                         <ListItemText primary={option.iteam_name} />
                                                     </MenuItem>
                                                 ))}
@@ -644,10 +671,10 @@ sx={{
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button  autoFocus variant="contained" className="p-5" style={{ textTransform: 'none',backgroundColor:"#3f6212" }} onClick={PlaceOrder} >
+                                <Button autoFocus variant="contained" className="p-5" style={{ textTransform: 'none', backgroundColor: "#3f6212" }} onClick={PlaceOrder} >
                                     Place Order
                                 </Button>
-                                <Button autoFocus variant="contained" style={{ textTransform: 'none',backgroundColor:"#F31C1C" }} onClick={resetAddDialog}  >
+                                <Button autoFocus variant="contained" style={{ textTransform: 'none', backgroundColor: "#F31C1C" }} onClick={resetAddDialog}  >
                                     Cancel
                                 </Button>
                             </DialogActions>

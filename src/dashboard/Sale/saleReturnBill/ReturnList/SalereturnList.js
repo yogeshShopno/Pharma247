@@ -216,8 +216,8 @@ const SalereturnList = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" , alignItems: "center"}} >
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' , alignItems: "center"}}>
+                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} >
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap" }} >Sales Return</span>
                             {hasPermission(permissions, "sale return bill create") && (<>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
@@ -247,6 +247,7 @@ const SalereturnList = () => {
                                                         <div className='headerStyle'>
                                                             <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                             <TextField
+                                                                autoComplete="off"
                                                                 label='Type Here'
                                                                 id="filled-basic"
                                                                 size="small"

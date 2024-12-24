@@ -310,12 +310,12 @@ const SignUp = () => {
                   </div>
                 )}
                 {!showCode && (
-                  <label htmlFor="referral_code" onClick={() => setShowCode(true)} className="text-x text-gray-500 hover:text-blue-900 text-end w-full mt-2">
+                  <label htmlFor="referral_code" onClick={() => setShowCode(true)} className="text-x secondary  text-end w-full mt-2">
                     Have a Referral code?
                   </label>
                 )}
                 <div className="mt-4">
-                  <Button variant="contained" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                  <Button variant="contained"  style={{backgroundColor:"var(--color1)"}} className="text-white font-bold py-2 px-4 w-full rounded "
                     onClick={handleRegister}
                   >
                     Next
@@ -328,7 +328,7 @@ const SignUp = () => {
                   >
                     Already have an account?
                     <Link to="/">
-                      <span className="text-blue-700"> Login</span></Link>
+                      <span className="secondary"> Login</span></Link>
                   </a>
                 </div>
               </>

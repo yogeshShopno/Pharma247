@@ -15,8 +15,11 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { FaCheckCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify"
 import usePermissions, { hasPermission } from "../../../componets/permission"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const StaffMember = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [header, setHeader] = useState('');
@@ -219,6 +222,10 @@ const StaffMember = () => {
                 setOpenAddPopUp(false)
                 toast.success(response.data.message);
                 setErrors({});
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
@@ -262,6 +269,10 @@ const StaffMember = () => {
                 setIsEditMode(false)
                 setErrors({});
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -303,6 +314,10 @@ const StaffMember = () => {
                 // listOfRolePermission();
                 staffList()
                 // setManageStaffRoleData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -371,7 +386,8 @@ const StaffMember = () => {
                                         })}
                                         <td className="flex justify-center">
                                             {hasPermission(permissions, "staff members edit") &&
-                                                <BorderColorIcon className="primary mr-3" onClick={() => handelEditOpen(item)} />}
+                                                <BorderColorIcon
+                                                    style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />}
                                             {hasPermission(permissions, "staff members activation") && (
                                                 <Tooltip title="Deactivate" className="">
                                                     {item.status == 'Active' ?
@@ -404,7 +420,8 @@ const StaffMember = () => {
                             <div className="flex gap-6">
                                 <div >
                                     <span className="flex primary mb-2 font-medium">Full Name</span>
-                                    <TextField id="standard-basic"
+                                    <TextField
+                 autoComplete="off" autoComplete="off"id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
                                         label="Full Name" variant="outlined"
@@ -415,7 +432,8 @@ const StaffMember = () => {
                                 </div>
                                 <div >
                                     <span className="flex primary mb-2 font-medium">Mobile No</span>
-                                    <TextField id="standard-basic"
+                                    <TextField
+                 autoComplete="off" autoComplete="off"id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
                                         label="Mobile No" variant="outlined"
@@ -452,7 +470,8 @@ const StaffMember = () => {
                                 </div>
                                 <div >
                                     <span className="flex primary mb-2 font-medium">Email ID</span>
-                                    <TextField id="standard-basic"
+                                    <TextField
+                 autoComplete="off" autoComplete="off"id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
                                         label="Email ID" variant="outlined"

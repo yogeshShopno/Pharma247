@@ -44,7 +44,6 @@ const ReportsMain = () => {
         { name: 'GSTR-2', path: '/Reports/gst-GSTR2', icon: GstIcon },
         { name: 'GSTR-3B', path: '/Reports/gst-GSTR-3B', icon: GstIcon },
 
-
         { name: 'HSN wise GST', path: '/Reports/gst-hsn-wise', icon: GstIcon },
         // { name: 'Composition GST Report', path: '/Report/margin-report/item-wise', icon: GstIcon },
     ];
@@ -127,7 +126,7 @@ const ReportsMain = () => {
                     onClick={() => toggleDrawer(false)}
                 >
                     <Box>
-                        <h1 className="text-2xl flex items-center justify-start font-semibold p-2 mb-4" style={{ color: "rgb(4, 76, 157)" }}>Reports
+                        <h1 className="text-2xl flex items-center justify-start font-semibold p-2 mb-4 primary" >Reports
                             <BsLightbulbFill className="ml-4 secondary hover-yellow" />
                         </h1>
                     </Box>

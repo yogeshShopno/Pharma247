@@ -114,7 +114,7 @@ const LoyaltyPoint = () => {
                 newErrors.amountMismatch = 'Maximum amount must be greater than minimum amount';
                 toast.error(newErrors.amountMismatch);
             }
-            
+
             setErrors(newErrors);
             const isValid = Object.keys(newErrors).length === 0;
             if (isValid) {
@@ -236,7 +236,7 @@ const LoyaltyPoint = () => {
         if (!deleteDrugGroupId) return;
         await loyaltyPointDelete(deleteDrugGroupId);
         setIsDelete(false);
-        
+
     };
 
     return (
@@ -286,7 +286,12 @@ const LoyaltyPoint = () => {
                                         onChange={handleLoyaltyPointList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
+<<<<<<< HEAD
                                         renderInput={(params) => <TextField {...params} label="Search Drug Name" />}
+=======
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
+>>>>>>> main
                                     />
                                 </div>
                                 <div>
@@ -406,6 +411,7 @@ const LoyaltyPoint = () => {
 
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
+                                                    autoComplete="off"
                                                     type="number"
                                                     value={minimumAmount}
                                                     onChange={(e) => {
@@ -424,6 +430,7 @@ const LoyaltyPoint = () => {
                                             </FormControl>
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
+                                                    autoComplete="off"
                                                     type="number"
                                                     value={maximumAmount}
                                                     onChange={(e) => {
@@ -444,6 +451,7 @@ const LoyaltyPoint = () => {
                                         <div className="mt-5">
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 224 }}>
                                                 <TextField
+                                                    autoComplete="off"
                                                     type="number"
                                                     value={percentage}
                                                     onChange={(e) => {

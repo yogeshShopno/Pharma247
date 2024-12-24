@@ -17,7 +17,10 @@ import { TablePagination } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
+
 const DrugGroup = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const drugGroupColumns = [
         { id: 'name', label: 'Drug Group Name', minWidth: 100 },
@@ -147,6 +150,10 @@ const DrugGroup = () => {
                 setOpenAddPopUp(false);
                 setDrugGroupName('');
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -173,6 +180,10 @@ const DrugGroup = () => {
                 toast.success(response.data.message);
                 setDrugGroupName('');
                 setIsEditMode(false)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -202,6 +213,10 @@ const DrugGroup = () => {
                 setIsLoading(true)
                 DrugGroupList();
                 toast.success(response.data.message);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             // alert("404 error");
@@ -276,6 +291,10 @@ const DrugGroup = () => {
             }
             ).then((response) => {
                 setFilterData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -308,7 +327,7 @@ const DrugGroup = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
-                                <Button  style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
+                                <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
                             </div>
                         </div>
                         <div className="firstrow p-4">
@@ -329,17 +348,18 @@ const DrugGroup = () => {
                                         onChange={handleDrugGroupList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <TextField {...params} label="Search Drug Name" />}
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
                                 <div>
-                                    <Button  style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
+                                    <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
                             </div>
                             <div className="overflow-x-auto mt-4">
                                 <table className="w-full border-collapse custom-table">
-                                    <thead style={{ background: "rgba(153, 153, 153, 0.1)"}}>
+                                    <thead style={{ background: "rgba(153, 153, 153, 0.1)" }}>
                                         <tr>
                                             <th>SR No.</th>
                                             {drugGroupColumns.map((column) => (
@@ -371,7 +391,7 @@ const DrugGroup = () => {
 
                                                     <td>
                                                         <div className="px-2">
-                                                            < BorderColorIcon style={{ color: "var(--color1)" }}onClick={() => handleEditOpen(item)} />
+                                                            < BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(item)} />
                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                         </div>
                                                     </td>
@@ -419,6 +439,7 @@ const DrugGroup = () => {
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="label primary">Drug Group Name</span>
                                         {/* <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             placeholder="Drug Group Name"
@@ -442,7 +463,8 @@ const DrugGroup = () => {
                                                 </ListItem>
                                             )}
                                             renderInput={(params) => (
-                                                <TextField {...params} />
+                                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                             )}
                                             freeSolo
                                         />

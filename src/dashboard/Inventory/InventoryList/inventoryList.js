@@ -860,14 +860,14 @@ const InventoryList = () => {
                       <FormControlLabel
                         key={category.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
-                         
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
+
                             checked={selectedCategoryIds.includes(category.id)}
                             onChange={(event) =>
                               handleCheckboxChange(event, category.id)
@@ -895,13 +895,13 @@ sx={{
                       <FormControlLabel
                         key={packging.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedPackgingIds.includes(packging.id)}
                             onChange={(event) =>
                               handleCheckboxPackging(event, packging.id)
@@ -931,29 +931,29 @@ sx={{
                       >
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes("expired")}
                               value="expired"
-                              
+
                             />
                           }
                           label="Expired"
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_month"
                               )}
@@ -964,13 +964,13 @@ sx={{
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_two_month"
                               )}
@@ -981,13 +981,13 @@ sx={{
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                '&.Mui-checked': {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
                               checked={selectedOptionExpiry.includes(
                                 "next_three_month"
                               )}
@@ -1072,6 +1072,7 @@ sx={{
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
                       <TextField
+                 autoComplete="off"
                         {...params}
                         label="Select Company"
                         onFocus={() => setIsAutocompleteFocused(true)}
@@ -1080,7 +1081,8 @@ sx={{
                     )}
                     ref={autocompleteRef}
                   />
-                  {/* <TextField id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
+                  {/* <TextField
+                 autoComplete="off" autoComplete="off"id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1106,6 +1108,7 @@ sx={{
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
                       <TextField
+                 autoComplete="off"
                         {...params}
                         label="Select DrugGroup"
                         onFocus={() => setIsAutocompleteFocused(true)}
@@ -1114,7 +1117,8 @@ sx={{
                     )}
                     ref={autocompleteRef}
                   />
-                  {/* <TextField id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
+                  {/* <TextField
+                 autoComplete="off" autoComplete="off"id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1129,13 +1133,13 @@ sx={{
                       <FormControlLabel
                         key={gst.id}
                         control={
-                          <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)", // Color for unchecked checkboxes
+                              '&.Mui-checked': {
+                                color: "var(--color1)", // Color for checked checkboxes
+                              },
+                            }}
                             checked={selectedGstIds.includes(gst.id)}
                             onChange={(event) =>
                               handleCheckboxChangeGst(event, gst.id)
@@ -1172,6 +1176,7 @@ sx={{
                     getOptionLabel={(option) => option}
                     renderInput={(params) => (
                       <TextField
+                 autoComplete="off"
                         {...params}
                         label="Select Location"
                         onFocus={() => setIsAutocompleteFocused(true)}
@@ -1181,7 +1186,8 @@ sx={{
                     ref={autocompleteRef}
                   />
 
-                  {/* <TextField id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
+                  {/* <TextField
+                 autoComplete="off" autoComplete="off"id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1192,6 +1198,7 @@ sx={{
               <AccordionDetails>
                 <ListItem disablePadding>
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     label="Type HSN Code"
                     variant="outlined"
@@ -1211,6 +1218,7 @@ sx={{
               <AccordionDetails>
                 <ListItem disablePadding>
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1223,6 +1231,7 @@ sx={{
                   />
                   to
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1243,6 +1252,7 @@ sx={{
               <AccordionDetails>
                 <ListItem disablePadding>
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1255,6 +1265,7 @@ sx={{
                   />
                   to
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1275,6 +1286,7 @@ sx={{
               <AccordionDetails>
                 <ListItem disablePadding>
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1287,6 +1299,7 @@ sx={{
                   />
                   to
                   <TextField
+                 autoComplete="off"
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
@@ -1332,7 +1345,8 @@ sx={{
         <Box className="p-5 " sx={{ width: "100%" }}>
           <div className="flex flex-wrap  justify-between mb-4 relative">
             <TextField
-           
+                 autoComplete="off"
+
               id="outlined-basic"
               value={searchItem}
               size="small"
@@ -1666,6 +1680,7 @@ sx={{
                     getOptionLabel={(option) => option.iteam_name}
                     renderInput={(params) => (
                       <TextField
+                 autoComplete="off"
                         {...params}
                       // label="Select Item"
                       />
@@ -1686,7 +1701,8 @@ sx={{
                     sx={{ width: 200 }}
                     getOptionLabel={(option) => option.batch_number}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select Batch" />
+                      <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Select Batch" />
                     )}
                   />
                 </div>
@@ -1705,6 +1721,7 @@ sx={{
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
                       <TextField
+                 autoComplete="off"
                         {...params}
                       // label="Select Company"
                       />
@@ -1716,6 +1733,7 @@ sx={{
                 <div>
                   <span className="title mb-2">Unit</span>
                   <TextField
+                 autoComplete="off"
                     disabled
                     required
                     id="outlined-number"
@@ -1728,6 +1746,7 @@ sx={{
                 <div>
                   <span className="title mb-2">Expiry</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     sx={{ width: "130px" }}
                     size="small"
@@ -1741,6 +1760,7 @@ sx={{
                 <div>
                   <span className="title mb-2">MRP</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     type="number"
                     sx={{ width: "130px" }}
@@ -1757,6 +1777,7 @@ sx={{
                 <div>
                   <span className="title mb-2">Stock </span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     type="number"
                     sx={{ width: "130px" }}
@@ -1771,6 +1792,7 @@ sx={{
                 <div>
                   <span className="title mb-2">Stock Adjusted </span>
                   {/* <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         type="number"
                                         sx={{ width: '130px' }}
@@ -1779,6 +1801,7 @@ sx={{
                                         onChange={(e) => { setStockAdjust(e.target.value) }}
                                     /> */}
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     type="number"
                     sx={{ width: "130px" }}
@@ -1793,6 +1816,7 @@ sx={{
                 <div>
                   <span className="title mb-2">Remaining Stock </span>
                   <TextField
+                 autoComplete="off"
                     disabled
                     id="outlined-number"
                     type="number"
@@ -1880,7 +1904,8 @@ sx={{
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Select Location" />
+                    <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Select Location" />
                   )}
                   freeSolo
                 />
@@ -1888,6 +1913,7 @@ sx={{
               <div>
                 <span className="title mb-2">Barcode</span>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   sx={{ width: "200px" }}
                   size="small"
@@ -1940,13 +1966,13 @@ sx={{
         </DialogContent>
         <DialogActions>
           <Button className="primary-bg"
-          style={{ backgroundColor: "#3f6212" }}
+            style={{ backgroundColor: "#3f6212" }}
 
             autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes
           </Button>
           <Button
-            style={{ backgroundColor: "#F31C1C" ,color:"white"  }}
+            style={{ backgroundColor: "#F31C1C", color: "white" }}
             autoFocus
 
             variant="outlined"
@@ -1975,6 +2001,7 @@ sx={{
                             <div>
                                 <span className="title mb-2">Location</span>
                                 <TextField
+                 autoComplete="off"
                                     // disabled
                                     required
                                     id="outlined-number"
@@ -1987,6 +2014,7 @@ sx={{
                             <div>
                                 <span className="title mb-2">Barcode</span>
                                 <TextField
+                 autoComplete="off"
                                     id="outlined-number"
                                     sx={{ width: '200px' }}
                                     size="small"

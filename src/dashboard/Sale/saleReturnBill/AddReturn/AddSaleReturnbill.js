@@ -771,6 +771,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -834,6 +835,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -910,7 +912,8 @@ const Salereturn = () => {
                                 {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
-                                    <TextField id="outlined-basic"
+                                    <TextField
+                 autoComplete="off" autoComplete="off"id="outlined-basic"
                                         value={address}
                                         onChange={(e) => { setAddress(e.target.value) }}
                                         sx={{
@@ -959,6 +962,7 @@ const Salereturn = () => {
                                                     <td className="td-up " >
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
@@ -977,6 +981,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up "  >
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
                                                             sx={{ width: '110px' }}
@@ -992,6 +997,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -1008,6 +1014,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
+                 autoComplete="off"
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
@@ -1025,6 +1032,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '120px' }}
@@ -1041,6 +1049,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             disabled
@@ -1059,6 +1068,7 @@ const Salereturn = () => {
                                                     <td className="td-up ">
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '70px' }}
@@ -1080,6 +1090,7 @@ const Salereturn = () => {
                                                     </td >
                                                     {/* <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
@@ -1092,6 +1103,7 @@ const Salereturn = () => {
 
                                                     <td className="td-up ">
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             inputRef={inputRef9}
@@ -1111,6 +1123,7 @@ const Salereturn = () => {
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-basic"
                                                             size="small"
                                                             sx={{ width: "90%", marginLeft: "20px", marginBlock: "10px" }}
@@ -1242,7 +1255,8 @@ const Salereturn = () => {
                                             <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                                         </div>
                                         {/* <div>
-                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                            <TextField
+                 autoComplete="off" autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

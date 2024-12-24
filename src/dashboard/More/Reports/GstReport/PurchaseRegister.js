@@ -78,7 +78,8 @@ const PurchaseRegister = () => {
                                             sx={{ maxWidth: "150px" }}
                                             value={startDate}
                                             onChange={(newDate) => setStartDate(newDate)}
-                                            renderInput={(params) => <TextField {...params} />}
+                                            renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                                         />
                                     </LocalizationProvider>
                                 </div>

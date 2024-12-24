@@ -65,6 +65,10 @@ const StaffWiseActivity = () => {
                 ).then((response) => {
                     setIsLoading(false);
                     setStaffActivityData(response.data.data)
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -141,8 +145,21 @@ const StaffWiseActivity = () => {
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}><img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-                                </div>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={exportToCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button>  </div>
                             </div>
                             <div className="bg-white ">
                                 <div className="manageExpenseRow" style={{

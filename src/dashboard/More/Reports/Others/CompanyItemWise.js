@@ -70,6 +70,10 @@ const CompanyItemWise = () => {
                 ).then((response) => {
                     setIsLoading(false);
                     setCompanyData(response.data.data)
+                    if(response.data.status === 401){ 
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
             } catch (error) {
                 console.error("API error:", error);
@@ -152,8 +156,21 @@ const CompanyItemWise = () => {
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-                                </div>
+                                <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={exportToCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button></div>
                             </div>
                             <div className="bg-white ">
                                 <div className="manageExpenseRow" style={{
@@ -186,6 +203,7 @@ const CompanyItemWise = () => {
                                         <div className="mt-6">
                                             <div className="detail" >
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-basic"
                                                     value={searchManu}
                                                     sx={{ minWidth: '300px' }}
@@ -206,7 +224,9 @@ const CompanyItemWise = () => {
                                         </div>
 
                                         <div className="mt-6">
-                                            <Button variant="contained" onClick={handleFilterData}>
+                                            <Button style={{
+                                                background: "var(--color1)",
+                                            }}  variant="contained" onClick={handleFilterData}>
 
                                                 Go
                                             </Button>

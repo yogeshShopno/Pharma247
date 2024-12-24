@@ -19,8 +19,11 @@ import { FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Loader from '../componets/loader/Loader';
 import { encryptData } from '../componets/cryptoUtils';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Dashboard = () => {
+  const history = useHistory()
+
   const token = localStorage.getItem("token");
   const staffList = [{ id: 'today', value: 'Today' }, { id: 'yesterday', value: 'Yesterday' }, { id: '7_day', value: 'Last 7 Days' }, { id: '30_day', value: 'Last 30 Days' }]
   const expiryList = [{ id: 'expired', value: 'Expired' }, { id: 'next_month', value: 'Next Month' }, { id: 'next_two_month', value: 'Next 2 Month' }, { id: 'next_three_month', value: 'Next 3 Month' }]
@@ -99,7 +102,7 @@ const Dashboard = () => {
         }
       }
       ).then((response) => {
-    //    console.log(response.data.data)
+        //    console.log(response.data.data)
         setIsLoading(false)
         const initialData = response.data.data;
         setRecord(initialData);
@@ -126,15 +129,20 @@ const Dashboard = () => {
         }));
 
         setData(formattedData);
-  //      console.log('Ayus', formattedData);
+        //      console.log('Ayus', formattedData);
 
         setBilldata(billData);
         setCustomer(initialData?.top_customer)
         setExpiry(initialData?.expiring_iteam)
         setDistributor(initialData?.top_distributor)
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
+      
     } catch (error) {
-   //   console.error('Error fetching dashboard data:', error);
+      //   console.error('Error fetching dashboard data:', error);
       setIsLoading(false);
     }
   }
@@ -152,8 +160,12 @@ const Dashboard = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
+      
     }
     catch (error) {
 

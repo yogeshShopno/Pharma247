@@ -220,6 +220,10 @@ const PaymentList = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -277,6 +281,10 @@ const PaymentList = () => {
                     setAmounts(0);
                     toast.success(response.data.meassage)
                     setPurchaseBill([]);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 }) :
                 await axios.post("purches-payment-edit", data, {
                     params: params,
@@ -296,6 +304,10 @@ const PaymentList = () => {
                     setNote('');
                     setAmounts(0);
                     setPurchaseBill([]);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 })
         } catch (error) {
             setIsLoading(false);
@@ -321,6 +333,10 @@ const PaymentList = () => {
                 setPurchaseBill(response?.data?.data)
                 //console.log(purchaseBill);
                 // setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -335,11 +351,16 @@ const PaymentList = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
             const distributors = response.data.data;
             localStorage.setItem("distributor", JSON.stringify(distributors));
             setDistributorList(distributors);
             //console.log("Distributors fetched: ", distributors);
             return distributors;
+
         } catch (error) {
             console.error("API Error fetching distributors:", error);
             return [];
@@ -360,6 +381,10 @@ const PaymentList = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
             setTableData(response?.data?.data)
             setIsLoading(false)
         } catch (error) {
@@ -440,7 +465,7 @@ const PaymentList = () => {
                         <span style={{ color: 'var(--color2)', display: 'flex', minWidth: '250px', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Purchase Payment</span>
                         {hasPermission(permissions, "purchase payment create") && (
                             <div className="headerList pr-4">
-                                <Button variant="contained" size='small' style={{ fontSize: '12px' }} onClick={handelAddOpen} ><AddIcon />Add New Payment</Button>
+                                <Button variant="contained" size='small' style={{ fontSize: '12px', background: 'var(--color1)' }} onClick={handelAddOpen} ><AddIcon />Add New Payment</Button>
                             </div>)}
                     </div>
                     <div className="firstrow p-4">
@@ -456,15 +481,19 @@ const PaymentList = () => {
                                         },
                                     }}
                                     size='small'
+                                    autoFocus
                                     onChange={handleDistributorBillList}
                                     options={distributorList}
                                     getOptionLabel={(option) => option.name}
-                                    renderInput={(params) => <TextField {...params} label="Search Distributor Name" />}
+                                    renderInput={(params) => <TextField
+
+                                   
+                                        {...params} label="Search Distributor Name" />}
                                 />
                                 {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>}
                             </div>
                             <div>
-                                <Button variant="contained" onClick={openBillDetails}>Search</Button>
+                                <Button style={{ background: 'var(--color1)' }} variant="contained" onClick={openBillDetails}>Search</Button>
                             </div>
                         </div>
                         <div className="overflow-x-auto mt-4">
@@ -583,7 +612,7 @@ const PaymentList = () => {
                     </div>
 
                     <Dialog open={open}  >
-                        <DialogTitle id="alert-dialog-title">
+                        <DialogTitle sx={{ color: "#3f6212" }} id="alert-dialog-title  ">
                             {paymentLabel}
                         </DialogTitle>
                         <IconButton
@@ -597,9 +626,10 @@ const PaymentList = () => {
                             <DialogContentText id="alert-dialog-description">
                                 <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
                                     <div >
-                                        <span>Distributor Name</span>
+                                        <span className="secondary" >Distributor Name</span>
                                         {isEditMode == true ?
                                             <TextField
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 disabled
                                                 size="small"
@@ -614,10 +644,12 @@ const PaymentList = () => {
                                                     disabled={!showTable}
                                                     // sx={{ minWidth: 730 }}
                                                     size='small'
+                                                    autoFocus
                                                     onChange={handleDistributor}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} />}
+                                                    renderInput={(params) => <TextField
+                                                    {...params} />}
                                                 />
                                                 {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
                                             </>
@@ -625,7 +657,7 @@ const PaymentList = () => {
                                     </div>
                                     <div style={{ display: 'flex', gap: 30, }}>
                                         <div style={{ display: 'flex', gap: 10, flexDirection: 'column' }}>
-                                            <span>Payment Date</span>
+                                            <span className="secondary" >Payment Date</span>
                                             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
                                                         value={paymentDate}
@@ -644,7 +676,7 @@ const PaymentList = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'flex', gap: 10, flexDirection: 'column', flexWrap: 'wrap' }}>
-                                            <span>Payment Mode</span>
+                                            <span className="secondary" >Payment Mode</span>
                                             <Select
                                                 labelId="dropdown-label"
                                                 id="dropdown"
@@ -664,8 +696,9 @@ const PaymentList = () => {
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: 10, flexDirection: 'column' }}>
-                                        <span className="label">Note</span>
+                                        <span className="label secondary">Note</span>
                                         <TextField
+                                            autoComplete="off"
                                             id="outlined-multiline-static"
                                             multiline
                                             size="small"
@@ -745,7 +778,7 @@ const PaymentList = () => {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button autoFocus variant="contained" color="success" onClick={handlePermission} >
+                            <Button autoFocus sx={{ backgroundColor: "#3f6212" }} variant="contained" onClick={handlePermission} >
                                 {buttonLabel}
                             </Button>
                         </DialogActions>

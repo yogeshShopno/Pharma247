@@ -61,6 +61,10 @@ const DoctorView = () => {
                 //console.log(response.data.data)
                 setIsLoading(false)
                 setDoctorDetails(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
 
@@ -139,9 +143,25 @@ const DoctorView = () => {
                     </div>
                     <div className='p-6' >
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} >
-                            <Tabs value={tabValue} onChange={handleChange} >
-                                <Tab label="Sale" sx={{ mx: 2 }} />
-                                <Tab label="Sales Return" sx={{ mx: 2 }} />
+                            <Tabs value={tabValue} onChange={handleChange}
+                                TabIndicatorProps={{
+                                    style: {
+                                        backgroundColor: "var(--color1)",
+                                        color: "var(--color1)",
+                                    },
+                                }}>
+                                <Tab label="Sale" sx={{
+                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
+                                    "&.Mui-selected": {
+                                        color: "var(--color1)",
+                                    },
+                                }} />
+                                <Tab label="Sales Return" sx={{
+                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
+                                    "&.Mui-selected": {
+                                        color: "var(--color1)",
+                                    },
+                                }} />
 
                             </Tabs>
 

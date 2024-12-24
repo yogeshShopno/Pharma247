@@ -1,5 +1,5 @@
 import { BsLightbulbFill } from "react-icons/bs"
-import Header from "../Header"
+import Header from "../../Header"
 import { Autocomplete, Button, IconButton, InputAdornment, ListItem } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
@@ -15,10 +15,13 @@ import { format, subDays } from 'date-fns';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from "axios";
 import SearchIcon from '@mui/icons-material/Search';
-import Loader from "../../componets/loader/Loader";
+import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const AdjustStock = () => {
+    const history = useHistory()
+
     const stockList = [
         { id: 'adjusted_by', label: 'Adjust By', minWidth: 10 },
         { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 10 },
@@ -161,7 +164,12 @@ const AdjustStock = () => {
             ).then((response) => {
                 setAdjustStockListData(response.data.data.data);
                 setIsLoading(false);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+           
         } catch (error) {
             console.error("API error:", error);
         }
@@ -184,10 +192,13 @@ const AdjustStock = () => {
             ).then((response) => {
                 const data = response.data.data
                 setBatchListData(response.data.data);
-
-
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
 
             })
+            
         } catch (error) {
             console.error("API error:", error);
         }
@@ -314,7 +325,12 @@ const AdjustStock = () => {
                 setStockAdjust('')
                 setRemainingStock('')
                 setAdjustDate(new Date())
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+          
         } catch (error) {
             console.error("API error:", error);
         }
@@ -363,20 +379,21 @@ const AdjustStock = () => {
             </div> :
 
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
-                   <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
-                            <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "130px" ,textWrap:"nowrap" }}  > Adjust Stock</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-                            </div>
-                            <div className="headerList">
-                                <Button variant="contained" style={{ display: 'flex', gap: '0px',background:"var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" />  Adjust Stock</Button>
-                            </div>
+                    <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
+                        <div style={{ display: 'flex', gap: '7px', }}>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "130px", textWrap: "nowrap" }}  > Adjust Stock</span>
+                            <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                         </div>
-                    
+                        <div className="headerList">
+                            <Button variant="contained" style={{ display: 'flex', gap: '0px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" />  Adjust Stock</Button>
+                        </div>
+                    </div>
+
                     <div className="firstrow p-4">
                         <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                             <div className="detail" >
                                 <TextField
+                 autoComplete="off"
                                     id="outlined-basic"
                                     value={search}
                                     sx={{ width: 'auto' }}
@@ -396,9 +413,9 @@ const AdjustStock = () => {
                                 />
                             </div>
                             <div>
-                                <Button 
-                                style={{ background:"var(--color1)" }}
-                                variant="contained" onClick={adjustStockList}
+                                <Button
+                                    style={{ background: "var(--color1)" }}
+                                    variant="contained" onClick={adjustStockList}
                                     className="min-h-[41px] h-[41px] mt-6 bg-[#044C9D] text-white flex items-center justify-center"
                                 >
                                     Go
@@ -416,6 +433,7 @@ const AdjustStock = () => {
                                                     <span>{column.label}</span>
                                                     <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     {/* <TextField
+                 autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"
@@ -466,6 +484,7 @@ const AdjustStock = () => {
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
+                 autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"
                                                     size="small"
@@ -606,6 +625,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.iteam_name}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         label="Select Item"
                                                     />
@@ -626,6 +646,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.batch_number}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         label="Select Batch"
                                                     />
@@ -646,7 +667,8 @@ const AdjustStock = () => {
                                                 disabled
                                                 getOptionLabel={(option) => option.company_name}
                                                 renderInput={(params) => (
-                                                    <TextField {...params} />
+                                                    <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                                 )}
                                             />
                                         </div>
@@ -655,6 +677,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Unit</span>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 required
                                                 id="outlined-number"
@@ -667,6 +690,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Expiry</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 sx={{ width: '130px' }}
                                                 size="small"
@@ -678,6 +702,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">MRP</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -692,6 +717,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Stock </span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -704,6 +730,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Stock Adjusted </span>
                                             {/* <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -712,6 +739,7 @@ const AdjustStock = () => {
                                                 onChange={(e) => { setStockAdjust(e.target.value) }}
                                             /> */}
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -726,6 +754,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Remaining Stock  </span>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 type="number"
@@ -739,10 +768,10 @@ const AdjustStock = () => {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button style={{ background:"#3f6212"  }} autoFocus variant="contained" className="p-5"  onClick={validateForm}>
+                            <Button style={{ background: "#3f6212" }} autoFocus variant="contained" className="p-5" onClick={validateForm}>
                                 Save
                             </Button>
-                            <Button style={{ background:"#F31C1C"  }}  autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
+                            <Button style={{ background: "#F31C1C" }} autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
                                 Cancel
                             </Button>
                         </DialogActions>

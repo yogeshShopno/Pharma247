@@ -100,6 +100,10 @@ const ReturnList = () => {
                 //console.log(PDFURL, 'hh');
                 setIsLoading(false);
                 handlePdf(PDFURL);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             });
         } catch (error) {
             console.error("API error:", error);
@@ -142,6 +146,10 @@ const ReturnList = () => {
             ).then((response) => {
                 setIsDelete(false);
                 ReturnBillList();
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -197,6 +205,10 @@ const ReturnList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -221,6 +233,10 @@ const ReturnList = () => {
                 //console.log(PDFURL, 'hh');
                 setIsLoading(false);
                 handlePdf(PDFURL);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             });
         } catch (error) {
             console.error("API error:", error);
@@ -280,6 +296,7 @@ const ReturnList = () => {
                                                         onClick={() => sortByColumn(column.id)}
                                                     />
                                                     <TextField
+                 autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"
@@ -296,14 +313,14 @@ const ReturnList = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredList.length === 0 ? (
+                                    {tableData.length === 0 ? (
                                         <tr>
                                             <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
                                                 No data found
                                             </td>
                                         </tr>
                                     ) : (
-                                        filteredList
+                                        tableData
                                             .map((row, index) => {
                                                 return (
                                                     <tr hover role="checkbox" tabIndex={-1} key={row.code} >
@@ -432,11 +449,11 @@ const ReturnList = () => {
                                                         </td>
 
                                                         <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer', alignItems: "center" }}>
-                                                            < VisibilityIcon  className='cursor-pointer cursor-pointer primary hover:secondary' onClick={() => { history.push(`/return/view/${row.id}`) }} />
+                                                            < VisibilityIcon className='cursor-pointer cursor-pointer primary hover:secondary' onClick={() => { history.push(`/return/view/${row.id}`) }} />
                                                             <FaFilePdf className="primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                                                             {hasPermission(permissions, "purchase return bill delete") && (
-                                                                <DeleteIcon style={{color:"#F31C1C"}}
-                                                                 className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
+                                                                <DeleteIcon style={{ color: "#F31C1C" }}
+                                                                    className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
                                                         </td>
                                                     </tr>
                                                 );

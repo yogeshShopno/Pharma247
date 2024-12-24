@@ -71,6 +71,10 @@ const CreateRole = () => {
             .then((response) => {
                 setIsLoading(false)
                 setPermissionList(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 setIsLoading(false);
@@ -102,6 +106,10 @@ const CreateRole = () => {
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);
+                        if (response.data.status === 401) {
+                            history.push('/');
+                            localStorage.clear();
+                        }
                     });
                 } catch (error) {
                     console.error("API error:", error);
@@ -123,6 +131,10 @@ const CreateRole = () => {
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);
+                        if (response.data.status === 401) {
+                            history.push('/');
+                            localStorage.clear();
+                        }
                     });
                 } catch (error) {
                     console.error("API error:", error);
@@ -184,7 +196,8 @@ const CreateRole = () => {
                                         <span className="primary mb-2 font-semibold">Role Name</span>
                                         <span className="text-red-600 text-xl">*</span>
                                     </div>
-                                    <TextField id="standard-basic"
+                                    <TextField
+                 autoComplete="off" autoComplete="off"id="standard-basic"
                                         size="small"
                                         sx={{ width: '100%' }}
                                         label="Enter Your Role Name"
@@ -206,13 +219,13 @@ const CreateRole = () => {
                                         <h2 className="primary text-xl flex items-center">
                                             <PlayArrowIcon className="text-black" />
                                             <span>{role}</span>
-                                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                                            <Checkbox
+                                                sx={{
+                                                    color: "var(--color2)", // Color for unchecked checkboxes
+                                                    '&.Mui-checked': {
+                                                        color: "var(--color1)", // Color for checked checkboxes
+                                                    },
+                                                }}
                                                 {...label}
                                                 checked={permissionList[role].every(permission => roleChecked[permission])}
                                                 onChange={(event) => {
@@ -228,13 +241,13 @@ sx={{
                                         <div className="pl-8">
                                             {permissionList[role].map((permission, index) => (
                                                 <div key={index} className="flex items-center gap-2">
-                                                    <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
+                                                    <Checkbox
+                                                        sx={{
+                                                            color: "var(--color2)", // Color for unchecked checkboxes
+                                                            '&.Mui-checked': {
+                                                                color: "var(--color1)", // Color for checked checkboxes
+                                                            },
+                                                        }}
                                                         {...label}
                                                         checked={roleChecked[permission] || false}
                                                         onChange={(event) => handleCheckboxChange(event, permission)}

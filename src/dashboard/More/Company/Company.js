@@ -18,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
 const Company = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const companyColumns = [
         { id: 'company_name', label: 'Company Name', minWidth: 100 },
@@ -81,6 +83,10 @@ const Company = () => {
                 //console.log("API Response:===", response);
                 setCompanyData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -135,6 +141,9 @@ const Company = () => {
                 setCompanyName('');
                 companyList();
                 toast.success(response.data.message);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
             })
         } catch (error) {
             setIsLoading(false);
@@ -160,6 +169,10 @@ const Company = () => {
                 toast.success(response.data.message);
                 setCompanyName('');
                 setIsEditMode(false)
+
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
 
             })
         } catch (error) {
@@ -208,6 +221,9 @@ const Company = () => {
                 setIsLoading(true)
                 companyList();
                 toast.success(response.data.message);
+                if(response.data.status === 401){ 
+                    history.push('/');
+                    localStorage.clear();}
             })
         } catch (error) {
             // alert("404 error");
@@ -253,16 +269,16 @@ const Company = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '90px' ,}} >Company</span>
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '90px', }} >Company</span>
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
                                 <Button variant="contained" style={{ background: 'var(--color1)' }} size='small' onClick={handelAddOpen} > <AddIcon />Add Company</Button>
                             </div>
                         </div>
-                        <div className="bg-white" style={{ paddingInline:"25px",paddingBlock:"15px" }}>
+                        <div className="bg-white" style={{ paddingInline: "25px", paddingBlock: "15px" }}>
                             <table className="custom-table " >
-                                <thead  style={{ background: "rgba(153, 153, 153, 0.1)"}} >
+                                <thead style={{ background: "rgba(153, 153, 153, 0.1)" }} >
                                     <tr >
                                         <th>SR No.</th>
                                         {companyColumns.map((column) => (
@@ -342,6 +358,7 @@ const Company = () => {
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="label primary">Company Name</span>
                                         {/* <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             placeholder="Company Name"
@@ -366,7 +383,8 @@ const Company = () => {
                                                 </ListItem>
                                             )}
                                             renderInput={(params) => (
-                                                <TextField {...params} />
+                                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                             )}
                                             freeSolo
                                         />
@@ -376,7 +394,7 @@ const Company = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} 
+                        <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}

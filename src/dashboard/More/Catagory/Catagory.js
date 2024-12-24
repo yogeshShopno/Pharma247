@@ -18,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
 const Catagory = () => {
+  const history = useHistory()
+
   const token = localStorage.getItem("token");
   const categoryColumns = [
     { id: 'category_name', label: 'Category Name', minWidth: 100 },
@@ -133,7 +135,12 @@ const Catagory = () => {
         setOpenAddPopUp(false);
         setCategoryName('');
         toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
+
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
@@ -158,6 +165,11 @@ const Catagory = () => {
         toast.success(response.data.message);
         setCategoryName('');
         setIsEditMode(false)
+
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
 
       })
     } catch (error) {
@@ -191,6 +203,10 @@ const Catagory = () => {
         setIsLoading(true)
         categoryList();
         toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       // alert("404 error");
@@ -326,6 +342,7 @@ const Catagory = () => {
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span className="label primary">Category Name</span>
                     <TextField
+                 autoComplete="off"
                       id="outlined-multiline-static"
                       size="small"
                       placeholder="Category Name"

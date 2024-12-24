@@ -34,17 +34,17 @@ const PurchaseView = () => {
 
     const handleLeavePage = async () => {
         let data = new FormData();
-            data.append("start_date", localStorage.getItem("StartFilterDate"));
-            data.append("end_date", localStorage.getItem("EndFilterDate"));
-            data.append("distributor_id", localStorage.getItem("DistributorId"));
-            data.append("type", "1");
-            try {
-              const response = await axios.post("purches-histroy", data, 
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "1");
+        try {
+            const response = await axios.post("purches-histroy", data,
                 {
-                headers: {Authorization: `Bearer ${token}`},
-              });
-        
-              if (response.status === 200) {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+            if (response.status === 200) {
                 // setUnsavedItems(false);
                 // setIsOpenBox(false);
                 history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number)
@@ -52,17 +52,20 @@ const PurchaseView = () => {
                 //   if (nextPath) {
                 //     history.push(nextPath)
                 //   }
-        
+
                 // }, 0);
-              }
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
             //   setIsOpenBox(false);
             //   setUnsavedItems(false);
-        
-              // history.replace(nextPath);
-            }catch (error) {
-          console.error("Error deleting items:", error);
+
+            // history.replace(nextPath);
+        } catch (error) {
+            console.error("Error deleting items:", error);
         }
-      };
+    };
     const purchaseBillList = async (currentPage) => {
         let data = new FormData();
         setIsLoading(true);
@@ -75,7 +78,10 @@ const PurchaseView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 //console.log(tableData)
             })
         } catch (error) {
@@ -100,7 +106,6 @@ const PurchaseView = () => {
                 if (nextId) {
                     history.push(`/purchase/view/${nextId}`);
                 }
-
             } else if (e.key === 'ArrowLeft') {
                 const prevIndex = (currentIndex - 1 + tableData.length) % tableData.length;
                 const prevId = tableData[prevIndex]?.id;
@@ -140,6 +145,10 @@ const PurchaseView = () => {
                 setData(response.data.data)
                 setRoundOffAmount(response.data.data.round_off)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -151,7 +160,7 @@ const PurchaseView = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <div style={{  height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <span style={{ color: "var(--color2)", display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => { history.push('/purchase/purchasebill') }}>Purchase</span>
@@ -176,7 +185,7 @@ const PurchaseView = () => {
                                             </Button>
                                         )
                                     }
-                                    <Button style={{ background: "var(--color1)" }} variant="contained" onClick={() => {history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />Edit</Button>
+                                    <Button style={{ background: "var(--color1)" }} variant="contained" onClick={() => { history.push('/purchase/edit/' + data.id + '/' + data?.item_list[0].random_number) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />Edit</Button>
                                 </div>
                             )}
                         </div>
@@ -270,10 +279,10 @@ const PurchaseView = () => {
                                         </tr>
                                     ))}
 
-                                  
-                                   
+
+
                                 </tbody>
-                               
+
                             </table>
                             <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10" >
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
@@ -282,13 +291,13 @@ const PurchaseView = () => {
                                     <label className="font-bold">Total Net Rate : </label>
                                 </div>
                                 <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                    <span style={{ fontWeight: 600 }}>{data?.total_gst?data?.total_gst:0} </span>
-                                    <span style={{ fontWeight: 600 }}> {data?.total_qty?data?.total_qty:0} </span>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_gst ? data?.total_gst : 0} </span>
+                                    <span style={{ fontWeight: 600 }}> {data?.total_qty ? data?.total_qty : 0} </span>
                                     <span style={{ fontWeight: 600 }}>{data?.total_net_rate}</span>
                                 </div>
 
 
-                              
+
 
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                     <label className="font-bold">Total Amount : </label>
@@ -298,20 +307,20 @@ const PurchaseView = () => {
                                     <label className="font-bold" >Net Amount : </label>
                                 </div>
                                 <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
-                                    <span style={{ fontWeight: 600 }}>{data?.total_amount?data?.total_amount:0}</span>
+                                    <span style={{ fontWeight: 600 }}>{data?.total_amount ? data?.total_amount : 0}</span>
                                     <span style={{ fontWeight: 600, color: "red" }}>{- (parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>
 
-                                 
-                                    <span style={{ fontWeight: 600 }}> 
-                                    {roundOffAmount === "0.00"
-                                                ? roundOffAmount
-                                                : roundOffAmount < 0
-                                                    ? `-${Math.abs(roundOffAmount)}`
-                                                    : `+${Math.abs(roundOffAmount)}`}
+
+                                    <span style={{ fontWeight: 600 }}>
+                                        {roundOffAmount === "0.00"
+                                            ? roundOffAmount
+                                            : roundOffAmount < 0
+                                                ? `-${Math.abs(roundOffAmount)}`
+                                                : `+${Math.abs(roundOffAmount)}`}
                                     </span>
                                     <span style={{ fontWeight: 600 }}>₹{data?.margin_net_profit} &nbsp; (₹{data?.total_margin})</span>
 
-                                    <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{data?.net_amount?data?.net_amount:0}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '22px', color: "var(--color1)" }}>{data?.net_amount ? data?.net_amount : 0}</span>
                                 </div>
                             </div>
                         </div>

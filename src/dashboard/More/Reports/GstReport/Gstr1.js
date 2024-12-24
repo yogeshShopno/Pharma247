@@ -28,38 +28,42 @@ const Gstr1 = () => {
             exportToCSV(); // Trigger CSV export after `reportData` is updated
         }
     }, [reportData]);
-    
+
     const downloadCSV = async () => {
         if (!reportType) {
             toast.error("Please select a report type.");
             return;
         }
-    
+
         try {
             let data = new FormData();
             data.append("date", monthDate ? format(monthDate, 'MM-yyyy') : '');
             data.append("type", reportType || 0);
-    
+
             const response = await axios.post('gst-one-report?', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
                 responseType: 'blob', // Response is a Blob
             });
-    
+
             if (response.status === 200) {
                 setIsLoading(false);
-    
+
                 // Convert Blob to JSON
                 const text = await response.data.text();
                 const parsedData = JSON.parse(text);
-    
+
                 if (parsedData?.data) {
                     setReportData([parsedData.data]); // Update state with parsed data
                 } else {
                     toast.error('No data available for the selected criteria.');
                 }
-            } else {
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
+            else {
                 toast.error('Failed to download records. Please try again.');
             }
         } catch (error) {
@@ -67,8 +71,8 @@ const Gstr1 = () => {
             toast.error('An error occurred while downloading the CSV.');
         }
     };
-    
-    
+
+
 
     const exportToCSV = () => {
         if (!Array.isArray(reportData) || reportData.length === 0) {
@@ -208,9 +212,21 @@ const Gstr1 = () => {
                                         <MenuItem key={0} value="0">sale</MenuItem>
                                         <MenuItem key={1} value="1">sale return</MenuItem>
                                     </Select>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={downloadCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
 
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px", marginBlock: "25px" }} onClick={downloadCSV}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
-
+                                        Download
+                                    </Button>
                                     <div >
                                     </div>
                                 </div>

@@ -61,6 +61,10 @@ const Package = () => {
         setIsLoading(false);
         setPackageAllData(response.data.data);
         //console.log(response.data.data);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }      
       })
       .catch((error) => {
         setIsLoading(false);
@@ -128,7 +132,7 @@ const Package = () => {
     data.append("id", id);
     try {
       //console.log("id", id);
-      await axios.post("delete-package",
+      const response = await axios.post("delete-package",
         data,
         {
           headers: {
@@ -138,6 +142,10 @@ const Package = () => {
         }
       );
       PackageList();
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (error) {
       alert("404 error");
       console.error("Error deleting item:", error);
@@ -224,7 +232,10 @@ const Package = () => {
         setUnits();
         setUnitList([]);
         setIsEditMode(false)
-
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       if (error.response.data.status == 400) {
@@ -256,6 +267,10 @@ const Package = () => {
         // setUnits('');
         // setUnitList([]);
         toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       setIsLoading(false);
@@ -380,6 +395,7 @@ const Package = () => {
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span className="label primary">Package Name</span>
                         <TextField
+                 autoComplete="off"
                           id="outlined-multiline-static"
                           size="small"
                           placeholder="Package Name"
@@ -396,6 +412,7 @@ const Package = () => {
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span className="label primary">Unit</span>
                         <TextField
+                 autoComplete="off"
                           id="outlined-multiline-static"
                           size="small"
                           value={units}

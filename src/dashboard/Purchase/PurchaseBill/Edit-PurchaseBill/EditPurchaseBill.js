@@ -111,7 +111,7 @@ const EditPurchaseBill = () => {
   // const {  } = useParams();
   const [purchase, setPurchase] = useState([]);
   useEffect(() => {
-    
+
     const initialize = async () => {
       try {
         await handleLeavePage();
@@ -120,7 +120,7 @@ const EditPurchaseBill = () => {
       }
     };
 
-    initialize(); 
+    initialize();
   }, []);
 
   useEffect(() => {
@@ -130,7 +130,7 @@ const EditPurchaseBill = () => {
     setCnAmount(total)
   }, [cnTotalAmount])
 
- useEffect(() => {
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       handleBarcode();
     }, 1000);
@@ -147,6 +147,10 @@ const EditPurchaseBill = () => {
       const distributors = response.data.data;
       localStorage.setItem("distributor", JSON.stringify(distributors));
       setDistributorList(distributors);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }      
       //console.log("Distributors fetched: ", distributors);
       return distributors;
     } catch (error) {
@@ -226,6 +230,10 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -312,28 +320,28 @@ const EditPurchaseBill = () => {
   }, [qty, ptr, disc, gst.name, free]);
 
   // Call the combined function when you want to initiate the data fetching
-useEffect(()=>{
-  if (selectedEditItem) {
-    setSearchItem(selectedEditItem.item_name);
-    setUnit(selectedEditItem.weightage);
-    setBatch(selectedEditItem.batch_number);
-    setExpiryDate(selectedEditItem.expiry);
-    setMRP(selectedEditItem.mrp);
-    setQty(selectedEditItem.qty || 0);
-    setFree(selectedEditItem.fr_qty);
-    setPTR(selectedEditItem.ptr);
-    setDisc(selectedEditItem.disocunt);
-    setSchAmt(selectedEditItem.scheme_account);
-    setBase(selectedEditItem.base_price);
-    setGst(
-      gstList.find((option) => option.name === selectedEditItem.gst_name) ||
-      {}
-    );
-    setLoc(selectedEditItem.location);
-    setMargin(selectedEditItem.margin);
-    setNetRate(selectedEditItem.net_rate);
-  }
-},[selectedEditItem])
+  useEffect(() => {
+    if (selectedEditItem) {
+      setSearchItem(selectedEditItem.item_name);
+      setUnit(selectedEditItem.weightage);
+      setBatch(selectedEditItem.batch_number);
+      setExpiryDate(selectedEditItem.expiry);
+      setMRP(selectedEditItem.mrp);
+      setQty(selectedEditItem.qty || 0);
+      setFree(selectedEditItem.fr_qty);
+      setPTR(selectedEditItem.ptr);
+      setDisc(selectedEditItem.disocunt);
+      setSchAmt(selectedEditItem.scheme_account);
+      setBase(selectedEditItem.base_price);
+      setGst(
+        gstList.find((option) => option.name === selectedEditItem.gst_name) ||
+        {}
+      );
+      setLoc(selectedEditItem.location);
+      setMargin(selectedEditItem.margin);
+      setNetRate(selectedEditItem.net_rate);
+    }
+  }, [selectedEditItem])
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/\D/g, "");
@@ -388,6 +396,10 @@ useEffect(()=>{
         // setCnTotalAmount(response.data.data.total_amount)
         //console.log(response.data.data, '123');
         // toast.success(response.data.message);
+        if (response.data.status === 401) {
+          history.push('/');
+          localStorage.clear();
+        }
       })
     } catch (error) {
       // setIsLoading(false);
@@ -518,41 +530,44 @@ useEffect(()=>{
   };
 
 
-  
+
   const handleLeavePage = async () => {
     let data = new FormData();
-        data.append("start_date", localStorage.getItem("StartFilterDate"));
-        data.append("end_date", localStorage.getItem("EndFilterDate"));
-        data.append("distributor_id", localStorage.getItem("DistributorId"));
-        data.append("type", "1");
-        try {
-          const response = await axios.post("purches-histroy", data, 
-            {
-            headers: {Authorization: `Bearer ${token}`},
-          });
-    
-          if (response.status === 200) {
-            setUnsavedItems(false);
-            setIsOpenBox(false);
-            setTimeout(() => {
-              if (nextPath) {
-                history.push(nextPath)
-              }
-    
-            }, 0);
+    data.append("start_date", localStorage.getItem("StartFilterDate"));
+    data.append("end_date", localStorage.getItem("EndFilterDate"));
+    data.append("distributor_id", localStorage.getItem("DistributorId"));
+    data.append("type", "1");
+    try {
+      const response = await axios.post("purches-histroy", data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+      if (response.status === 200) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+        setTimeout(() => {
+          if (nextPath) {
+            history.push(nextPath)
           }
-          setIsOpenBox(false);
-          setUnsavedItems(false);
-          
-          // history.replace(nextPath);
-        }catch (error) {
+
+        }, 0);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
+      setIsOpenBox(false);
+      setUnsavedItems(false);
+
+      // history.replace(nextPath);
+    } catch (error) {
       console.error("Error deleting items:", error);
     }
   };
 
 
 
- const handleBarcode = async () => {
+  const handleBarcode = async () => {
     if (!barcode) {
       return;
     }
@@ -615,7 +630,7 @@ useEffect(()=>{
           setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
 
           setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
-          console.log(response?.data?.data[0]?.batch_list[0],ItemId)
+          console.log(response?.data?.data[0]?.batch_list[0], ItemId)
 
           setSelectedEditItemId(response?.data?.data[0]?.id)
           setItemEditID(response.data.data[0]?.id)
@@ -642,36 +657,36 @@ useEffect(()=>{
       data.append("item_id", selectedEditItemId);
       // data.append("unit_id", value?.unit_id);
     } else {
-      if(barcode){
+      if (barcode) {
         data.append("item_id", ItemId);
         data.append("unit_id", Number(0));
 
-      }else{
+      } else {
         data.append("item_id", value?.id);
         data.append("unit_id", value?.unit_id);
       }
-      
+
     }
     data.append("unit_id", unit);
     data.append("random_number", randomNumber);
-    data.append("unite", !unit?0:unit);
-    data.append("batch_number", !batch?0:batch);
-    data.append("expiry", !expiryDate?0:expiryDate);
-    data.append("mrp", !mrp?0:mrp);
-    data.append("qty", !qty?0:qty);
-    data.append("free_qty", !free?0:free);
-    data.append("ptr", !ptr?0:ptr);
-    data.append("discount", !disc?0:disc);
-    data.append("scheme_account", !schAmt?0:schAmt);
-    data.append("base_price", !base?0:base);
-    data.append("gst", !gst.id?0:gst.id);
-    data.append("location", !loc?0:loc);
-    data.append("margin", !margin?0:margin);
-    data.append("net_amount", !netAmount?0:netAmount);
-    data.append("cn_amount", !finalCnAmount?0:finalCnAmount);
-    data.append("net_rate", !netRate?0:netRate);
-    data.append("total_amount", !ItemTotalAmount?0:ItemTotalAmount);
-    data.append("weightage", !unit?0:unit);
+    data.append("unite", !unit ? 0 : unit);
+    data.append("batch_number", !batch ? 0 : batch);
+    data.append("expiry", !expiryDate ? 0 : expiryDate);
+    data.append("mrp", !mrp ? 0 : mrp);
+    data.append("qty", !qty ? 0 : qty);
+    data.append("free_qty", !free ? 0 : free);
+    data.append("ptr", !ptr ? 0 : ptr);
+    data.append("discount", !disc ? 0 : disc);
+    data.append("scheme_account", !schAmt ? 0 : schAmt);
+    data.append("base_price", !base ? 0 : base);
+    data.append("gst", !gst.id ? 0 : gst.id);
+    data.append("location", !loc ? 0 : loc);
+    data.append("margin", !margin ? 0 : margin);
+    data.append("net_amount", !netAmount ? 0 : netAmount);
+    data.append("cn_amount", !finalCnAmount ? 0 : finalCnAmount);
+    data.append("net_rate", !netRate ? 0 : netRate);
+    data.append("total_amount", !ItemTotalAmount ? 0 : ItemTotalAmount);
+    data.append("weightage", !unit ? 0 : unit);
     const params = {
       id: selectedEditItemId,
     };
@@ -720,6 +735,10 @@ useEffect(()=>{
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (e) {
       //console.log(e);
     }
@@ -865,7 +884,7 @@ useEffect(()=>{
       setNetRate(selectedEditItem.net_rate);
     }
   };
- 
+
   const handelAddOpen = () => {
     setUnsavedItems(true)
 
@@ -915,11 +934,10 @@ useEffect(()=>{
   };
 
   const handleOptionChange = (event, newValue) => {
-    setValue(newValue.toUpperCase());
+    setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName.toUpperCase());
-    setAutocompleteDisabled(true);
-    handleSearch(itemName.toUpperCase());
+    setSearchItem(itemName);
+    handleSearch(itemName);
   };
 
   const handlePTR = (e) => {
@@ -1036,7 +1054,7 @@ useEffect(()=>{
       setCnAmount(0);
     }
   };
- 
+
   const handleRowSelectPending = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
       ? selectedRows.filter((rowId) => rowId !== id)
@@ -1098,7 +1116,7 @@ useEffect(()=>{
     let roundOffAmountCal;
 
     if (decimalPart >= 0.50) {
-      netAmountCal = Math.ceil(adjustedTotalAmount); // round up
+      netAmountCal = Math.ceil(adjustedTotalAmount); // round off
       roundOffAmountCal = netAmountCal - adjustedTotalAmount; // calculate the round-off value
     } else {
       netAmountCal = Math.floor(adjustedTotalAmount);
@@ -1170,7 +1188,7 @@ useEffect(()=>{
       ) : (
         <div
           style={{
-            
+
             height: "calc(99vh - 55px)",
             padding: "0px 20px",
           }}
@@ -1259,7 +1277,8 @@ useEffect(()=>{
                     onChange={(e, value) => setDistributor(value)}
                     options={distributorList}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                   />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1270,6 +1289,7 @@ useEffect(()=>{
                 <div className="detail">
                   <span className="title mb-2">Sr No.</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     size="small"
                     style={{ width: "200px" }}
@@ -1283,6 +1303,7 @@ useEffect(()=>{
                 <div className="detail">
                   <span className="title mb-2">Bill No. / Order No.</span>
                   <TextField
+                 autoComplete="off"
                     id="outlined-number"
                     disabled
                     size="small"
@@ -1362,7 +1383,8 @@ useEffect(()=>{
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" autoFocus />
+                    <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Item Name" autoFocus />
                   )}
                 />
 
@@ -1402,6 +1424,7 @@ useEffect(()=>{
 
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             inputRef={inputRef1}
@@ -1425,6 +1448,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef2}
                             onKeyDown={handleKeyDown}
@@ -1441,6 +1465,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             size="small"
                             sx={{ width: "80px" }}
@@ -1459,6 +1484,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1484,6 +1510,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "80px" }}
@@ -1507,6 +1534,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             size="small"
                             type="number"
@@ -1530,6 +1558,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1549,6 +1578,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "60px" }}
                             size="small"
@@ -1567,13 +1597,14 @@ useEffect(()=>{
                             onChange={(e) => {
                               const value = e.target.value;
                               if (Number(value) > 100) {
-                                e.target.value = 100; 
+                                e.target.value = 100;
                               }
-                              handleSchAmt(e); 
-                            }}                          />
+                              handleSchAmt(e);
+                            }} />
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "90px" }}
                             size="small"
@@ -1590,6 +1621,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             size="small"
@@ -1632,6 +1664,7 @@ useEffect(()=>{
                         </td>
                         <td>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef12}
                             onKeyDown={handleKeyDown}
@@ -1647,6 +1680,7 @@ useEffect(()=>{
                         <td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1659,6 +1693,7 @@ useEffect(()=>{
                         <td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1684,28 +1719,30 @@ useEffect(()=>{
                       </tr>
                       <tr>
                         <td><TextField
-                              id="outlined-number"
-                              type="number"
-                              size="small"
-                              value={barcode}
-                              placeholder="scan barcode"
-                           
-                              sx={{ width: "250px" }}
-                              onChange={(e) => {
-                                setBarcode(e.target.value)
-                              }}
+                 autoComplete="off"
+                          id="outlined-number"
+                          type="number"
+                          size="small"
+                          value={barcode}
+                          placeholder="scan barcode"
 
-                            /></td>
+                          sx={{ width: "250px" }}
+                          onChange={(e) => {
+                            setBarcode(e.target.value)
+                          }}
+
+                        /></td>
                         <td colSpan={14}></td>
 
                         <td>
                           <Button
                             variant="contained"
                             color="success"
-                            style={{ display: "flex", gap: "5px",background:"var(--color1)" }}
+                            style={{ display: "flex", gap: "5px", background: "var(--color1)" }}
                             onClick={addPurchaseValidation}
                           >
-                            <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
+                            <BorderColorIcon
+                              className="w-7 h-6 text-white  p-1 cursor-pointer" />
                             Edit
                           </Button>
                           {/* <Button variant="contained" color="success" onClick={addPurchaseValidation}><ControlPointIcon />Edit</Button> */}
@@ -1725,7 +1762,7 @@ useEffect(()=>{
                             }}
                           >
                             <BorderColorIcon
-                              color="primary"
+                              style={{ color: "var(--color1)" }}
                               onClick={() => handleEditClick(item)}
                             />
                             <DeleteIcon
@@ -1751,95 +1788,97 @@ useEffect(()=>{
                           <td>{item.amount}</td>
                         </tr>
                       ))}
-                     
+
                     </tbody>
                   </table>
-                
+
                   <div className="flex gap-10 justify-end mt-5 ">
-                  {/* First Column */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total GST : </label>
-                      <div className="font-bold">{purchase?.total_gst}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Qty :</label>
-                      <div className="font-bold">{purchase?.total_qty}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Net Profit :</label>
-                      <div className="font-bold">{purchase?.total_net_rate}</div>
-                    </div>
-                  </div>
-
-                  {/* Second Column */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
-                    {/* Total Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Total Amount : </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                        }}
-                      >
-                        {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
-                      </span>
+                    {/* First Column */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Total GST : </label>
+                        <div className="font-bold">{purchase?.total_gst}</div>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Total Qty :</label>
+                        <div className="font-bold">{purchase?.total_qty}</div>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Total Net Profit :</label>
+                        <div className="font-bold">{purchase?.total_net_rate}</div>
+                      </div>
                     </div>
 
-                    {/* CN Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" ,}}>
-                      <label className="font-bold">CN Amount : </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          color :"red"
-                        }}
-                      >
-                        {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
-                      </span>
-                    </div>
+                    {/* Second Column */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+                      {/* Total Amount Row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Total Amount : </label>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                          }}
+                        >
+                          {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
+                        </span>
+                      </div>
 
-                    {/* Total Margin Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Profit : </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                        }}
-                      >
-                       ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
-                      </span>
-                    </div>
+                      {/* CN Amount Row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px", }}>
+                        <label className="font-bold">CN Amount : </label>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                            color: "#F31C1C"
+                          }}
+                        >
+                          {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
+                        </span>
+                      </div>
 
-                    {/* Round Off Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Round off : </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                        }}
-                      >
-                        {(parseFloat(roundOffAmount) || 0).toFixed(2)}
-                      </span>
-                    </div>
+                      {/* Total Margin Row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Profit : </label>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                          }}
+                        >
+                          ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
+                        </span>
+                      </div>
 
-                    {/* Net Amount Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                      <label className="font-bold">Net Amount : </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                        }}
-                      >
-                        {(parseFloat(netAmount) || 0).toFixed(2)}
-                      </span>
+                      {/* Round Off Row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Round off : </label>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                          }}
+                        >
+                          {(parseFloat(roundOffAmount) || 0).toFixed(2)}
+                        </span>
+                      </div>
+
+                      {/* Net Amount Row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Net Amount : </label>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                            fontSize: "22px",
+                            color: "#3f6212"
+
+                          }}
+                        >
+                          {(parseFloat(netAmount) || 0).toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                </div>
 
-                
+
               </div>
               <div>
 
@@ -1867,21 +1906,21 @@ useEffect(()=>{
                       <tr>
                         <th>
                           {purchase?.cn_bill_list?.length === 0 ? (
-                              <input
-                                type="checkbox"
-                                onChange={handleSelectAllPending}
-                                checked={selectedRows.length === purchaseReturnPending.length && purchaseReturnPending.length > 0}
-                              />
-                            ) :
-                              <input
-                                type="checkbox"
-                                onChange={handleSelectAll}
-                                checked={
-                                  selectedRows.length === (purchase?.cn_bill_list?.length || 0) &&
-                                  (purchase?.cn_bill_list?.length > 0)
-                                }
-                                disabled={checkboxDisabled}
-                              />
+                            <input
+                              type="checkbox"
+                              onChange={handleSelectAllPending}
+                              checked={selectedRows.length === purchaseReturnPending.length && purchaseReturnPending.length > 0}
+                            />
+                          ) :
+                            <input
+                              type="checkbox"
+                              onChange={handleSelectAll}
+                              checked={
+                                selectedRows.length === (purchase?.cn_bill_list?.length || 0) &&
+                                (purchase?.cn_bill_list?.length > 0)
+                              }
+                              disabled={checkboxDisabled}
+                            />
                           }
                         </th>
                         <th>Bill No</th>
@@ -2064,13 +2103,13 @@ useEffect(()=>{
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6 text-center"> <span style={{ textTransform: "uppercase" }}>A</span>
-                <span style={{ textTransform: "lowercase" }}>re you sure you want to delete it?</span></h4>
+                <h4 className="text-lg font-semibold mt-6 text-center">
+                  <span style={{ textTransform: "lowercase" }}>Are you sure you want to delete it?</span></h4>
               </div>
               <div className="flex gap-5 justify-center">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                   onClick={handleLeavePage}
                 >
                   Yes

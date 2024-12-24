@@ -216,6 +216,10 @@ const InventoryView = () => {
                 //console.log("API Response item Catagory:===", response);
                 setPackList(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -230,6 +234,10 @@ const InventoryView = () => {
             .then((response) => {
                 setCategoryList(response.data.data);
                 // setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                  }      
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -245,6 +253,10 @@ const InventoryView = () => {
             .then((response) => {
                 setDrugGroupList(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -316,6 +328,10 @@ const InventoryView = () => {
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
+            else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
@@ -347,7 +363,12 @@ const InventoryView = () => {
             }
             ).then((response) => {
                 setOpenAddPopUp(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+
         } catch (error) {
             setIsLoading(false);
         }
@@ -380,8 +401,10 @@ const InventoryView = () => {
             const distributors = response.data.data;
             localStorage.setItem("distributor", JSON.stringify(distributors));
             setDistributorList(distributors);
+
             //console.log("Distributors fetched: ", distributors);
             return distributors;
+
         } catch (error) {
             console.error("API Error fetching distributors:", error);
             return [];
@@ -407,6 +430,10 @@ const InventoryView = () => {
             );
             setCustomerDetails(response.data.data);
             setIsLoading(false);
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -423,7 +450,12 @@ const InventoryView = () => {
                 // //console.log("API Response item Catagory:===", response);
                 setStaffList(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+
             .catch((error) => {
                 //console.log("API Error:", error);
             });
@@ -470,7 +502,12 @@ const InventoryView = () => {
                 //console.log(response.data.data);
                 setLoc(response?.data?.data?.location)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
+
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -498,6 +535,10 @@ const InventoryView = () => {
                 //console.log(response.data.data);
                 // setLoc(response?.data?.data?.location)
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -589,6 +630,10 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseListData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -620,6 +665,10 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseReturnListData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -651,6 +700,10 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleListData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -681,6 +734,10 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleReturnListData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -707,6 +764,10 @@ const InventoryView = () => {
             ).then((response) => {
                 setLedgerListData(response.data.data);
                 setIsLoading(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -732,6 +793,10 @@ const InventoryView = () => {
                 itemGetByID();
                 //console.log(response.data.data);
                 setIsDelete(false);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -975,7 +1040,8 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1100,7 +1166,8 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1217,7 +1284,8 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1229,6 +1297,7 @@ const InventoryView = () => {
                                                 />
 
                                                 {/* <TextField
+                 autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
                                                     style={{ width: '200px' }}
@@ -1336,7 +1405,8 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1359,10 +1429,12 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                 /> */}
 
                                                 {/* <TextField
+                 autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
                                                     style={{ width: '200px' }}
@@ -1553,6 +1625,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.category_name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                             // label="Select Company"
                                             />
@@ -1573,6 +1646,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.company_name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                             />
                                         )}
@@ -1591,6 +1665,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 label="Select DrugGroup"
                                             />
@@ -1600,6 +1675,7 @@ const InventoryView = () => {
                                 <div className="flex flex-col">
                                     <span className="label primary">Location</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-multiline-static"
                                         size="small"
                                         value={loc}

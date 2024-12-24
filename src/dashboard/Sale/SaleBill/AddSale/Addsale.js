@@ -1378,9 +1378,9 @@ const Addsale = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ backgroundColor: '#f0f0f0', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
@@ -1392,7 +1392,7 @@ const Addsale = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
-                                    className="payment_divv"
+                                    sx={{ minWidth: '200px' }}
                                     onChange={(e) => {
                                         setPaymentType(e.target.value);
                                         setUnsavedItems(true);
@@ -1410,7 +1410,7 @@ const Addsale = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={pickup}
-                                    className="payment_divv"
+                                    sx={{ minWidth: '150px' }}
                                     onChange={(e) => {
                                         setPickup(e.target.value);
                                         setUnsavedItems(true);
@@ -1422,29 +1422,18 @@ const Addsale = () => {
                                         <MenuItem key={option.id} value={option.label}>{option.label}</MenuItem>
                                     ))}
                                 </Select>
-                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
-                            </div>
+                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
 
+                            </div>
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
-                                <div className="detail mt-1 custommedia" >
+                                <div className="detail mt-1" >
                                     <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-1">
-                                                <div
-                                                    style={{
-                                                        color: 'white',
-                                                        fontWeight: "500",
-                                                        alignItems: "center",
-                                                        marginTop: '8px',
-                                                        marginLeft: "15px",
-                                                        fontWeight: "bold",
-                                                        width: '19%'
-                                                    }}>
-                                                    {localStorage.getItem('BillNo')}
-                                                </div>
+                                                <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', marginLeft: "15px", fontWeight: "bold", width: '19%' }}>{localStorage.getItem('BillNo')}  </div>
                                                 <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', fontWeight: "bold" }}>|</div>
                                                 <DatePicker
                                                     color="white"
@@ -1488,8 +1477,8 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
+                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
                                         value={customer}
@@ -1504,12 +1493,10 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '320px',
+                                                sm: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1528,6 +1515,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -1541,6 +1529,7 @@ const Addsale = () => {
                                                     ),
                                                     style: { height: 55 },
                                                 }}
+
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
                                                         fontSize: '1rem',
@@ -1552,7 +1541,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ width: '100%' }}>
+                                <div className="detail">
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1567,12 +1556,10 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '320px',
+                                                sm: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1591,6 +1578,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -1615,171 +1603,169 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
-                                    <table style={{ maxWidth: '50%', width: '100%' }} >
+                                <table >
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: 2,
+                                            alignItems: 'center',
+                                        }}
+                                    >
                                         <Box
                                             sx={{
-                                                display: 'flex',
-                                                flexWrap: 'wrap',
-                                                gap: 2,
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    flex: '1 1 auto',
-                                                    // minWidth: {
-                                                    //     xs: '350px',
-                                                    //     sm: '500px',
-                                                    //     md: '806px',
-                                                    //     lg: '1000px'
-                                                    // },
-                                                    width: '100%',
-                                                    background: '#ffffff',
-                                                    borderRadius: '7px',
-                                                }}
-                                            >
-                                                <Autocomplete
-                                                    value={selectedOption}
-                                                    blurOnSelect
-                                                    size="small"
-                                                    sx={{ fontSize: "1.5rem" }}
-                                                    onChange={handleOptionChange}
-                                                    onInputChange={handleInputChange}
-                                                    options={itemList}
-                                                    getOptionLabel={(option) => `${option.iteam_name || ''} `}
-                                                    filterOptions={(option, state) => { return itemList }}
-                                                    renderOption={(props, option) => (
-                                                        <ListItem {...props} key={option.id}>
-                                                            <ListItemText
-                                                                primary={`${option.iteam_name}, (${option.company})`}
-                                                                // secondary={
-                                                                //     <>
-                                                                //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                                                //         ₹: {option.mrp || 0},
-                                                                //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                                                //     </>
-                                                                // }
-                                                                secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                                                                sx={{
-                                                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
-                                                                }}
-                                                            />
-                                                        </ListItem>
-                                                    )}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            variant="outlined"
-                                                            id="searchResults"
-                                                            placeholder="Search Item Name..."
-                                                            InputProps={{
-                                                                ...params.InputProps,
-                                                                style: { height: 45, fontSize: '1.2rem' },
-
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <SearchIcon sx={{ color: "var(--color1)", cursor: "pointer" }} />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }}
-                                                            sx={{
-                                                                '& .MuiOutlinedInput-root': {
-                                                                    '& fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    '&:hover fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    '&.Mui-focused fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    borderBottom: '1px solid ',
-                                                                },
-                                                                '& .MuiInputBase-input::placeholder': {
-                                                                    fontSize: '1rem',
-                                                                    color: 'black',
-                                                                },
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
-                                            </Box>
-                                        </Box>
-                                        {isVisible && value && !batch &&
-                                            <Box sx={{
+                                                flex: '1 1 auto',
                                                 minWidth: {
-                                                    xs: '200px',
+                                                    xs: '350px',
                                                     sm: '500px',
                                                     md: '1000px',
                                                 },
-                                                backgroundColor: 'white',
-                                                position: 'absolute',
-                                                zIndex: 1
+                                                width: '100%',
+                                                background: '#ceecfd',
+                                                borderRadius: '7px',
                                             }}
-                                                id="tempId"
+                                        >
+                                            <Autocomplete
+                                                value={selectedOption}
+                                                blurOnSelect
+                                                size="small"
+                                                sx={{ fontSize: "1.5rem" }}
+                                                onChange={handleOptionChange}
+                                                onInputChange={handleInputChange}
+                                                options={itemList}
+                                                getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                filterOptions={(option, state) => { return itemList }}
+                                                renderOption={(props, option) => (
+                                                    <ListItem {...props} key={option.id}>
+                                                        <ListItemText
+                                                            primary={`${option.iteam_name}, (${option.company})`}
+                                                            // secondary={
+                                                            //     <>
+                                                            //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                                            //         ₹: {option.mrp || 0},
+                                                            //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                                            //     </>
+                                                            // }
+                                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                                            sx={{
+                                                                '& .MuiTypography-root': { fontSize: '1.1rem' }
+                                                            }}
+                                                        />
+                                                    </ListItem>
+                                                )}
+                                                renderInput={(params) => (
+                                                    <TextField
+                 autoComplete="off"
+                                                        {...params}
+                                                        variant="outlined"
+                                                        id="searchResults"
+                                                        placeholder="Search Item Name..."
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            style: { height: 45, fontSize: '1.2rem' },
+
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-root': {
+                                                                '& fieldset': {
+                                                                    border: 'none',
+                                                                },
+                                                                '&:hover fieldset': {
+                                                                    border: 'none',
+                                                                },
+                                                                '&.Mui-focused fieldset': {
+                                                                    border: 'none',
+                                                                },
+                                                                borderBottom: '1px solid ',
+                                                            },
+                                                            '& .MuiInputBase-input::placeholder': {
+                                                                fontSize: '1rem',
+                                                                color: 'black',
+                                                            },
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Box>
+                                    </Box>
+                                    {isVisible && value && !batch &&
+                                        <Box sx={{
+                                            minWidth: {
+                                                xs: '200px',
+                                                sm: '500px',
+                                                md: '1000px',
+                                            },
+                                            backgroundColor: 'white',
+                                            position: 'absolute',
+                                            zIndex: 1
+                                        }}
+                                            id="tempId"
+                                        >
+                                            <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
+                                                ref={tableRef}
                                             >
-                                                <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
-                                                    ref={tableRef}
-                                                >
-                                                    <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                        <thead>
-                                                            <tr className="customtable">
-                                                                <th>Item Name</th>
-                                                                <th>Batch Number</th>
-                                                                <th>Unit</th>
-                                                                <th>Expiry Date</th>
-                                                                <th>QTY</th>
-                                                                <th>Loc</th>
+                                                <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                    <thead>
+                                                        <tr className="customtable">
+                                                            <th>Item Name</th>
+                                                            <th>Batch Number</th>
+                                                            <th>Unit</th>
+                                                            <th>Expiry Date</th>
+                                                            <th>QTY</th>
+                                                            <th>Loc</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {batchListData.length > 0 ?
+                                                            <>
+                                                                {batchListData.map(item => (
+                                                                    <tr
+                                                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
+                                                                        key={item.id}
+                                                                        data-id={item.id}
+                                                                        tabIndex={0}
+                                                                        style={{
+                                                                            border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                                                        }}
+                                                                        onClick={() => handlePassData(item)}
+                                                                        onMouseEnter={handleMouseEnter}
+                                                                    >
+                                                                        <td className="text-base font-semibold">{item.iteam_name}</td>
+                                                                        <td className="text-base font-semibold">{item.batch_number}</td>
+                                                                        <td className="text-base font-semibold">{item.unit}</td>
+                                                                        <td className="text-base font-semibold">{item.expiry_date}</td>
+                                                                        <td className="text-base font-semibold">{item.qty}</td>
+                                                                        <td className="text-base font-semibold">{item.location}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </> :
+                                                            <tr>
+                                                                <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {batchListData.length > 0 ?
-                                                                <>
-                                                                    {batchListData.map(item => (
-                                                                        <tr
-                                                                            className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-                                                                            key={item.id}
-                                                                            data-id={item.id}
-                                                                            tabIndex={0}
-                                                                            style={{
-                                                                                border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
-                                                                            }}
-                                                                            onClick={() => handlePassData(item)}
-                                                                            onMouseEnter={handleMouseEnter}
-                                                                        >
-                                                                            <td className="text-base font-semibold">{item.iteam_name}</td>
-                                                                            <td className="text-base font-semibold">{item.batch_number}</td>
-                                                                            <td className="text-base font-semibold">{item.unit}</td>
-                                                                            <td className="text-base font-semibold">{item.expiry_date}</td>
-                                                                            <td className="text-base font-semibold">{item.qty}</td>
-                                                                            <td className="text-base font-semibold">{item.location}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </> :
-                                                                <tr>
-                                                                    <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </Box>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </Box>
 
-                                        }
+                                    }
 
-                                    </table>
+                                </table>
 
-                                    <Button
-                                        variant="contained"
-                                        style={{ backgroundColor: "var(--color1)" }}
+                                <Button
+                                    variant="contained"
+                                    style={{ backgroundColor: "var(--color1)" }}
 
-                                        onClick={handelAddItemOpen}
-                                    >
-                                        <ControlPointIcon className="mr-2" />
-                                        Add New Item
-                                    </Button>
-                                </div>
+                                    onClick={handelAddItemOpen}
+                                >
+                                    <ControlPointIcon className="mr-2" />
+                                    Add New Item
+                                </Button>
 
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1793,14 +1779,11 @@ const Addsale = () => {
                                                 <th>Base</th>
                                                 <th >GST%</th>
                                                 <th >QTY </th>
-
-                                                <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
+                                                <th  >Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
-                                                        <Button style={{ justifyContent: 'left' }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                                                        <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                                                     </Tooltip>
-                                                </div>
                                                 </th>
-
                                                 <th >Loc.</ th>
                                                 <th >Amount </th>
                                             </tr>
@@ -1814,6 +1797,7 @@ const Addsale = () => {
                                                 <td>
 
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         type="number"
@@ -1827,6 +1811,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '110px' }}
                                                         size="small"
@@ -1837,6 +1822,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         size="small"
@@ -1850,6 +1836,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         disabled
                                                         id="outlined-number"
                                                         type="number"
@@ -1863,6 +1850,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '120px' }}
@@ -1875,6 +1863,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         disabled
@@ -1888,6 +1877,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '70px' }}
@@ -1907,6 +1897,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
@@ -1922,6 +1913,7 @@ const Addsale = () => {
 
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         inputRef={inputRef9}
@@ -1937,6 +1929,7 @@ const Addsale = () => {
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         size="small"
@@ -2099,7 +2092,7 @@ const Addsale = () => {
                                                 }} />
                                         </div>
 
-                                        <div className="">
+                                        <div className="mt-1">
                                             <Input type="number"
                                                 value={loyaltyVal || loyaltyPoints}
                                                 // onChange={(e) => { setLoyaltyVal(e.target.value) }}
@@ -2177,6 +2170,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={doctorName}
@@ -2189,6 +2183,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={clinic}
@@ -2230,6 +2225,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={customerName}
@@ -2242,6 +2238,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={mobileNo}
@@ -2345,6 +2342,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Item Name</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 size="small"
                                                 sx={{ minWidth: "150px" }}
@@ -2356,6 +2354,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label  secondary">Barcode</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2368,6 +2367,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Unit</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2380,6 +2380,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Pack</label>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 size="small"
@@ -2460,7 +2461,6 @@ const Addsale = () => {
             <div
                 id="modal"
                 value={openModal}
-                style={{ zIndex: 9999 }}
                 className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
             >
                 <div />
@@ -2487,7 +2487,7 @@ const Addsale = () => {
                         </button>
                     </div>
                 </div>
-            </div >
+            </div>
 
         </>
     )

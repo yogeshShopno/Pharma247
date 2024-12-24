@@ -693,6 +693,7 @@ const EditSaleReturn = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
+                 autoComplete="off"
                                                     {...params}
                                                     value={customer}
 
@@ -740,7 +741,8 @@ const EditSaleReturn = () => {
                                     {/* <div className="detail">
                                         <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
-                                        <TextField id="outlined-basic"
+                                        <TextField
+                 autoComplete="off" autoComplete="off"id="outlined-basic"
                                             value={address}
                                             onChange={(e) => { setAddress(e.target.value) }}
                                             sx={{
@@ -788,6 +790,7 @@ const EditSaleReturn = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
+                 autoComplete="off"
                                                     {...params}
                                                     variant="outlined"
                                                     placeholder="Search by DR. Name"
@@ -834,6 +837,7 @@ const EditSaleReturn = () => {
                                                     <td>
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
@@ -852,6 +856,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
                                                             sx={{ width: '110px', textAlign: 'right' }}
@@ -868,6 +873,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -885,6 +891,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
@@ -903,6 +910,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '120px', textAlign: 'right' }}
@@ -924,6 +932,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             disabled
@@ -943,6 +952,7 @@ const EditSaleReturn = () => {
                                                     <td>
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '70px', textAlign: 'right' }}
@@ -970,6 +980,7 @@ const EditSaleReturn = () => {
 
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             inputRef={inputRef9}

@@ -5,7 +5,11 @@ import { IoSearch } from "react-icons/io5";
 import { AiOutlineCaretUp } from 'react-icons/ai';
 import axios from 'axios';
 import Model_return from '../model/purchase/Model_return';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const Purchasereturn = () => {
+    const history = useHistory()
+
     const [itemsearch, setItemsearch] = useState([]);
     const [item, setItem] = useState([])
     const [searchInput, setSearchInput] = useState([]);
@@ -49,6 +53,10 @@ const Purchasereturn = () => {
             );
             //console.log("response===>", response.data.data);
             setDistributors(response.data.data);
+            if(response.data.status === 401){ 
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             //console.log("Error:", error);
         }
@@ -79,6 +87,10 @@ const Purchasereturn = () => {
                 }));
 
                 setItem(extractedItems);
+            }
+            if(response.data.status === 401){ 
+                history.push('/');
+                localStorage.clear();
             }
         } catch (error) {
             //console.log("Error:", error);

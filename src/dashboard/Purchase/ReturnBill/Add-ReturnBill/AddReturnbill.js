@@ -881,7 +881,7 @@ const AddReturnbill = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} autoFocus />}
+                 autoComplete="off" {...params} autoFocus />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                     {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
@@ -1387,7 +1387,7 @@ sx={{
                                     </div>
                                     {/* <div>
                                             <TextField
-                 autoComplete="off" autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                 autoComplete="off" value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

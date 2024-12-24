@@ -384,7 +384,7 @@ const Company = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off" autoComplete="off"{...params} />
+                 autoComplete="off" {...params} />
                                             )}
                                             freeSolo
                                         />

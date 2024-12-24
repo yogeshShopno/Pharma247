@@ -32,7 +32,7 @@ const PaymentList = () => {
     const rowsPerPage = 11;
     const token = localStorage.getItem("token");
     const permissions = usePermissions();
-
+    
     const columns = [
         { id: 'bill_no', label: 'Bill No', minWidth: 170, height: 100 },
         { id: 'distributor_name', label: 'Distributor Name', minWidth: 100 },
@@ -43,6 +43,7 @@ const PaymentList = () => {
         { id: 'paid_amount', label: 'Paid Amount', minWidth: 100 },
         { id: 'due_amount', label: 'Due Amount', minWidth: 100 },
     ];
+    
     const [editId, setEditId] = useState(null)
     const [confirm, setConfirm] = useState(false);
     const [open, setOpen] = useState(false);
@@ -485,8 +486,7 @@ const PaymentList = () => {
                                     onChange={handleDistributorBillList}
                                     options={distributorList}
                                     getOptionLabel={(option) => option.name}
-                                    renderInput={(params) => <TextField
-
+                                    renderInput={(params) => <TextField autoFocus
                                    
                                         {...params} label="Search Distributor Name" />}
                                 />
@@ -649,6 +649,7 @@ const PaymentList = () => {
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
                                                     renderInput={(params) => <TextField
+
                                                     {...params} />}
                                                 />
                                                 {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
@@ -848,7 +849,6 @@ const PaymentList = () => {
                             <Button autoFocus variant="contained" onClick={() => { setopenBill(false); setDistributorValue(null); setDistributorId(null); }}>
                                 OK
                             </Button>
-
                         </DialogActions>
                     </Dialog>
                 </div >

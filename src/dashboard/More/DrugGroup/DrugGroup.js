@@ -349,7 +349,7 @@ const DrugGroup = () => {
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
+                 autoComplete="off" {...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
@@ -464,7 +464,7 @@ const DrugGroup = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off" autoComplete="off"{...params} />
+                 autoComplete="off" {...params} />
                                             )}
                                             freeSolo
                                         />

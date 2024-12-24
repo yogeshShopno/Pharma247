@@ -222,7 +222,7 @@ const AddDistributer = () => {
                                 >
                                     Phone
                                 </label>
-                                <TextField 
+                                <textField autoComplete="off"
 sx={{
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px' , // Remove padding from the input field

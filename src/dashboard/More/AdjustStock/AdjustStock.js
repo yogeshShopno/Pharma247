@@ -662,7 +662,7 @@ const AdjustStock = () => {
                                                 disabled
                                                 getOptionLabel={(option) => option.company_name}
                                                 renderInput={(params) => (
-                                                    <TextField {...params} />
+                                                    <textField autoComplete="off"{...params} />
                                                 )}
                                             />
                                         </div>

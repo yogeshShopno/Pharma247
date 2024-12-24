@@ -806,7 +806,7 @@ const DoctorList = () => {
                                 </ListItem>
                               )}
                               renderInput={(params) => (
-                                <TextField {...params} />
+                                <textField autoComplete="off"{...params} />
                               )}
                               freeSolo
                             />

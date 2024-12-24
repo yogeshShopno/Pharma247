@@ -484,7 +484,7 @@ const PaymentList = () => {
                                     onChange={handleDistributorBillList}
                                     options={distributorList}
                                     getOptionLabel={(option) => option.name}
-                                    renderInput={(params) => <TextField {...params} label="Search Distributor Name" />}
+                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Search Distributor Name" />}
                                 />
                                 {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>}
                             </div>
@@ -642,7 +642,7 @@ const PaymentList = () => {
                                                     onChange={handleDistributor}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} />}
                                                 />
                                                 {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
                                             </>

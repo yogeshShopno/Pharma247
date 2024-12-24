@@ -382,7 +382,7 @@ const Company = () => {
                                                 </ListItem>
                                             )}
                                             renderInput={(params) => (
-                                                <TextField {...params} />
+                                                <textField autoComplete="off"{...params} />
                                             )}
                                             freeSolo
                                         />

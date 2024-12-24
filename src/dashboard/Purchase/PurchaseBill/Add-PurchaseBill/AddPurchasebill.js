@@ -1484,7 +1484,7 @@ const AddPurchaseBill = () => {
                   onChange={handleDistributorChange}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params}
+                  renderInput={(params) => <textField autoComplete="off"{...params}
                     autoFocus
                   />}
                 />

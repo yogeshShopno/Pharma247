@@ -725,7 +725,7 @@ const Itemmaster = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" autoFocus />
+                    <textField autoComplete="off"{...params} label="Search Item Name" autoFocus />
 
                   )}
                   freeSolo // Allows the user to type values not in the list
@@ -811,7 +811,7 @@ const Itemmaster = () => {
                     onChange={(e, value) => setDrugGroup(value)}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select DrugGroup" />
+                      <textField autoComplete="off"{...params} label="Select DrugGroup" />
                     )}
                   />
                 </FormControl>
@@ -843,7 +843,7 @@ const Itemmaster = () => {
                     sx={{ width: 350 }}
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select Company" />
+                      <textField autoComplete="off"{...params} label="Select Company" />
                     )}
                   />
                   {/* {error.selectedCompany && <span style={{ color: 'red', fontSize: '14px' }}>{error.selectedCompany}</span>} */}
@@ -872,7 +872,7 @@ const Itemmaster = () => {
                     onChange={(e, value) => setSelectedSuppliers(value)}
                     getOptionLabel={(option) => option.name.toUpperCase()}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select Suppliers" />
+                      <textField autoComplete="off"{...params} label="Select Suppliers" />
                     )}
                   />
                   {error.selectedSuppliers && (
@@ -948,7 +948,7 @@ const Itemmaster = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Select Location" />
+                    <textField autoComplete="off"{...params} label="Select Location" />
                   )}
                   freeSolo
                 />
@@ -1088,7 +1088,7 @@ const Itemmaster = () => {
                       onChange={(e, value) => setSelectedCategory(value)}
                       getOptionLabel={(option) => option.category_name}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select Category " />
+                        <textField autoComplete="off"{...params} label="Select Category " />
                       )}
                     />
                   </FormControl>

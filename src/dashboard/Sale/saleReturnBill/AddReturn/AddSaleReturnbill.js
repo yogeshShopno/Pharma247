@@ -910,7 +910,7 @@ const Salereturn = () => {
                                 {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
-                                    <TextField id="outlined-basic"
+                                    <textField autoComplete="off"id="outlined-basic"
                                         value={address}
                                         onChange={(e) => { setAddress(e.target.value) }}
                                         sx={{
@@ -1242,7 +1242,7 @@ const Salereturn = () => {
                                             <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                                         </div>
                                         {/* <div>
-                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                            <textField autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

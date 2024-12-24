@@ -934,7 +934,7 @@ const EditReturnBill = () => {
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <TextField {...params} />}
+                                        renderInput={(params) => <textField autoComplete="off"{...params} />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
@@ -1424,7 +1424,7 @@ const EditReturnBill = () => {
                                                 <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
                                             </div>
                                             {/* <div>
-                                            <TextField value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                            <textField autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

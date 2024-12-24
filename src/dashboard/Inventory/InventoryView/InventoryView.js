@@ -1040,7 +1040,7 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1165,7 +1165,7 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1282,7 +1282,7 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1401,7 +1401,7 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1424,7 +1424,7 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField {...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
                                                 /> */}
 
                                                 {/* <TextField

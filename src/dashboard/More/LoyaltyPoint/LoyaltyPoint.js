@@ -286,7 +286,7 @@ const LoyaltyPoint = () => {
                                         onChange={handleLoyaltyPointList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <TextField {...params} label="Search Drug Name" />}
+                                        renderInput={(params) => <textField autoComplete="off"{...params} label="Search Drug Name" />}
                                     />
                                 </div>
                                 <div>

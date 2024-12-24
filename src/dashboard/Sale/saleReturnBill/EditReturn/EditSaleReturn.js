@@ -740,7 +740,7 @@ const EditSaleReturn = () => {
                                     {/* <div className="detail">
                                         <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
-                                        <TextField id="outlined-basic"
+                                        <textField autoComplete="off"id="outlined-basic"
                                             value={address}
                                             onChange={(e) => { setAddress(e.target.value) }}
                                             sx={{

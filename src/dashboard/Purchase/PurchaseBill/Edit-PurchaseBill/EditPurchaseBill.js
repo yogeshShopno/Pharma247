@@ -1277,7 +1277,7 @@ const EditPurchaseBill = () => {
                     onChange={(e, value) => setDistributor(value)}
                     options={distributorList}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <textField autoComplete="off"{...params} />}
                   />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1380,7 +1380,7 @@ const EditPurchaseBill = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Item Name" autoFocus />
+                    <textField autoComplete="off"{...params} label="Search Item Name" autoFocus />
                   )}
                 />
 

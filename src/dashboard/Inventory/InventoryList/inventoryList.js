@@ -1080,7 +1080,7 @@ const InventoryList = () => {
                     )}
                     ref={autocompleteRef}
                   />
-                  {/* <TextField id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
+                  {/* <textField autoComplete="off"id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1114,7 +1114,7 @@ const InventoryList = () => {
                     )}
                     ref={autocompleteRef}
                   />
-                  {/* <TextField id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
+                  {/* <textField autoComplete="off"id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1181,7 +1181,7 @@ const InventoryList = () => {
                     ref={autocompleteRef}
                   />
 
-                  {/* <TextField id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
+                  {/* <textField autoComplete="off"id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1686,7 +1686,7 @@ const InventoryList = () => {
                     sx={{ width: 200 }}
                     getOptionLabel={(option) => option.batch_number}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select Batch" />
+                      <textField autoComplete="off"{...params} label="Select Batch" />
                     )}
                   />
                 </div>
@@ -1880,7 +1880,7 @@ const InventoryList = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Select Location" />
+                    <textField autoComplete="off"{...params} label="Select Location" />
                   )}
                   freeSolo
                 />

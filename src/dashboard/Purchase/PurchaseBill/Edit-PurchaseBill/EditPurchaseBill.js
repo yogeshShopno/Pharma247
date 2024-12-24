@@ -936,9 +936,8 @@ const EditPurchaseBill = () => {
   const handleOptionChange = (event, newValue) => {
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName.toUpperCase());
-    setAutocompleteDisabled(true);
-    handleSearch(itemName.toUpperCase());
+    setSearchItem(itemName);
+    handleSearch(itemName);
   };
 
   const handlePTR = (e) => {

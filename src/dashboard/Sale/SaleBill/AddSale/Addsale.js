@@ -1115,28 +1115,36 @@ const Addsale = () => {
         }
     };
 
-    const addItemValidation = () => {
+    const addItemValidation = async () => {
         setUnsavedItems(true);
+        const newErrors = {};
         if (!mrp) {
-            toast.error('Please Select any Item Name')
-        } else {
-            addSaleItem();
+            newErrors.mrp = "Please Select any Item Name";
+            toast.error(newErrors.mrp);
+        }
+        if (!qty || qty <= 0) {
+            // Notify the user to enter a valid quantity
+            newErrors.qty = "Please enter a valid quantity.";
+            toast.error(newErrors.qty);
+        }
+
+        else {
+            // addSaleItem();
             setIsVisible(false);
             setSearchItem('')
             setBarcodeItemName('')
             setSelectedOption(null);
         }
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+            await addSaleItem();
+        }
+        return isValid;
     }
 
     const addSaleItem = async () => {
         generateRandomNumber();
         let data = new FormData();
-
-        if (!qty || qty <= 0) {
-            // Notify the user to enter a valid quantity
-            toast.error("Please enter a valid quantity.");
-            return; // Exit the function early
-        }
 
         if (isEditMode === true) {
             data.append("item_id", itemEditID)
@@ -1191,25 +1199,22 @@ const Addsale = () => {
                     },
                 });
 
-            if (!isEditMode && response.data.status === 200) {
-                setTotalAmount(0)
-                saleItemList();
-                setUnit('')
-                setBatch('')
-                setExpiryDate('');
-                setMRP('')
-                setQty('')
-                setBase('')
-                setGst('')
-                setBatch('')
-                setBarcode("")
-                setLoc('')
-                setOrder('')
-                setIsEditMode(false);
+            setTotalAmount(0)
+            saleItemList();
+            setUnit('')
+            setBatch('')
+            setExpiryDate('');
+            setMRP('')
+            setQty('')
+            setBase('')
+            setGst('')
+            setBatch('')
+            setBarcode("")
+            setLoc('')
+            setOrder('')
+            setIsEditMode(false);
 
-            } else {
-                toast.error(response.data.message);
-            }
+            toast.success(response.data.message);
 
 
             // if (quantityDifference === 1) {
@@ -1373,9 +1378,9 @@ const Addsale = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ backgroundColor: '#f0f0f0', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
@@ -1423,7 +1428,7 @@ const Addsale = () => {
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
-                                <div className="detail mt-1 custommedia" >
+                                <div className="detail mt-1" >
                                     <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
@@ -1472,7 +1477,7 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
+                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
@@ -1488,12 +1493,10 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '320px',
+                                                sm: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1537,7 +1540,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ width: '100%' }}>
+                                <div className="detail">
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1552,12 +1555,10 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '320px',
+                                                sm: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1600,8 +1601,7 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
-                                <table style={{ maxWidth: '50%', width: '100%' }} >
+                                <table >
                                     <Box
                                         sx={{
                                             display: 'flex',
@@ -1613,12 +1613,11 @@ const Addsale = () => {
                                         <Box
                                             sx={{
                                                 flex: '1 1 auto',
-                                                // minWidth: {
-                                                //     xs: '350px',
-                                                //     sm: '500px',
-                                                //     md: '806px',
-                                                //     lg: '1000px'
-                                                // },
+                                                minWidth: {
+                                                    xs: '350px',
+                                                    sm: '500px',
+                                                    md: '1000px',
+                                                },
                                                 width: '100%',
                                                 background: '#ceecfd',
                                                 borderRadius: '7px',
@@ -1764,7 +1763,6 @@ const Addsale = () => {
                                     <ControlPointIcon className="mr-2" />
                                     Add New Item
                                 </Button>
-                                </div>
 
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1778,14 +1776,11 @@ const Addsale = () => {
                                                 <th>Base</th>
                                                 <th >GST%</th>
                                                 <th >QTY </th>
-
-                                                <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
+                                                <th  >Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
-                                                        <Button style={{ justifyContent: 'left' }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                                                        <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                                                     </Tooltip>
-                                                </div>
                                                 </th>
-
                                                 <th >Loc.</ th>
                                                 <th >Amount </th>
                                             </tr>
@@ -2084,7 +2079,7 @@ const Addsale = () => {
                                                 }} />
                                         </div>
 
-                                        <div className="">
+                                        <div className="mt-1">
                                             <Input type="number"
                                                 value={loyaltyVal || loyaltyPoints}
                                                 // onChange={(e) => { setLoyaltyVal(e.target.value) }}
@@ -2445,7 +2440,6 @@ const Addsale = () => {
             <div
                 id="modal"
                 value={openModal}
-                style={{ zIndex: 9999 }}
                 className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"}`}
             >
                 <div />
@@ -2472,7 +2466,7 @@ const Addsale = () => {
                         </button>
                     </div>
                 </div>
-            </div >
+            </div>
 
         </>
     )

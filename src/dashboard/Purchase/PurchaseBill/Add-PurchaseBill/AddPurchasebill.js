@@ -1670,7 +1670,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               error={!!errors.unit}
                               value={unit}
-                              sx={{ width: "50px" }}
+                              sx={{ width: "40px" }}
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g, '');
                                 setUnit(value ? Number(value) : "");

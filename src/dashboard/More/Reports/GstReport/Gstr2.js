@@ -210,7 +210,21 @@ const Gstr2 = () => {
                                         <MenuItem key={1} value="1">Purchase return</MenuItem>
                                     </Select>
 
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px", marginBlock: "25px" }} onClick={downloadCSV}> <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={downloadCSV}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button>
 
                                     <div >
                                     </div>

@@ -129,7 +129,21 @@ const Non_Moving_items = () => {
                                     />
                                 </div>
                                 <div style={{ marginTop: "25px" }}>
-                                    <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlefilterData}  > <img src={excelIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white",
+                                            textTransform: "none",
+                                            paddingLeft: "35px",
+                                        }}
+                                        onClick={handlefilterData}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                        Download
+                                    </Button>
                                 </div>
                             </div>
                         </div>

@@ -326,17 +326,7 @@ const Header = () => {
                         </span></Link>
                     </div>
                     {/* {permissions.some(permission => permission["adjust stock create"]) && */}
-                    {hasPermission(permissions, "adjust stock create") &&
-                      <div>
-                        <Link to='/adjustStock'>
-                          <span
-                            href=""
-                            className="text-white font-semibold py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
-                          >
-                            Adjust Stock
-                          </span></Link>
-                      </div>
-                    }
+                   
                     <div className="dropdown relative" >
                       <button
                         className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
@@ -426,6 +416,17 @@ const Header = () => {
                               </span>
                             </li>
                           </Link>}
+                         
+                          {hasPermission(permissions, "adjust stock create") &&
+                          <li className="block border-b-2">
+                            <Link to='/more/adjust-stock'>
+                              <span
+                                className="bg-white hover:bg-lime-900   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                href=""
+                              >
+                                Adjust stock
+                              </span></Link>
+                          </li>}
                         {hasPermission(permissions, "bank account view") &&
                           <li className="block border-b-2">
                             <Link to='/more/BankAccountdetails'>

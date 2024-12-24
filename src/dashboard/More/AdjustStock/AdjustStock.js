@@ -1,5 +1,5 @@
 import { BsLightbulbFill } from "react-icons/bs"
-import Header from "../Header"
+import Header from "../../Header"
 import { Autocomplete, Button, IconButton, InputAdornment, ListItem } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
@@ -15,7 +15,7 @@ import { format, subDays } from 'date-fns';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from "axios";
 import SearchIcon from '@mui/icons-material/Search';
-import Loader from "../../componets/loader/Loader";
+import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 

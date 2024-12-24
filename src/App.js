@@ -52,7 +52,7 @@ import BankAccount from './dashboard/More/BankAccounts/BankAccount';
 import ItemWiseMargin from './dashboard/More/Reports/MarginReport/ItemWiseMargin';
 import BillItemWiseMargin from './dashboard/More/Reports/MarginReport/BillItemWiseMargin';
 import PurchaseRegister from './dashboard/More/Reports/GstReport/PurchaseRegister';
-import AdjustStock from './dashboard/AdjustStock/AdjustStock';
+import AdjustStock from './dashboard/More/AdjustStock/AdjustStock';
 import SalesRegister from './dashboard/More/Reports/GstReport/SalesRegister';
 import SalesBill from './dashboard/More/Reports/GstReport/SalesBill';
 import PurchaseBillReport from './dashboard/More/Reports/GstReport/PurchaseBill_Report';
@@ -367,11 +367,7 @@ function App() {
                 <PurchaseBillReport />
               </Protected>
             </Route>
-            <Route path='/adjustStock'>
-              <Protected>
-                <AdjustStock />
-              </Protected>
-            </Route>
+            
             <Route path='/Reports/gst-sales-register'>
               <Protected>
                 <SalesRegister />
@@ -540,6 +536,11 @@ function App() {
             </Route>
             <Route path='/more/drug-group'>
               <DrugGroup />
+            </Route>
+            <Route path='/more/adjust-stock'>
+              <Protected>
+                <AdjustStock />
+              </Protected>
             </Route>
             <Route path='/Staff-sessions/sessions'>
               <LogActivity />

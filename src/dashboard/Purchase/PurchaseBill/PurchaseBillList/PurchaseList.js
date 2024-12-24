@@ -62,9 +62,7 @@ const Purchasebill = () => {
 
   const goIntoAdd = () => {
     history.push('/purchase/addPurchaseBill')
-  }
-
-  
+  } 
 
   useEffect(() => {
     purchaseBillList(currentPage);
@@ -140,7 +138,13 @@ const filteredList = tableData.filter(row => {
   );
 });
 
- 
+useEffect(() => {
+  if (tableData.length > 0) {
+    localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
+  } else {
+    localStorage.setItem('Purchase_SrNo', 1);
+  }
+}, [tableData, currentPage]);
 
   useEffect(() => {
     purchaseBillList();

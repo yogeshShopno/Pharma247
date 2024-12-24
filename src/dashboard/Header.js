@@ -56,7 +56,6 @@ const Header = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
-
         localStorage.clear();
 
         history.push('/')
@@ -123,7 +122,6 @@ const Header = () => {
           localStorage.clear();
         }
       })
-      
     }
     catch (error) {
 
@@ -326,7 +324,6 @@ const Header = () => {
                         </span></Link>
                     </div>
                     {/* {permissions.some(permission => permission["adjust stock create"]) && */}
-                   
                     <div className="dropdown relative" >
                       <button
                         className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
@@ -416,7 +413,7 @@ const Header = () => {
                               </span>
                             </li>
                           </Link>}
-                         
+                           
                           {hasPermission(permissions, "adjust stock create") &&
                           <li className="block border-b-2">
                             <Link to='/more/adjust-stock'>
@@ -456,6 +453,15 @@ const Header = () => {
                               href=""
                             >
                               Reconciliation                              </span>
+                          </Link>
+                        </li>
+                        <li className="block border-b-2">
+                          <Link to='/more/loyaltypoints'>
+                            <span
+                              className="bg-white hover:bg-lime-900   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              href=""
+                            >
+                              Loyalty Point                              </span>
                           </Link>
                         </li>
                         <Link to='/Resports'>

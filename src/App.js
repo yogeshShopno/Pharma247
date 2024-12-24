@@ -92,6 +92,7 @@ import LogActivity from './dashboard/profile/Staff-Sessions/LogActivity';
 import Gstr2 from './dashboard/More/Reports/GstReport/Gstr2';
 import Reconciliation from './dashboard/More/Reconciliation/reconciliation';
 import ReconciliationManage from './dashboard/profile/Staff-Sessions/ReconciliationManage';
+import LoyaltyPoint from './dashboard/More/LoyaltyPoint/LoyaltyPoint';
 
 import CssBaseline from '@mui/material/CssBaseline'; // Reset default styles
 // import { CssBaseline } from '@mui/material';
@@ -120,6 +121,10 @@ function App() {
         border-color: #3f6212; /* Focused border color */
       }
 
+       .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #3f6212;
+    border-width: 2px;
+  }
       /* Change label colors */
       .MuiInputLabel-root {
         color: #3f6212; /* Default label color */
@@ -136,6 +141,10 @@ function App() {
 
       .MuiInput-underline:hover:not(.Mui-disabled):before {
         border-bottom: 2px solid #3f6212; /* Hover underline color */
+      }
+
+       .css-1z6833-MuiButtonBase-root-MuiButton-root:hover{
+      background-color: #3f6212;
       }
 
       .MuiInput-underline:after {
@@ -232,6 +241,11 @@ function App() {
             <Route path='/more/reconciliation'>
               <Protected>
                 <Reconciliation />
+              </Protected>
+            </Route>
+            <Route path='/more/loyaltypoints'>
+              <Protected>
+                <LoyaltyPoint />
               </Protected>
             </Route>
             <Route path='/Resports'>
@@ -367,7 +381,7 @@ function App() {
                 <PurchaseBillReport />
               </Protected>
             </Route>
-            
+
             <Route path='/Reports/gst-sales-register'>
               <Protected>
                 <SalesRegister />

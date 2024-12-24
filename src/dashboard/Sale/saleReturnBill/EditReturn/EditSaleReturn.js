@@ -189,7 +189,11 @@ const EditSaleReturn = () => {
             });
             const record = response.data.data;
             console.log('record :>> ', record);
-            setCustomer(response.data.data.customer_name)
+            // setCustomer(response.data.data.customer_name)
+            const foundCustomer = customerData.find(
+                (option) => option.name === record.customer_name
+            );
+            setCustomer(foundCustomer || '');
             // const foundCustomer = customerData.find(
             //     (option) => option.name === record.customer_name
             // );
@@ -203,7 +207,7 @@ const EditSaleReturn = () => {
             setSgst(response.data.data.sgst)
             setIgst(response.data.data.igst)
             setCgst(response.data.data.cgst)
-            setAddress(response.data.data.customer_address)
+            setAddress(response.data.data.customer_name)
             setTotalAmount(response.data.data.sales_amount)
             setTotalGst(response.data.data.total_gst)
 
@@ -292,6 +296,7 @@ const EditSaleReturn = () => {
             data.append("bill_date", saleReturnItems?.bill_date)
             data.append("customer_id", customer?.id);
             data.append("customer_address", address)
+            data.append("customer_name", customer.name)
             data.append("doctor_id", doctor?.id || '');
             data.append('mrp_total', totalAmount)
             data.append('total_discount', finalDiscount)
@@ -661,7 +666,7 @@ const EditSaleReturn = () => {
                                             value={customer}
                                             options={customerDetails}
                                             disabled
-                                            // getOptionLabel={(option) => option.name || ''}
+                                            getOptionLabel={(option) => option.name || ''}
                                             isOptionEqualToValue={(option, value) => option.id === value.id}
                                             sx={{
                                                 width: '100%',
@@ -732,7 +737,7 @@ const EditSaleReturn = () => {
                                         </input> */}
                                         {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                     </div>
-                                    <div className="detail">
+                                    {/* <div className="detail">
                                         <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
                                         <TextField id="outlined-basic"
@@ -748,7 +753,7 @@ const EditSaleReturn = () => {
                                                     padding: '10px 14px',
                                                 },
                                             }} variant="outlined" />
-                                    </div>
+                                    </div> */}
 
                                     <div className="detail">
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>

@@ -426,7 +426,12 @@ const StaffMember = () => {
                                         sx={{ width: 250 }}
                                         label="Full Name" variant="outlined"
                                         value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)} />
+                                        onChange={(e) => {
+                                            const capitalizedValue = e.target.value
+                                        .toLowerCase()
+                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                                        setFullName(capitalizedValue)
+                                         }}/>
                                     {errors.fullName && <span style={{ color: 'red', fontSize: '12px' }}>{errors.fullName}</span>}
 
                                 </div>

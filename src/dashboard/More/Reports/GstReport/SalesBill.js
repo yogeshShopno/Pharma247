@@ -218,7 +218,8 @@ const SalesBill = () => {
                                             sx={{ maxWidth: "150px" }}
                                             value={startDate}
                                             onChange={(newDate) => setStartDate(newDate)}
-                                            renderInput={(params) => <textField autoComplete="off"{...params} />}
+                                            renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                                         />
                                     </LocalizationProvider> */}
                                     <div style={{ width: "215px" }}>

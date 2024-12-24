@@ -334,6 +334,7 @@ const OrderList = () => {
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Distributor</span>
                                     {/* <TextField
+                 autoComplete="off"
                                         id="outlined-basic"
                                         value={distributor}
                                         onChange={(e) => setDistributor(e.target.value)}
@@ -369,6 +370,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                 autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
                                         />}
@@ -377,6 +379,7 @@ const OrderList = () => {
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Company Name</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-basic"
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
@@ -425,6 +428,7 @@ const OrderList = () => {
                                                         <span>{column.label}</span>
                                                         <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
+                 autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"

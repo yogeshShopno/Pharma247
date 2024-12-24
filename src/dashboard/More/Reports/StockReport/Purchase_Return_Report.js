@@ -213,6 +213,7 @@ const Purchase_Return_Report = () => {
                                     <div className="mt-6">
                                         <div style={{ maxWidth: "300px" }}>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-basic"
                                                 value={distributorName}
                                                 size="small"

@@ -227,6 +227,7 @@ const Stock_AdjustMent_Report = () => {
 
                                             <div className="detail mt-6">
                                                 <TextField
+                 autoComplete="off"
                                                     id="outlined-basic"
                                                     value={itemSearch}
                                                     sx={{ minWidth: '300px' }}

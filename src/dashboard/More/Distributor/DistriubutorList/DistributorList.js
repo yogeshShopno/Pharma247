@@ -424,6 +424,7 @@ const DistributerList = () => {
                                             <div className='headerStyle'>
                                                 <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                 <TextField
+                 autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"
                                                     size="small"
@@ -550,6 +551,7 @@ const DistributerList = () => {
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={gstNumber}
@@ -565,6 +567,7 @@ const DistributerList = () => {
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={distributerName}
@@ -579,6 +582,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Email ID</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={email}
@@ -607,6 +611,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Whatsapp No.</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={whatsapp}
@@ -618,6 +623,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary"> Address</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={address}
@@ -631,6 +637,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Area</span>
                                                     <TextField
+                 autoComplete="off"
                                                         value={area}
                                                         onChange={(e) => setArea(e.target.value)}
                                                         className="w-full"
@@ -640,6 +647,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Pincode</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={pincode}
@@ -654,6 +662,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">State</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={state}
@@ -678,6 +687,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Food Licence No.</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={licenceNo}
@@ -694,6 +704,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Credit Due Days</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={creditDuedays}
@@ -706,6 +717,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Bank Name</span>
                                                     <TextField
+                 autoComplete="off"
                                                         value={bankName}
                                                         onChange={(e) => setBankName(e.target.value)}
                                                         className="w-full"
@@ -719,6 +731,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Account No.</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={accountNo}
@@ -730,6 +743,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">IFSC Code</span>
                                                     <TextField
+                 autoComplete="off"
                                                         value={ifscCode}
                                                         onChange={(e) => setIfscCode(e.target.value)}
                                                         className="w-full"
@@ -834,6 +848,7 @@ const DistributerList = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={gstNumber}
@@ -849,6 +864,7 @@ const DistributerList = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={distributerName}
@@ -863,6 +879,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Email ID</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={email}
@@ -891,6 +908,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Whatsapp No.</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={whatsapp}
@@ -902,6 +920,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
                                             <span className="label primary"> Address</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={address}
@@ -916,6 +935,7 @@ const DistributerList = () => {
                                             <span className="label primary">Area
                                             </span>
                                             <TextField
+                 autoComplete="off"
                                                 value={area}
                                                 onChange={(e) => { setArea(e.target.value) }}
                                                 style={{ minWidth: 250 }}
@@ -925,6 +945,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Pincode</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={pincode}
@@ -939,6 +960,7 @@ const DistributerList = () => {
                                             <span className="label primary">
                                                 Bank Name</span>
                                             <TextField
+                 autoComplete="off"
                                                 value={bankName}
                                                 onChange={(e) => { setBankName(e.target.value) }}
                                                 style={{ minWidth: 250 }}
@@ -948,6 +970,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Account No.</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountNo}
@@ -962,6 +985,7 @@ const DistributerList = () => {
                                             <span className="label primary">
                                                 IFSC Code</span>
                                             <TextField
+                 autoComplete="off"
                                                 value={ifscCode}
                                                 onChange={(e) => { setIfscCode(e.target.value) }}
                                                 style={{ minWidth: 250 }}
@@ -971,6 +995,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Food Licence No.</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={licenceNo}
@@ -995,6 +1020,7 @@ const DistributerList = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span className="label primary">Credit Due Days</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={creditDuedays}

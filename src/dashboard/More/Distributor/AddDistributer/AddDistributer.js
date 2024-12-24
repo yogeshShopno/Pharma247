@@ -139,6 +139,7 @@ const AddDistributer = () => {
                                 <div class="relative w-full">
 
                                     <TextField
+                 autoComplete="off"
                                         sx={{
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px', // Remove padding from the input field
@@ -171,6 +172,7 @@ const AddDistributer = () => {
                                     Distributor Name
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -193,6 +195,7 @@ const AddDistributer = () => {
                                     Mobile No.
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -222,7 +225,8 @@ const AddDistributer = () => {
                                 >
                                     Phone
                                 </label>
-                                <textField autoComplete="off"
+                                <TextField
+                 autoComplete="off" autoComplete="off"
 sx={{
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px' , // Remove padding from the input field
@@ -243,6 +247,7 @@ sx={{
                                     Email ID
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -265,6 +270,7 @@ sx={{
                                     Whatsapp No.
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -286,6 +292,7 @@ sx={{
                                     state
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -315,6 +322,7 @@ sx={{
                                     Address
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -340,6 +348,7 @@ sx={{
                                     Area
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -362,6 +371,7 @@ sx={{
                                     Pincode
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -386,6 +396,7 @@ sx={{
                                     Distributor Drug License No.
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -411,6 +422,7 @@ sx={{
                                     Food Licence No.
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -436,6 +448,7 @@ sx={{
                                     Credit Due Days
                                 </label>
                                 <TextField
+                 autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
                                             padding: '10px 12px', // Remove padding from the input field
@@ -468,6 +481,7 @@ sx={{
 
                                         <div class="relative w-full">
                                             <TextField
+                 autoComplete="off"
                                                 sx={{
                                                     '.MuiInputBase-input': {
                                                         padding: '10px 12px', // Remove padding from the input field
@@ -501,6 +515,7 @@ sx={{
                                             Account No.
                                         </label>
                                         <TextField
+                 autoComplete="off"
                                             sx={{
                                                 '.MuiInputBase-input': {
                                                     padding: '10px 12px', // Remove padding from the input field
@@ -523,6 +538,7 @@ sx={{
                                             IFSC Code
                                         </label>
                                         <TextField
+                 autoComplete="off"
                                             sx={{
                                                 '.MuiInputBase-input': {
                                                     padding: '10px 12px', // Remove padding from the input field

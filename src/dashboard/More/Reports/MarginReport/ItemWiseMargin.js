@@ -231,6 +231,7 @@ const ItemWiseMargin = () => {
                                     <div className="mt-6">
                                         <div className="detail" >
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-basic"
                                                 value={searchItem}
                                                 size="small"

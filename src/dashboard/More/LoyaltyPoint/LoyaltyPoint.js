@@ -286,7 +286,8 @@ const LoyaltyPoint = () => {
                                         onChange={handleLoyaltyPointList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <textField autoComplete="off"{...params} label="Search Drug Name" />}
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
                                     />
                                 </div>
                                 <div>
@@ -406,6 +407,7 @@ const LoyaltyPoint = () => {
 
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
+                 autoComplete="off"
                                                     type="number"
                                                     value={minimumAmount}
                                                     onChange={(e) => {
@@ -424,6 +426,7 @@ const LoyaltyPoint = () => {
                                             </FormControl>
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 225 }}>
                                                 <TextField
+                 autoComplete="off"
                                                     type="number"
                                                     value={maximumAmount}
                                                     onChange={(e) => {
@@ -444,6 +447,7 @@ const LoyaltyPoint = () => {
                                         <div className="mt-5">
                                             <FormControl variant="outlined data-mdb-input-init" sx={{ width: 224 }}>
                                                 <TextField
+                 autoComplete="off"
                                                     type="number"
                                                     value={percentage}
                                                     onChange={(e) => {

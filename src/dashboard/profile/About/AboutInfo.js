@@ -147,6 +147,7 @@ const AboutInfo = () => {
               </div>
               <Box className="aboutPharmacy">
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Pharmacy Name"
                   variant="standard"
@@ -156,6 +157,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Owner Name"
                   variant="standard"
@@ -167,6 +169,7 @@ const AboutInfo = () => {
               </Box>
               <Box className="aboutPharmacy">
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="GSTN"
                   variant="standard"
@@ -176,6 +179,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="PAN"
                   variant="standard"
@@ -187,6 +191,7 @@ const AboutInfo = () => {
               </Box>
               <Box className="aboutPharmacy">
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Mobile No."
                   variant="standard"
@@ -196,6 +201,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Email ID"
                   variant="standard"
@@ -207,6 +213,7 @@ const AboutInfo = () => {
               </Box>
               <Box className="aboutPharmacy">
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Address 1"
                   variant="standard"
@@ -216,6 +223,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Pincode"
                   variant="standard"
@@ -227,6 +235,7 @@ const AboutInfo = () => {
               </Box>
               <Box className="aboutPharmacy">
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="Area"
                   variant="standard"
@@ -236,6 +245,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="City"
                   variant="standard"
@@ -245,6 +255,7 @@ const AboutInfo = () => {
                   InputLabelProps={{}}
                 />
                 <TextField
+                 autoComplete="off"
                   id="standard-basic"
                   label="state"
                   variant="standard"

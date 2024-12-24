@@ -599,6 +599,7 @@ sx={{
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
+                 autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"
@@ -826,6 +827,7 @@ sx={{
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={customer}
@@ -856,6 +858,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Email ID</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={emailId}
@@ -867,6 +870,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Amount</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         type="number"
@@ -882,6 +886,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Area</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={area}
@@ -893,6 +898,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">City</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={city}
@@ -907,6 +913,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Address</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={address}
@@ -919,6 +926,7 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">State</span>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={state}

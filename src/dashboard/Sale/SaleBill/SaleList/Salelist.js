@@ -305,6 +305,7 @@ const Salelist = () => {
                                                     <div className='headerStyle'>
                                                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
+                 autoComplete="off"
                                                             // label={`Search ${column.label}`}
                                                             label='Type Here'
                                                             id="filled-basic"

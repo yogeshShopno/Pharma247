@@ -119,6 +119,7 @@ const Non_Moving_items = () => {
                                 <span className="text-xl secondary">Non Moving Time Duration </span>
                                 <div style={{ width: "50%" }}>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-basic"
                                         value={nonMovingDate}
                                         sx={{ minWidth: '300px', marginTop: "10px" }}

@@ -225,6 +225,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }}>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={companyName}
                                                         size="small"
@@ -250,6 +251,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={drugGroup}
                                                         size="small"
@@ -275,6 +277,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         value={location}
                                                         size="small"

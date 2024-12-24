@@ -230,6 +230,7 @@ const Reconciliation = () => {
                             LOC:<span className="primary"> {item.location}</span>
                           </p>
                           <TextField
+                 autoComplete="off"
                             id="outlined-number"
                             placeholder="Add Stock"
                             type="number"

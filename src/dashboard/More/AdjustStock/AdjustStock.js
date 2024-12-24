@@ -393,6 +393,7 @@ const AdjustStock = () => {
                         <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                             <div className="detail" >
                                 <TextField
+                 autoComplete="off"
                                     id="outlined-basic"
                                     value={search}
                                     sx={{ width: 'auto' }}
@@ -432,6 +433,7 @@ const AdjustStock = () => {
                                                     <span>{column.label}</span>
                                                     <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     {/* <TextField
+                 autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"
@@ -482,6 +484,7 @@ const AdjustStock = () => {
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
+                 autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"
                                                     size="small"
@@ -622,6 +625,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.iteam_name}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         label="Select Item"
                                                     />
@@ -642,6 +646,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.batch_number}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         label="Select Batch"
                                                     />
@@ -662,7 +667,8 @@ const AdjustStock = () => {
                                                 disabled
                                                 getOptionLabel={(option) => option.company_name}
                                                 renderInput={(params) => (
-                                                    <textField autoComplete="off"{...params} />
+                                                    <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                                 )}
                                             />
                                         </div>
@@ -671,6 +677,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Unit</span>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 required
                                                 id="outlined-number"
@@ -683,6 +690,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Expiry</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 sx={{ width: '130px' }}
                                                 size="small"
@@ -694,6 +702,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">MRP</span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -708,6 +717,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Stock </span>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -720,6 +730,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Stock Adjusted </span>
                                             {/* <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -728,6 +739,7 @@ const AdjustStock = () => {
                                                 onChange={(e) => { setStockAdjust(e.target.value) }}
                                             /> */}
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -742,6 +754,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Remaining Stock  </span>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 type="number"

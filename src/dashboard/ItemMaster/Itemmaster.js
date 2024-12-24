@@ -725,12 +725,14 @@ const Itemmaster = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <textField autoComplete="off"{...params} label="Search Item Name" autoFocus />
+                    <TextField
+                 autoComplete="off"  {...params} label="Search Item Name" autoFocus />
 
                   )}
                   freeSolo // Allows the user to type values not in the list
                 />
                 {/* <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   label="Item Name"
                   style={{ width: '350px' }}
@@ -767,18 +769,21 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Unit</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   type="number"
                   size="small"
                   sx={{ minWidth: "150px" }}
                   value={weightage}
                   onChange={handlePack}
+                  
                 />
               </div>
 
               <div className="fields">
                 <label className="label">Pack</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   disabled
                   style={{ width: "160px" }}
@@ -811,7 +816,8 @@ const Itemmaster = () => {
                     onChange={(e, value) => setDrugGroup(value)}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
-                      <textField autoComplete="off"{...params} label="Select DrugGroup" />
+                      <TextField
+                 autoComplete="off" {...params} label="Select DrugGroup" />
                     )}
                   />
                 </FormControl>
@@ -843,7 +849,8 @@ const Itemmaster = () => {
                     sx={{ width: 350 }}
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
-                      <textField autoComplete="off"{...params} label="Select Company" />
+                      <TextField
+                 autoComplete="off" {...params} label="Select Company" />
                     )}
                   />
                   {/* {error.selectedCompany && <span style={{ color: 'red', fontSize: '14px' }}>{error.selectedCompany}</span>} */}
@@ -872,7 +879,8 @@ const Itemmaster = () => {
                     onChange={(e, value) => setSelectedSuppliers(value)}
                     getOptionLabel={(option) => option.name.toUpperCase()}
                     renderInput={(params) => (
-                      <textField autoComplete="off"{...params} label="Select Suppliers" />
+                      <TextField
+                 autoComplete="off" {...params} label="Select Suppliers" />
                     )}
                   />
                   {error.selectedSuppliers && (
@@ -909,6 +917,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">MRP</label>
                 <TextField
+                 autoComplete="off"
                   required
                   id="outlined-number"
                   style={{ width: "350px" }}
@@ -923,6 +932,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Location</label>
                 {/* <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   label="Location"
                   style={{ width: '350px' }}
@@ -948,7 +958,8 @@ const Itemmaster = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <textField autoComplete="off"{...params} label="Select Location" />
+                    <TextField
+                 autoComplete="off" {...params} label="Select Location" />
                   )}
                   freeSolo
                 />
@@ -956,6 +967,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Barcode</label>
                 <TextField
+                 autoComplete="off"
                   required
                   id="outlined-number"
                   style={{ width: "350px" }}
@@ -973,6 +985,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Minimum</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   // label="Min"
                   type="number"
@@ -987,6 +1000,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Maximum</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   // label="Max."
                   type="number"
@@ -1001,6 +1015,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Disc.%</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   // label="Disc.%"
                   style={{ width: "232px" }}
@@ -1015,6 +1030,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">Margin%</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   // label="Margin%"
                   style={{ width: "232px" }}
@@ -1029,6 +1045,7 @@ const Itemmaster = () => {
               <div className="fields">
                 <label className="label">HSN code.</label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-number"
                   // label="HSN code"
                   type="number"
@@ -1088,7 +1105,8 @@ const Itemmaster = () => {
                       onChange={(e, value) => setSelectedCategory(value)}
                       getOptionLabel={(option) => option.category_name}
                       renderInput={(params) => (
-                        <textField autoComplete="off"{...params} label="Select Category " />
+                        <TextField
+                 autoComplete="off" {...params} label="Select Category " />
                       )}
                     />
                   </FormControl>
@@ -1261,6 +1279,7 @@ const Itemmaster = () => {
                   Message
                 </label>
                 <TextField
+                 autoComplete="off"
                   id="outlined-multiline-static"
                   label="Message"
                   multiline
@@ -1296,6 +1315,7 @@ const Itemmaster = () => {
           <div className="dialog">
             <label className="mb-2">Catagory Name</label>
             <TextField
+                 autoComplete="off"
               id="outlined-number"
               label="Enter Catagory Name"
               type="text"
@@ -1331,6 +1351,7 @@ const Itemmaster = () => {
           <div className="dialog">
             <label className="mb-2">DrugGroup Name</label>
             <TextField
+                 autoComplete="off"
               id="outlined-number"
               label="Enter DrugGroup Name"
               type="text"
@@ -1366,6 +1387,7 @@ const Itemmaster = () => {
           <div className="dialog">
             <label className="mb-2">Company Name</label>
             <TextField
+                 autoComplete="off"
               id="outlined-number"
               label="Enter Company Name"
               type="text"

@@ -1040,7 +1040,8 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1165,7 +1166,8 @@ const InventoryView = () => {
                                                     onChange={handleDistributorBillList}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Distributor Name" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Distributor Name" />}
                                                 />
 
                                                 <Select
@@ -1282,7 +1284,8 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1294,6 +1297,7 @@ const InventoryView = () => {
                                                 />
 
                                                 {/* <TextField
+                 autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
                                                     style={{ width: '200px' }}
@@ -1401,7 +1405,8 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                     renderOption={(props, option) => (
                                                         <ListItem {...props}>
                                                             <ListItemText
@@ -1424,10 +1429,12 @@ const InventoryView = () => {
                                                     onChange={handleCustomerBillList}
                                                     options={customerDetails}
                                                     getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <textField autoComplete="off"{...params} label="Customer Name/No" />}
+                                                    renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Customer Name/No" />}
                                                 /> */}
 
                                                 {/* <TextField
+                 autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
                                                     style={{ width: '200px' }}
@@ -1618,6 +1625,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.category_name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                             // label="Select Company"
                                             />
@@ -1638,6 +1646,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.company_name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                             />
                                         )}
@@ -1656,6 +1665,7 @@ const InventoryView = () => {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 label="Select DrugGroup"
                                             />
@@ -1665,6 +1675,7 @@ const InventoryView = () => {
                                 <div className="flex flex-col">
                                     <span className="label primary">Location</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-multiline-static"
                                         size="small"
                                         value={loc}

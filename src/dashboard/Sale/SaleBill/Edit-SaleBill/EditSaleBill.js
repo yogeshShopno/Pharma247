@@ -1099,6 +1099,7 @@ const EditSaleBill = () => {
                       )}
                       renderInput={(params) => (
                         <TextField
+                 autoComplete="off"
                           {...params}
                           variant="outlined"
                           placeholder="Search by Mobile, Name"
@@ -1159,6 +1160,7 @@ const EditSaleBill = () => {
                       )}
                       renderInput={(params) => (
                         <TextField
+                 autoComplete="off"
                           {...params}
                           variant="outlined"
                           placeholder="Search by DR. Name"
@@ -1219,6 +1221,7 @@ const EditSaleBill = () => {
                         )}
                         renderInput={(params) => (
                           <TextField
+                 autoComplete="off"
                             {...params}
                             variant="outlined"
                             placeholder="Search Item Name..."
@@ -1393,6 +1396,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               disabled
                               type="number"
@@ -1406,6 +1410,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "110px" }}
@@ -1419,6 +1424,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               disabled
                               size="small"
@@ -1430,6 +1436,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               disabled
                               id="outlined-number"
                               type="number"
@@ -1443,6 +1450,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "120px" }}
@@ -1456,6 +1464,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1469,6 +1478,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "70px" }}
@@ -1493,6 +1503,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "80px" }}
                               size="small"
@@ -1502,6 +1513,7 @@ const EditSaleBill = () => {
                           </td>
                           <td>
                             <TextField
+                 autoComplete="off"
                               id="outlined-number"
                               size="small"
                               disabled
@@ -1516,6 +1528,7 @@ const EditSaleBill = () => {
                         </tr>
                         <tr style={{ borderBottom: '1px solid lightgray' }}>
                           <td><TextField
+                 autoComplete="off"
                             id="outlined-number"
                             type="number"
                             size="small"

@@ -229,6 +229,7 @@ const Top_Selling_Items = () => {
                                             getOptionLabel={(option) => option.company_name}
                                             renderInput={(params) => (
                                                 <TextField
+                 autoComplete="off"
                                                     {...params}
                                                     label="Select Company"
                                                 />

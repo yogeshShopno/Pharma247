@@ -934,7 +934,8 @@ const EditReturnBill = () => {
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <textField autoComplete="off"{...params} />}
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
@@ -958,6 +959,7 @@ const EditReturnBill = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         size="small"
                                         sx={{ width: '250px' }}
@@ -972,6 +974,7 @@ const EditReturnBill = () => {
                                     <span className="title mb-2">Start Date</span>
                                     <div style={{ width: "215px" }}>
                                         <TextField
+                 autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
@@ -1015,6 +1018,7 @@ const EditReturnBill = () => {
                                             showMonthYearPicker
                                         /> */}
                                         <TextField
+                 autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
@@ -1027,6 +1031,7 @@ const EditReturnBill = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Remark</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         size="small"
                                         sx={{
@@ -1072,6 +1077,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         // inputRef={inputRef1}
@@ -1096,6 +1102,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         sx={{ width: '100px' }}
@@ -1112,6 +1119,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         sx={{ width: '100px' }}
@@ -1127,6 +1135,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1155,6 +1164,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1184,6 +1194,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         type="number"
@@ -1209,6 +1220,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1235,6 +1247,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '100px' }}
                                                         size="small"
@@ -1283,6 +1296,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         // inputRef={inputRef12}
                                                         // onKeyDown={handleKeyDown}
@@ -1300,6 +1314,7 @@ const EditReturnBill = () => {
                                             <tr >
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
                                                         autoFocus
@@ -1424,7 +1439,8 @@ const EditReturnBill = () => {
                                                 <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
                                             </div>
                                             {/* <div>
-                                            <textField autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                            <TextField
+                 autoComplete="off" autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

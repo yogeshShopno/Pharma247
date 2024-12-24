@@ -1515,6 +1515,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -1577,6 +1578,7 @@ const Addsale = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -1653,6 +1655,7 @@ const Addsale = () => {
                                                 )}
                                                 renderInput={(params) => (
                                                     <TextField
+                 autoComplete="off"
                                                         {...params}
                                                         variant="outlined"
                                                         id="searchResults"
@@ -1794,6 +1797,7 @@ const Addsale = () => {
                                                 <td>
 
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         type="number"
@@ -1807,6 +1811,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '110px' }}
                                                         size="small"
@@ -1817,6 +1822,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         disabled
                                                         size="small"
@@ -1830,6 +1836,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         disabled
                                                         id="outlined-number"
                                                         type="number"
@@ -1843,6 +1850,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '120px' }}
@@ -1855,6 +1863,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         disabled
@@ -1868,6 +1877,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '70px' }}
@@ -1887,6 +1897,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
@@ -1902,6 +1913,7 @@ const Addsale = () => {
 
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         inputRef={inputRef9}
@@ -1917,6 +1929,7 @@ const Addsale = () => {
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
                                                     <TextField
+                 autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         size="small"
@@ -2157,6 +2170,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={doctorName}
@@ -2169,6 +2183,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={clinic}
@@ -2210,6 +2225,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={customerName}
@@ -2222,6 +2238,7 @@ const Addsale = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={mobileNo}
@@ -2325,6 +2342,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Item Name</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 size="small"
                                                 sx={{ minWidth: "150px" }}
@@ -2336,6 +2354,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label  secondary">Barcode</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2348,6 +2367,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Unit</label>
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
@@ -2360,6 +2380,7 @@ const Addsale = () => {
                                         <div className="fields">
                                             <label className="label secondary">Pack</label>
                                             <TextField
+                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 size="small"

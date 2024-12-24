@@ -348,7 +348,8 @@ const DrugGroup = () => {
                                         onChange={handleDrugGroupList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <textField autoComplete="off"{...params} label="Search Drug Name" />}
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
@@ -438,6 +439,7 @@ const DrugGroup = () => {
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span className="label primary">Drug Group Name</span>
                                         {/* <TextField
+                 autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             placeholder="Drug Group Name"
@@ -461,7 +463,8 @@ const DrugGroup = () => {
                                                 </ListItem>
                                             )}
                                             renderInput={(params) => (
-                                                <textField autoComplete="off"{...params} />
+                                                <TextField
+                 autoComplete="off" autoComplete="off"{...params} />
                                             )}
                                             freeSolo
                                         />

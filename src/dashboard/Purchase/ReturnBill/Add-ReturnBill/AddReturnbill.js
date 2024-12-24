@@ -880,7 +880,8 @@ const AddReturnbill = () => {
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <textField autoComplete="off"{...params} autoFocus />}
+                                        renderInput={(params) => <TextField
+                 autoComplete="off" autoComplete="off"{...params} autoFocus />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                     {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
@@ -900,6 +901,7 @@ const AddReturnbill = () => {
                                 <div className="detail">
                                     <span className="title mb-2">Bill No</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         type='number'
                                         size="small"
@@ -962,6 +964,7 @@ const AddReturnbill = () => {
                                 <div className="detail">
                                     <span className="title mb-2">Remark</span>
                                     <TextField
+                 autoComplete="off"
                                         id="outlined-number"
                                         size="small"
                                         sx={{
@@ -1009,6 +1012,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             // inputRef={inputRef1}
@@ -1035,6 +1039,7 @@ const AddReturnbill = () => {
 
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
 
                                                             // inputRef={inputRef1}
@@ -1049,6 +1054,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -1063,6 +1069,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '100px' }}
@@ -1091,6 +1098,7 @@ const AddReturnbill = () => {
                                                     <td>
 
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '100px' }}
@@ -1129,6 +1137,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             type="number"
@@ -1155,6 +1164,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '100px' }}
@@ -1176,6 +1186,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             sx={{ width: '100px' }}
                                                             size="small"
@@ -1221,6 +1232,7 @@ const AddReturnbill = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             // inputRef={inputRef12}
                                                             // onKeyDown={handleKeyDown}
@@ -1236,6 +1248,7 @@ const AddReturnbill = () => {
                                                 <tr >
                                                     <td>
                                                         <TextField
+                 autoComplete="off"
                                                             id="outlined-basic"
                                                             size="small"
                                                             sx={{ width: "75%", marginTop: "5px" }}
@@ -1373,7 +1386,8 @@ sx={{
                                         <span style={{ fontWeight: 600, color: "var(--color1)" }}>{finalAmount ? finalAmount : 0}</span>
                                     </div>
                                     {/* <div>
-                                            <textField autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
+                                            <TextField
+                 autoComplete="off" autoComplete="off"value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '35px'
                                                 },

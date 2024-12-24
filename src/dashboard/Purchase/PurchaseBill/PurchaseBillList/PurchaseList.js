@@ -374,6 +374,7 @@ useEffect(() => {
                             onClick={() => sortByColumn(column.id)}
                           />
                           <TextField
+                 autoComplete="off"
                             label={`Search ${column.label}`}
                             size="small"
                             className="w-full md:w-auto"
@@ -659,6 +660,7 @@ export default Purchasebill;
                       <div className='headerStyle'>
                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                         <TextField
+                 autoComplete="off"
                           label={`Search ${column.label}`}
                           id="filled-basic"
                           size="small"

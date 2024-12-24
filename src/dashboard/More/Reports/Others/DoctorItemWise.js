@@ -260,6 +260,7 @@ const DoctorItemWise = () => {
                                     <div className="mt-6">
                                         <div className="detail" >
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-basic"
                                                 value={doctorSearch}
                                                 sx={{ minWidth: '250px' }}
@@ -281,6 +282,7 @@ const DoctorItemWise = () => {
                                     <div className="mt-6">
                                         <div className="detail" >
                                             <TextField
+                 autoComplete="off"
                                                 id="outlined-basic"
                                                 value={itemSearch}
                                                 sx={{ minWidth: '250px' }}

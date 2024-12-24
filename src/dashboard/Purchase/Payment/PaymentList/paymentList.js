@@ -481,11 +481,14 @@ const PaymentList = () => {
                                         },
                                     }}
                                     size='small'
+                                    autoFocus
                                     onChange={handleDistributorBillList}
                                     options={distributorList}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} label="Search Distributor Name" />}
+
+                                   
+                                        {...params} label="Search Distributor Name" />}
                                 />
                                 {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>}
                             </div>
@@ -626,7 +629,7 @@ const PaymentList = () => {
                                         <span className="secondary" >Distributor Name</span>
                                         {isEditMode == true ?
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 disabled
                                                 size="small"
@@ -641,11 +644,12 @@ const PaymentList = () => {
                                                     disabled={!showTable}
                                                     // sx={{ minWidth: 730 }}
                                                     size='small'
+                                                    autoFocus
                                                     onChange={handleDistributor}
                                                     options={distributorList}
                                                     getOptionLabel={(option) => option.name}
                                                     renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} />}
+                                                    {...params} />}
                                                 />
                                                 {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
                                             </>
@@ -694,7 +698,7 @@ const PaymentList = () => {
                                     <div style={{ display: 'flex', gap: 10, flexDirection: 'column' }}>
                                         <span className="label secondary">Note</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-multiline-static"
                                             multiline
                                             size="small"

@@ -156,7 +156,7 @@ const OrderList = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
         } catch (error) {
             //console.log("API Error:", error);
@@ -174,7 +174,7 @@ const OrderList = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
         } catch (error) {
             //console.log("API Error:", error);
@@ -356,7 +356,7 @@ const OrderList = () => {
                                         sx={{
                                             width: 'full',
                                             '& .MuiInputBase-root': {
-                                                width: 220,
+                                                width: 350,
                                                 height: 45,
                                                 fontSize: '1.10rem',
                                             },
@@ -370,7 +370,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
                                         />}
@@ -379,7 +379,7 @@ const OrderList = () => {
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Company Name</span>
                                     <TextField
-                 autoComplete="off"
+                                        autoComplete="off"
                                         id="outlined-basic"
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
@@ -428,7 +428,7 @@ const OrderList = () => {
                                                         <span>{column.label}</span>
                                                         <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"

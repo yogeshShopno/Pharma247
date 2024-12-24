@@ -139,7 +139,7 @@ const AboutInfo = () => {
               <div>
                 <h1
                   className="text-2xl flex items-center  font-semibold justify-start p-2 my-5"
-                  style={{ color: "rgb(4, 76, 157)" }}
+                  style={{ color: "var(--color1)" }}
                 >
                   About Pharmacy
                   <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
@@ -153,7 +153,12 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={pharmacyName}
-                  onChange={(e) => setPharmacyName(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                .toLowerCase()
+                .replace(/\b\w/g, (char) => char.toUpperCase());
+                setPharmacyName(capitalizedValue)
+                 }}
                   InputLabelProps={{}}
                 />
                 <TextField
@@ -163,7 +168,11 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={ownerName}
-                  onChange={(e) => setOwnerName(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    setOwnerName(capitalizedValue)}}
                   InputLabelProps={{}}
                 />
               </Box>
@@ -197,7 +206,7 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={mobileNo}
-                  onChange={(e) => setMobileNo(e.target.value)}
+                  onChange={(e) => setMobileNo(Number(e.target.value))}
                   InputLabelProps={{}}
                 />
                 <TextField
@@ -219,7 +228,11 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={address1}
-                  onChange={(e) => setAddress1(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    setAddress1(capitalizedValue)}}
                   InputLabelProps={{}}
                 />
                 <TextField
@@ -241,7 +254,11 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={area}
-                  onChange={(e) => setArea(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    setArea(capitalizedValue)}}
                   InputLabelProps={{}}
                 />
                 <TextField
@@ -251,7 +268,11 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    setCity(capitalizedValue)}}
                   InputLabelProps={{}}
                 />
                 <TextField
@@ -261,7 +282,11 @@ const AboutInfo = () => {
                   variant="standard"
                   className="aboutTextField"
                   value={state}
-                  onChange={(e) => setState(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    setState(capitalizedValue)}}
                   InputLabelProps={{}}
                 />
               </Box>

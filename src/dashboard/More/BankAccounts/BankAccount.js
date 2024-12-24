@@ -1122,8 +1122,13 @@ const BankAccount = () => {
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={bankName}
-                                            onChange={(e) => { setBankName(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+
+                                            onChange={(e) => { 
+                                                // Transform to uppercase
+                                                const uppercasedValue = e.target.value.toUpperCase();
+                                                setBankName(uppercasedValue);
+                                            }}
+                                                                                 style={{ minWidth: 250 }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
                                         />
@@ -1138,8 +1143,12 @@ const BankAccount = () => {
                  autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
+                                            type="text"
                                             value={accountType}
-                                            onChange={(e) => { setAccountType(e.target.value) }}
+                                            onChange={(e) => {  
+                                                const capitalizedValue = e.target.value
+                                                .toLowerCase()
+                                                .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue) }}
                                             style={{ minWidth: 250 }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
@@ -1198,7 +1207,10 @@ const BankAccount = () => {
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountNumber}
-                                                onChange={(e) => { setAccountNumber(e.target.value) }}
+                                                onChange={(e) => { 
+                                                    const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                                                    
+                                                    setAccountNumber(numericValue) }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
@@ -1215,8 +1227,11 @@ const BankAccount = () => {
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={reEnterAccountNumber}
-                                                onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                                onChange={(e) => {
+                                                    // Allow only numeric input
+                                                    const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                                                    setReEnterAccountNumber(numericValue);
+                                                }}                                                style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
@@ -1234,7 +1249,7 @@ const BankAccount = () => {
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={ifscCode}
-                                                onChange={(e) => { setIfscCode(e.target.value) }}
+                                                onChange={(e) => {   const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
@@ -1272,7 +1287,12 @@ const BankAccount = () => {
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountHolderName}
-                                                onChange={(e) => { setAccountHolderName(e.target.value) }}
+                                                onChange={(e) => {
+                                                    const capitalizedValue = e.target.value
+                                                .toLowerCase()
+                                                .replace(/\b\w/g, (char) => char.toUpperCase());
+                                                 setAccountHolderName(capitalizedValue)
+                                                 }}
                                                 style={{ minWidth: 250 }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}

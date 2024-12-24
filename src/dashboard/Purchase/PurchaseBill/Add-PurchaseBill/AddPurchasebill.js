@@ -1485,7 +1485,8 @@ const AddPurchaseBill = () => {
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params}
+                 autoComplete="off"
+                 {...params}
                     autoFocus
                   />}
                 />

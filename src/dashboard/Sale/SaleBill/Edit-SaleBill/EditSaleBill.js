@@ -160,6 +160,7 @@ const EditSaleBill = () => {
 
       if (calculatedNetAmount < 0) {
         setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
+        setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
         calculatedNetAmount = 0;
       }
 
@@ -281,6 +282,7 @@ const EditSaleBill = () => {
       setTotalBase(record.total_base);
       setTotalgst(record.total_gst);
       setTotalAmount(record.sales_amount);
+      setOtherAmt(record.other_amount);
       setRoundOff(record.round_off)
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
@@ -916,13 +918,13 @@ const EditSaleBill = () => {
         ) : (
           <div
             style={{
-              backgroundColor: "rgb(240, 240, 240)",
+              // backgroundColor: "rgb(240, 240, 240)",
               height: "calc(99vh - 55px)",
               padding: "0px 20px 0px",
             }}
           >
             <div>
-              <div className="py-3" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+              <div className="py-3 header_sale_divv" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                 <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
                   <span
                     style={{
@@ -961,10 +963,10 @@ const EditSaleBill = () => {
                     labelId="dropdown-label"
                     id="dropdown"
                     value={location.state.paymentType}
-                    sx={{ minWidth: "200px" }}
                     disabled
                     size="small"
-                    className="Payment_Value"
+                    className="Payment_Value payment_divv"
+                    style={{ minHeight: "2.4375em" }}
                   >
                   </input>
 
@@ -972,10 +974,11 @@ const EditSaleBill = () => {
                     labelId="dropdown-label"
                     id="dropdown"
                     value={pickup}
-                    sx={{ minWidth: "150px" }}
-                    className="Payment_Value"
+                    className="Payment_Value payment_divv"
                     disabled
                     size="small"
+                    style={{ minHeight: "2.4375em" }}
+
                   >
                   </input>
                   <Button
@@ -984,6 +987,7 @@ const EditSaleBill = () => {
                       textTransform: "none",
                       background: "var(--color1)",
                     }}
+                    className="payment_btn_divv"
                     onClick={handleUpdate}
                   >
                     {" "}
@@ -993,31 +997,29 @@ const EditSaleBill = () => {
               </div>
               <div className="border-b">
                 <div className="firstrow flex">
-                  <div className="detail mt-1" style={{ width: "250px" }}>
+                  <div className="detail mt-1 custommedia" style={{ whiteSpace: "pre" }}>
                     <div
                       className="detail  p-2 rounded-md"
                       style={{ background: "var(--color1)", width: "100%" }}
                     >
                       <div
-                        className="heading"
+                        className="heading pr-5 pl-5 flex"
                         style={{
                           color: "white",
                           fontWeight: "500",
-                          alignItems: "center",
-                          marginLeft: "15px",
+                          alignItems: "center"
                         }}
                       >
                         Bill No{" "}
-                        <span style={{ marginLeft: "35px" }}> Bill Date</span>{" "}
+                        <span className="pl-8"> Bill Date</span>{" "}
                       </div>
-                      <div className="flex gap-5">
+                      <div className="flex pr-5 pl-5">
                         <div
                           style={{
                             color: "white",
                             fontWeight: "500",
                             alignItems: "center",
                             marginTop: "8px",
-                            marginLeft: "15px",
                             fontWeight: "bold",
                             width: "19%",
                           }}
@@ -1025,6 +1027,7 @@ const EditSaleBill = () => {
                           {saleAllData.bill_no}{" "}
                         </div>
                         <div
+                          className="pl-8"
                           style={{
                             color: "white",
                             fontWeight: "500",
@@ -1036,12 +1039,14 @@ const EditSaleBill = () => {
                           |
                         </div>
                         <div
+                          className="pl-8"
                           style={{
                             color: "white",
                             fontWeight: "500",
                             alignItems: "center",
                             marginTop: "8px",
                             fontWeight: "bold",
+                            // marginLeft: "35px",
                           }}
                         >
                           {saleAllData.bill_date}
@@ -1050,15 +1055,15 @@ const EditSaleBill = () => {
                     </div>
                   </div>
                   <div
-                    className="detail"
+                    className="detail custommedia"
                     style={{
                       display: "flex",
                       flexDirection: "column",
-                      gap: "10px",
+                      width: "100%"
                     }}
                   >
                     <span
-                      className="heading"
+                      className="heading mb-2 title"
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
@@ -1076,10 +1081,10 @@ const EditSaleBill = () => {
                       disabled
                       sx={{
                         width: "100%",
-                        minWidth: {
-                          xs: "320px",
-                          sm: "400px",
-                        },
+                        // minWidth: {
+                        //   xs: "320px",
+                        //   sm: "400px",
+                        // },
                         "& .MuiInputBase-root": {
                           height: 20,
                           fontSize: "1.10rem",
@@ -1115,7 +1120,7 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  <div className="detail">
+                  <div className="detail custommedia" style={{ width: '100%' }}>
                     <span
                       className="heading mb-2"
                       style={{
@@ -1136,10 +1141,10 @@ const EditSaleBill = () => {
                       }
                       sx={{
                         width: "100%",
-                        minWidth: {
-                          xs: "320px",
-                          sm: "400px",
-                        },
+                        // minWidth: {
+                        //   xs: "320px",
+                        //   sm: "400px",
+                        // },
                         "& .MuiInputBase-root": {
                           height: 20,
                           fontSize: "1.10rem",
@@ -1175,183 +1180,190 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  <table>
-                    <Box
-                      sx={{
-                        flex: "1 1 auto",
-                        minWidth: {
-                          xs: "350px",
-                          sm: "500px",
-                          md: "1000px",
-                        },
-                        width: "100%",
-                        background: "#ceecfd",
-                        borderRadius: "7px",
-                      }}
-                    >
-                      <Autocomplete
-                        value={selectedOption}
-                        size="small"
-                        onChange={handleOptionChange}
-                        onInputChange={handleInputChange}
-                        getOptionLabel={(option) => `${option.iteam_name} `}
-                        options={itemList}
-                        renderOption={(props, option) => (
-                          <ListItem {...props}>
-                            <ListItemText
-                              // primary={`${option.iteam_name} - ${option.stock}`}
-                              // secondary={`weightage: ${option.weightage}`}
-                              primary={`${option.iteam_name},(${option.company})`}
-                              secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                              // secondary={
-                              //   <>
-                              //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                              //     ₹: {option.mrp || 0},
-                              //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                              //   </>
-                              // }
-                              sx={{
-                                '& .MuiTypography-root': { fontSize: '1.1rem' }
-                              }}
-                            />
-                          </ListItem>
-                        )}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            placeholder="Search Item Name..."
-                            InputProps={{
-                              ...params.InputProps,
-                              style: { height: 45 },
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <SearchIcon
-                                    sx={{
-                                      color: "rgba(9, 161, 246)",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                </InputAdornment>
-                              ),
-                            }}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                  border: "none",
-                                },
-                                "&:hover fieldset": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused fieldset": {
-                                  border: "none",
-                                },
-                                borderBottom: "1px solid ",
-                              },
-                              "& .MuiInputBase-input::placeholder": {
-                                fontSize: "1rem",
-                                color: "black",
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    </Box>
-                    {isVisible && value && !batch && (
+                  <div className="search_fld_divv" style={{ width: '100%' }}>
+                    <table style={{ maxWidth: '50%', width: '100%' }}>
                       <Box
                         sx={{
-                          minWidth: {
-                            xs: "200px",
-                            sm: "500px",
-                            md: "1000px",
-                          },
-                          backgroundColor: "white",
-                          position: "absolute",
-                          zIndex: 1,
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 2,
+                          alignItems: 'center',
                         }}
-                        id="tempId"
-
                       >
-                        <div
-                          className="custom-scroll-sale "
-                          style={{ width: "100%" }}
-                          tabIndex={0} onKeyDown={handleTableKeyDown}
-                          ref={tableRef}
-                        >
-                          <table
-                            ref={tableRef}
-                            style={{
-                              width: "100%",
-                              borderCollapse: "collapse",
-                            }}
-                          >
-                            <thead>
-                              <tr className="customtable">
-                                <th>Item Name</th>
-                                <th>Batch Number</th>
-                                <th>Unit</th>
-                                <th>Expiry Date</th>
-                                <th>QTY</th>
-                                <th>Loc</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {batchListData.length > 0 ? (
-                                <>
-                                  {batchListData?.map((item) => (
-                                    <tr
-                                      className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-                                      key={item.id}
-                                      data-id={item.id}
-                                      tabIndex={0}
-                                      style={{
-                                        border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
-                                      }}
+                        <Box
+                          sx={{
+                            flex: "1 1 auto",
 
-                                      onClick={() => handlePassData(item)}
-                                      onMouseEnter={handleMouseEnter}
-                                    >
-                                      <td className=" text-base font-semibold">
-                                        {item.iteam_name}
-                                      </td>
-                                      <td className=" text-base font-semibold">
-                                        {item.batch_number}
-                                      </td>
-                                      <td className=" text-base font-semibold">
-                                        {item.unit}
-                                      </td>
-                                      <td className=" text-base font-semibold">
-                                        {item.expiry_date}
-                                      </td>
-                                      <td className=" text-base font-semibold">
-                                        {item.qty}
-                                      </td>
-                                      <td className=" text-base font-semibold">
-                                        {item.location}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </>
-                              ) : (
-                                <tr>
-                                  <td
-                                    colSpan={12}
-                                    style={{
-                                      textAlign: "center",
-                                      fontSize: "16px",
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    No record found
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
+                            width: "100%",
+                            background: "#ffffff",
+                            borderRadius: "7px",
+                          }}
+                        >
+                          <Autocomplete
+                            value={selectedOption}
+                            size="small"
+                            onChange={handleOptionChange}
+                            onInputChange={handleInputChange}
+                            getOptionLabel={(option) => `${option.iteam_name} `}
+                            options={itemList}
+                            renderOption={(props, option) => (
+                              <ListItem {...props}>
+                                <ListItemText
+                                  // primary={`${option.iteam_name} - ${option.stock}`}
+                                  // secondary={`weightage: ${option.weightage}`}
+                                  primary={`${option.iteam_name},(${option.company})`}
+                                  secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                  // secondary={
+                                  //   <>
+                                  //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                  //     ₹: {option.mrp || 0},
+                                  //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                  //   </>
+                                  // }
+                                  sx={{
+                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
+                                  }}
+                                />
+                              </ListItem>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant="outlined"
+                                placeholder="Search Item Name..."
+                                InputProps={{
+                                  ...params.InputProps,
+                                  style: { height: 45 },
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <SearchIcon
+                                        sx={{
+                                          color: "var(--color1)",
+                                          cursor: "pointer",
+                                        }}
+                                      />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                sx={{
+                                  "& .MuiOutlinedInput-root": {
+                                    "& fieldset": {
+                                      border: "none",
+                                    },
+                                    "&:hover fieldset": {
+                                      border: "none",
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                      border: "none",
+                                    },
+                                    borderBottom: "1px solid ",
+                                  },
+                                  "& .MuiInputBase-input::placeholder": {
+                                    fontSize: "1rem",
+                                    color: "black",
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </Box>
                       </Box>
-                    )}
-                  </table>
+                      {isVisible && value && !batch && (
+                        <Box
+                          sx={{
+                            minWidth: {
+                              xs: "200px",
+                              sm: "500px",
+                              md: "1000px",
+                            },
+                            backgroundColor: "white",
+                            position: "absolute",
+                            zIndex: 1,
+                          }}
+                          id="tempId"
+
+                        >
+                          <div
+                            className="custom-scroll-sale "
+                            style={{ width: "100%" }}
+                            tabIndex={0} onKeyDown={handleTableKeyDown}
+                            ref={tableRef}
+                          >
+                            <table
+                              ref={tableRef}
+                              style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                              }}
+                            >
+                              <thead>
+                                <tr className="customtable">
+                                  <th>Item Name</th>
+                                  <th>Batch Number</th>
+                                  <th>Unit</th>
+                                  <th>Expiry Date</th>
+                                  <th>QTY</th>
+                                  <th>Loc</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {batchListData.length > 0 ? (
+                                  <>
+                                    {batchListData?.map((item) => (
+                                      <tr
+                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
+                                        key={item.id}
+                                        data-id={item.id}
+                                        tabIndex={0}
+                                        style={{
+                                          border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                        }}
+
+                                        onClick={() => handlePassData(item)}
+                                        onMouseEnter={handleMouseEnter}
+                                      >
+                                        <td className=" text-base font-semibold">
+                                          {item.iteam_name}
+                                        </td>
+                                        <td className=" text-base font-semibold">
+                                          {item.batch_number}
+                                        </td>
+                                        <td className=" text-base font-semibold">
+                                          {item.unit}
+                                        </td>
+                                        <td className=" text-base font-semibold">
+                                          {item.expiry_date}
+                                        </td>
+                                        <td className=" text-base font-semibold">
+                                          {item.qty}
+                                        </td>
+                                        <td className=" text-base font-semibold">
+                                          {item.location}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <tr>
+                                    <td
+                                      colSpan={12}
+                                      style={{
+                                        textAlign: "center",
+                                        fontSize: "16px",
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      No record found
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </Box>
+                      )}
+                    </table>
+                  </div>
 
                   {/* {value && */}
                   <div className="scroll-two">
@@ -1367,15 +1379,17 @@ const EditSaleBill = () => {
                           <th>GST% </th>
                           <th>QTY </th>
                           <th>
-                            Order{" "}
-                            <Tooltip title="Please Enter only (o)" arrow>
-                              <Button>
-                                <GoInfo
-                                  className="absolute"
-                                  style={{ fontSize: "1rem" }}
-                                />
-                              </Button>
-                            </Tooltip>
+                            <div style={{ display: "flex", flexWrap: "nowrap" }}>
+                              Order{" "}
+                              <Tooltip title="Please Enter only (o)" arrow>
+                                <Button style={{ justifyContent: 'left' }}>
+                                  <GoInfo
+                                    className="absolute"
+                                    style={{ fontSize: "1rem" }}
+                                  />
+                                </Button>
+                              </Tooltip>
+                            </div>
                           </th>
                           <th>Loc.</th>
                           <th>Amount </th>

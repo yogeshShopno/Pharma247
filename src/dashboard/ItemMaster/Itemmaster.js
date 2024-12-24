@@ -308,15 +308,20 @@ const Itemmaster = () => {
     let data = new FormData();
     data.append("category_name", categoryName);
     try {
-      axios.post("create-itemcategory", data, {
+      const response = axios.post("create-itemcategory", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
       listItemcatagory();
       setOpen(false);
       setCategoryName("");
       setIsLoading(false);
+
     } catch (error) {
       console.error("API error:", error);
     }
@@ -419,28 +424,28 @@ const Itemmaster = () => {
 
   const submitItemRecord = async () => {
     let formData = new FormData();
-    formData.append("item_name", searchItem?searchItem:"");
-    formData.append("packaging_id", packaging?packaging:"");
-    formData.append("unite", unit?unit:"");
-    formData.append("weightage", weightage?weightage:"");
-    formData.append("pack", pack?pack:"");
-    formData.append("drug_group", drugGroup?drugGroup.id:"");
-    formData.append("gst", gst?gst:"");
-    formData.append("location", location?location:"");
-    formData.append("mrp", MRP?MRP:"");
-    formData.append("barcode", barcode?barcode:"");
-    formData.append("minimum", min?min:"");
-    formData.append("maximum", max?max:"");
-    formData.append("discount", disc?disc:"");
-    formData.append("margin", margin?margin:"");
-    formData.append("hsn_code", hsn_code?hsn_code:"");
-    formData.append("message", message?message:"");
-    formData.append("item_category_id", selectedCategory?selectedCategory.id:"");
-    formData.append("pahrma", selectedCompany?selectedCompany.id:"");
-    formData.append("distributer", selectedSuppliers?selectedSuppliers.id:"");
-    formData.append("front_photo", selectedFrontFile?selectedFrontFile:"");
-    formData.append("back_photo", selectedBackFile?selectedBackFile:"");
-    formData.append("mrp_photo", selectedMRPFile?selectedMRPFile:"");
+    formData.append("item_name", searchItem ? searchItem : "");
+    formData.append("packaging_id", packaging ? packaging : "");
+    formData.append("unite", unit ? unit : "");
+    formData.append("weightage", weightage ? weightage : "");
+    formData.append("pack", pack ? pack : "");
+    formData.append("drug_group", drugGroup ? drugGroup.id : "");
+    formData.append("gst", gst ? gst : "");
+    formData.append("location", location ? location : "");
+    formData.append("mrp", MRP ? MRP : "");
+    formData.append("barcode", barcode ? barcode : "");
+    formData.append("minimum", min ? min : "");
+    formData.append("maximum", max ? max : "");
+    formData.append("discount", disc ? disc : "");
+    formData.append("margin", margin ? margin : "");
+    formData.append("hsn_code", hsn_code ? hsn_code : "");
+    formData.append("message", message ? message : "");
+    formData.append("item_category_id", selectedCategory ? selectedCategory.id : "");
+    formData.append("pahrma", selectedCompany ? selectedCompany.id : "");
+    formData.append("distributer", selectedSuppliers ? selectedSuppliers.id : "");
+    formData.append("front_photo", selectedFrontFile ? selectedFrontFile : "");
+    formData.append("back_photo", selectedBackFile ? selectedBackFile : "");
+    formData.append("mrp_photo", selectedMRPFile ? selectedMRPFile : "");
     try {
       const response = await axios.post("create-iteams", formData, {
         headers: {
@@ -456,6 +461,9 @@ const Itemmaster = () => {
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
+      } else if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -704,7 +712,7 @@ const Itemmaster = () => {
                   inputValue={searchItem.toUpperCase()}
                   sx={{ width: 350 }}
                   size="small"
-                   
+
                   onChange={handleOptionChange}
                   onInputChange={handleInputChange} // Handles input changes while typing
                   getOptionLabel={(option) =>
@@ -756,7 +764,7 @@ const Itemmaster = () => {
                 </Select>
               </div>  */}
 
-              <div className="fields">
+              <div className="fields Unit_divvv">
                 <label className="label">Unit</label>
                 <TextField
                   id="outlined-number"
@@ -768,12 +776,12 @@ const Itemmaster = () => {
                 />
               </div>
 
-              <div className="fields">
+              <div className="fields Unit_divvv">
                 <label className="label">Pack</label>
                 <TextField
                   id="outlined-number"
                   disabled
-                  style={{ width: "160px" }}
+                  // style={{ width: "160px" }}
                   size="small"
                   value={pack}
                   onChange={(e) => {
@@ -799,7 +807,7 @@ const Itemmaster = () => {
                     options={drugGroupList}
                     size="small"
                     value={drugGroup}
-                    sx={{ width: 350 }}
+                    // sx={{ width: 350 }}
                     onChange={(e, value) => setDrugGroup(value)}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
@@ -810,10 +818,10 @@ const Itemmaster = () => {
               </div>
             </div>
 
-            <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}></div>
+            <div className="row border-b pb-6" style={{ borderColor: "var(--color2)" }}></div>
 
-            <div className="row ">
-              <div className="fields">
+            <div className="row pt-6">
+              <div className="fields secrw_divvv">
                 <div
                   style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                 >
@@ -832,7 +840,7 @@ const Itemmaster = () => {
                     size="small"
                     value={selectedCompany}
                     onChange={(e, value) => setSelectedCompany(value)}
-                    sx={{ width: 350 }}
+                    // sx={{ width: 350 }}
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
                       <TextField {...params} label="Select Company" />
@@ -842,7 +850,7 @@ const Itemmaster = () => {
                 </Box>
               </div>
 
-              <div className="fields">
+              <div className="fields secrw_divvv">
                 <div
                   style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                 >
@@ -853,14 +861,15 @@ const Itemmaster = () => {
                   />
                 </div>
                 {/* <label className="label"></label> */}
-                <Box sx={{ minWidth: 350 }}>
+                {/* <Box sx={{ minWidth: 350 }}> */}
+                <Box >
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
                     options={suppliersList}
                     value={selectedSuppliers}
                     size="small"
-                    sx={{ width: 350 }}
+                    // sx={{ width: 350 }}
                     onChange={(e, value) => setSelectedSuppliers(value)}
                     getOptionLabel={(option) => option.name.toUpperCase()}
                     renderInput={(params) => (
@@ -875,7 +884,7 @@ const Itemmaster = () => {
                 </Box>
               </div>
 
-              <div className="fields">
+              <div className="fields secrw_divvv">
                 <label className="label">GST%</label>
                 <Select
                   labelId="dropdown-label"
@@ -897,13 +906,13 @@ const Itemmaster = () => {
               </div>
             </div>
 
-            <div className="row border-b-2 pb-6" style={{ borderColor: "var(--color2)" }}>
-              <div className="fields">
+            <div className="row border-b pb-6 " style={{ borderColor: "var(--color2)" }}>
+              <div className="fields secrw_divvv pt-2">
                 <label className="label">MRP</label>
                 <TextField
                   required
                   id="outlined-number"
-                  style={{ width: "350px" }}
+                  // style={{ width: "350px" }}
                   size="small"
                   type="number"
                   value={MRP}
@@ -912,7 +921,7 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-              <div className="fields">
+              <div className="fields secrw_divvv pt-2">
                 <label className="label">Location</label>
                 {/* <TextField
                   id="outlined-number"
@@ -926,7 +935,7 @@ const Itemmaster = () => {
                 <Autocomplete
                   value={locationvalue}
                   inputValue={location}
-                  sx={{ width: 350 }}
+                  // sx={{ width: 350 }}
                   size="small"
                   onChange={handleLocationOptionChange}
                   onInputChange={handleLocationInputChange}
@@ -945,12 +954,12 @@ const Itemmaster = () => {
                   freeSolo
                 />
               </div>
-              <div className="fields">
+              <div className="fields secrw_divvv pt-2">
                 <label className="label">Barcode</label>
                 <TextField
                   required
                   id="outlined-number"
-                  style={{ width: "350px" }}
+                  // style={{ width: "350px" }}
                   size="small"
                   type="number"
                   value={barcode}
@@ -961,14 +970,14 @@ const Itemmaster = () => {
               </div>
             </div>
 
-            <div className="row">
-              <div className="fields">
+            <div className="row pt-6">
+              <div className="fields third_divv">
                 <label className="label">Minimum</label>
                 <TextField
                   id="outlined-number"
                   // label="Min"
                   type="number"
-                  style={{ width: "232px" }}
+                  // style={{ width: "232px" }}
                   size="small"
                   value={min}
                   onChange={(e) => {
@@ -976,13 +985,13 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-              <div className="fields">
+              <div className="fields third_divv">
                 <label className="label">Maximum</label>
                 <TextField
                   id="outlined-number"
                   // label="Max."
                   type="number"
-                  style={{ width: "232px" }}
+                  // style={{ width: "232px" }}
                   size="small"
                   value={max}
                   onChange={(e) => {
@@ -990,12 +999,12 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-              <div className="fields">
+              <div className="fields third_divv">
                 <label className="label">Disc.%</label>
                 <TextField
                   id="outlined-number"
                   // label="Disc.%"
-                  style={{ width: "232px" }}
+                  // style={{ width: "232px" }}
                   size="small"
                   type="number"
                   value={disc}
@@ -1004,12 +1013,12 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-              <div className="fields">
+              <div className="fields third_divv">
                 <label className="label">Margin%</label>
                 <TextField
                   id="outlined-number"
                   // label="Margin%"
-                  style={{ width: "232px" }}
+                  // style={{ width: "232px" }}
                   size="small"
                   type="number"
                   value={margin}
@@ -1018,13 +1027,13 @@ const Itemmaster = () => {
                   }}
                 />
               </div>
-              <div className="fields">
+              <div className="fields third_divv">
                 <label className="label">HSN code.</label>
                 <TextField
                   id="outlined-number"
                   // label="HSN code"
                   type="number"
-                  style={{ width: "232px" }}
+                  // style={{ width: "232px" }}
                   size="small"
                   value={hsn_code}
                   onChange={(e) => {
@@ -1033,18 +1042,18 @@ const Itemmaster = () => {
                 />
               </div>
 
-              
+
 
 
             </div>
-            <div className="row"> 
-            <div className="fields">
+            <div className="row">
+              <div className="fields four_divv pt-2">
                 <label className="label">Packaging In</label>
                 <Select
                   labelId="dropdown-label"
                   id="dropdown"
                   value={packaging}
-                  sx={{ minWidth: "250px" }}
+                  // sx={{ minWidth: "250px" }}
                   onChange={handlePackagingChange}
                   size="small"
                   displayEmpty
@@ -1061,14 +1070,14 @@ const Itemmaster = () => {
                 {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
               </div>
 
-              <div className="fields">
+              <div className="fields four_divv pt-2">
                 <div
                   style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                 >
                   <label className="label">Category </label>
                   {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
                 </div>
-                <Box sx={{ minWidth: 350 }}>
+                <Box >
                   <FormControl fullWidth>
                     <Autocomplete
                       disablePortal
@@ -1076,7 +1085,7 @@ const Itemmaster = () => {
                       options={categoryList}
                       size="small"
                       value={selectedCategory}
-                      sx={{ width: 350 }}
+                      // sx={{ width: 350 }}
                       onChange={(e, value) => setSelectedCategory(value)}
                       getOptionLabel={(option) => option.category_name}
                       renderInput={(params) => (
@@ -1086,15 +1095,15 @@ const Itemmaster = () => {
                   </FormControl>
                 </Box>
               </div>
-              </div>
+            </div>
             <div >
-            <div className="row border-b-2 pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
+              <div className="row border-b pb-6 mb-5" style={{ borderColor: "var(--color2)" }}></div>
               <div>
-                <h1 className="product " style={{ color: "var(--color1)" }}>
+                <h1 className="product" style={{ color: "var(--color1)" }}>
                   Product Images
                 </h1>
               </div>
-              <div className="row justify-center">
+              <div className="row justify-center product_img_divv">
                 <div>
                   <div className="uploadBox">
                     <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
@@ -1248,7 +1257,7 @@ const Itemmaster = () => {
             </div>
 
             <div className="row">
-              <div className="w-full md:w-2/3 lg:w-1/2 xl:w-full">
+              <div className="w-full md:w-2/3 lg:w-1/2 xl:w-full pt-5">
                 <label className="label block text-sm font-medium text-gray-700 my-2">
                   Message
                 </label>
@@ -1267,10 +1276,10 @@ const Itemmaster = () => {
               </div>
             </div>
 
-            <div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Button
                 variant="contained"
-                style={{ margin: "10px", background: "var(--color1)" }}
+                style={{ margin: "10px", marginLeft: "0px", background: "var(--color1)" }}
                 onClick={handleSubmit}
               >Submit</Button>
 
@@ -1342,12 +1351,12 @@ const Itemmaster = () => {
             variant="contained"
             onClick={submitDrugGroup}
             disabled={!drugGroupName}
-            style={{ margin: "10px", background: "#3f6212",color:"white" }}
+            style={{ margin: "10px", background: "#3f6212", color: "white" }}
 
           >
             Submit
           </Button>
-          <Button   style={{ background: "#F31C1C" ,color:"white"}} onClick={handleCloseDrugGroup}>Cancel</Button>
+          <Button style={{ background: "#F31C1C", color: "white" }} onClick={handleCloseDrugGroup}>Cancel</Button>
 
         </DialogActions>
       </Dialog>
@@ -1372,20 +1381,20 @@ const Itemmaster = () => {
           </div>
         </DialogContent>
         <DialogActions>
-         
+
           <Button
             type="submit"
             onClick={submitCompany}
             variant="contained"
             disabled={!companyName}
-            style={{ background: "#3f6212" ,color:"white"}}
+            style={{ background: "#3f6212", color: "white" }}
           >
             Submit
           </Button>
           <Button
-                      style={{ background: "#F31C1C" ,color:"white"}}
+            style={{ background: "#F31C1C", color: "white" }}
 
-          onClick={handleCloseCompany}>Cancel</Button>
+            onClick={handleCloseCompany}>Cancel</Button>
         </DialogActions>
       </Dialog>
       {/*Bulk Item Data Added  */}
@@ -1420,8 +1429,8 @@ const Itemmaster = () => {
                 <span className="errorFile">*select only .csv File.</span>
               </div>
               <div>
-                <Button onClick={handleDownload}  style={{backgroundColor: "#3f6212" ,color:"white"  }}  >
-                  <CloudDownloadIcon className="mr-2"/>
+                <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                  <CloudDownloadIcon className="mr-2" />
                   Sample File Download
                 </Button>
               </div>
@@ -1431,8 +1440,8 @@ const Itemmaster = () => {
         <DialogActions>
           <Button
             autoFocus
-            style={{backgroundColor: "#3f6212" ,color:"white"  }}
-        
+            style={{ backgroundColor: "#3f6212", color: "white" }}
+
             type="success"
             onClick={handleFileUpload}
           >

@@ -1115,28 +1115,36 @@ const Addsale = () => {
         }
     };
 
-    const addItemValidation = () => {
+    const addItemValidation = async () => {
         setUnsavedItems(true);
+        const newErrors = {};
         if (!mrp) {
-            toast.error('Please Select any Item Name')
-        } else {
-            addSaleItem();
+            newErrors.mrp = "Please Select any Item Name";
+            toast.error(newErrors.mrp);
+        }
+        if (!qty || qty <= 0) {
+            // Notify the user to enter a valid quantity
+            newErrors.qty = "Please enter a valid quantity.";
+            toast.error(newErrors.qty);
+        }
+
+        else {
+            // addSaleItem();
             setIsVisible(false);
             setSearchItem('')
             setBarcodeItemName('')
             setSelectedOption(null);
         }
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+            await addSaleItem();
+        }
+        return isValid;
     }
 
     const addSaleItem = async () => {
         generateRandomNumber();
         let data = new FormData();
-
-        if (!qty || qty <= 0) {
-            // Notify the user to enter a valid quantity
-            toast.error("Please enter a valid quantity.");
-            return; // Exit the function early
-        }
 
         if (isEditMode === true) {
             data.append("item_id", itemEditID)
@@ -1191,25 +1199,22 @@ const Addsale = () => {
                     },
                 });
 
-            if (!isEditMode && response.data.status === 200) {
-                setTotalAmount(0)
-                saleItemList();
-                setUnit('')
-                setBatch('')
-                setExpiryDate('');
-                setMRP('')
-                setQty('')
-                setBase('')
-                setGst('')
-                setBatch('')
-                setBarcode("")
-                setLoc('')
-                setOrder('')
-                setIsEditMode(false);
+            setTotalAmount(0)
+            saleItemList();
+            setUnit('')
+            setBatch('')
+            setExpiryDate('');
+            setMRP('')
+            setQty('')
+            setBase('')
+            setGst('')
+            setBatch('')
+            setBarcode("")
+            setLoc('')
+            setOrder('')
+            setIsEditMode(false);
 
-            } else {
-                toast.error(response.data.message);
-            }
+            toast.success(response.data.message);
 
 
             // if (quantityDifference === 1) {
@@ -1387,7 +1392,7 @@ const Addsale = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
-                                    sx={{ minWidth: '200px' }}
+                                    className="payment_divv"
                                     onChange={(e) => {
                                         setPaymentType(e.target.value);
                                         setUnsavedItems(true);
@@ -1405,7 +1410,7 @@ const Addsale = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={pickup}
-                                    sx={{ minWidth: '150px' }}
+                                    className="payment_divv"
                                     onChange={(e) => {
                                         setPickup(e.target.value);
                                         setUnsavedItems(true);
@@ -1417,9 +1422,9 @@ const Addsale = () => {
                                         <MenuItem key={option.id} value={option.label}>{option.label}</MenuItem>
                                     ))}
                                 </Select>
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
-
+                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
                             </div>
+
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
@@ -1428,7 +1433,18 @@ const Addsale = () => {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-1">
-                                                <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', marginLeft: "15px", fontWeight: "bold", width: '19%' }}>{localStorage.getItem('BillNo')}  </div>
+                                                <div
+                                                    style={{
+                                                        color: 'white',
+                                                        fontWeight: "500",
+                                                        alignItems: "center",
+                                                        marginTop: '8px',
+                                                        marginLeft: "15px",
+                                                        fontWeight: "bold",
+                                                        width: '19%'
+                                                    }}>
+                                                    {localStorage.getItem('BillNo')}
+                                                </div>
                                                 <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', fontWeight: "bold" }}>|</div>
                                                 <DatePicker
                                                     color="white"
@@ -1473,7 +1489,7 @@ const Addsale = () => {
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
                                         value={customer}
@@ -1525,7 +1541,6 @@ const Addsale = () => {
                                                     ),
                                                     style: { height: 55 },
                                                 }}
-
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
                                                         fontSize: '1rem',
@@ -1601,169 +1616,169 @@ const Addsale = () => {
 
                                 </div>
                                 <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
-                                <table style={{ maxWidth: '50%', width: '100%' }} >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            gap: 2,
-                                            alignItems: 'center',
-                                        }}
-                                    >
+                                    <table style={{ maxWidth: '50%', width: '100%' }} >
                                         <Box
                                             sx={{
-                                                flex: '1 1 auto',
-                                                // minWidth: {
-                                                //     xs: '350px',
-                                                //     sm: '500px',
-                                                //     md: '806px',
-                                                //     lg: '1000px'
-                                                // },
-                                                width: '100%',
-                                                background: '#ceecfd',
-                                                borderRadius: '7px',
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                gap: 2,
+                                                alignItems: 'center',
                                             }}
                                         >
-                                            <Autocomplete
-                                                value={selectedOption}
-                                                blurOnSelect
-                                                size="small"
-                                                sx={{ fontSize: "1.5rem" }}
-                                                onChange={handleOptionChange}
-                                                onInputChange={handleInputChange}
-                                                options={itemList}
-                                                getOptionLabel={(option) => `${option.iteam_name || ''} `}
-                                                filterOptions={(option, state) => { return itemList }}
-                                                renderOption={(props, option) => (
-                                                    <ListItem {...props} key={option.id}>
-                                                        <ListItemText
-                                                            primary={`${option.iteam_name}, (${option.company})`}
-                                                            // secondary={
-                                                            //     <>
-                                                            //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                                            //         ₹: {option.mrp || 0},
-                                                            //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                                            //     </>
-                                                            // }
-                                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                            <Box
+                                                sx={{
+                                                    flex: '1 1 auto',
+                                                    // minWidth: {
+                                                    //     xs: '350px',
+                                                    //     sm: '500px',
+                                                    //     md: '806px',
+                                                    //     lg: '1000px'
+                                                    // },
+                                                    width: '100%',
+                                                    background: '#ffffff',
+                                                    borderRadius: '7px',
+                                                }}
+                                            >
+                                                <Autocomplete
+                                                    value={selectedOption}
+                                                    blurOnSelect
+                                                    size="small"
+                                                    sx={{ fontSize: "1.5rem" }}
+                                                    onChange={handleOptionChange}
+                                                    onInputChange={handleInputChange}
+                                                    options={itemList}
+                                                    getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                    filterOptions={(option, state) => { return itemList }}
+                                                    renderOption={(props, option) => (
+                                                        <ListItem {...props} key={option.id}>
+                                                            <ListItemText
+                                                                primary={`${option.iteam_name}, (${option.company})`}
+                                                                // secondary={
+                                                                //     <>
+                                                                //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                                                //         ₹: {option.mrp || 0},
+                                                                //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                                                //     </>
+                                                                // }
+                                                                secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                                                sx={{
+                                                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
+                                                                }}
+                                                            />
+                                                        </ListItem>
+                                                    )}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            variant="outlined"
+                                                            id="searchResults"
+                                                            placeholder="Search Item Name..."
+                                                            InputProps={{
+                                                                ...params.InputProps,
+                                                                style: { height: 45, fontSize: '1.2rem' },
+
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <SearchIcon sx={{ color: "var(--color1)", cursor: "pointer" }} />
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
                                                             sx={{
-                                                                '& .MuiTypography-root': { fontSize: '1.1rem' }
+                                                                '& .MuiOutlinedInput-root': {
+                                                                    '& fieldset': {
+                                                                        border: 'none',
+                                                                    },
+                                                                    '&:hover fieldset': {
+                                                                        border: 'none',
+                                                                    },
+                                                                    '&.Mui-focused fieldset': {
+                                                                        border: 'none',
+                                                                    },
+                                                                    borderBottom: '1px solid ',
+                                                                },
+                                                                '& .MuiInputBase-input::placeholder': {
+                                                                    fontSize: '1rem',
+                                                                    color: 'black',
+                                                                },
                                                             }}
                                                         />
-                                                    </ListItem>
-                                                )}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        variant="outlined"
-                                                        id="searchResults"
-                                                        placeholder="Search Item Name..."
-                                                        InputProps={{
-                                                            ...params.InputProps,
-                                                            style: { height: 45, fontSize: '1.2rem' },
-
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                        sx={{
-                                                            '& .MuiOutlinedInput-root': {
-                                                                '& fieldset': {
-                                                                    border: 'none',
-                                                                },
-                                                                '&:hover fieldset': {
-                                                                    border: 'none',
-                                                                },
-                                                                '&.Mui-focused fieldset': {
-                                                                    border: 'none',
-                                                                },
-                                                                borderBottom: '1px solid ',
-                                                            },
-                                                            '& .MuiInputBase-input::placeholder': {
-                                                                fontSize: '1rem',
-                                                                color: 'black',
-                                                            },
-                                                        }}
-                                                    />
-                                                )}
-                                            />
+                                                    )}
+                                                />
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                    {isVisible && value && !batch &&
-                                        <Box sx={{
-                                            minWidth: {
-                                                xs: '200px',
-                                                sm: '500px',
-                                                md: '1000px',
-                                            },
-                                            backgroundColor: 'white',
-                                            position: 'absolute',
-                                            zIndex: 1
-                                        }}
-                                            id="tempId"
-                                        >
-                                            <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
-                                                ref={tableRef}
+                                        {isVisible && value && !batch &&
+                                            <Box sx={{
+                                                minWidth: {
+                                                    xs: '200px',
+                                                    sm: '500px',
+                                                    md: '1000px',
+                                                },
+                                                backgroundColor: 'white',
+                                                position: 'absolute',
+                                                zIndex: 1
+                                            }}
+                                                id="tempId"
                                             >
-                                                <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                    <thead>
-                                                        <tr className="customtable">
-                                                            <th>Item Name</th>
-                                                            <th>Batch Number</th>
-                                                            <th>Unit</th>
-                                                            <th>Expiry Date</th>
-                                                            <th>QTY</th>
-                                                            <th>Loc</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {batchListData.length > 0 ?
-                                                            <>
-                                                                {batchListData.map(item => (
-                                                                    <tr
-                                                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-                                                                        key={item.id}
-                                                                        data-id={item.id}
-                                                                        tabIndex={0}
-                                                                        style={{
-                                                                            border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
-                                                                        }}
-                                                                        onClick={() => handlePassData(item)}
-                                                                        onMouseEnter={handleMouseEnter}
-                                                                    >
-                                                                        <td className="text-base font-semibold">{item.iteam_name}</td>
-                                                                        <td className="text-base font-semibold">{item.batch_number}</td>
-                                                                        <td className="text-base font-semibold">{item.unit}</td>
-                                                                        <td className="text-base font-semibold">{item.expiry_date}</td>
-                                                                        <td className="text-base font-semibold">{item.qty}</td>
-                                                                        <td className="text-base font-semibold">{item.location}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </> :
-                                                            <tr>
-                                                                <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
+                                                <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
+                                                    ref={tableRef}
+                                                >
+                                                    <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                        <thead>
+                                                            <tr className="customtable">
+                                                                <th>Item Name</th>
+                                                                <th>Batch Number</th>
+                                                                <th>Unit</th>
+                                                                <th>Expiry Date</th>
+                                                                <th>QTY</th>
+                                                                <th>Loc</th>
                                                             </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </Box>
+                                                        </thead>
+                                                        <tbody>
+                                                            {batchListData.length > 0 ?
+                                                                <>
+                                                                    {batchListData.map(item => (
+                                                                        <tr
+                                                                            className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
+                                                                            key={item.id}
+                                                                            data-id={item.id}
+                                                                            tabIndex={0}
+                                                                            style={{
+                                                                                border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                                                            }}
+                                                                            onClick={() => handlePassData(item)}
+                                                                            onMouseEnter={handleMouseEnter}
+                                                                        >
+                                                                            <td className="text-base font-semibold">{item.iteam_name}</td>
+                                                                            <td className="text-base font-semibold">{item.batch_number}</td>
+                                                                            <td className="text-base font-semibold">{item.unit}</td>
+                                                                            <td className="text-base font-semibold">{item.expiry_date}</td>
+                                                                            <td className="text-base font-semibold">{item.qty}</td>
+                                                                            <td className="text-base font-semibold">{item.location}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </> :
+                                                                <tr>
+                                                                    <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </Box>
 
-                                    }
+                                        }
 
-                                </table>
+                                    </table>
 
-                                <Button
-                                    variant="contained"
-                                    style={{ backgroundColor: "var(--color1)" }}
+                                    <Button
+                                        variant="contained"
+                                        style={{ backgroundColor: "var(--color1)" }}
 
-                                    onClick={handelAddItemOpen}
-                                >
-                                    <ControlPointIcon className="mr-2" />
-                                    Add New Item
-                                </Button>
+                                        onClick={handelAddItemOpen}
+                                    >
+                                        <ControlPointIcon className="mr-2" />
+                                        Add New Item
+                                    </Button>
                                 </div>
 
                                 <div className="scroll-two">

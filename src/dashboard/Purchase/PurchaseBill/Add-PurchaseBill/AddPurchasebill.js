@@ -855,7 +855,7 @@ const AddPurchaseBill = () => {
     formData.append("item_name", addItemName ? addItemName : "");
     formData.append("unite", addUnit ? addUnit : "");
     formData.append("weightage", addUnit ? addUnit : "");
-    formData.append("pack", addUnit ? "1" + addUnit : "");
+    formData.append("pack", addUnit ? "1*" + addUnit : "");
     formData.append("barcode", addBarcode ? addBarcode : "");
 
     formData.append("packaging_id", "");
@@ -2290,80 +2290,78 @@ const AddPurchaseBill = () => {
                   style={{ padding: "20px" }}
                 >
                   <div className="row">
-                    <div className="fields">
+                    <div className="fields add_new_item_divv">
                       <label className="label secondary">Item Name</label>
                       <TextField
-                 autoComplete="off"
+                        autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ minWidth: "150px" }}
                         value={addItemName}
                         onChange={(e) => setAddItemName(e.target.value)}
 
                       />
                     </div>
-                    <div className="fields">
+                    <div className="fields add_new_item_divv">
                       <label className="label  secondary">Barcode</label>
                       <TextField
-                 autoComplete="off"
+                        autoComplete="off"
                         id="outlined-number"
                         type="number"
                         size="small"
-                        sx={{ minWidth: "150px" }}
                         value={addBarcode}
                         onChange={(e) => setAddBarcode(Number(e.target.value))}
 
                       />
                     </div>
-                    <div className="fields">
+                  </div>
+                  <div className="row">
+                    <div className="fields add_new_item_divv">
                       <label className="label secondary">Unit</label>
                       <TextField
-                 autoComplete="off"
+                        autoComplete="off"
                         id="outlined-number"
                         type="number"
                         size="small"
-                        sx={{ minWidth: "150px" }}
                         value={addUnit}
                         onChange={(e) => setAddUnit(e.target.value)}
 
                       />
                     </div>
-                    <div className="fields">
+                    <div className="fields add_new_item_divv">
                       <label className="label secondary">Pack</label>
                       <TextField
-                 autoComplete="off"
+                        autoComplete="off"
                         disabled
                         id="outlined-number"
                         size="small"
-                        sx={{ minWidth: "150px" }}
                         value={`1 * ${addUnit} `}
                       />
                     </div>
 
 
                   </div>
-                </div>
+                  <div className="row" style={{ justifyContent: "flex-end", paddingRight: "4px", paddingTop: "8%" }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#3f6212",
+                        "&:hover": {
+                          backgroundColor: "#3f6212",
+                        },
+                      }}
+                      onClick={handleAddNewItem}
 
+                    >
+                      <ControlPointIcon className="mr-2" />
+                      Add New Item
+                    </Button>
+                  </div>
+                </div>
               </div>
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#3f6212",
-                "&:hover": {
-                  backgroundColor: "#3f6212",
-                },
-              }}
-              onClick={handleAddNewItem}
 
-            >
-              <ControlPointIcon className="mr-2" />
-              Add New Item
-            </Button>
 
-          </DialogActions>
         </Dialog >
         {/* Delete PopUP */}
         <div

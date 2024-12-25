@@ -664,7 +664,7 @@ const Inventory_Reconciliation = () => {
                                             getOptionLabel={(option) => option.batch_number}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off" autoComplete="off"{...params} label="Select Batch" />
+                 autoComplete="off" {...params} label="Select Batch" />
                                             )}
                                         /> */}
                                     </div>

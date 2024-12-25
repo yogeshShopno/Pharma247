@@ -1278,7 +1278,7 @@ const EditPurchaseBill = () => {
                     options={distributorList}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} />}
+                 autoComplete="off" {...params} />}
                   />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1384,7 +1384,7 @@ const EditPurchaseBill = () => {
                   )}
                   renderInput={(params) => (
                     <TextField
-                 autoComplete="off" autoComplete="off"{...params} label="Search Item Name" autoFocus />
+                 autoComplete="off" {...params} label="Search Item Name" autoFocus />
                   )}
                 />
 

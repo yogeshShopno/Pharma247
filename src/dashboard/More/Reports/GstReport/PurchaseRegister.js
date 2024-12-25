@@ -79,7 +79,7 @@ const PurchaseRegister = () => {
                                             value={startDate}
                                             onChange={(newDate) => setStartDate(newDate)}
                                             renderInput={(params) => <TextField
-                 autoComplete="off" autoComplete="off"{...params} />}
+                 autoComplete="off" {...params} />}
                                         />
                                     </LocalizationProvider>
                                 </div>

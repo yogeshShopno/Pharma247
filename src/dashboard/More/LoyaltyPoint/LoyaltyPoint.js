@@ -261,7 +261,7 @@ const LoyaltyPoint = () => {
                     < div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '0px 20px 0px' }}>
                         <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '120px' }} >loyalty point</span>
+                                <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px', width: '130px' }} >loyalty point</span>
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">

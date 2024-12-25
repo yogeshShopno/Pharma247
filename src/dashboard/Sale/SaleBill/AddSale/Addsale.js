@@ -2319,8 +2319,8 @@ const Addsale = () => {
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
-
-                <Dialog open={openAddItemPopUp} >
+                <Dialog open={openAddItemPopUp}
+                >
                     <DialogTitle id="alert-dialog-title" className="secondary">
                         Add New Item
                     </DialogTitle>
@@ -2335,84 +2335,76 @@ const Addsale = () => {
 
                             <div className="bg-white">
                                 <div
-                                    className="mainform bg-white rounded-lg"
-                                    style={{ padding: "20px" }}
+                                    className="mainform bg-white rounded-lg" style={{ padding: "20px" }}
                                 >
                                     <div className="row">
-                                        <div className="fields">
+                                        <div className="fields add_new_item_divv">
                                             <label className="label secondary">Item Name</label>
                                             <TextField
-                 autoComplete="off"
                                                 id="outlined-number"
                                                 size="small"
-                                                sx={{ minWidth: "150px" }}
                                                 value={addItemName}
                                                 onChange={(e) => setAddItemName(e.target.value)}
 
                                             />
                                         </div>
-                                        <div className="fields">
+                                        <div className="fields add_new_item_divv">
                                             <label className="label  secondary">Barcode</label>
                                             <TextField
-                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
-                                                sx={{ minWidth: "150px" }}
                                                 value={addBarcode}
                                                 onChange={(e) => setAddBarcode(Number(e.target.value))}
 
                                             />
                                         </div>
-                                        <div className="fields">
+                                    </div>
+                                    <div className="row">
+                                        <div className="fields add_new_item_divv">
                                             <label className="label secondary">Unit</label>
                                             <TextField
-                 autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 size="small"
-                                                sx={{ minWidth: "150px" }}
                                                 value={addUnit}
                                                 onChange={(e) => setAddUnit(e.target.value)}
 
                                             />
                                         </div>
-                                        <div className="fields">
+                                        <div className="fields add_new_item_divv">
                                             <label className="label secondary">Pack</label>
                                             <TextField
-                 autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 size="small"
-                                                sx={{ minWidth: "150px" }}
                                                 value={`1 * ${addUnit} `}
                                             />
                                         </div>
 
 
                                     </div>
+                                    <div className="row" style={{ justifyContent: "flex-end", paddingRight: "4px", paddingTop: "8%" }}>
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                backgroundColor: "#3f6212",
+                                                "&:hover": {
+                                                    backgroundColor: "#3f6212", // Keep the hover color same
+                                                },
+                                            }}
+                                            onClick={handleAddNewItem}
+                                        >
+                                            <ControlPointIcon className="" />
+                                            Add New Item
+                                        </Button>
+                                    </div>
                                 </div>
 
                             </div>
                         </DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Button
-                            variant="contained"
-                            sx={{
-                                backgroundColor: "#3f6212",
-                                "&:hover": {
-                                    backgroundColor: "#3f6212", // Keep the hover color same
-                                },
-                            }}
-                            onClick={handleAddNewItem}
 
-                        >
-                            <ControlPointIcon className="mr-2" />
-                            Add New Item
-                        </Button>
-
-                    </DialogActions>
                 </Dialog >
 
                 <div id="modal" value={IsDelete}

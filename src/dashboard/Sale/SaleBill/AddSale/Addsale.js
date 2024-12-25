@@ -1621,7 +1621,7 @@ const Addsale = () => {
                                                     md: '1000px',
                                                 },
                                                 width: '100%',
-                                                background: '#ceecfd',
+                                                background: 'white',
                                                 borderRadius: '7px',
                                             }}
                                         >
@@ -1666,7 +1666,7 @@ const Addsale = () => {
 
                                                             startAdornment: (
                                                                 <InputAdornment position="start">
-                                                                    <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
+                                                                    <SearchIcon sx={{ color: "var(--color1)", cursor: "pointer" }} />
                                                                 </InputAdornment>
                                                             ),
                                                         }}

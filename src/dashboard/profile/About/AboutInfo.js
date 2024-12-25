@@ -295,7 +295,7 @@ const AboutInfo = () => {
                   variant="contained"
                   sx={{
                     textTransform: "none",
-                    background: "rgb(4, 76, 157)",
+                    background: "var(--color1)",
                     paddingLeft: "18px",
                     marginTop: "20px",
                   }}
@@ -334,7 +334,7 @@ const AboutInfo = () => {
                     <Button
                         variant="contained"
                         component="span"
-                        style={{ padding: "5px", background: "rgb(4,76,157)" }}
+                        style={{ padding: "5px", background: "var(--color1)" }}
                     >
                         Choose Photo
                     </Button>

@@ -44,7 +44,7 @@ const ProfileView = () => {
                     onClick={() => toggleDrawer(false)}
                 >
                     <Accordion defaultExpanded>
-                        <AccordionSummary sx={{color:"rgb(4, 76, 157)"}} >
+                        <AccordionSummary sx={{color:"var(--color1)"}} >
                             <PersonIcon sx={{ mb: 1}} />
                             <Typography sx={{ paddingX: "20px" }}>Account</Typography>
                         </AccordionSummary>
@@ -88,7 +88,7 @@ const ProfileView = () => {
 
                     {hasStaffSessionsPermission && (
                         <Accordion >
-                            <AccordionSummary sx={{ color: "rgb(4, 76, 157)" }} >
+                            <AccordionSummary sx={{color:"var(--color1)"}} >
                                 <SupervisorAccountIcon sx={{ mb: 1 }} />
                                 <Typography sx={{ paddingX: "20px" }}>Staff & Sessions</Typography>
                             </AccordionSummary>

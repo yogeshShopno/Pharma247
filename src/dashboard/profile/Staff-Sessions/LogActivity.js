@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Loader from "../../../componets/loader/Loader"
 import Header from "../../Header"
 import ProfileView from "../ProfileView";
-import { Box, TablePagination } from "@mui/material";
+
+  import { Box, TablePagination ,  TableContainer,Paper} from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import { Button } from "flowbite-react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -79,6 +80,8 @@ const LogActivity = () => {
                                     </h1>
                                 </div>
                             </div>
+                            <TableContainer component={Paper} style={{ width: "100%", paddingInline: "25px", paddingBlock: "15px" }}>
+
                             <table className="table-cashManage p-4">
                                 <thead>
                                     <tr>
@@ -122,6 +125,10 @@ const LogActivity = () => {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
+            </TableContainer>
+
+                            
+                           
                         </div>
                     </Box>
                 </div>

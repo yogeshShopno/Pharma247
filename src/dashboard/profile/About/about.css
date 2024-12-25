@@ -22,7 +22,7 @@
 }
 
 .selected {
-  background-color: rgb(49 111 180 / 0.78);
+  background-color: var(--color1);
   color: white;
 }
 

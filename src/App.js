@@ -110,6 +110,13 @@ function App() {
       .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
         border-color: #3f6212; /* Default border color */
       }
+              .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
+    color: var(--color1) !important;
+}
+      .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+    background-color: var(--color1);
+}
+  
 
       /* Change border color on hover for Outlined TextFields */
       .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {

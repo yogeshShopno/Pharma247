@@ -74,7 +74,7 @@ const CreateRole = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
             .catch((error) => {
                 setIsLoading(false);
@@ -187,7 +187,10 @@ const CreateRole = () => {
                                     </h1>
                                 </div>
                                 <div>
-                                    <Button variant="contained" color="primary" style={{ textTransform: 'none', marginBottom: "25px" }} onClick={handleCreateRole}>{id ? 'Update' : 'Create'}</Button>
+                                    <Button variant="contained" style={{
+                                        background: "var(--color1)",
+                                        color: "white", textTransform: 'none', marginBottom: "25px"
+                                    }} onClick={handleCreateRole}>{id ? 'Update' : 'Create'}</Button>
                                 </div>
                             </div>
                             <div>
@@ -197,7 +200,7 @@ const CreateRole = () => {
                                         <span className="text-red-600 text-xl">*</span>
                                     </div>
                                     <TextField
-                 autoComplete="off" id="standard-basic"
+                                        autoComplete="off" id="standard-basic"
                                         size="small"
                                         sx={{ width: '100%' }}
                                         label="Enter Your Role Name"

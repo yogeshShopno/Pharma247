@@ -146,7 +146,13 @@ const ManageStaffRole = () => {
                                 </div>
 
                                 <div className="flex gap-6">
-                                    <Button variant="contained" color="primary" style={{ textTransform: 'none', marginBottom: "25px" }} onClick={(() => history.push('/add-roles'))}> <AddIcon className="mr-2" />Create Role</Button>
+                                    <Button variant="contained"
+                                        style={{
+                                            background: "var(--color1)",
+                                            color: "white", textTransform: 'none', marginBottom: "25px"
+                                        }}
+                                        onClick={(() => history.push('/add-roles'))}>
+                                        <AddIcon className="mr-2" />Create Role</Button>
                                 </div>
                             </div>
                             <table className="table-cashManage p-4">

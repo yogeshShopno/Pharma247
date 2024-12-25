@@ -352,7 +352,7 @@ const StaffMember = () => {
                             </div>
 
                             <div className="flex gap-6">
-                                <Button variant="contained" color="primary" style={{ textTransform: 'none', marginBottom: "25px" }} onClick={handelAddOpen}> <AddIcon className="mr-2" />Add New Member</Button>
+                                <Button variant="contained" color="primary" style={{background: "var(--color1)",color: "white", textTransform: 'none', marginBottom: "25px" }} onClick={handelAddOpen}> <AddIcon className="mr-2" />Add New Member</Button>
                             </div>
                         </div>
                         <table className="table-cashManage p-4">
@@ -545,7 +545,10 @@ const StaffMember = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus variant="contained" color="success" onClick={validateForm}>
+                    <Button     style={{
+                                            background: "#3f6212",
+                                            color: "white",
+                                        }} autoFocus variant="contained" color="success" onClick={validateForm}>
                         {buttonLabel}
                     </Button>
                 </DialogActions>

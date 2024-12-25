@@ -127,7 +127,7 @@ const Password = () => {
                         <ProfileView />
                         <div className="pt-8 pl-8 w-full">
                             <div>
-                                <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-5" style={{ color: "rgb(4, 76, 157)", marginBottom: "25px" }}>Update Password
+                                <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-5" style={{ color: "var(--color1)", marginBottom: "25px" }}>Update Password
                                     <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                 </h1>
                             </div>
@@ -182,7 +182,7 @@ const Password = () => {
                                 {passwordError && <div style={{ color: 'red', fontSize: '12px' }}>{passwordError}</div>}
                             </div>
                             <Box className='ml-2'>
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "rgb(4, 76, 157)", paddingLeft: "20px", marginTop: "20px" }} onClick={handleUpdate} >Update</Button>
+                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)", paddingLeft: "20px", marginTop: "20px" }} onClick={handleUpdate} >Update</Button>
                             </Box>
                         </div>
 

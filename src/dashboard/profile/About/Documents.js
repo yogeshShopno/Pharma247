@@ -346,7 +346,7 @@
 //                                                 )}
 //                                             </label>
 //                                         </div> */}
-//                                         <div className="flex items-center justify-center w-44">
+//                                         <div className="flex items-center justify-center flex-1">
 //                                             <label htmlFor="upload-photo-file" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
 //                                                 <input
 //                                                     accept="image/*"
@@ -412,8 +412,8 @@ import { cleanDigitSectionValue } from "@mui/x-date-pickers/internals/hooks/useF
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Documents = () => {
-      const history = useHistory()
-    
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const [header, setHeader] = useState('');
     const [selectedLicenseName, setSelectedLicenseName] = useState('')
@@ -472,7 +472,7 @@ const Documents = () => {
             }
             // setDocument(data)
             setIsLoading(false);
-            if(response.data.status === 401){ 
+            if (response.data.status === 401) {
                 history.push('/');
                 localStorage.clear();
             }
@@ -540,7 +540,7 @@ const Documents = () => {
                 toast.success(response.data.message)
                 fetchAboutDetails();
                 setErrors({})
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
@@ -573,7 +573,7 @@ const Documents = () => {
                         <div className="p-5 ml-4" style={{ width: "100%" }}>
                             <div className="flex justify-between">
                                 <div>
-                                    <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-6" style={{ color: "rgb(4, 76, 157)", marginTop: "25px" }}>Documents
+                                    <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-6" style={{ color: "var(--color1)", marginTop: "25px" }}>Documents
                                         <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                     </h1>
                                 </div>
@@ -585,16 +585,19 @@ const Documents = () => {
                                     <div>
                                         <span className="primary text-lg font-bold">Drug License No.20</span>
                                     </div>
-                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
-                                        <span>
+                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5 gap-4" style={{
+                                        border: '1px solid #628a2f73',
+                                        boxShadow: '1px 5px 15px #9b9b9b3b',
+                                    }}>
+                                        <div className="flex-1">
                                             <div className="mb-4">
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number"
-                                                    style={{ width: '189px' }}
+                                                    style={{ width: '100%' }}
                                                     size="small"
-                                                    type="number"
+                                                    type="text"
                                                     value={licenseNo}
                                                     onChange={(e) => setLicenseNo(e.target.value)}
                                                 />
@@ -603,15 +606,15 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDate}
+                                                    selected={licenseExpiryDate || new Date()}
                                                     onChange={(newDate) => setLicenseExpiryDate(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
                                                 />
                                             </div>
-                                        </span>
-                                        <div className="flex items-center justify-center w-44">
-                                            <label htmlFor="upload-photo-file-one" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
+                                        </div>
+                                        <div className="flex items-center justify-center flex-1">
+                                            <label htmlFor="upload-photo-file-one" className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -622,10 +625,11 @@ const Documents = () => {
                                                 {selectedUploadFile == null ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
-                                                        <p className="text-sm text-gray-500">Click to upload</p>
+                                                        <span>Drop your image here</span>
+                                                        <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrl} alt="Uploaded Image 1" className="w-44 h-28 border-dashed rounded-lg" />
+                                                    <img src={uploadUrl} alt="Uploaded Image 1" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -635,16 +639,20 @@ const Documents = () => {
                                     <div>
                                         <span className="primary text-lg font-bold">Drug License No.21</span>
                                     </div>
-                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
-                                        <span>
+                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5 gap-4" style={{
+                                        border: '1px solid #628a2f73',
+                                        boxShadow: '1px 5px 15px #9b9b9b3b',
+
+                                    }}>
+                                        <div className="flex-1">
                                             <div className="mb-4">
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-two"
-                                                    style={{ width: '189px' }}
+                                                    style={{ width: '100%' }}
                                                     size="small"
-                                                    type="number"
+                                                    type="text"
                                                     value={licenseNoTwo}
                                                     onChange={(e) => setLicenseNoTwo(e.target.value)}
                                                 />
@@ -653,15 +661,15 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateTwo}
+                                                    selected={licenseExpiryDateTwo || new Date()}
                                                     onChange={(newDate) => setLicenseExpiryDateTwo(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
                                                 />
                                             </div>
-                                        </span>
-                                        <div className="flex items-center justify-center w-44">
-                                            <label htmlFor="upload-photo-file-two" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
+                                        </div>
+                                        <div className="flex items-center justify-center flex-1">
+                                            <label htmlFor="upload-photo-file-two" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -672,10 +680,11 @@ const Documents = () => {
                                                 {selectedUploadFileTwo == null ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
-                                                        <p className="text-sm text-gray-500">Click to upload</p>
+                                                        <span>Drop your image here</span>
+                                                        <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlTwo} alt="Uploaded Image 2" className="w-44 h-28 border-dashed rounded-lg" />
+                                                    <img src={uploadUrlTwo} alt="Uploaded Image 2" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -683,21 +692,25 @@ const Documents = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-around flex-wrap">
+                            <div className="flex justify-around flex-wrap mt-5">
                                 <div className="w-2/5 flex-col justify-evenly align-center">
                                     <div>
                                         <span className="primary text-lg font-bold">FSSAI No. (Optional)</span>
                                     </div>
-                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
-                                        <span>
+                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5 gap-4" style={{
+                                        border: '1px solid #628a2f73',
+                                        boxShadow: '1px 5px 15px #9b9b9b3b',
+
+                                    }}>
+                                        <div className="flex-1">
                                             <div className="mb-4">
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-three"
-                                                    style={{ width: '189px' }}
+                                                    style={{ width: '100%' }}
                                                     size="small"
-                                                    type="number"
+                                                    type="text"
                                                     value={licenseNoThree}
                                                     onChange={(e) => setLicenseNoThree(e.target.value)}
                                                 />
@@ -706,15 +719,15 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateThree}
+                                                    selected={licenseExpiryDateThree || new Date()}
                                                     onChange={(newDate) => setLicenseExpiryDateThree(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
                                                 />
                                             </div>
-                                        </span>
-                                        <div className="flex items-center justify-center w-44">
-                                            <label htmlFor="upload-photo-file-three" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
+                                        </div>
+                                        <div className="flex items-center justify-center flex-1">
+                                            <label htmlFor="upload-photo-file-three" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -725,10 +738,11 @@ const Documents = () => {
                                                 {selectedUploadFileThree == null ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
-                                                        <p className="text-sm text-gray-500">Click to upload</p>
+                                                        <span>Drop your image here</span>
+                                                        <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlThree} alt="Uploaded Image 3" className="w-44 h-28 border-dashed rounded-lg" />
+                                                    <img src={uploadUrlThree} alt="Uploaded Image 3" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -738,16 +752,19 @@ const Documents = () => {
                                     <div>
                                         <span className="primary text-lg font-bold">GSTN (Optional)</span>
                                     </div>
-                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5">
-                                        <span>
+                                    <div className="bg-white rounded-lg flex flex-wrap justify-between flex-row items-center mt-5 mb-5 p-5 gap-4" style={{
+                                        border: '1px solid #628a2f73',
+                                        boxShadow: '1px 5px 15px #9b9b9b3b',
+                                    }}>
+                                        <div className="flex-1">
                                             <div className="mb-4">
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
                                                     id="outlined-number-four"
-                                                    style={{ width: '189px' }}
+                                                    style={{ width: '100%' }}
                                                     size="small"
-                                                    type="number"
+                                                    type="text"
                                                     value={licenseNoFour}
                                                     onChange={(e) => setLicenseNoFour(e.target.value)}
                                                 />
@@ -756,16 +773,16 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateFour}
+                                                    selected={licenseExpiryDateFour || new Date()}
                                                     onChange={(newDate) => setLicenseExpiryDateFour(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
 
                                                 />
                                             </div>
-                                        </span>
-                                        <div className="flex items-center justify-center w-44">
-                                            <label htmlFor="upload-photo-file-four" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
+                                        </div>
+                                        <div className="flex items-center justify-center flex-1">
+                                            <label htmlFor="upload-photo-file-four" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -776,10 +793,11 @@ const Documents = () => {
                                                 {selectedUploadFileFour == null ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
-                                                        <p className="text-sm text-gray-500">Click to upload</p>
+                                                        <span>Drop your image here</span>
+                                                        <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlFour} alt="Uploaded Image 4" className="w-44 h-28 border-dashed rounded-lg" />
+                                                    <img src={uploadUrlFour} alt="Uploaded Image 4" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -787,12 +805,12 @@ const Documents = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-start">
+                            <div className="flex justify-start mt-5" style={{ paddingLeft: "5%" }}>
                                 <div className="self-end">
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        style={{ textTransform: 'none' }}
+                                        style={{ textTransform: 'none', backgroundColor: "var(--color1)" }}
                                         onClick={documentDetails}
                                     >
                                         Update
@@ -802,9 +820,9 @@ const Documents = () => {
 
 
                         </div>
-                    </Box>
+                    </Box >
 
-                </div>
+                </div >
             }
         </>
     )

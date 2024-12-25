@@ -25,12 +25,13 @@ const ReportsMain = () => {
     const history = useHistory()
     const permissions = usePermissions();
 
-    const GstIcon = process.env.PUBLIC_URL + '/gstIcon.png';
-    const MarginIcon = process.env.PUBLIC_URL + '/marginIcon.png';
-    const StockIcon = process.env.PUBLIC_URL + '/stockIcon.png';
-    const OtherIcon = process.env.PUBLIC_URL + '/othersIcon.png';
-    const ENtelligentIcon = process.env.PUBLIC_URL + '/entelligentIcon.png';
-    const AccouaccountingIcon = process.env.PUBLIC_URL + '/accountingIcon.png';
+    const GstIcon = `${process.env.PUBLIC_URL}/gstIcon.png`;
+    const MarginIcon = `${process.env.PUBLIC_URL}/marginIcon.png`;
+    const StockIcon = `${process.env.PUBLIC_URL}/stockIcon.png`;
+    const OtherIcon = `${process.env.PUBLIC_URL}/othersIcon.png`;
+    const ENtelligentIcon = `${process.env.PUBLIC_URL}/entelligentIcon.png`;
+    const AccouaccountingIcon = `${process.env.PUBLIC_URL}/accountingIcon.png`;
+    
 
     const [favorites, setFavorites] = useState([]);
 

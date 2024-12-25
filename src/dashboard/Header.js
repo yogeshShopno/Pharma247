@@ -591,11 +591,15 @@ const Header = () => {
                       <div className="absolute right-0 top-8 mt-2 w-48 bg-white shadow-lg user-icon mr-4">
                         <ul className="transition-all">
                           <Link to='/about-info'>
-                            <li onClick={handleProfile} className="px-4 py-2 hover:bg-green-100 cursor-pointer text-base font-medium flex gap-2">
+                            <li
+                             onClick={handleProfile} 
+                             style={{}}
+                             className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]"
+                             >
                               <FaUserAlt style={{ fontSize: '1.2rem' }} />Profile
                             </li>
                           </Link>
-                          <li onClick={LogoutOpen} className="px-4 py-2 hover:bg-green-100 cursor-pointer text-base font-medium flex gap-2">
+                          <li onClick={LogoutOpen} className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]">
                             <LuLogOut style={{ fontSize: '1.2rem' }} />Logout
                           </li>
                         </ul>

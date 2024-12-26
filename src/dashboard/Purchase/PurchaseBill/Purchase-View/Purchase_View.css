@@ -160,9 +160,9 @@
 }
 
 .custom-table th {
-    color: var(--color1);
-    font-size: 14px;
-    border-bottom: 1px solid;
+  color: var(--color1);
+  font-size: 14px;
+  border-bottom: 1px solid;
 }
 
 .custom-table tr {
@@ -175,14 +175,14 @@
 }
 
 .data {
-    color: var(--color1);
-    font-weight: 600;
-    /* max-width: 156px; */
-    text-wrap: wrap;
-    width: 330px;
-    text-overflow: ellipsis;
-    /* white-space: nowrap; */
-    display: inline-block;
+  color: var(--color1);
+  font-weight: 600;
+  /* max-width: 156px; */
+  text-wrap: wrap;
+  width: 330px;
+  text-overflow: ellipsis;
+  /* white-space: nowrap; */
+  display: inline-block;
 }
 
 .invoice-table {
@@ -280,5 +280,16 @@
 .headerList {
   @media (max-width: 696px) {
     display: flex;
+  }
+}
+
+.add_new_item_divv {
+  width: 100%;
+  flex-direction: column;
+}
+
+.sale_dates_divv {
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 }

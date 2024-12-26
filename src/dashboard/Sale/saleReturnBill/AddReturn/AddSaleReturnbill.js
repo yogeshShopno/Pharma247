@@ -652,10 +652,10 @@ const Salereturn = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
-                            <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
                                 <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
@@ -666,7 +666,7 @@ const Salereturn = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={paymentType}
-                                    className="payment_divv"
+                                    sx={{ minWidth: '150px' }}
                                     onChange={(e) => { setPaymentType(e.target.value) }}
                                     size="small"
                                 >
@@ -683,7 +683,7 @@ const Salereturn = () => {
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex">
-                                <div className="detail mt-1" style={{ paddingRight: "5px" }}>
+                                <div className="detail mt-1" >
                                     <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
@@ -732,7 +732,7 @@ const Salereturn = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%', }}>
+                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
                                     <Autocomplete
                                         value={customer}
@@ -747,17 +747,18 @@ const Salereturn = () => {
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
                                         loading={isLoading}
                                         sx={{
-                                            width: '100%',
-
+                                            width: '10%',
+                                            minWidth: '400px',
                                             '& .MuiInputBase-root': {
-                                                fontSize: '1.10rem',
+
                                                 // fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
                                                 // padding: '10px 14px',
-                                                padding: '8px 8px',
                                             },
-
+                                            '@media (max-width:600px)': {
+                                                minWidth: '300px',
+                                            },
                                         }}
 
                                         renderOption={(props, option) => (
@@ -770,7 +771,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
-                                                autoComplete="off"
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -782,7 +783,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    // style: { height: 55 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -795,7 +796,7 @@ const Salereturn = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: "100%" }}>
+                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
@@ -812,17 +813,17 @@ const Salereturn = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: '400px',
+                                            minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 // fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
                                                 // padding: '10px 14px',
-                                                padding: '8px 8px',
-
                                             },
-
+                                            '@media (max-width:600px)': {
+                                                // minWidth: '300px',
+                                            },
                                         }}
                                         renderOption={(props, option) => (
                                             <ListItem {...props}>
@@ -834,7 +835,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
-                                                autoComplete="off"
+                 autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -846,7 +847,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    // style: { height: 45 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -859,9 +860,9 @@ const Salereturn = () => {
                                     />
                                 </div>
 
-                                <div className='flex items-center sale_dates_divv '>
-                                    <div className='flex pb-4 gap-2 sale_dates_divv'>
-                                        <div style={{ padding: "0 5px", width: '100%' }}>
+                                <div className='flex items-center gap-4'>
+                                    <div className='flex gap-8 pb-4'>
+                                        <div >
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date</span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
@@ -871,19 +872,14 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{
-                                                        width: "100%",
-                                                        "& .MuiInputBase-root": {
-                                                            height: "53px", // Set height here
-                                                        },
-                                                    }}
+                                                    sx={{ width: '200px' }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
 
-                                        <div style={{ padding: "0 5px", width: '100%' }}>
+                                        <div>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs} >
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={endDate}
                                                     onChange={(newDate) => {
@@ -891,32 +887,26 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{
-                                                        width: "100%",
-                                                        "& .MuiInputBase-root": {
-                                                            height: "53px", // Set height here
-                                                        },
-                                                    }}
+                                                    sx={{ width: '200px' }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
                                     </div>
-                                    <div style={{ padding: "0 5px" }}>
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            style={{
-                                                // minHeight: '41px',
-                                                alignItems: "center",
-                                                height: '53px',
-                                                // marginTop: "7px",
-                                                background: "var(--color1)"
-                                            }}
-                                            onClick={validfilter}
-                                        >
-                                            <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
-                                        </Button>
-                                    </div>
+
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        style={{
+                                            minHeight: '41px',
+                                            alignItems: "center",
+                                            height: '41px',
+                                            marginTop: "7px",
+                                            background: "var(--color1)"
+                                        }}
+                                        onClick={validfilter}
+                                    >
+                                        <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
+                                    </Button>
                                 </div>
 
                                 {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -972,7 +962,7 @@ const Salereturn = () => {
                                                     <td className="td-up " >
 
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
@@ -991,7 +981,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up "  >
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
                                                             sx={{ width: '110px' }}
@@ -1007,7 +997,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -1024,7 +1014,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
@@ -1042,7 +1032,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '120px' }}
@@ -1059,7 +1049,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             disabled
@@ -1078,7 +1068,7 @@ const Salereturn = () => {
                                                     <td className="td-up ">
 
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '70px' }}
@@ -1113,7 +1103,7 @@ const Salereturn = () => {
 
                                                     <td className="td-up ">
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             inputRef={inputRef9}
@@ -1133,7 +1123,7 @@ const Salereturn = () => {
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
                                                         <TextField
-                                                            autoComplete="off"
+                 autoComplete="off"
                                                             id="outlined-basic"
                                                             size="small"
                                                             sx={{ width: "90%", marginLeft: "20px", marginBlock: "10px" }}

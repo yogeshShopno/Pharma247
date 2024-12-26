@@ -214,10 +214,11 @@
 }
 
 .invoice-table tr:hover {
-  background-color: rgba(4, 76, 157, 0.1);
+    background-color: rgba(4, 76, 157, 0.1);
 }
 
 .add_new_item_divv{
-  width: 100%;
-  flex-direction: column;
-}
+    width: 100%;
+    flex-direction: column;
+  }
+  

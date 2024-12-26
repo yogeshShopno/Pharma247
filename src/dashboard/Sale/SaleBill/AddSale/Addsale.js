@@ -2342,7 +2342,6 @@ const Addsale = () => {
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
-
                 <Dialog open={openAddItemPopUp}
                 >
                     <DialogTitle id="alert-dialog-title" className="secondary">

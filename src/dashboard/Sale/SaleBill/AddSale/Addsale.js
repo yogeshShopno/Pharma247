@@ -1496,7 +1496,7 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
+                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column'}}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
@@ -1512,12 +1512,12 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100% !important',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '350px',
+                                                sm: '500px',
+                                                md: '500px',
+                                                lg: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1560,7 +1560,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ width: '100%' }}>
+                                <div className="detail custommedia" >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1575,12 +1575,12 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            // minWidth: {
-                                            //     xs: '350px',
-                                            //     sm: '500px',
-                                            //     md: '500px',
-                                            //     lg: '400px',
-                                            // },
+                                            minWidth: {
+                                                xs: '350px',
+                                                sm: '500px',
+                                                md: '500px',
+                                                lg: '400px',
+                                            },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',

@@ -314,7 +314,7 @@ const AboutInfo = () => {
                     type="file"
                     onChange={handleProfilePhoto}
                     />
-                    {selectedProfileFile == null ? (
+                    {selectedProfileFile == null || selectedProfileFile == ""  ? (
                     <div className="UploadClass">
                         <img src={profileImage} width="50%" height="50%" />
                     </div>

@@ -1219,7 +1219,7 @@ const Itemmaster = () => {
                       type="file"
                       onChange={handleMRPPhoto}
                     />
-                    {selectedMRPFile == null ? (
+                    {selectedMRPFile == null  ?  (
                       <div className="UploadClass">
                         <img src="./tablet.png" width="40%" height="40%" />
                         <span>Drop your image here</span>

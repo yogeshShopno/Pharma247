@@ -200,24 +200,24 @@ const Dashboard = () => {
                         <div className='w-1/2'>
                           <p>Sales</p>
                           <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.salesmodel_total ? 0 : record?.salesmodel_total}/- </h4>
-                          <span>{record?.salesmodel_total_count} Orders</span>
+                          <span>{record?.salesmodel_total_count} Bills</span>
                         </div>
                         <div className='w-1/2'>
                           <p>Purchase</p>
                           <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.purchesmodel_total ? 0 : record?.purchesmodel_total}/- </h4>
-                          <span>{record?.purchesmodel_total_count} Orders</span>
+                          <span>{record?.purchesmodel_total_count} Bills</span>
                         </div>
                       </div>
                       <div className='flex py-4 p-6 justify-between'>
                         <div className='w-1/2' >
                           <p>Sale Return</p>
                           <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.salesreturn_total ? 0 : record?.salesreturn_total}/-</h4>
-                          <span>{record?.salesreturn_total_count} Orders</span>
+                          <span>{record?.salesreturn_total_count} Bills</span>
                         </div>
                         <div className='w-1/2'>
                           <p>Purchase Return</p>
                           <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.purchesreturn_total ? 0 : record?.purchesreturn_total}/- </h4>
-                          <span>{record?.purchesreturn_total_count} Orders</span>
+                          <span>{record?.purchesreturn_total_count} Bills</span>
                         </div>
                       </div>
                     </Box>

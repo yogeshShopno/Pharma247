@@ -245,7 +245,13 @@ const Reconciliation = () => {
                 ))}
               </div>
             ) : (
-              <> </>
+              <div className="text-center">
+                <Typography variant="h6" gutterBottom>
+                  {role === "Owner"
+                    ? "Reconciliation is not for Owner"
+                    : "Reconciliation is not available"}
+                </Typography>
+              </div>
             )}
           </div>
         )}

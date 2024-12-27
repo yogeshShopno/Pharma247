@@ -30,8 +30,6 @@ const debounce = (func, delay) => {
   };
 };
 
-
-
 const AddPurchaseBill = () => {
   const searchItemField = useRef("");
   const inputRef1 = useRef();
@@ -1004,10 +1002,19 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
+      toast.error('Please select Distributor');
+
     }
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
+      toast.error('Bill No is Required');
+
     }
+    if (ItemPurchaseList.item.length === 0) {
+      toast.error('Please add atleast one item');
+      newErrors.item = "Please add atleast one item";
+    }
+  
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -1015,9 +1022,6 @@ const AddPurchaseBill = () => {
     submitPurchaseData();
     setUnsavedItems(false)
   };
-
-
-
 
   useEffect(() => {
     if (selectedEditItem) {

@@ -238,7 +238,7 @@ const EditReturnBill = () => {
                         history.push(nextPath);
                     }
                 }, 0);
-            } 
+            }
             setIsOpenBox(false);
             setUnsavedItems(false);
 
@@ -261,7 +261,7 @@ const EditReturnBill = () => {
             history.push(pendingNavigation.pathname);
         }
         setIsOpenBox(false);
-   
+
     };
 
     // useEffect(() => {
@@ -296,7 +296,7 @@ const EditReturnBill = () => {
             if (response.data.status === 401) {
                 history.push('/');
                 localStorage.clear();
-              }      
+            }
             ////console.log("Distributors fetched: ", distributors);
             return distributors;
         } catch (error) {
@@ -321,7 +321,7 @@ const EditReturnBill = () => {
             ).then((response) => {
                 setBatchList(response.data.data)
                 ////console.log(batchList);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -350,7 +350,7 @@ const EditReturnBill = () => {
                 // localStorage.removeItem('StartFilterDate')
                 // localStorage.removeItem('EndFilterDate')
                 // localStorage.removeItem('DistributorId')
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -369,7 +369,7 @@ const EditReturnBill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -386,7 +386,7 @@ const EditReturnBill = () => {
             .then((response) => {
                 ////console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
-                      
+
             })
             .catch((error) => {
                 ////console.log("API error:", error);
@@ -765,7 +765,7 @@ const EditReturnBill = () => {
                 ////console.log(response.data);
                 setSaveValue(true)
                 history.push('/purchase/return');
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -797,7 +797,7 @@ const EditReturnBill = () => {
                 returnBillEditID()
                 setIsDelete(false);
                 setUnsavedItems(true)
-               
+
 
             })
         } catch (error) {
@@ -840,7 +840,7 @@ const EditReturnBill = () => {
                 },
             }).then(() => {
                 returnBillEditID()
-               
+
             }
             );
             ////console.log(response)
@@ -920,7 +920,7 @@ const EditReturnBill = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                 autoComplete="off" {...params} />}
+                                            autoComplete="off" {...params} />}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
@@ -944,7 +944,7 @@ const EditReturnBill = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
-                 autoComplete="off"
+                                        autoComplete="off"
                                         id="outlined-number"
                                         size="small"
                                         sx={{ width: '250px' }}
@@ -959,7 +959,7 @@ const EditReturnBill = () => {
                                     <span className="title mb-2">Start Date</span>
                                     <div style={{ width: "215px" }}>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
@@ -1003,7 +1003,7 @@ const EditReturnBill = () => {
                                             showMonthYearPicker
                                         /> */}
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
@@ -1016,7 +1016,7 @@ const EditReturnBill = () => {
                                 <div className="detail">
                                     <span className="heading mb-2">Remark</span>
                                     <TextField
-                 autoComplete="off"
+                                        autoComplete="off"
                                         id="outlined-number"
                                         size="small"
                                         sx={{
@@ -1062,7 +1062,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         // inputRef={inputRef1}
@@ -1087,7 +1087,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         sx={{ width: '100px' }}
@@ -1104,7 +1104,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         sx={{ width: '100px' }}
@@ -1120,7 +1120,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1149,7 +1149,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1179,7 +1179,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
                                                         type="number"
@@ -1205,7 +1205,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '100px' }}
@@ -1232,7 +1232,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '100px' }}
                                                         size="small"
@@ -1281,7 +1281,7 @@ const EditReturnBill = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         // inputRef={inputRef12}
                                                         // onKeyDown={handleKeyDown}
@@ -1299,7 +1299,7 @@ const EditReturnBill = () => {
                                             <tr >
                                                 <td>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
                                                         autoFocus

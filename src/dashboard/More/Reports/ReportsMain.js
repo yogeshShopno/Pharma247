@@ -25,7 +25,7 @@ const ReportsMain = () => {
     const history = useHistory()
     const permissions = usePermissions();
 
-    const GstIcon = `${process.env.PUBLIC_URL}/gstIcon.png`;
+    const GSTIcon = `${process.env.PUBLIC_URL}/gstIcon.png`;
     const MarginIcon = `${process.env.PUBLIC_URL}/marginIcon.png`;
     const StockIcon = `${process.env.PUBLIC_URL}/stockIcon.png`;
     const OtherIcon = `${process.env.PUBLIC_URL}/othersIcon.png`;
@@ -36,17 +36,17 @@ const ReportsMain = () => {
     const [favorites, setFavorites] = useState([]);
 
     const gstReports = [
-        // { name: 'Purchase Register', path: '/Reports/gst-purchase-register', icon: GstIcon },
-        { name: 'Purchase Bills', path: '/Reports/gst-purchase-bills', icon: GstIcon },
-        // { name: 'Sales Register', path: '/Reports/gst-sales-register', icon: GstIcon },
-        { name: 'Sales Bill', path: '/Reports/gst-sales-bills', icon: GstIcon },
-        { name: 'Day wise Summary', path: '/Reports/day-wise-summary', icon: GstIcon },
-        { name: 'GSTR-1', path: '/Reports/gst-GSTR1', icon: GstIcon },
-        { name: 'GSTR-2', path: '/Reports/gst-GSTR2', icon: GstIcon },
-        { name: 'GSTR-3B', path: '/Reports/gst-GSTR-3B', icon: GstIcon },
+        // { name: 'Purchase Register', path: '/Reports/gst-purchase-register', icon: GSTIcon },
+        { name: 'Purchase Bills', path: '/Reports/gst-purchase-bills', icon: GSTIcon },
+        // { name: 'Sales Register', path: '/Reports/gst-sales-register', icon: GSTIcon },
+        { name: 'Sales Bill', path: '/Reports/gst-sales-bills', icon: GSTIcon },
+        { name: 'Day wise Summary', path: '/Reports/day-wise-summary', icon: GSTIcon },
+        { name: 'GSTR-1', path: '/Reports/gst-GSTR1', icon: GSTIcon },
+        { name: 'GSTR-2', path: '/Reports/gst-GSTR2', icon: GSTIcon },
+        { name: 'GSTR-3B', path: '/Reports/gst-GSTR-3B', icon: GSTIcon },
 
-        { name: 'HSN wise GST', path: '/Reports/gst-hsn-wise', icon: GstIcon },
-        // { name: 'Composition GST Report', path: '/Report/margin-report/item-wise', icon: GstIcon },
+        { name: 'HSN wise GST', path: '/Reports/gst-hsn-wise', icon: GSTIcon },
+        // { name: 'Composition GST Report', path: '/Report/margin-report/item-wise', icon: GSTIcon },
     ];
     const stockReports = [
         { name: 'Purchase Return Report', path: '/Reports/stock-purchase-return-report', icon: StockIcon },
@@ -254,7 +254,7 @@ const ReportsMain = () => {
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }}>
-                                    <img src={GstIcon} className="reportMain-icon absolute mr-10" alt="GST Icon" />
+                                    <img src={GSTIcon} className="reportMain-icon absolute mr-10" alt="GST Icon" />
                                     <span className="right-0">GST Reports</span>
                                 </Typography>
                             </AccordionSummary>

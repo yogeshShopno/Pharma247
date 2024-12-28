@@ -222,6 +222,7 @@ const BankAccount = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -260,14 +261,12 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankData(response.data.data)
                 setIsLoading(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -289,13 +288,11 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankDetails(response.data.data)
                 setIsLoading(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const theme = useTheme();
@@ -344,6 +341,7 @@ const BankAccount = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -379,6 +377,7 @@ const BankAccount = () => {
 
     const handlePaymentTypeChange = async (e) => {
         const selectedPaymentType = e.target.value;
+    console.log(selectedPaymentType)
         setPaymentType(selectedPaymentType);
         const selectedBankData = bankData.find(bank => bank.id === selectedPaymentType);
         if (selectedPaymentType == 'cash') {
@@ -430,6 +429,7 @@ const BankAccount = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

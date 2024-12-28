@@ -68,7 +68,8 @@ const Package = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -243,6 +244,7 @@ const Package = () => {
         toast.error(error.response.data.message)
       }
       console.error("API error:", error);
+
     }
   }
 

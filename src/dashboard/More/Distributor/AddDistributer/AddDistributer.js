@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState} from 'react'
 
 import { TextField } from "@mui/material";
 
@@ -8,7 +8,6 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Header from '../../../Header';
 import { toast, ToastContainer } from 'react-toastify';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
-import { Padding } from '@mui/icons-material';
 
 
 const AddDistributer = () => {
@@ -16,11 +15,8 @@ const AddDistributer = () => {
     const history = useHistory()
     const [error, setError] = useState(null);
 
-
-
-
     const [GSTNumber, setGSTNumber] = useState('');
-    const [distributorName, setiDstributorname] = useState('');
+    const [distributorName, setDistributorName] = useState('');
     const [email, setEmail] = useState('');
     const [mobileno, setMobileno] = useState('');
     const [whatsapp, setWhatsapp] = useState('');
@@ -34,19 +30,30 @@ const AddDistributer = () => {
     const [foodLicence, setFoodLicence] = useState('');
     const [durgLicence, setDurgLicence] = useState('');
     const [dueDays, setDueDays] = useState('');
-    const [isEditMode, setIsEditMode] = useState('');
+    
+    // const [isEditMode, setIsEditMode] = useState('');
 
     const handleSubmit = () => {
-        if (isEditMode == false) {
-            //  Add Customer 
-            const newErrors = {};
-            if (!distributorName) newErrors.customer = 'Customer is required';
-            if (!GSTNumber) newErrors.GSTNumber = 'GST Number is required';
 
+            const newErrors = {};
+            if (!distributorName) {
+                newErrors.distributorName = 'Distributor is required'
+                toast.error('Distributor is required');
+
+            };
+            if (!GSTNumber){ 
+                newErrors.GSTNumber = 'GST Number is required'
+                toast.error('GST Number is required')
+            };
+          
             if (!mobileno) {
                 newErrors.mobileno = 'Mobile No is required';
+                toast.error('Mobile No is required');
+
             } else if (!/^\d{10}$/.test(mobileno)) {
                 newErrors.mobileno = 'Mobile number must be 10 digits';
+                toast.error('Mobile number must be 10 digits');
+
             }
 
             setError(newErrors);
@@ -54,7 +61,7 @@ const AddDistributer = () => {
             if (isValid) {
                 AddDistributor();
             }
-        }
+        
 
     };
 
@@ -88,7 +95,7 @@ const AddDistributer = () => {
                 toast.success(response.data.message);
 
                 setGSTNumber('');
-                setiDstributorname('');
+                setDistributorName('');
                 setEmail('');
                 setMobileno('');
                 setWhatsapp('');
@@ -102,11 +109,7 @@ const AddDistributer = () => {
                 setFoodLicence('');
                 setDurgLicence('');
                 setDueDays('');
-                setIsEditMode('');
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             // setIsLoading(false);
@@ -115,6 +118,7 @@ const AddDistributer = () => {
                 toast.error(error.response.data.message)
             }
             // console.error("API error:", error);
+
         }
     }
 
@@ -133,10 +137,7 @@ const AddDistributer = () => {
                 draggable
                 pauseOnHover
             />
-            <div
-
-
-            >
+            <div>
                 <div>
                     <div className=' rounded-md shadow-md md:p-12 lg:px-16 h-full'>
                         <div className='mb-12 flex justify-between'>
@@ -161,16 +162,15 @@ const AddDistributer = () => {
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px', // Remove padding from the input field
                                             }
-
                                         }}
                                         className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                                         name="gst_number"
                                         type="text"
                                         value={GSTNumber}
-                                        onChange={(e) => setGSTNumber(e.target.value)}
-
-
-                                    />
+                                        onChange={(e) => {
+                                            const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                                            setGSTNumber(value);
+                                        }}/>
 
 
                                     <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">
@@ -200,7 +200,10 @@ const AddDistributer = () => {
                                     className="appearance-none border rounded-lg px-0 py-0 w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                                     name="distributor_name"
                                     type="text"
-                                    onChange={(e) => setiDstributorname(e.target.value)}
+                                    onChange={(e) => {
+                                  
+                                        setDistributorName((e.target.value).toUpperCase());
+                                    }}
                                 />
                                 <div name="distributor_name" />
                             </div>
@@ -320,7 +323,14 @@ sx={{
                                     name="state"
                                     type="text"
                                     value={state}
-                                    onChange={(e) => setState(e.target.value)}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/[^a-zA-Z]/g, ''); // Remove non-alphabetic characters
+                                        const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                                        setState(formattedValue);
+                                    }}
+
+                                   
+                                    
                                 />
                                 <div
                                     name="state"
@@ -450,7 +460,10 @@ sx={{
                                     name='food_licence_no'
                                     type="text"
                                     value={foodLicence}
-                                    onChange={(e) => setFoodLicence(e.target.value)}
+                                    onChange={(e) => {
+                                        const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                        setFoodLicence(value);
+                                    }}
                                 />
                                 <div
                                     name="food_licence_no"
@@ -474,9 +487,9 @@ sx={{
                                     }}
                                     className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
                                     name="payment_due_days"
-                                    type="text"
+                                    type="number"
                                     value={dueDays}
-                                    onChange={(e) => setDueDays(e.target.value)}
+                                    onChange={(e) => setDueDays(Number(e.target.value))}
                                 />
                                 <div name="payment_due_days" />
                             </div>
@@ -509,7 +522,10 @@ sx={{
                                                 name='bank_name'
                                                 type="text"
                                                 value={bankName}
-                                                onChange={(e) => setBankName(e.target.value)}
+                                                onChange={(e) => {
+                                                    const uppercasedValue = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                                                    setBankName(uppercasedValue);
+                                                }}
                                             />
 
                                             <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white  border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg rounded-e-lg border  cursor-pointer">
@@ -566,7 +582,10 @@ sx={{
                                             name="ifsc_code"
                                             type="text"
                                             value={ifsc}
-                                            onChange={(e) => setIfsc(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                                                setIfsc(value);
+                                            }}
                                         />
                                         <div name="ifsc_code" />
                                     </div>
@@ -577,7 +596,7 @@ sx={{
                                     <button
                                         type="submit"
                                         className="py-2 min-w-16 px-5 h-10  text-white rounded-lg primary-bg ml-2"
-                                        onClick={AddDistributor}
+                                        onClick={handleSubmit}
                                     >
                                         Add
                                     </button>

@@ -58,6 +58,7 @@ const CreateRole = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -71,14 +72,12 @@ const CreateRole = () => {
             .then((response) => {
                 setIsLoading(false)
                 setPermissionList(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
                 setIsLoading(false);
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -113,6 +112,7 @@ const CreateRole = () => {
                     });
                 } catch (error) {
                     console.error("API error:", error);
+
                 }
             }
         } else {
@@ -138,6 +138,7 @@ const CreateRole = () => {
                     });
                 } catch (error) {
                     console.error("API error:", error);
+
                 }
             }
         }

@@ -16,7 +16,7 @@ const ErrorPage = () => {
                                 <img src={ErrorImage} alt="Error illustration" />
                             </div>
                             <div className="justify-center flex mt-5">
-                                <Button variant="contained" onClick={() => history.push('/admindashboard')}>Back to home</Button>
+                                <Button style={{  background: 'var(--color1)' }} variant="contained" onClick={() => history.push('/admindashboard')}>Back to home</Button>
                             </div>
                         </div>
                     </div>

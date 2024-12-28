@@ -85,7 +85,8 @@ const Catagory = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
         setIsLoading(false);
       });
   };
@@ -178,6 +179,7 @@ const Catagory = () => {
         toast.error(error.response.data.message)
       }
       console.error("API error:", error);
+
     }
   }
 

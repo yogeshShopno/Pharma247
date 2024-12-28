@@ -216,13 +216,11 @@ const InventoryView = () => {
                 //console.log("API Response item Catagory:===", response);
                 setPackList(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                  }      
+                      
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     }
     let listItemcatagory = () => {
@@ -234,13 +232,11 @@ const InventoryView = () => {
             .then((response) => {
                 setCategoryList(response.data.data);
                 // setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                  }      
+                      
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     }
 
@@ -253,13 +249,11 @@ const InventoryView = () => {
             .then((response) => {
                 setDrugGroupList(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -328,10 +322,7 @@ const InventoryView = () => {
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
-            else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
@@ -363,10 +354,7 @@ const InventoryView = () => {
             }
             ).then((response) => {
                 setOpenAddPopUp(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
 
         } catch (error) {
@@ -387,7 +375,8 @@ const InventoryView = () => {
                 setCompanyList(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -437,6 +426,7 @@ const InventoryView = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     };
 
@@ -450,14 +440,12 @@ const InventoryView = () => {
                 // //console.log("API Response item Catagory:===", response);
                 setStaffList(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
 
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     }
 
@@ -502,15 +490,13 @@ const InventoryView = () => {
                 //console.log(response.data.data);
                 setLoc(response?.data?.data?.location)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
 
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -535,14 +521,12 @@ const InventoryView = () => {
                 //console.log(response.data.data);
                 // setLoc(response?.data?.data?.location)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
     const handleCustomerBillList = (e, value) => {
@@ -630,14 +614,12 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseListData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -665,14 +647,12 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseReturnListData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -700,14 +680,12 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleListData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -734,14 +712,12 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleReturnListData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -764,14 +740,12 @@ const InventoryView = () => {
             ).then((response) => {
                 setLedgerListData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -793,14 +767,12 @@ const InventoryView = () => {
                 itemGetByID();
                 //console.log(response.data.data);
                 setIsDelete(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
     const openImage = () => {

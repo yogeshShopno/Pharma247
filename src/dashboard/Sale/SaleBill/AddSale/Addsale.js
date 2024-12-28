@@ -255,6 +255,7 @@ const Addsale = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
+
                 }
             };
 
@@ -292,6 +293,7 @@ const Addsale = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
+
                 }
             };
 
@@ -387,6 +389,7 @@ const Addsale = () => {
     //         return res.data.data.data;
     //     } catch (error) {
     //         console.error("API error:", error);
+
     //     }
     // };
 
@@ -413,6 +416,7 @@ const Addsale = () => {
             return items;
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -465,6 +469,7 @@ const Addsale = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -481,6 +486,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -652,6 +658,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -729,6 +736,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
 
     }
@@ -800,6 +808,7 @@ const Addsale = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -1069,6 +1078,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -1102,6 +1112,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -1244,6 +1255,7 @@ const Addsale = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
             toast.error("Failed to place bulk order.");
         }
     };
@@ -1308,6 +1320,7 @@ const Addsale = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

@@ -75,14 +75,12 @@ const CustomerView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
                 //console.log(tableData);
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const handleChange = (event, newValue) => {
@@ -109,13 +107,11 @@ const CustomerView = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -155,14 +151,12 @@ const CustomerView = () => {
             ).then((response) => {
                 setopenStatusDialog(false);
                 CustomerGetByID(id)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     return (

@@ -253,6 +253,7 @@ const Inventory_Reconciliation = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -277,6 +278,7 @@ const Inventory_Reconciliation = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -303,12 +305,10 @@ const Inventory_Reconciliation = () => {
                 } else {
                     toast.error("No data available for the selected criteria.");
                 }
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
         } catch (error) {
             console.error("API error:", error);
+
             toast.error("An error occurred while downloading the CSV.");
         } finally {
             setIsDownload(false);

@@ -184,7 +184,8 @@ const InventoryList = () => {
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
 
@@ -227,7 +228,8 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
   let listDrougGroup = () => {
@@ -242,7 +244,8 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
 
@@ -258,7 +261,8 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
 
@@ -274,7 +278,8 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
 
@@ -290,7 +295,8 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+        // console.log("API error:", error);
+
       });
   };
   const handleCheckboxChange = (event, categoryId) => {
@@ -363,6 +369,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -428,6 +435,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -543,6 +551,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -589,6 +598,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -658,6 +668,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -692,6 +703,7 @@ const InventoryList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 

@@ -159,6 +159,7 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
 
@@ -238,6 +239,7 @@ const DoctorList = () => {
         toast.error(error.response.data.message);
       }
       // console.error("API error:", error);
+
     }
   };
 
@@ -404,6 +406,7 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
 
@@ -429,6 +432,7 @@ const DoctorList = () => {
       }
       // toast.error(error.data.message)
       console.error("API error:", error);
+
     }
   };
 

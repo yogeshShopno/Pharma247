@@ -173,6 +173,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -380,6 +381,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   const purchaseReturnData = async () => {
@@ -420,7 +422,8 @@ const EditPurchaseBill = () => {
         setGstList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
   // let listOfHistory = () => {
@@ -435,7 +438,8 @@ const EditPurchaseBill = () => {
   //       setHistoryList(response.data.data);
   //     })
   //     .catch((error) => {
-  //       //console.log("API Error:", error);
+  //       //console.log("API error:", error);
+
   //     });
   // };
   const itemPurchaseList = async () => {
@@ -457,6 +461,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   const deleteOpen = (Id) => {
@@ -552,10 +557,7 @@ const EditPurchaseBill = () => {
           }
 
         }, 0);
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
       setIsOpenBox(false);
       setUnsavedItems(false);
 
@@ -644,6 +646,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -765,6 +768,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -793,6 +797,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -836,6 +841,7 @@ const EditPurchaseBill = () => {
     } catch (error) {
       toast.error(error.data.message);
       console.error("API error:", error);
+
     }
   };
   const handleChange = (event) => {

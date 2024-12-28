@@ -30,8 +30,6 @@ const debounce = (func, delay) => {
   };
 };
 
-
-
 const AddPurchaseBill = () => {
   const searchItemField = useRef("");
   const inputRef1 = useRef();
@@ -80,6 +78,8 @@ const AddPurchaseBill = () => {
   const [base, setBase] = useState("");
   const [gst, setGst] = useState({ id: "", name: "" });
   const [batch, setBatch] = useState("");
+  const [HSN, setHSN] = useState("");
+
   const [gstList, setGstList] = useState([]);
   const userId = localStorage.getItem("userId");
   const [barcode, setBarcode] = useState("");
@@ -247,6 +247,10 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      if (error.response.status === 401) {
+        setUnsavedItems(false);
+
+      }
     }
   };
 
@@ -310,7 +314,7 @@ const AddPurchaseBill = () => {
 
           // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
           // setValue.unit_id(response.data.data[0]?.unit)
-          console.log(barcodeBatch, "response")
+ 
           // setBarcodeBatch(response?.data?.data[0])
           // setUnit(Number(response?.data?.data[0]?.batch_list[0]?.unit))
           // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
@@ -383,6 +387,7 @@ const AddPurchaseBill = () => {
               itemPurchaseList();
               setUnit("");
               setBatch("");
+              setHSN("");
               setExpiryDate("");
               setMRP("");
               setQty("");
@@ -393,7 +398,6 @@ const AddPurchaseBill = () => {
               setBase("");
               setNetRate("");
               setSchAmt("");
-              setBatch("");
               setMargin("");
               setLoc("");
 
@@ -412,18 +416,20 @@ const AddPurchaseBill = () => {
               // Reset Autocomplete field
               setValue("");
               setSearchItem("");
-              if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-              }
+           
               // setAutocompleteDisabled(false);
             } catch (e) {
               //console.log(e);
+      setUnsavedItems(false);
+              
+
             }
           }
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -527,6 +533,9 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
+      setUnsavedItems(false);
+
     }
   };
 
@@ -554,7 +563,9 @@ const AddPurchaseBill = () => {
         setGstList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+        setUnsavedItems(false);
+
       });
   };
 
@@ -570,7 +581,10 @@ const AddPurchaseBill = () => {
         setDistributorList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+      setUnsavedItems(false);
+
+
       });
   };
 
@@ -596,13 +610,12 @@ const AddPurchaseBill = () => {
           handleCalNetAmount(response.data.data.total_price)
           // setNetAmount(response.data.data.total_price)
           //console.log(ItemPurchaseList);
-          if (response.data.status === 401) {
-            history.push('/');
-            localStorage.clear();
-          }
+        
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
   const isDateDisabled = (date) => {
@@ -641,6 +654,8 @@ const AddPurchaseBill = () => {
           if (batchData.length > 0) {
             setUnit(batchData[0].unit);
             setBatch(batchData[0].batch_name);
+            setHSN(batchData[0].HSN);
+
             setExpiryDate(batchData[0].expiry_date);
             setMRP(batchData[0].mrp);
             setQty(batchData[0].purchase_qty);
@@ -655,6 +670,8 @@ const AddPurchaseBill = () => {
           } else {
             setUnit("");
             setBatch("");
+            setHSN("");
+          
             setExpiryDate("");
             setMRP("");
             setQty("");
@@ -668,13 +685,14 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 
 
 
   const handleAddButtonClick = async () => {
-
 
     generateRandomNumber()
     const newErrors = {};
@@ -807,6 +825,7 @@ const AddPurchaseBill = () => {
       itemPurchaseList();
       setUnit("");
       setBatch("");
+      setHSN("");
       setExpiryDate("");
       setMRP("");
       setQty("");
@@ -817,7 +836,6 @@ const AddPurchaseBill = () => {
       setBase("");
       setNetRate("");
       setSchAmt("");
-      setBatch("");
       setMargin("");
       setLoc("");
 
@@ -836,13 +854,11 @@ const AddPurchaseBill = () => {
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
-      if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
       // setAutocompleteDisabled(false);
     } catch (e) {
       //console.log(e);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -889,14 +905,14 @@ const AddPurchaseBill = () => {
         setOpenAddItemPopUp(false)
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
     } catch (error) {
+        
+      setUnsavedItems(false);
+
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
-      }  else {
+      } else {
         toast.error("Please try again later");
       }
     }
@@ -926,6 +942,9 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
+
     }
   };
 
@@ -951,6 +970,8 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -997,6 +1018,8 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -1004,10 +1027,19 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
+      toast.error('Please select Distributor');
+
     }
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
+      toast.error('Bill No is Required');
+
     }
+    if (ItemPurchaseList.item.length === 0) {
+      toast.error('Please add atleast one item');
+      newErrors.item = "Please add atleast one item";
+    }
+
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -1016,9 +1048,6 @@ const AddPurchaseBill = () => {
     setUnsavedItems(false)
   };
 
-
-
-
   useEffect(() => {
     if (selectedEditItem) {
       setUnitEditID(selectedEditItem.unit_id);
@@ -1026,6 +1055,7 @@ const AddPurchaseBill = () => {
       setSearchItem(selectedEditItem.iteam_name);
       setUnit(selectedEditItem.weightage);
       setBatch(selectedEditItem.batch_number);
+      setHSN(selectedEditItem.hsn_code);
       setExpiryDate(selectedEditItem.expiry);
       setMRP(selectedEditItem.mrp);
       setQty(selectedEditItem.qty);
@@ -1087,17 +1117,16 @@ const AddPurchaseBill = () => {
         // setCnTotalAmount(response.data.data.total_amount)
         //console.log(response.data.data, '123');
         // toast.success(response.data.message);
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+       
       })
     } catch (error) {
+      setUnsavedItems(false);
+
       // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.error(error.response.data.message)
-      } else  {
-     
+      } else {
+
       }
     }
   };
@@ -1186,6 +1215,7 @@ const AddPurchaseBill = () => {
     // setAutocompleteDisabled(false);
     setUnit("");
     setBatch("");
+    setHSN("");
     setExpiryDate("");
     setSearchItem("");
     setMRP("");
@@ -1196,7 +1226,6 @@ const AddPurchaseBill = () => {
     setDisc("");
     setBase("");
     setSchAmt("");
-    setBatch("");
     setNetRate("");
     setMargin("");
     setLoc("");
@@ -1358,16 +1387,15 @@ const AddPurchaseBill = () => {
           }
 
         }, 0);
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
       setIsOpenBox(false);
       setUnsavedItems(false);
       localStorage.removeItem("RandomNumber");
 
       // history.replace(nextPath);
     } catch (error) {
+      setUnsavedItems(false);
+
       console.error("Error deleting items:", error);
     }
   };
@@ -1485,8 +1513,8 @@ const AddPurchaseBill = () => {
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => <TextField
-                 autoComplete="off"
-                 {...params}
+                    autoComplete="off"
+                    {...params}
                     autoFocus
                   />}
                 />
@@ -1499,7 +1527,7 @@ const AddPurchaseBill = () => {
               <div className="detail">
                 <span className="title mb-2">Sr No.</span>
                 <TextField
-                 autoComplete="off"
+                  autoComplete="off"
                   id="outlined-number"
                   size="small"
                   style={{ width: "200px" }}
@@ -1513,7 +1541,7 @@ const AddPurchaseBill = () => {
               <div className="detail">
                 <span className="title mb-2">Bill No. / Order No.</span>
                 <TextField
-                 autoComplete="off"
+                  autoComplete="off"
                   id="outlined-number"
                   size="small"
                   style={{ width: "250px" }}
@@ -1599,7 +1627,7 @@ const AddPurchaseBill = () => {
                   )}
                   renderInput={(params) => (
                     <TextField
-                 autoComplete="off"
+                      autoComplete="off"
                       {...params}
                       label="Search Item Name"
                       value={searchItem?.iteam_name}
@@ -1624,6 +1652,7 @@ const AddPurchaseBill = () => {
                     <tr>
                       <th>Item Name</th>
                       <th>Unit</th>
+                      {/* <th>HSN</th> */}
                       <th>Batch </th>
                       <th>Expiry </th>
                       <th>MRP </th>
@@ -1670,13 +1699,13 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
-                              type="text" // Change to text to better handle custom validation
+                              type="text" 
                               size="small"
                               error={!!errors.unit}
                               value={unit}
-                              sx={{ width: "40px" }}
+                              sx={{ width: "65px" }}
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g, '');
                                 setUnit(value ? Number(value) : "");
@@ -1692,9 +1721,25 @@ const AddPurchaseBill = () => {
                             />
 
                           </td>
+                          {/* <td>
+                            <TextField
+                              autoComplete="off"
+                              id="outlined-number"
+                              // inputRef={inputRef2}
+                              // onKeyDown={handleKeyDown}
+                              size="small"
+                              value={batch}
+                              sx={{ width: "90px" }}
+                              // error={!!errors.batch}
+                              onChange={(e) => {
+                                setHSN(e.target.value);
+                              }}
+
+                            />
+                          </td> */}
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef2}
                               // onKeyDown={handleKeyDown}
@@ -1710,7 +1755,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               size="small"
                               sx={{ width: "80px" }}
@@ -1724,10 +1769,10 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "100px" }}
+                              sx={{ width: "90px" }}
                               size="small"
                               // inputRef={inputRef4}
                               error={!!errors.mrp}
@@ -1751,7 +1796,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
                               sx={{ width: "80px" }}
@@ -1778,7 +1823,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               size="small"
                               type="number"
@@ -1803,10 +1848,10 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "100px" }}
+                              sx={{ width: "90px" }}
                               size="small"
                               // inputRef={inputRef7}
                               // onKeyDown={handleKeyDown}
@@ -1826,7 +1871,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "60px" }}
                               size="small"
@@ -1854,7 +1899,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "90px" }}
                               size="small"
@@ -1866,8 +1911,9 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td>
+
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
                               size="small"
@@ -1908,7 +1954,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef12}
                               // onKeyDown={handleKeyDown}
@@ -1924,7 +1970,7 @@ const AddPurchaseBill = () => {
                           <td>
                             <td>
                               <TextField
-                 autoComplete="off"
+                                autoComplete="off"
                                 id="outlined-number"
                                 type="number"
                                 disabled
@@ -1937,7 +1983,7 @@ const AddPurchaseBill = () => {
                           <td>
                             <td>
                               <TextField
-                 autoComplete="off"
+                                autoComplete="off"
                                 id="outlined-number"
                                 type="number"
                                 disabled
@@ -1957,7 +2003,7 @@ const AddPurchaseBill = () => {
                         <tr>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
                               size="small"
@@ -1991,7 +2037,6 @@ const AddPurchaseBill = () => {
                             <Button
                               variant="contained"
                               style={{ backgroundColor: "var(--color1)" }}
-
                               onClick={handleAddButtonClick}
                             >
                               <ControlPointIcon className="mr-2" />
@@ -2064,10 +2109,13 @@ const AddPurchaseBill = () => {
                       <label className="font-bold">Total Qty : </label>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <label className="font-bold">Total Net Profit : </label>
-                    </div>
+                    </div> */}
 
+                    <div>
+                      <label className="font-bold">Total Base : </label>
+                    </div>
                   </div>
                   <div class="totals-purchase  text-end ">
                     <div className="font-bold">
@@ -2078,10 +2126,13 @@ const AddPurchaseBill = () => {
                       {totalQty ? totalQty : 0}
                     </div>
 
-                    <div className="font-bold mt-5">
+                    {/* <div className="font-bold mt-5">
                       {totalNetRate ? totalNetRate : 0}
-                    </div>
+                    </div> */}
 
+                    <div className="font-bold mt-5">
+                   01 static
+                    </div>
                   </div>
                   <div
                     className="totals"
@@ -2098,9 +2149,9 @@ const AddPurchaseBill = () => {
                     <div>
                       <label className="font-bold">CN Amount : </label>
                     </div>
-                    <div>
+                    {/* <div>
                       <label className="font-bold">Profit : </label>
-                    </div>
+                    </div> */}
 
                     <div>
                       <label className="font-bold">Round off : </label>
@@ -2137,7 +2188,7 @@ const AddPurchaseBill = () => {
                       </span>
 
                     </div>
-                    <div style={{
+                    {/* <div style={{
                       marginTop: "23px"
                     }}>
                       <span
@@ -2149,7 +2200,7 @@ const AddPurchaseBill = () => {
                         ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
                       </span>
 
-                    </div>
+                    </div> */}
                     <div style={{ marginTop: "23px" }}>
                       <span style={{ fontWeight: 600 }}>
 
@@ -2297,7 +2348,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={addItemName}
-                        onChange={(e) => setAddItemName(e.target.value)}
+                        onChange={(e) => setAddItemName((e.target.value).toUpperCase())}
 
                       />
                     </div>

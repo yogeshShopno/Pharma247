@@ -38,14 +38,14 @@ const ReturnView = () => {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowRight') {
+            if (e.key === 'PageDown') {
                 const nextIndex = (currentIndex + 1) % returnData.length;
                 const nextId = returnData[nextIndex]?.id;
                 if (nextId) {
                     history.push(`/return/view/${nextId}`);
                 }
 
-            } else if (e.key === 'ArrowLeft') {
+            } else if (e.key === 'PageUp') {
                 const prevIndex = (currentIndex - 1 + returnData.length) % returnData.length;
                 const prevId = returnData[prevIndex]?.id;
                 if (prevId) {
@@ -81,14 +81,12 @@ const ReturnView = () => {
             ).then((response) => {
                 setReturnData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -110,13 +108,11 @@ const ReturnView = () => {
                 setTableData(response?.data?.data);
                 setRoundOff(response?.data?.data?.round_off)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -145,6 +141,7 @@ const ReturnView = () => {
     //         })
     //     } catch (error) {
     //         console.error("API error:", error);
+
     //     }
     // }
 
@@ -171,10 +168,7 @@ const ReturnView = () => {
 
                 // }, 0);
             }
-            else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            
             //   setIsOpenBox(false);
             //   setUnsavedItems(false);
 

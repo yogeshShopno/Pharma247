@@ -57,13 +57,11 @@ const DistributerView = () => {
                 setTableData(response.data.data)
                 setIsLoading(false);
                 //console.log(tableData);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

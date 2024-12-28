@@ -83,13 +83,11 @@ const Company = () => {
                 //console.log("API Response:===", response);
                 setCompanyData(response.data.data);
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                  }      
+                      
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
                 setIsLoading(false);
             });
     };
@@ -180,6 +178,7 @@ const Company = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
     // const handleOptionChange = (event, newValue) => {

@@ -220,6 +220,35 @@ const ReportsMain = () => {
                             </AccordionDetails>
                         </Accordion>
                     }
+                     {hasPermission(permissions, "report entelligent") &&
+                        <Accordion sx={{ paddingX: '15px' }}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography sx={{ my: 0, fontSize: "20px",textTransform: 'none', fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
+                                    <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img>
+                                    eNtelligent Reports
+                                </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
+                                    {eNtelligentReports.map(report => (
+                                        <ul className="hover-report" key={report.name}>
+                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
+                                                <div >
+                                                    {report.name}
+                                                </div>
+                                                <span className="heart-icon" onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(report);
+                                                }}>
+                                                    {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    ))}
+                                </FormControl>
+                            </AccordionDetails>
+                        </Accordion>
+                    }
 
                     {hasPermission(permissions, "report gst") &&
                         <Accordion sx={{ paddingX: '15px' }}>
@@ -253,35 +282,7 @@ const ReportsMain = () => {
                         </Accordion>
                     }
 
-                    {hasPermission(permissions, "report entelligent") &&
-                        <Accordion sx={{ paddingX: '15px' }}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px",textTransform: 'none', fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img>
-                                    eNtelligent Reports
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                                    {eNtelligentReports.map(report => (
-                                        <ul className="hover-report" key={report.name}>
-                                            <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div >
-                                                    {report.name}
-                                                </div>
-                                                <span className="heart-icon" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleFavorite(report);
-                                                }}>
-                                                    {favorites.includes(report.name) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    ))}
-                                </FormControl>
-                            </AccordionDetails>
-                        </Accordion>
-                    }
+                   
 
                     {hasPermission(permissions, "report others") &&
                         <Accordion sx={{ paddingX: '15px' }}>

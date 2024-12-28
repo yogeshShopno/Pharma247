@@ -12,6 +12,8 @@ import usePermissions, { hasPermission } from '../../../../componets/permission'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel } from "@mui/material"
+import {IoArrowBackCircleOutline,IoArrowForwardCircleOutline} from 'react-icons/io5';
+
 
 const PurchaseView = () => {
     const { id } = useParams();
@@ -54,10 +56,7 @@ const PurchaseView = () => {
                 //   }
 
                 // }, 0);
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
             //   setIsOpenBox(false);
             //   setUnsavedItems(false);
 
@@ -78,14 +77,12 @@ const PurchaseView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
                 //console.log(tableData)
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -100,13 +97,13 @@ const PurchaseView = () => {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowRight') {
+            if (e.key === 'PageDown') {
                 const nextIndex = (currentIndex + 1) % tableData.length;
                 const nextId = tableData[nextIndex]?.id;
                 if (nextId) {
                     history.push(`/purchase/view/${nextId}`);
                 }
-            } else if (e.key === 'ArrowLeft') {
+            } else if (e.key === 'PageUp') {
                 const prevIndex = (currentIndex - 1 + tableData.length) % tableData.length;
                 const prevId = tableData[prevIndex]?.id;
                 if (prevId) {
@@ -145,13 +142,11 @@ const PurchaseView = () => {
                 setData(response.data.data)
                 setRoundOffAmount(response.data.data.round_off)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     return (
@@ -302,7 +297,7 @@ const PurchaseView = () => {
                                 <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                     <label className="font-bold">Total Amount : </label>
                                     <label className="font-bold">CN Amount : </label>
-                                    <label className="font-bold">Round Off : </label>
+                                    <label className="font-bold">Round Of : </label>
                                     <label className="font-bold">Profit : </label>
                                     <label className="font-bold" >Net Amount : </label>
                                 </div>
@@ -324,7 +319,9 @@ const PurchaseView = () => {
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
+                    
                     {/* CN List PopUp Box */}
                     <Dialog open={openAddPopUp} >
                         <DialogTitle id="alert-dialog-title" className="secondary">
@@ -387,10 +384,29 @@ const PurchaseView = () => {
 
                         </DialogActions>
                     </Dialog >
+                    <div className="flex justify-between" style={{ width: '98%', position: 'absolute', bottom: '20px' }}>
+                            <Button style={{ background: "var(--color1)" }} variant="contained" onClick={() => {
+                                const prevIndex = (currentIndex - 1 + tableData.length) % tableData.length;
+                                const prevId = tableData[prevIndex]?.id;
+                                if (prevId) {
+                                    history.push(`/purchase/view/${prevId}`);
+                                }
+                            }} ><IoArrowBackCircleOutline size={25}  cursor='pointer' />Previous Bill</Button>
+                            <Button style={{ background: "var(--color1)" }} variant="contained" onClick={() => {
+                                const nextIndex = (currentIndex + 1) % tableData.length;
+                                const nextId = tableData[nextIndex]?.id;
+                                if (nextId) {
+                                    history.push(`/purchase/view/${nextId}`);
+                                }
+                            }}><IoArrowForwardCircleOutline size={25} cursor='pointer' />Next Bill</Button>
+                        </div>
                 </div>
 
 
             }
+
+
+         
         </>
     )
 }

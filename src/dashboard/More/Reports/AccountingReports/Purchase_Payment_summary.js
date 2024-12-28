@@ -85,6 +85,7 @@ const PurchasePaymentSummary = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }

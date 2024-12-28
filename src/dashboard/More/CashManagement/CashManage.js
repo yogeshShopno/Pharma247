@@ -72,13 +72,11 @@ const CashManage = () => {
             ).then((response) => {
                 setIsLoading(false)
                 setCatagory(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const CaseManageMentList = async () => {
@@ -100,13 +98,11 @@ const CashManage = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setCashmageDetails(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -158,6 +154,7 @@ const CashManage = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
     // const capitalizeFirstLetter = (string) => {

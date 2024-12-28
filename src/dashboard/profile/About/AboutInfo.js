@@ -64,6 +64,7 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
 
@@ -100,6 +101,7 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
   const handleProfilePhoto = (event) => {
@@ -314,7 +316,7 @@ const AboutInfo = () => {
                     type="file"
                     onChange={handleProfilePhoto}
                     />
-                    {selectedProfileFile == null ? (
+                    {selectedProfileFile == null || selectedProfileFile == ""  ? (
                     <div className="UploadClass">
                         <img src={profileImage} width="50%" height="50%" />
                     </div>

@@ -73,6 +73,7 @@ const SaleReturnView = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -97,6 +98,7 @@ const SaleReturnView = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

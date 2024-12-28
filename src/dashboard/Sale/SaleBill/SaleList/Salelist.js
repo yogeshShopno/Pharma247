@@ -134,7 +134,6 @@ const Salelist = () => {
             (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
             (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
             (customerName.includes(customerSearchTerm) || mobileNumber.includes(customerSearchTerm)) &&
-
             (paymentName.includes(paymentSearchTerm) || paymentSearchTerm === '') &&
             (status.includes(statusSearchTerm) || statusSearchTerm === '') &&
             (netAmt.includes(netAmtSearchTerm) || netAmtSearchTerm === '')
@@ -185,6 +184,7 @@ const Salelist = () => {
             setIsLoading(false);
         } catch (error) {
             console.error("API error:", error);
+
             setIsLoading(false);
         }
     }
@@ -209,6 +209,7 @@ const Salelist = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -234,6 +235,7 @@ const Salelist = () => {
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -257,6 +259,7 @@ const Salelist = () => {
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

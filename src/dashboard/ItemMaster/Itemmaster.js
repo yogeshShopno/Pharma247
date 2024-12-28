@@ -137,6 +137,7 @@ const Itemmaster = () => {
       } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
+
       }
     } else {
       toast.error("No file selected");
@@ -165,7 +166,8 @@ const Itemmaster = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -217,7 +219,8 @@ const Itemmaster = () => {
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -234,7 +237,8 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -251,7 +255,8 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -268,7 +273,8 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -284,7 +290,8 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -300,7 +307,8 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        //console.log("API error:", error);
+
       });
   };
 
@@ -324,6 +332,7 @@ const Itemmaster = () => {
 
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   const submitDrugGroup = () => {
@@ -344,6 +353,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -365,6 +375,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -461,10 +472,7 @@ const Itemmaster = () => {
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -495,6 +503,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -565,6 +574,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -1219,7 +1229,7 @@ const Itemmaster = () => {
                       type="file"
                       onChange={handleMRPPhoto}
                     />
-                    {selectedMRPFile == null ? (
+                    {selectedMRPFile == null  ?  (
                       <div className="UploadClass">
                         <img src="./tablet.png" width="40%" height="40%" />
                         <span>Drop your image here</span>

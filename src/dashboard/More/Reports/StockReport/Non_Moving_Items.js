@@ -67,12 +67,10 @@ const Non_Moving_items = () => {
 
                 // Use FileSaver to save the file
                 saveAs(blob, 'non-moving-items.csv');
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     };

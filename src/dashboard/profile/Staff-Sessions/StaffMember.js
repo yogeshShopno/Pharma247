@@ -105,7 +105,8 @@ const StaffMember = () => {
                 setTableData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -124,7 +125,8 @@ const StaffMember = () => {
                 setManageStaffRoleData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -222,10 +224,7 @@ const StaffMember = () => {
                 setOpenAddPopUp(false)
                 toast.success(response.data.message);
                 setErrors({});
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
@@ -233,6 +232,7 @@ const StaffMember = () => {
                 //console.log(error.message, 'mp');
             }
             console.error("API error:", error);
+
         }
         // }
     }
@@ -269,13 +269,11 @@ const StaffMember = () => {
                 setIsEditMode(false)
                 setErrors({});
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
         // }
     }
@@ -314,13 +312,11 @@ const StaffMember = () => {
                 // listOfRolePermission();
                 staffList()
                 // setManageStaffRoleData(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     }
 

@@ -221,13 +221,11 @@ const PaymentList = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -313,6 +311,7 @@ const PaymentList = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -334,14 +333,12 @@ const PaymentList = () => {
                 setPurchaseBill(response?.data?.data)
                 //console.log(purchaseBill);
                 // setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 

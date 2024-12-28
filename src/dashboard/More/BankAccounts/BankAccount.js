@@ -222,6 +222,7 @@ const BankAccount = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -260,14 +261,12 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankData(response.data.data)
                 setIsLoading(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -289,13 +288,11 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankDetails(response.data.data)
                 setIsLoading(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const theme = useTheme();
@@ -344,6 +341,7 @@ const BankAccount = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -431,6 +429,7 @@ const BankAccount = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

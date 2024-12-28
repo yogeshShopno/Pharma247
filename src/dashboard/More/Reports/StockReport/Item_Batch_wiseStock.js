@@ -76,13 +76,11 @@ const Item_Batch_wiseStock = () => {
                 // setTotal(response.data.data.total_amount)
                 // setTotalNetProfit(response.data.data.total_net_profite)
                 // setQTY(response.data.data.total_qty)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
 
         }
         // }

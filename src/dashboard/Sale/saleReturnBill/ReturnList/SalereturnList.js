@@ -70,6 +70,7 @@ const SalereturnList = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -174,6 +175,7 @@ const SalereturnList = () => {
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -197,6 +199,7 @@ const SalereturnList = () => {
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

@@ -64,6 +64,7 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
 
@@ -100,6 +101,7 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
   const handleProfilePhoto = (event) => {

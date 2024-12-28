@@ -108,14 +108,12 @@ const CustomerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     };
 
@@ -236,10 +234,7 @@ const CustomerList = () => {
                 setAmount('');
                 setAddress('');
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
@@ -248,6 +243,7 @@ const CustomerList = () => {
                 toast.error(error.response.data.message)
             }
             // console.error("API error:", error);
+
         }
     }
 
@@ -265,10 +261,7 @@ const CustomerList = () => {
                 customerAllData();
                 setOpenUpload(false);
                 toast.success(response.data.message)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -276,6 +269,7 @@ const CustomerList = () => {
             }
             // toast.error(error.data.message)
             console.error("API error:", error);
+
         }
 
     }
@@ -311,10 +305,7 @@ const CustomerList = () => {
                 setArea('');
                 setAmount('');
                 setAddress('');
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             if (error.response.data.status == 400) {
@@ -322,6 +313,7 @@ const CustomerList = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
 
@@ -440,14 +432,12 @@ const CustomerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 

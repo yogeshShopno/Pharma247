@@ -238,10 +238,7 @@ const EditReturnBill = () => {
                         history.push(nextPath);
                     }
                 }, 0);
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
             setIsOpenBox(false);
             setUnsavedItems(false);
 
@@ -264,7 +261,7 @@ const EditReturnBill = () => {
             history.push(pendingNavigation.pathname);
         }
         setIsOpenBox(false);
-        window.location.reload();
+   
     };
 
     // useEffect(() => {
@@ -324,13 +321,11 @@ const EditReturnBill = () => {
             ).then((response) => {
                 setBatchList(response.data.data)
                 ////console.log(batchList);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -355,13 +350,11 @@ const EditReturnBill = () => {
                 // localStorage.removeItem('StartFilterDate')
                 // localStorage.removeItem('EndFilterDate')
                 // localStorage.removeItem('DistributorId')
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -376,13 +369,11 @@ const EditReturnBill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -395,13 +386,11 @@ const EditReturnBill = () => {
             .then((response) => {
                 ////console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                  }      
+                      
             })
             .catch((error) => {
-                ////console.log("API Error:", error);
+                ////console.log("API error:", error);
+
             });
     }
     const handleInputChange = async (e) => {
@@ -457,6 +446,7 @@ const EditReturnBill = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         } finally {
             isFetching = false;
         }
@@ -517,6 +507,7 @@ const EditReturnBill = () => {
     //         })
     //     } catch (error) {
     //         console.error("API error:", error);
+
     //         setIsLoading(false);
     //     }
     // }
@@ -774,13 +765,11 @@ const EditReturnBill = () => {
                 ////console.log(response.data);
                 setSaveValue(true)
                 history.push('/purchase/return');
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -808,14 +797,12 @@ const EditReturnBill = () => {
                 returnBillEditID()
                 setIsDelete(false);
                 setUnsavedItems(true)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -853,15 +840,13 @@ const EditReturnBill = () => {
                 },
             }).then(() => {
                 returnBillEditID()
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             }
             );
             ////console.log(response)
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

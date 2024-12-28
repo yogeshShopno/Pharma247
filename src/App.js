@@ -566,6 +566,9 @@ function App() {
             <Route path='/Staff-sessions/sessions'>
               <LogActivity />
             </Route>
+            <Route path='*'>
+              <ErrorPage />
+            </Route>
             {/* <Route path='/mehul'>
             <AddPurchaseReturn />
           </Route> */}

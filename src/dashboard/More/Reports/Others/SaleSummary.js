@@ -60,6 +60,7 @@ const SaleSummary = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -106,6 +107,7 @@ const SaleSummary = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }

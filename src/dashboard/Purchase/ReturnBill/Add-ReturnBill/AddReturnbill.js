@@ -228,10 +228,7 @@ const AddReturnbill = () => {
                         history.push(nextPath);
                     }
                 }, 0);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             }
             setIsOpenBox(false);
             setUnsavedItems(false);
@@ -349,13 +346,11 @@ const AddReturnbill = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -368,13 +363,11 @@ const AddReturnbill = () => {
             .then((response) => {
                 //console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                  }      
+                      
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     }
 
@@ -391,7 +384,8 @@ const AddReturnbill = () => {
                 localStorage.clear();
               }      
         }).catch((error) => {
-            //console.log("API Error:", error);
+            //console.log("API error:", error);
+
         });
     };
     const isDateDisabled = (date) => {
@@ -427,13 +421,11 @@ const AddReturnbill = () => {
                 setUnsavedItems(true)
                 purcheseReturnFilter();
                 setIsDelete(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -482,10 +474,7 @@ const AddReturnbill = () => {
                 setTotalNetRate(response.data.data?.total_net_rate)
                 setTotalGST(response.data.data?.total_gst)
                 setTotalQty(response.data.data?.total_qty)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
                 // batchListAPI();
                 // setIsLoading(false);
             })
@@ -496,6 +485,7 @@ const AddReturnbill = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -602,6 +592,7 @@ const AddReturnbill = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -696,13 +687,11 @@ const AddReturnbill = () => {
             }
             ).then((response) => {
                 console.log(response);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -726,12 +715,10 @@ const AddReturnbill = () => {
                 const allSelected = returnItemList?.item_list.every(item => item.iss_check) || false;
                 // setSelectAll(allSelected);
                 purcheseReturnFilter();
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
     const handleSelectAll = async (checked) => {
@@ -786,10 +773,7 @@ const AddReturnbill = () => {
             setUnsavedItems(true);
             if (isNaN(ItemTotalAmount)) {
                 setItemTotalAmount(0);
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
 
         }
         catch (e) {

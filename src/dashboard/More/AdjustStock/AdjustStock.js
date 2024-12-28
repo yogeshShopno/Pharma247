@@ -125,7 +125,8 @@ const AdjustStock = () => {
                 setCompanyList(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -142,7 +143,8 @@ const AdjustStock = () => {
                 setpurchaseItemData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
             });
     };
 
@@ -172,6 +174,7 @@ const AdjustStock = () => {
            
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -201,6 +204,7 @@ const AdjustStock = () => {
             
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -232,6 +236,7 @@ const AdjustStock = () => {
     //         }
     //     } catch (error) {
     //         console.error("API error:", error);
+
     //     }
     // };
 
@@ -333,6 +338,7 @@ const AdjustStock = () => {
           
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

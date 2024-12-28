@@ -22,6 +22,7 @@ import { encryptData } from '../componets/cryptoUtils';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Dashboard = () => {
+  
   const history = useHistory()
 
   const token = localStorage.getItem("token");
@@ -78,15 +79,19 @@ const Dashboard = () => {
     }
   };
 
+
+
+  
   useEffect(() => {
     dashboardData();
     userPermission();
+    
   }, [typeValue, value, expiredValue, staffListValue, pieChartvalue])
 
 
   const dashboardData = async () => {
     let data = new FormData();
-    setIsLoading(true)
+    // setIsLoading(true)
     const params = {
       type: value,
       bill_day: typeValue,
@@ -135,10 +140,8 @@ const Dashboard = () => {
         setCustomer(initialData?.top_customer)
         setExpiry(initialData?.expiring_iteam)
         setDistributor(initialData?.top_distributor)
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+
+      
       })
       
     } catch (error) {
@@ -160,10 +163,7 @@ const Dashboard = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+      
       })
       
     }
@@ -432,7 +432,6 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-
                   <div className='w-1/2 items-center'>
                     <div className='mb-2 flex justify-between items-center '>
                       <div className='flex '>
@@ -533,7 +532,6 @@ const Dashboard = () => {
                   </div>
                   {distributor.length > 0 ?
                     <>
-
                       <div className='flex justify-between py-2 p-5 text-blue-900 border-b border-blue-200 '>
                         <div>
                           Distributor

@@ -43,6 +43,7 @@ const SaleView = () => {
             setIsLoading(false);
         } catch (error) {
             console.error("API error:", error);
+
             setIsLoading(false);
         }
     }
@@ -114,6 +115,7 @@ const SaleView = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

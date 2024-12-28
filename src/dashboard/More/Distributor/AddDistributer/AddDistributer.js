@@ -109,10 +109,7 @@ const AddDistributer = () => {
                 setFoodLicence('');
                 setDurgLicence('');
                 setDueDays('');
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             // setIsLoading(false);
@@ -121,6 +118,7 @@ const AddDistributer = () => {
                 toast.error(error.response.data.message)
             }
             // console.error("API error:", error);
+
         }
     }
 

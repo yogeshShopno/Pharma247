@@ -89,6 +89,7 @@ const Documents = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     };
 
@@ -125,13 +126,11 @@ const Documents = () => {
                 toast.success(response.data.message)
                 fetchAboutDetails();
                 setErrors({})
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

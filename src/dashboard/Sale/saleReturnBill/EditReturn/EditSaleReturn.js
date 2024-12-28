@@ -172,6 +172,7 @@ const EditSaleReturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const saleBillGetBySaleID = async (doctorData, customerData) => {
@@ -256,6 +257,7 @@ const EditSaleReturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
             return [];
         }
     }
@@ -280,6 +282,7 @@ const EditSaleReturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
             return [];
         }
     }
@@ -334,6 +337,7 @@ const EditSaleReturn = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -483,6 +487,7 @@ const EditSaleReturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -520,6 +525,7 @@ const EditSaleReturn = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

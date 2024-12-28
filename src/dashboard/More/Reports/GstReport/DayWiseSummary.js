@@ -71,6 +71,7 @@ const DayWiseSummary = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
 
@@ -124,12 +125,10 @@ const DayWiseSummary = () => {
                 } else if (reportType == 3) {
                     saveAs(blob, 'Sale-Return-DayWise-Summary-Report.xlsx');
                 }
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     };

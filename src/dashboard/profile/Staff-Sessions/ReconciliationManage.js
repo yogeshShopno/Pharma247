@@ -52,6 +52,7 @@ const ReconciliationManage = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+
     } finally {
       setIsLoading(false);
     }
@@ -75,12 +76,10 @@ const ReconciliationManage = () => {
       if (response.data.status === 200) {
         toast.success("Updated successfully");
         getData(); // Refresh data after update
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
     } catch (error) {
       console.error("API error:", error);
+
     } finally {
       setIsLoading(false);
     }

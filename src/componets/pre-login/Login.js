@@ -92,6 +92,7 @@ const Login = () => {
                     }, 3000);
                 }else{
                     history.push('/admindashboard');
+                    
 
                 }
             } else {

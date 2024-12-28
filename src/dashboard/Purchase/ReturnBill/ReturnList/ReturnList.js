@@ -100,13 +100,11 @@ const ReturnList = () => {
                 //console.log(PDFURL, 'hh');
                 setIsLoading(false);
                 handlePdf(PDFURL);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
     const handlePdf = (url) => {
@@ -146,13 +144,11 @@ const ReturnList = () => {
             ).then((response) => {
                 setIsDelete(false);
                 ReturnBillList();
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -205,14 +201,12 @@ const ReturnList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
     const AllPDFGenerate = async () => {
@@ -233,13 +227,11 @@ const ReturnList = () => {
                 //console.log(PDFURL, 'hh');
                 setIsLoading(false);
                 handlePdf(PDFURL);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -296,7 +288,7 @@ const ReturnList = () => {
                                                         onClick={() => sortByColumn(column.id)}
                                                     />
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"
@@ -313,15 +305,14 @@ const ReturnList = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableData.length === 0 ? (
+                                    {filteredList.length === 0 ? (
                                         <tr>
                                             <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
                                                 No data found
                                             </td>
                                         </tr>
                                     ) : (
-                                        tableData
-                                            .map((row, index) => {
+                                        filteredList.map((row, index) => {
                                                 return (
                                                     <tr hover role="checkbox" tabIndex={-1} key={row.code} >
                                                         <td>

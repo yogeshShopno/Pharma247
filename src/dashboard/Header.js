@@ -24,6 +24,7 @@ import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { encryptData } from "../componets/cryptoUtils";
+import { toast, ToastContainer } from "react-toastify"
 
 const Header = () => {
 
@@ -32,8 +33,19 @@ const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [IsLogout, setIsLogout] = useState(false);
+  const [IsClear, setIsClear] = useState(false);
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token")
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      await userPermission(); // Assuming this fetches permissions and stores them correctly
+      
+    };
+    fetchPermissions();
+  }, []);
+
+  
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -62,6 +74,8 @@ const Header = () => {
       })
     } catch (error) {
       console.error("API error:", error);
+      setIsClear(true);
+
     }
   }
   const LogoutOpen = (categoryId) => {
@@ -117,14 +131,16 @@ const Header = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+
       })
     }
     catch (error) {
+      console.log("API error:", error.response.status);
 
+      if (error.response.status === 401) {
+        setIsClear(true);
+
+      }
     }
   }
   return (
@@ -141,7 +157,7 @@ const Header = () => {
           </svg>
           <div className="my-4 logout-icon">
             <FaPowerOff className=" h-10 w-12 text-red-500" />
-            <h4 className="text-lg font-semibold mt-6 text-center ">Are you sure you want to Logout?</h4>
+            <h4 className="text-lg font-semibold mt-6 text-center normal-case">Are you sure you want to Logout?</h4>
           </div>
           <div className="flex gap-5 justify-center">
             <button type="button"
@@ -153,6 +169,37 @@ const Header = () => {
             <button type="submit"
               className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
               onClick={handleLogout}
+            >Logout !</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal" value={IsClear}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsClear ? "block" : "hidden"
+          }`}>
+        <div />
+        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+          <svg xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-black "
+            viewBox="0 0 24 24" onClick={() => setIsClear(false)}>
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+          </svg>
+          <div className="my-4 logout-icon">
+            <FaPowerOff className=" h-10 w-12 text-red-500" />
+            <h4 className="text-lg font-semibold mt-6 text-center normal-case">Login session expired, please logout !</h4>
+          </div>
+          <div className="flex gap-5 justify-center">
+            <button type="button"
+              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+              onClick={() => setIsClear(false)}>
+              Cancel
+            </button>
+            <button type="submit"
+              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+              onClick={() => {
+                localStorage.clear();
+                history.push('/')
+              }}
             >Logout !</button>
           </div>
         </div>
@@ -413,8 +460,8 @@ const Header = () => {
                               </span>
                             </li>
                           </Link>}
-                           
-                          {hasPermission(permissions, "adjust stock create") &&
+
+                        {hasPermission(permissions, "adjust stock create") &&
                           <li className="block border-b-2">
                             <Link to='/more/adjust-stock'>
                               <span
@@ -592,10 +639,10 @@ const Header = () => {
                         <ul className="transition-all">
                           <Link to='/about-info'>
                             <li
-                             onClick={handleProfile} 
-                             style={{}}
-                             className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]"
-                             >
+                              onClick={handleProfile}
+                              style={{}}
+                              className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]"
+                            >
                               <FaUserAlt style={{ fontSize: '1.2rem' }} />Profile
                             </li>
                           </Link>

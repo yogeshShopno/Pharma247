@@ -99,7 +99,8 @@ const DrugGroup = () => {
                 setIsLoading(false);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                //console.log("API error:", error);
+
                 setIsLoading(false);
             });
     };
@@ -150,10 +151,7 @@ const DrugGroup = () => {
                 setOpenAddPopUp(false);
                 setDrugGroupName('');
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
@@ -180,10 +178,7 @@ const DrugGroup = () => {
                 toast.success(response.data.message);
                 setDrugGroupName('');
                 setIsEditMode(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
@@ -192,6 +187,7 @@ const DrugGroup = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
 
@@ -213,10 +209,7 @@ const DrugGroup = () => {
                 setIsLoading(true)
                 DrugGroupList();
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             // alert("404 error");
@@ -291,13 +284,11 @@ const DrugGroup = () => {
             }
             ).then((response) => {
                 setFilterData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

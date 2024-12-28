@@ -248,6 +248,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -339,6 +340,7 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
       return [];
     }
   };
@@ -360,6 +362,7 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
       return [];
     }
   };
@@ -384,6 +387,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -555,6 +559,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   useEffect(() => {
@@ -635,6 +640,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -783,6 +789,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -840,6 +847,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 

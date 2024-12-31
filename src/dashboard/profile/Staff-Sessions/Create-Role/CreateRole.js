@@ -76,7 +76,7 @@ const CreateRole = () => {
             })
             .catch((error) => {
                 setIsLoading(false);
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     };

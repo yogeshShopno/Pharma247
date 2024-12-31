@@ -52,7 +52,6 @@ const Header = () => {
   };
   const handleProfile = () => {
 
-    console.log('Opening profile...');
   };
 
   const handleLogout = async () => {
@@ -135,7 +134,7 @@ const Header = () => {
       })
     }
     catch (error) {
-      console.log("API error:", error.response.status);
+      console.error("API error:", error.response.status);
 
       if (error.response.status === 401) {
         setIsClear(true);

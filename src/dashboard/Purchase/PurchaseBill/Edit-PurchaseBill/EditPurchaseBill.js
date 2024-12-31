@@ -151,7 +151,7 @@ const EditPurchaseBill = () => {
         history.push('/');
         localStorage.clear();
       }      
-      //console.log("Distributors fetched: ", distributors);
+     
       return distributors;
     } catch (error) {
       console.error("API Error fetching distributors:", error);
@@ -198,19 +198,19 @@ const EditPurchaseBill = () => {
       });
 
       const purchaseData = response?.data?.data;
-      //console.log("Purchase data fetched: ", purchaseData);
+     
 
       setPurchase(purchaseData);
       setNetAmount(response?.data?.data.net_amount)
 
       if (purchaseData) {
-        //console.log("Distributors array: ", distributors);
+      
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
         const foundDistributor = distributors.find((option) => {
-          //console.log(option.id, purchaseData.distributor_id);
+          
           return option.id == purchaseData.distributor_id;
         });
-        //console.log("Found distributor: ", foundDistributor);
+       
         if (foundDistributor) {
           setDistributor(foundDistributor);
         } else {
@@ -377,7 +377,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           itemPurchaseList();
-          //console.log(response);
+          
         });
     } catch (error) {
       console.error("API error:", error);
@@ -396,7 +396,7 @@ const EditPurchaseBill = () => {
       ).then((response) => {
         setPurchaseReturnPending(response.data.data)
         // setCnTotalAmount(response.data.data.total_amount)
-        //console.log(response.data.data, '123');
+        
         // toast.success(response.data.message);
         if (response.data.status === 401) {
           history.push('/');
@@ -418,11 +418,12 @@ const EditPurchaseBill = () => {
         },
       })
       .then((response) => {
-        //console.log("API Response item Catagory:===", response);
+        
         setGstList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API error:", error);
+        console.error("API error:", error);
+
 
       });
   };
@@ -434,11 +435,10 @@ const EditPurchaseBill = () => {
   //       },
   //     })
   //     .then((response) => {
-  //       //console.log("API Response item Catagory:===", response);
   //       setHistoryList(response.data.data);
   //     })
   //     .catch((error) => {
-  //       //console.log("API error:", error);
+
 
   //     });
   // };
@@ -468,7 +468,7 @@ const EditPurchaseBill = () => {
     setIsDelete(true);
     setItemId(Id);
     setUnsavedItems(true)
-    //console.log(ItemId);
+
   };
 
   const addPurchaseValidation = async () => {
@@ -632,7 +632,6 @@ const EditPurchaseBill = () => {
           setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
 
           setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
-          console.log(response?.data?.data[0]?.batch_list[0], ItemId)
 
           setSelectedEditItemId(response?.data?.data[0]?.id)
           setItemEditID(response.data.data[0]?.id)
@@ -707,7 +706,7 @@ const EditPurchaseBill = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-      //console.log("response", response);
+
       setDeleteAll(true);
       itemPurchaseList();
       purchaseBillGetByID();
@@ -743,7 +742,8 @@ const EditPurchaseBill = () => {
         localStorage.clear();
       }
     } catch (e) {
-      //console.log(e);
+      console.error("API error:", error);
+
     }
   };
 
@@ -764,7 +764,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-          //console.log(data);
+         
         });
     } catch (error) {
       console.error("API error:", error);
@@ -832,7 +832,7 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          //console.log(response.data);
+     
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
@@ -895,7 +895,7 @@ const EditPurchaseBill = () => {
     setUnsavedItems(true)
 
     setOpenAddPopUp(true);
-    //console.log(distributor, '145');
+
     purchaseReturnData()
     setHeader('Add Amount');
   }
@@ -1147,7 +1147,7 @@ const EditPurchaseBill = () => {
     setFinalCnAmount(cnAmount)
     setUnsavedItems(true)
     // setNetAmount(finalTotalAmount - cnAmount)
-    // //console.log("124", setFinalCnAmount);
+
     const decimalTotalAmount = finalTotalAmount - Math.floor(finalTotalAmount);
     const decimalCNAmount = cnAmount - Math.floor(cnAmount);
 

@@ -107,7 +107,6 @@ const Dashboard = () => {
         }
       }
       ).then((response) => {
-        //    console.log(response.data.data)
         setIsLoading(false)
         const initialData = response.data.data;
         setRecord(initialData);
@@ -134,7 +133,6 @@ const Dashboard = () => {
         }));
 
         setData(formattedData);
-        //      console.log('Ayus', formattedData);
 
         setBilldata(billData);
         setCustomer(initialData?.top_customer)

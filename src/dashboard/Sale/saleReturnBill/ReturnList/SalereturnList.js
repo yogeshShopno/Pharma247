@@ -169,7 +169,7 @@ const SalereturnList = () => {
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
                 setOpenAddPopUp(false)
-                //console.log(PDFURL, 'hh');
+        
                 setIsLoading(false);
                 handlePdf(PDFURL);
             });
@@ -193,7 +193,7 @@ const SalereturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+              
                 setIsLoading(false);
                 handlePdf(PDFURL);
             });

@@ -51,14 +51,13 @@ const Purchasereturn = () => {
                 },
             }
             );
-            //console.log("response===>", response.data.data);
             setDistributors(response.data.data);
             if(response.data.status === 401){ 
                 history.push('/');
                 localStorage.clear();
             }
         } catch (error) {
-            //console.log("Error:", error);
+            console.error("API error:", error);
         }
     };
 
@@ -93,7 +92,8 @@ const Purchasereturn = () => {
                 localStorage.clear();
             }
         } catch (error) {
-            //console.log("Error:", error);
+            console.error("API error:", error);
+
         }
     }
 

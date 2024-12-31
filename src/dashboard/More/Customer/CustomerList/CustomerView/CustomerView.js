@@ -76,7 +76,7 @@ const CustomerView = () => {
                 setTableData(response.data.data)
                 setIsLoading(false);
                
-                //console.log(tableData);
+                
             })
         } catch (error) {
             console.error("API error:", error);
@@ -116,7 +116,7 @@ const CustomerView = () => {
     }
 
     const viewBill = (item) => {
-        //console.log(item);
+    
 
         if (tabValue === 0) {
             history.push(`/salebill/view/${item.sales_id}`)

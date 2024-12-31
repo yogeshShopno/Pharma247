@@ -279,7 +279,6 @@ const DoctorList = () => {
 
   // const handleOptionChange = (event, newValue) => {
   //     setDoctor(newValue);
-  //     //console.log(newValue, "145214");
   // };
   const handleOptionChange = (event, newValue) => {
     if (newValue && typeof newValue === "object") {
@@ -287,11 +286,9 @@ const DoctorList = () => {
     } else {
       setDoctor(newValue);
     }
-    //console.log(newValue, "Option selected or input typed");
   };
   const handleInputChange = (event, newInputValue) => {
     setDoctor(newInputValue);
-    //console.log(newInputValue + "mm9");
   };
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -328,11 +325,9 @@ const DoctorList = () => {
   };
 
   const handleDownload = () => {
-    //console.log("Download function called");
     const link = document.createElement("a");
     link.href = "/Doctor_Sample_Data.csv";
     link.download = "Doctor_Sample_Data.csv";
-    //console.log("Link href:", link.href);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -421,7 +416,6 @@ const DoctorList = () => {
           },
         })
         .then((response) => {
-          //console.log(response.data.data);
           ListOfDoctor();
           setOpenUpload(false);
           toast.success(response.data.message);
@@ -430,7 +424,6 @@ const DoctorList = () => {
       if (error.response && error.response.status === 500) {
         toast.error("Please Select file");
       }
-      // toast.error(error.data.message)
       console.error("API error:", error);
 
     }

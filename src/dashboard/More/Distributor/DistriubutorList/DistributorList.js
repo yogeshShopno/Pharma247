@@ -218,11 +218,10 @@ const DistributerList = () => {
 
 
     const handleDownload = () => {
-        //console.log('Download function called');
+        
         const link = document.createElement('a');
         link.href = '/distributor.csv';
         link.download = 'distributor.csv';
-        //console.log('Link href:', link.href);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -238,7 +237,7 @@ const DistributerList = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
+             
                 DistList();
                 setOpenUpload(false);
                 toast.success(response.data.message)
@@ -248,7 +247,6 @@ const DistributerList = () => {
             if (error.response && error.response.status === 500) {
                 toast.error('Please Select file');
             }
-            // toast.error(error.data.message)
             console.error("API error:", error);
 
         }

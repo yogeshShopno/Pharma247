@@ -69,7 +69,6 @@ const OrderList = () => {
 
     // const handelEditOpen = (row) => {
     //     const x = row;
-    //     //console.log(row);
     //     setStatusName({
     //         // id:,
     //         name: row?.y_n
@@ -152,7 +151,7 @@ const OrderList = () => {
                
             })
         } catch (error) {
-            //console.log("API error:", error);
+            console.error("API error:", error);
 
         }
     };
@@ -168,7 +167,7 @@ const OrderList = () => {
                
             })
         } catch (error) {
-            //console.log("API error:", error);
+            console.error("API error:", error);
 
         }
     };
@@ -275,7 +274,6 @@ const OrderList = () => {
             setItems(value);
         }
 
-        //console.log('items', items);
     };
 
 

@@ -33,7 +33,7 @@ const ReturnView = () => {
             setCurrentIndex(index);
             returnBillGetByID(returnData[index].id);
         }
-        //console.log('purchase', returnData);
+      
     }, [id, returnData]);
 
     useEffect(() => {

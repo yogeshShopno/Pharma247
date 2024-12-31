@@ -142,7 +142,6 @@ const Inventory_Reconciliation = () => {
     };
 
     const handleNext = () => {
-        console.log("currentPage", currentPage);
         const newPage = currentPage + 1;
         setCurrentPage(newPage);
         getData(newPage);
@@ -163,7 +162,6 @@ const Inventory_Reconciliation = () => {
         setExpiry(newValue?.expiry_date);
         setMrp(newValue?.mrp);
         setStock(newValue?.qty);
-        console.log(newValue, "newValue")
         setSelectedCompany(newValue?.company_name)
     };
 
@@ -274,7 +272,6 @@ const Inventory_Reconciliation = () => {
             })
                 .then((response) => {
                     setBatchListData(response.data.data[0]);
-                    console.log(response.data.data[0].iteam_name)
                 });
         } catch (error) {
             console.error("API error:", error);

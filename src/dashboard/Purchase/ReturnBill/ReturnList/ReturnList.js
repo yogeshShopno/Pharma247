@@ -97,7 +97,7 @@ const ReturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+           
                 setIsLoading(false);
                 handlePdf(PDFURL);
 
@@ -224,7 +224,7 @@ const ReturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+          
                 setIsLoading(false);
                 handlePdf(PDFURL);
 

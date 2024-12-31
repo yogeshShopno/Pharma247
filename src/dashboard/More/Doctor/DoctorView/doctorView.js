@@ -58,12 +58,12 @@ const DoctorView = () => {
                 }
             }
             ).then((response) => {
-                //console.log(response.data.data)
                 setIsLoading(false)
                 setDoctorDetails(response.data.data)
                
             })
         } catch (error) {
+            console.error("API error:", error);
 
         }
     }

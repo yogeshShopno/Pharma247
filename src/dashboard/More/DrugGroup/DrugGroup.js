@@ -94,12 +94,11 @@ const DrugGroup = () => {
                 params: params
             })
             .then((response) => {
-                //console.log("API Response:===", response);
                 setDrugGroupData(response.data.data);
                 setIsLoading(false);
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
                 setIsLoading(false);
             });
@@ -172,7 +171,6 @@ const DrugGroup = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
                 DrugGroupList();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
@@ -196,7 +194,6 @@ const DrugGroup = () => {
         data.append("id", id);
 
         try {
-            //console.log("id", id);
             await axios.post("drug-group-delete",
                 data,
                 {
@@ -235,7 +232,6 @@ const DrugGroup = () => {
 
     // const handleOptionChange = (event, newValue) => {
     //     setDrugGroupName(newValue);
-    //     //console.log(newValue, "145214");
     // };
     const handleOptionChange = (event, newValue) => {
         if (newValue && typeof newValue === 'object') {
@@ -247,13 +243,11 @@ const DrugGroup = () => {
 
     const handleInputChange = (event, newInputValue) => {
         setDrugGroupName(newInputValue);
-        //console.log(newInputValue + 'mm9');
     };
 
     const handleDrugGroupList = (e, value) => {
         setDrugGroupFilter(value);
         if (value) {
-            // setDistributorId(value.id);
             droupGroupFilter(value.id);
         }
     }

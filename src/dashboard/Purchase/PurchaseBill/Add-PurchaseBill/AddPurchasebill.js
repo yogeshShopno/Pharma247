@@ -45,10 +45,16 @@ const AddPurchaseBill = () => {
   const inputRef11 = useRef();
   const inputRef12 = useRef();
   const inputRef13 = useRef();
+
+  const tableRef = useRef(null);
+
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0)
   const [marginNetProfit, setMarginNetProfit] = useState(0)
   const [totalNetRate, setTotalNetRate] = useState(0)
+  const [totalBase, setTotalBase] = useState(0)
+  const [totalFree, setTotalFRee] = useState(0)
+
   const [totalGst, setTotalGst] = useState(0)
   const [totalQty, setTotalQty] = useState(0)
   const [searchItem, setSearchItem] = useState("");
@@ -121,6 +127,10 @@ const AddPurchaseBill = () => {
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
 
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -137,6 +147,17 @@ const AddPurchaseBill = () => {
   const [id, setId] = useState(null);
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
+
+  useEffect(() => {
+    const newErrors = {};
+    if (Number(ptr) > Number(mrp)) {
+      newErrors.ptr = "PTR must be less than or equal to MRP";
+      toast.error("PTR must be less than or equal to MRP");
+    }
+
+    setErrors(newErrors)
+
+  }, [ptr, mrp])
 
   useEffect(() => {
     generateRandomNumber()
@@ -161,7 +182,7 @@ const AddPurchaseBill = () => {
   }, [barcode]);
 
   // useEffect(() => {
-  //   console.log('')
+
   //   generateRandomNumber()
   //   handleLeavePage()
   // },)
@@ -233,6 +254,20 @@ const AddPurchaseBill = () => {
     setCnAmount(total)
   }, [cnTotalAmount])
 
+  // useEffect(() => {
+  //   const handleKeyDown = (event) => {
+  //     if (event.key === 'Enter') {
+  //       handleAddButtonClick();
+  //     }
+  //   };
+
+  //   window.addEventListener('keydown', handleKeyDown);
+
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, []);
+
   const BankList = async () => {
     let data = new FormData();
     try {
@@ -274,6 +309,7 @@ const AddPurchaseBill = () => {
 
 
   const handleBarcode = async () => {
+    setIsEditMode(false);
     if (!barcode) {
       return;
     }
@@ -314,7 +350,7 @@ const AddPurchaseBill = () => {
 
           // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
           // setValue.unit_id(response.data.data[0]?.unit)
- 
+
           // setBarcodeBatch(response?.data?.data[0])
           // setUnit(Number(response?.data?.data[0]?.batch_list[0]?.unit))
           // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
@@ -380,7 +416,7 @@ const AddPurchaseBill = () => {
                   Authorization: `Bearer ${token}`,
                 },
               });
-              //console.log("response", response);
+
 
               setItemTotalAmount(0);
               setDeleteAll(true);
@@ -416,12 +452,12 @@ const AddPurchaseBill = () => {
               // Reset Autocomplete field
               setValue("");
               setSearchItem("");
-           
+
               // setAutocompleteDisabled(false);
             } catch (e) {
-              //console.log(e);
-      setUnsavedItems(false);
-              
+
+              setUnsavedItems(false);
+
 
             }
           }
@@ -468,7 +504,7 @@ const AddPurchaseBill = () => {
   //         Authorization: `Bearer ${token}`,
   //       },
   //     });
-  //     //console.log("response", response);
+
 
   //     setItemTotalAmount(0);
   //     setDeleteAll(true);
@@ -507,7 +543,7 @@ const AddPurchaseBill = () => {
 
   //     // setAutocompleteDisabled(false);
   //   } catch (e) {
-  //     //console.log(e);
+
   //   }
   // }
 
@@ -559,11 +595,11 @@ const AddPurchaseBill = () => {
         },
       })
       .then((response) => {
-        //console.log("API Response item Catagory:===", response);
+
         setGstList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API error:", error);
+
         setUnsavedItems(false);
 
       });
@@ -581,8 +617,7 @@ const AddPurchaseBill = () => {
         setDistributorList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API error:", error);
-      setUnsavedItems(false);
+        setUnsavedItems(false);
 
 
       });
@@ -608,9 +643,13 @@ const AddPurchaseBill = () => {
           setMarginNetProfit(response.data.data.margin_net_profit)
           setTotalNetRate(response.data.data.total_net_rate)
           handleCalNetAmount(response.data.data.total_price)
+          setTotalBase(response.data.data.total_base)
+          setTotalFRee(response.data.data.total_free)
+
+
+
           // setNetAmount(response.data.data.total_price)
-          //console.log(ItemPurchaseList);
-        
+
         });
     } catch (error) {
       console.error("API error:", error);
@@ -629,7 +668,6 @@ const AddPurchaseBill = () => {
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
-    //console.log(ItemId);
   };
 
   const batchList = async () => {
@@ -650,7 +688,6 @@ const AddPurchaseBill = () => {
         .then((response) => {
           const batchData = response.data.data;
           setBatchListData(response.data.data);
-          console.log(response.data.data)
           if (batchData.length > 0) {
             setUnit(batchData[0].unit);
             setBatch(batchData[0].batch_name);
@@ -671,7 +708,7 @@ const AddPurchaseBill = () => {
             setUnit("");
             setBatch("");
             setHSN("");
-          
+
             setExpiryDate("");
             setMRP("");
             setQty("");
@@ -681,7 +718,6 @@ const AddPurchaseBill = () => {
             setLoc("");
             setGst("");
           }
-          //console.log("DATA", batchData);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -736,7 +772,6 @@ const AddPurchaseBill = () => {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-
     // if (!base) newErrors.base = "Base is required";
     if (!gst.name) newErrors.gst = "GST is required";
     // if (!loc) newErrors.loc = 'Location is required';
@@ -816,7 +851,6 @@ const AddPurchaseBill = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-      //console.log("response", response);
       setSelectedOption(null);
 
       setSearchItem("")
@@ -856,7 +890,7 @@ const AddPurchaseBill = () => {
       setSearchItem("");
       // setAutocompleteDisabled(false);
     } catch (e) {
-      //console.log(e);
+
       setUnsavedItems(false);
 
     }
@@ -900,14 +934,14 @@ const AddPurchaseBill = () => {
       });
 
       if (response.data.status === 200) {
-        //console.log("response===>", response.data);
+
         toast.success(response.data.message);
         setOpenAddItemPopUp(false)
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
-      } 
+      }
     } catch (error) {
-        
+
       setUnsavedItems(false);
 
       if (error.response && error.response.status === 400) {
@@ -935,7 +969,7 @@ const AddPurchaseBill = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-          //console.log(data);
+
           // if(id){
           //     batchList(id);
           // }
@@ -945,6 +979,49 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
 
 
+    }
+  };
+
+
+  useEffect(() => {
+    if (isVisible && tableRef.current) {
+      const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
+      if (firstRow) {
+        firstRow.focus();
+        setHighlightedRowId(firstRow.getAttribute("data-id"));
+      }
+    }
+  }, [isVisible, batchListData]);
+  const handleTableKeyDown = (e) => {
+
+    const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
+    let currentIndex = rows.findIndex(row => row === document.activeElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
+        rows[nextIndex]?.focus();
+        setHighlightedRowId(rows[nextIndex]?.dataset.id);
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (rows.length > 0) {
+        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+        rows[prevIndex]?.focus();
+        setHighlightedRowId(rows[prevIndex]?.dataset.id);
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (currentIndex >= 0 && rows[currentIndex]) {
+        const itemId = rows[currentIndex].getAttribute("data-id");
+        const item = batchListData.find((item) => String(item.id) === String(itemId));
+        if (item) {
+          setHighlightedRowId(itemId);
+        }
+      }
     }
   };
 
@@ -1006,10 +1083,9 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
-          //console.log(response.data);
+
           localStorage.removeItem("RandomNumber");
           setItemPurchaseList("");
-          //console.log("response===>", response.data);
           setUnsavedItems(false)
           toast.success(response.data.message);
           setTimeout(() => {
@@ -1115,9 +1191,9 @@ const AddPurchaseBill = () => {
       ).then((response) => {
         setPurchaseReturnPending(response.data.data)
         // setCnTotalAmount(response.data.data.total_amount)
-        //console.log(response.data.data, '123');
+
         // toast.success(response.data.message);
-       
+
       })
     } catch (error) {
       setUnsavedItems(false);
@@ -1133,9 +1209,8 @@ const AddPurchaseBill = () => {
 
   const handelAddOpen = () => {
     setUnsavedItems(true)
-
     setOpenAddPopUp(true);
-    //console.log(distributor, '145');
+
     purchaseReturnData();
   }
   const handelAddItemOpen = () => {
@@ -1160,11 +1235,14 @@ const AddPurchaseBill = () => {
   };
 
   const handleInputChange = (event, newInputValue) => {
+
     setSearchItem(newInputValue.toUpperCase());
     handleSearch(newInputValue.toUpperCase());
   };
 
   const handleOptionChange = (event, newValue) => {
+    setIsEditMode(false);
+
     setValue(newValue);
     setSelectedOption(newValue);
 
@@ -1176,18 +1254,13 @@ const AddPurchaseBill = () => {
     handleSearch(itemName);
   };
 
-  const clearAutocomplete = () => {
-    setSearchItem(null); // Reset the value
-    if (searchItemField.current) {
-    }
-  };
 
   const handlePTR = (e) => {
 
-
     const setptr = e.target.value.replace(/[eE]/g, '');
     setPTR(setptr);
-    setBase(setptr);
+    // setBase(setptr);
+
   };
 
   const handleSchAmt = (e) => {
@@ -1352,7 +1425,6 @@ const AddPurchaseBill = () => {
     });
     setFinalPurchaseReturnList(purchaseReturnList);
     // Submit purchaseReturnList to the backend or handle it as needed
-    //console.log("Final Purchase Return List:", purchaseReturnList);
     resetAddDialog()
     // Reset dialog after submission
   };
@@ -1387,7 +1459,7 @@ const AddPurchaseBill = () => {
           }
 
         }, 0);
-      } 
+      }
       setIsOpenBox(false);
       setUnsavedItems(false);
       localStorage.removeItem("RandomNumber");
@@ -1586,10 +1658,7 @@ const AddPurchaseBill = () => {
                 <Button
                   variant="contained"
                   color="primary"
-
                   style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
-
-
                   onClick={handelAddOpen}
                   disabled={!distributor || ItemPurchaseList?.item?.length === 0}
                 >
@@ -1695,13 +1764,18 @@ const AddPurchaseBill = () => {
                               />
                               {searchItem}
                             </div>
+                            {error.item && (
+                              <span style={{ color: "red", fontSize: "12px" }}>
+                                {error.item}
+                              </span>
+                            )}
                           </td>
 
                           <td>
                             <TextField
                               autoComplete="off"
                               id="outlined-number"
-                              type="text" 
+                              type="text"
                               size="small"
                               error={!!errors.unit}
                               value={unit}
@@ -1719,6 +1793,11 @@ const AddPurchaseBill = () => {
                                 }
                               }}
                             />
+                             {error.unit && (
+                              <span style={{ color: "red", fontSize: "12px" }}>
+                                {error.unit}
+                              </span>
+                            )}
 
                           </td>
                           {/* <td>
@@ -1752,6 +1831,11 @@ const AddPurchaseBill = () => {
                               }}
 
                             />
+                             {error.batch && (
+                              <span style={{ color: "red", fontSize: "12px" }}>
+                                {error.batch}
+                              </span>
+                            )}
                           </td>
                           <td>
                             <TextField
@@ -1968,33 +2052,33 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td>
-                            <td>
-                              <TextField
-                                autoComplete="off"
-                                id="outlined-number"
-                                type="number"
-                                disabled
-                                size="small"
-                                value={netRate === 0 ? '' : netRate}
-                                sx={{ width: "100px" }}
-                              />
-                            </td>
+
+                            <TextField
+                              autoComplete="off"
+                              id="outlined-number"
+                              type="number"
+                              disabled
+                              size="small"
+                              value={netRate === 0 ? '' : netRate}
+                              sx={{ width: "100px" }}
+                            />
+
                           </td>
                           <td>
-                            <td>
-                              <TextField
-                                autoComplete="off"
-                                id="outlined-number"
-                                type="number"
-                                disabled
-                                size="small"
-                                value={margin === 0 ? '' : margin}
-                                sx={{ width: "100px" }}
-                                onChange={(e) => {
-                                  setMargin(e.target.value);
-                                }}
-                              />
-                            </td>
+
+                            <TextField
+                              autoComplete="off"
+                              id="outlined-number"
+                              type="number"
+                              disabled
+                              size="small"
+                              value={margin === 0 ? '' : margin}
+                              sx={{ width: "100px" }}
+                              onChange={(e) => {
+                                setMargin(e.target.value);
+                              }}
+                            />
+
                           </td>
                           <td className="total">
                             <span>{ItemTotalAmount.toFixed(2)}</span>
@@ -2040,7 +2124,7 @@ const AddPurchaseBill = () => {
                               onClick={handleAddButtonClick}
                             >
                               <ControlPointIcon className="mr-2" />
-                              Add
+                              {isEditMode ? "Update" : "Add"}
                             </Button>
                           </td>
                         </tr>
@@ -2048,8 +2132,11 @@ const AddPurchaseBill = () => {
                         {ItemPurchaseList?.item?.map((item) => (
                           <tr
                             key={item.id}
-                            className="item-List "
+
                             onClick={() => handleEditClick(item)}
+                            onKeyDown={handleTableKeyDown} ref={tableRef}
+                            className={` item-List  cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
+
                           >
 
                             <td
@@ -2123,7 +2210,7 @@ const AddPurchaseBill = () => {
                     </div>
 
                     <div className="font-bold mt-5">
-                      {totalQty ? totalQty : 0}
+                      {totalQty ? totalQty : 0} + <span className="primary" >{totalFree ? totalFree : 0} Free </span>
                     </div>
 
                     {/* <div className="font-bold mt-5">
@@ -2131,7 +2218,7 @@ const AddPurchaseBill = () => {
                     </div> */}
 
                     <div className="font-bold mt-5">
-                   01 static
+                      {totalBase}
                     </div>
                   </div>
                   <div
@@ -2145,14 +2232,12 @@ const AddPurchaseBill = () => {
                     <div>
                       <label className="font-bold">Total Amount : </label>
                     </div>
-
                     <div>
                       <label className="font-bold">CN Amount : </label>
                     </div>
                     {/* <div>
                       <label className="font-bold">Profit : </label>
                     </div> */}
-
                     <div>
                       <label className="font-bold">Round off : </label>
                     </div>
@@ -2173,7 +2258,6 @@ const AddPurchaseBill = () => {
                         {finalTotalAmount?.toFixed(2)}
                       </span>
                     </div>
-
                     <div style={{
                       marginTop: "23px"
                     }}>
@@ -2199,7 +2283,6 @@ const AddPurchaseBill = () => {
                       >
                         ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
                       </span>
-
                     </div> */}
                     <div style={{ marginTop: "23px" }}>
                       <span style={{ fontWeight: 600 }}>

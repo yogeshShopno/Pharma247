@@ -257,7 +257,7 @@ const CustomerList = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
+               
                 customerAllData();
                 setOpenUpload(false);
                 toast.success(response.data.message)
@@ -291,7 +291,7 @@ const CustomerList = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
+              
                 customerAllData();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
@@ -349,11 +349,11 @@ const CustomerList = () => {
     };
 
     const handleDownload = () => {
-        //console.log('Download function called');
+       
         const link = document.createElement('a');
         link.href = '/Customer_Sample_Data.csv';
         link.download = 'Customer_Sample_Data.csv';
-        //console.log('Link href:', link.href);
+       
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -369,14 +369,14 @@ const CustomerList = () => {
                 value: 'due_only',
             });
             customerAllData();
-            //console.log('purchase', 'due_Only');
+           
         } else {
             setChipState({
                 variant: 'default',
                 value: '',
             });
             customerAllData();
-            //console.log('purchase', '');
+          
         }
     };
 

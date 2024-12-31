@@ -63,14 +63,13 @@ const ManageStaffRole = () => {
         })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setOpenAddPopUpDeactive(false)
                 listOfRolePermission();
                 // setManageStaffRoleData(response.data.data);
                
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     }
@@ -88,11 +87,10 @@ const ManageStaffRole = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setManageStaffRoleData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     };

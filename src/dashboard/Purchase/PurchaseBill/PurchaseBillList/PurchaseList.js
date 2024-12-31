@@ -115,7 +115,7 @@ const Purchasebill = () => {
   };
 
   const filteredList = tableData.filter(row => {
-    // console.log(row, 'row')
+   
     const srNo = row.sr_no ? row.sr_no.toLowerCase() : '';
     const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
     const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
@@ -170,7 +170,7 @@ const Purchasebill = () => {
       }
 
       ).then((response) => {
-        // console.log(response.data.data)
+       
         setTableData(response.data.data)
         setIsLoading(false);
         if (response.data.status === 401) {
@@ -230,7 +230,6 @@ const Purchasebill = () => {
 
         const PDFURL = response.data.data.pdf_url;
         toast.success(response.data.meassage)
-        //console.log(PDFURL, 'hh');
         setIsLoading(false);
         handlePdf(PDFURL);
         if (response.data.status === 401) {
@@ -258,7 +257,7 @@ const Purchasebill = () => {
 
         const PDFURL = response.data.data.pdf_url;
         toast.success(response.data.meassage)
-        //console.log(PDFURL, 'hh');
+   
         setIsLoading(false);
         handlePdf(PDFURL);
         if (response.data.status === 401) {

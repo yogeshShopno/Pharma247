@@ -129,7 +129,6 @@ const Forgot = () => {
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-            //console.log('add')
             handleSubmit();
         }
     };
@@ -142,7 +141,6 @@ const Forgot = () => {
         userData.append('userId', localStorage.getItem('useId'));
         try {
             const response = await axios.post('forget-password', userData);
-            //console.log('API response==>:', response.data.data);
             localStorage.setItem('userId', response.data.data.user_id);
             if (response.data.status === 200) {
                 toast.success(response.data.message);
@@ -186,7 +184,6 @@ const Forgot = () => {
         setErrors(errors);
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
-            //console.log('add')
             handleUpdatePassword();
         }
         // return errors;
@@ -207,7 +204,6 @@ const Forgot = () => {
 
         try {
             const response = await axios.post('forget-password', userData);
-            //console.log('API response==>:', response.data.data);
             // localStorage.setItem('userId', response.data.data.user_id);
             if (response.data.status === 200) {
                 toast.success(response.data.message);

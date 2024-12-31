@@ -267,7 +267,6 @@ const PaymentList = () => {
                     },
                 }).then((response) => {
                     setPaymentList(response?.data?.data)
-                    //console.log(purchaseBill);
                     listDistributor();
                     setIsLoading(false);
                     setConfirm(false);
@@ -292,7 +291,6 @@ const PaymentList = () => {
                     },
                 }).then((response) => {
                     setPaymentList(response?.data?.data)
-                    //console.log(purchaseBill);
                     setIsLoading(false);
                     setConfirm(false);
                     setOpen(false);
@@ -331,7 +329,6 @@ const PaymentList = () => {
             }
             ).then((response) => {
                 setPurchaseBill(response?.data?.data)
-                //console.log(purchaseBill);
                 // setIsLoading(false);
                
             })
@@ -356,7 +353,6 @@ const PaymentList = () => {
             const distributors = response.data.data;
             localStorage.setItem("distributor", JSON.stringify(distributors));
             setDistributorList(distributors);
-            //console.log("Distributors fetched: ", distributors);
             return distributors;
 
         } catch (error) {
@@ -405,7 +401,6 @@ const PaymentList = () => {
     const handleDistributor = (e, value) => {
         setDistributor(value);
         setDistributorId(value?.id);
-        //console.log(distributorId)
         if (value) {
             PurchasePaymentList(value?.id);
         }

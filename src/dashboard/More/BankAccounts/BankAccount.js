@@ -377,7 +377,7 @@ const BankAccount = () => {
 
     const handlePaymentTypeChange = async (e) => {
         const selectedPaymentType = e.target.value;
-    console.log(selectedPaymentType)
+ 
         setPaymentType(selectedPaymentType);
         const selectedBankData = bankData.find(bank => bank.id === selectedPaymentType);
         if (selectedPaymentType == 'cash') {

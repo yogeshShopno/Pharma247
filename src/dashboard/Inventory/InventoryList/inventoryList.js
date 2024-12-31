@@ -170,7 +170,6 @@ const InventoryList = () => {
         : [...prevSelected, itemId]
     );
 
-    // console.log("id", selectedItems);
   };
   let listOfCompany = () => {
     axios
@@ -180,11 +179,10 @@ const InventoryList = () => {
         },
       })
       .then((response) => {
-        // console.log("API Response Pharma:===", response);
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -228,7 +226,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -244,7 +242,7 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -261,7 +259,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -278,7 +276,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -295,7 +293,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -430,8 +428,6 @@ const InventoryList = () => {
             toast.error("No Record Found");
           }
           setIsLoading(false);
-          // console.log(data);
-          // console.log(searchItem);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -481,7 +477,6 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
-    console.log(newValue, "newValue")
     setSelectedCompany(newValue?.company_name)
   };
 
@@ -523,7 +518,6 @@ const InventoryList = () => {
   const handleInputChange = (event, newInputValue) => {
     setLocationBulk(newInputValue);
     // handleSearch(newInputValue);
-    // console.log(newInputValue + "ayusf");
   };
 
   const bulkOrderData = async () => {
@@ -1443,10 +1437,8 @@ const InventoryList = () => {
                         onChange={() => {
                           if (selectedItems.length === data.length) {
                             setSelectedItems([]);
-                            // console.log("id", selectedItems);
                           } else {
                             setSelectedItems(data.map((item) => item.id));
-                            // console.log("id", selectedItems);
                           }
                         }}
                         checked={selectedItems.length === data.length}

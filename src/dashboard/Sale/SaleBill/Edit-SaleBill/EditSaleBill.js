@@ -617,7 +617,6 @@ const EditSaleBill = () => {
           },
         })
         .then((response) => {
-          console.log('object :>> ', response?.data?.data[0]?.batch_list);
           setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
           setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)

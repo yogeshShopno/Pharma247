@@ -270,7 +270,6 @@ const EditReturnBill = () => {
     //         const distributors = await listDistributor();
     //         await returnBillEditID(distributors);
     //         setIsLoading(false);
-    //         ////console.log(distributors, "1234");
 
     //     };
     //     batchListAPI();
@@ -297,7 +296,6 @@ const EditReturnBill = () => {
                 history.push('/');
                 localStorage.clear();
             }
-            ////console.log("Distributors fetched: ", distributors);
             return distributors;
         } catch (error) {
             console.error("API Error fetching distributors:", error);
@@ -320,7 +318,6 @@ const EditReturnBill = () => {
             }
             ).then((response) => {
                 setBatchList(response.data.data)
-                ////console.log(batchList);
 
             })
         } catch (error) {
@@ -346,7 +343,6 @@ const EditReturnBill = () => {
                 },
             }
             ).then((response) => {
-                ////console.log(response);
                 // localStorage.removeItem('StartFilterDate')
                 // localStorage.removeItem('EndFilterDate')
                 // localStorage.removeItem('DistributorId')
@@ -384,12 +380,11 @@ const EditReturnBill = () => {
             },
         })
             .then((response) => {
-                ////console.log("API Response item Catagory:===", response);
                 setGstList(response.data.data);
 
             })
             .catch((error) => {
-                ////console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     }
@@ -493,13 +488,11 @@ const EditReturnBill = () => {
     //             //     return option.id == data.distributor_id;
     //             // });
 
-    //             ////console.log(foundDistributor, "mh");
     //             setBillNo(data.bill_no || '');
     //             // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
     //             // const formattedDate = format(parsedDate, 'MM-yyyy');
 
     //             setRemark(data?.remark)
-    //             ////console.log(tableData, 'tableData')
 
     //             if (foundDistributor) {
     //                 setDistributor(foundDistributor);
@@ -546,7 +539,6 @@ const EditReturnBill = () => {
 
     const handleEditClick = (item) => {
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
-        console.log(existingItem, "existingItem")
 
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
@@ -562,7 +554,6 @@ const EditReturnBill = () => {
         setSelectedEditItemId(item.id);
         setQty(item.qty)
         setInitialTotalStock(item.total_stock);
-        console.log(initialTotalStock, "initialTotalStock")
 
     };
     // const handleQty = (value) => {
@@ -620,7 +611,6 @@ const EditReturnBill = () => {
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
         // if (Number(tempQty) < Number(qty)) {
-        //     console.log(tempQty, qty, "")
         //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
         //     toast.error('Quantity should not be greater than purchase quantity ')
         //     return
@@ -670,7 +660,7 @@ const EditReturnBill = () => {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            ////console.log("response", response);
+          ;
             setUnsavedItems(true);
 
             setIsDeleteAll(true);
@@ -696,7 +686,8 @@ const EditReturnBill = () => {
             }
         }
         catch (e) {
-            ////console.log(e)
+            console.error("API error:", error);
+
         }
     }
     const deleteOpen = (Id) => {
@@ -721,7 +712,6 @@ const EditReturnBill = () => {
         setError(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
-            //console.log(newErrors, 'newErrors')
             return;
         }
         updatePurchaseRecord();
@@ -762,7 +752,6 @@ const EditReturnBill = () => {
             }
             ).then((response) => {
                 setUnsavedItems(false)
-                ////console.log(response.data);
                 setSaveValue(true)
                 history.push('/purchase/return');
 
@@ -828,11 +817,10 @@ const EditReturnBill = () => {
         //     }
 
         // });
-        // //console.log(checkedItems,"checkedItems");
+       
 
         // setCheckedItems((prevCheckedItems) => [...prevCheckedItems, ItemId]);
 
-        ////console.log(checkedItems,"checkedItems");
         try {
             const response = await axios.post("purchase-return-iteam-select", data, {
                 headers: {
@@ -843,7 +831,7 @@ const EditReturnBill = () => {
 
             }
             );
-            ////console.log(response)
+           
         } catch (error) {
             console.error("API error:", error);
 

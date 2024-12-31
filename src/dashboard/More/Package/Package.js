@@ -60,7 +60,6 @@ const Package = () => {
       .then((response) => {
         setIsLoading(false);
         setPackageAllData(response.data.data);
-        //console.log(response.data.data);
         if (response.data.status === 401) {
           history.push('/');
           localStorage.clear();
@@ -68,7 +67,7 @@ const Package = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        //console.log("API error:", error);
+        console.error("API error:", error);
 
       });
   };
@@ -121,7 +120,7 @@ const Package = () => {
       setUnitList([...unitList, units.trim()]);
       setUnits('');
     }
-    //console.log(unitList);
+    //(unitList);
   };
 
   const handleRemoveUnit = (unitToRemove) => {
@@ -132,7 +131,6 @@ const Package = () => {
     let data = new FormData();
     data.append("id", id);
     try {
-      //console.log("id", id);
       const response = await axios.post("delete-package",
         data,
         {
@@ -225,7 +223,6 @@ const Package = () => {
         },
       }
       ).then((response) => {
-        //console.log(response.data.data)
         PackageList();
         setOpenAddPopUp(false);
         toast.success(response.data.message);

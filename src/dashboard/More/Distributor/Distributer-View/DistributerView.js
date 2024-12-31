@@ -56,7 +56,7 @@ const DistributerView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                //console.log(tableData);
+          
                
             })
         } catch (error) {

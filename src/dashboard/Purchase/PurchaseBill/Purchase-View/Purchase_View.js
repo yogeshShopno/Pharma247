@@ -30,7 +30,7 @@ const PurchaseView = () => {
 
     useEffect(() => {
         purchaseBillList();
-        //console.log('purchase', tableData);
+        
     }, [])
 
 
@@ -78,7 +78,7 @@ const PurchaseView = () => {
                 setTableData(response.data.data)
                 setIsLoading(false);
                
-                //console.log(tableData)
+              
             })
         } catch (error) {
             console.error("API error:", error);
@@ -92,7 +92,7 @@ const PurchaseView = () => {
             setCurrentIndex(index);
             purchaseBillGetByID(tableData[index].id);
         }
-        //console.log('purchase', tableData);
+    
     }, [id, tableData]);
 
     useEffect(() => {

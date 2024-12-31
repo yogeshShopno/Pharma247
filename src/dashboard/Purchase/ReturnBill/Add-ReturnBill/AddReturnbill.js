@@ -177,8 +177,7 @@ const AddReturnbill = () => {
     }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
 
     useEffect(() => {
-        // console.log(editQty, "Updated editQty");
-        // console.log(selectedEditItemId, "selectedEditItemId");
+       
 
         // You can perform any additional action here after the state updates
     }, [editQty, selectedEditItemId]);
@@ -361,12 +360,13 @@ const AddReturnbill = () => {
             },
         })
             .then((response) => {
-                //console.log("API Response item Catagory:===", response);
+                
                 setGstList(response.data.data);
                       
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
+
 
             });
     }
@@ -384,7 +384,9 @@ const AddReturnbill = () => {
                 localStorage.clear();
               }      
         }).catch((error) => {
-            //console.log("API error:", error);
+           
+            console.error("API error:", error);
+
 
         });
     };
@@ -458,7 +460,6 @@ const AddReturnbill = () => {
         data.append("end_date", endDate ? format(endDate, 'MM/yy') : '');
         data.append("distributor_id", distributor.id ? distributor.id : '');
         data.append("search", value ? value : "");
-        // console.log(searchQuery,"value")
         try {
             await axios.post("purches-return-filter?", data, {
                 headers: {
@@ -577,7 +578,6 @@ const AddReturnbill = () => {
                     },
                 }
                 ).then((response) => {
-                    //console.log(response.data)
                     setIsLoading(false)
                     setSaveValue(true);
                     setUnsavedItems(false)
@@ -686,7 +686,7 @@ const AddReturnbill = () => {
                 },
             }
             ).then((response) => {
-                console.log(response);
+         
                
             })
         } catch (error) {
@@ -755,7 +755,6 @@ const AddReturnbill = () => {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            //console.log("response", response);
             setIsDeleteAll(true);
             purcheseReturnFilter();
             setSearchItem('');
@@ -777,7 +776,8 @@ const AddReturnbill = () => {
 
         }
         catch (e) {
-            //console.log(e)
+            console.error("API error:", error);
+
         }
     }
 

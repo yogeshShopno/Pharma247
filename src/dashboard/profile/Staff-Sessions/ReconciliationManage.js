@@ -25,7 +25,6 @@ const ReconciliationManage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(toggle, "Toggle state updated"); // Log toggle whenever it updates
   }, [toggle]);
 
   const getData = async () => {
@@ -38,8 +37,6 @@ const ReconciliationManage = () => {
       });
 
       const data = response.data.data;
-      // console.log(data.iss_audit, "Raw iss_audit from API"); 
-      // console.log(typeof data.iss_audit, "Type of iss_audit from API");
 
       setReconciliationData(data);
       setCount(Number(data.iteam_count));
@@ -185,7 +182,6 @@ const ReconciliationManage = () => {
                       },
                     }}
                     onChange={() => {
-                      console.log(!toggle, "Switch toggled");
                       setToggle(!toggle);
                     }}
                   />

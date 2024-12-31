@@ -58,7 +58,6 @@ const Documents = () => {
                 },
             });
             const data = response.data.data;
-            console.log(data, '123')
             if (response.data.status == 200) {
                 const data = response.data.data;
                 setLicenseDetails(data);

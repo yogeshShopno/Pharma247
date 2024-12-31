@@ -106,7 +106,6 @@ const AboutInfo = () => {
   };
   const handleProfilePhoto = (event) => {
     setSelectedProfileFile(event.target.files[0]);
-    //console.log(selectedProfileFile, "ml");
     const url = URL.createObjectURL(event.target.files[0]);
     setFrontImgUrl(url);
   };

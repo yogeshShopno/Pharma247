@@ -101,11 +101,10 @@ const StaffMember = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setTableData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     };
@@ -121,11 +120,11 @@ const StaffMember = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setManageStaffRoleData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
+
 
             });
     };
@@ -229,12 +228,11 @@ const StaffMember = () => {
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
-                //console.log(error.message, 'mp');
             }
             console.error("API error:", error);
 
         }
-        // }
+ 
     }
 
     const EditStaffMemberRecord = async () => {
@@ -307,7 +305,6 @@ const StaffMember = () => {
         })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setOpenAddPopUpDeactive(false)
                 // listOfRolePermission();
                 staffList()
@@ -315,7 +312,7 @@ const StaffMember = () => {
                
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     }

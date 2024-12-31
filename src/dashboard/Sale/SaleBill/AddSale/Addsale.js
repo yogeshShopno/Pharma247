@@ -249,7 +249,6 @@ const Addsale = () => {
                             },
                         }
                     );
-                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -354,7 +353,7 @@ const Addsale = () => {
             });
 
             if (response.data.status === 200) {
-                //console.log("response===>", response.data);
+                
                 toast.success(response.data.message);
                 setOpenAddItemPopUp(false)
             } else if (response.data.status === 400) {
@@ -409,7 +408,7 @@ const Addsale = () => {
             const allOutOfStock = items.every(item => item.stock === 0);
 
             if (allOutOfStock) {
-                console.log('Search Item-------');
+               
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -431,11 +430,9 @@ const Addsale = () => {
             });
 
             if (res.data) {
-                console.log('Item Drug Group Data:', res.data.data.data);
                 if (res.data.data) {
                     const filteredItems = res.data.data.data.filter(item => item.stock > 0);
                     setItemList(filteredItems);
-                    console.log('Filtered itemList:', filteredItems);
                 }
             }
         } catch (error) {
@@ -725,7 +722,6 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
@@ -754,7 +750,6 @@ const Addsale = () => {
                     },
                 })
                 .then((response) => {
-                    console.log('response.data.data :>> ', response.data.data);
                     setBarcodeBatch(response?.data?.data[0])
                     setUnit(Number(response?.data?.data[0]?.unit))
                     setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
@@ -772,7 +767,6 @@ const Addsale = () => {
                     setBarcodeItemName(response?.data?.data[0]?.iteam_name);
                     setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
                     setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
-                    console.log(response?.data?.data[0]?.batch_list[0], itemId)
 
                     setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
 
@@ -849,7 +843,6 @@ const Addsale = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("response", response);
 
             setTotalAmount(0);
             setUnit("");
@@ -884,7 +877,9 @@ const Addsale = () => {
 
             // setAutocompleteDisabled(false);
         } catch (e) {
-            //console.log(e);
+       
+            console.error("API error:", error);
+
         }
     }
 
@@ -958,7 +953,6 @@ const Addsale = () => {
 
                 if (lowStockItems.length > 0) {
                     bulkOrderData();
-                    console.log('Low stock items:', lowStockItems);
                 }
 
 

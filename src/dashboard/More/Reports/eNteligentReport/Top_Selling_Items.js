@@ -57,11 +57,10 @@ const Top_Selling_Items = () => {
                     },
                 })
             .then((response) => {
-                //console.log("API Response Pharma:===", response);
                 setCompanyList(response.data.data);
             })
             .catch((error) => {
-                //console.log("API error:", error);
+                console.error("API error:", error);
 
             });
     };

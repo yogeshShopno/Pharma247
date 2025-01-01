@@ -29,6 +29,7 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
+
 const Addsale = () => {
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();

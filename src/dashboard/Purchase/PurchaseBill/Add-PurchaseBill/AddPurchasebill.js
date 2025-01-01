@@ -31,7 +31,7 @@ const debounce = (func, delay) => {
 };
 
 const AddPurchaseBill = () => {
-  const searchItemField = useRef("");
+  const searchItemField = useRef(null);
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();
@@ -130,6 +130,9 @@ const AddPurchaseBill = () => {
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
+  const [itemAutofoucs, setItemAutofoucs] = useState(false);
+  const [autocompleteKey, setAutocompleteKey] = useState(0);
+  const [focusedField, setFocusedField] = useState("distributor");
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -149,6 +152,7 @@ const AddPurchaseBill = () => {
   defaultDate.setDate(defaultDate.getDate() + 3);
 
   useEffect(() => {
+
     const newErrors = {};
     if (Number(ptr) > Number(mrp)) {
       newErrors.ptr = "PTR must be less than or equal to MRP";
@@ -160,6 +164,7 @@ const AddPurchaseBill = () => {
   }, [ptr, mrp])
 
   useEffect(() => {
+
     generateRandomNumber()
     const initialize = async () => {
       try {
@@ -168,7 +173,6 @@ const AddPurchaseBill = () => {
         console.error("Error during initialization:", error);
       }
     };
-
     initialize();
   }, []);
 
@@ -267,6 +271,8 @@ const AddPurchaseBill = () => {
   //     window.removeEventListener('keydown', handleKeyDown);
   //   };
   // }, []);
+
+
 
   const BankList = async () => {
     let data = new FormData();
@@ -416,8 +422,6 @@ const AddPurchaseBill = () => {
                   Authorization: `Bearer ${token}`,
                 },
               });
-
-
               setItemTotalAmount(0);
               setDeleteAll(true);
               itemPurchaseList();
@@ -534,16 +538,13 @@ const AddPurchaseBill = () => {
   //     // handleCalNetAmount()
   //     setIsEditMode(false);
   //     setSelectedEditItemId(null);
-
   //     setBarcode("")
   //     setValue("")
   //     // Reset Autocomplete field
   //     setValue("");
   //     setSearchItem("");
-
   //     // setAutocompleteDisabled(false);
   //   } catch (e) {
-
   //   }
   // }
 
@@ -634,7 +635,6 @@ const AddPurchaseBill = () => {
         },
       })
         .then((response) => {
-
           setItemPurchaseList(response.data.data);
           setFinalTotalAmount(response.data.data.total_price)
           setTotalGst(response.data.data.total_gst)
@@ -645,16 +645,11 @@ const AddPurchaseBill = () => {
           handleCalNetAmount(response.data.data.total_price)
           setTotalBase(response.data.data.total_base)
           setTotalFRee(response.data.data.total_free)
-
-
-
           // setNetAmount(response.data.data.total_price)
-
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
     }
   };
   const isDateDisabled = (date) => {
@@ -692,7 +687,6 @@ const AddPurchaseBill = () => {
             setUnit(batchData[0].unit);
             setBatch(batchData[0].batch_name);
             setHSN(batchData[0].HSN);
-
             setExpiryDate(batchData[0].expiry_date);
             setMRP(batchData[0].mrp);
             setQty(batchData[0].purchase_qty);
@@ -708,7 +702,6 @@ const AddPurchaseBill = () => {
             setUnit("");
             setBatch("");
             setHSN("");
-
             setExpiryDate("");
             setMRP("");
             setQty("");
@@ -729,6 +722,9 @@ const AddPurchaseBill = () => {
 
 
   const handleAddButtonClick = async () => {
+
+    setFocusedField("item"); // Focus the item field
+    setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
     generateRandomNumber()
     const newErrors = {};
@@ -794,6 +790,7 @@ const AddPurchaseBill = () => {
   };
 
   const handleAddItem = async () => {
+    setItemAutofoucs(true)
 
     setUnsavedItems(true)
     let data = new FormData();
@@ -852,7 +849,6 @@ const AddPurchaseBill = () => {
           },
         });
       setSelectedOption(null);
-
       setSearchItem("")
       setItemTotalAmount(0);
       setDeleteAll(true);
@@ -872,6 +868,8 @@ const AddPurchaseBill = () => {
       setSchAmt("");
       setMargin("");
       setLoc("");
+
+
 
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
@@ -897,6 +895,7 @@ const AddPurchaseBill = () => {
   };
 
   const handleAddNewItem = async () => {
+
     if (!addItemName && !addUnit && !addBarcode) {
       return;
     }
@@ -992,6 +991,7 @@ const AddPurchaseBill = () => {
       }
     }
   }, [isVisible, batchListData]);
+
   const handleTableKeyDown = (e) => {
 
     const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
@@ -1227,7 +1227,6 @@ const AddPurchaseBill = () => {
     // setCnTotalAmount("")
     // setCnAmount(0);
   }
-
 
   const handleDistributorChange = (event, newValue) => {
     setDistributor(newValue);
@@ -1550,6 +1549,37 @@ const AddPurchaseBill = () => {
                   </MenuItem>
                 ))}
               </Select> */}
+
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "var(--color1)" }}
+
+                onClick={handelAddItemOpen}
+              >
+                <ControlPointIcon className="mr-2" />
+                Add New Item
+              </Button>
+              <div className="flex gap-6">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "var(--color1)",
+                    "&:disabled": {
+                      backgroundColor: "grey", // Custom disabled background color
+                      color: "white", // Custom disabled text color
+                      opacity: 0.7, // Adjust the transparency
+                    },
+                  }}
+                  onClick={handelAddOpen}
+                  disabled={!distributor || ItemPurchaseList?.item?.length === 0}
+                >
+                  <AddIcon className="mr-2" />
+                  CN Adjust
+                </Button>
+
+              </div>
               <Button
                 variant="contained"
                 style={{ background: "var(--color1)" }}
@@ -1585,9 +1615,9 @@ const AddPurchaseBill = () => {
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => <TextField
+                    autoFocus={focusedField === "distributor"}
                     autoComplete="off"
                     {...params}
-                    autoFocus
                   />}
                 />
                 {error.distributor && (
@@ -1654,7 +1684,27 @@ const AddPurchaseBill = () => {
                   />
                 </div>
               </div>
-              <div className="flex gap-6">
+              <div className="detail">
+                <span className="title mb-2">Scan Barcode</span>
+
+                <TextField
+                  autoComplete="off"
+                  id="outlined-number"
+                  type="number"
+                  size="small"
+                  value={barcode}
+                  placeholder="scan barcode"
+                  // inputRef={inputRef10}
+                  // onKeyDown={handleKeyDown}
+                  sx={{ width: "250px" }}
+                  onChange={(e) => {
+                    setBarcode(e.target.value)
+
+                  }}
+                />
+              </div>
+
+              {/* <div className="flex gap-6">
                 <Button
                   variant="contained"
                   color="primary"
@@ -1665,45 +1715,8 @@ const AddPurchaseBill = () => {
                   <AddIcon className="mr-2" />
                   CN Adjust
                 </Button>
-              </div>
-              {isAutocompleteDisabled && (
-                <Autocomplete
-                  value={selectedOption}
-
-                  // value={searchItem?.iteam_name}
-                  sx={{ width: 570 }}
-                  size="small"
-                  onChange={handleOptionChange}
-                  onInputChange={handleInputChange}
-                  inputRef={searchItemField}
-                  getOptionLabel={(option) => `${option.iteam_name} `}
-                  options={itemList}
-                  renderOption={(props, option) => (
-                    <ListItem {...props}>
-                      {/* <ListItemText
-                        primary={`${option.iteam_name}`}
-                        secondary={`Pack : ${option.pack} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock : ${option.stock} `}
-                      /> */}
-                      <ListItemText
-                        primary={`${option.iteam_name}`}
-                        secondary={` ${option.stock === 0 ? `Unit: ${option.weightage}` : `Pack: ${option.pack}`} | 
-              MRP: ${option.mrp}  | 
-              Location: ${option.location}  | 
-              Current Stock: ${option.stock}`}
-                      />
-
-                    </ListItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      autoComplete="off"
-                      {...params}
-                      label="Search Item Name"
-                      value={searchItem?.iteam_name}
-                    />
-                  )}
-                />
-              )}
+              </div> */}
+              {/* 
               <Button
                 variant="contained"
                 style={{ backgroundColor: "var(--color1)" }}
@@ -1712,14 +1725,14 @@ const AddPurchaseBill = () => {
               >
                 <ControlPointIcon className="mr-2" />
                 Add New Item
-              </Button>
+              </Button> */}
 
 
               <div className="overflow-x-auto ">
                 <table className="customtable  w-full border-collapse custom-table">
                   <thead>
                     <tr>
-                      <th>Item Name</th>
+                      <th>Search Item Name</th>
                       <th>Unit</th>
                       {/* <th>HSN</th> */}
                       <th>Batch </th>
@@ -1733,12 +1746,13 @@ const AddPurchaseBill = () => {
                       <th>Base</th>
                       <th>GST% </th>
                       <th>Loc.</th>
-                      <th>Net Rate</th>
+                      {/* <th>Net Rate</th> */}
                       <th>Margin%</th>
                       <th>Amount </th>
                     </tr>
                   </thead>
                   <tbody>
+
                     {!value && ItemPurchaseList.item > 0 ? (
                       <tr>
                         <td
@@ -1756,7 +1770,45 @@ const AddPurchaseBill = () => {
                     ) : (
                       <>
                         <tr>
-                          <td style={{ width: "600px" }}>
+
+                          <td>
+                            {isAutocompleteDisabled && (
+                              <Autocomplete
+                                key={autocompleteKey} // Ensure re-render
+                                value={selectedOption}
+                                // value={searchItem?.iteam_name}
+                                sx={{ width: 400 }}
+                                size="small"
+                                onChange={handleOptionChange}
+                                onInputChange={handleInputChange}
+                                inputRef={searchItemField}
+                                getOptionLabel={(option) => `${option.iteam_name} `}
+                                options={itemList}
+                                renderOption={(props, option) => (
+                                  <ListItem {...props}>
+                                    {/* <ListItemText
+                        primary={`${option.iteam_name}`}
+                        secondary={`Pack : ${option.pack} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock : ${option.stock} `}
+                      /> */}
+                                    <ListItemText
+                                      primary={`${option.iteam_name}`}
+                                      secondary={` ${option.stock === 0 ? `Unit: ${option.weightage}` : `Pack: ${option.pack}`} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock: ${option.stock}`}
+                                    />
+
+                                  </ListItem>
+                                )}
+                                renderInput={(params) => (
+                                  <TextField
+                                    autoComplete="off"
+                                    autoFocus={focusedField === "item"}
+                                    {...params}
+                                    // label="Search Item Name"
+                                    value={searchItem?.iteam_name}
+                                  />
+                                )}
+                              />
+                            )}
+                            {/* <td style={{ width: "600px" }}>
                             <div>
                               <DeleteIcon
                                 className="delete-icon"
@@ -1769,8 +1821,8 @@ const AddPurchaseBill = () => {
                                 {error.item}
                               </span>
                             )}
+                          </td> */}
                           </td>
-
                           <td>
                             <TextField
                               autoComplete="off"
@@ -1793,12 +1845,11 @@ const AddPurchaseBill = () => {
                                 }
                               }}
                             />
-                             {error.unit && (
+                            {error.unit && (
                               <span style={{ color: "red", fontSize: "12px" }}>
                                 {error.unit}
                               </span>
                             )}
-
                           </td>
                           {/* <td>
                             <TextField
@@ -1831,7 +1882,7 @@ const AddPurchaseBill = () => {
                               }}
 
                             />
-                             {error.batch && (
+                            {error.batch && (
                               <span style={{ color: "red", fontSize: "12px" }}>
                                 {error.batch}
                               </span>
@@ -1990,7 +2041,6 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef9}
                               // onKeyDown={handleKeyDown}
                               value={schAmt}
-
                               disabled
                             />
                           </td>
@@ -2062,10 +2112,8 @@ const AddPurchaseBill = () => {
                               value={netRate === 0 ? '' : netRate}
                               sx={{ width: "100px" }}
                             />
-
                           </td>
-                          <td>
-
+                          {/* <td>
                             <TextField
                               autoComplete="off"
                               id="outlined-number"
@@ -2078,15 +2126,14 @@ const AddPurchaseBill = () => {
                                 setMargin(e.target.value);
                               }}
                             />
-
-                          </td>
+                          </td> */}
                           <td className="total">
                             <span>{ItemTotalAmount.toFixed(2)}</span>
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            <TextField
+                            {/* <TextField
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -2100,7 +2147,7 @@ const AddPurchaseBill = () => {
                                 setBarcode(e.target.value)
 
                               }}
-                            />
+                            /> */}
                           </td>
                           <td></td>
                           <td> </td>
@@ -2115,36 +2162,28 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td></td>
-                          <td></td>
                           <td>
-
                             <Button
                               variant="contained"
                               style={{ backgroundColor: "var(--color1)" }}
                               onClick={handleAddButtonClick}
                             >
                               <ControlPointIcon className="mr-2" />
-                              {isEditMode ? "Update" : "Add"}
+                              {isEditMode ? "Edit" : "Add"}
                             </Button>
                           </td>
                         </tr>
-
                         {ItemPurchaseList?.item?.map((item) => (
                           <tr
                             key={item.id}
-
                             onClick={() => handleEditClick(item)}
                             onKeyDown={handleTableKeyDown} ref={tableRef}
                             className={` item-List  cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-
-                          >
-
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                              }}
-                            >
+                          ><td
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                            }}>
                               <BorderColorIcon
                                 style={{ color: "var(--color1)" }}
                                 onClick={() => handleEditClick(item)}
@@ -2170,7 +2209,7 @@ const AddPurchaseBill = () => {
                             <td>{item.base_price}</td>
                             <td>{item.gst}</td>
                             <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
+                            {/* <td>{item.net_rate}</td> */}
                             <td>{item.margin}</td>
                             <td>{item.total_amount}</td>
                           </tr>
@@ -2196,9 +2235,9 @@ const AddPurchaseBill = () => {
                       <label className="font-bold">Total Qty : </label>
                     </div>
 
-                    {/* <div>
+                    <div>
                       <label className="font-bold">Total Net Profit : </label>
-                    </div> */}
+                    </div>
 
                     <div>
                       <label className="font-bold">Total Base : </label>
@@ -2213,9 +2252,9 @@ const AddPurchaseBill = () => {
                       {totalQty ? totalQty : 0} + <span className="primary" >{totalFree ? totalFree : 0} Free </span>
                     </div>
 
-                    {/* <div className="font-bold mt-5">
+                    <div className="font-bold mt-5">
                       {totalNetRate ? totalNetRate : 0}
-                    </div> */}
+                    </div>
 
                     <div className="font-bold mt-5">
                       {totalBase}
@@ -2252,10 +2291,8 @@ const AddPurchaseBill = () => {
                           fontWeight: 600,
                           gap: "22px",
                           flexDirection: "column",
-
                         }}
-                      >
-                        {finalTotalAmount?.toFixed(2)}
+                      >{finalTotalAmount?.toFixed(2)}
                       </span>
                     </div>
                     <div style={{
@@ -2267,10 +2304,8 @@ const AddPurchaseBill = () => {
                           paddingTop: "10px",
                           color: "red"
                         }}
-                      >
-                        -{finalCnAmount?.toFixed(2)}
+                      >-{finalCnAmount?.toFixed(2)}
                       </span>
-
                     </div>
                     {/* <div style={{
                       marginTop: "23px"
@@ -2312,9 +2347,7 @@ const AddPurchaseBill = () => {
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
         {/* CN amount PopUp Box */}

@@ -47,7 +47,7 @@ const ReturnList = () => {
     const [IsDelete, setIsDelete] = useState(false);
     const [returnId, setReturnId] = useState(null)
     const { id } = useParams();
-    const [openAddPopUp, setOpenAddPopUp] = useState(false);
+    const [ openAddPopUp, setOpenAddPopUp] = useState(false);
 
     const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15))
     const [PdfendDate, setPdfEndDate] = useState(new Date());
@@ -264,16 +264,15 @@ const ReturnList = () => {
                             <Button
                                 variant="contained"
                                 style={{ background: "var(--color1) " }}
-                                onClick={() => { setOpenAddPopUp(true) }}
-                            >
+                                onClick={() => { setOpenAddPopUp(true) }}>
                                 Generate PDF
                             </Button>
                         </div>
                     </div>
 
                     <div className="firstrow">
-                        <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table">
+                        <div className="overflow-x-auto mt-4" style={{overflowX:"auto"}}>
+                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead>
                                     <tr>
                                         <th>SR. No
@@ -304,7 +303,7 @@ const ReturnList = () => {
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody  style={{ background: "#3f621217" }}>
                                     {filteredList.length === 0 ? (
                                         <tr>
                                             <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
@@ -315,7 +314,7 @@ const ReturnList = () => {
                                         filteredList.map((row, index) => {
                                                 return (
                                                     <tr hover role="checkbox" tabIndex={-1} key={row.code} >
-                                                        <td>
+                                                        <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                             {startIndex + index}
                                                         </td>
                                                         {/* {columns.map((column) => {
@@ -439,12 +438,14 @@ const ReturnList = () => {
                                                             )}
                                                         </td>
 
-                                                        <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer', alignItems: "center" }}>
+                                                        <td style={{borderRadius:"0 10px 10px 0" }}>
+                                                          <div style={{display:"flex",gap:"5px", fontSize: '15px',color: 'gray', cursor: 'pointer', alignItems: "center"}}>
                                                             < VisibilityIcon className='cursor-pointer cursor-pointer primary hover:secondary' onClick={() => { history.push(`/return/view/${row.id}`) }} />
                                                             <FaFilePdf className="primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                                                             {hasPermission(permissions, "purchase return bill delete") && (
                                                                 <DeleteIcon style={{ color: "#F31C1C" }}
                                                                     className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
+                                                          </div>
                                                         </td>
                                                     </tr>
                                                 );

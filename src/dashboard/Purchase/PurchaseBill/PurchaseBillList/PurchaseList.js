@@ -361,8 +361,8 @@ const Purchasebill = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto mt-4">
-              <table className="w-full border-collapse custom-table">
+            <div className="overflow-x-auto mt-4" style={{overflowX:"auto"}}>
+              <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                 <thead>
                   <tr>
                     {/* <th>SR. No</th> */}
@@ -390,7 +390,7 @@ const Purchasebill = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: "#3f621217" }}>
                   {filteredList.length === 0 ? (
                     <tr>
                       <td colSpan={columns.length + 1} className="text-center text-gray-500">
@@ -405,10 +405,11 @@ const Purchasebill = () => {
                       >
                         {/* <td>{startIndex + index}</td> */}
 
-                        {columns.map((column) => {
+                        {columns.map((column,colIndex) => {
                           const value = row[column.id];
                           return (
                             <td
+                            style={colIndex === 0 ? { borderRadius: "10px 0 0 10px" } : colIndex === columns.length ? { borderRadius: "0 10px 10px 0" } : {}}
                               key={column.id}
                               className="capitalize"
                               onClick={() => history.push(`/purchase/view/${row.id}`)}
@@ -419,7 +420,8 @@ const Purchasebill = () => {
                             </td>
                           );
                         })}
-                        <td>
+                        <td style={{ borderRadius: "0 10px 10px 0" }}
+                        >
                           <div className="flex gap-2 items-center">
                             <VisibilityIcon
                               className="cursor-pointer primary hover:secondary"

@@ -150,8 +150,8 @@ const EditPurchaseBill = () => {
       if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();
-      }      
-     
+      }
+
       return distributors;
     } catch (error) {
       console.error("API Error fetching distributors:", error);
@@ -173,7 +173,6 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-
     }
   };
 
@@ -198,19 +197,19 @@ const EditPurchaseBill = () => {
       });
 
       const purchaseData = response?.data?.data;
-     
+
 
       setPurchase(purchaseData);
       setNetAmount(response?.data?.data.net_amount)
 
       if (purchaseData) {
-      
+
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
         const foundDistributor = distributors.find((option) => {
-          
+
           return option.id == purchaseData.distributor_id;
         });
-       
+
         if (foundDistributor) {
           setDistributor(foundDistributor);
         } else {
@@ -377,7 +376,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           itemPurchaseList();
-          
+
         });
     } catch (error) {
       console.error("API error:", error);
@@ -396,7 +395,7 @@ const EditPurchaseBill = () => {
       ).then((response) => {
         setPurchaseReturnPending(response.data.data)
         // setCnTotalAmount(response.data.data.total_amount)
-        
+
         // toast.success(response.data.message);
         if (response.data.status === 401) {
           history.push('/');
@@ -418,7 +417,7 @@ const EditPurchaseBill = () => {
         },
       })
       .then((response) => {
-        
+
         setGstList(response.data.data);
       })
       .catch((error) => {
@@ -557,7 +556,7 @@ const EditPurchaseBill = () => {
           }
 
         }, 0);
-      } 
+      }
       setIsOpenBox(false);
       setUnsavedItems(false);
 
@@ -612,29 +611,29 @@ const EditPurchaseBill = () => {
           // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
           // setValue.unit_id(response.data.data[0]?.unit)
 
-          setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
-          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp)
-          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty)
-          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr)
-          setDisc(response?.data?.data[0]?.batch_list[0]?.discount)
-          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-          setBase(response?.data?.data[0]?.batch_list[0]?.base)
+          setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
+          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);
+          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date);
+          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp);
+          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty);
+          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty);
+          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr);
+          setDisc(response?.data?.data[0]?.batch_list[0]?.discount);
+          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account);
+          setBase(response?.data?.data[0]?.batch_list[0]?.base);
           setGst({
             id: response?.data?.data[0]?.batch_list[0]?.gst,
             name: response?.data?.data[0]?.batch_list[0]?.gst_name,
           });
-          setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-          setMargin(response?.data?.data[0]?.batch_list[0]?.margin)
-          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate)
-          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name)
+          setLoc(response?.data?.data[0]?.batch_list[0]?.location);
+          setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
+          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate);
+          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name);
 
-          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id)
+          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
 
-          setSelectedEditItemId(response?.data?.data[0]?.id)
-          setItemEditID(response.data.data[0]?.id)
+          setSelectedEditItemId(response?.data?.data[0]?.id);
+          setItemEditID(response.data.data[0]?.id);
 
           // setIsEditMode(true)
 
@@ -764,7 +763,7 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-         
+
         });
     } catch (error) {
       console.error("API error:", error);
@@ -832,7 +831,7 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-     
+
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
@@ -1284,7 +1283,7 @@ const EditPurchaseBill = () => {
                     options={distributorList}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField
-                 autoComplete="off" {...params} />}
+                      autoComplete="off" {...params} />}
                   />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1295,7 +1294,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Sr No.</span>
                   <TextField
-                 autoComplete="off"
+                    autoComplete="off"
                     id="outlined-number"
                     size="small"
                     style={{ width: "200px" }}
@@ -1309,7 +1308,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Bill No. / Order No.</span>
                   <TextField
-                 autoComplete="off"
+                    autoComplete="off"
                     id="outlined-number"
                     disabled
                     size="small"
@@ -1390,7 +1389,7 @@ const EditPurchaseBill = () => {
                   )}
                   renderInput={(params) => (
                     <TextField
-                 autoComplete="off" {...params} label="Search Item Name" autoFocus />
+                      autoComplete="off" {...params} label="Search Item Name" autoFocus />
                   )}
                 />
 
@@ -1430,7 +1429,7 @@ const EditPurchaseBill = () => {
 
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             type="number"
                             inputRef={inputRef1}
@@ -1454,7 +1453,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef2}
                             onKeyDown={handleKeyDown}
@@ -1471,7 +1470,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             size="small"
                             sx={{ width: "80px" }}
@@ -1490,7 +1489,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1516,7 +1515,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "80px" }}
@@ -1540,7 +1539,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             size="small"
                             type="number"
@@ -1564,7 +1563,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             type="number"
                             sx={{ width: "100px" }}
@@ -1584,7 +1583,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "60px" }}
                             size="small"
@@ -1610,7 +1609,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "90px" }}
                             size="small"
@@ -1627,7 +1626,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             type="number"
                             size="small"
@@ -1670,7 +1669,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef12}
                             onKeyDown={handleKeyDown}
@@ -1686,7 +1685,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1699,7 +1698,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
@@ -1725,7 +1724,7 @@ const EditPurchaseBill = () => {
                       </tr>
                       <tr>
                         <td><TextField
-                 autoComplete="off"
+                          autoComplete="off"
                           id="outlined-number"
                           type="number"
                           size="small"

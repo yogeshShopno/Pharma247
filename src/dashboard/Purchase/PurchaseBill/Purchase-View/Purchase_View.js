@@ -302,6 +302,7 @@ const PurchaseView = () => {
                   <tr>
                     <th>Item Name</th>
                     <th>Unit </th>
+                    <th>HSN</th>
                     <th>Batch </th>
                     <th>Expiry </th>
                     <th>MRP </th>
@@ -325,6 +326,7 @@ const PurchaseView = () => {
                         <div>{item.item_name}</div>
                       </td>
                       <td>{item.weightage}</td>
+                      <td>{item.hsn_code}</td>
                       <td>{item.batch_number}</td>
                       <td>{item.expiry}</td>
                       <td>{item.mrp}</td>

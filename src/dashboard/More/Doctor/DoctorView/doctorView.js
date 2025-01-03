@@ -58,15 +58,12 @@ const DoctorView = () => {
                 }
             }
             ).then((response) => {
-                //console.log(response.data.data)
                 setIsLoading(false)
                 setDoctorDetails(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
+            console.error("API error:", error);
 
         }
     }

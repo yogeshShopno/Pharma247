@@ -3,10 +3,8 @@ import { useEffect, useState } from "react";
 import Loader from "../../../componets/loader/Loader";
 import Header from "../../Header";
 import ProfileView from "../ProfileView";
-import { Box, Switch, TextField, Button, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Switch, TextField, Button,} from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -27,7 +25,6 @@ const ReconciliationManage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(toggle, "Toggle state updated"); // Log toggle whenever it updates
   }, [toggle]);
 
   const getData = async () => {
@@ -40,8 +37,6 @@ const ReconciliationManage = () => {
       });
 
       const data = response.data.data;
-      console.log(data.iss_audit, "Raw iss_audit from API"); // Debug API value
-      console.log(typeof data.iss_audit, "Type of iss_audit from API"); // Debug its type
 
       setReconciliationData(data);
       setCount(Number(data.iteam_count));
@@ -54,6 +49,7 @@ const ReconciliationManage = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+
     } finally {
       setIsLoading(false);
     }
@@ -77,12 +73,10 @@ const ReconciliationManage = () => {
       if (response.data.status === 200) {
         toast.success("Updated successfully");
         getData(); // Refresh data after update
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
     } catch (error) {
       console.error("API error:", error);
+
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +182,6 @@ const ReconciliationManage = () => {
                       },
                     }}
                     onChange={() => {
-                      console.log(!toggle, "Switch toggled");
                       setToggle(!toggle);
                     }}
                   />

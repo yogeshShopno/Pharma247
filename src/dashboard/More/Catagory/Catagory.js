@@ -80,12 +80,13 @@ const Catagory = () => {
         params: params
       })
       .then((response) => {
-        //console.log("API Response:===", response);
+        
         setCategoryData(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        console.error("API error:", error);
+
         setIsLoading(false);
       });
   };
@@ -159,7 +160,7 @@ const Catagory = () => {
         },
       }
       ).then((response) => {
-        //console.log(response.data.data)
+      
         categoryList();
         setOpenAddPopUp(false);
         toast.success(response.data.message);
@@ -178,6 +179,7 @@ const Catagory = () => {
         toast.error(error.response.data.message)
       }
       console.error("API error:", error);
+
     }
   }
 
@@ -190,7 +192,6 @@ const Catagory = () => {
     let data = new FormData();
     data.append("id", id);
     try {
-      //console.log("id", id);
       await axios.post("delete-itemcategory",
         data,
         {

@@ -102,7 +102,6 @@ const SignUp = () => {
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
-      //console.log('add')
       handleSubmit();
     }
   };
@@ -151,7 +150,6 @@ const SignUp = () => {
           user_id: userID,
         });
 
-        //console.log('API response==>:', response.data.data);
 
         if (response.data.status === 200) {
           toast.success(response.data.message);
@@ -166,10 +164,10 @@ const SignUp = () => {
         if (error.response && error.response.status === 400) {
           toast.error(error.response.data.message);
         }
-        console.error('API error:', error);
+        console.error('API error:', errors);
       }
     } else {
-      //console.log(errors)
+        console.error('API error:', errors);
     }
   };
 

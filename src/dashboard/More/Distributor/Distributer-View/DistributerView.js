@@ -6,7 +6,9 @@ import React, { useEffect, useState } from 'react';
 import Header from "../../../Header";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
-import { TablePagination } from "@mui/material";
+import { TablePagination, Button } from "@mui/material";
+import { BsLightbulbFill } from "react-icons/bs";
+
 const DistributerView = () => {
     const { id } = useParams();
     const history = useHistory();
@@ -56,14 +58,12 @@ const DistributerView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                //console.log(tableData);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
+
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -74,14 +74,26 @@ const DistributerView = () => {
                 <Loader />
             </div> :
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
-                    <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
+                    <div className="flex justify-between items-center">
+                        <div className='py-3' style={{ display: 'flex', gap: '4px', }}>
+
                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} onClick={() => { history.push('/more/DistributorList') }} className="cursor-pointer" >Distributor</span>
+                            <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
+
                             <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
                             <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View </span>
                             <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
                             <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
                         </div>
+                        <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px",  }}
+
+
+                        >    <img src="/csv-file.png"
+                            className=" report-icon absolute mr-10 "
+                            alt="csv Icon"
+                            />
+                            Download Compony List</Button>
+
                     </div>
                     <div>
                         <div className="firstrow flex" style={{ background: "none", gap: 0 }}>

@@ -121,11 +121,13 @@ const AdjustStock = () => {
                     },
                 })
             .then((response) => {
-                //console.log("API Response Pharma:===", response);
                 setCompanyList(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+               
+        console.error("API error:", error);
+
+
             });
     };
 
@@ -138,11 +140,13 @@ const AdjustStock = () => {
                     },
                 })
             .then((response) => {
-                //console.log("API Response Pharma:===", response);
                 setpurchaseItemData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+              
+        console.error("API error:", error);
+
+
             });
     };
 
@@ -172,6 +176,7 @@ const AdjustStock = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -201,6 +206,7 @@ const AdjustStock = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -232,6 +238,7 @@ const AdjustStock = () => {
     //         }
     //     } catch (error) {
     //         console.error("API error:", error);
+
     //     }
     // };
 
@@ -260,7 +267,7 @@ const AdjustStock = () => {
         setStock(newValue?.qty)
         const company = companyList.find(x => x.id == batchListData[0]?.company_id)
         setSelectedCompany(company)
-        //console.log('company', company);
+        
     };
 
     const validateForm = async () => {
@@ -333,6 +340,7 @@ const AdjustStock = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

@@ -187,7 +187,6 @@ const DistributerList = () => {
                 setAddress('');
                 setArea('');
                 setState('');
-
                 setPincode('');
                 setBankName('');
                 setAccountNo('');
@@ -197,10 +196,7 @@ const DistributerList = () => {
                 setCreditDuedays('');
                 // setIsEditMode(false)
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
@@ -222,11 +218,10 @@ const DistributerList = () => {
 
 
     const handleDownload = () => {
-        //console.log('Download function called');
+        
         const link = document.createElement('a');
         link.href = '/distributor.csv';
         link.download = 'distributor.csv';
-        //console.log('Link href:', link.href);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -242,21 +237,18 @@ const DistributerList = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
+             
                 DistList();
                 setOpenUpload(false);
                 toast.success(response.data.message)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
                 toast.error('Please Select file');
             }
-            // toast.error(error.data.message)
             console.error("API error:", error);
+
         }
 
     }
@@ -278,13 +270,11 @@ const DistributerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -346,14 +336,12 @@ const DistributerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     };
 
@@ -558,6 +546,8 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                                        type="text"
+
                                                         value={gstNumber}
                                                         onChange={(e) => setGstnumber(e.target.value)}
                                                         className="w-full"
@@ -574,8 +564,13 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                                        type="text"
+
                                                         value={distributerName}
-                                                        onChange={(e) => setDistributerName(e.target.value)}
+                                                        onChange={(e) => {
+                                                            setDistributerName((e.target.value).toUpperCase());
+
+                                                        }}
                                                         className="w-full"
                                                         variant="standard"
                                                     />
@@ -589,6 +584,7 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                                        type="email"
                                                         value={email}
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         className="w-full"
@@ -602,6 +598,7 @@ const DistributerList = () => {
                                                     </div>
                                                     <OutlinedInput
                                                         type="number"
+                                                        
                                                         value={mobileNo}
                                                         onChange={handleChange}
                                                         startAdornment={<InputAdornment position="start">+91</InputAdornment>}
@@ -618,6 +615,8 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                                        type="number"
+
                                                         value={whatsapp}
                                                         onChange={(e) => setWhatsApp(e.target.value)}
                                                         className="w-full"
@@ -654,6 +653,8 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                    type="number"
+
                                                         value={pincode}
                                                         onChange={(e) => setPincode(e.target.value)}
                                                         className="w-full"
@@ -670,7 +671,11 @@ const DistributerList = () => {
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={state}
-                                                        onChange={(e) => setState(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^a-zA-Z]/g, ''); // Remove non-alphabetic characters
+                                                            const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                                                            setState(formattedValue);
+                                                        }}
                                                         className="w-full"
                                                         variant="standard"
                                                     />
@@ -682,7 +687,10 @@ const DistributerList = () => {
                                                     <OutlinedInput
                                                         type="text"
                                                         value={distributorDrugLicenseNo}
-                                                        onChange={(e) => setDistributorDrugLicenseNo(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                                            setDistributorDrugLicenseNo(value);
+                                                        }}
                                                         className="w-full"
                                                         size="small"
                                                     />
@@ -695,7 +703,10 @@ const DistributerList = () => {
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={licenceNo}
-                                                        onChange={(e) => setLicenceNo(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                                            setLicenceNo(value);
+                                                        }}
                                                         className="w-full"
                                                         variant="standard"
                                                     />
@@ -712,7 +723,7 @@ const DistributerList = () => {
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={creditDuedays}
-                                                        onChange={(e) => setCreditDuedays(e.target.value)}
+                                                        onChange={(e) => setCreditDuedays(Number(e.target.value))}
                                                         className="w-full"
                                                         variant="standard"
                                                     />
@@ -723,7 +734,10 @@ const DistributerList = () => {
                                                     <TextField
                                                         autoComplete="off"
                                                         value={bankName}
-                                                        onChange={(e) => setBankName(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const uppercasedValue = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                                                            setBankName(uppercasedValue);
+                                                        }}
                                                         className="w-full"
                                                         size="small"
                                                     />
@@ -738,6 +752,8 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
+                                            type="number"
+
                                                         value={accountNo}
                                                         onChange={(e) => setAccountNo(e.target.value)}
                                                         className="w-full"
@@ -750,6 +766,11 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         value={ifscCode}
                                                         onChange={(e) => setIfscCode(e.target.value)}
+                                                        // type="text"
+                                                        // onChange={(e) => {
+                                                        //     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                                                        //     setIfscCode(value);
+                                                        // }}
                                                         className="w-full"
                                                         size="small"
                                                     />

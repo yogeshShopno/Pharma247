@@ -24,10 +24,8 @@ const Login = () => {
        const roles = localStorage.getItem('role')
         if (roles == "Owner") {
             history.push("/admindashboard")
-            console.log("f1")
         } else if (roles == "Staff") {
             history.push("/more/reconciliation")
-            console.log("4")
         }
 
     }, [])
@@ -64,7 +62,6 @@ const Login = () => {
 
 
     const handleSubmit = async () => {
-        console.log('Form Submitted');
 
         let data = new FormData();
         data.append('mobile_number', mobileNumber)
@@ -92,6 +89,7 @@ const Login = () => {
                     }, 3000);
                 }else{
                     history.push('/admindashboard');
+                    
 
                 }
             } else {

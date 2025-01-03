@@ -85,7 +85,6 @@ const AddPurchaseReturn = () => {
 
     useEffect(() => {
         // This useEffect will trigger every time purchaseReturnDataList changes
-        //console.log('Final purchaseReturnDataList:', purchaseReturnDataList);
     }, [purchaseReturnDataList]);
 
     return (

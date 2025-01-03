@@ -111,6 +111,7 @@ const Reconciliation = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -138,14 +139,12 @@ const Reconciliation = () => {
         history.push("/admindashboard")
         toast.success("Data submitted successfully");
       }
-      else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+     
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
       toast.success("Data submitted successfully");
     }
   };
@@ -245,7 +244,13 @@ const Reconciliation = () => {
                 ))}
               </div>
             ) : (
-              <> </>
+              <div className="text-center">
+                <Typography variant="h6" gutterBottom>
+                  {role === "Owner"
+                    ? "Reconciliation is not for Owner"
+                    : "Reconciliation is not available"}
+                </Typography>
+              </div>
             )}
           </div>
         )}

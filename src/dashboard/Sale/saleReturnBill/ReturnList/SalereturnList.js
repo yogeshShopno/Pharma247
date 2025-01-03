@@ -70,6 +70,7 @@ const SalereturnList = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -168,12 +169,13 @@ const SalereturnList = () => {
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
                 setOpenAddPopUp(false)
-                //console.log(PDFURL, 'hh');
+        
                 setIsLoading(false);
                 handlePdf(PDFURL);
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -191,12 +193,13 @@ const SalereturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+              
                 setIsLoading(false);
                 handlePdf(PDFURL);
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

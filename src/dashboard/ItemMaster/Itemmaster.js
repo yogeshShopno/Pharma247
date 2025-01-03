@@ -137,6 +137,7 @@ const Itemmaster = () => {
       } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
+
       }
     } else {
       toast.error("No file selected");
@@ -160,12 +161,12 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-        // console.log('response :>> ', response);
         setLocationList(response.data.data);
         // setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        console.error("API error:", error);
+
       });
   };
 
@@ -177,7 +178,6 @@ const Itemmaster = () => {
 
   const handleFrontPhoto = (event) => {
     setSelectedFrontFile(event.target.files[0]);
-    //console.log(selectedFrontFile,'ml');
     const url = URL.createObjectURL(event.target.files[0]);
     setFrontImgUrl(url);
   };
@@ -213,11 +213,11 @@ const Itemmaster = () => {
       })
       .then((response) => {
         // const pharma = JSON.parse(localStorage.getItem("pharma"));
-        //console.log("API Response Pharma:===", response);
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        console.error("API error:", error);
+
       });
   };
 
@@ -229,12 +229,13 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-        //console.log("API Response item Catagory:===", response);
         setCategoryList(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+          
+        console.error("API error:", error);
+
       });
   };
 
@@ -246,12 +247,14 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-        //console.log("API Response item Catagory:===", response);
+      
         setGstList(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        console.error("API error:", error);
+
+
       });
   };
 
@@ -263,12 +266,13 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-        //console.log("API Response item Catagory:===", response);
         setPackList(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+        console.error("API error:", error);
+
+
       });
   };
 
@@ -284,7 +288,10 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+      
+        console.error("API error:", error);
+
+
       });
   };
 
@@ -300,7 +307,10 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        //console.log("API Error:", error);
+     
+        console.error("API error:", error);
+
+
       });
   };
 
@@ -324,6 +334,7 @@ const Itemmaster = () => {
 
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   const submitDrugGroup = () => {
@@ -344,6 +355,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -365,12 +377,12 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
   // const handle = () => {
   //   setOnlineOrderChecked(!onlineorderChecked)
-  //   //console.log("onlineorderChecked", onlineorderChecked);
   // }
 
   const handleSubmit = () => {
@@ -454,21 +466,19 @@ const Itemmaster = () => {
       });
 
       if (response.data.status === 200) {
-        //console.log("response===>", response.data);
         toast.success(response.data.message);
         setTimeout(() => {
           history.push("/admindashboard");
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
-      } else if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+      } 
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
       } else {
+        console.error("API error:", error);
+
         toast.error("Please try again later");
       }
     }
@@ -491,10 +501,11 @@ const Itemmaster = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-          //console.log(data);
+       
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -546,7 +557,7 @@ const Itemmaster = () => {
           setSelectedSuppliers(supplier);
 
           const locationItem = locationList.find((x) => x === data?.loaction);
-          //console.log("locationItem", locationItem);
+          
           setLocationValue(locationItem);
 
           if (locationItem) {
@@ -565,6 +576,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -593,7 +605,7 @@ const Itemmaster = () => {
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
-    //console.log(newInputValue + "ayusf");
+   
   };
 
   const handlePack = (e) => {
@@ -618,11 +630,10 @@ const Itemmaster = () => {
   };
 
   const handleDownload = () => {
-    //console.log("Download function called");
+    
     const link = document.createElement("a");
     link.href = "/ItemSample_Data.csv";
     link.download = "ItemSample_Data.csv";
-    //console.log("Link href:", link.href);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

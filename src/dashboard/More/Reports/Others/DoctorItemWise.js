@@ -89,6 +89,7 @@ const DoctorItemWise = () => {
             } catch (error) {
                 console.error("API error:", error);
 
+
             }
         }
     }

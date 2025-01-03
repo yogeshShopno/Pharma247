@@ -44,6 +44,7 @@ const SaleView = () => {
             setIsLoading(false);
         } catch (error) {
             console.error("API error:", error);
+
             setIsLoading(false);
         }
     }
@@ -104,17 +105,18 @@ const SaleView = () => {
                 },
             }
             ).then((response) => {
-                // console.log('response.data.data :>> ', response.data.data);
+                
                 setPaymentType(response.data.data.payment_name)
                 setTableData(response.data.data)
                 localStorage.setItem("Other_Amount", response.data.data.other_amount)
                 setTotalGST(response.data.data.total_gst)
                 setTotalAmount(response.data.data.total_amount);
                 setIsLoading(false);
-                //console.log(tableData);
+         
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

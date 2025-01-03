@@ -63,17 +63,14 @@ const ManageStaffRole = () => {
         })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setOpenAddPopUpDeactive(false)
                 listOfRolePermission();
                 // setManageStaffRoleData(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
             });
     }
     useEffect(() => {
@@ -90,11 +87,11 @@ const ManageStaffRole = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setManageStaffRoleData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
             });
     };
     const handelAddOpen = (id) => {
@@ -118,13 +115,11 @@ const ManageStaffRole = () => {
             }
             ).then((response) => {
                 setRoleHistory(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

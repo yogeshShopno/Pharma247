@@ -81,6 +81,7 @@ const BillItemWiseMargin = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }

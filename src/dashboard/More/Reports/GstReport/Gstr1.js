@@ -59,15 +59,13 @@ const Gstr1 = () => {
                 } else {
                     toast.error('No data available for the selected criteria.');
                 }
-            } else if (response.data.status === 401) {
-                history.push('/');
-                localStorage.clear();
-            }
+            } 
             else {
                 toast.error('Failed to download records. Please try again.');
             }
         } catch (error) {
             console.error("API error:", error);
+
             toast.error('An error occurred while downloading the CSV.');
         }
     };

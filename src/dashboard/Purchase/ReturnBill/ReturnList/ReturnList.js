@@ -47,7 +47,7 @@ const ReturnList = () => {
     const [IsDelete, setIsDelete] = useState(false);
     const [returnId, setReturnId] = useState(null)
     const { id } = useParams();
-    const [openAddPopUp, setOpenAddPopUp] = useState(false);
+    const [ openAddPopUp, setOpenAddPopUp] = useState(false);
 
     const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15))
     const [PdfendDate, setPdfEndDate] = useState(new Date());
@@ -97,16 +97,14 @@ const ReturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+           
                 setIsLoading(false);
                 handlePdf(PDFURL);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
     const handlePdf = (url) => {
@@ -146,13 +144,11 @@ const ReturnList = () => {
             ).then((response) => {
                 setIsDelete(false);
                 ReturnBillList();
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -205,14 +201,12 @@ const ReturnList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
     const AllPDFGenerate = async () => {
@@ -230,16 +224,14 @@ const ReturnList = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-                //console.log(PDFURL, 'hh');
+          
                 setIsLoading(false);
                 handlePdf(PDFURL);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+
             });
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -272,16 +264,15 @@ const ReturnList = () => {
                             <Button
                                 variant="contained"
                                 style={{ background: "var(--color1) " }}
-                                onClick={() => { setOpenAddPopUp(true) }}
-                            >
+                                onClick={() => { setOpenAddPopUp(true) }}>
                                 Generate PDF
                             </Button>
                         </div>
                     </div>
 
                     <div className="firstrow">
-                        <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table">
+                        <div className="overflow-x-auto mt-4" style={{overflowX:"auto"}}>
+                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead>
                                     <tr>
                                         <th>SR. No
@@ -296,7 +287,7 @@ const ReturnList = () => {
                                                         onClick={() => sortByColumn(column.id)}
                                                     />
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"
@@ -312,19 +303,18 @@ const ReturnList = () => {
 
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {tableData.length === 0 ? (
+                                <tbody  style={{ background: "#3f621217" }}>
+                                    {filteredList.length === 0 ? (
                                         <tr>
                                             <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray'  ,borderRadius: "10px 10px 10px 10px"}}>
                                                 No data found
                                             </td>
                                         </tr>
                                     ) : (
-                                        tableData
-                                            .map((row, index) => {
+                                        filteredList.map((row, index) => {
                                                 return (
                                                     <tr hover role="checkbox" tabIndex={-1} key={row.code} >
-                                                        <td>
+                                                        <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                             {startIndex + index}
                                                         </td>
                                                         {/* {columns.map((column) => {
@@ -448,12 +438,14 @@ const ReturnList = () => {
                                                             )}
                                                         </td>
 
-                                                        <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer', alignItems: "center" }}>
+                                                        <td style={{borderRadius:"0 10px 10px 0" }}>
+                                                          <div style={{display:"flex",gap:"5px", fontSize: '15px',color: 'gray', cursor: 'pointer', alignItems: "center"}}>
                                                             < VisibilityIcon className='cursor-pointer cursor-pointer primary hover:secondary' onClick={() => { history.push(`/return/view/${row.id}`) }} />
                                                             <FaFilePdf className="primary hover:secondary" onClick={() => pdfGenerator(row.id)} />
                                                             {hasPermission(permissions, "purchase return bill delete") && (
                                                                 <DeleteIcon style={{ color: "#F31C1C" }}
                                                                     className="delete-icon" onClick={() => deleteOpen(row.id)} />)}
+                                                          </div>
                                                         </td>
                                                     </tr>
                                                 );

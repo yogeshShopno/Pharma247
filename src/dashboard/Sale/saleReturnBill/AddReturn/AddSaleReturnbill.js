@@ -129,6 +129,7 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
+
                 }
             };
 
@@ -202,6 +203,7 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -221,6 +223,7 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -262,6 +265,7 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
+
                 }
             };
 
@@ -308,6 +312,7 @@ const Salereturn = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -358,6 +363,7 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -506,6 +512,7 @@ const Salereturn = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
 
@@ -543,6 +550,7 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

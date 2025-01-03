@@ -94,14 +94,12 @@ const ManageExpense = () => {
             ).then((response) => {
                 setCatagoryList(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -118,14 +116,12 @@ const ManageExpense = () => {
             ).then((response) => {
                 setBankData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const handleChangePage = (event, newPage) => {
@@ -242,6 +238,7 @@ const ManageExpense = () => {
 
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 
@@ -268,13 +265,11 @@ const ManageExpense = () => {
                 // setOpenAddPopUp(false);
                 setExpenseData(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -329,6 +324,7 @@ const ManageExpense = () => {
 
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }

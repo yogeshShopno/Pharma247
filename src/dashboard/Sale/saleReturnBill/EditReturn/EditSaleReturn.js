@@ -172,6 +172,7 @@ const EditSaleReturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
     const saleBillGetBySaleID = async (doctorData, customerData) => {
@@ -188,7 +189,7 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
-            console.log('record :>> ', record);
+           
             // setCustomer(response.data.data.customer_name)
             const foundCustomer = customerData.find(
                 (option) => option.name === record.customer_name
@@ -250,12 +251,13 @@ const EditSaleReturn = () => {
             const doctorData = response.data.data;
             setDoctorData(response.data.data);
             setDoctor(response.data.data[0] || null)
-            console.log('response.data.data[0] :>> ', response.data.data[0]);
+           
             setIsLoading(false);
             return doctorData;
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
             return [];
         }
     }
@@ -273,13 +275,14 @@ const EditSaleReturn = () => {
             const customerData = response.data.data;
             setCustomerDetails(response.data.data);
             setCustomer(response.data.data[0] || '');
-            console.log('customer :>> ', response.data.data[0]);
+           
 
             setIsLoading(false);
             return customerData;
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
             return [];
         }
     }
@@ -334,6 +337,7 @@ const EditSaleReturn = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     }
@@ -483,6 +487,7 @@ const EditSaleReturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -520,6 +525,7 @@ const EditSaleReturn = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+
         }
     };
 

@@ -124,10 +124,7 @@ const Purchase_Return_Report = () => {
             }).then((response) => {
                 setIsLoading(false)
                 setPurchaseReturnData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
                 if (response.data.data.length >= rowsPerPage) {
                     // Implement a state variable or logic to disable the button
@@ -138,6 +135,7 @@ const Purchase_Return_Report = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
 
         }
     }

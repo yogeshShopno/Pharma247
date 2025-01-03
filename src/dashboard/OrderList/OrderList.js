@@ -69,7 +69,6 @@ const OrderList = () => {
 
     // const handelEditOpen = (row) => {
     //     const x = row;
-    //     //console.log(row);
     //     setStatusName({
     //         // id:,
     //         name: row?.y_n
@@ -103,14 +102,12 @@ const OrderList = () => {
                 setOpenAddPopUpPlaceOrder(false)
                 setItems([])
                 setStatusName({ id: 2, name: 'Order' })
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -134,13 +131,11 @@ const OrderList = () => {
                 setOnlineOrder(response.data.data)
                 setItemName(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -153,13 +148,11 @@ const OrderList = () => {
             }).then((response) => {
                 localStorage.setItem("distributor", response.data.data.distributor)
                 setDistributorList(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
-            //console.log("API Error:", error);
+            console.error("API error:", error);
+
         }
     };
 
@@ -171,13 +164,11 @@ const OrderList = () => {
                 },
             }).then((response) => {
                 setStatusOpation(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
-            //console.log("API Error:", error);
+            console.error("API error:", error);
+
         }
     };
 
@@ -197,13 +188,11 @@ const OrderList = () => {
             ).then((response) => {
                 setPurchaseHistory(response.data.data)
                 setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -285,7 +274,6 @@ const OrderList = () => {
             setItems(value);
         }
 
-        //console.log('items', items);
     };
 
 

@@ -221,13 +221,11 @@ const PaymentList = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -269,7 +267,6 @@ const PaymentList = () => {
                     },
                 }).then((response) => {
                     setPaymentList(response?.data?.data)
-                    //console.log(purchaseBill);
                     listDistributor();
                     setIsLoading(false);
                     setConfirm(false);
@@ -294,7 +291,6 @@ const PaymentList = () => {
                     },
                 }).then((response) => {
                     setPaymentList(response?.data?.data)
-                    //console.log(purchaseBill);
                     setIsLoading(false);
                     setConfirm(false);
                     setOpen(false);
@@ -313,6 +309,7 @@ const PaymentList = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -332,16 +329,13 @@ const PaymentList = () => {
             }
             ).then((response) => {
                 setPurchaseBill(response?.data?.data)
-                //console.log(purchaseBill);
                 // setIsLoading(false);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     }
 
@@ -359,7 +353,6 @@ const PaymentList = () => {
             const distributors = response.data.data;
             localStorage.setItem("distributor", JSON.stringify(distributors));
             setDistributorList(distributors);
-            //console.log("Distributors fetched: ", distributors);
             return distributors;
 
         } catch (error) {
@@ -408,7 +401,6 @@ const PaymentList = () => {
     const handleDistributor = (e, value) => {
         setDistributor(value);
         setDistributorId(value?.id);
-        //console.log(distributorId)
         if (value) {
             PurchasePaymentList(value?.id);
         }

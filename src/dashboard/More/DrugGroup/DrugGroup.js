@@ -94,12 +94,12 @@ const DrugGroup = () => {
                 params: params
             })
             .then((response) => {
-                //console.log("API Response:===", response);
                 setDrugGroupData(response.data.data);
                 setIsLoading(false);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
                 setIsLoading(false);
             });
     };
@@ -150,10 +150,7 @@ const DrugGroup = () => {
                 setOpenAddPopUp(false);
                 setDrugGroupName('');
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             setIsLoading(false);
@@ -174,16 +171,12 @@ const DrugGroup = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
                 DrugGroupList();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
                 setDrugGroupName('');
                 setIsEditMode(false)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
 
             })
         } catch (error) {
@@ -192,6 +185,7 @@ const DrugGroup = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
 
@@ -200,7 +194,6 @@ const DrugGroup = () => {
         data.append("id", id);
 
         try {
-            //console.log("id", id);
             await axios.post("drug-group-delete",
                 data,
                 {
@@ -213,10 +206,7 @@ const DrugGroup = () => {
                 setIsLoading(true)
                 DrugGroupList();
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             // alert("404 error");
@@ -242,7 +232,6 @@ const DrugGroup = () => {
 
     // const handleOptionChange = (event, newValue) => {
     //     setDrugGroupName(newValue);
-    //     //console.log(newValue, "145214");
     // };
     const handleOptionChange = (event, newValue) => {
         if (newValue && typeof newValue === 'object') {
@@ -254,13 +243,11 @@ const DrugGroup = () => {
 
     const handleInputChange = (event, newInputValue) => {
         setDrugGroupName(newInputValue);
-        //console.log(newInputValue + 'mm9');
     };
 
     const handleDrugGroupList = (e, value) => {
         setDrugGroupFilter(value);
         if (value) {
-            // setDistributorId(value.id);
             droupGroupFilter(value.id);
         }
     }
@@ -291,13 +278,11 @@ const DrugGroup = () => {
             }
             ).then((response) => {
                 setFilterData(response.data.data)
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

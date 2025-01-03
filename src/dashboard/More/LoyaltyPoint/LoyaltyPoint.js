@@ -13,6 +13,8 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, F
 import { TablePagination } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 
 const LoyaltyPoint = () => {
     const token = localStorage.getItem("token");
@@ -223,6 +225,7 @@ const LoyaltyPoint = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
 

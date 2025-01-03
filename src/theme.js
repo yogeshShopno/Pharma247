@@ -1,41 +1,33 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-    components: {
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#3f6212',
-              },
-              '&:hover fieldset': {
-                borderColor: '#3f6212',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#3f6212',
-              },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInput-underline': {
+            '&:before': {
+              borderBottom: '2px solid #3f6212', // Default bottom border
             },
-            '& .MuiFilledInput-root': {
-              backgroundColor: '#3f6212', 
-              '&:hover': {
-                backgroundColor: '#3f6212',
-              },
-              '&.Mui-focused': {
-                backgroundColor: '#3f6212',
-              },
+            '&:hover:before': {
+              borderBottom: '2px solid #3f6212', // Hover bottom border
             },
-            '& .MuiInputLabel-root': {
-              color: '#3f6212',
+            '&:after': {
+              borderBottom: '2px solid #3f6212', // Focused bottom border
             },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: '#3f6212',
-            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#3f6212',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#3f6212', // Label color when focused
           },
         },
       },
     },
-  });
+  },
+});
+
   
 
 export default theme;

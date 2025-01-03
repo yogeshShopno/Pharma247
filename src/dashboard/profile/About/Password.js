@@ -8,7 +8,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from "axios"
 import Loader from "../../../componets/loader/Loader"
 import { toast, ToastContainer } from "react-toastify"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const Password = () => {
+    const history = useHistory()
+
     const token = localStorage.getItem("token");
     const [currentPasswordIcon, setCurrentPasswordIcon] = useState(false);
     const [newPasswordIcon, setNewPasswordIcon] = useState(false);
@@ -40,6 +44,7 @@ const Password = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
+
         }
     };
 
@@ -101,6 +106,7 @@ const Password = () => {
                 })
             } catch (error) {
                 console.error("API error:", error);
+
             }
         }
     };

@@ -64,6 +64,7 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
 
@@ -100,11 +101,11 @@ const AboutInfo = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
     }
   };
   const handleProfilePhoto = (event) => {
     setSelectedProfileFile(event.target.files[0]);
-    //console.log(selectedProfileFile, "ml");
     const url = URL.createObjectURL(event.target.files[0]);
     setFrontImgUrl(url);
   };
@@ -314,7 +315,7 @@ const AboutInfo = () => {
                     type="file"
                     onChange={handleProfilePhoto}
                     />
-                    {selectedProfileFile == null ? (
+                    {selectedProfileFile == null || selectedProfileFile == ""  ? (
                     <div className="UploadClass">
                         <img src={profileImage} width="50%" height="50%" />
                     </div>

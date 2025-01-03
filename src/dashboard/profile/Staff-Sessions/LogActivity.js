@@ -42,15 +42,12 @@ const LogActivity = () => {
         })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setLogAllData(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
             });
     };
 

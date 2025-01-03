@@ -249,6 +249,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -340,6 +341,7 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
       return [];
     }
   };
@@ -361,6 +363,7 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+
       return [];
     }
   };
@@ -385,6 +388,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -556,6 +560,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
   useEffect(() => {
@@ -613,7 +618,6 @@ const EditSaleBill = () => {
           },
         })
         .then((response) => {
-          console.log('object :>> ', response?.data?.data[0]?.batch_list);
           setUnit(response?.data?.data[0]?.batch_list[0]?.unit)
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
           setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
@@ -636,6 +640,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -784,6 +789,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -841,6 +847,7 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 

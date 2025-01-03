@@ -22,6 +22,7 @@ import { encryptData } from '../componets/cryptoUtils';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Dashboard = () => {
+  
   const history = useHistory()
 
   const token = localStorage.getItem("token");
@@ -78,15 +79,19 @@ const Dashboard = () => {
     }
   };
 
+
+
+  
   useEffect(() => {
     dashboardData();
     userPermission();
+    
   }, [typeValue, value, expiredValue, staffListValue, pieChartvalue])
 
 
   const dashboardData = async () => {
     let data = new FormData();
-    setIsLoading(true)
+    // setIsLoading(true)
     const params = {
       type: value,
       bill_day: typeValue,
@@ -102,7 +107,6 @@ const Dashboard = () => {
         }
       }
       ).then((response) => {
-        //    console.log(response.data.data)
         setIsLoading(false)
         const initialData = response.data.data;
         setRecord(initialData);
@@ -129,16 +133,13 @@ const Dashboard = () => {
         }));
 
         setData(formattedData);
-        //      console.log('Ayus', formattedData);
 
         setBilldata(billData);
         setCustomer(initialData?.top_customer)
         setExpiry(initialData?.expiring_iteam)
         setDistributor(initialData?.top_distributor)
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+
+      
       })
       
     } catch (error) {
@@ -160,10 +161,7 @@ const Dashboard = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-        if (response.data.status === 401) {
-          history.push('/');
-          localStorage.clear();
-        }
+      
       })
       
     }
@@ -200,24 +198,24 @@ const Dashboard = () => {
                         <div className='w-1/2'>
                           <p>Sales</p>
                           <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.salesmodel_total ? 0 : record?.salesmodel_total}/- </h4>
-                          <span>{record?.salesmodel_total_count} Orders</span>
+                          <span>{record?.salesmodel_total_count} Bills</span>
                         </div>
                         <div className='w-1/2'>
                           <p>Purchase</p>
                           <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.purchesmodel_total ? 0 : record?.purchesmodel_total}/- </h4>
-                          <span>{record?.purchesmodel_total_count} Orders</span>
+                          <span>{record?.purchesmodel_total_count} Bills</span>
                         </div>
                       </div>
                       <div className='flex py-4 p-6 justify-between'>
                         <div className='w-1/2' >
                           <p>Sale Return</p>
                           <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.salesreturn_total ? 0 : record?.salesreturn_total}/-</h4>
-                          <span>{record?.salesreturn_total_count} Orders</span>
+                          <span>{record?.salesreturn_total_count} Bills</span>
                         </div>
                         <div className='w-1/2'>
                           <p>Purchase Return</p>
                           <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.purchesreturn_total ? 0 : record?.purchesreturn_total}/- </h4>
-                          <span>{record?.purchesreturn_total_count} Orders</span>
+                          <span>{record?.purchesreturn_total_count} Bills</span>
                         </div>
                       </div>
                     </Box>
@@ -432,7 +430,6 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-
                   <div className='w-1/2 items-center'>
                     <div className='mb-2 flex justify-between items-center '>
                       <div className='flex '>
@@ -533,7 +530,6 @@ const Dashboard = () => {
                   </div>
                   {distributor.length > 0 ?
                     <>
-
                       <div className='flex justify-between py-2 p-5 text-blue-900 border-b border-blue-200 '>
                         <div>
                           Distributor

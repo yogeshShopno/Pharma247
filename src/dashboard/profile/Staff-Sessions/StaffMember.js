@@ -101,11 +101,11 @@ const StaffMember = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setTableData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
             });
     };
 
@@ -120,16 +120,17 @@ const StaffMember = () => {
             })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setManageStaffRoleData(response.data.data);
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
+
             });
     };
 
     const validateForm = async () => {
-        if (isEditMode == false) {
+        if (isEditMode === false) {
             const newErrors = {};
             if (!selectedAssignRole) newErrors.selectedAssignRole = 'Assign Role is required'
             if (!fullName) newErrors.fullName = 'Full Name is required';
@@ -222,19 +223,16 @@ const StaffMember = () => {
                 setOpenAddPopUp(false)
                 toast.success(response.data.message);
                 setErrors({});
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
-                //console.log(error.message, 'mp');
             }
             console.error("API error:", error);
+
         }
-        // }
+ 
     }
 
     const EditStaffMemberRecord = async () => {
@@ -269,13 +267,11 @@ const StaffMember = () => {
                 setIsEditMode(false)
                 setErrors({});
                 toast.success(response.data.message);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
         // }
     }
@@ -309,18 +305,15 @@ const StaffMember = () => {
         })
             .then((response) => {
                 setIsLoading(false)
-                //console.log("API Response: ", response.data.data);
                 setOpenAddPopUpDeactive(false)
                 // listOfRolePermission();
                 staffList()
                 // setManageStaffRoleData(response.data.data);
-                if (response.data.status === 401) {
-                    history.push('/');
-                    localStorage.clear();
-                }
+               
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+                console.error("API error:", error);
+
             });
     }
 
@@ -379,7 +372,7 @@ const StaffMember = () => {
                                             return (
                                                 <td key={column.id} className={`text-lg `}>
                                                     <span className={`text ${isStatus && statusClass}`}>
-                                                        {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive' : item[column.id]}
+                                                        {item.status === 1 ? item.status = 'Active' : item.status === 0 ? item.status = 'Disactive' : item[column.id]}
                                                     </span>
                                                 </td>
                                             )
@@ -390,7 +383,7 @@ const StaffMember = () => {
                                                     style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />}
                                             {hasPermission(permissions, "staff members activation") && (
                                                 <Tooltip title="Deactivate" className="">
-                                                    {item.status == 'Active' ?
+                                                    {item.status === 'Active' ?
                                                         <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
                                                         <FaCheckCircle className="text-blue-600 mr-3" size={20} onClick={() => handleDeactive(item.id)} />}
                                                 </Tooltip>)}

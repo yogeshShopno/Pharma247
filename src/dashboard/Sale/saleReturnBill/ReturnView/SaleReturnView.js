@@ -31,7 +31,7 @@ const SaleReturnView = () => {
             setCurrentIndex(index);
             saleReturnBillGetByID(saleReturnData[index].id);
         }
-        //console.log('purchase', saleReturnData);
+      
     }, [id, saleReturnData]);
 
     useEffect(() => {
@@ -74,6 +74,7 @@ const SaleReturnView = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 
@@ -94,10 +95,11 @@ const SaleReturnView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-                //console.log(tableData);
+               
             })
         } catch (error) {
             console.error("API error:", error);
+
         }
     }
 

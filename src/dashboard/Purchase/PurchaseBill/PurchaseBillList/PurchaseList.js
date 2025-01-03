@@ -53,7 +53,7 @@ const Purchasebill = () => {
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
   const paginatedData = tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
   const [IsDelete, setIsDelete] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState('')
+  const [pdfUrl, setPdfUrl] = useState('');
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('');
 
@@ -62,7 +62,7 @@ const Purchasebill = () => {
 
   const goIntoAdd = () => {
     history.push('/purchase/addPurchaseBill')
-  } 
+  }
 
   useEffect(() => {
     purchaseBillList(currentPage);
@@ -112,39 +112,38 @@ const Purchasebill = () => {
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = value;
     setSearchTerms(newSearchTerms);
-    console.log(newSearchTerms, 'newSearchTerms')
-};
+  };
 
-const filteredList = tableData.filter(row => {
-// console.log(row, 'row')
-  const srNo = row.sr_no ? row.sr_no.toLowerCase() : '';
-  const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
-  const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
-  const distributor = row.distributor_name ? row.distributor_name.toLowerCase() : '';
-  const bilAmount = row.total_amount ? row.total_amount.toLowerCase() : '';
+  const filteredList = tableData.filter(row => {
+   
+    const srNo = row.sr_no ? row.sr_no.toLowerCase() : '';
+    const billNo = row.bill_no ? row.bill_no.toLowerCase() : '';
+    const billDate = row.bill_date ? row.bill_date.toLowerCase() : '';
+    const distributor = row.distributor_name ? row.distributor_name.toLowerCase() : '';
+    const bilAmount = row.total_amount ? row.total_amount.toLowerCase() : '';
 
-  const srNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : '';
-  const billNoSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : '';
-  const billDateSearchTerm = searchTerms[2] ? String(searchTerms[2]).toLowerCase() : '';
-  const distributorSearchTerm = searchTerms[3]?String(searchTerms[3]).toLowerCase() : '';
-  const billAmountSearchTerm = searchTerms[4] ? String(searchTerms[4]).toLowerCase() : '';
+    const srNoSearchTerm = searchTerms[0] ? String(searchTerms[0]).toLowerCase() : '';
+    const billNoSearchTerm = searchTerms[1] ? String(searchTerms[1]).toLowerCase() : '';
+    const billDateSearchTerm = searchTerms[2] ? String(searchTerms[2]).toLowerCase() : '';
+    const distributorSearchTerm = searchTerms[3].toLowerCase();
+    const billAmountSearchTerm = searchTerms[4] ? String(searchTerms[4]).toLowerCase() : '';
 
-  return (
-    (srNo.includes(srNoSearchTerm) || srNoSearchTerm === '') &&
+    return (
+      (srNo.includes(srNoSearchTerm) || srNoSearchTerm === '') &&
       (billNo.includes(billNoSearchTerm) || billNoSearchTerm === '') &&
       (billDate.includes(billDateSearchTerm) || billDateSearchTerm === '') &&
-      (distributor.includes(distributorSearchTerm) || distributorSearchTerm) &&
-      (bilAmount.includes(billAmountSearchTerm) || billAmountSearchTerm === '') 
-  );
-});
+      (distributor.includes(distributorSearchTerm) || distributorSearchTerm === '') &&
+      (bilAmount.includes(billAmountSearchTerm) || billAmountSearchTerm === '')
+    );
+  });
 
-useEffect(() => {
-  if (tableData.length > 0) {
-    localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
-  } else {
-    localStorage.setItem('Purchase_SrNo', 1);
-  }
-}, [tableData, currentPage]);
+  useEffect(() => {
+    if (tableData.length > 0) {
+      localStorage.setItem('Purchase_SrNo', tableData[0].count + 1);
+    } else {
+      localStorage.setItem('Purchase_SrNo', 1);
+    }
+  }, [tableData, currentPage]);
 
   useEffect(() => {
     purchaseBillList();
@@ -171,7 +170,7 @@ useEffect(() => {
       }
 
       ).then((response) => {
-        // console.log(response.data.data)
+       
         setTableData(response.data.data)
         setIsLoading(false);
         if (response.data.status === 401) {
@@ -182,6 +181,7 @@ useEffect(() => {
       })
     } catch (error) {
       console.error("API error:", error);
+
     }
   }
 
@@ -211,6 +211,7 @@ useEffect(() => {
       })
     } catch (error) {
       console.error("API error:", error);
+
     }
   }
 
@@ -229,7 +230,6 @@ useEffect(() => {
 
         const PDFURL = response.data.data.pdf_url;
         toast.success(response.data.meassage)
-        //console.log(PDFURL, 'hh');
         setIsLoading(false);
         handlePdf(PDFURL);
         if (response.data.status === 401) {
@@ -239,6 +239,7 @@ useEffect(() => {
       });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -256,7 +257,7 @@ useEffect(() => {
 
         const PDFURL = response.data.data.pdf_url;
         toast.success(response.data.meassage)
-        //console.log(PDFURL, 'hh');
+   
         setIsLoading(false);
         handlePdf(PDFURL);
         if (response.data.status === 401) {
@@ -266,6 +267,7 @@ useEffect(() => {
       });
     } catch (error) {
       console.error("API error:", error);
+
     }
   };
 
@@ -359,8 +361,8 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="overflow-x-auto mt-4">
-              <table className="w-full border-collapse custom-table">
+            <div className="overflow-x-auto mt-4" style={{overflowX:"auto"}}>
+              <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                 <thead>
                   <tr>
                     {/* <th>SR. No</th> */}
@@ -374,7 +376,7 @@ useEffect(() => {
                             onClick={() => sortByColumn(column.id)}
                           />
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             label={`Search ${column.label}`}
                             size="small"
                             className="w-full md:w-auto"
@@ -388,7 +390,7 @@ useEffect(() => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: "#3f621217" }}>
                   {filteredList.length === 0 ? (
                     <tr>
                       <td colSpan={columns.length + 1} className="text-center text-gray-500" style={{ borderRadius: "10px 10px 10px 10px"}}>
@@ -403,10 +405,11 @@ useEffect(() => {
                       >
                         {/* <td>{startIndex + index}</td> */}
 
-                        {columns.map((column) => {
+                        {columns.map((column,colIndex) => {
                           const value = row[column.id];
                           return (
                             <td
+                            style={colIndex === 0 ? { borderRadius: "10px 0 0 10px" } : colIndex === columns.length ? { borderRadius: "0 10px 10px 0" } : {}}
                               key={column.id}
                               className="capitalize"
                               onClick={() => history.push(`/purchase/view/${row.id}`)}
@@ -417,7 +420,8 @@ useEffect(() => {
                             </td>
                           );
                         })}
-                        <td>
+                        <td style={{ borderRadius: "0 10px 10px 0" }}
+                        >
                           <div className="flex gap-2 items-center">
                             <VisibilityIcon
                               className="cursor-pointer primary hover:secondary"
@@ -440,53 +444,53 @@ useEffect(() => {
               </table>
             </div>
             <div className="flex justify-center mt-4">
-                                <button
-                                    onClick={handlePrevious}
-                                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
-                                        }`}
-                                    disabled={currentPage === 1}
-                                >
-                                    Previous
-                                </button>
-                                {currentPage > 2 && (
-                                    <button
-                                        onClick={() => handleClick(currentPage - 2)}
-                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                    >
-                                        {currentPage - 2}
-                                    </button>
-                                )}
-                                {currentPage > 1 && (
-                                    <button
-                                        onClick={() => handleClick(currentPage - 1)}
-                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                    >
-                                        {currentPage - 1}
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => handleClick(currentPage)}
-                                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                                >
-                                    {currentPage}
-                                </button>
-                                {currentPage < totalPages && (
-                                    <button
-                                        onClick={() => handleClick(currentPage + 1)}
-                                        className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                    >
-                                        {currentPage + 1}
-                                    </button>
-                                )}
-                                <button
-                                    onClick={handleNext}
-                                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
-                                        }`}
-                                    disabled={filteredList.length === 0}
-                                >
-                                    Next
-                                </button>
-                            </div>
+              <button
+                onClick={handlePrevious}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                  }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {currentPage > 2 && (
+                <button
+                  onClick={() => handleClick(currentPage - 2)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage - 2}
+                </button>
+              )}
+              {currentPage > 1 && (
+                <button
+                  onClick={() => handleClick(currentPage - 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button
+                onClick={() => handleClick(currentPage)}
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => handleClick(currentPage + 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              <button
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                  }`}
+                disabled={filteredList.length === 0}
+              >
+                Next
+              </button>
+            </div>
           </div>
 
 

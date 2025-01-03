@@ -80,7 +80,7 @@ const Company = () => {
             params: params
         })
             .then((response) => {
-                //console.log("API Response:===", response);
+              
                 setCompanyData(response.data.data);
                 setIsLoading(false);
                 if (response.data.status === 401) {
@@ -89,7 +89,11 @@ const Company = () => {
                 }
             })
             .catch((error) => {
-                //console.log("API Error:", error);
+        
+      console.error("API error:", error);
+
+
+
                 setIsLoading(false);
             });
     };
@@ -127,7 +131,7 @@ const Company = () => {
     const AddCompany = async () => {
         let data = new FormData();
         data.append('company_name', companyName);
-        // //console.log("hh", companyName);
+       
 
         try {
             await axios.post("company-store", data, {
@@ -164,7 +168,7 @@ const Company = () => {
                 },
             }
             ).then((response) => {
-                //console.log(response.data.data)
+                
                 companyList();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
@@ -182,11 +186,12 @@ const Company = () => {
                 toast.error(error.response.data.message)
             }
             console.error("API error:", error);
+
         }
     }
     // const handleOptionChange = (event, newValue) => {
     //     setCompanyName(newValue);
-    //     //console.log(newValue, "145214");
+
     // };
     const handleOptionChange = (event, newValue) => {
         if (newValue && typeof newValue === 'object') {
@@ -194,12 +199,11 @@ const Company = () => {
         } else {
             setCompanyName(newValue);
         }
-        //console.log(newValue, "145214");
+        //(newValue, "145214");
     };
 
     const handleInputChange = (event, newInputValue) => {
         setCompanyName(newInputValue);
-        //console.log(newInputValue + 'mm9');
     };
     const [deleteCompanyId, setDeleteCompanyId] = useState(null);
     const [IsDelete, setIsDelete] = useState(false);
@@ -210,7 +214,7 @@ const Company = () => {
         let data = new FormData();
         data.append("id", id);
         try {
-            //console.log("id", id);
+     
             await axios.post("company-delete",
                 data,
                 {

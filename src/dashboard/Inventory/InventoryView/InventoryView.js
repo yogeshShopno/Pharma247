@@ -9,9 +9,10 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputAdornment, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, TablePagination, TextField } from '@mui/material';
+import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputAdornment, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, TablePagination, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import tablet from '../../../componets/Images/tablet.png'
 import SouthIcon from '@mui/icons-material/South';
 import Loader from "../../../componets/loader/Loader";
@@ -219,7 +220,7 @@ const InventoryView = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -237,7 +238,7 @@ const InventoryView = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -852,16 +853,18 @@ const InventoryView = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)' }}>
                     <div className='p-5' >
                         <div >
-                            <div style={{ display: 'flex', gap: '4px' }}>
-                                <span className="text-blue-500 text-2xl secondary cursor-pointer" onClick={(() => history.push('/inventory'))}  >Inventory</span>
-                                <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '8px', color: "var(--color1)" }} />
-                                <span className="primary text-lg flex mt-1" style={{ minWidth: '250px', width: 'auto' }}>{itemAllData?.iteam_name} <BsLightbulbFill className="ml-2 w-6 h-6 secondary hover-yellow" /> </span>
-                                <div className='headerList mt-2' >
-                                    <Button variant="contained" color="primary" style={{ marginBottom: '7px' }} onClick={() => handleEditOpen()}><MdEdit className="w-7 h-6  p-1 cursor-pointer" />Item Edit</Button>
+                            <div className="row gap-2 item_edit_btn_inventory">
+                                <div className="gap-2" style={{ display: 'flex', whiteSpace: 'nowrap' }}>
+                                    <span className="text-blue-500 text-2xl secondary cursor-pointer inventory_txt_purchase" onClick={(() => history.push('/inventory'))}  >Inventory</span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '8px', color: "var(--color1)" }} />
+                                    <span className="primary text-lg flex mt-1 inventory_txt_purchase_api" style={{ width: 'auto' }}>{itemAllData?.iteam_name} <BsLightbulbFill className="ml-2 w-6 h-6 secondary hover-yellow" /> </span>
+                                </div>
+                                <div className='headerList' >
+                                    <Button variant="contained" className="item_edit_btn_inventory_main" style={{ marginBottom: '7px', backgroundColor: "var(--color1)", whiteSpace: 'nowrap' }} onClick={() => handleEditOpen()}><MdEdit className="w-7 h-6  p-1 cursor-pointer" />Item Edit</Button>
                                 </div>
                             </div>
                             <div className="flex justify-between flex-wrap">
-                                <div className="img flex gap-10 ">
+                                <div className="img flex gap-10 inventory_header_txt">
                                     <div className="relative w-28 h-28 mb-6 bg-white p-2">
                                         <img
                                             src={itemAllData?.front_photo ? itemAllData.front_photo : tablet}
@@ -891,9 +894,9 @@ const InventoryView = () => {
                                 </div>
                                 <div className="overflow-x-auto">
                                     <div >
-                                        <table >
+                                        <table style={{ whiteSpace: 'nowrap' }}>
                                             <thead>
-                                                <tr className="primary text-sm border border-blue-800 font-bold">
+                                                <tr className="primary text-sm border border-gray-300 font-bold">
                                                     <td className="px-12 py-2">Current Stock</td>
                                                     <td className="px-12 py-2">Default Disc.</td>
                                                     <td className="px-12 py-2">Location</td>
@@ -911,21 +914,21 @@ const InventoryView = () => {
                                         </table>
                                     </div>
                                     <div>
-                                        <table className="border-collapse w-full">
+                                        <table className="border-collapse w-full" style={{ whiteSpace: 'nowrap' }}>
                                             <thead>
-                                                <tr className="primary text-sm border border-blue-800 font-bold">
-                                                    <td className="px-12 py-2">Min.Qty</td>
-                                                    <td className="px-12 py-2">Max.Qty</td>
+                                                <tr className="primary text-sm border border-gray-300 font-bold">
+                                                    <td className="px-12 py-2">Minimum Qty</td>
+                                                    <td className="px-12 py-2">Maximum Qty</td>
                                                     <td className="px-12 py-2">GST</td>
                                                     <td className="px-12 py-2">Item Category</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td className="px-12 py-2 text-center">{!itemAllData.maximum ? '---' : itemAllData.maximum}</td>
-                                                    <td className="px-12 py-2 text-center">{!itemAllData.minimum ? '---' : itemAllData.minimum}</td>
-                                                    <td className="px-12 py-2 text-center">{itemAllData.gst}%</td>
-                                                    <td className="px-12 py-2 text-center">{itemAllData.category_name}</td>
+                                                    <td className="px-12 py-4 text-center">{!itemAllData.maximum ? '---' : itemAllData.maximum}</td>
+                                                    <td className="px-12 py-4 text-center">{!itemAllData.minimum ? '---' : itemAllData.minimum}</td>
+                                                    <td className="px-12 py-4 text-center">{itemAllData.gst}%</td>
+                                                    <td className="px-12 py-4 text-center">{itemAllData.category_name}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -935,11 +938,10 @@ const InventoryView = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="px-6">
+                    <div className="px-6" >
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} >
-                            <Tabs value={tabValue} onChange={handleChange} style={{ marginBottom: "10px" }}>
-                                <Tab label="Batches" sx={{ mx: 2 }} >
-                                </Tab>
+                            <Tabs value={tabValue} onChange={handleChange} style={{ marginBottom: "10px" }} sx={{ '& .MuiTabs-scroller.MuiTabs-fixed.css-jpln7h-MuiTabs-scroller': { overflow: 'auto !important' } }}>
+                                <Tab label="Batches" sx={{ mx: 2 }} />
                                 <Tab label="Purchases" sx={{ mx: 2 }} />
                                 <Tab label="Pu.return" sx={{ mx: 2 }} />
                                 <Tab label="Sales" sx={{ mx: 2 }} />
@@ -951,17 +953,32 @@ const InventoryView = () => {
                             </div> : <>
                                 {tabValue === 0 && (
                                     <>
-                                        <div className="ml-4">
-                                            <input
+                                        <div className="pl-2">
+                                            {/* <input
                                                 type="checkbox"
+                                                checked={hideZeroQuantity}
+                                                onChange={handleCheckboxChange}
+                                            /> */}
+                                            <Checkbox
+                                                sx={{
+                                                    color: "#628a2f", // Color for unchecked checkboxes
+                                                    '&.Mui-checked': {
+                                                        color: "#3f6212", // Color for checked checkboxes
+                                                    },
+                                                }}
+
                                                 checked={hideZeroQuantity}
                                                 onChange={handleCheckboxChange}
                                             />
                                             <span style={{ color: 'var(--color1)', fontSize: '15px', fontWeight: 800, marginLeft: '10px' }}> Hide Zero Quantity</span>
                                         </div>
 
-                                        <div className="overflow-x-auto">
-                                            <table className="custom-table w-full border-collapse">
+                                        <div className="overflow-x-auto pl-2 pr-2"
+                                            style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}
+                                        >
+                                            <table className="custom-table w-full" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                 <thead>
                                                     <tr>
                                                         {batchColumns.map((column) => (
@@ -972,17 +989,23 @@ const InventoryView = () => {
                                                         <th>Delete</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style={{ backgroundColor: "#3f621217" }}>
                                                     {filteredData?.map((item, index) => (
                                                         <>
                                                             {hideZeroQuantity && item.qty == 0}
                                                             <tr key={index}>
-                                                                {batchColumns?.map((column) => (
-                                                                    <td key={column.id}>
+                                                                {batchColumns?.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === 0
+                                                                            ? { borderRadius: "10px 0 0 10px" }
+                                                                            : undefined
+                                                                    }>
                                                                         {item[column.id]}
                                                                     </td>
                                                                 ))}
-                                                                <td>
+                                                                <td style={{
+                                                                    borderRadius: "0 10px 10px 0",
+                                                                }}>
                                                                     <button >
                                                                         <div>
                                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
@@ -1015,72 +1038,85 @@ const InventoryView = () => {
                                 <>
                                     {tabValue === 1 && (
                                         <>
-                                            <div className="flex px-4 gap-4">
-                                                <DatePicker
-                                                    className="custom-datepicker w-full"
-                                                    selected={startDate}
-                                                    onChange={(update) => setDateRange(update)}
-                                                    startDate={startDate}
-                                                    endDate={endDate}
-                                                    selectsRange
-                                                    dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Select Start and End Date"
-                                                />
+                                            <div className="row px-4 gap-4 inven_view_purchase_main">
+                                                <div className="row gap-4 inven_view_purchase">
+                                                    <DatePicker
+                                                        className="custom-datepicker w-full"
+                                                        selected={startDate}
+                                                        onChange={(update) => setDateRange(update)}
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        selectsRange
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="Select Start and End Date"
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '150px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                    />
 
-                                                <Autocomplete
-                                                    value={distributorValue}
-                                                    sx={{
-                                                        width: '15%',
-                                                        minWidth: '150px',
-                                                        '@media (max-width:600px)': {
-                                                            minWidth: '300px',
-                                                        },
-                                                    }}
-                                                    size='small'
-                                                    onChange={handleDistributorBillList}
-                                                    options={distributorList}
-                                                    getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField
-                 autoComplete="off" {...params} label="Distributor Name" />}
-                                                />
+                                                    <Autocomplete
+                                                        value={distributorValue}
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '180px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                        size='small'
+                                                        onChange={handleDistributorBillList}
+                                                        options={distributorList}
+                                                        getOptionLabel={(option) => option.name}
+                                                        renderInput={(params) => <TextField
+                                                            autoComplete="off" {...params} label="Distributor Name" />}
+                                                    />
+                                                </div>
+                                                <div className="row gap-4 inven_view_purchase">
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={staff}
-                                                    sx={{ minWidth: '200px' }}
-                                                    onChange={handleStaff}
-                                                    size="small"
-                                                    displayEmpty
-                                                    renderValue={(selected) => {
-                                                        if (selected === "") {
-                                                            return <em>Select Staff</em>;
-                                                        }
-                                                        const selectedOption = staffList.find(option => option.id === selected);
-                                                        return selectedOption ? selectedOption.name : "";
-                                                    }}
-                                                >
-                                                    {staffList.map(option => (
-                                                        <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={staff}
+                                                        sx={{ minWidth: '200px' }}
+                                                        onChange={handleStaff}
+                                                        size="small"
+                                                        displayEmpty
+                                                        renderValue={(selected) => {
+                                                            if (selected === "") {
+                                                                return <em>Select Staff</em>;
+                                                            }
+                                                            const selectedOption = staffList.find(option => option.id === selected);
+                                                            return selectedOption ? selectedOption.name : "";
+                                                        }}
+                                                    >
+                                                        {staffList.map(option => (
+                                                            <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+                                                        ))}
+                                                    </Select>
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={gstType}
-                                                    sx={{ minWidth: '150px' }}
-                                                    onChange={handleGstType}
-                                                    size="small"
-                                                    displayEmpty
-                                                >
-                                                    <MenuItem value={true} >With GST</MenuItem>
-                                                    <MenuItem value={false}>Without GST</MenuItem>
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={gstType}
+                                                        sx={{ minWidth: '150px' }}
+                                                        onChange={handleGstType}
+                                                        size="small"
+                                                        displayEmpty
+                                                    >
+                                                        <MenuItem value={true} >With GST</MenuItem>
+                                                        <MenuItem value={false}>Without GST</MenuItem>
+                                                    </Select>
 
+                                                </div>
                                             </div>
-                                            <div className="overflow-x-auto" >
-                                                <table className="custom-table w-full border-collapse">
+                                            <div className="overflow-x-auto pl-2 pr-2" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                                <table className="custom-table w-full border-collapse mt-5" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
                                                             {purchaseColumns.map((column) => (
@@ -1090,11 +1126,11 @@ const InventoryView = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    {/* <tbody style={{ backgroundColor: "#3f621217" }}>
                                                         {purchaseListData?.map((item, index) => (
                                                             <tr key={index} >
                                                                 {purchaseColumns.map((column) => (
-                                                                    <td key={column.id}>
+                                                                    <td key={column.id} >
                                                                         {column.id === 'bill_no' ? (
                                                                             <span
                                                                                 style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
@@ -1108,6 +1144,39 @@ const InventoryView = () => {
                                                                     </td>
                                                                 ))}
 
+                                                            </tr>
+                                                        ))}
+                                                    </tbody> */}
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                                                        {purchaseListData?.map((item, index) => (
+                                                            <tr key={index}>
+                                                                {purchaseColumns.map((column, colIndex) => (
+                                                                    <td
+                                                                        key={column.id}
+                                                                        style={
+                                                                            colIndex === 0 // Check if this is the first column
+                                                                                ? { borderRadius: "10px 0 0 10px" }
+                                                                                : colIndex === purchaseColumns.length - 1 // Last column for right-side radius
+                                                                                    ? { borderRadius: "0 10px 10px 0" }
+                                                                                    : {}
+                                                                        }
+                                                                    >
+                                                                        {column.id === "bill_no" ? (
+                                                                            <span
+                                                                                style={{
+                                                                                    cursor: "pointer",
+                                                                                    color: "blue",
+                                                                                    textDecoration: "underline",
+                                                                                }}
+                                                                                onClick={() => viewBill(item)}
+                                                                            >
+                                                                                {item[column.id]}
+                                                                            </span>
+                                                                        ) : (
+                                                                            item[column.id]
+                                                                        )}
+                                                                    </td>
+                                                                ))}
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -1141,73 +1210,85 @@ const InventoryView = () => {
                                 <>
                                     {tabValue === 2 && (
                                         <>
-                                            <div className="flex px-4 gap-4">
-                                                <DatePicker
-                                                    className="custom-datepicker w-full"
-                                                    selected={startDate}
-                                                    onChange={(update) => setDateRange(update)}
-                                                    startDate={startDate}
-                                                    endDate={endDate}
-                                                    selectsRange
-                                                    dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Select Start and End Date"
-                                                />
+                                            <div className="row px-4 gap-4 inven_view_purchase_main">
+                                                <div className="row gap-4 inven_view_purchase">
+                                                    <DatePicker
+                                                        className="custom-datepicker w-full"
+                                                        selected={startDate}
+                                                        onChange={(update) => setDateRange(update)}
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        selectsRange
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="Select Start and End Date"
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                    />
 
-                                                <Autocomplete
-                                                    value={distributorValue}
-                                                    sx={{
-                                                        width: '15%',
-                                                        minWidth: '150px',
-                                                        '@media (max-width:600px)': {
-                                                            minWidth: '300px',
-                                                        },
-                                                    }}
-                                                    size='small'
-                                                    onChange={handleDistributorBillList}
-                                                    options={distributorList}
-                                                    getOptionLabel={(option) => option.name}
-                                                    renderInput={(params) => <TextField
-                 autoComplete="off" {...params} label="Distributor Name" />}
-                                                />
+                                                    <Autocomplete
+                                                        value={distributorValue}
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                        size='small'
+                                                        onChange={handleDistributorBillList}
+                                                        options={distributorList}
+                                                        getOptionLabel={(option) => option.name}
+                                                        renderInput={(params) => <TextField
+                                                            autoComplete="off" {...params} label="Distributor Name" />}
+                                                    />
+                                                </div>
+                                                <div className="row gap-4 inven_view_purchase">
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={staff}
-                                                    sx={{ minWidth: '200px' }}
-                                                    onChange={handleStaff}
-                                                    size="small"
-                                                    displayEmpty
-                                                    renderValue={(selected) => {
-                                                        if (selected === "") {
-                                                            return <em>Select Staff</em>;
-                                                        }
-                                                        const selectedOption = staffList.find(option => option.id === selected);
-                                                        return selectedOption ? selectedOption.name : "";
-                                                    }}
-                                                >
-                                                    {staffList.map(option => (
-                                                        <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={staff}
+                                                        sx={{ minWidth: '200px' }}
+                                                        onChange={handleStaff}
+                                                        size="small"
+                                                        displayEmpty
+                                                        renderValue={(selected) => {
+                                                            if (selected === "") {
+                                                                return <em>Select Staff</em>;
+                                                            }
+                                                            const selectedOption = staffList.find(option => option.id === selected);
+                                                            return selectedOption ? selectedOption.name : "";
+                                                        }}
+                                                    >
+                                                        {staffList.map(option => (
+                                                            <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+                                                        ))}
+                                                    </Select>
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={gstType}
-                                                    sx={{ minWidth: '150px' }}
-                                                    onChange={handleGstType}
-                                                    size="small"
-                                                    displayEmpty
-                                                >
-                                                    <MenuItem value={true} >With GST</MenuItem>
-                                                    <MenuItem value={false}>Without GST</MenuItem>
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={gstType}
+                                                        sx={{ minWidth: '150px' }}
+                                                        onChange={handleGstType}
+                                                        size="small"
+                                                        displayEmpty
+                                                    >
+                                                        <MenuItem value={true} >With GST</MenuItem>
+                                                        <MenuItem value={false}>Without GST</MenuItem>
+                                                    </Select>
 
+                                                </div>
                                             </div>
-
-                                            <div className="overflow-x-auto">
-                                                <table className="custom-table w-full border-collapse">
+                                            <div className="overflow-x-auto pl-2 pr-2" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                                <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
                                                             {purchaseReturnColumns.map((column) => (
@@ -1217,11 +1298,18 @@ const InventoryView = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                                         {purchaseReturnListData?.map((item, index) => (
                                                             <tr key={index}>
-                                                                {purchaseReturnColumns.map((column) => (
-                                                                    <td key={column.id}>
+                                                                {purchaseReturnColumns.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === 0 ? {
+                                                                            borderRadius: "10px 0 0 10px",
+                                                                        } : colIndex === purchaseReturnColumns.length - 1 ? {
+                                                                            borderRadius: "0 10px 10px 0",
+                                                                        } : {}
+                                                                    }
+                                                                    >
                                                                         {column.id === 'bill_no' ? (
                                                                             <span
                                                                                 style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
@@ -1259,44 +1347,55 @@ const InventoryView = () => {
                                 <>
                                     {tabValue === 3 && (
                                         <>
-                                            <div className="flex px-4 gap-4">
-                                                <DatePicker
-                                                    className="custom-datepicker w-full"
-                                                    selected={startDate}
-                                                    onChange={(update) => setDateRange(update)}
-                                                    startDate={startDate}
-                                                    endDate={endDate}
-                                                    selectsRange
-                                                    dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Select Start and End Date"
-                                                />
+                                            <div className="row px-4 gap-4 inven_view_purchase_main">
+                                                <div className="row gap-4 inven_view_purchase">
 
-                                                <Autocomplete
-                                                    value={customerValue}
-                                                    sx={{
-                                                        width: '15%',
-                                                        minWidth: '150px',
-                                                        '@media (max-width:600px)': {
-                                                            minWidth: '300px',
-                                                        },
-                                                    }}
-                                                    size='small'
-                                                    onChange={handleCustomerBillList}
-                                                    options={customerDetails}
-                                                    getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField
-                 autoComplete="off" {...params} label="Customer Name/No" />}
-                                                    renderOption={(props, option) => (
-                                                        <ListItem {...props}>
-                                                            <ListItemText
-                                                                primary={`${option.name} `}
-                                                                secondary={`Mobile No: ${option.phone_number}`}
-                                                            />
-                                                        </ListItem>
-                                                    )}
-                                                />
+                                                    <DatePicker
+                                                        className="custom-datepicker w-full"
+                                                        selected={startDate}
+                                                        onChange={(update) => setDateRange(update)}
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        selectsRange
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="Select Start and End Date"
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                    />
 
-                                                {/* <TextField
+                                                    <Autocomplete
+                                                        value={customerValue}
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                        size='small'
+                                                        onChange={handleCustomerBillList}
+                                                        options={customerDetails}
+                                                        getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
+                                                        renderInput={(params) => <TextField
+                                                            autoComplete="off" {...params} label="Customer Name/No" />}
+                                                        renderOption={(props, option) => (
+                                                            <ListItem {...props}>
+                                                                <ListItemText
+                                                                    primary={`${option.name} `}
+                                                                    secondary={`Mobile No: ${option.phone_number}`}
+                                                                />
+                                                            </ListItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                                <div className="row gap-4 inven_view_purchase">
+
+                                                    {/* <TextField
                  autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
@@ -1306,30 +1405,33 @@ const InventoryView = () => {
                                                     onChange={(e) => { setCustomerNo(e.target.value) }}
                                                 /> */}
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={staff}
-                                                    sx={{ minWidth: '200px' }}
-                                                    onChange={handleStaff}
-                                                    size="small"
-                                                    displayEmpty
-                                                    renderValue={(selected) => {
-                                                        if (selected === "") {
-                                                            return <em>Select Staff</em>;
-                                                        }
-                                                        const selectedOption = staffList.find(option => option.id === selected);
-                                                        return selectedOption ? selectedOption.name : "";
-                                                    }}
-                                                >
-                                                    {staffList.map(option => (
-                                                        <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={staff}
+                                                        sx={{ minWidth: '200px' }}
+                                                        onChange={handleStaff}
+                                                        size="small"
+                                                        displayEmpty
+                                                        renderValue={(selected) => {
+                                                            if (selected === "") {
+                                                                return <em>Select Staff</em>;
+                                                            }
+                                                            const selectedOption = staffList.find(option => option.id === selected);
+                                                            return selectedOption ? selectedOption.name : "";
+                                                        }}
+                                                    >
+                                                        {staffList.map(option => (
+                                                            <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+                                                        ))}
+                                                    </Select>
 
+                                                </div>
                                             </div>
-                                            <div className="overflow-x-auto">
-                                                <table className="custom-table w-full border-collapse">
+                                            <div className="overflow-x-auto pl-2 pr-2" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                                <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
                                                             {saleColumns.map((column) => (
@@ -1339,11 +1441,18 @@ const InventoryView = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                                         {saleListData?.map((item, index) => (
                                                             <tr key={index}>
-                                                                {saleColumns.map((column) => (
-                                                                    <td key={column.id}>
+                                                                {saleColumns.map((column, colIndex) => (
+                                                                    <td key={column.id}
+                                                                        style={
+                                                                            colIndex === 0 ? {
+                                                                                borderRadius: "10px 0 0 10px"
+                                                                            } : colIndex === saleColumns.length - 1 ? { borderRadius: "0 10px 10px 0" }
+                                                                                : {}
+                                                                        }
+                                                                    >
                                                                         {column.id === 'bill_no' ? (
                                                                             <span
                                                                                 style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
@@ -1381,42 +1490,54 @@ const InventoryView = () => {
                                 <>
                                     {tabValue === 4 && (
                                         <>
-                                            <div className="flex px-4 gap-4">
-                                                <DatePicker
-                                                    className="custom-datepicker w-full"
-                                                    selected={startDate}
-                                                    onChange={(update) => setDateRange(update)}
-                                                    startDate={startDate}
-                                                    endDate={endDate}
-                                                    selectsRange
-                                                    dateFormat="dd/MM/yyyy"
-                                                    placeholderText="Select Start and End Date"
-                                                />
-                                                <Autocomplete
-                                                    value={customerValue}
-                                                    sx={{
-                                                        width: '15%',
-                                                        minWidth: '150px',
-                                                        '@media (max-width:600px)': {
-                                                            minWidth: '300px',
-                                                        },
-                                                    }}
-                                                    size='small'
-                                                    onChange={handleCustomerBillList}
-                                                    options={customerDetails}
-                                                    getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
-                                                    renderInput={(params) => <TextField
-                 autoComplete="off" {...params} label="Customer Name/No" />}
-                                                    renderOption={(props, option) => (
-                                                        <ListItem {...props}>
-                                                            <ListItemText
-                                                                primary={`${option.name} `}
-                                                                secondary={`Mobile No: ${option.phone_number}`}
-                                                            />
-                                                        </ListItem>
-                                                    )}
-                                                />
-                                                {/* <Autocomplete
+                                            <div className="row px-4 gap-4 inven_view_purchase_main">
+                                                <div className="row gap-4 inven_view_purchase">
+
+                                                    <DatePicker
+                                                        className="custom-datepicker w-full"
+                                                        selected={startDate}
+                                                        onChange={(update) => setDateRange(update)}
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        selectsRange
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="Select Start and End Date"
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                    />
+                                                    <Autocomplete
+                                                        value={customerValue}
+                                                        sx={{
+                                                            width: '15%',
+                                                            minWidth: '200px',
+                                                            '@media (max-width:600px)': {
+                                                                minWidth: '100%',
+                                                            },
+                                                        }}
+                                                        size='small'
+                                                        onChange={handleCustomerBillList}
+                                                        options={customerDetails}
+                                                        getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
+                                                        renderInput={(params) => <TextField
+                                                            autoComplete="off" {...params} label="Customer Name/No" />}
+                                                        renderOption={(props, option) => (
+                                                            <ListItem {...props}>
+                                                                <ListItemText
+                                                                    primary={`${option.name} `}
+                                                                    secondary={`Mobile No: ${option.phone_number}`}
+                                                                />
+                                                            </ListItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                                <div className="row gap-4 inven_view_purchase">
+
+                                                    {/* <Autocomplete
                                                     value={customerValue}
                                                     sx={{
                                                         width: '15%',
@@ -1433,7 +1554,7 @@ const InventoryView = () => {
                  autoComplete="off" {...params} label="Customer Name/No" />}
                                                 /> */}
 
-                                                {/* <TextField
+                                                    {/* <TextField
                  autoComplete="off"
                                                     id="outlined-number"
                                                     label="Mobile No"
@@ -1443,29 +1564,32 @@ const InventoryView = () => {
                                                     onChange={(e) => { setCustomerNo(e.target.value) }}
                                                 /> */}
 
-                                                <Select
-                                                    labelId="dropdown-label"
-                                                    id="dropdown"
-                                                    value={staff}
-                                                    sx={{ minWidth: '200px' }}
-                                                    onChange={handleStaff}
-                                                    size="small"
-                                                    displayEmpty
-                                                    renderValue={(selected) => {
-                                                        if (selected === "") {
-                                                            return <em>Select Staff</em>;
-                                                        }
-                                                        const selectedOption = staffList.find(option => option.id === selected);
-                                                        return selectedOption ? selectedOption.name : "";
-                                                    }}
-                                                >
-                                                    {staffList.map(option => (
-                                                        <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    <Select
+                                                        labelId="dropdown-label"
+                                                        id="dropdown"
+                                                        value={staff}
+                                                        sx={{ minWidth: '200px' }}
+                                                        onChange={handleStaff}
+                                                        size="small"
+                                                        displayEmpty
+                                                        renderValue={(selected) => {
+                                                            if (selected === "") {
+                                                                return <em>Select Staff</em>;
+                                                            }
+                                                            const selectedOption = staffList.find(option => option.id === selected);
+                                                            return selectedOption ? selectedOption.name : "";
+                                                        }}
+                                                    >
+                                                        {staffList.map(option => (
+                                                            <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
                                             </div>
-                                            <div className="overflow-x-auto">
-                                                <table className="custom-table w-full border-collapse">
+                                            <div className="overflow-x-auto pl-2 pr-2" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                                <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
                                                             {saleReturnColumns.map((column) => (
@@ -1475,11 +1599,13 @@ const InventoryView = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                                         {saleReturnListData?.map((item, index) => (
                                                             <tr key={index}>
-                                                                {saleReturnColumns.map((column) => (
-                                                                    <td key={column.id}>
+                                                                {saleReturnColumns.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === 0 ? { borderRadius: '10px 0 0 10px' } : colIndex === saleReturnColumns.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}
+                                                                    }>
                                                                         {column.id === 'bill_no' ? (
                                                                             <span
                                                                                 style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
@@ -1511,47 +1637,53 @@ const InventoryView = () => {
                                     )}
                                 </>}
 
-                            {isLoading ? <div className="loader-container ">
+                            {isLoading ? <div className="loader-container " style={{
+                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                            }}>
                                 <Loader />
                             </div> :
                                 <>
                                     {tabValue === 5 && (
                                         <>
-                                            <table className="custom-table">
-                                                <thead>
-                                                    <tr>
-                                                        {ledger.map((column) => (
-                                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                                {column.label}
-                                                                {column.label == 'In' && <ArrowUpwardIcon />}
-                                                                {column.label == 'Out' && <SouthIcon />}
-
-                                                            </th>
-                                                        ))}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {ledgerListData?.map((item, index) => (
-                                                        <tr key={index}>
+                                            <div className="overflow-x-auto pl-2 pr-2">
+                                                <table className="custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
+                                                    <thead>
+                                                        <tr>
                                                             {ledger.map((column) => (
-                                                                <td key={column.id}>
-                                                                    {column.id === 'bill_no' ? (
-                                                                        <span
-                                                                            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
-                                                                            onClick={() => openBill(item)}
-                                                                        >
-                                                                            {item[column.id]}
-                                                                        </span>
-                                                                    ) : (
-                                                                        item[column.id]
-                                                                    )}
-                                                                </td>
+                                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                                    {column.label}
+                                                                    {column.label == 'In' && <ArrowUpwardIcon />}
+                                                                    {column.label == 'Out' &&
+                                                                        <ArrowDownwardIcon />
+                                                                    }
+                                                                </th>
                                                             ))}
                                                         </tr>
-                                                    ))}
-                                                </tbody>
+                                                    </thead>
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                                                        {ledgerListData?.map((item, index) => (
+                                                            <tr key={index}>
+                                                                {ledger.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === 0 ? { borderRadius: '10px 0 0 10px' } : colIndex === ledger.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}
+                                                                    }>
+                                                                        {column.id === 'bill_no' ? (
+                                                                            <span
+                                                                                style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                                                                                onClick={() => openBill(item)}
+                                                                            >
+                                                                                {item[column.id]}
+                                                                            </span>
+                                                                        ) : (
+                                                                            item[column.id]
+                                                                        )}
+                                                                    </td>
+                                                                ))}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
 
-                                                {/* <tbody>
+                                                    {/* <tbody>
                                                 {itemAllData?.ledger?.map((item, index) => (
                                                     <tr key={index} >
                                                         {ledger.map((column) => (
@@ -1562,7 +1694,8 @@ const InventoryView = () => {
                                                     </tr>
                                                 ))}
                                             </tbody> */}
-                                            </table>
+                                                </table>
+                                            </div>
                                             {/* <TablePagination
                                                 rowsPerPageOptions={[5, 10, 12]}
                                                 component="div"
@@ -1598,8 +1731,9 @@ const InventoryView = () => {
                                     <Select
                                         labelId="dropdown-label"
                                         id="dropdown"
+                                        className="w-full"
                                         value={packaging}
-                                        sx={{ minWidth: '250px' }}
+                                        // sx={{ minWidth: '250px' }}
                                         onChange={(e) => setPackaging(e.target.value)}
                                         size="small"
                                         displayEmpty
@@ -1616,16 +1750,17 @@ const InventoryView = () => {
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
+                                        className="w-full"
                                         options={categoryList}
                                         size="small"
                                         // disabled
                                         value={category}
                                         onChange={(e, value) => setCategory(value)}
-                                        sx={{ width: 250 }}
+                                        // sx={{ width: 250 }}
                                         getOptionLabel={(option) => option.category_name}
                                         renderInput={(params) => (
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 {...params}
                                             // label="Select Company"
                                             />
@@ -1639,14 +1774,15 @@ const InventoryView = () => {
                                         id="combo-box-demo"
                                         options={companyList}
                                         size="small"
+                                        className="w-full"
                                         // disabled
                                         value={company}
                                         onChange={(e, value) => setCompany(value)}
-                                        sx={{ width: 250 }}
+                                        // sx={{ width: 250 }}
                                         getOptionLabel={(option) => option.company_name}
                                         renderInput={(params) => (
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 {...params}
                                             />
                                         )}
@@ -1657,15 +1793,16 @@ const InventoryView = () => {
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
+                                        className="w-full"
                                         options={drugGroupList}
                                         size="small"
                                         value={drugGroup}
-                                        sx={{ width: 250 }}
+                                        // sx={{ width: 250 }}
                                         onChange={(e, value) => setDrugGroup(value)}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 {...params}
                                                 label="Select DrugGroup"
                                             />
@@ -1675,19 +1812,19 @@ const InventoryView = () => {
                                 <div className="flex flex-col">
                                     <span className="label primary">Location</span>
                                     <TextField
-                 autoComplete="off"
+                                        autoComplete="off"
                                         id="outlined-multiline-static"
                                         size="small"
                                         value={loc}
                                         onChange={(e) => { setLoc(e.target.value) }}
                                         className="w-full"
-                                        variant="outlined"
+                                        variant="standard"
                                     />
                                 </div>
                             </div>
                         </DialogContentText>
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions style={{ padding: "24px" }}>
                         <Button autoFocus variant="contained" color="success" onClick={updateItem}>
                             Update
                         </Button>
@@ -1759,7 +1896,7 @@ const InventoryView = () => {
                     </div>
                 </div>
 
-            </div>
+            </div >
         </>
     )
 }

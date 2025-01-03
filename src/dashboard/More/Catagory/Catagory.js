@@ -277,7 +277,7 @@ const Catagory = () => {
 
                   {categoryData.length === 0 ? (
                     <tr>
-                      <td colSpan={categoryColumns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                      <td colSpan={categoryColumns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }} >
                         No data found
                       </td>
                     </tr>
@@ -350,7 +350,7 @@ const Catagory = () => {
                       onChange={(e) => { setCategoryName(e.target.value) }}
                       style={{ minWidth: 450 }}
 
-                      variant="outlined"
+                      variant="standard"
                     />
                   </div>
                 </div>

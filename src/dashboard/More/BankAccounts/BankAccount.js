@@ -576,7 +576,7 @@ const BankAccount = () => {
                                                         value={search}
                                                         size="small"
                                                         onChange={(e) => setSearch(e.target.value)}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -784,12 +784,12 @@ const BankAccount = () => {
                                             <div className="flex flex-wrap gap-6 ml-4 sm:ml-12 mt-6">
                                                 <div style={{ marginTop: "25px" }}>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-basic"
                                                         value={search}
                                                         size="small"
                                                         onChange={(e) => setSearch(e.target.value)}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -825,7 +825,7 @@ const BankAccount = () => {
                                             </div>
 
                                             <div className="overflow-x-auto mt-4">
-                                                <table className="table-cashManage w-full border-collapse">
+                                                <table className="table-cashManage w-full border-collapse" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
                                                             {PassbookColumns.map((column) => (
@@ -835,11 +835,14 @@ const BankAccount = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                                         {bankDetails?.map((item, index) => (
                                                             <tr key={index}>
-                                                                {PassbookColumns.map((column) => (
-                                                                    <td key={column.id} className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}>
+                                                                {PassbookColumns.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === PassbookColumns.length - 1 ? { borderRadius: "0 10px 10px 0" } : {}
+                                                                    } className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}
+                                                                    >
                                                                         {item[column.id]}
                                                                     </td>
                                                                 ))}
@@ -893,7 +896,7 @@ const BankAccount = () => {
                                             value={bankName}
                                             onChange={(e) => { setBankName(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            variant="standard"
 
                                         />
                                         {errors.bankName && <span className="error">{errors.bankName}</span>}
@@ -910,7 +913,7 @@ const BankAccount = () => {
                                             value={accountType}
                                             onChange={(e) => { setAccountType(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            variant="standard"
 
                                         />
                                         {errors.accountType && <span className="error">{errors.accountType}</span>}
@@ -928,7 +931,7 @@ const BankAccount = () => {
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                     </div>
                                     <div>
@@ -969,7 +972,7 @@ const BankAccount = () => {
                                                 value={accountNumber}
                                                 onChange={(e) => { setAccountNumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
 
                                             />
                                             {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
@@ -986,7 +989,7 @@ const BankAccount = () => {
                                                 value={reEnterAccountNumber}
                                                 onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
 
                                             />
                                             {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
@@ -1006,7 +1009,7 @@ const BankAccount = () => {
                                                 value={ifscCode}
                                                 onChange={(e) => { setIfscCode(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
 
                                             />
                                             {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
@@ -1024,7 +1027,7 @@ const BankAccount = () => {
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="outlined"
+                                                    variant="standard"
 
                                                 />
                                                 {errors.branchName && <span className="error">{errors.branchName}</span>}
@@ -1048,7 +1051,7 @@ const BankAccount = () => {
                                                 value={accountHolderName}
                                                 onChange={(e) => { setAccountHolderName(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
                                         </div>
@@ -1064,7 +1067,7 @@ const BankAccount = () => {
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="outlined"
+                                                    variant="standard"
 
                                                 />
                                             </div>
@@ -1118,18 +1121,18 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={bankName}
 
-                                            onChange={(e) => { 
+                                            onChange={(e) => {
                                                 // Transform to uppercase
                                                 const uppercasedValue = e.target.value.toUpperCase();
                                                 setBankName(uppercasedValue);
                                             }}
-                                                                                 style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            style={{ minWidth: 250 }}
+                                            variant="standard"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.bankName && <span className="error">{errors.bankName}</span>}
@@ -1140,17 +1143,18 @@ const BankAccount = () => {
                                             <span className="text-red-600 ml-1">*</span>
                                         </div>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             type="text"
                                             value={accountType}
-                                            onChange={(e) => {  
+                                            onChange={(e) => {
                                                 const capitalizedValue = e.target.value
-                                                .toLowerCase()
-                                                .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue) }}
+                                                    .toLowerCase()
+                                                    .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue)
+                                            }}
                                             style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            variant="standard"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.accountType && <span className="error">{errors.accountType}</span>}
@@ -1162,13 +1166,13 @@ const BankAccount = () => {
                                             <span className="label primary mb-4">Opening Balance</span>
                                         </div>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-multiline-static"
                                             size="small"
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="outlined"
+                                            variant="standard"
                                             fullWidth={fullScreen}
                                         />
                                     </div>
@@ -1203,16 +1207,17 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountNumber}
-                                                onChange={(e) => { 
+                                                onChange={(e) => {
                                                     const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
-                                                    
-                                                    setAccountNumber(numericValue) }}
+
+                                                    setAccountNumber(numericValue)
+                                                }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
@@ -1223,7 +1228,7 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={reEnterAccountNumber}
@@ -1231,8 +1236,8 @@ const BankAccount = () => {
                                                     // Allow only numeric input
                                                     const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
                                                     setReEnterAccountNumber(numericValue);
-                                                }}                                                style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                }} style={{ minWidth: 250 }}
+                                                variant="standard"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
@@ -1245,13 +1250,13 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={ifscCode}
-                                                onChange={(e) => {   const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
+                                                onChange={(e) => { const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
@@ -1263,13 +1268,13 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     fullWidth={fullScreen}
                                                 />
                                                 {errors.branchName && <span className="error">{errors.branchName}</span>}
@@ -1283,18 +1288,18 @@ const BankAccount = () => {
                                                 <span className="text-red-600 ml-1">*</span>
                                             </div>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-multiline-static"
                                                 size="small"
                                                 value={accountHolderName}
                                                 onChange={(e) => {
                                                     const capitalizedValue = e.target.value
-                                                .toLowerCase()
-                                                .replace(/\b\w/g, (char) => char.toUpperCase());
-                                                 setAccountHolderName(capitalizedValue)
-                                                 }}
+                                                        .toLowerCase()
+                                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                                                    setAccountHolderName(capitalizedValue)
+                                                }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
@@ -1305,13 +1310,13 @@ const BankAccount = () => {
                                             </div>
                                             <div className="detail">
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     id="outlined-multiline-static"
                                                     size="small"
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     fullWidth={fullScreen}
                                                 />
                                             </div>

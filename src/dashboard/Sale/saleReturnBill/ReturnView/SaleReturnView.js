@@ -9,6 +9,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { BsLightbulbFill } from "react-icons/bs";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
+import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
 
 const SaleReturnView = () => {
     const [tableData, setTableData] = useState([]);
@@ -108,122 +109,123 @@ const SaleReturnView = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} >
-                            <div>
-                                <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
-                                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-                                    {hasPermission(permissions, "sale return bill edit") && (
-                                        <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                            <Button variant="contained" style={{backgroundColor:"var(--color1)"}} onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
-                                        </div>)}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="firstrow flex">
-
-                                    <div className="detail">
-                                        <span className="heading">Bill No</span>
-                                        <span className="data">
-                                            {tableData.bill_no}
-                                        </span>
-                                    </div>
-                                    <div className="detail">
-                                        <span className="heading">Bill Date</span>
-                                        <span className="data">
-                                            {tableData.bill_date}
-
-                                        </span>
-
-                                    </div>
-                                    <div className="detail">
-                                        <span className="heading">Customer </span>
-                                        <span className="data">
-                                            {tableData.customer_name}
-                                        </span>
-
-                                    </div>
-                                    <div className="detail">
-                                        <span className="heading">Mobile No.</span>
-                                        <span className="data">
-                                            {tableData.customer_number}
-                                        </span>
-                                    </div>
-                                    <div className="detail">
-                                        <span className="heading">Doctor </span>
-                                        <span className="data">
-                                            {tableData.doctor_name || '-'}
-                                        </span>
-                                    </div>
-                                    <div className="detail">
-                                        <span className="heading">Payment Mode</span>
-                                        <span className="data">
-                                            {tableData.payment_name}
-
-                                        </span>
+                        <>
+                            <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} >
+                                <div>
+                                    <div className='py-3 gap-4' style={{ display: 'flex', alignItems: "center" }}>
+                                        <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px", flexWrap: "nowrap", whiteSpace: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
+                                        <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
+                                        <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
+                                        <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
+                                        <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
+                                        <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                        {hasPermission(permissions, "sale return bill edit") && (
+                                            <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
+                                                <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                            </div>)}
                                     </div>
                                 </div>
-                                <div className='overflow-x-auto'>
-                                    <table className="customtable w-full border-collapse custom-table">
-                                        <thead>
-                                            <tr>
-                                                <th >
-                                                    Item Name
-                                                </th>
-                                                <th >Unit  </th>
-                                                <th >Batch </th>
-                                                <th >Expiry </ th>
-                                                <th >MRP  </th>
-                                                <th >Base </th>
-                                                <th >GST%  </th>
-                                                <th >QTY </ th>
-                                                {/* <th >Order  </th> */}
-                                                <th >Loc. </th>
-                                                <th >Amount  </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {tableData?.sales_retur_view?.map((item, index) => (
-                                                <tr >
-                                                    <td>
-                                                        <div className="itemName">
-                                                            {item.iteam_name}
-                                                        </div>
-                                                    </td>
-                                                    <td>{item.unit}</td>
-                                                    <td>{item.batch}</td>
-                                                    <td>{item.exp}</td>
-                                                    <td>{item.mrp}</td>
-                                                    <td>{item.base}</td>
-                                                    <td>{item.gst}</td>
-                                                    <td>{item.qty}</td>
-                                                    {/* <td>{item.order}</td> */}
-                                                    <td>{item.location}</td>
-                                                    <td className="amount">{item.net_rate}</td>
+                                <div>
+                                    <div className="firstrow flex">
+
+                                        <div className="detail">
+                                            <span className="heading">Bill No</span>
+                                            <span className="data">
+                                                {tableData.bill_no}
+                                            </span>
+                                        </div>
+                                        <div className="detail">
+                                            <span className="heading">Bill Date</span>
+                                            <span className="data">
+                                                {tableData.bill_date}
+
+                                            </span>
+
+                                        </div>
+                                        <div className="detail">
+                                            <span className="heading">Customer </span>
+                                            <span className="data">
+                                                {tableData.customer_name}
+                                            </span>
+
+                                        </div>
+                                        <div className="detail">
+                                            <span className="heading">Mobile No.</span>
+                                            <span className="data">
+                                                {tableData.customer_number}
+                                            </span>
+                                        </div>
+                                        <div className="detail">
+                                            <span className="heading">Doctor </span>
+                                            <span className="data">
+                                                {tableData.doctor_name || '-'}
+                                            </span>
+                                        </div>
+                                        <div className="detail">
+                                            <span className="heading">Payment Mode</span>
+                                            <span className="data">
+                                                {tableData.payment_name}
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className='overflow-x-auto'>
+                                        <table className="customtable w-full border-collapse custom-table">
+                                            <thead>
+                                                <tr>
+                                                    <th >
+                                                        Item Name
+                                                    </th>
+                                                    <th >Unit  </th>
+                                                    <th >Batch </th>
+                                                    <th >Expiry </ th>
+                                                    <th >MRP  </th>
+                                                    <th >Base </th>
+                                                    <th >GST%  </th>
+                                                    <th >QTY </ th>
+                                                    {/* <th >Order  </th> */}
+                                                    <th >Loc. </th>
+                                                    <th >Amount  </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10"  >
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total GST : </label>
-                                        <label className="font-bold">Total Base : </label>
-                                        <label className="font-bold">Profit : </label>
-                                        <label className="font-bold">Total Net Rate : </label>
+                                            </thead>
+                                            <tbody>
+                                                {tableData?.sales_retur_view?.map((item, index) => (
+                                                    <tr >
+                                                        <td>
+                                                            <div className="itemName">
+                                                                {item.iteam_name}
+                                                            </div>
+                                                        </td>
+                                                        <td>{item.unit}</td>
+                                                        <td>{item.batch}</td>
+                                                        <td>{item.exp}</td>
+                                                        <td>{item.mrp}</td>
+                                                        <td>{item.base}</td>
+                                                        <td>{item.gst}</td>
+                                                        <td>{item.qty}</td>
+                                                        {/* <td>{item.order}</td> */}
+                                                        <td>{item.location}</td>
+                                                        <td className="amount">{item.net_rate}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                        <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
-                                        <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
-                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
-                                        <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
-                                    </div>
+                                    <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10"  >
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <label className="font-bold">Total GST : </label>
+                                            <label className="font-bold">Total Base : </label>
+                                            <label className="font-bold">Profit : </label>
+                                            <label className="font-bold">Total Net Rate : </label>
+                                        </div>
+                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                            <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
+                                            <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
+                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
+                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
+                                        </div>
 
-                                    {/* <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                                        {/* <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
                                         <label className="font-bold">SGST : </label>
                                         <label className="font-bold">CGST: </label>
                                         <label className="font-bold">IGST: </label>
@@ -234,22 +236,49 @@ const SaleReturnView = () => {
                                         <span style={{ fontWeight: 600 }}>{tableData?.igst}</span>
                                     </div> */}
 
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total Amount : </label>
-                                        <label className="font-bold">Other Amount : </label>
-                                        <label className="font-bold">Round Off : </label>
-                                        <label className="font-bold" >Net Amount : </label>
-                                    </div>
-                                    <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}</span>
-                                        {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
-                                        <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
-                                        <span style={{ fontWeight: 600 }}>{Number(tableData?.round_off || 0).toFixed(2)}</span>
-                                        <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
+                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+                                            <label className="font-bold">Total Amount : </label>
+                                            <label className="font-bold">Other Amount : </label>
+                                            <label className="font-bold">Round Off : </label>
+                                            <label className="font-bold" >Net Amount : </label>
+                                        </div>
+                                        <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
+                                            <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}</span>
+                                            {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
+                                            <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
+                                            <span style={{ fontWeight: 600 }}>{Number(tableData?.round_off || 0).toFixed(2)}</span>
+                                            <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div className="flex justify-between" style={{ width: '100%', position: 'absolute', bottom: '20px', padding: "0 20px" }}>
+                                <span onClick={() => {
+                                    const prevIndex = (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
+                                    const prevId = saleReturnData[prevIndex]?.id;
+                                    if (prevId) {
+                                        history.push(`/SaleReturn/view/${prevId}`);
+                                    }
+                                }} >
+                                    <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >
+
+                                        <IoArrowBackCircleOutline size={25} color="white" cursor='pointer' />
+                                        PREVIOUS BILL
+                                    </Button>
+                                </span>
+                                <span onClick={() => {
+                                    const nextIndex = (currentIndex + 1) % saleReturnData.length;
+                                    const nextId = saleReturnData[nextIndex]?.id;
+                                    if (nextId) {
+                                        history.push(`/SaleReturn/view/${nextId}`);
+                                    }
+                                }}>
+                                    <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >
+                                        <IoArrowForwardCircleOutline size={25} color="white" cursor='pointer' />
+                                        NEXT BILL</Button>
+                                </span>
+                            </div>
+                        </>
                     }
                 </div >
             </div>

@@ -315,7 +315,7 @@ const ReturnList = () => {
                                 <tbody>
                                     {tableData.length === 0 ? (
                                         <tr>
-                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray'  ,borderRadius: "10px 10px 10px 10px"}}>
                                                 No data found
                                             </td>
                                         </tr>

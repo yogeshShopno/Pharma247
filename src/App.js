@@ -117,7 +117,15 @@ function App() {
     background-color: var(--color1);
 }
   
-
+       '& .MuiOutlinedInput-root': {
+       '&:hover fieldset': {
+         borderColor: 'var(--color1)', 
+         },
+        '&.Mui-focused fieldset': {
+            borderColor: 'var(--color1)', 
+          },
+           },
+                                                        
       /* Change border color on hover for Outlined TextFields */
       .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
         border-color: #3f6212; /* Hover border color */

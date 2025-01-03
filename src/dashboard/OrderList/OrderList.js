@@ -325,12 +325,12 @@ const OrderList = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                <Button variant="contained" style={{ display: 'flex', gap: '0px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" /> Place Order</Button>
+                                <Button variant="contained" style={{ display: 'flex', gap: '4px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="" /> Place Order</Button>
                             </div>
                         </div>
 
                         <div className="firstrow p-4">
-                            <div className="flex flex-col gap-8 lg:flex-row lg:gap-8">
+                            <div className="oreder_list_fld flex flex-col gap-8 md:flex-row lg:flex-row lg:gap-8 md:gap-8">
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Distributor</span>
                                     {/* <TextField
@@ -356,7 +356,7 @@ const OrderList = () => {
                                         sx={{
                                             width: 'full',
                                             '& .MuiInputBase-root': {
-                                                width: 350,
+                                                // width: 300,
                                                 height: 45,
                                                 fontSize: '1.10rem',
                                             },
@@ -364,6 +364,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
+                                        className="dst_fld_odr"
                                         variant="outlined"
                                         fullWidth
                                         onChange={(e, value) => setDistributor(value)}
@@ -381,11 +382,13 @@ const OrderList = () => {
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-basic"
+                                        className="dst_fld_odr"
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
                                         sx={{
                                             width: 'full',
                                             '& .MuiInputBase-root': {
+                                                // width: 300,
                                                 height: 45,
                                                 fontSize: '1.10rem',
                                             },
@@ -405,16 +408,19 @@ const OrderList = () => {
                                         style={{
                                             minHeight: '45px',
                                             alignItems: "center",
-                                            marginTop: "25px",
-                                            background: "var(--color1)"
+                                            marginTop: "23px",
+                                            background: "var(--color1)",
+                                            width: "100%"
                                         }}
                                     >
                                         <FilterAltIcon size='large' className="text-white text-lg" /> Filter
                                     </Button>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto mt-4">
-                                <table className="w-full bg-transparent border-collapse custom-table">
+                            <div className="overflow-x-auto mt-4" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                <table className="w-full bg-transparent border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead className="bg-gray-100">
                                         <tr>
                                             <th className="py-2 px-4 text-left">SR. No</th>
@@ -432,6 +438,7 @@ const OrderList = () => {
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
                                                             // className="w-[150px]"
+                                                            sx={{ minWidth: 155 }}
                                                             size="small"
                                                             value={searchTerms[index]}
                                                             onChange={(e) => handleSearchChange(index, e.target.value)}
@@ -444,17 +451,17 @@ const OrderList = () => {
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{ background: "#3f621217" }}>
                                         {filteredList.length === 0 ? (
                                             <tr>
-                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500" style={{textAlign:"center"}}>
+                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500" style={{ textAlign: "center"  ,borderRadius: "10px 10px 10px 10px"}}>
                                                     No data found
                                                 </td>
                                             </tr>
                                         ) : (
                                             filteredList.map((row, index) => (
                                                 <tr key={row.code} className="hover:bg-gray-100">
-                                                    <td className="py-2 px-4">{startIndex + index}</td>
+                                                    <td className="py-2 px-4"  style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
                                                     {OnlineOrdercolumns.map((column) => {
                                                         const value = row[column.id] || '-';
                                                         const isStatus = column.id === 'y_n';
@@ -467,11 +474,11 @@ const OrderList = () => {
                                                             </td>
                                                         );
                                                     })}
-                                                    <td >
+                                                    <td style={{ borderRadius: "0 10px 10px 0" }}>
                                                         <VisibilityIcon
                                                             className='cursor-pointer'
                                                             onClick={() => handleOpenDialog(row.item_id)}
-                                                            color="primary"
+                                                            style={{ color: "var(--color1)" }}
                                                         />
                                                     </td>
                                                 </tr>
@@ -522,7 +529,7 @@ const OrderList = () => {
                             sx={{
                                 "& .MuiDialog-container": {
                                     "& .MuiPaper-root": {
-                                        width: "65%",
+                                        width: "50%",
                                         maxWidth: "1900px",  // Set your width here
                                     },
                                 },
@@ -530,8 +537,8 @@ const OrderList = () => {
                             <DialogTitle id="alert-dialog-title" className="secondary">
                                 Item Purchase History
                             </DialogTitle>
-                            <div className="px-6 " >
-                                <Alert severity="info">
+                            <div className="px-6" >
+                                <Alert severity="info" className="info_box_fld">
                                     <AlertTitle>Info</AlertTitle>
                                     Lastest 5 Purchase History.
                                 </Alert>
@@ -545,7 +552,7 @@ const OrderList = () => {
                             </IconButton>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
-                                    <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
+                                    <div className="flex" style={{ flexDirection: 'column', gap: '19px', whiteSpace: 'nowrap' }}>
                                         <table className="custom-table" style={{ background: "none" }}>
                                             <thead>
                                                 <tr>
@@ -559,7 +566,7 @@ const OrderList = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody >
                                                 {purchaseHistory
                                                     .map((row, index) => {
                                                         return (
@@ -670,7 +677,7 @@ const OrderList = () => {
                                     </div>
                                 </DialogContentText>
                             </DialogContent>
-                            <DialogActions>
+                            <DialogActions style={{ padding: '24px' }}>
                                 <Button autoFocus variant="contained" className="p-5" style={{ textTransform: 'none', backgroundColor: "#3f6212" }} onClick={PlaceOrder} >
                                     Place Order
                                 </Button>

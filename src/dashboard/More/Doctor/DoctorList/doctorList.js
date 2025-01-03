@@ -494,7 +494,7 @@ const DoctorList = () => {
                   <Button
                     variant="contained"
 
-                    style={{background: 'var(--color1)', display: "flex", gap: "0px" }}
+                    style={{ background: 'var(--color1)', display: "flex", gap: "0px" }}
                     onClick={handelAddOpen}
                   >
                     <AddIcon /> Add Doctor
@@ -508,9 +508,9 @@ const DoctorList = () => {
                     onClick={exportToCSV}
                   >
                     <img src="/csv-file.png"
-                                        className="report-icon absolute mr-10"
-                                        alt="csv Icon"
-                                        />
+                      className="report-icon absolute mr-10"
+                      alt="csv Icon"
+                    />
                     Download
                   </Button>
                 )}
@@ -518,7 +518,7 @@ const DoctorList = () => {
             </div>
             <div className="bg-white p-4">
               <div className="overflow-x-auto mt-4">
-                <table className="w-full border-collapse custom-table">
+                <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                   <thead className="bg-gray-100">
                     <tr>
                       <th>SR. No</th>
@@ -530,7 +530,7 @@ const DoctorList = () => {
                             </span>
                             <SwapVertIcon />
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               label={`Search ${column.label}`}
                               id="filled-basic"
                               size="small"
@@ -545,12 +545,12 @@ const DoctorList = () => {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
                     {filteredList.length === 0 ? (
                       <tr>
                         <td
                           colSpan={columns.length + 2}
-                          style={{ textAlign: "center", color: "gray" }}
+                          style={{ textAlign: "center", color: "gray" ,borderRadius: "10px 10px 10px 10px" }}
                         >
                           No data found
                         </td>
@@ -564,7 +564,7 @@ const DoctorList = () => {
                             tabIndex={-1}
                             key={row.code}
                           >
-                            <td>{startIndex + index}</td>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
                             {columns.map((column) => {
                               let value = row[column.id];
                               if (column.id === "email") {
@@ -594,30 +594,31 @@ const DoctorList = () => {
                                 </td>
                               );
                             })}
-
-                            <td
-                              style={{
-                                fontSize: "15px",
-                                display: "flex",
-                                gap: "5px",
-                                color: "gray",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <VisibilityIcon
-                                style={{ color: "var(--color1)" }}
-
-                                onClick={() => {
-                                  history.push(`/more/doctor/${row.id}`);
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <div
+                                style={{
+                                  fontSize: "15px",
+                                  display: "flex",
+                                  gap: "5px",
+                                  color: "gray",
+                                  cursor: "pointer",
                                 }}
-                              />
-                              {hasPermission(permissions, "doctor edit") && (
-                                <BorderColorIcon
+                              >
+                                <VisibilityIcon
                                   style={{ color: "var(--color1)" }}
 
-                                  onClick={() => handleEditOpen(row)}
+                                  onClick={() => {
+                                    history.push(`/more/doctor/${row.id}`);
+                                  }}
                                 />
-                              )}
+                                {hasPermission(permissions, "doctor edit") && (
+                                  <BorderColorIcon
+                                    style={{ color: "var(--color1)" }}
+
+                                    onClick={() => handleEditOpen(row)}
+                                  />
+                                )}
+                              </div>
                             </td>
                           </tr>
                         );
@@ -734,7 +735,7 @@ const DoctorList = () => {
                     </div>
                     <div>
                       <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className="downloadFile">
-                      <CloudDownloadIcon className="mr-2" />
+                        <CloudDownloadIcon className="mr-2" />
 
                         Sample File Download
                       </Button>
@@ -808,7 +809,7 @@ const DoctorList = () => {
                               )}
                               renderInput={(params) => (
                                 <TextField
-                 autoComplete="off" {...params} />
+                                  autoComplete="off" {...params} />
                               )}
                               freeSolo
                             />
@@ -826,7 +827,7 @@ const DoctorList = () => {
                               {/* <span className="text-red-600 ml-1">*</span> */}
                             </div>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={clinic}
@@ -834,7 +835,7 @@ const DoctorList = () => {
                                 setClinic(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                             {errors.clinic && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -849,7 +850,7 @@ const DoctorList = () => {
                               Email ID
                             </span>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={emailId}
@@ -857,7 +858,7 @@ const DoctorList = () => {
                                 setEmailId(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                           </div>
                           <div
@@ -909,7 +910,7 @@ const DoctorList = () => {
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <span className="label primary">Address</span>
                             <TextField
-                 autoComplete="off"
+                              autoComplete="off"
                               id="outlined-multiline-static"
                               size="small"
                               value={address}
@@ -917,7 +918,7 @@ const DoctorList = () => {
                                 setAddress(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                           </div>
                         </div>
@@ -935,7 +936,7 @@ const DoctorList = () => {
                     </Button>
                     <Button
                       autoFocus
-                      
+
                       variant="contained"
                       color="error"
                       onClick={resetAddDialog}

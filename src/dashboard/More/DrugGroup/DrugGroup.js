@@ -349,7 +349,7 @@ const DrugGroup = () => {
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                 autoComplete="off" {...params} label="Search Drug Name" />}
+                                            autoComplete="off" {...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
@@ -357,8 +357,8 @@ const DrugGroup = () => {
                                     <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto mt-4">
-                                <table className="w-full border-collapse custom-table">
+                            <div className="overflow-x-auto mt-4" style={{ overflowX: 'auto' }}>
+                                <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead style={{ background: "rgba(153, 153, 153, 0.1)" }}>
                                         <tr>
                                             <th>SR No.</th>
@@ -370,17 +370,17 @@ const DrugGroup = () => {
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                         {drugGroupData.length === 0 ? (
                                             <tr>
-                                                <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                                <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>
                                         ) :
                                             (drugGroupData?.map((item, index) => (
                                                 <tr key={index}>
-                                                    <td>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                         {startIndex + index}
                                                     </td>
                                                     {drugGroupColumns.map((column) => (
@@ -389,7 +389,7 @@ const DrugGroup = () => {
                                                         </td>
                                                     ))}
 
-                                                    <td>
+                                                    <td style={{ borderRadius: "0 10px 10px 0" }}>
                                                         <div className="px-2">
                                                             < BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(item)} />
                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
@@ -446,7 +446,7 @@ const DrugGroup = () => {
                                             value={drugGroupName}
                                             onChange={(e) => { setDrugGroupName(e.target.value) }}
                                             style={{ minWidth: 450 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         /> */}
                                         <Autocomplete
                                             value={drugGroupName}
@@ -464,7 +464,7 @@ const DrugGroup = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off" {...params} />
+                                                    autoComplete="off" {...params} />
                                             )}
                                             freeSolo
                                         />

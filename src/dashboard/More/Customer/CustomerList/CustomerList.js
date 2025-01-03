@@ -588,7 +588,7 @@ sx={{
                             </div> */}
                         </div>
                         <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table">
+                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead className="bg-gray-100">
                                     <tr>
                                         <th>SR. No
@@ -599,7 +599,7 @@ sx={{
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
                                                         size="small"
@@ -613,10 +613,10 @@ sx={{
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style={{ backgroundColor: "#3f621217" }}>
                                     {filteredList.length === 0 ? (
                                         <tr>
-                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray'  ,borderRadius: "10px 10px 10px 10px"}}>
                                                 No data found
                                             </td>
                                         </tr>
@@ -624,7 +624,7 @@ sx={{
                                         filteredList.map((row, index) => {
                                             return (
                                                 <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                    <td>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                         {startIndex + index}
                                                     </td>
                                                     {columns.map((column) => {
@@ -652,12 +652,13 @@ sx={{
                                                             </td>
                                                         );
                                                     })}
-
-                                                    <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer' }}>
-                                                        <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
-                                                        {hasPermission(permissions, "customer edit") && row.name !== 'Direct Customers' && (
-                                                            <BorderColorIcon
-                                                                style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
+                                                    <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                        <div style={{ fontSize: '15px', display: 'flex', gap: '6px', color: 'gray', cursor: 'pointer' }}>
+                                                            <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
+                                                            {hasPermission(permissions, "customer edit") && row.name !== 'Direct Customers' && (
+                                                                <BorderColorIcon
+                                                                    style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} disabled={row.name == 'Direct Customers'} />)}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );
@@ -827,13 +828,13 @@ sx={{
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={customer}
                                                         onChange={(e) => { setCustomer(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.customer && <span style={{ color: 'red', fontSize: '12px' }}>{errors.customer}</span>}
                                                 </div>
@@ -858,26 +859,26 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Email ID</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={emailId}
                                                         onChange={(e) => { setEmailId(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Amount</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         type="number"
                                                         value={amount}
                                                         onChange={(e) => { setAmount(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -886,25 +887,25 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Area</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={area}
                                                         onChange={(e) => { setArea(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">City</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={city}
                                                         onChange={(e) => { setCity(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -913,27 +914,27 @@ sx={{
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Address</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={address}
                                                         onChange={(e) => { setAddress(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">State</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={state}
                                                         onChange={(e) => { setState(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>

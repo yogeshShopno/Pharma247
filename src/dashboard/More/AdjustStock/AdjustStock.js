@@ -164,12 +164,12 @@ const AdjustStock = () => {
             ).then((response) => {
                 setAdjustStockListData(response.data.data.data);
                 setIsLoading(false);
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
             })
-           
+
         } catch (error) {
             console.error("API error:", error);
         }
@@ -192,13 +192,13 @@ const AdjustStock = () => {
             ).then((response) => {
                 const data = response.data.data
                 setBatchListData(response.data.data);
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
 
             })
-            
+
         } catch (error) {
             console.error("API error:", error);
         }
@@ -325,12 +325,12 @@ const AdjustStock = () => {
                 setStockAdjust('')
                 setRemainingStock('')
                 setAdjustDate(new Date())
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
             })
-          
+
         } catch (error) {
             console.error("API error:", error);
         }
@@ -393,13 +393,13 @@ const AdjustStock = () => {
                         <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                             <div className="detail" >
                                 <TextField
-                 autoComplete="off"
+                                    autoComplete="off"
                                     id="outlined-basic"
                                     value={search}
                                     sx={{ width: 'auto' }}
                                     size="small"
                                     onChange={(e) => setSearch(e.target.value)}
-                                    variant="outlined"
+                                    variant="standard"
                                     onKeyPress={handleKeyPress}
                                     placeholder="Search by Item name,Batch No"
                                     InputProps={{
@@ -423,7 +423,7 @@ const AdjustStock = () => {
                             </div>
                         </div>
                         <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table">
+                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead className="bg-gray-100">
                                     <tr>
                                         <th className="px-4 py-2 ">SR. No</th>
@@ -447,21 +447,23 @@ const AdjustStock = () => {
                                         ))}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style={{ backgroundColor: "#3f621217" }}>
                                     {filteredList.length === 0 ? (
                                         <tr>
-                                            <td colSpan={stockList.length + 1} className=" text-gray-500 py-4">
+                                            <td colSpan={stockList.length + 1} className=" text-gray-500 py-4" style={{ borderRadius: "10px 10px 10px 10px" }}>
                                                 No data found
                                             </td>
                                         </tr>
                                     ) : (
                                         filteredList.map((row, index) => (
                                             <tr key={row.code} className="hover:bg-gray-100 cursor-pointer">
-                                                <td className="px-4 py-2">{startIndex + index}</td>
-                                                {stockList.map((column) => {
+                                                <td className="px-4 py-2" style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
+                                                {stockList.map((column, colIndex) => {
                                                     const value = row[column.id];
                                                     return (
-                                                        <td key={column.id} >
+                                                        <td key={column.id} style={
+                                                            colIndex === stockList.length - 1 ? { borderRadius: "0 10px 10px 0" } : {}
+                                                        }>
                                                             {column.format && typeof value === 'number'
                                                                 ? column.format(value)
                                                                 : value}
@@ -625,7 +627,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.iteam_name}
                                                 renderInput={(params) => (
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         {...params}
                                                         label="Select Item"
                                                     />
@@ -646,7 +648,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.batch_number}
                                                 renderInput={(params) => (
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         {...params}
                                                         label="Select Batch"
                                                     />
@@ -668,7 +670,7 @@ const AdjustStock = () => {
                                                 getOptionLabel={(option) => option.company_name}
                                                 renderInput={(params) => (
                                                     <TextField
-                 autoComplete="off" {...params} />
+                                                        autoComplete="off" {...params} />
                                                 )}
                                             />
                                         </div>
@@ -677,7 +679,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Unit</span>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 disabled
                                                 required
                                                 id="outlined-number"
@@ -690,7 +692,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Expiry</span>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-number"
                                                 sx={{ width: '130px' }}
                                                 size="small"
@@ -702,7 +704,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">MRP</span>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -717,7 +719,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Stock </span>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -739,7 +741,7 @@ const AdjustStock = () => {
                                                 onChange={(e) => { setStockAdjust(e.target.value) }}
                                             /> */}
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
                                                 sx={{ width: '130px' }}
@@ -754,7 +756,7 @@ const AdjustStock = () => {
                                         <div>
                                             <span className="title mb-2">Remaining Stock  </span>
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 disabled
                                                 id="outlined-number"
                                                 type="number"

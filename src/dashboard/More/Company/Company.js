@@ -86,7 +86,7 @@ const Company = () => {
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
-                  }      
+                }
             })
             .catch((error) => {
                 //console.log("API Error:", error);
@@ -141,9 +141,10 @@ const Company = () => {
                 setCompanyName('');
                 companyList();
                 toast.success(response.data.message);
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
-                    localStorage.clear();}
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             setIsLoading(false);
@@ -170,9 +171,10 @@ const Company = () => {
                 setCompanyName('');
                 setIsEditMode(false)
 
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
-                    localStorage.clear();}
+                    localStorage.clear();
+                }
 
             })
         } catch (error) {
@@ -221,9 +223,10 @@ const Company = () => {
                 setIsLoading(true)
                 companyList();
                 toast.success(response.data.message);
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
-                    localStorage.clear();}
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             // alert("404 error");
@@ -277,7 +280,7 @@ const Company = () => {
                             </div>
                         </div>
                         <div className="bg-white" style={{ paddingInline: "25px", paddingBlock: "15px" }}>
-                            <table className="custom-table " >
+                            <table className="w-full border-collapse custom-table " style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead style={{ background: "rgba(153, 153, 153, 0.1)" }} >
                                     <tr >
                                         <th>SR No.</th>
@@ -289,18 +292,18 @@ const Company = () => {
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style={{ background: "#3f621217" }}>
 
                                     {companyData.length === 0 ? (
                                         <tr>
-                                            <td colSpan={companyColumns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                            <td colSpan={companyColumns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
                                                 No data found
                                             </td>
                                         </tr>
                                     ) :
                                         (companyData?.map((item, index) => (
                                             <tr key={index}>
-                                                <td>
+                                                <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                     {startIndex + index}
                                                 </td>
                                                 {companyColumns.map((column) => (
@@ -309,8 +312,8 @@ const Company = () => {
                                                     </td>
                                                 ))}
 
-                                                <td>
-                                                    <div className="px-2">
+                                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                    <div className="px-2 ">
                                                         < BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(item)} />
                                                         <DeleteIcon style={{ color: "var(--color6)" }} onClick={() => deleteOpen(item.id)} />
                                                     </div>
@@ -365,7 +368,7 @@ const Company = () => {
                                             value={companyName}
                                             onChange={(e) => { setCompanyName(e.target.value) }}
                                             style={{ minWidth: 450 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         /> */}
                                         <Autocomplete
                                             value={companyName}
@@ -384,7 +387,7 @@ const Company = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off" {...params} />
+                                                    autoComplete="off" {...params} />
                                             )}
                                             freeSolo
                                         />

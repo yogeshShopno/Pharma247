@@ -295,8 +295,10 @@ const Salelist = () => {
                         </div>
 
                         <div className="firstrow">
-                            <div className="overflow-x-auto mt-4">
-                                <table className="w-full border-collapse custom-table">
+                            <div className="overflow-x-auto mt-4" style={{
+                                                overflow: "hidden", // Prevent corners from being overridden by table contents
+                                            }}>
+                                <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead>
                                         <tr >
                                             <th>SR. No</th>
@@ -320,10 +322,10 @@ const Salelist = () => {
                                             <th> Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{ background: "#3f621217" }}>
                                         {filteredList.length === 0 ? (
                                             <tr>
-                                                <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                                <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>
@@ -332,7 +334,7 @@ const Salelist = () => {
                                                 filteredList.map((row, index) => {
                                                     return (
                                                         <tr key={row.id}>
-                                                            <td>{startIndex + index}</td>
+                                                            <td style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
                                                             {columns.map((column) => {
                                                                 if (column.id === 'customer_info') {
                                                                     const name = row.name ? row.name : '';
@@ -350,7 +352,7 @@ const Salelist = () => {
                                                                     );
                                                                 }
                                                             })}
-                                                            <td>
+                                                            <td style={{ borderRadius: "0 10px 10px 0" }}>
                                                                 <div className="flex gap-4">
                                                                     <VisibilityIcon color="primary" onClick={() => { history.push(`/salebill/view/${row.id}`) }} />
                                                                     <FaFilePdf className="w-5 h-5 text-gray-700 hover:text-black" onClick={() => pdfGenerator(row.id)} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import Header from "../../Header";
 import axios from "axios";
@@ -16,6 +16,10 @@ import IconButton from '@mui/material/IconButton';
 
 const LoyaltyPoint = () => {
     const token = localStorage.getItem("token");
+    const inputRef1 = useRef(null);
+    const inputRef2 = useRef(null);
+    const inputRef3 = useRef(null);
+
     const loyaltyPointLabel = [
         { id: 'minimum', label: 'Minimum Amount', minWidth: 100 },
         { id: 'maximum', label: 'Maximum Amount', minWidth: 100 },
@@ -46,6 +50,12 @@ const LoyaltyPoint = () => {
         setOpenAddPopUp(true);
         setHeader('Add Loyalty Point');
         setButtonLabel('Save')
+
+        setTimeout(() => {
+            if (inputRef1.current) {
+                inputRef1.current.focus();
+            }
+        }, 0);
     }
 
     const handleEditOpen = (row) => {
@@ -98,16 +108,31 @@ const LoyaltyPoint = () => {
     };
 
     const validData = () => {
-        if (isEditMode == false) {
+        if (isEditMode === false) {
             const newErrors = {};
+
+            // Check if the new minimum and maximum values fall within the already existing range
+            const existingLoyaltyPoints = loyaltypointData; // Assuming this is the data already fetched
+            for (let i = 0; i < existingLoyaltyPoints.length; i++) {
+                const item = existingLoyaltyPoints[i];
+                if (
+                    (Number(minimumAmount) >= Number(item.minimum) && Number(minimumAmount) <= Number(item.maximum)) ||
+                    (Number(maximumAmount) >= Number(item.minimum) && Number(maximumAmount) <= Number(item.maximum))
+                ) {
+                    toast.error('Range overlaps. Choose different values.');
+                    return false; // Prevent form submission if this condition fails
+                }
+            }
+
+            // Validate minimum, maximum and percentage
             if (!maximumAmount) {
-                newErrors.maximumAmount = 'maximum amount is required';
-                toast.error(newErrors.maximumAmount)
+                newErrors.maximumAmount = 'Maximum amount is required';
+                toast.error(newErrors.maximumAmount);
             }
 
             if (!minimumAmount) {
-                newErrors.minimumAmount = 'minimum amount is required';
-                toast.error(newErrors.minimumAmount)
+                newErrors.minimumAmount = 'Minimum amount is required';
+                toast.error(newErrors.minimumAmount);
             }
 
             if (Number(maximumAmount) <= Number(minimumAmount)) {
@@ -121,21 +146,21 @@ const LoyaltyPoint = () => {
                 AddLoyaltyPoint();
             }
             return isValid;
-        }
-        else {
+        } else {
+            // Similar validation logic for Edit Mode, if needed
             const newErrors = {};
             if (!maximumAmount) {
-                newErrors.maximumAmount = 'maximum amount is required';
-                toast.error(newErrors.maximumAmount)
+                newErrors.maximumAmount = 'Maximum amount is required';
+                toast.error(newErrors.maximumAmount);
             }
             if (!minimumAmount) {
-                newErrors.minimumAmount = 'minimum amount is required';
-                toast.error(newErrors.minimumAmount)
+                newErrors.minimumAmount = 'Minimum amount is required';
+                toast.error(newErrors.minimumAmount);
             }
             setErrors(newErrors);
             const isValid = Object.keys(newErrors).length === 0;
             if (isValid) {
-                EditDrugGroup();
+                EditLoyaltyPoint();
             }
             return isValid;
         }
@@ -169,7 +194,7 @@ const LoyaltyPoint = () => {
         }
     }
 
-    const EditDrugGroup = async () => {
+    const EditLoyaltyPoint = async () => {
         let data = new FormData();
         data.append('id', loyaltyPointID);
         data.append('maximum', maximumAmount);
@@ -239,6 +264,17 @@ const LoyaltyPoint = () => {
 
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (event.target === inputRef1.current && inputRef2.current) {
+                inputRef2.current.focus();
+            } else if (event.target === inputRef2.current && inputRef3.current) {
+                inputRef3.current.focus();
+            }
+        }
+    };
+
     return (
         <div >
             <Header />
@@ -286,12 +322,8 @@ const LoyaltyPoint = () => {
                                         onChange={handleLoyaltyPointList}
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
-<<<<<<< HEAD
-                                        renderInput={(params) => <TextField {...params} label="Search Drug Name" />}
-=======
                                         renderInput={(params) => <TextField
                  autoComplete="off" autoComplete="off"{...params} label="Search Drug Name" />}
->>>>>>> main
                                     />
                                 </div>
                                 <div>
@@ -299,8 +331,8 @@ const LoyaltyPoint = () => {
                                 </div>
                             </div> */}
                             <div className="overflow-x-auto mt-4">
-                                <table className="w-full border-collapse custom-table">
-                                    <thead style={{ background: "rgba(153, 153, 153, 0.1)" }}>
+                                <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
+                                    <thead className="bg-gray-100">
                                         <tr>
                                             <th>SR No.</th>
                                             {loyaltyPointLabel.map((column) => (
@@ -341,17 +373,17 @@ const LoyaltyPoint = () => {
                                         }
                                     </tbody> */}
 
-                                    <tbody>
+                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                         {loyaltypointData.length === 0 ? (
                                             <tr>
-                                                <td colSpan={loyaltyPointLabel.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                                <td colSpan={loyaltyPointLabel.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>
                                         ) : (
                                             loyaltypointData?.map((item, index) => (
                                                 <tr key={index}>
-                                                    <td>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                         {startIndex + index}
                                                     </td>
                                                     {loyaltyPointLabel.map((column) => (
@@ -359,7 +391,7 @@ const LoyaltyPoint = () => {
                                                             {item[column.id]}
                                                         </td>
                                                     ))}
-                                                    <td>
+                                                    <td style={{ borderRadius: "0 10px 10px 0"}}>
                                                         <div className="px-2">
                                                             <BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(item)} />
                                                             <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
@@ -413,13 +445,15 @@ const LoyaltyPoint = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     type="number"
+                                                    inputRef={inputRef1}
+                                                    onKeyDown={handleKeyDown}
                                                     value={minimumAmount}
                                                     onChange={(e) => {
                                                         e.target.value = e.target.value.replace(/[^0-9]/g, '');
                                                         setMinimumAmount(e.target.value)
                                                     }}
                                                     label="Minimum"
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
@@ -432,13 +466,15 @@ const LoyaltyPoint = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     type="number"
+                                                    inputRef={inputRef2}
+                                                    onKeyDown={handleKeyDown}
                                                     value={maximumAmount}
                                                     onChange={(e) => {
                                                         e.target.value = e.target.value.replace(/[^0-9]/g, '');
                                                         setMaximumAmount(e.target.value)
                                                     }}
                                                     label="Maximum"
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
@@ -453,6 +489,14 @@ const LoyaltyPoint = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     type="number"
+                                                    inputRef={inputRef3}
+                                                    onKeyDown={(e) => {
+                                                        handleKeyDown(e);
+
+                                                        if (e.key === 'Enter') {
+                                                            validData();
+                                                        }
+                                                    }}
                                                     value={percentage}
                                                     onChange={(e) => {
                                                         e.target.value = e.target.value.replace(/[^0-9]/g, '');

@@ -329,7 +329,7 @@ const Package = () => {
 
                     {packageAllData.length === 0 ? (
                       <tr>
-                        <td colSpan={packageColumns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                        <td colSpan={packageColumns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
                           No data found
                         </td>
                       </tr>

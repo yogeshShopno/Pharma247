@@ -414,8 +414,10 @@ const DistributerList = () => {
 
                         </div>
                     </div>
-                    <div className="overflow-x-auto firstrow">
-                        <table className="w-full border-collapse custom-table">
+                    <div className="overflow-x-auto firstrow" style={{
+                        overflow: "hidden", // Prevent corners from being overridden by table contents
+                    }}>
+                        <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                             <thead className="bg-gray-100">
                                 <tr>
                                     <th>SR. No</th>
@@ -424,7 +426,7 @@ const DistributerList = () => {
                                             <div className='headerStyle'>
                                                 <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"
                                                     size="small"
@@ -437,10 +439,10 @@ const DistributerList = () => {
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style={{ background: "#3f621217" }}>
                                 {tableData.length === 0 ? (
                                     <tr>
-                                        <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
+                                        <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
                                             No data found
                                         </td>
                                     </tr>
@@ -448,7 +450,7 @@ const DistributerList = () => {
                                     tableData.map((row, index) => {
                                         return (
                                             <tr hover tabIndex={-1} key={row.code} >
-                                                <td>
+                                                <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                     {startIndex + index}
                                                 </td>
 
@@ -465,11 +467,13 @@ const DistributerList = () => {
                                                         </td>
                                                     );
                                                 })}
-                                                <td className="d-flex gap-2">
-                                                    <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
-                                                    {hasPermission(permissions, "distributor edit") && (
-                                                        <BorderColorIcon
-                                                            style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
+                                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                    <div className="d-flex gap-4">
+                                                        <VisibilityIcon style={{ color: "var(--color1)" }} onClick={() => { history.push(`/DistributerView/${row.id}`) }} />
+                                                        {hasPermission(permissions, "distributor edit") && (
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />)}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );
@@ -477,52 +481,52 @@ const DistributerList = () => {
                             </tbody>
                         </table>
                         <div className="flex justify-center mt-4">
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
-                disabled={filteredList.length === 0}
-              >
-                Next
-              </button>
-            </div>
+                            <button
+                                onClick={handlePrevious}
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'
+                                    }`}
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            {currentPage > 2 && (
+                                <button
+                                    onClick={() => handleClick(currentPage - 2)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage - 2}
+                                </button>
+                            )}
+                            {currentPage > 1 && (
+                                <button
+                                    onClick={() => handleClick(currentPage - 1)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage - 1}
+                                </button>
+                            )}
+                            <button
+                                onClick={() => handleClick(currentPage)}
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                            >
+                                {currentPage}
+                            </button>
+                            {currentPage < totalPages && (
+                                <button
+                                    onClick={() => handleClick(currentPage + 1)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage + 1}
+                                </button>
+                            )}
+                            <button
+                                onClick={handleNext}
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage ? 'bg-gray-200 text-gray-700' : 'secondary-bg text-white'}`}
+                                disabled={filteredList.length === 0}
+                            >
+                                Next
+                            </button>
+                        </div>
 
                     </div>
 
@@ -551,13 +555,13 @@ const DistributerList = () => {
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={gstNumber}
                                                         onChange={(e) => setGstnumber(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.Doctor && <span className="text-red-600 text-xs">{errors.Doctor}</span>}
                                                 </div>
@@ -567,13 +571,13 @@ const DistributerList = () => {
                                                         <span className="text-red-600 ml-1">*</span>
                                                     </div>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={distributerName}
                                                         onChange={(e) => setDistributerName(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.clinic && <span className="text-red-600 text-xs">{errors.clinic}</span>}
                                                 </div>
@@ -582,13 +586,13 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Email ID</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={email}
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -611,25 +615,25 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Whatsapp No.</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={whatsapp}
                                                         onChange={(e) => setWhatsApp(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary"> Address</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={address}
                                                         onChange={(e) => setAddress(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -637,7 +641,7 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Area</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         value={area}
                                                         onChange={(e) => setArea(e.target.value)}
                                                         className="w-full"
@@ -647,13 +651,13 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Pincode</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={pincode}
                                                         onChange={(e) => setPincode(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -662,13 +666,13 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">State</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={state}
                                                         onChange={(e) => setState(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -687,13 +691,13 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Food Licence No.</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={licenceNo}
                                                         onChange={(e) => setLicenceNo(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
 
@@ -704,20 +708,20 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Credit Due Days</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={creditDuedays}
                                                         onChange={(e) => setCreditDuedays(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
 
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Bank Name</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         value={bankName}
                                                         onChange={(e) => setBankName(e.target.value)}
                                                         className="w-full"
@@ -731,19 +735,19 @@ const DistributerList = () => {
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">Account No.</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
                                                         value={accountNo}
                                                         onChange={(e) => setAccountNo(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                                                     <span className="label primary">IFSC Code</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         value={ifscCode}
                                                         onChange={(e) => setIfscCode(e.target.value)}
                                                         className="w-full"
@@ -854,7 +858,7 @@ const DistributerList = () => {
                                                 value={gstNumber}
                                                 onChange={(e) => { setGstnumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                             {errors.Doctor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.Doctor}</span>}
                                         </div>
@@ -870,7 +874,7 @@ const DistributerList = () => {
                                                 value={distributerName}
                                                 onChange={(e) => { setDistributerName(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                             {errors.clinic && <span style={{ color: 'red', fontSize: '12px' }}>{errors.clinic}</span>}
                                         </div>
@@ -885,7 +889,7 @@ const DistributerList = () => {
                                                 value={email}
                                                 onChange={(e) => { setEmail(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
@@ -914,7 +918,7 @@ const DistributerList = () => {
                                                 value={whatsapp}
                                                 onChange={(e) => { setWhatsApp(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
@@ -926,7 +930,7 @@ const DistributerList = () => {
                                                 value={address}
                                                 onChange={(e) => { setAddress(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -951,7 +955,7 @@ const DistributerList = () => {
                                                 value={pincode}
                                                 onChange={(e) => { setPincode(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -976,7 +980,7 @@ const DistributerList = () => {
                                                 value={accountNo}
                                                 onChange={(e) => { setAccountNo(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -1001,7 +1005,7 @@ const DistributerList = () => {
                                                 value={licenceNo}
                                                 onChange={(e) => { setLicenceNo(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -1026,7 +1030,7 @@ const DistributerList = () => {
                                                 value={creditDuedays}
                                                 onChange={(e) => { setCreditDuedays(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>

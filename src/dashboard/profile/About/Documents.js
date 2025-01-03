@@ -606,7 +606,7 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDate || new Date()}
+                                                    selected={licenseExpiryDate}
                                                     onChange={(newDate) => setLicenseExpiryDate(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
@@ -661,7 +661,7 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateTwo || new Date()}
+                                                    selected={licenseExpiryDateTwo}
                                                     onChange={(newDate) => setLicenseExpiryDateTwo(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
@@ -719,7 +719,7 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateThree || new Date()}
+                                                    selected={licenseExpiryDateThree}
                                                     onChange={(newDate) => setLicenseExpiryDateThree(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
@@ -773,7 +773,7 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
                                                     className="custom-datepicker"
-                                                    selected={licenseExpiryDateFour || new Date()}
+                                                    selected={licenseExpiryDateFour}
                                                     onChange={(newDate) => setLicenseExpiryDateFour(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}

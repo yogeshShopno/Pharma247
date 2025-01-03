@@ -253,7 +253,7 @@ const CashManage = () => {
                             </div>
                         </div>
                         <div className="overflow-x-auto mt-4" >
-                            <table className="w-full border-collapse custom-table">
+                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                 <thead>
                                     <tr>
                                         {cashManageDetailscolumns.map((column) => (
@@ -269,7 +269,7 @@ const CashManage = () => {
                                         ))}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style={{ backgroundColor: "#3f621217" }}>
                                     {cashManageDetails?.cash_list?.map((row) => {
                                         return (
                                             <tr
@@ -277,7 +277,7 @@ const CashManage = () => {
                                                 className="hover:bg-gray-100 cursor-pointer"
                                                 tabIndex={-1}
                                             >
-                                                {cashManageDetailscolumns.map((column) => {
+                                                {cashManageDetailscolumns.map((column, colIndex) => {
                                                     const value = row[column.id];
                                                     return (
                                                         <td
@@ -286,6 +286,7 @@ const CashManage = () => {
                                                             className={`px-4 py-2 whitespace-nowrap ${column.id === 'debit' ? 'debit-cell' :
                                                                 column.id === 'credit' ? 'credit-cell' : ''
                                                                 }`}
+                                                            style={colIndex === 0 ? { borderRadius: "10px 0 0 10px" } : colIndex === cashManageDetailscolumns.length - 1 ? { borderRadius: "0 10px 10px 0" } : {}}
                                                         >
                                                             {column.format && typeof value === 'number'
                                                                 ? column.format(value)

@@ -353,7 +353,7 @@ const PurchaseView = () => {
                                             <tbody>
                                                 {data?.cn_bill_list?.length === 0 ? (
                                                     <tr>
-                                                        <td >
+                                                        <td style={{ borderRadius: "10px 10px 10px 10px"}}>
                                                             No data found
                                                         </td>
                                                     </tr>

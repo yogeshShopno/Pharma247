@@ -326,7 +326,7 @@ const ManageExpense = () => {
                         localStorage.clear();
                     }
                 })
-               
+
             } catch (error) {
                 console.error("API error:", error);
             }
@@ -393,7 +393,7 @@ const ManageExpense = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div >
+                                    <div>
                                         <span className="text-gray-500" >End Date</span>
                                         <div >
                                             <DatePicker
@@ -441,7 +441,7 @@ const ManageExpense = () => {
                                 </div>
                             </div>
                             <div className="overflow-x-auto mt-4" >
-                                <table className="w-full border-collapse custom-table">
+                                <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead >
                                         <tr>
                                             {expenseColumns.map((column) => (
@@ -451,11 +451,11 @@ const ManageExpense = () => {
                                             ))}
                                         </tr>
                                     </thead>
-                                    <tbody >
+                                    <tbody style={{ backgroundColor: "#3f621217" }}>
                                         {ManageData?.map((item, index) => (
                                             <tr key={index} >
-                                                {expenseColumns.map((column) => (
-                                                    <td key={column.id}>
+                                                {expenseColumns.map((column, colIndex) => (
+                                                    <td key={column.id} style={colIndex === 0 ? { borderRadius: "10px 0 0 10px" } : expenseColumns.length - 1 === colIndex ? { borderRadius: "0 10px 10px 0" } : {}}>
                                                         {item[column.id]}
                                                     </td>
                                                 ))}
@@ -839,7 +839,7 @@ const ManageExpense = () => {
                                                         <div className="w-full md:w-1/2">
                                                             <span className="ExpenseBoxSubTitle">GST(%)</span>
                                                             <TextField
-                 autoComplete="off"
+                                                                autoComplete="off"
                                                                 required
 
                                                                 type="number"
@@ -853,7 +853,7 @@ const ManageExpense = () => {
                                                         <div className="w-full md:w-1/2">
                                                             <span className="ExpenseBoxSubTitle">GSTN Number</span>
                                                             <TextField
-                 autoComplete="off"
+                                                                autoComplete="off"
                                                                 required
                                                                 size="small"
                                                                 value={gstIN}
@@ -865,7 +865,7 @@ const ManageExpense = () => {
                                                     <div className="w-full md:w-1/2">
                                                         <span className="ExpenseBoxSubTitle">Party Name</span>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             required
                                                             size="small"
                                                             value={party}
@@ -881,7 +881,7 @@ const ManageExpense = () => {
                                                     <span className="ExpenseBoxSubTitle">without GST Amount</span>
                                                     {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -893,7 +893,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Total</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -923,7 +923,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Reference No.</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         required
                                                         type="number"
                                                         size="small"
@@ -937,7 +937,7 @@ const ManageExpense = () => {
                                                 <div className="w-full md:w-1/2">
                                                     <span className="ExpenseBoxSubTitle">Remark</span>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         required
                                                         size="small"
                                                         value={remark}

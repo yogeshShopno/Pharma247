@@ -391,7 +391,7 @@ useEffect(() => {
                 <tbody>
                   {filteredList.length === 0 ? (
                     <tr>
-                      <td colSpan={columns.length + 1} className="text-center text-gray-500">
+                      <td colSpan={columns.length + 1} className="text-center text-gray-500" style={{ borderRadius: "10px 10px 10px 10px"}}>
                         No data found
                       </td>
                     </tr>

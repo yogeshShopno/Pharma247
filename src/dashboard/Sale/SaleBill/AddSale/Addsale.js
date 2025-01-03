@@ -31,16 +31,20 @@ import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
 const Addsale = () => {
     const token = localStorage.getItem("token")
-    const inputRef1 = useRef();
-    const inputRef2 = useRef();
-    const inputRef3 = useRef();
-    const inputRef4 = useRef();
-    const inputRef5 = useRef();
-    const inputRef6 = useRef();
-    const inputRef7 = useRef();
-    const inputRef8 = useRef();
-    const inputRef9 = useRef();
-    const inputRef10 = useRef();
+    const searchInputRef = useRef(null);
+    const itemNameInputRef = useRef(null);
+    const barcodeInputRef = useRef(null);
+    const unitInputRef = useRef(null);
+    const inputRef1 = useRef(null);
+    const inputRef2 = useRef(null);
+    const inputRef3 = useRef(null);
+    const inputRef4 = useRef(null);
+    const inputRef5 = useRef(null);
+    const inputRef6 = useRef(null);
+    const inputRef7 = useRef(null);
+    const inputRef8 = useRef(null);
+    const inputRef9 = useRef(null);
+    const inputRef10 = useRef(null);
     const [item, setItem] = useState('')
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(false);
@@ -249,7 +253,6 @@ const Addsale = () => {
                             },
                         }
                     );
-                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -318,6 +321,27 @@ const Addsale = () => {
         }
     }, [itemId, base, qty]);
 
+    const handleAddNewItemValidation = () => {
+        const newErrors = {};
+        if (!addItemName) {
+            newErrors.addItemName = "Item Name is required";
+            toast.error(newErrors.addItemName)
+        } else if (!addUnit) {
+            newErrors.addUnit = "Unit is required";
+            toast.error(newErrors.addUnit)
+        } else if (!addBarcode) {
+            newErrors.addBarcode = "Barcode is required";
+            toast.error(newErrors.addBarcode)
+        }
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+            handleAddNewItem();
+        }
+
+        return isValid;
+
+    }
+
     const handleAddNewItem = async () => {
         let formData = new FormData();
         formData.append("item_name", addItemName ? addItemName : "");
@@ -357,7 +381,11 @@ const Addsale = () => {
                 setOpenAddItemPopUp(false)
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
+            } else if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
             }
+
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
@@ -406,7 +434,6 @@ const Addsale = () => {
             const allOutOfStock = items.every(item => item.stock === 0);
 
             if (allOutOfStock) {
-                console.log('Search Item-------');
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -427,11 +454,9 @@ const Addsale = () => {
             });
 
             if (res.data) {
-                console.log('Item Drug Group Data:', res.data.data.data);
                 if (res.data.data) {
                     const filteredItems = res.data.data.data.filter(item => item.stock > 0);
                     setItemList(filteredItems);
-                    console.log('Filtered itemList:', filteredItems);
                 }
             }
         } catch (error) {
@@ -442,10 +467,9 @@ const Addsale = () => {
     const resetAddDialog = () => {
         setOpenAddPopUp(false);
         setOpenAddItemPopUp(false);
-        // setCnAmount(0);
-        // setSelectedRows("")
-        // setCnTotalAmount("")
-        // setCnAmount(0);
+        setAddItemName("");
+        setAddUnit("");
+        setAddBarcode("");
     }
 
     const customerAllData = async (searchQuery) => {
@@ -460,8 +484,17 @@ const Addsale = () => {
                 },
             }
             );
-            setCustomerDetails(response.data.data)
+            const customers = response.data.data || [];
+            setCustomerDetails(customers);
             setIsLoading(false);
+
+            // Set the first customer as default if available
+            if (customers.length > 0) {
+                const firstCustomer = customers[0];
+                setCustomer(firstCustomer);
+                setLoyaltyPoints(firstCustomer.roylti_point || 0);
+                setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
+            }
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -487,6 +520,12 @@ const Addsale = () => {
     const handelAddItemOpen = () => {
         setUnsavedItems(true)
         setOpenAddItemPopUp(true);
+
+        setTimeout(() => {
+            if (itemNameInputRef.current) {
+                itemNameInputRef.current.focus();
+            }
+        }, 0);
     }
 
     const handleInputChange = (event, newInputValue) => {
@@ -552,6 +591,10 @@ const Addsale = () => {
         setGst(event.gst_name);
         // setQty(event.qty);
         setLoc(event.location)
+
+        if (inputRef5.current) {
+            inputRef5.current.focus();
+        }
     }
 
     const handleDoctorOption = (event, newValue) => {
@@ -563,27 +606,32 @@ const Addsale = () => {
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (event.target === inputRef1.current) {
+            if (event.target === inputRef1.current && inputRef2.current) {
                 inputRef2.current.focus();
-            } else if (event.target === inputRef2.current) {
+            } else if (event.target === inputRef2.current && inputRef3.current) {
                 inputRef3.current.focus();
-            } else if (event.target === inputRef3.current) {
+            } else if (event.target === inputRef3.current && inputRef4.current) {
                 inputRef4.current.focus();
-            } else if (event.target === inputRef4.current) {
+            } else if (event.target === inputRef4.current && inputRef5.current) {
                 inputRef5.current.focus();
-            } else if (event.target === inputRef5.current) {
-                inputRef6.current.focus();
-            } else if (event.target === inputRef6.current) {
+            } else if (event.target === inputRef5.current && inputRef7.current) {
                 inputRef7.current.focus();
-            } else if (event.target === inputRef7.current) {
+            } else if (event.target === inputRef7.current && inputRef8.current) {
                 inputRef8.current.focus();
-            } else if (event.target === inputRef8.current) {
+            } else if (event.target === inputRef8.current && inputRef9.current) {
                 inputRef9.current.focus();
-            } else if (event.target === inputRef9.current) {
+            } else if (event.target === inputRef9.current && inputRef10.current) {
                 inputRef10.current.focus();
             }
+
+            if (event.target === itemNameInputRef.current && barcodeInputRef.current) {
+                barcodeInputRef.current.focus();
+            } else if (event.target === barcodeInputRef.current && unitInputRef.current) {
+                unitInputRef.current.focus();
+            }
         }
-    }
+    };
+
     const AddDoctorRecord = async () => {
         let data = new FormData();
         data.append('name', doctorName ? doctorName : "");
@@ -706,12 +754,13 @@ const Addsale = () => {
 
     const saleItemList = async () => {
         let data = new FormData();
-        const params = {
-            random_number: localStorage.getItem('RandomNumber') || ''
-        };
+        data.append('random_number', localStorage.getItem('RandomNumber') || '');
+        // const params = {
+        //     random_number: localStorage.getItem('RandomNumber') || ''
+        // };
         try {
             const res = await axios.post("sales-item-list?", data, {
-                params: params,
+                // params: params,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -726,6 +775,11 @@ const Addsale = () => {
                 setMarginNetProfit(response.data.data.margin_net_profit)
                 setTotalMargin(response.data.data.total_margin)
                 setTotalNetRate(response.data.data.total_net_rate)
+
+                if (response.data.status == 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -746,138 +800,199 @@ const Addsale = () => {
                     },
                 })
                 .then((response) => {
-                    console.log('response.data.data :>> ', response.data.data);
-                    setBarcodeBatch(response?.data?.data[0])
-                    setUnit(Number(response?.data?.data[0]?.unit))
-                    setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-                    setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-                    setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
-                    setQty(Number(response?.data?.data[0]?.batch_list[0]?.qty))
-                    setMaxQty(Number(response?.data?.data[0]?.batch_list[0]?.stock))
-                    setPtr(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
-                    setDiscount(Number(response?.data?.data[0]?.batch_list[0]?.discount))
-                    setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
-                    setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst_name));
-                    setLoc(response?.data?.data[0]?.batch_list[0]?.location);
-                    setTotalMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
-                    setTotalNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
-                    setBarcodeItemName(response?.data?.data[0]?.iteam_name);
-                    setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
-                    setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
-                    console.log(response?.data?.data[0]?.batch_list[0], itemId)
-
-                    setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
-
-                    setItemEditID(Number(response.data.data[0]?.id))
 
                     setTimeout(() => {
-                        if (totalAmount != 0) {
-                            handleBarcodeItem()
+                        handleBarcodeItem()
+                        // handleAddItem()
+                    }, 100);
+
+                    const handleBarcodeItem = async () => {
+                        setUnsavedItems(true)
+                        let data = new FormData();
+
+                        data.append("random_number", localStorage.getItem("RandomNumber"));
+                        // data.append("iteam_name", response?.data?.data[0]?.iteam_name);
+
+                        data.append("unit", Number(response?.data?.data[0]?.batch_list[0]?.unit))
+                        data.append("batch", response?.data?.data[0]?.batch_list[0]?.batch_name ? response?.data?.data[0]?.batch_list[0]?.batch_name : 0)
+                        data.append("exp", response?.data?.data[0]?.batch_list[0]?.expiry_date);
+
+                        data.append("mrp", Number(response?.data?.data[0]?.batch_list[0]?.mrp) ? Number(response?.data?.data[0]?.batch_list[0]?.mrp) : 0);
+                        data.append("qty", Number(response?.data?.data[0]?.batch_list[0]?.qty) ? Number(response?.data?.data[0]?.batch_list[0]?.qty) : 0);
+                        data.append("free_qty", Number(response?.data?.data[0]?.batch_list[0]?.maxQty) ? Number(response?.data?.data[0]?.batch_list[0]?.maxQty) : 0);
+                        data.append("ptr", Number(response?.data?.data[0]?.batch_list[0]?.ptr) ? Number(response?.data?.data[0]?.batch_list[0]?.ptr) : 0);
+                        data.append("discount", Number(response?.data?.data[0]?.batch_list[0]?.discount) ? Number(response?.data?.data[0]?.batch_list[0]?.discount) : 0);
+                        data.append("base", Number(response?.data?.data[0]?.batch_list[0]?.base) ? Number(response?.data?.data[0]?.batch_list[0]?.base) : 0);
+                        data.append("gst", Number(response?.data?.data[0]?.batch_list[0]?.gst_name) ? Number(response?.data?.data[0]?.batch_list[0]?.gst_name) : 0);
+                        data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
+                        data.append("margin", Number(response?.data?.data[0]?.batch_list[0]?.margin) ? Number(response?.data?.data[0]?.batch_list[0]?.margin) : 0);
+                        data.append("net_rate", Number(response?.data?.data[0]?.batch_list[0]?.net_rate) ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate) : 0);
+                        data.append("item_id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
+
+                        data.append("id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0)
+                        data.append("user_id", userId);
+                        data.append("unit_id", Number(0));
+
+                        // setBarcodeBatch(response?.data?.data[0])
+                        // setUnit(Number(response?.data?.data[0]?.unit))
+                        // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
+                        // setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
+                        // setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
+                        // setQty(Number(response?.data?.data[0]?.batch_list[0]?.qty))
+                        // setMaxQty(Number(response?.data?.data[0]?.batch_list[0]?.stock))
+                        // setPtr(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
+                        // setDiscount(Number(response?.data?.data[0]?.batch_list[0]?.discount))
+                        // setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
+                        // setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst_name));
+                        // setLoc(response?.data?.data[0]?.batch_list[0]?.location);
+                        // setTotalMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
+                        // setTotalNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
+                        // setBarcodeItemName(response?.data?.data[0]?.iteam_name);
+                        // setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
+                        // setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
+                        // console.log(response?.data?.data[0]?.batch_list[0], itemId)
+
+                        // setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
+
+                        // setItemEditID(Number(response.data.data[0]?.id))
+
+
+                        try {
+                            const response = axios.post('sales-item-add', data, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            })
+                            setTotalAmount(0)
+                            saleItemList();
+                            setUnit('')
+                            setBatch('')
+                            setExpiryDate('');
+                            setMRP('')
+                            setQty('')
+                            setBase('')
+                            setGst('')
+                            setBatch('')
+                            setBarcode("")
+                            setLoc('')
+                            setOrder('')
+
+                            setIsEditMode(false);
+                            setSelectedEditItemId(null);
+                            setBarcode("");
+                            setValue("");
+                            setSearchItem("");
+                            if (response.data.status === 401) {
+                                history.push('/');
+                                localStorage.clear();
+                            }
+                        } catch (error) {
 
                         }
-                    }, 1000);
+                    }
 
-                    setUnsavedItems(true)
-                    // const batch = response?.data?.data[0]?.batch_list[0];
-                    // if (batch) {
-                    //     setUnit(batch.unit);
-                    //     setBatch(batch.batch_name);
-                    //     setExpiryDate(batch.expiry_date);
-                    //     setMRP(batch.mrp);
-                    //     setQty(batch.purchase_qty);
-                    //     setPtr(batch.ptr);
-                    //     setDiscount(batch.discount);
-                    //     setBase(batch.base);
-                    //     setGst(batch.gst_name);
-                    //     setLoc(batch.location);
-                    //     setTotalMargin(batch.margin);
-                    //     setTotalNetRate(batch.net_rate);
-                    //     setSearchItem(batch.iteam_name);
-                    //     setItemId(batch.item_id);
-                    //     setSelectedEditItemId(batch.id);
-                    // }
-                    // setIsEditMode(true)
                 });
+
+
+            // const batch = response?.data?.data[0]?.batch_list[0];
+            // if (batch) {
+            //     setUnit(batch.unit);
+            //     setBatch(batch.batch_name);
+            //     setExpiryDate(batch.expiry_date);
+            //     setMRP(batch.mrp);
+            //     setQty(batch.purchase_qty);
+            //     setPtr(batch.ptr);
+            //     setDiscount(batch.discount);
+            //     setBase(batch.base);
+            //     setGst(batch.gst_name);
+            //     setLoc(batch.location);
+            //     setTotalMargin(batch.margin);
+            //     setTotalNetRate(batch.net_rate);
+            //     setSearchItem(batch.iteam_name);
+            //     setItemId(batch.item_id);
+            //     setSelectedEditItemId(batch.id);
+            // }
+            // setIsEditMode(true)
         } catch (error) {
             console.error("API error:", error);
         }
     };
 
-    const handleBarcodeItem = async () => {
-        setUnsavedItems(true)
-        let data = new FormData();
+    // const handleBarcodeItem = async () => {
+    //     setUnsavedItems(true)
+    //     let data = new FormData();
 
 
-        data.append("random_number", localStorage.getItem("RandomNumber"));
-        data.append("weightage", unit ? Number(unit) : 1);
-        data.append("batch_number", batch ? batch : 0);
-        data.append("expiry", expiryDate);
-        data.append("mrp", mrp ? mrp : 0);
-        data.append("qty", qty ? qty : 0);
-        data.append("free_qty", maxQty ? maxQty : 0);
-        data.append("ptr", ptr ? ptr : 0);
-        data.append("discount", discount ? discount : 0);
-        data.append("base_price", base ? base : 0);
-        data.append("gst", gst.id);
-        data.append("location", loc ? loc : 0);
-        data.append("margin", totalMargin ? totalMargin : 0);
-        data.append("net_rate", totalNetRate ? totalNetRate : 0);
-        data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+    //     data.append("random_number", localStorage.getItem("RandomNumber"));
+    //     data.append("weightage", unit ? Number(unit) : 1);
+    //     data.append("batch_number", batch ? batch : 0);
+    //     data.append("expiry", expiryDate);
+    //     data.append("mrp", mrp ? mrp : 0);
+    //     data.append("qty", qty ? qty : 0);
+    //     data.append("free_qty", maxQty ? maxQty : 0);
+    //     data.append("ptr", ptr ? ptr : 0);
+    //     data.append("discount", discount ? discount : 0);
+    //     data.append("base_price", base ? base : 0);
+    //     data.append("gst", gst.id);
+    //     data.append("location", loc ? loc : 0);
+    //     data.append("margin", totalMargin ? totalMargin : 0);
+    //     data.append("net_rate", totalNetRate ? totalNetRate : 0);
+    //     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
 
 
-        data.append("item_id", itemId);
-        data.append("unit_id", Number(0));
-        data.append("user_id", userId);
-        data.append("id", selectedEditItemId ? selectedEditItemId : 0);
-        data.append("total_amount", totalAmount ? totalAmount : 0);
+    //     data.append("item_id", itemId);
+    //     data.append("unit_id", Number(0));
+    //     data.append("user_id", userId);
+    //     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+    //     data.append("total_amount", totalAmount ? totalAmount : 0);
 
-        const params = {
-            id: selectedEditItemId,
-        };
-        try {
-            const response = await axios.post("item-purchase", data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log("response", response);
+    //     const params = {
+    //         id: selectedEditItemId,
+    //     };
+    //     try {
+    //         const response = await axios.post("item-purchase", data, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+    //         console.log("response", response);
 
-            setTotalAmount(0);
-            setUnit("");
-            setBatch("");
-            setExpiryDate("");
-            setMRP("");
-            setQty("");
-            setMaxQty("");
-            setPtr("");
-            setGst("");
-            setDiscount("");
-            setTotalBase("");
-            setTotalNetRate("");
-            setBatch("");
-            setTotalMargin("");
-            setLoc("");
-            setBarcodeItemName("")
+    //         setTotalAmount(0);
+    //         setUnit("");
+    //         setBatch("");
+    //         setExpiryDate("");
+    //         setMRP("");
+    //         setQty("");
+    //         setMaxQty("");
+    //         setPtr("");
+    //         setGst("");
+    //         setDiscount("");
+    //         setTotalBase("");
+    //         setTotalNetRate("");
+    //         setBatch("");
+    //         setTotalMargin("");
+    //         setLoc("");
+    //         setBarcodeItemName("")
 
-            //   if (totalAmount) {
-            //     setSelectedRows([]);
-            //   }
-            // setNetAmount(totalAmount)
-            // handleCalNetAmount()
-            setIsEditMode(false);
-            setSelectedEditItemId(null);
+    //         //   if (totalAmount) {
+    //         //     setSelectedRows([]);
+    //         //   }
+    //         // setNetAmount(totalAmount)
+    //         // handleCalNetAmount()
+    //         setIsEditMode(false);
+    //         setSelectedEditItemId(null);
 
-            setBarcode("")
-            setValue("")
-            // Reset Autocomplete field
-            setValue("");
-            setSearchItem("");
+    //         setBarcode("")
+    //         setValue("")
+    //         // Reset Autocomplete field
+    //         setValue("");
+    //         setSearchItem("");
 
-            // setAutocompleteDisabled(false);
-        } catch (e) {
-            //console.log(e);
-        }
-    }
+    //         // setAutocompleteDisabled(false);
+    //     } catch (e) {
+    //         //console.log(e);
+    //     }
+    // }
 
     const handleSubmit = () => {
         setUnsavedItems(false);
@@ -953,7 +1068,7 @@ const Addsale = () => {
                     history.push('/salelist');
                 }, 2000);
 
-                const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) === 1);
+                const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) <= 1);
 
                 if (lowStockItems.length > 0) {
                     bulkOrderData();
@@ -980,10 +1095,13 @@ const Addsale = () => {
         }
     })
     useEffect(() => {
+        customerAllData();
+        if (searchInputRef.current) {
+            searchInputRef.current.focus(); // Focus on the search item name field
+        }
         generateRandomNumber()
         let data = new FormData();
         data.append("random_number", localStorage.getItem('RandomNumber') || '')
-
         axios.post("all-sales-item-delete", data, {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -1146,6 +1264,9 @@ const Addsale = () => {
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
             await addSaleItem();
+            if (searchInputRef.current) {
+                searchInputRef.current.focus();
+            }
         }
         return isValid;
     }
@@ -1396,6 +1517,15 @@ const Addsale = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
+                                <Button
+                                    variant="contained"
+                                    style={{ backgroundColor: "var(--color1)" }}
+
+                                    onClick={handelAddItemOpen}
+                                >
+                                    <ControlPointIcon className="mr-2" />
+                                    Add New Item
+                                </Button>
                                 <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
@@ -1496,7 +1626,10 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column'}}                                >
+                                <div className="detail custommedia" style={{
+                                    display: 'flex', flexDirection: 'column',
+                                    // width: "100%"
+                                }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
@@ -1507,7 +1640,7 @@ const Addsale = () => {
                                             setSearchQuery(newInputValue);
                                         }}
                                         options={customerDetails}
-                                        getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
+                                        getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}] [${option.roylti_point}]` : option.phone_number || ''}
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
                                         loading={isLoading}
                                         sx={{
@@ -1530,7 +1663,7 @@ const Addsale = () => {
                                             <ListItem {...props}>
                                                 <ListItemText
                                                     primary={`${option.name} `}
-                                                    secondary={`Mobile No: ${option.phone_number}`}
+                                                    secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point}`}
                                                 />
                                             </ListItem>
                                         )}
@@ -1560,7 +1693,9 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" >
+                                <div className="detail custommedia"
+                                // style={{ width: '100%' }}
+                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1623,7 +1758,7 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
+                                {/* <div className="flex gap-5 search_fld_divv" style={{ width: '100%' }} >
                                     <table style={{ maxWidth: '50%', width: '100%' }} >
                                         <Box
                                             sx={{
@@ -1651,7 +1786,6 @@ const Addsale = () => {
                                                     value={selectedOption}
                                                     blurOnSelect
                                                     size="small"
-                                                    sx={{ fontSize: "1.5rem" }}
                                                     onChange={handleOptionChange}
                                                     onInputChange={handleInputChange}
                                                     options={itemList}
@@ -1668,16 +1802,15 @@ const Addsale = () => {
                                                                 //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
                                                                 //     </>
                                                                 // }
-                                                                secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                                                                sx={{
-                                                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
-                                                                }}
+                                                                secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
+
                                                             />
                                                         </ListItem>
                                                     )}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
+                                                            inputRef={searchInputRef}
                                                             variant="outlined"
                                                             id="searchResults"
                                                             placeholder="Search Item Name..."
@@ -1737,6 +1870,7 @@ const Addsale = () => {
                                                                 <th>Batch Number</th>
                                                                 <th>Unit</th>
                                                                 <th>Expiry Date</th>
+                                                                <th>MRP</th>
                                                                 <th>QTY</th>
                                                                 <th>Loc</th>
                                                             </tr>
@@ -1760,6 +1894,7 @@ const Addsale = () => {
                                                                             <td className="text-base font-semibold">{item.batch_number}</td>
                                                                             <td className="text-base font-semibold">{item.unit}</td>
                                                                             <td className="text-base font-semibold">{item.expiry_date}</td>
+                                                                            <td className="text-base font-semibold">{item.mrp}</td>
                                                                             <td className="text-base font-semibold">{item.qty}</td>
                                                                             <td className="text-base font-semibold">{item.location}</td>
                                                                         </tr>
@@ -1787,7 +1922,7 @@ const Addsale = () => {
                                         <ControlPointIcon className="mr-2" />
                                         Add New Item
                                     </Button>
-                                </div>
+                                </div> */}
 
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1816,8 +1951,165 @@ const Addsale = () => {
                                         <tbody>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td >
-                                                    <DeleteIcon className="delete-icon" onClick={resetValue} />
-                                                    {searchItem || barcodeItemName}
+                                                    {/* <DeleteIcon className="delete-icon" onClick={resetValue} />
+                                                    {searchItem || barcodeItemName} */}
+                                                    <div className="flex gap-5 search_fld_divv" style={{ width: '100%' }} >
+                                                        <table style={{ maxWidth: '100%', width: '100%' }} >
+                                                            <Box
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexWrap: 'wrap',
+                                                                    gap: 2,
+                                                                    alignItems: 'center',
+                                                                }}
+                                                            >
+                                                                <Box
+                                                                    sx={{
+                                                                        flex: '1 1 auto',
+                                                                        // minWidth: {
+                                                                        //     xs: '350px',
+                                                                        //     sm: '500px',
+                                                                        //     md: '806px',
+                                                                        //     lg: '1000px'
+                                                                        // },
+                                                                        width: '100%',
+                                                                        background: '#ffffff',
+                                                                        borderRadius: '7px',
+                                                                    }}
+                                                                >
+                                                                    <Autocomplete
+                                                                        value={selectedOption}
+                                                                        blurOnSelect
+                                                                        size="small"
+                                                                        onChange={handleOptionChange}
+                                                                        onInputChange={handleInputChange}
+                                                                        options={itemList}
+                                                                        getOptionLabel={(option) => `${option.iteam_name || ''} `}
+                                                                        filterOptions={(option, state) => { return itemList }}
+                                                                        renderOption={(props, option) => (
+                                                                            <ListItem {...props} key={option.id}>
+                                                                                <ListItemText
+                                                                                    primary={`${option.iteam_name}, (${option.company})`}
+                                                                                    // secondary={
+                                                                                    //     <>
+                                                                                    //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                                                                    //         ₹: {option.mrp || 0},
+                                                                                    //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                                                                    //     </>
+                                                                                    // }
+                                                                                    secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
+
+                                                                                />
+                                                                            </ListItem>
+                                                                        )}
+                                                                        renderInput={(params) => (
+                                                                            <TextField
+                                                                                {...params}
+                                                                                inputRef={searchInputRef}
+                                                                                variant="outlined"
+                                                                                id="searchResults"
+                                                                                placeholder="Search Item Name..."
+                                                                                InputProps={{
+                                                                                    ...params.InputProps,
+                                                                                    style: { height: 45, fontSize: '1.2rem' },
+
+                                                                                    startAdornment: (
+                                                                                        <InputAdornment position="start">
+                                                                                            <SearchIcon sx={{ color: "var(--color1)", cursor: "pointer" }} />
+                                                                                        </InputAdornment>
+                                                                                    ),
+                                                                                }}
+                                                                                sx={{
+                                                                                    '& .MuiOutlinedInput-root': {
+                                                                                        '& fieldset': {
+                                                                                            border: 'none',
+                                                                                        },
+                                                                                        '&:hover fieldset': {
+                                                                                            border: 'none',
+                                                                                        },
+                                                                                        '&.Mui-focused fieldset': {
+                                                                                            border: 'none',
+                                                                                        },
+                                                                                        borderBottom: '1px solid ',
+                                                                                    },
+                                                                                    '& .MuiInputBase-input::placeholder': {
+                                                                                        fontSize: '1rem',
+                                                                                        color: 'black',
+                                                                                    },
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </Box>
+                                                            </Box>
+                                                            {isVisible && value && !batch &&
+                                                                <Box sx={{
+                                                                    minWidth: {
+                                                                        xs: '200px',
+                                                                        sm: '500px',
+                                                                        md: '1000px',
+                                                                    },
+                                                                    backgroundColor: 'white',
+                                                                    position: 'absolute',
+                                                                    zIndex: 1
+                                                                }}
+                                                                    id="tempId"
+                                                                >
+                                                                    <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
+                                                                        ref={tableRef}
+                                                                    >
+                                                                        <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                                            <thead>
+                                                                                <tr className="customtable">
+                                                                                    <th>Item Name</th>
+                                                                                    <th>Batch Number</th>
+                                                                                    <th>Unit</th>
+                                                                                    <th>Expiry Date</th>
+                                                                                    <th>MRP</th>
+                                                                                    <th>QTY</th>
+                                                                                    <th>Loc</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                {batchListData.length > 0 ?
+                                                                                    <>
+                                                                                        {batchListData.map(item => (
+                                                                                            <tr
+                                                                                                className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
+                                                                                                key={item.id}
+                                                                                                data-id={item.id}
+                                                                                                tabIndex={0}
+                                                                                                style={{
+                                                                                                    border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
+                                                                                                }}
+                                                                                                onClick={() => handlePassData(item)}
+                                                                                                onMouseEnter={handleMouseEnter}
+                                                                                            >
+                                                                                                <td className="text-base font-semibold">{item.iteam_name}</td>
+                                                                                                <td className="text-base font-semibold">{item.batch_number}</td>
+                                                                                                <td className="text-base font-semibold">{item.unit}</td>
+                                                                                                <td className="text-base font-semibold">{item.expiry_date}</td>
+                                                                                                <td className="text-base font-semibold">{item.mrp}</td>
+                                                                                                <td className="text-base font-semibold">{item.qty}</td>
+                                                                                                <td className="text-base font-semibold">{item.location}</td>
+                                                                                            </tr>
+                                                                                        ))}
+                                                                                    </> :
+                                                                                    <tr>
+                                                                                        <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
+                                                                                    </tr>
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </Box>
+
+                                                            }
+
+                                                        </table>
+
+
+                                                    </div>
                                                 </td>
                                                 <td>
 
@@ -1871,6 +2163,7 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '120px' }}
@@ -1887,7 +2180,7 @@ const Addsale = () => {
                                                         type="number"
                                                         disabled
                                                         size="small"
-                                                        inputRef={inputRef8}
+                                                        inputRef={inputRef6}
                                                         onKeyDown={handleKeyDown}
                                                         sx={{ width: '80px' }}
                                                         value={gst}
@@ -1896,11 +2189,12 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
                                                         sx={{ width: '70px' }}
                                                         size="small"
-                                                        inputRef={inputRef5}
+                                                        inputRef={inputRef7}
                                                         onKeyDown={handleKeyDown}
                                                         value={qty}
                                                         onKeyPress={(e) => {
@@ -1915,10 +2209,20 @@ const Addsale = () => {
                                                 </td>
                                                 <td>
                                                     <TextField
+                                                        autoComplete="off"
                                                         id="outlined-number"
                                                         sx={{ width: '80px' }}
                                                         size="small"
                                                         value={order}
+                                                        inputRef={inputRef8}
+                                                        // onKeyDown={handleKeyDown}
+                                                        onKeyDown={(e) => {
+                                                            handleKeyDown(e);
+                                                            if (e.key === "Enter") {
+                                                                addItemValidation();
+                                                            }
+                                                        }}
+
                                                         onChange={(e) => {
                                                             const value = e.target.value.toUpperCase();
                                                             if (value === '' || value === 'O') {
@@ -2106,7 +2410,6 @@ const Addsale = () => {
 
                                                 }} />
                                         </div>
-
                                         <div className="">
                                             <Input type="number"
                                                 value={loyaltyVal || loyaltyPoints}
@@ -2365,6 +2668,8 @@ const Addsale = () => {
                                             <label className="label secondary">Item Name</label>
                                             <TextField
                                                 id="outlined-number"
+                                                inputRef={itemNameInputRef}
+                                                onKeyDown={handleKeyDown}
                                                 size="small"
                                                 value={addItemName}
                                                 onChange={(e) => setAddItemName(e.target.value)}
@@ -2375,6 +2680,8 @@ const Addsale = () => {
                                             <label className="label  secondary">Barcode</label>
                                             <TextField
                                                 id="outlined-number"
+                                                inputRef={barcodeInputRef}
+                                                onKeyDown={handleKeyDown}
                                                 type="number"
                                                 size="small"
                                                 value={addBarcode}
@@ -2389,10 +2696,16 @@ const Addsale = () => {
                                             <TextField
                                                 id="outlined-number"
                                                 type="number"
+                                                inputRef={unitInputRef}
                                                 size="small"
                                                 value={addUnit}
                                                 onChange={(e) => setAddUnit(e.target.value)}
-
+                                                onKeyDown={(e) => {
+                                                    handleKeyDown(e);
+                                                    if (e.key === "Enter") {
+                                                        handleAddNewItemValidation();
+                                                    }
+                                                }}
                                             />
                                         </div>
                                         <div className="fields add_new_item_divv">
@@ -2416,7 +2729,7 @@ const Addsale = () => {
                                                     backgroundColor: "#3f6212", // Keep the hover color same
                                                 },
                                             }}
-                                            onClick={handleAddNewItem}
+                                            onClick={handleAddNewItemValidation}
                                         >
                                             <ControlPointIcon className="" />
                                             Add New Item

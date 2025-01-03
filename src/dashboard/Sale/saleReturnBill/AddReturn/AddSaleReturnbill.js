@@ -654,9 +654,9 @@ const Salereturn = () => {
                 />
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                        <div className='py-3 gap-4' style={{ display: 'flex', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
-                                <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
+                                <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer", whiteSpace: "nowrap", flexWrap: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
@@ -771,7 +771,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
@@ -835,7 +835,7 @@ const Salereturn = () => {
                                         )}
                                         renderInput={(params) => (
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
@@ -962,7 +962,7 @@ const Salereturn = () => {
                                                     <td className="td-up " >
 
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
@@ -981,7 +981,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up "  >
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
                                                             sx={{ width: '110px' }}
@@ -997,7 +997,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -1014,7 +1014,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
@@ -1032,7 +1032,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up " >
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '120px' }}
@@ -1049,7 +1049,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td className="td-up ">
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             disabled
@@ -1068,7 +1068,7 @@ const Salereturn = () => {
                                                     <td className="td-up ">
 
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '70px' }}
@@ -1103,7 +1103,7 @@ const Salereturn = () => {
 
                                                     <td className="td-up ">
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             inputRef={inputRef9}
@@ -1123,7 +1123,7 @@ const Salereturn = () => {
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-basic"
                                                             size="small"
                                                             sx={{ width: "90%", marginLeft: "20px", marginBlock: "10px" }}

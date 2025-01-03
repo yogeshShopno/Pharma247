@@ -2217,7 +2217,7 @@ const AddPurchaseBill = () => {
                     <tbody>
                       {purchaseReturnPending.length === 0 ? (
                         <tr>
-                          <td >
+                          <td style={{ borderRadius: "10px 10px 10px 10px"}}>
                             No data found
                           </td>
                         </tr>

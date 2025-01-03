@@ -308,13 +308,22 @@ const AddPurchaseBill = () => {
   };
 
   const handleFileUpload = async () => {
+    generateRandomNumber();
+
     if (file) {
       let data = new FormData();
       data.append("file", file);
+      data.append("random_number",localStorage.getItem("RandomNumber"));
+
+      const params = {
+        random_number: localStorage.getItem("RandomNumber"),
+      };
+
       setIsLoading(true);
       try {
         await axios
-          .post("item-import", data, {
+          .post("purchase-item-upload", data, {
+         
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -323,6 +332,9 @@ const AddPurchaseBill = () => {
             toast.success(response.data.message);
             setOpenFile(false);
             setIsLoading(false);
+            setUnsavedItems(true);
+          itemPurchaseList();
+
           });
       } catch (error) {
         setIsLoading(false);
@@ -337,8 +349,8 @@ const AddPurchaseBill = () => {
   const handleDownload = () => {
     
     const link = document.createElement("a");
-    link.href = "/ItemSample_Data.csv";
-    link.download = "ItemSample_Data.csv";
+    link.href = "/purchase_add_sample.csv";
+    link.download = "purchase_add_sample.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -872,6 +884,8 @@ const AddPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
+    if (!HSN) newErrors.HSN = "HSN is required";
+
     // if (!batch) newErrors.batch = "Batch is required";
     if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
@@ -948,6 +962,7 @@ const AddPurchaseBill = () => {
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("weightage", unit ? Number(unit) : 1);
     data.append("batch_number", batch ? batch : 0);
+    data.append("hsn_code", HSN ? HSN : 0);
     data.append("expiry", expiryDate);
     data.append("mrp", mrp ? mrp : 0);
     data.append("qty", qty ? qty : 0);
@@ -1906,7 +1921,7 @@ const AddPurchaseBill = () => {
                     <tr>
                       <th>Search Item Name</th>
                       <th>Unit</th>
-                      {/* <th>HSN</th> */}
+                      <th>HSN</th>
                       <th>Batch </th>
                       <th>Expiry </th>
                       <th>MRP </th>
@@ -2038,22 +2053,38 @@ const AddPurchaseBill = () => {
                               </span>
                             )}
                           </td>
-                          {/* <td>
+                          <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
-                              // inputRef={inputRef2}
-                              // onKeyDown={handleKeyDown}
+                              type="text"
                               size="small"
-                              value={batch}
-                              sx={{ width: "90px" }}
-                              // error={!!errors.batch}
+                              error={!!errors.HSN}
+                              value={HSN}
+                              sx={{ width: "65px" }}
                               onChange={(e) => {
-                                setHSN(e.target.value);
+                                const value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+                                setHSN(value ? Number(value) : "");
                               }}
-
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
+                                ) {
+                                  e.preventDefault();
+                                }
+                              }}
                             />
-                          </td> */}
+                            {error.unit && (
+                              <span style={{ color: "red", fontSize: "12px" }}>
+                                {error.HSN}
+                              </span>
+                            )}
+                          </td>
+                     
                           <td>
                             <TextField
                               variant="standard"
@@ -2358,6 +2389,9 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td></td>
+                          <td></td>
+                          <td></td>
+
                           <td>
                             <Button
                               variant="contained"
@@ -2401,6 +2435,7 @@ const AddPurchaseBill = () => {
                               {item.iteam_name}
                             </td>
                             <td>{item.weightage}</td>
+                            <td>{item.hsn_code}</td>
                             <td>{item.batch_number}</td>
                             <td>{item.expiry}</td>
                             <td>{item.mrp}</td>

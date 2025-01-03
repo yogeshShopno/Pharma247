@@ -169,7 +169,7 @@ const Login = () => {
                                 type="password"
                             /> */}
 
-                            <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
+                            <FormControl sx={{ width: '600', height: '42px' }} variant="standard">
                                 <OutlinedInput
                                     value={password}
                                     className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"

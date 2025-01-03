@@ -549,7 +549,7 @@ const DistributerList = () => {
                                                             const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                                                             setGstnumber(value);
                                                         }} className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.Doctor && <span className="text-red-600 text-xs">{errors.Doctor}</span>}
                                                 </div>
@@ -570,7 +570,7 @@ const DistributerList = () => {
 
                                                         }}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.clinic && <span className="text-red-600 text-xs">{errors.clinic}</span>}
                                                 </div>
@@ -586,7 +586,7 @@ const DistributerList = () => {
                                                         value={email}
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -618,7 +618,7 @@ const DistributerList = () => {
                                                         value={whatsapp}
                                                         onChange={(e) => setWhatsApp(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -630,7 +630,7 @@ const DistributerList = () => {
                                                         value={address}
                                                         onChange={(e) => setAddress(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -656,7 +656,7 @@ const DistributerList = () => {
                                                         value={pincode}
                                                         onChange={(e) => setPincode(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -675,7 +675,7 @@ const DistributerList = () => {
                                                             setState(formattedValue);
                                                         }}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -706,7 +706,7 @@ const DistributerList = () => {
                                                             setLicenceNo(value);
                                                         }}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
 
@@ -723,7 +723,7 @@ const DistributerList = () => {
                                                         value={creditDuedays}
                                                         onChange={(e) => setCreditDuedays(Number(e.target.value))}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
 
@@ -755,7 +755,7 @@ const DistributerList = () => {
                                                         value={accountNo}
                                                         onChange={(e) => setAccountNo(e.target.value)}
                                                         className="w-full"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -821,7 +821,7 @@ const DistributerList = () => {
                                     <div>
                                         <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
                                             <CloudDownloadIcon className="mr-2" />
-                                            Sample File Download
+                                            Download Sample File
                                         </Button>
 
 
@@ -877,7 +877,7 @@ const DistributerList = () => {
                                                 value={gstNumber}
                                                 onChange={(e) => { setGstnumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                             {errors.Doctor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.Doctor}</span>}
                                         </div>
@@ -893,7 +893,7 @@ const DistributerList = () => {
                                                 value={distributerName}
                                                 onChange={(e) => { setDistributerName(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                             {errors.clinic && <span style={{ color: 'red', fontSize: '12px' }}>{errors.clinic}</span>}
                                         </div>
@@ -908,7 +908,7 @@ const DistributerList = () => {
                                                 value={email}
                                                 onChange={(e) => { setEmail(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
@@ -937,7 +937,7 @@ const DistributerList = () => {
                                                 value={whatsapp}
                                                 onChange={(e) => { setWhatsApp(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                         <div style={{ display: 'flex ', flexDirection: 'column' }}>
@@ -949,7 +949,7 @@ const DistributerList = () => {
                                                 value={address}
                                                 onChange={(e) => { setAddress(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -974,7 +974,7 @@ const DistributerList = () => {
                                                 value={pincode}
                                                 onChange={(e) => { setPincode(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -999,7 +999,7 @@ const DistributerList = () => {
                                                 value={accountNo}
                                                 onChange={(e) => { setAccountNo(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -1024,7 +1024,7 @@ const DistributerList = () => {
                                                 value={licenceNo}
                                                 onChange={(e) => { setLicenceNo(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>
@@ -1049,7 +1049,7 @@ const DistributerList = () => {
                                                 value={creditDuedays}
                                                 onChange={(e) => { setCreditDuedays(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="outlined"
+                                                variant="standard"
                                             />
                                         </div>
                                     </div>

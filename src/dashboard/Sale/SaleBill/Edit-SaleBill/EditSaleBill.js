@@ -1108,7 +1108,7 @@ const EditSaleBill = () => {
                         <TextField
                  autoComplete="off"
                           {...params}
-                          variant="outlined"
+                          variant="standard"
                           placeholder="Search by Mobile, Name"
                           InputProps={{
                             ...params.InputProps,
@@ -1169,7 +1169,7 @@ const EditSaleBill = () => {
                         <TextField
                  autoComplete="off"
                           {...params}
-                          variant="outlined"
+                          variant="standard"
                           placeholder="Search by DR. Name"
                           InputProps={{
                             ...params.InputProps,
@@ -1230,7 +1230,7 @@ const EditSaleBill = () => {
                           <TextField
                  autoComplete="off"
                             {...params}
-                            variant="outlined"
+                            variant="standard"
                             placeholder="Search Item Name..."
                             InputProps={{
                               ...params.InputProps,

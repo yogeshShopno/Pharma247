@@ -1294,7 +1294,7 @@ const EditReturnBill = () => {
                                                         sx={{ width: "75%", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                         placeholder="Please search any items.."
                                                         InputProps={{
                                                             endAdornment: (

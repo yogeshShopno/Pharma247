@@ -230,7 +230,7 @@ const Stock_AdjustMent_Report = () => {
                                                     sx={{ minWidth: '300px' }}
                                                     size="small"
                                                     onChange={(e) => setItemSearch(e.target.value)}
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     placeholder="Search by Item name, adjusted by"
                                                     InputProps={{
                                                         endAdornment: (

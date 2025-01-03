@@ -123,7 +123,7 @@ const Non_Moving_items = () => {
                                         sx={{ minWidth: '300px', marginTop: "10px" }}
                                         size="small"
                                         onChange={(e) => setNonMovingDate(e.target.value)}
-                                        variant="outlined"
+                                        variant="standard"
                                         placeholder="Please Enter Days"
                                     />
                                 </div>

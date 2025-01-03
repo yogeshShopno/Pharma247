@@ -267,7 +267,7 @@ const DoctorItemWise = () => {
                                                 sx={{ minWidth: '250px' }}
                                                 size="small"
                                                 onChange={(e) => setDoctorSearch(e.target.value)}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Doctor Name"
                                                 InputProps={{
                                                     endAdornment: (
@@ -289,7 +289,7 @@ const DoctorItemWise = () => {
                                                 sx={{ minWidth: '250px' }}
                                                 size="small"
                                                 onChange={(e) => setItemSearch(e.target.value)}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="item Name"
                                                 InputProps={{
                                                     endAdornment: (

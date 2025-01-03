@@ -1806,11 +1806,17 @@ const EditPurchaseBill = () => {
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
                         <label className="font-bold">Total Qty :</label>
-                        <div className="font-bold">{purchase?.total_qty}</div>
+                        <div className="font-bold">{purchase?.total_qty} + <span className="primary">
+                        {purchase?.total_free_qty ? purchase?.total_free_qty : 0} Free{" "}
+                      </span></div>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
                         <label className="font-bold">Total Net Profit :</label>
                         <div className="font-bold">{purchase?.total_net_rate}</div>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                        <label className="font-bold">Total Base :</label>
+                        <div className="font-bold">{purchase?.total_base}</div>
                       </div>
                     </div>
 
@@ -1842,7 +1848,7 @@ const EditPurchaseBill = () => {
                       </div>
 
                       {/* Total Margin Row */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
+                      {/* <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
                         <label className="font-bold">Profit : </label>
                         <span
                           style={{
@@ -1851,11 +1857,11 @@ const EditPurchaseBill = () => {
                         >
                           ₹{purchase?.margin_net_profit} ({purchase?.total_margin})%
                         </span>
-                      </div>
+                      </div> */}
 
                       {/* Round Off Row */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "25px" }}>
-                        <label className="font-bold">Round off : </label>
+                        <label className="font-bold">Round of : </label>
                         <span
                           style={{
                             fontWeight: 600,

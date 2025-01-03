@@ -431,7 +431,7 @@ const DrugGroup = () => {
                                             value={drugGroupName}
                                             onChange={(e) => { setDrugGroupName(e.target.value) }}
                                             style={{ minWidth: 450 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         /> */}
                                         <Autocomplete
                                             value={drugGroupName}

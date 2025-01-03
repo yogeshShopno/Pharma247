@@ -769,7 +769,7 @@ sx={{
                                         <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className='downloadFile'>
                                             <CloudDownloadIcon className="mr-2" />
 
-                                            Sample File Download
+                                            Download Sample File
                                         </Button>
                                     </div>
                                 </div>
@@ -823,7 +823,7 @@ sx={{
                                                         value={customer}
                                                         onChange={(e) => { setCustomer(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                     {errors.customer && <span style={{ color: 'red', fontSize: '12px' }}>{errors.customer}</span>}
                                                 </div>
@@ -854,7 +854,7 @@ sx={{
                                                         value={emailId}
                                                         onChange={(e) => { setEmailId(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -867,7 +867,7 @@ sx={{
                                                         value={amount}
                                                         onChange={(e) => { setAmount(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -882,7 +882,7 @@ sx={{
                                                         value={area}
                                                         onChange={(e) => { setArea(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -894,7 +894,7 @@ sx={{
                                                         value={city}
                                                         onChange={(e) => { setCity(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>
@@ -910,7 +910,7 @@ sx={{
                                                         onChange={(e) => { setAddress(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -923,7 +923,7 @@ sx={{
                                                         onChange={(e) => { setState(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="outlined"
+                                                        variant="standard"
                                                     />
                                                 </div>
                                             </div>

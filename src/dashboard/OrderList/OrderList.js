@@ -336,7 +336,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="outlined"
+                                        variant="standard"
                                         fullWidth
                                     /> */}
                                     <Autocomplete
@@ -352,7 +352,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="outlined"
+                                        variant="standard"
                                         fullWidth
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
@@ -381,7 +381,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="outlined"
+                                        variant="standard"
                                         fullWidth
                                     />
                                 </div>

@@ -30,6 +30,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const Itemmaster = () => {
   const [item, setItem] = useState("");
   const [unit, setUnit] = useState(1);
@@ -1282,7 +1283,7 @@ const Itemmaster = () => {
                   }}
                   className="w-full"
                   rows={4}
-                  variant="outlined"
+                  variant="standard"
                 />
               </div>
             </div>
@@ -1442,7 +1443,7 @@ const Itemmaster = () => {
               <div>
                 <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
                   <CloudDownloadIcon className="mr-2" />
-                  Sample File Download
+                  Download Sample File
                 </Button>
               </div>
             </div>

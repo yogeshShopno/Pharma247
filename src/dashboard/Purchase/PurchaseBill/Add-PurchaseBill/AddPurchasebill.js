@@ -4,7 +4,14 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Button, InputAdornment, ListItem, ListItemText, OutlinedInput, TextField } from "@mui/material";
+import {
+  Button,
+  InputAdornment,
+  ListItem,
+  ListItemText,
+  OutlinedInput,
+  TextField,
+} from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaPlusCircle } from "react-icons/fa";
@@ -16,11 +23,22 @@ import DatePicker from "react-datepicker";
 import { addDays, format, subDays } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 const debounce = (func, delay) => {
   let timeout;
@@ -49,14 +67,14 @@ const AddPurchaseBill = () => {
   const tableRef = useRef(null);
 
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
-  const [totalMargin, setTotalMargin] = useState(0)
-  const [marginNetProfit, setMarginNetProfit] = useState(0)
-  const [totalNetRate, setTotalNetRate] = useState(0)
-  const [totalBase, setTotalBase] = useState(0)
-  const [totalFree, setTotalFRee] = useState(0)
+  const [totalMargin, setTotalMargin] = useState(0);
+  const [marginNetProfit, setMarginNetProfit] = useState(0);
+  const [totalNetRate, setTotalNetRate] = useState(0);
+  const [totalBase, setTotalBase] = useState(0);
+  const [totalFree, setTotalFRee] = useState(0);
 
-  const [totalGst, setTotalGst] = useState(0)
-  const [totalQty, setTotalQty] = useState(0)
+  const [totalGst, setTotalGst] = useState(0);
+  const [totalQty, setTotalQty] = useState(0);
   const [searchItem, setSearchItem] = useState("");
   const [itemList, setItemList] = useState([]);
   const [distributor, setDistributor] = useState(null);
@@ -107,15 +125,15 @@ const AddPurchaseBill = () => {
   const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState([]);
-  const [purchaseReturnPending, setPurchaseReturnPending] = useState([])
+  const [purchaseReturnPending, setPurchaseReturnPending] = useState([]);
   const [finalPurchaseReturnList, setFinalPurchaseReturnList] = useState([]);
   // const [adjustCnAmount, setAdjustCnAmount] = useState("")
   const [cnTotalAmount, setCnTotalAmount] = useState({});
-  const [netAmount, setNetAmount] = useState(0)
-  const [finalTotalAmount, setFinalTotalAmount] = useState(0)
-  const [cnAmount, setCnAmount] = useState(0)
-  const [roundOffAmount, setRoundOffAmount] = useState(0)
-  const [finalCnAmount, setFinalCnAmount] = useState(0)
+  const [netAmount, setNetAmount] = useState(0);
+  const [finalTotalAmount, setFinalTotalAmount] = useState(0);
+  const [cnAmount, setCnAmount] = useState(0);
+  const [roundOffAmount, setRoundOffAmount] = useState(0);
+  const [finalCnAmount, setFinalCnAmount] = useState(0);
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
@@ -134,6 +152,10 @@ const AddPurchaseBill = () => {
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const [focusedField, setFocusedField] = useState("distributor");
 
+    const [openFile, setOpenFile] = useState(false);
+    const [file, setFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+  
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -152,20 +174,17 @@ const AddPurchaseBill = () => {
   defaultDate.setDate(defaultDate.getDate() + 3);
 
   useEffect(() => {
-
     const newErrors = {};
     if (Number(ptr) > Number(mrp)) {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
 
-    setErrors(newErrors)
-
-  }, [ptr, mrp])
+    setErrors(newErrors);
+  }, [ptr, mrp]);
 
   useEffect(() => {
-
-    generateRandomNumber()
+    generateRandomNumber();
     const initialize = async () => {
       try {
         await handleLeavePage();
@@ -182,7 +201,6 @@ const AddPurchaseBill = () => {
     }, 100);
     return () => clearTimeout(timeoutId);
     // handleBarcode();
-
   }, [barcode]);
 
   // useEffect(() => {
@@ -198,8 +216,7 @@ const AddPurchaseBill = () => {
     listDistributor();
     BankList();
     listOfGst();
-    setSrNo(localStorage.getItem("Purchase_SrNo"));;
-
+    setSrNo(localStorage.getItem("Purchase_SrNo"));
   }, [id]);
 
   useEffect(() => {
@@ -248,15 +265,14 @@ const AddPurchaseBill = () => {
     // Margin Caluculation
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-
   }, [qty, ptr, disc, gst.name, free, ItemTotalAmount, barcodeBatch]);
 
   useEffect(() => {
     const total = Object.values(cnTotalAmount)
-      .map(amount => parseFloat(amount) || 0)
+      .map((amount) => parseFloat(amount) || 0)
       .reduce((acc, amount) => acc + amount, 0);
-    setCnAmount(total)
-  }, [cnTotalAmount])
+    setCnAmount(total);
+  }, [cnTotalAmount]);
 
   // useEffect(() => {
   //   const handleKeyDown = (event) => {
@@ -271,8 +287,62 @@ const AddPurchaseBill = () => {
   //     window.removeEventListener('keydown', handleKeyDown);
   //   };
   // }, []);
+ const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const fileType = selectedFile.type;
+      if (fileType === "text/csv") {
+        setFile(selectedFile);
+      } else {
+        toast.error("Please select an Excel or CSV file.");
+      }
+    }
+  };
 
+  const openFileUpload = () => {
+    setOpenFile(true);
+  };
 
+  const handleFileClose = () => {
+    setOpenFile(false);
+  };
+
+  const handleFileUpload = async () => {
+    if (file) {
+      let data = new FormData();
+      data.append("file", file);
+      setIsLoading(true);
+      try {
+        await axios
+          .post("item-import", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            toast.success(response.data.message);
+            setOpenFile(false);
+            setIsLoading(false);
+          });
+      } catch (error) {
+        setIsLoading(false);
+        console.error("API error:", error);
+
+      }
+    } else {
+      toast.error("No file selected");
+    }
+  };
+
+  const handleDownload = () => {
+    
+    const link = document.createElement("a");
+    link.href = "/ItemSample_Data.csv";
+    link.download = "ItemSample_Data.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const BankList = async () => {
     let data = new FormData();
@@ -290,7 +360,6 @@ const AddPurchaseBill = () => {
       console.error("API error:", error);
       if (error.response.status === 401) {
         setUnsavedItems(false);
-
       }
     }
   };
@@ -313,7 +382,6 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-
   const handleBarcode = async () => {
     setIsEditMode(false);
     if (!barcode) {
@@ -327,13 +395,17 @@ const AddPurchaseBill = () => {
     };
     try {
       const res = axios
-        .post("barcode-batch-list?", { "barcode": barcode }, {
-          // params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .post(
+          "barcode-batch-list?",
+          { barcode: barcode },
+          {
+            // params: params,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           // data.append("unit_id", Number(0));
           // data.append("random_number", localStorage.getItem("RandomNumber"));
@@ -380,38 +452,118 @@ const AddPurchaseBill = () => {
           // setItemEditID(Number(response.data.data[0]?.id))
 
           setTimeout(() => {
-            handleBarcodeItem()
+            handleBarcodeItem();
             // handleAddItem()
           }, 100);
 
           const handleBarcodeItem = async () => {
-            setUnsavedItems(true)
+            setUnsavedItems(true);
             let data = new FormData();
 
-
             data.append("random_number", localStorage.getItem("RandomNumber"));
-            data.append("weightage", Number(response?.data?.data[0]?.batch_list[0]?.unit));
-            data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_name ? response?.data?.data[0]?.batch_list[0]?.batch_name : 0);
-            data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
-            data.append("mrp", Number(response?.data?.data[0]?.batch_list[0]?.mrp) ? Number(response?.data?.data[0]?.batch_list[0]?.mrp) : 0);
-            data.append("qty", Number(response?.data?.data[0]?.batch_list[0]?.unit) ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 0);
-            data.append("free_qty", Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) ? Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty) : 0);
-            data.append("ptr", Number(response?.data?.data[0]?.batch_list[0]?.ptr) ? Number(response?.data?.data[0]?.batch_list[0]?.ptr) : 0);
-            data.append("discount", Number(response?.data?.data[0]?.batch_list[0]?.discount) ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
-            data.append("scheme_account", Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account) : 0);
-            data.append("base_price", Number(response?.data?.data[0]?.batch_list[0]?.base) ? Number(response?.data?.data[0]?.batch_list[0]?.base) : 0);
-            data.append("gst", Number(response?.data?.data[0]?.batch_list[0]?.gst));
-            data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
-            data.append("margin", Number(response?.data?.data[0]?.batch_list[0]?.margin) ? Number(response?.data?.data[0]?.batch_list[0]?.margin) : 0);
-            data.append("net_rate", Number(response?.data?.data[0]?.batch_list[0]?.net_rate) ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate) : 0);
+            data.append(
+              "weightage",
+              Number(response?.data?.data[0]?.batch_list[0]?.unit)
+            );
+            data.append(
+              "batch_number",
+              response?.data?.data[0]?.batch_list[0]?.batch_name
+                ? response?.data?.data[0]?.batch_list[0]?.batch_name
+                : 0
+            );
+            data.append(
+              "expiry",
+              response?.data?.data[0]?.batch_list[0]?.expiry_date
+            );
+            data.append(
+              "mrp",
+              Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                : 0
+            );
+            data.append(
+              "qty",
+              Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                : 0
+            );
+            data.append(
+              "free_qty",
+              Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+                ? Number(
+                    response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                  )
+                : 0
+            );
+            data.append(
+              "ptr",
+              Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                : 0
+            );
+            data.append(
+              "discount",
+              Number(response?.data?.data[0]?.batch_list[0]?.discount)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                : 0
+            );
+            data.append(
+              "scheme_account",
+              Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                : 0
+            );
+            data.append(
+              "base_price",
+              Number(response?.data?.data[0]?.batch_list[0]?.base)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+                : 0
+            );
+            data.append(
+              "gst",
+              Number(response?.data?.data[0]?.batch_list[0]?.gst)
+            );
+            data.append(
+              "location",
+              response?.data?.data[0]?.batch_list[0]?.location
+                ? response?.data?.data[0]?.batch_list[0]?.location
+                : 0
+            );
+            data.append(
+              "margin",
+              Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                : 0
+            );
+            data.append(
+              "net_rate",
+              Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                : 0
+            );
 
-            data.append("item_id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
+            data.append(
+              "item_id",
+              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                : 0
+            );
             data.append("unit_id", Number(0));
             data.append("user_id", userId);
 
-            data.append("id", Number(response?.data?.data[0]?.batch_list[0]?.item_id) ? Number(response?.data?.data[0]?.batch_list[0]?.item_id) : 0);
+            data.append(
+              "id",
+              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                : 0
+            );
 
-            data.append("total_amount", Number(response?.data?.data[0]?.batch_list[0]?.total_amount) ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount) : 0);
+            data.append(
+              "total_amount",
+              Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                : 0
+            );
 
             const params = {
               id: selectedEditItemId,
@@ -451,25 +603,21 @@ const AddPurchaseBill = () => {
               setIsEditMode(false);
               setSelectedEditItemId(null);
 
-              setBarcode("")
-              setValue("")
+              setBarcode("");
+              setValue("");
               // Reset Autocomplete field
               setValue("");
               setSearchItem("");
 
               // setAutocompleteDisabled(false);
             } catch (e) {
-
               setUnsavedItems(false);
-
-
             }
-          }
+          };
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
     }
   };
 
@@ -508,7 +656,6 @@ const AddPurchaseBill = () => {
   //         Authorization: `Bearer ${token}`,
   //       },
   //     });
-
 
   //     setItemTotalAmount(0);
   //     setDeleteAll(true);
@@ -572,12 +719,10 @@ const AddPurchaseBill = () => {
       console.error("API error:", error);
 
       setUnsavedItems(false);
-
     }
   };
 
   const generateRandomNumber = () => {
-
     if (localStorage.getItem("RandomNumber") == null) {
       const number = Math.floor(Math.random() * 100000) + 1;
       setRandomNumber(number);
@@ -585,7 +730,6 @@ const AddPurchaseBill = () => {
     } else {
       return;
     }
-
   };
 
   let listOfGst = () => {
@@ -596,13 +740,10 @@ const AddPurchaseBill = () => {
         },
       })
       .then((response) => {
-
         setGstList(response.data.data);
       })
       .catch((error) => {
-
         setUnsavedItems(false);
-
       });
   };
 
@@ -619,8 +760,6 @@ const AddPurchaseBill = () => {
       })
       .catch((error) => {
         setUnsavedItems(false);
-
-
       });
   };
 
@@ -629,22 +768,23 @@ const AddPurchaseBill = () => {
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
     try {
-      const response = await axios.post("item-purchase-list?", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axios
+        .post("item-purchase-list?", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           setItemPurchaseList(response.data.data);
-          setFinalTotalAmount(response.data.data.total_price)
-          setTotalGst(response.data.data.total_gst)
-          setTotalQty(response.data.data.total_qty)
-          setTotalMargin(response.data.data.total_margin)
-          setMarginNetProfit(response.data.data.margin_net_profit)
-          setTotalNetRate(response.data.data.total_net_rate)
-          handleCalNetAmount(response.data.data.total_price)
-          setTotalBase(response.data.data.total_base)
-          setTotalFRee(response.data.data.total_free)
+          setFinalTotalAmount(response.data.data.total_price);
+          setTotalGst(response.data.data.total_gst);
+          setTotalQty(response.data.data.total_qty);
+          setTotalMargin(response.data.data.total_margin);
+          setMarginNetProfit(response.data.data.margin_net_profit);
+          setTotalNetRate(response.data.data.total_net_rate);
+          handleCalNetAmount(response.data.data.total_price);
+          setTotalBase(response.data.data.total_base);
+          setTotalFRee(response.data.data.total_free);
           // setNetAmount(response.data.data.total_price)
         });
     } catch (error) {
@@ -715,24 +855,20 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
     }
   };
 
-
-
   const handleAddButtonClick = async () => {
-
     setFocusedField("item"); // Focus the item field
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
-    generateRandomNumber()
+    generateRandomNumber();
     const newErrors = {};
     const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
     if (numericQty === 0 && numericFree === 0) {
-      toast.error("Free and Qty cannot both be 0")
+      toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
@@ -790,9 +926,9 @@ const AddPurchaseBill = () => {
   };
 
   const handleAddItem = async () => {
-    setItemAutofoucs(true)
+    setItemAutofoucs(true);
 
-    setUnsavedItems(true)
+    setUnsavedItems(true);
     let data = new FormData();
     data.append("user_id", userId);
     if (isEditMode == true) {
@@ -800,17 +936,13 @@ const AddPurchaseBill = () => {
       data.append("unit_id", unitEditID);
     } else {
       if (barcode) {
-
         data.append("item_id", ItemId);
         data.append("unit_id", Number(0));
-
       } else {
-
         data.append("item_id", value.id);
 
         data.append("unit_id", Number(value.unit_id));
       }
-
     }
 
     data.append("random_number", localStorage.getItem("RandomNumber"));
@@ -838,18 +970,18 @@ const AddPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+            params: params,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
         : await axios.post("item-purchase", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
       setSelectedOption(null);
-      setSearchItem("")
+      setSearchItem("");
       setItemTotalAmount(0);
       setDeleteAll(true);
       itemPurchaseList();
@@ -869,8 +1001,6 @@ const AddPurchaseBill = () => {
       setMargin("");
       setLoc("");
 
-
-
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
         setSelectedRows([]);
@@ -881,21 +1011,18 @@ const AddPurchaseBill = () => {
       setIsEditMode(false);
       setSelectedEditItemId(null);
 
-      setBarcode("")
-      setValue("")
+      setBarcode("");
+      setValue("");
       // Reset Autocomplete field
       setValue("");
       setSearchItem("");
       // setAutocompleteDisabled(false);
     } catch (e) {
-
       setUnsavedItems(false);
-
     }
   };
 
   const handleAddNewItem = async () => {
-
     if (!addItemName && !addUnit && !addBarcode) {
       return;
     }
@@ -933,14 +1060,12 @@ const AddPurchaseBill = () => {
       });
 
       if (response.data.status === 200) {
-
         toast.success(response.data.message);
-        setOpenAddItemPopUp(false)
+        setOpenAddItemPopUp(false);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
     } catch (error) {
-
       setUnsavedItems(false);
 
       if (error.response && error.response.status === 400) {
@@ -976,11 +1101,8 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
-
     }
   };
-
 
   useEffect(() => {
     if (isVisible && tableRef.current) {
@@ -990,26 +1112,33 @@ const AddPurchaseBill = () => {
         setHighlightedRowId(firstRow.getAttribute("data-id"));
       }
     }
-  }, [isVisible, batchListData]);
+  }, [isVisible, ItemPurchaseList]);
 
+  const handleMouseEnter = (e) => {
+    const hoveredRow = e.currentTarget;
+    setHighlightedRowId(hoveredRow.getAttribute("data-id"));
+  };
   const handleTableKeyDown = (e) => {
+    const rows = Array.from(
+      tableRef.current?.querySelectorAll("tr.cursor-pointer") || []
+    );
+    let currentIndex = rows.findIndex((row) => row === document.activeElement);
 
-    const rows = Array.from(tableRef.current?.querySelectorAll("tr.cursor-pointer") || []);
-    let currentIndex = rows.findIndex(row => row === document.activeElement);
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (rows.length > 0) {
         const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
         rows[nextIndex]?.focus();
-        setHighlightedRowId(rows[nextIndex]?.dataset.id);
+        setHighlightedRowId(rows[nextIndex]?.getAttribute("data-id"));
       }
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
       if (rows.length > 0) {
-        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+        const prevIndex =
+          currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
         rows[prevIndex]?.focus();
-        setHighlightedRowId(rows[prevIndex]?.dataset.id);
+        setHighlightedRowId(rows[prevIndex]?.getAttribute("data-id"));
       }
     }
 
@@ -1017,9 +1146,12 @@ const AddPurchaseBill = () => {
       e.preventDefault();
       if (currentIndex >= 0 && rows[currentIndex]) {
         const itemId = rows[currentIndex].getAttribute("data-id");
-        const item = batchListData.find((item) => String(item.id) === String(itemId));
+        const item = ItemPurchaseList.find(
+          (item) => String(item.id) === String(itemId)
+        );
         if (item) {
           setHighlightedRowId(itemId);
+          handleEditClick(item);
         }
       }
     }
@@ -1048,7 +1180,6 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
     }
   };
 
@@ -1068,9 +1199,9 @@ const AddPurchaseBill = () => {
     data.append("total_amount", ItemPurchaseList.total_price);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
-    data.append("total_gst", !totalGst ? 0 : totalGst)
-    data.append("total_margin", ItemPurchaseList.total_margin)
-    data.append("cn_amount", finalCnAmount)
+    data.append("total_gst", !totalGst ? 0 : totalGst);
+    data.append("total_margin", ItemPurchaseList.total_margin);
+    data.append("cn_amount", finalCnAmount);
     data.append("round_off", roundOffAmount?.toFixed(2));
     data.append("purches_data", JSON.stringify(ItemPurchaseList.item));
     data.append("purches_return_data", JSON.stringify(finalPurchaseReturnList));
@@ -1083,10 +1214,9 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
-
           localStorage.removeItem("RandomNumber");
           setItemPurchaseList("");
-          setUnsavedItems(false)
+          setUnsavedItems(false);
           toast.success(response.data.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
@@ -1095,7 +1225,6 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-
     }
   };
 
@@ -1103,16 +1232,14 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
-      toast.error('Please select Distributor');
-
+      toast.error("Please select Distributor");
     }
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
-      toast.error('Bill No is Required');
-
+      toast.error("Bill No is Required");
     }
     if (ItemPurchaseList.item.length === 0) {
-      toast.error('Please add atleast one item');
+      toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
     }
 
@@ -1121,7 +1248,7 @@ const AddPurchaseBill = () => {
       return;
     }
     submitPurchaseData();
-    setUnsavedItems(false)
+    setUnsavedItems(false);
   };
 
   useEffect(() => {
@@ -1147,7 +1274,6 @@ const AddPurchaseBill = () => {
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
     }
-
   }, [selectedEditItem]);
 
   //   useEffect(() => {
@@ -1173,51 +1299,50 @@ const AddPurchaseBill = () => {
   // }, [addBarcode]);
 
   const handleEditClick = (item) => {
+    // setSelectedOption(item.iteam_name);
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-
   };
 
   const purchaseReturnData = async () => {
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     try {
-      await axios.post("purchase-return-pending-bills", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-      ).then((response) => {
-        setPurchaseReturnPending(response.data.data)
-        // setCnTotalAmount(response.data.data.total_amount)
+      await axios
+        .post("purchase-return-pending-bills", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setPurchaseReturnPending(response.data.data);
+          // setCnTotalAmount(response.data.data.total_amount)
 
-        // toast.success(response.data.message);
-
-      })
+          // toast.success(response.data.message);
+        });
     } catch (error) {
       setUnsavedItems(false);
 
       // setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message)
+        toast.error(error.response.data.message);
       } else {
-
       }
     }
   };
+ 
 
   const handelAddOpen = () => {
-    setUnsavedItems(true)
+    setUnsavedItems(true);
     setOpenAddPopUp(true);
 
     purchaseReturnData();
-  }
+  };
   const handelAddItemOpen = () => {
-    setUnsavedItems(true)
+    setUnsavedItems(true);
     setOpenAddItemPopUp(true);
-  }
-
+  };
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
@@ -1226,15 +1351,14 @@ const AddPurchaseBill = () => {
     // setSelectedRows("")
     // setCnTotalAmount("")
     // setCnAmount(0);
-  }
+  };
 
   const handleDistributorChange = (event, newValue) => {
     setDistributor(newValue);
-    purchaseReturnData(id)
+    purchaseReturnData(id);
   };
 
   const handleInputChange = (event, newInputValue) => {
-
     setSearchItem(newInputValue.toUpperCase());
     handleSearch(newInputValue.toUpperCase());
   };
@@ -1253,19 +1377,17 @@ const AddPurchaseBill = () => {
     handleSearch(itemName);
   };
 
-
   const handlePTR = (e) => {
-
-    const setptr = e.target.value.replace(/[eE]/g, '');
+    const setptr = e.target.value.replace(/[eE]/g, "");
     setPTR(setptr);
     // setBase(setptr);
-
   };
 
   const handleSchAmt = (e) => {
-
     const inputDiscount =
-      e.target.value.replace(/[eE]/g, '') === "" ? "" : parseFloat(e.target.value.replace(/[eE]/g, ''));
+      e.target.value.replace(/[eE]/g, "") === ""
+        ? ""
+        : parseFloat(e.target.value.replace(/[eE]/g, ""));
     if (isNaN(inputDiscount)) {
       setDisc(0);
       setSchAmt(0);
@@ -1284,6 +1406,7 @@ const AddPurchaseBill = () => {
   };
 
   const removeItem = () => {
+    setIsEditMode(false);
     // setAutocompleteDisabled(false);
     setUnit("");
     setBatch("");
@@ -1323,7 +1446,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       setSelectedRows(purchaseReturnPending.map((row) => row.id));
@@ -1333,7 +1455,10 @@ const AddPurchaseBill = () => {
       }, {});
       setCnTotalAmount(updatedAmounts);
       setCnAmount(
-        purchaseReturnPending.reduce((acc, row) => acc + parseFloat(row.total_amount || 0), 0)
+        purchaseReturnPending.reduce(
+          (acc, row) => acc + parseFloat(row.total_amount || 0),
+          0
+        )
       );
     } else {
       setSelectedRows([]);
@@ -1365,7 +1490,7 @@ const AddPurchaseBill = () => {
     let netAmountCal;
     let roundOffAmountCal;
 
-    if (decimalPart >= 0.50) {
+    if (decimalPart >= 0.5) {
       netAmountCal = Math.ceil(adjustedTotalAmount); // round up
       roundOffAmountCal = netAmountCal - adjustedTotalAmount; // calculate the round-off value
     } else {
@@ -1376,21 +1501,20 @@ const AddPurchaseBill = () => {
     setRoundOffAmount(roundOffAmountCal);
   };
 
-
-
   const handleCnAmount = () => {
     const newErrors = {};
 
     if (finalTotalAmount <= cnAmount) {
-      newErrors.finalTotalAmount = "You cannot adjust CN more than the total invoice amount";
-      toast.error('You cannot adjust CN more than the total invoice amount');
+      newErrors.finalTotalAmount =
+        "You cannot adjust CN more than the total invoice amount";
+      toast.error("You cannot adjust CN more than the total invoice amount");
       setError(newErrors);
       setSelectedRows([]);
       setCnTotalAmount({});
       setCnAmount(0);
       return;
     }
-    setFinalCnAmount(cnAmount)
+    setFinalCnAmount(cnAmount);
     const decimalTotalAmount = finalTotalAmount - Math.floor(finalTotalAmount);
     const decimalCNAmount = cnAmount - Math.floor(cnAmount);
 
@@ -1402,7 +1526,7 @@ const AddPurchaseBill = () => {
 
     const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
 
-    if (decimalPart >= 0.50) {
+    if (decimalPart >= 0.5) {
       netAmountCal = Math.ceil(adjustedTotalAmount); // Round up
     } else {
       netAmountCal = Math.floor(adjustedTotalAmount); // Round down
@@ -1414,7 +1538,6 @@ const AddPurchaseBill = () => {
     setNetAmount(netAmountCal);
     setRoundOffAmount(roundOffAmountCal);
 
-
     // handleCalNetAmount();
     const purchaseReturnList = selectedRows.map((rowId) => {
       return {
@@ -1424,11 +1547,11 @@ const AddPurchaseBill = () => {
     });
     setFinalPurchaseReturnList(purchaseReturnList);
     // Submit purchaseReturnList to the backend or handle it as needed
-    resetAddDialog()
+    resetAddDialog();
     // Reset dialog after submission
   };
   const handleNavigation = (path) => {
-    setOpenAddPopUp(false)
+    setOpenAddPopUp(false);
     setIsOpenBox(true);
     setNextPath(path);
   };
@@ -1454,9 +1577,8 @@ const AddPurchaseBill = () => {
         setIsOpenBox(false);
         setTimeout(() => {
           if (nextPath) {
-            history.push(nextPath)
+            history.push(nextPath);
           }
-
         }, 0);
       }
       setIsOpenBox(false);
@@ -1470,7 +1592,6 @@ const AddPurchaseBill = () => {
       console.error("Error deleting items:", error);
     }
   };
-
 
   return (
     <>
@@ -1488,13 +1609,12 @@ const AddPurchaseBill = () => {
       />
       <div
         style={{
-
           height: "calc(99vh - 55px)",
           padding: "0px 20px 0px",
         }}
       >
         <div>
-          <div className="py-3" style={{ display: "flex", gap: "4px", }}>
+          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
@@ -1531,6 +1651,15 @@ const AddPurchaseBill = () => {
             </div>
 
             <div className="headerList">
+          
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "var(--color1)" }}
+                onClick={openFileUpload}
+              >
+                  <CloudUploadIcon className="mr-2"/> 
+                Import CSV
+              </Button>
               {/* <Select
                 labelId="dropdown-label"
                 id="dropdown"
@@ -1549,37 +1678,67 @@ const AddPurchaseBill = () => {
                   </MenuItem>
                 ))}
               </Select> */}
+              {!distributor || ItemPurchaseList?.item?.length === 0 ? (
+                <></>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ backgroundColor: "var(--color1)" }}
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "var(--color1)",
 
+                    "&:disabled": {
+                      backgroundColor: "var(--color3)",
+                      color: "var(--color1)",
+                      opacity: 0.7,
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handelAddOpen}
+                  disabled={
+                    !distributor || ItemPurchaseList?.item?.length === 0
+                  }
+                >
+                  <AddIcon className="mr-2" />
+                  CN Adjust
+                </Button>
+              )}
+              {/* <div className="flex gap-6">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ backgroundColor: "var(--color1)" }}
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "var(--color1)",
+
+                    "&:disabled": {
+                      backgroundColor: "var(--color3)",
+                      color: "var(--color1)",
+                      opacity: 0.7,
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handelAddOpen}
+                  disabled={
+                    !distributor || ItemPurchaseList?.item?.length === 0
+                  }
+                >
+                  <AddIcon className="mr-2" />
+                  CN Adjust
+                </Button>
+              </div> */}
               <Button
                 variant="contained"
                 style={{ backgroundColor: "var(--color1)" }}
-
                 onClick={handelAddItemOpen}
               >
                 <ControlPointIcon className="mr-2" />
                 Add New Item
               </Button>
-              <div className="flex gap-6">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    textTransform: "none",
-                    backgroundColor: "var(--color1)",
-                    "&:disabled": {
-                      backgroundColor: "grey", // Custom disabled background color
-                      color: "white", // Custom disabled text color
-                      opacity: 0.7, // Adjust the transparency
-                    },
-                  }}
-                  onClick={handelAddOpen}
-                  disabled={!distributor || ItemPurchaseList?.item?.length === 0}
-                >
-                  <AddIcon className="mr-2" />
-                  CN Adjust
-                </Button>
 
-              </div>
               <Button
                 variant="contained"
                 style={{ background: "var(--color1)" }}
@@ -1614,11 +1773,14 @@ const AddPurchaseBill = () => {
                   onChange={handleDistributorChange}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField
-                    autoFocus={focusedField === "distributor"}
-                    autoComplete="off"
-                    {...params}
-                  />}
+                  renderInput={(params) => (
+                    <TextField
+                      autoFocus={focusedField === "distributor"}
+                      autoComplete="off"
+                      variant="standard"
+                      {...params}
+                    />
+                  )}
                 />
                 {error.distributor && (
                   <span style={{ color: "red", fontSize: "12px" }}>
@@ -1634,6 +1796,7 @@ const AddPurchaseBill = () => {
                   size="small"
                   style={{ width: "200px" }}
                   value={srNo}
+                  variant="standard"
                   disabled
                   onChange={(e) => {
                     setSrNo(e.target.value);
@@ -1646,6 +1809,7 @@ const AddPurchaseBill = () => {
                   autoComplete="off"
                   id="outlined-number"
                   size="small"
+                  variant="standard"
                   style={{ width: "250px" }}
                   value={billNo}
                   onChange={(e) => {
@@ -1665,6 +1829,7 @@ const AddPurchaseBill = () => {
                   <DatePicker
                     className="custom-datepicker "
                     selected={selectedDate}
+                    variant="standard"
                     onChange={(newDate) => setSelectedDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     filterDate={(date) => !isDateDisabled(date)}
@@ -1678,6 +1843,7 @@ const AddPurchaseBill = () => {
                   <DatePicker
                     className="custom-datepicker "
                     selected={dueDate}
+                    variant="standard"
                     onChange={(newDate) => setDueDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     minDate={new Date()}
@@ -1692,14 +1858,14 @@ const AddPurchaseBill = () => {
                   id="outlined-number"
                   type="number"
                   size="small"
+                  variant="standard"
                   value={barcode}
                   placeholder="scan barcode"
                   // inputRef={inputRef10}
                   // onKeyDown={handleKeyDown}
                   sx={{ width: "250px" }}
                   onChange={(e) => {
-                    setBarcode(e.target.value)
-
+                    setBarcode(e.target.value);
                   }}
                 />
               </div>
@@ -1727,9 +1893,15 @@ const AddPurchaseBill = () => {
                 Add New Item
               </Button> */}
 
-
-              <div className="overflow-x-auto ">
-                <table className="customtable  w-full border-collapse custom-table">
+              <div
+                className="overflow-x-auto "
+                ref={tableRef}
+                onKeyDown={handleTableKeyDown}
+              >
+                <table
+                  ref={tableRef}
+                  className="customtable  w-full border-collapse custom-table"
+                >
                   <thead>
                     <tr>
                       <th>Search Item Name</th>
@@ -1746,13 +1918,12 @@ const AddPurchaseBill = () => {
                       <th>Base</th>
                       <th>GST% </th>
                       <th>Loc.</th>
-                      {/* <th>Net Rate</th> */}
+                      <th>Net Rate</th>
                       <th>Margin%</th>
                       <th>Amount </th>
                     </tr>
                   </thead>
                   <tbody>
-
                     {!value && ItemPurchaseList.item > 0 ? (
                       <tr>
                         <td
@@ -1770,61 +1941,75 @@ const AddPurchaseBill = () => {
                     ) : (
                       <>
                         <tr>
-
-                          <td>
-                            {isAutocompleteDisabled && (
-                              <Autocomplete
-                                key={autocompleteKey} // Ensure re-render
-                                value={selectedOption}
-                                // value={searchItem?.iteam_name}
-                                sx={{ width: 400 }}
-                                size="small"
-                                onChange={handleOptionChange}
-                                onInputChange={handleInputChange}
-                                inputRef={searchItemField}
-                                getOptionLabel={(option) => `${option.iteam_name} `}
-                                options={itemList}
-                                renderOption={(props, option) => (
-                                  <ListItem {...props}>
-                                    {/* <ListItemText
-                        primary={`${option.iteam_name}`}
-                        secondary={`Pack : ${option.pack} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock : ${option.stock} `}
-                      /> */}
-                                    <ListItemText
-                                      primary={`${option.iteam_name}`}
-                                      secondary={` ${option.stock === 0 ? `Unit: ${option.weightage}` : `Pack: ${option.pack}`} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock: ${option.stock}`}
+                          {isEditMode ? (
+                            <td style={{ width: "600px" }}>
+                              <div>
+                                <BorderColorIcon
+                                  style={{ color: "var(--color1)" }}
+                                  onClick={() => setIsEditMode(false)}
+                                />
+                                <DeleteIcon
+                                  className="delete-icon mr-2"
+                                  onClick={removeItem}
+                                />
+                                {searchItem}
+                              </div>
+                              {error.item && (
+                                <span
+                                  style={{ color: "red", fontSize: "12px" }}
+                                >
+                                  {error.item}
+                                </span>
+                              )}
+                            </td>
+                          ) : (
+                            <td>
+                              {isAutocompleteDisabled && (
+                                <Autocomplete
+                                  key={autocompleteKey} // Ensure re-render
+                                  value={selectedOption}
+                                  // value={searchItem?.iteam_name}
+                                  sx={{ width: 400 }}
+                                  size="small"
+                                  onChange={handleOptionChange}
+                                  onInputChange={handleInputChange}
+                                  inputRef={searchItemField}
+                                  getOptionLabel={(option) =>
+                                    `${option.iteam_name} `
+                                  }
+                                  options={itemList}
+                                  renderOption={(props, option) => (
+                                    <ListItem {...props}>
+                                      <ListItemText
+                                        primary={`${option.iteam_name}`}
+                                        secondary={` ${
+                                          option.stock === 0
+                                            ? `Unit: ${option.weightage}`
+                                            : `Pack: ${option.pack}`
+                                        } | MRP: ${option.mrp}  | Location: ${
+                                          option.location
+                                        }  | Current Stock: ${option.stock}`}
+                                      />
+                                    </ListItem>
+                                  )}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      variant="standard"
+                                      autoComplete="off"
+                                      sx={{ width: 400, paddingLeft: "10px" }}
+                                      autoFocus={focusedField === "item"}
+                                      {...params}
+                                      value={searchItem?.iteam_name}
                                     />
+                                  )}
+                                />
+                              )}
+                            </td>
+                          )}
 
-                                  </ListItem>
-                                )}
-                                renderInput={(params) => (
-                                  <TextField
-                                    autoComplete="off"
-                                    autoFocus={focusedField === "item"}
-                                    {...params}
-                                    // label="Search Item Name"
-                                    value={searchItem?.iteam_name}
-                                  />
-                                )}
-                              />
-                            )}
-                            {/* <td style={{ width: "600px" }}>
-                            <div>
-                              <DeleteIcon
-                                className="delete-icon"
-                                onClick={removeItem}
-                              />
-                              {searchItem}
-                            </div>
-                            {error.item && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {error.item}
-                              </span>
-                            )}
-                          </td> */}
-                          </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="text"
@@ -1833,13 +2018,15 @@ const AddPurchaseBill = () => {
                               value={unit}
                               sx={{ width: "65px" }}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                const value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
                                 setUnit(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-
                                 if (
-                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
                                 ) {
                                   e.preventDefault();
                                 }
@@ -1869,6 +2056,7 @@ const AddPurchaseBill = () => {
                           </td> */}
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef2}
@@ -1880,7 +2068,6 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
-
                             />
                             {error.batch && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -1890,6 +2077,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
@@ -1904,6 +2092,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1921,8 +2110,9 @@ const AddPurchaseBill = () => {
                               }}
                               onKeyDown={(e) => {
                                 if (
-                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
-                                  (e.key === '.' && e.target.value.includes('.'))
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
                                 ) {
                                   e.preventDefault();
                                 }
@@ -1931,6 +2121,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1942,14 +2133,15 @@ const AddPurchaseBill = () => {
                               error={!!errors.qty}
                               value={qty}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                const value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
                                 setQty(value ? Number(value) : "");
                               }}
-
                               onKeyDown={(e) => {
-
                                 if (
-                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
                                 ) {
                                   e.preventDefault();
                                 }
@@ -1958,6 +2150,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
@@ -1968,13 +2161,12 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef6}
                               // onKeyDown={handleKeyDown}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                const value = e.target.value.replace(/[^0-9]/g);
                                 setFree(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-
                                 if (
-                                  ['e', 'E', '.', '+', '-', ','].includes(e.key)
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
                                 ) {
                                   e.preventDefault();
                                 }
@@ -1983,6 +2175,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1994,18 +2187,19 @@ const AddPurchaseBill = () => {
                               error={!!errors.ptr}
                               onKeyDown={(e) => {
                                 if (
-                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
-                                  (e.key === '.' && e.target.value.includes('.'))
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
                                 ) {
                                   e.preventDefault();
                                 }
                               }}
                               onChange={handlePTR}
-
                             />
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "60px" }}
@@ -2016,8 +2210,9 @@ const AddPurchaseBill = () => {
                               value={disc}
                               onKeyDown={(e) => {
                                 if (
-                                  ['e', 'E', '+', '-', ','].includes(e.key) ||
-                                  (e.key === '.' && e.target.value.includes('.'))
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
                                 ) {
                                   e.preventDefault();
                                 }
@@ -2029,11 +2224,11 @@ const AddPurchaseBill = () => {
                                 }
                                 handleSchAmt(e);
                               }}
-
                             />
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "90px" }}
@@ -2045,14 +2240,13 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td>
-
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
                               size="small"
-                              value={base === 0 ? '' : base}
-
+                              value={base === 0 ? "" : base}
                               // inputRef={inputRef10}
                               // onKeyDown={handleKeyDown}
                               disabled
@@ -2066,6 +2260,7 @@ const AddPurchaseBill = () => {
                             <Select
                               labelId="dropdown-label"
                               id="dropdown"
+                              variant="standard"
                               value={gst.name}
                               sx={{ minWidth: "80px" }}
                               onChange={(e) => {
@@ -2088,6 +2283,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef12}
@@ -2102,18 +2298,18 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td>
-
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
                               disabled
                               size="small"
-                              value={netRate === 0 ? '' : netRate}
+                              value={netRate === 0 ? "" : netRate}
                               sx={{ width: "100px" }}
                             />
                           </td>
-                          {/* <td>
+                          <td>
                             <TextField
                               autoComplete="off"
                               id="outlined-number"
@@ -2126,7 +2322,7 @@ const AddPurchaseBill = () => {
                                 setMargin(e.target.value);
                               }}
                             />
-                          </td> */}
+                          </td>
                           <td className="total">
                             <span>{ItemTotalAmount.toFixed(2)}</span>
                           </td>
@@ -2176,24 +2372,31 @@ const AddPurchaseBill = () => {
                         {ItemPurchaseList?.item?.map((item) => (
                           <tr
                             key={item.id}
+                            data-id={item.id}
+                            tabIndex={0}
                             onClick={() => handleEditClick(item)}
-                            onKeyDown={handleTableKeyDown} ref={tableRef}
-                            className={` item-List  cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-                          ><td
-                            style={{
-                              display: "flex",
-                              gap: "8px",
-                            }}>
+                            onMouseEnter={handleMouseEnter}
+                            ref={tableRef}
+                            className={` item-List  cursor-pointer saleTable custom-hover ${
+                              highlightedRowId === String(item.id)
+                                ? "highlighted-row"
+                                : ""
+                            }`}
+                          >
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "8px",
+                              }}
+                            >
                               <BorderColorIcon
                                 style={{ color: "var(--color1)" }}
                                 onClick={() => handleEditClick(item)}
                               />
                               <DeleteIcon
                                 style={{ color: "var(--color6)" }}
-
                                 className="delete-icon bg-none"
                                 onClick={() => deleteOpen(item.id)}
-
                               />
                               {item.iteam_name}
                             </td>
@@ -2209,12 +2412,11 @@ const AddPurchaseBill = () => {
                             <td>{item.base_price}</td>
                             <td>{item.gst}</td>
                             <td>{item.location}</td>
-                            {/* <td>{item.net_rate}</td> */}
+                            <td>{item.net_rate}</td> 
                             <td>{item.margin}</td>
                             <td>{item.total_amount}</td>
                           </tr>
                         ))}
-
                       </>
                     )}
                   </tbody>
@@ -2244,21 +2446,20 @@ const AddPurchaseBill = () => {
                     </div>
                   </div>
                   <div class="totals-purchase  text-end ">
-                    <div className="font-bold">
-                      {totalGst ? totalGst : 0}
-                    </div>
+                    <div className="font-bold">{totalGst ? totalGst : 0}</div>
 
                     <div className="font-bold mt-5">
-                      {totalQty ? totalQty : 0} + <span className="primary" >{totalFree ? totalFree : 0} Free </span>
+                      {totalQty ? totalQty : 0} +{" "}
+                      <span className="primary">
+                        {totalFree ? totalFree : 0} Free{" "}
+                      </span>
                     </div>
 
                     <div className="font-bold mt-5">
                       {totalNetRate ? totalNetRate : 0}
                     </div>
 
-                    <div className="font-bold mt-5">
-                      {totalBase}
-                    </div>
+                    <div className="font-bold mt-5">{totalBase?totalBase:0}</div>
                   </div>
                   <div
                     className="totals"
@@ -2278,7 +2479,7 @@ const AddPurchaseBill = () => {
                       <label className="font-bold">Profit : </label>
                     </div> */}
                     <div>
-                      <label className="font-bold">Round off : </label>
+                      <label className="font-bold">Round of : </label>
                     </div>
                     <div>
                       <label className="font-bold">Net Amount : </label>
@@ -2292,19 +2493,23 @@ const AddPurchaseBill = () => {
                           gap: "22px",
                           flexDirection: "column",
                         }}
-                      >{finalTotalAmount?.toFixed(2)}
+                      >
+                        {finalTotalAmount?.toFixed(2)}
                       </span>
                     </div>
-                    <div style={{
-                      marginTop: "23px"
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "23px",
+                      }}
+                    >
                       <span
                         style={{
                           fontWeight: 600,
                           paddingTop: "10px",
-                          color: "red"
+                          color: "red",
                         }}
-                      >-{finalCnAmount?.toFixed(2)}
+                      >
+                        -{finalCnAmount?.toFixed(2)}
                       </span>
                     </div>
                     {/* <div style={{
@@ -2321,24 +2526,24 @@ const AddPurchaseBill = () => {
                     </div> */}
                     <div style={{ marginTop: "23px" }}>
                       <span style={{ fontWeight: 600 }}>
-
                         {roundOffAmount === "0.00"
                           ? roundOffAmount
                           : roundOffAmount < 0
-                            ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                            : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                          ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                          : `${Math.abs(roundOffAmount.toFixed(2))}`}
                       </span>
                     </div>
-                    <div style={{
-                      marginTop: "15px",
-                      font: "var(-color1)"
-
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "15px",
+                        font: "var(-color1)",
+                      }}
+                    >
                       <span
                         style={{
                           fontWeight: 600,
                           fontSize: "22px",
-                          color: "#3f6212"
+                          color: "#3f6212",
                         }}
                       >
                         {netAmount.toFixed(2)}
@@ -2351,15 +2556,21 @@ const AddPurchaseBill = () => {
           </div>
         </div>
         {/* CN amount PopUp Box */}
-        <Dialog open={openAddPopUp} >
+        <Dialog open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add Amount
           </DialogTitle>
           <IconButton
             aria-label="close"
             onClick={resetAddDialog}
-            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-          ><CloseIcon />
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -2372,7 +2583,11 @@ const AddPurchaseBill = () => {
                           <input
                             type="checkbox"
                             onChange={handleSelectAll}
-                            checked={selectedRows.length === purchaseReturnPending.length && purchaseReturnPending.length > 0}
+                            checked={
+                              selectedRows.length ===
+                                purchaseReturnPending.length &&
+                              purchaseReturnPending.length > 0
+                            }
                           />
                         </th>
                         <th>Bill No</th>
@@ -2384,9 +2599,7 @@ const AddPurchaseBill = () => {
                     <tbody>
                       {purchaseReturnPending.length === 0 ? (
                         <tr>
-                          <td >
-                            No data found
-                          </td>
+                          <td>No data found</td>
                         </tr>
                       ) : (
                         purchaseReturnPending.map((row, index) => (
@@ -2394,7 +2607,9 @@ const AddPurchaseBill = () => {
                             <td>
                               <input
                                 type="checkbox"
-                                onChange={(e) => handleRowSelect(row.id, row.total_amount || 0)}
+                                onChange={(e) =>
+                                  handleRowSelect(row.id, row.total_amount || 0)
+                                }
                                 checked={selectedRows.includes(row.id)}
                               />
                             </td>
@@ -2404,9 +2619,19 @@ const AddPurchaseBill = () => {
                             <td>
                               <OutlinedInput
                                 type="number"
-                                value={cnTotalAmount[row.id] || ''}
-                                onChange={(e) => handleCnAmountChange(row.id, e.target.value, row.total_amount)}
-                                startAdornment={<InputAdornment position="start">Rs.</InputAdornment>}
+                                value={cnTotalAmount[row.id] || ""}
+                                onChange={(e) =>
+                                  handleCnAmountChange(
+                                    row.id,
+                                    e.target.value,
+                                    row.total_amount
+                                  )
+                                }
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    Rs.
+                                  </InputAdornment>
+                                }
                                 sx={{ width: 130, m: 1 }}
                                 size="small"
                                 disabled={!selectedRows.includes(row.id)}
@@ -2421,7 +2646,15 @@ const AddPurchaseBill = () => {
                         <td></td>
                         <td>Selected Bills Amount</td>
                         <td>
-                          <span style={{ fontSize: '14px', fontWeight: 800, color: 'black' }}>Rs.{(parseFloat(cnAmount) || 0).toFixed(2)}</span>
+                          <span
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: 800,
+                              color: "black",
+                            }}
+                          >
+                            Rs.{(parseFloat(cnAmount) || 0).toFixed(2)}
+                          </span>
                         </td>
                       </tr>
                     </tbody>
@@ -2431,26 +2664,90 @@ const AddPurchaseBill = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus variant="contained" color="success" onClick={handleCnAmount} >
+            <Button
+              autoFocus
+              variant="contained"
+              color="success"
+              onClick={handleCnAmount}
+            >
               Save
             </Button>
           </DialogActions>
-        </Dialog >
+        </Dialog>
+     
+         {/*Bulk Import csv   */}
+      <Dialog open={openFile} className="custom-dialog">
+        <DialogTitle className="primary">Import Item</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleFileClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <div className="primary">Item File Upload</div>
+            <div
+              style={{ display: "flex", gap: "15px", flexDirection: "column" }}
+            >
+              <div>
+                <input
+                  className="File-upload"
+                  type="file"
+                  accept=".csv"
+                  id="file-upload"
+                  onChange={handleFileChange}
+                />
+                <span className="errorFile">*select only .csv File.</span>
+              </div>
+              <div>
+                <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                  <CloudDownloadIcon className="mr-2" />
+                  Download Sample File
+                </Button>
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            style={{ backgroundColor: "#3f6212", color: "white" }}
+
+            type="success"
+            onClick={handleFileUpload}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+        
         {/* add item  PopUp Box */}
 
-        <Dialog open={openAddItemPopUp} >
+        <Dialog open={openAddItemPopUp}>
           <DialogTitle id="alert-dialog-title" className="primary">
             Add New Item
           </DialogTitle>
           <IconButton
             aria-label="close"
             onClick={resetAddDialog}
-            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-          ><CloseIcon />
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-
               <div className="bg-white">
                 <div
                   className="mainform bg-white rounded-lg"
@@ -2464,8 +2761,9 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={addItemName}
-                        onChange={(e) => setAddItemName((e.target.value).toUpperCase())}
-
+                        onChange={(e) =>
+                          setAddItemName(e.target.value.toUpperCase())
+                        }
                       />
                     </div>
                     <div className="fields add_new_item_divv">
@@ -2477,7 +2775,6 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={addBarcode}
                         onChange={(e) => setAddBarcode(Number(e.target.value))}
-
                       />
                     </div>
                   </div>
@@ -2491,7 +2788,6 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={addUnit}
                         onChange={(e) => setAddUnit(e.target.value)}
-
                       />
                     </div>
                     <div className="fields add_new_item_divv">
@@ -2504,10 +2800,15 @@ const AddPurchaseBill = () => {
                         value={`1 * ${addUnit} `}
                       />
                     </div>
-
-
                   </div>
-                  <div className="row" style={{ justifyContent: "flex-end", paddingRight: "4px", paddingTop: "8%" }}>
+                  <div
+                    className="row"
+                    style={{
+                      justifyContent: "flex-end",
+                      paddingRight: "4px",
+                      paddingTop: "8%",
+                    }}
+                  >
                     <Button
                       variant="contained"
                       sx={{
@@ -2517,7 +2818,6 @@ const AddPurchaseBill = () => {
                         },
                       }}
                       onClick={handleAddNewItem}
-
                     >
                       <ControlPointIcon className="mr-2" />
                       Add New Item
@@ -2527,15 +2827,14 @@ const AddPurchaseBill = () => {
               </div>
             </DialogContentText>
           </DialogContent>
-
-
-        </Dialog >
+        </Dialog>
         {/* Delete PopUP */}
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-            }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+            IsDelete ? "block" : "hidden"
+          }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -2563,8 +2862,9 @@ const AddPurchaseBill = () => {
                 />
               </svg>
               <h4 className="text-lg font-semibold mt-6 first-letter:uppercase">
-
-                <span style={{ textTransform: "none" }}>Are you sure you want to delete it?</span>
+                <span style={{ textTransform: "none" }}>
+                  Are you sure you want to delete it?
+                </span>
               </h4>
             </div>
             <div className="flex gap-5 justify-center">
@@ -2595,14 +2895,21 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+            isOpenBox ? "block" : "hidden"
+          }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
             <div className="my-4 logout-icon">
-              <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
+              <VscDebugStepBack
+                className="h-12 w-14"
+                style={{ color: "#628A2F" }}
+              />
               <h4 className="text-lg font-semibold mt-6 text-center">
-                <span style={{ textTransform: "none" }}>Are you sure you want to leave this page?</span>
+                <span style={{ textTransform: "none" }}>
+                  Are you sure you want to leave this page?
+                </span>
               </h4>
             </div>
             <div className="flex gap-5 justify-center">

@@ -1525,7 +1525,7 @@ const Addsale = () => {
                                             <TextField
                  autoComplete="off"
                                                 {...params}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Search by Mobile, Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -1588,7 +1588,7 @@ const Addsale = () => {
                                             <TextField
                  autoComplete="off"
                                                 {...params}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Search by DR. Name, Clinic Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -1665,7 +1665,7 @@ const Addsale = () => {
                                                     <TextField
                  autoComplete="off"
                                                         {...params}
-                                                        variant="outlined"
+                                                        variant="standard"
                                                         id="searchResults"
                                                         placeholder="Search Item Name..."
                                                         InputProps={{
@@ -2184,7 +2184,7 @@ const Addsale = () => {
                                             value={doctorName}
                                             onChange={(e) => { setDoctorName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                         <div className="mb-2" >
                                             <span className="label primary" >Clinic Name</span>
@@ -2197,7 +2197,7 @@ const Addsale = () => {
                                             value={clinic}
                                             onChange={(e) => { setClinic(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                     </div>
                                 </div>
@@ -2239,7 +2239,7 @@ const Addsale = () => {
                                             value={customerName}
                                             onChange={(e) => { setCustomerName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                         <div className="mb-2" >
                                             <span className="label primary" >Mobile Number</span>
@@ -2252,7 +2252,7 @@ const Addsale = () => {
                                             value={mobileNo}
                                             onChange={(e) => { setMobileNo(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                     </div>
                                 </div>

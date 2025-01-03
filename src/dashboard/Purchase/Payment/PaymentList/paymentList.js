@@ -628,7 +628,7 @@ const PaymentList = () => {
                                                 value={distributor}
                                                 sx={{ minWidth: 550 }}
                                                 rows={2}
-                                                variant="outlined"
+                                                variant="standard"
                                             /> :
                                             <>
                                                 <Autocomplete
@@ -699,7 +699,7 @@ const PaymentList = () => {
                                             onChange={(e) => { setNote(e.target.value) }}
                                             style={{ minWidth: 500 }}
                                             rows={2}
-                                            variant="outlined"
+                                            variant="standard"
                                         />
                                     </div>
                                     <div>
@@ -788,7 +788,7 @@ const PaymentList = () => {
                             <Button autoFocus variant="contained" onClick={submitPayment}>
                                 Yes
                             </Button>
-                            <Button autoFocus variant="outlined" onClick={() => setConfirm(false)}>
+                            <Button autoFocus variant="standard" onClick={() => setConfirm(false)}>
                                 No
                             </Button>
                         </DialogActions>

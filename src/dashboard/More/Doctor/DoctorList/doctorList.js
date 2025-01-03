@@ -733,7 +733,7 @@ const DoctorList = () => {
                       <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className="downloadFile">
                       <CloudDownloadIcon className="mr-2" />
 
-                        Sample File Download
+                        Download Sample File
                       </Button>
                     </div>
                   </div>
@@ -831,7 +831,7 @@ const DoctorList = () => {
                                 setClinic(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                             {errors.clinic && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -854,7 +854,7 @@ const DoctorList = () => {
                                 setEmailId(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                           </div>
                           <div
@@ -914,7 +914,7 @@ const DoctorList = () => {
                                 setAddress(e.target.value);
                               }}
                               className="w-full"
-                              variant="outlined"
+                              variant="standard"
                             />
                           </div>
                         </div>

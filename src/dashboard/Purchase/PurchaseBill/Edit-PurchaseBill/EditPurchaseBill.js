@@ -163,13 +163,11 @@ const EditPurchaseBill = () => {
       const distributors = response.data.data;
       localStorage.setItem("distributor", JSON.stringify(distributors));
       setDistributorList(distributors);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
+      
 
       return distributors;
     } catch (error) {
+      
       console.error("API Error fetching distributors:", error);
       return [];
     }
@@ -245,10 +243,7 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
+      
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -414,16 +409,14 @@ const EditPurchaseBill = () => {
           // setCnTotalAmount(response.data.data.total_amount)
 
           // toast.success(response.data.message);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
+          
         });
     } catch (error) {
       // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.error(error.response.data.message);
       }
+      
     }
   };
   let listOfGst = () => {
@@ -438,6 +431,8 @@ const EditPurchaseBill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
+        setUnsavedItems(false);
+
       });
   };
   // let listOfHistory = () => {
@@ -473,6 +468,8 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
   const deleteOpen = (Id) => {
@@ -571,6 +568,8 @@ const EditPurchaseBill = () => {
       // history.replace(nextPath);
     } catch (error) {
       console.error("Error deleting items:", error);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -651,6 +650,8 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 
@@ -741,12 +742,11 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
+     
     } catch (e) {
       console.error("API error:", error);
+      setUnsavedItems(false);
+
     }
   };
 

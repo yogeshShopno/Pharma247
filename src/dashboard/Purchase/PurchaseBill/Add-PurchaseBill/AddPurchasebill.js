@@ -2342,6 +2342,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
+                              variant="standard"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"

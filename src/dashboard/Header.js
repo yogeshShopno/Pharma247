@@ -138,7 +138,6 @@ const Header = () => {
 
       if (error.response.status === 401) {
         setIsClear(true);
-
       }
     }
   }

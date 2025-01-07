@@ -39,7 +39,6 @@ const Login = () => {
     } else if (roles == "Staff") {
       history.push("/more/reconciliation");
     }
-    console.log("NewUser", NewUser);
   }, []);
 
   const handleLogin = (event) => {

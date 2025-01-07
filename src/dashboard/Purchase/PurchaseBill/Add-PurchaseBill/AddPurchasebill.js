@@ -38,7 +38,7 @@ import {
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 const debounce = (func, delay) => {
   let timeout;
@@ -152,10 +152,10 @@ const AddPurchaseBill = () => {
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const [focusedField, setFocusedField] = useState("distributor");
 
-    const [openFile, setOpenFile] = useState(false);
-    const [file, setFile] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-  
+  const [openFile, setOpenFile] = useState(false);
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -287,7 +287,7 @@ const AddPurchaseBill = () => {
   //     window.removeEventListener('keydown', handleKeyDown);
   //   };
   // }, []);
- const handleFileChange = (e) => {
+  const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const fileType = selectedFile.type;
@@ -313,7 +313,7 @@ const AddPurchaseBill = () => {
     if (file) {
       let data = new FormData();
       data.append("file", file);
-      data.append("random_number",localStorage.getItem("RandomNumber"));
+      data.append("random_number", localStorage.getItem("RandomNumber"));
 
       const params = {
         random_number: localStorage.getItem("RandomNumber"),
@@ -323,7 +323,6 @@ const AddPurchaseBill = () => {
       try {
         await axios
           .post("purchase-item-upload", data, {
-         
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -333,13 +332,11 @@ const AddPurchaseBill = () => {
             setOpenFile(false);
             setIsLoading(false);
             setUnsavedItems(true);
-          itemPurchaseList();
-
+            itemPurchaseList();
           });
       } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
-
       }
     } else {
       toast.error("No file selected");
@@ -347,7 +344,6 @@ const AddPurchaseBill = () => {
   };
 
   const handleDownload = () => {
-    
     const link = document.createElement("a");
     link.href = "/purchase_add_sample.csv";
     link.download = "purchase_add_sample.csv";
@@ -884,7 +880,10 @@ const AddPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!HSN) newErrors.HSN = "HSN is required";
+    if (!HSN) {
+      toast.error("HSN is required");
+      newErrors.HSN = "HSN is required";
+    }
 
     // if (!batch) newErrors.batch = "Batch is required";
     if (!qty) newErrors.unit = "Qty is required";
@@ -1346,7 +1345,6 @@ const AddPurchaseBill = () => {
       }
     }
   };
- 
 
   const handelAddOpen = () => {
     setUnsavedItems(true);
@@ -1666,13 +1664,12 @@ const AddPurchaseBill = () => {
             </div>
 
             <div className="headerList">
-          
               <Button
                 variant="contained"
                 style={{ backgroundColor: "var(--color1)" }}
                 onClick={openFileUpload}
               >
-                  <CloudUploadIcon className="mr-2"/> 
+                <CloudUploadIcon className="mr-2" />
                 Import CSV
               </Button>
               {/* <Select
@@ -2084,7 +2081,7 @@ const AddPurchaseBill = () => {
                               </span>
                             )}
                           </td>
-                     
+
                           <td>
                             <TextField
                               variant="standard"
@@ -2348,7 +2345,7 @@ const AddPurchaseBill = () => {
                               type="number"
                               disabled
                               size="small"
-                              value={margin === 0 ? '' : margin}
+                              value={margin === 0 ? "" : margin}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
                                 setMargin(e.target.value);
@@ -2448,7 +2445,7 @@ const AddPurchaseBill = () => {
                             <td>{item.base_price}</td>
                             <td>{item.gst}</td>
                             <td>{item.location}</td>
-                            <td>{item.net_rate}</td> 
+                            <td>{item.net_rate}</td>
                             <td>{item.margin}</td>
                             <td>{item.total_amount}</td>
                           </tr>
@@ -2495,7 +2492,9 @@ const AddPurchaseBill = () => {
                       {totalNetRate ? totalNetRate : 0}
                     </div>
 
-                    <div className="font-bold mt-5">{totalBase?totalBase:0}</div>
+                    <div className="font-bold mt-5">
+                      {totalBase ? totalBase : 0}
+                    </div>
                   </div>
                   <div
                     className="totals"
@@ -2710,60 +2709,66 @@ const AddPurchaseBill = () => {
             </Button>
           </DialogActions>
         </Dialog>
-     
-         {/*Bulk Import csv   */}
-      <Dialog open={openFile} className="custom-dialog">
-        <DialogTitle className="primary">Import Item</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleFileClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <div className="primary">Item File Upload</div>
-            <div
-              style={{ display: "flex", gap: "15px", flexDirection: "column" }}
-            >
-              <div>
-                <input
-                  className="File-upload"
-                  type="file"
-                  accept=".csv"
-                  id="file-upload"
-                  onChange={handleFileChange}
-                />
-                <span className="errorFile">*select only .csv File.</span>
-              </div>
-              <div>
-                <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
-                  <CloudDownloadIcon className="mr-2" />
-                  Download Sample File
-                </Button>
-              </div>
-            </div>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            style={{ backgroundColor: "#3f6212", color: "white" }}
 
-            type="success"
-            onClick={handleFileUpload}
+        {/*Bulk Import csv   */}
+        <Dialog open={openFile} className="custom-dialog">
+          <DialogTitle className="primary">Import Item</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleFileClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
           >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-        
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="primary">Item File Upload</div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  flexDirection: "column",
+                }}
+              >
+                <div>
+                  <input
+                    className="File-upload"
+                    type="file"
+                    accept=".csv"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                  />
+                  <span className="errorFile">*select only .csv File.</span>
+                </div>
+                <div>
+                  <Button
+                    onClick={handleDownload}
+                    style={{ backgroundColor: "#3f6212", color: "white" }}
+                  >
+                    <CloudDownloadIcon className="mr-2" />
+                    Download Sample File
+                  </Button>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              autoFocus
+              style={{ backgroundColor: "#3f6212", color: "white" }}
+              type="success"
+              onClick={handleFileUpload}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/* add item  PopUp Box */}
 
         <Dialog open={openAddItemPopUp}>

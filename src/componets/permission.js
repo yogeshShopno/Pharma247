@@ -16,7 +16,7 @@ const usePermissions = () => {
 
       try {
         const storedPermissions = decryptData(encryptedPermissions);
-        //console.log('ayush',storedPermissions);
+        // console.log('yogi',storedPermissions);
         
         // Filter permissions to get only those with a value of true
         const filteredPermissions = storedPermissions.filter(permission => {
@@ -24,7 +24,6 @@ const usePermissions = () => {
           return permission[key] === true;
         });
         // console.log('permission', filteredPermissions);
-
         setPermissions(filteredPermissions);
       } catch (error) {
         console.error('Failed to decrypt permissions', error);
@@ -34,6 +33,7 @@ const usePermissions = () => {
 
   return permissions;
 };
+
 export default usePermissions;
 
 export const hasPermission = (permissions, permissionKey) => {

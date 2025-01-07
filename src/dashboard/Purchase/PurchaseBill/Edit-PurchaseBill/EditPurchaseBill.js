@@ -163,10 +163,6 @@ const EditPurchaseBill = () => {
       const distributors = response.data.data;
       localStorage.setItem("distributor", JSON.stringify(distributors));
       setDistributorList(distributors);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
 
       return distributors;
     } catch (error) {
@@ -245,10 +241,6 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -414,10 +406,6 @@ const EditPurchaseBill = () => {
           // setCnTotalAmount(response.data.data.total_amount)
 
           // toast.success(response.data.message);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
         });
     } catch (error) {
       // setIsLoading(false);
@@ -438,6 +426,7 @@ const EditPurchaseBill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
+        setUnsavedItems(false);
       });
   };
   // let listOfHistory = () => {
@@ -473,6 +462,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
     }
   };
   const deleteOpen = (Id) => {
@@ -490,7 +480,12 @@ const EditPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!HSN) newErrors.HSN = "HSN is required";
+    if (!HSN){
+      toast.error("HSN is required");
+ newErrors.HSN = "HSN is required";
+    
+    }
+
     if (!batch) newErrors.batch = "Batch is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -571,6 +566,7 @@ const EditPurchaseBill = () => {
       // history.replace(nextPath);
     } catch (error) {
       console.error("Error deleting items:", error);
+      setUnsavedItems(false);
     }
   };
 
@@ -651,6 +647,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setUnsavedItems(false);
     }
   };
 
@@ -741,12 +738,9 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
     } catch (e) {
       console.error("API error:", error);
+      setUnsavedItems(false);
     }
   };
 
@@ -864,6 +858,7 @@ const EditPurchaseBill = () => {
     updatePurchaseRecord();
   };
   const handleEditClick = (item) => {
+    console.log(item,"item")
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -978,7 +973,6 @@ const EditPurchaseBill = () => {
   };
 
   const removeItem = () => {
-
     setAutocompleteDisabled(false);
     setUnit("");
     setSearchItem("");
@@ -1422,59 +1416,61 @@ const EditPurchaseBill = () => {
                     <tbody>
                       <tr>
                         <td style={{ width: "500px" }}>
-                          {isEditMode? <>
-                            
-                            {/* <DeleteIcon
+                          {isEditMode ? (
+                            <>
+                              {/* <DeleteIcon
                               className="delete-icon"
                               onClick={removeItem}
                             /> */}
-                            <BorderColorIcon onClick={removeItem}  className="primary mr-2 cursor-pointer" />
+                              <BorderColorIcon
+                                onClick={removeItem}
+                                className="primary mr-2 cursor-pointer"
+                              />
 
-{searchItem}
-                            </>:
+                              {searchItem}
+                            </>
+                          ) : (
                             <Autocomplete
-                            value={searchItem?.iteam_name}
-                            sx={{ width: 370 }}
-                            size="small"
-                            onChange={handleOptionChange}
-                            onInputChange={handleInputChange}
-                            disabled={isAutocompleteDisabled}
-                            getOptionLabel={(option) =>
-                              `${option.iteam_name} `
-                            }
-                            options={itemList}
-                            renderOption={(props, option) => (
-                              <ListItem {...props}>
-                                {/* <ListItemText
+                              value={searchItem?.iteam_name}
+                              sx={{ width: 370 }}
+                              size="small"
+                              onChange={handleOptionChange}
+                              onInputChange={handleInputChange}
+                              disabled={isAutocompleteDisabled}
+                              getOptionLabel={(option) =>
+                                `${option.iteam_name} `
+                              }
+                              options={itemList}
+                              renderOption={(props, option) => (
+                                <ListItem {...props}>
+                                  {/* <ListItemText
                       primary={`${option.iteam_name}`}
                       secondary={`Pack : ${option.pack} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock : ${option.stock} `}
                     /> */}
-                                <ListItemText
-                                  primary={`${option.iteam_name}`}
-                                  secondary={` ${
-                                    option.stock === 0
-                                      ? `Unit: ${option.weightage}`
-                                      : `Pack: ${option.pack}`
-                                  } | 
+                                  <ListItemText
+                                    primary={`${option.iteam_name}`}
+                                    secondary={` ${
+                                      option.stock === 0
+                                        ? `Unit: ${option.weightage}`
+                                        : `Pack: ${option.pack}`
+                                    } | 
             MRP: ${option.mrp}  | 
             Location: ${option.location}  | 
             Current Stock: ${option.stock}`}
+                                  />
+                                </ListItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  variant="standard"
+                                  autoComplete="off"
+                                  {...params}
+                                  // label="Search Item Name"
+                                  autoFocus
                                 />
-                              </ListItem>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                variant="standard"
-                                autoComplete="off"
-                                {...params}
-                                // label="Search Item Name"
-                                autoFocus
-                              />
-                            )}
-                          />}
-                         
-                           
-                              
+                              )}
+                            />
+                          )}
                         </td>
 
                         <td>
@@ -1842,6 +1838,7 @@ const EditPurchaseBill = () => {
 
                         <td>
                           <Button
+                          
                             variant="contained"
                             color="success"
                             style={{
@@ -1852,7 +1849,8 @@ const EditPurchaseBill = () => {
                             onClick={addPurchaseValidation}
                           >
                             <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
-                            Edit
+                            {isEditMode?"Edit":"Add"}
+                            
                           </Button>
                           {/* <Button variant="contained" color="success" onClick={addPurchaseValidation}><ControlPointIcon />Edit</Button> */}
                         </td>

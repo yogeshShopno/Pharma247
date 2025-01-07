@@ -109,6 +109,11 @@ const AddDistributer = () => {
                 setFoodLicence('');
                 setDurgLicence('');
                 setDueDays('');
+
+
+                setTimeout(() => {
+                    history.push('/more/DistributorList');
+                }, 1000);
                
             })
         } catch (error) {

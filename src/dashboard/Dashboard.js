@@ -43,6 +43,7 @@ const Dashboard = () => {
   const [pieChartvalue, setpieChartValue] = useState(0)
   const [value, setValue] = useState(1)
   const [data, setData] = useState([])
+ 
 
   const handlechange = (event, newValue) => {
     setValue(newValue);
@@ -78,7 +79,6 @@ const Dashboard = () => {
       });
     }
   };
-
 
 
   
@@ -161,8 +161,7 @@ const Dashboard = () => {
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
         // localStorage.setItem('Permission', JSON.stringify(permission));
-      
-      })
+            })
       
     }
     catch (error) {
@@ -174,6 +173,7 @@ const Dashboard = () => {
     <div>
       <div>
         <Header />
+
         {isLoading ? <div className="loaderdash">
           <Loader />
         </div> :

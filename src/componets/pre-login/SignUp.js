@@ -155,7 +155,9 @@ const SignUp = () => {
           toast.success(response.data.message);
           localStorage.setItem('userId', userID)
           setTimeout(() => {
-            history.push('/');
+           
+            history.push('/', { NewUser: 'NewUser' });
+
           }, 3000);
         } else {
           toast.error(response.data.message);

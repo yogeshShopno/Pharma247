@@ -334,6 +334,8 @@ const DrugGroup = () => {
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                                            variant="standard"
+
                  autoComplete="off" {...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}

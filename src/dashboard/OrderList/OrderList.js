@@ -358,6 +358,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                                        variant="standard"
                                             autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}

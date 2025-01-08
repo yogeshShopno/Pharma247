@@ -412,6 +412,8 @@ const DistributerList = () => {
                                             <div className='headerStyle'>
                                                 <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                 <TextField
+                                    variant="standard"
+
                                                     autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"

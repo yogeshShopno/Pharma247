@@ -18,12 +18,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { encryptData } from "../componets/cryptoUtils";
+import { encryptData, decryptData } from "../componets/cryptoUtils";
 import { toast, ToastContainer } from "react-toastify";
 
 const Header = () => {
@@ -35,23 +35,14 @@ const Header = () => {
   const [IsLogout, setIsLogout] = useState(false);
   const [IsClear, setIsClear] = useState(false);
   const dropdownRef = useRef(null);
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  // const token = localStorage.getItem("token");
+  const [permission, setPermission] = useState([]);
+  const [checkedper, setCheckedper] = useState();
+  // const [renderPlease, setRenderPlease] = useState(0);
 
-  const [shouldRerender, setShouldRerender] = useState(false);
 
-  // Trigger a re-render immediately after the first render
-  useEffect(() => {
-    setShouldRerender(true);
-  }, []);
 
-  // This effect will only run after the state update
-  useEffect(() => {
-    if (shouldRerender) {
-      console.log('Page re-rendered');
-      // Additional logic to handle after re-render, if necessary
-    }
-  }, [shouldRerender]);
-  
   useEffect(() => {
     const fetchPermissions = async () => {
       await userPermission(); // Assuming this fetches permissions and stores them correctly
@@ -59,8 +50,26 @@ const Header = () => {
     fetchPermissions();
   }, []);
 
- 
+  // useEffect(() => {
+  //   if (renderPlease < 2) {
 
+  //     const timeout = setTimeout(() => {
+  //       setRenderPlease(renderPlease + 1);
+  //     }, 100);
+
+  //     return () => clearTimeout(timeout); // Cleanup the timeout
+  //   }
+
+  //   console.log(renderPlease,"renderPlease");
+  // }, [renderPlease]);
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, [token]);
+
+  // useEffect(() => {
+  //   userPermission();
+  // }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -97,10 +106,6 @@ const Header = () => {
   const LogoutClose = () => {
     setIsLogout(false);
   };
-
-  useEffect(() => {
-    userPermission();
-  }, []);
 
   // useEffect(() => {
   //   const handleClickOutside = (event) => {
@@ -144,19 +149,43 @@ const Header = () => {
         .then((response) => {
           const permission = response.data.data;
           const encryptedPermission = encryptData(permission);
-          localStorage.setItem("Permission", encryptedPermission);
+          // localStorage.setItem("Permission", encryptedPermission);
+
           // localStorage.setItem('Permission', JSON.stringify(permission));
+
+          const storedPermissions = decryptData(encryptedPermission);
+          // console.log('yogi',storedPermissions);
+
+          // Filter permissions to get only those with a value of true
+          const filteredPermissions = storedPermissions.filter((permission) => {
+            const key = Object.keys(permission)[0];
+            return permission[key] === true;
+          });
+          setPermission(filteredPermissions);
+          
+          permission.forEach((item) => {
+            Object.keys(item).forEach((key) => {
+              // console.log(key);
+            });
+          });
+          
         });
     } catch (error) {
       console.error("API error:", error.response.status);
 
       if (error.response.status === 401) {
+
         setIsClear(true);
       }
     }
   };
+
+  const handleCheck = (e) =>{
+    setCheckedper(e.target.value)
+    console.log(checkedper,"checkedper")
+  }
   return (
-    <div>
+    <div >
       <div 
         id="modal"
         value={IsLogout}
@@ -165,7 +194,7 @@ const Header = () => {
         }`}
       >
         <div />
-        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+        <div  className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-black "
@@ -259,6 +288,7 @@ const Header = () => {
               <div className="flex items-center z-10">
                 <div className="hidden xl:block ">
                   <div className="ml-10 flex items-baseline space-x-4 ">
+                    {/* <TextField value={checkedper} onChange={handleCheck} /> */}
                     {hasPermission(permissions, "Item master view") && (
                       <div>
                         <button
@@ -617,7 +647,7 @@ const Header = () => {
               <div className="hidden xl:flex">
                 <div>
                   <div className="text-white mr-4 bg-transparent mr-2">
-                    <IoSearch style={{ fontSize: "1.5rem" }} />
+                    <IoSearch  style={{ fontSize: "1.5rem" }} />
                   </div>
                 </div>
                 {/* <div className="text-white mr-4 bg-transparent mr-2" >

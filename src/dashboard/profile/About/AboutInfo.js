@@ -28,6 +28,20 @@ const AboutInfo = () => {
   const [pincode, setPincode] = useState("");
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
   const [frontImgUrl, setFrontImgUrl] = useState(null);
+const [reRender, setreRender] = useState(0);
+  
+
+   useEffect(() => {
+      if (reRender < 2) {
+  
+        const timeout = setTimeout(() => {
+          setreRender(reRender + 1);
+        }, 100);
+  
+        return () => clearTimeout(timeout); 
+      }
+  
+    }, [reRender]);
 
   useEffect(() => {
     fetchAboutDetails();
@@ -112,7 +126,7 @@ const AboutInfo = () => {
 
   return (
     <>
-      <Header />
+      <Header key={reRender} />
       <ToastContainer
         position="top-right"
         autoClose={5000}

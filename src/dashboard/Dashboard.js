@@ -44,6 +44,20 @@ const Dashboard = () => {
   const [value, setValue] = useState(1)
   const [data, setData] = useState([])
  
+    const [reRender, setreRender] = useState(0);
+  
+
+   useEffect(() => {
+      if (reRender < 2) {
+  
+        const timeout = setTimeout(() => {
+          setreRender(reRender + 1);
+        }, 100);
+  
+        return () => clearTimeout(timeout); 
+      }
+  
+    }, [reRender]);
 
   const handlechange = (event, newValue) => {
     setValue(newValue);
@@ -170,9 +184,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
+    <div >
       <div>
-        <Header />
+        <Header key={reRender} />
 
         {isLoading ? <div className="loaderdash">
           <Loader />

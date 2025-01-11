@@ -2,96 +2,309 @@ import { BsLightbulbFill } from "react-icons/bs";
 import Header from "../../Header";
 import { Box } from "@mui/material";
 import ProfileView from "../ProfileView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GetAppIcon from "@mui/icons-material/GetApp";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import { format, subDays, addYears } from "date-fns";
+import { Button } from "@mui/material";
+import Loader from "../../../componets/loader/Loader"
+
 const Plans = () => {
-  const plansColumns = [
-    { id: "subscription", label: "Subscription", minWidth: 100 },
-    { id: "status", label: "Status", minWidth: 100 },
-    { id: "duration", label: "Duration", minWidth: 100 },
-    { id: "payment", label: "Payment", minWidth: 100 },
-    { id: "paidon", label: "Paid on", minWidth: 100 },
-    { id: "paymentmode", label: "Payment Mode", minWidth: 100 },
+  const token = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(false);
+  const [togglePage, setTogglePage] = useState(true);
+  const [plansDetails, setPlansDetails] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
+   /*<================================================================================== Plans column ==================================================================================> */ 
+
+   const plansColumns = [
+    { id: "email", label: "email", minWidth: 100 },
+    { id: "description", label: "description", minWidth: 100 },
+    { id: "amount", label: "amount", minWidth: 100 },
+    { id: "paid_on", label: "paid_on", minWidth: 100 },
+    { id: "method", label: "Payment Mode", minWidth: 100 },
     { id: "description", label: "Description", minWidth: 100 },
   ];
-  const [tableData, setTableData] = useState([
-    {
-      subscription: "Capsule Package",
-      status: "active",
-      duration: "21-06-24 -21-06-25",
-      payment: "121454",
-      paidon: "	21-06-24 09:03 AM",
-      paymentmode: "UPI",
-      description: "	Subscription for package - Capsule Package has been added.",
-    },
-    {
-      subscription: "Capsule Package",
-      status: "active",
-      duration: "21-06-24 -21-06-25",
-      payment: "121454",
-      paidon: "	21-06-24 09:03 AM",
-      paymentmode: "UPI",
-      description: "	Subscription for package - Capsule Package has been added.",
-    },
-    {
-      subscription: "Capsule Package",
-      status: "active",
-      duration: "21-06-24 -21-06-25",
-      payment: "121454",
-      paidon: "	21-06-24 09:03 AM",
-      paymentmode: "UPI",
-      description: "	Subscription for package - Capsule Package has been added.",
-    },
-  ]);
+
+
+  useEffect(() => {
+    getPlan();
+    getPurchaseHistory();
+  }, []);
+
+  /*<================================================================ get various dynamic plans details  to render table ================================================================> */ 
+
+  const getPlan = async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post("list-plan", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status == 200) {
+        setPlansDetails(response.data.data);
+        setIsLoading(false);
+
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      setIsLoading(false);
+
+    }
+  };
+
+ 
+  /*<========================================================================= Call razorpay API to get payment =========================================================================> */ 
+
+  const loadRazorpay = async (plan) => {
+    console.log(plan.annual_price, "plan");
+    try {
+      const key = "rzp_test_qp5ViSvdWQsuNd";
+      const name = localStorage.getItem("UserName");
+      const contact = localStorage.getItem("contact");
+      const email = localStorage.getItem("email");
+
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+      script.onload = () => {
+        if (!key) {
+          toast.error("Payment key not available");
+          return;
+        }
+        // const remainingTime = Math.floor((timer - Date.now()) / 1000);
+
+        // console.log(remainingTime);
+        const options = {
+          key: key, // Use the fetched key
+          amount: Number(plan.annual_price) * 100, // Razorpay expects the amount in paise
+          currency: "INR",
+          name: "pharma 24*7",
+          description: plan.name,
+          image: "pharmalogo.png",
+          planId: plan.id,
+
+          handler: function (response) {
+            submitPlan(response.razorpay_payment_id, plan.annual_price);
+          },
+          prefill: {
+            name: name,
+            contact: contact,
+            email: email,
+          },
+          theme: {
+            color: "#628a2f",
+          },
+          modal: {
+            // On modal close
+            ondismiss: function () {
+              rzp.close();
+            },
+          },
+          timeout: 300, // Razorpay expects timeout in seconds
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      };
+
+      // Append the Razorpay script to the document body
+      document.body.appendChild(script);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to fetch payment key"
+      );
+    }
+  };
+
+  /*<========================================================= call backend API to store plans Details after getting success response frm razorpay ====================================> */ 
+
+  const submitPlan = async (PaymentId, amount) => {
+    console.log(PaymentId, "PaymentId");
+    let data = new FormData();
+    data.append("payment_id", PaymentId);
+    data.append("payment_date", format(new Date(), "yyyy-MM-dd"));
+    data.append("expiry_date", format(addYears(new Date(), 1), "yyyy-MM-dd"));
+    data.append("user_id", localStorage.getItem("userId"));
+    data.append("plan_name", PaymentId);
+    data.append("amount", amount);
+    data.append("user_name", localStorage.getItem("UserName"));
+    data.append("contact", localStorage.getItem("contact"));
+    data.append("email", localStorage.getItem("email"));
+
+    try {
+      setIsLoading(true);
+      const response = await axios.post("payment-details-store?", data, {
+        header: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status == 200) {
+        console.log(response.data.data);
+        getPurchaseHistory();
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      setIsLoading(false);
+    }
+  };
+
+  /*<====================================================================== get plans purchase history to render table ================================================================> */ 
+
+
+  const getPurchaseHistory = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get("payment-history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status == 200) {
+        setTableData(response.data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("API error:", error);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Header />
-      <Box sx={{ display: "flex" }}>
-        <ProfileView />
-        <div className="p-8 w-full">
-          <div>
-            <h1
-              className="text-2xl flex items-center primary font-semibold  p-2 mb-5"
-              style={{ marginBottom: "25px" }}
-            >
-              Active Plan
-              <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
-            </h1>
-          </div>
-          <div>
-            <h1
-              className="text-2xl flex items-center  font-semibold  p-2 mb-5 secondary"
-              style={{ marginBottom: "25px" }}
-            >
-              History
-            </h1>
-          </div>
-          <table className="table-cashManage p-4">
-            <thead>
-              <tr>
-                {plansColumns.map((column) => (
-                  <th key={column.id} style={{ minWidth: column.minWidth }}>
-                    {column.label}
-                  </th>
-                ))}
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData?.map((item, index) => (
-                <tr key={index}>
-                  {plansColumns.map((column) => (
-                    <td key={column.id}>{item[column.id]}</td>
-                  ))}
-                  <td>
-                    <GetAppIcon className="primary" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {isLoading ? (
+        <div className="loader-container ">
+          <Loader />
         </div>
-      </Box>
+      ) : (
+        <Box sx={{ display: "flex" }}>
+          <ProfileView />
+          <div className="p-8 w-full">
+            <div className="flex justify-between items-center">
+              <h1
+                className="text-2xl flex items-center primary font-semibold  "
+                style={{ marginBottom: "25px" }}
+              >
+                {togglePage ? "Plans" : "history"}
+                <BsLightbulbFill className="ml-3 secondary  hover-yellow" />
+              </h1>
+              <div className="flex ">
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "var(--color1)",
+                    color: "white",
+                    textTransform: "none",
+                    marginBottom: "25px",
+                  }}
+                  onClick={()=>{setTogglePage(!togglePage)}}
+                >
+                  {togglePage ? "SEE HISTORY" : "SEE PLANS"}
+                </Button>
+              </div>
+            </div>
+            {!togglePage ? (
+              <div>
+                <table className="table-cashManage my-5 p-4">
+                  <thead>
+                    <tr>
+                      {plansColumns.map((column) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </th>
+                      ))}
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tableData?.map((item, index) => (
+                      <tr key={index}>
+                        {plansColumns.map((column) => (
+                          <td key={column.id}>{item[column.id]}</td>
+                        ))}
+                        <td>
+                          <GetAppIcon className="primary" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <section class="py-8 bg-gray-50">
+                <div class="container mx-auto px-4">
+                  <div class="text-center mb-8">
+                    <h2 class="text-3xl secondary font-bold">
+                      Selecting the Best Pricing Plan for Your Pharmacy
+                    </h2>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "20px",
+                      justifyContent: "center",
+                      marginTop: "20px",
+                    }}
+                  ></div>
+                  <div class="flex justify-around ">
+                    {plansDetails.map((plan) => (
+                      <div
+                        key={plan.id}
+                        class="border w-96	 rounded-lg shadow-md bg-white text-center p-6">
+                        <div class="mb-4 ">
+                          <h5 class="text-xl font-semibold ">{plan.name}</h5>
+                          <h2 class="text-2xl my-1 secondary font-bold">
+                            {plan.annual_price} / Year
+                          </h2>
+                        </div>
+                        <ul
+                          class="text-sm text-gray-600 space-y-2 "
+                          style={{
+                            maxHeight: "450px", 
+                            overflowY: "auto",
+                            paddingRight: "8px", 
+                          }}
+                        >
+                          {plan.enable_modules.map((feature, index) => (
+                            <li key={index}>{feature}</li>
+                          ))}
+                        </ul>
+                        <div class="mt-6" onClick={() => loadRazorpay(plan)}>
+                          <a class="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white">
+                            Buy Plan
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
+        </Box>
+      )}
     </>
   );
 };

@@ -127,6 +127,7 @@ const EditPurchaseBill = () => {
   const { id, randomNumber } = useParams();
   // const {  } = useParams();
   const [purchase, setPurchase] = useState([]);
+
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -352,6 +353,7 @@ const EditPurchaseBill = () => {
       setNetRate(selectedEditItem.net_rate);
     }
   }, [selectedEditItem]);
+
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/\D/g, "");
@@ -391,6 +393,7 @@ const EditPurchaseBill = () => {
       console.error("API error:", error);
     }
   };
+
   const purchaseReturnData = async () => {
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
@@ -594,28 +597,7 @@ const EditPurchaseBill = () => {
           }
         )
         .then((response) => {
-          // data.append("unit_id", Number(0));
-          // data.append("random_number", localStorage.getItem("RandomNumber"));
-          // data.append("item_id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
-          // data.append("weightage", response?.data?.data[0]?.batch_list[0]?.unit ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 1);
-          // data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
-          // data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
-          // data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
-          // data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
-          // data.append("free_qty", 0);
-          // data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
-          // data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
-          // data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
-          // data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
-          // data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst ? response?.data?.data[0]?.batch_list[0]?.gst : 0);
-          // data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
-          // data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
-          // data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
-          // data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
-
-          // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
-          // setValue.unit_id(response.data.data[0]?.unit)
-
+        
           setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
           setHSN(response?.data?.data[0]?.batch_list[0]?.hsn_code);
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);

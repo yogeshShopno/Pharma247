@@ -78,11 +78,15 @@ const Login = () => {
       const response = await axios.post("login", data);
 
       if (response.data.status === 200) {
-        const { token, id, name, role, iss_audit, status } = response.data.data;
+        const { token, id, name, role, iss_audit, status,phone_number,email } = response.data.data;
         localStorage.setItem("token", token);
+        localStorage.setItem("contact", phone_number);
         localStorage.setItem("userId", id);
         localStorage.setItem("UserName", name);
         localStorage.setItem("role", role);
+        localStorage.setItem("email", email);
+
+      
         toast.success(response.data.message);
 
         setRole(role);

@@ -108,7 +108,7 @@ const CustomerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -234,7 +234,7 @@ const CustomerList = () => {
                 setAmount('');
                 setAddress('');
                 toast.success(response.data.message);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -257,11 +257,11 @@ const CustomerList = () => {
                 },
             }
             ).then((response) => {
-               
+
                 customerAllData();
                 setOpenUpload(false);
                 toast.success(response.data.message)
-               
+
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -291,7 +291,7 @@ const CustomerList = () => {
                 },
             }
             ).then((response) => {
-              
+
                 customerAllData();
                 setOpenAddPopUp(false);
                 toast.success(response.data.message);
@@ -305,7 +305,7 @@ const CustomerList = () => {
                 setArea('');
                 setAmount('');
                 setAddress('');
-               
+
             })
         } catch (error) {
             if (error.response.data.status == 400) {
@@ -349,11 +349,11 @@ const CustomerList = () => {
     };
 
     const handleDownload = () => {
-       
+
         const link = document.createElement('a');
         link.href = '/Customer_Sample_Data.csv';
         link.download = 'Customer_Sample_Data.csv';
-       
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -369,14 +369,14 @@ const CustomerList = () => {
                 value: 'due_only',
             });
             customerAllData();
-           
+
         } else {
             setChipState({
                 variant: 'default',
                 value: '',
             });
             customerAllData();
-          
+
         }
     };
 
@@ -432,7 +432,7 @@ const CustomerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -589,6 +589,7 @@ sx={{
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
+                                                        variant="standard"
                                                         autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
@@ -606,7 +607,7 @@ sx={{
                                 <tbody style={{ backgroundColor: "#3f621217" }}>
                                     {filteredList.length === 0 ? (
                                         <tr>
-                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray'  ,borderRadius: "10px 10px 10px 10px"}}>
+                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                                 No data found
                                             </td>
                                         </tr>
@@ -770,7 +771,7 @@ sx={{
                                         <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className='downloadFile'>
                                             <CloudDownloadIcon className="mr-2" />
 
-                                            Sample File Download
+                                            Download Sample File
                                         </Button>
                                     </div>
                                 </div>

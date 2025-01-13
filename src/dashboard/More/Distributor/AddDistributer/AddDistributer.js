@@ -109,6 +109,11 @@ const AddDistributer = () => {
                 setFoodLicence('');
                 setDurgLicence('');
                 setDueDays('');
+
+
+                setTimeout(() => {
+                    history.push('/more/DistributorList');
+                }, 1000);
                
             })
         } catch (error) {
@@ -157,7 +162,9 @@ const AddDistributer = () => {
                                 <div class="relative w-full">
 
                                     <TextField
-                                        autoComplete="off"
+                                    
+                                    variant="standard"
+                                    autoComplete="off"
                                         sx={{
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px', // Remove padding from the input field
@@ -189,6 +196,8 @@ const AddDistributer = () => {
                                     Distributor Name
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -215,6 +224,8 @@ const AddDistributer = () => {
                                     Mobile No.
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -267,6 +278,8 @@ sx={{
                                     Email ID
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -290,6 +303,8 @@ sx={{
                                     Whatsapp No.
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -312,6 +327,8 @@ sx={{
                                     state
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -349,6 +366,8 @@ sx={{
                                     Address
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -375,6 +394,8 @@ sx={{
                                     Area
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -398,6 +419,8 @@ sx={{
                                     Pincode
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -423,6 +446,8 @@ sx={{
                                     Distributor Drug License No.
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -449,6 +474,8 @@ sx={{
                                     Food Licence No.
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -478,6 +505,8 @@ sx={{
                                     Credit Due Days
                                 </label>
                                 <TextField
+                                    variant="standard"
+
                                     autoComplete="off"
                                     sx={{
                                         '.MuiInputBase-input': {
@@ -511,6 +540,8 @@ sx={{
 
                                         <div class="relative w-full">
                                             <TextField
+                                    variant="standard"
+
                                                 autoComplete="off"
                                                 sx={{
                                                     '.MuiInputBase-input': {
@@ -548,6 +579,8 @@ sx={{
                                             Account No.
                                         </label>
                                         <TextField
+                                    variant="standard"
+
                                             autoComplete="off"
                                             sx={{
                                                 '.MuiInputBase-input': {
@@ -571,6 +604,8 @@ sx={{
                                             IFSC Code
                                         </label>
                                         <TextField
+                                    variant="standard"
+
                                             autoComplete="off"
                                             sx={{
                                                 '.MuiInputBase-input': {

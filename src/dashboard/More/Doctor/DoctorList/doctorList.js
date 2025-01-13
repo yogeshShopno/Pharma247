@@ -734,7 +734,7 @@ const DoctorList = () => {
                       <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className="downloadFile">
                         <CloudDownloadIcon className="mr-2" />
 
-                        Sample File Download
+                        Download Sample File
                       </Button>
                     </div>
                   </div>

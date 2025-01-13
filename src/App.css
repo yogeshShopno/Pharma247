@@ -4,7 +4,7 @@
 #root {
   --color1: #3f6212;
   --color2: #628a2f;
-  --color3: #9bb770;
+  --color3: #a2b687;
   --color4: #f6a609;
   --color5: #ffb822;
   --color6: #f31c1c;
@@ -657,23 +657,24 @@ body {
 }
 
 .custom-datepicker {
-  padding: 6px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 4px !important;
+  padding: 1.5px !important;
+
+  border-bottom: 1px solid var(--color1) !important; /* Add border only at the bottom */
 }
 
 /* More specific selector for the react-datepicker component */
 .react-datepicker {
   font-size: 14px !important;
   background-color: #fff !important;
+
 }
 
 .react-datepicker__header {
-  background-color: #f0f0f0 !important;
+  background-color: var(--color3)!important;
 }
 
 .react-datepicker__day--selected {
-  background-color: #007bff !important;
+  background-color: var(--color2) !important;
   color: #fff !important;
 }
 

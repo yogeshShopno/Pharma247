@@ -402,7 +402,7 @@ const Package = () => {
                           onChange={(e) => { setPackageName(e.target.value) }}
                           style={{ minWidth: 450 }}
 
-                          variant="outlined"
+                          variant="standard"
                         />
                       </div>
                     </div>
@@ -424,7 +424,7 @@ const Package = () => {
                             }
                           }}
                           style={{ minWidth: 450 }}
-                          variant="outlined"
+                          variant="standard"
                         />
                         <Box style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                           {unitList.map((unit, index) => (

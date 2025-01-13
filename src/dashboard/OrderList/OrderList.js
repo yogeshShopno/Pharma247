@@ -336,7 +336,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="outlined"
+                                        variant="standard"
                                         fullWidth
                                     /> */}
                                     <Autocomplete
@@ -353,12 +353,12 @@ const OrderList = () => {
                                             },
                                         }}
                                         className="dst_fld_odr"
-                                        variant="outlined"
                                         fullWidth
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                                        variant="standard"
                                             autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
@@ -384,7 +384,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="outlined"
+                                        variant="standard"
                                         fullWidth
                                     />
                                 </div>

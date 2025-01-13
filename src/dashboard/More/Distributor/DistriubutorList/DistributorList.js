@@ -196,7 +196,7 @@ const DistributerList = () => {
                 setCreditDuedays('');
                 // setIsEditMode(false)
                 toast.success(response.data.message);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -218,7 +218,7 @@ const DistributerList = () => {
 
 
     const handleDownload = () => {
-        
+
         const link = document.createElement('a');
         link.href = '/distributor.csv';
         link.download = 'distributor.csv';
@@ -237,11 +237,11 @@ const DistributerList = () => {
                 },
             }
             ).then((response) => {
-             
+
                 DistList();
                 setOpenUpload(false);
                 toast.success(response.data.message)
-               
+
             })
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -270,7 +270,7 @@ const DistributerList = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -336,7 +336,7 @@ const DistributerList = () => {
 
                 setTableData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -412,6 +412,8 @@ const DistributerList = () => {
                                             <div className='headerStyle'>
                                                 <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                 <TextField
+                                                    variant="standard"
+
                                                     autoComplete="off"
                                                     label={`Search ${column.label}`}
                                                     id="filled-basic"
@@ -428,7 +430,7 @@ const DistributerList = () => {
                             <tbody style={{ background: "#3f621217" }}>
                                 {tableData.length === 0 ? (
                                     <tr>
-                                        <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
+                                        <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                             No data found
                                         </td>
                                     </tr>
@@ -547,7 +549,10 @@ const DistributerList = () => {
                                                         type="text"
 
                                                         value={gstNumber}
-                                                        onChange={(e) => setGstnumber(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                                                            setGstnumber(value);
+                                                        }}
                                                         className="w-full"
                                                         variant="standard"
                                                     />
@@ -596,7 +601,7 @@ const DistributerList = () => {
                                                     </div>
                                                     <OutlinedInput
                                                         type="number"
-                                                        
+
                                                         value={mobileNo}
                                                         onChange={handleChange}
                                                         startAdornment={<InputAdornment position="start">+91</InputAdornment>}
@@ -651,7 +656,7 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
-                                    type="number"
+                                                        type="number"
 
                                                         value={pincode}
                                                         onChange={(e) => setPincode(e.target.value)}
@@ -750,7 +755,7 @@ const DistributerList = () => {
                                                         autoComplete="off"
                                                         id="outlined-multiline-static"
                                                         size="small"
-                                            type="number"
+                                                        type="number"
 
                                                         value={accountNo}
                                                         onChange={(e) => setAccountNo(e.target.value)}
@@ -821,7 +826,7 @@ const DistributerList = () => {
                                     <div>
                                         <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}  >
                                             <CloudDownloadIcon className="mr-2" />
-                                            Sample File Download
+                                            Download Sample File
                                         </Button>
 
 

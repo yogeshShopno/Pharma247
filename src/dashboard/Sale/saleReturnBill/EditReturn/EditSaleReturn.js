@@ -711,7 +711,7 @@ const EditSaleReturn = () => {
                                                     {...params}
                                                     value={customer}
 
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     placeholder="Search by Mobile, Name"
                                                     InputProps={{
                                                         ...params.InputProps,
@@ -768,7 +768,7 @@ const EditSaleReturn = () => {
                                                 '& .MuiAutocomplete-inputRoot': {
                                                     padding: '10px 14px',
                                                 },
-                                            }} variant="outlined" />
+                                            }} variant="standard" />
                                     </div> */}
 
                                     <div className="detail custommedia" style={{ display: 'flex', width: '100%' }}>
@@ -806,7 +806,7 @@ const EditSaleReturn = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     {...params}
-                                                    variant="outlined"
+                                                    variant="standard"
                                                     placeholder="Search by DR. Name"
                                                     InputProps={{
                                                         ...params.InputProps,

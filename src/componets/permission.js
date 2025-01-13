@@ -5,7 +5,6 @@ import { decryptData } from './cryptoUtils';
 import { Redirect, Route } from 'react-router-dom/cjs/react-router-dom.min';
 import { toast } from 'react-toastify';
 
-
 const usePermissions = () => {
   const [permissions, setPermissions] = useState([]);
 
@@ -16,15 +15,13 @@ const usePermissions = () => {
 
       try {
         const storedPermissions = decryptData(encryptedPermissions);
-        //console.log('ayush',storedPermissions);
+        // console.log('yogi',storedPermissions);
         
         // Filter permissions to get only those with a value of true
         const filteredPermissions = storedPermissions.filter(permission => {
           const key = Object.keys(permission)[0];
           return permission[key] === true;
         });
-        // console.log('permission', filteredPermissions);
-
         setPermissions(filteredPermissions);
       } catch (error) {
         console.error('Failed to decrypt permissions', error);
@@ -34,18 +31,18 @@ const usePermissions = () => {
 
   return permissions;
 };
+
 export default usePermissions;
 
 export const hasPermission = (permissions, permissionKey) => {
   //console.log(permissions.some(permission => permission[permissionKey] === true));
-
   return permissions.some(permission => permission[permissionKey] === true);
 };
 
 export const ProtectedRoute = ({ component: Component, requiredPermission, ...rest }) => {
   const permissions = usePermissions();
 
-  return (
+  return (           
     <Route
       {...rest}
       render={props => {

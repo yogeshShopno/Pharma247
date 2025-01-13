@@ -417,7 +417,7 @@ const StaffMember = () => {
                  autoComplete="off"id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
-                                        label="Full Name" variant="outlined"
+                                        label="Full Name" variant="standard"
                                         value={fullName}
                                         onChange={(e) => {
                                             const capitalizedValue = e.target.value
@@ -434,7 +434,7 @@ const StaffMember = () => {
                  autoComplete="off" id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
-                                        label="Mobile No" variant="outlined"
+                                        label="Mobile No" variant="standard"
                                         value={mobileNo}
                                         onChange={handleChange}
                                     />
@@ -472,7 +472,7 @@ const StaffMember = () => {
                  autoComplete="off" id="standard-basic"
                                         size="small"
                                         sx={{ width: 250 }}
-                                        label="Email ID" variant="outlined"
+                                        label="Email ID" variant="standard"
                                         value={emailID}
                                         onChange={(e) => setEmailID(e.target.value)} />
                                     {errors.emailID && <span style={{ color: 'red', fontSize: '12px' }}>{errors.emailID}</span>}
@@ -484,7 +484,7 @@ const StaffMember = () => {
                             <div className="flex gap-6">
                                 <div >
                                     <span className="flex primary mb-2 font-medium">Password</span>
-                                    <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
+                                    <FormControl sx={{ width: '600', height: '42px' }} variant="standard">
                                         <OutlinedInput
                                             value={password}
                                             className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
@@ -509,7 +509,7 @@ const StaffMember = () => {
                                 </div>
                                 <div >
                                     <span className="flex primary mb-2 font-medium">Re-enter Password</span>
-                                    <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
+                                    <FormControl sx={{ width: '600', height: '42px' }} variant="standard">
                                         <OutlinedInput
                                             value={reEnterPassword}
                                             className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
@@ -564,7 +564,7 @@ const StaffMember = () => {
                                     Yes
                                 </Button>
                                 <Button
-                                    variant="outlined"
+                                    variant="standard"
                                     onClick={resetAddDialogDeactive}
                                 >
                                     No

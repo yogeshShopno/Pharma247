@@ -205,7 +205,7 @@ const CreateRole = () => {
                                         size="small"
                                         sx={{ width: '100%' }}
                                         label="Enter Your Role Name"
-                                        variant="outlined"
+                                        variant="standard"
                                         value={roleName}
                                         onChange={(e) => setRoleName(e.target.value)}
                                     />

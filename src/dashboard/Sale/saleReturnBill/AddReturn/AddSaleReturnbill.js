@@ -799,7 +799,7 @@ const Salereturn = () => {
                                             <TextField
                                                 autoComplete="off"
                                                 {...params}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Search by Mobile, Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -863,7 +863,7 @@ const Salereturn = () => {
                                             <TextField
                                                 autoComplete="off"
                                                 {...params}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Search by DR. Name, Clinic Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -963,7 +963,7 @@ const Salereturn = () => {
                                             '& .MuiAutocomplete-inputRoot': {
                                                 // padding: '10px 14px',
                                             },
-                                        }} variant="outlined" />
+                                        }} variant="standard" />
                                 </div> */}
 
 
@@ -1167,7 +1167,7 @@ const Salereturn = () => {
                                                             sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
                                                             value={search}
                                                             onChange={handleInputChange}
-                                                            variant="outlined"
+                                                            variant="standard"
                                                             placeholder="Please search any items.."
                                                             InputProps={{
                                                                 endAdornment: (

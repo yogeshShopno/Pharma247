@@ -216,7 +216,7 @@ const Purchase_Return_Report = () => {
                                                 value={distributorName}
                                                 size="small"
                                                 onChange={(e) => setDistributorName(e.target.value)}
-                                                variant="outlined"
+                                                variant="standard"
                                                 placeholder="Type Here..."
                                                 InputProps={{
                                                     startAdornment: (

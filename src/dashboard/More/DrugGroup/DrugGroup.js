@@ -150,7 +150,7 @@ const DrugGroup = () => {
                 setOpenAddPopUp(false);
                 setDrugGroupName('');
                 toast.success(response.data.message);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -176,7 +176,7 @@ const DrugGroup = () => {
                 toast.success(response.data.message);
                 setDrugGroupName('');
                 setIsEditMode(false)
-               
+
 
             })
         } catch (error) {
@@ -206,7 +206,7 @@ const DrugGroup = () => {
                 setIsLoading(true)
                 DrugGroupList();
                 toast.success(response.data.message);
-               
+
             })
         } catch (error) {
             // alert("404 error");
@@ -278,7 +278,7 @@ const DrugGroup = () => {
             }
             ).then((response) => {
                 setFilterData(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -334,6 +334,8 @@ const DrugGroup = () => {
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
+                                            variant="standard"
+
                                             autoComplete="off" {...params} label="Search Drug Name" />}
                                     />
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
@@ -358,7 +360,7 @@ const DrugGroup = () => {
                                     <tbody style={{ backgroundColor: "#3f621217" }}>
                                         {drugGroupData.length === 0 ? (
                                             <tr>
-                                                <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
+                                                <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>

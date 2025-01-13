@@ -9,6 +9,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
 import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
+import { BsLightbulbFill } from "react-icons/bs";
+import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf, FaStore } from "react-icons/fa6";
+import { FaShippingFast, FaWalking } from "react-icons/fa";
+import { Modal } from "flowbite-react";
+import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const SaleView = () => {
     const permissions = usePermissions();
@@ -22,11 +28,23 @@ const SaleView = () => {
     const { id } = useParams();
     const token = localStorage.getItem("token");
     const history = useHistory()
+    const [pickup, setPickup] = useState("")
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     useEffect(() => {
         saleBillList();
     }, [])
 
+    const pickupOptions = [
+        { id: 1, label: "Counter", icon: <FaStore /> },
+        { id: 2, label: "Pickup", icon: <FaWalking /> },
+        { id: 3, label: "Delivery", icon: <FaShippingFast /> },
+    ];
 
     const saleBillList = async (currentPage) => {
         setIsLoading(true);
@@ -59,6 +77,39 @@ const SaleView = () => {
     // useEffect(() => {
     //     localStorage.removeItem("RandomNumber")
     // }, [])
+
+    const pdfGenerator = async (id) => {
+        let data = new FormData();
+        data.append('id', id);
+        setIsLoading(true);
+        try {
+            await axios.post("sales-pdf-downloads", data, {
+                params: { id },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+
+                const PDFURL = response.data.data.pdf_url;
+                toast.success(response.data.meassage)
+
+                setIsLoading(false);
+                handlePdf(PDFURL);
+            });
+        } catch (error) {
+            console.error("API error:", error);
+
+        }
+    };
+
+    const handlePdf = (url) => {
+        if (typeof url === 'string') {
+            // Open the PDF in a new tab
+            window.open(url, '_blank');
+        } else {
+            console.error('Invalid URL for the PDF');
+        }
+    };
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -105,14 +156,19 @@ const SaleView = () => {
                 },
             }
             ).then((response) => {
-                
+
                 setPaymentType(response.data.data.payment_name)
                 setTableData(response.data.data)
                 localStorage.setItem("Other_Amount", response.data.data.other_amount)
                 setTotalGST(response.data.data.total_gst)
                 setTotalAmount(response.data.data.total_amount);
+                // setPickup(response.data.data.pickup);
+
+                const selectedPickup = pickupOptions.find(option => option.label === (response.data.data.pickup));
+                setPickup(selectedPickup);
+
                 setIsLoading(false);
-         
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -128,7 +184,7 @@ const SaleView = () => {
                     <Loader />
                 </div> :
                     <>
-                        <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} >
+                        <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                             <div>
                                 <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                                     <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer' }} onClick={() => { history.push('/salelist') }}>Sale</span>
@@ -136,8 +192,11 @@ const SaleView = () => {
                                     <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
                                     <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                                     <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
+                                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                     {hasPermission(permissions, "sale bill edit") && (
                                         <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
+                                            {/* <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} > <FaFilePdf className="w-5 h-5 text-gray-700 hover:text-black" onClick={() => pdfGenerator()} style={{ color: 'white' }} />Download PDF</Button> */}
+
                                             <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} onClick={() => { history.push({ pathname: '/salebill/edit/' + tableData.id + '/' + tableData?.sales_item[0].random_number, state: { paymentType } }) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                         </div>)}
                                 </div>
@@ -146,13 +205,13 @@ const SaleView = () => {
                             <div>
                                 <div className="firstrow flex mt-2">
 
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Bill No</span>
                                         <span className="data">
                                             {tableData.bill_no}
                                         </span>
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Bill Date</span>
                                         <span className="data">
                                             {tableData.bill_date}
@@ -160,35 +219,41 @@ const SaleView = () => {
                                         </span>
 
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Customer</span>
                                         <span className="data">
                                             {tableData.customer_name}
                                         </span>
 
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Mobile No.</span>
                                         <span className="data">
                                             {tableData.mobile_numbr}
                                         </span>
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Doctor </span>
                                         <span className="data">
                                             {tableData.doctor_name || " - "}
                                         </span>
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Payment Mode</span>
                                         <span className="data">
                                             {tableData.payment_name}
                                         </span>
                                     </div>
-                                    <div className="detail">
+                                    <div className="detail_main">
                                         <span className="heading mb-2">Pickup</span>
-                                        <span className="data">
-                                            {tableData.pickup}
+                                        <span className="data" style={{
+                                            display: 'flex',
+                                            whiteSpace: 'nowrap',
+                                            alignItems: 'center',
+                                            gap: '1rem'
+                                        }}>
+                                            {/* {pickup} */}
+                                            {pickup?.icon} {pickup?.label}
                                         </span>
                                     </div>
                                     {/* <div className="detail">
@@ -200,10 +265,10 @@ const SaleView = () => {
                                 </div> */}
                                 </div>
                                 <div className='overflow-x-auto'>
-                                    <table className="customtable  w-full border-collapse custom-table">
+                                    <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                         <thead>
-                                            <tr>
-                                                <th >
+                                            <tr style={{ whiteSpace: "nowrap" }}>
+                                                <th>
                                                     Item Name
                                                 </th>
                                                 <th >Unit  </th>
@@ -218,10 +283,10 @@ const SaleView = () => {
                                                 <th >Amount  </th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style={{ background: "#3f621217" }}>
                                             {tableData?.sales_item?.map((item, index) => (
                                                 <tr >
-                                                    <td>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                         <div className="itemName">
                                                             {item.iteam_name}
                                                         </div>
@@ -235,75 +300,135 @@ const SaleView = () => {
                                                     <td>{item.qty}</td>
                                                     <td>{item.order}</td>
                                                     <td>{item.location}</td>
-                                                    <td className="amount">{item.net_rate}</td>
+                                                    <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.net_rate}</td>
                                                 </tr>
                                             ))}
 
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10" >
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+
+                            </div>
+                            <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
+                                <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+                                    <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                         <label className="font-bold">Total GST : </label>
-                                        <label className="font-bold">Total Base : </label>
-                                        <label className="font-bold">Profit : </label>
-                                        <label className="font-bold">Total Net Rate : </label>
-                                    </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+
                                         <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
+                                    </div>
+                                    <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                        <label className="font-bold">Total Base : </label>
                                         <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
+                                    </div>
+                                    <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                        <label className="font-bold">Profit : </label>
                                         <span style={{ fontWeight: 600 }}>₹ {tableData?.margin_net_profit} ({Number(tableData?.total_margin).toFixed(2)}%) </span>
+                                    </div>
+                                    <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                        <label className="font-bold">Total Net Rate : </label>
                                         <span style={{ fontWeight: 600 }}>₹ {tableData?.total_net_rate} </span>
                                     </div>
-
-
-                                    {/* <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                    <label className="font-bold">SGST : </label>
-                                    <label className="font-bold">CGST: </label>
-                                    <label className="font-bold">IGST: </label>
-                                    <label className="font-bold">Total GST : </label>
                                 </div>
-                                <div className="mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                    <span style={{ fontWeight: 600 }}>{tableData?.sgst}</span>
-                                    <span style={{ fontWeight: 600 }}>{tableData?.cgst}</span>
-                                    {/* <span style={{ fontWeight: 600 }}>{tableData?.igst ? tableData?.igst : 0}</span> 
-                                    <span style={{ fontWeight: 600 }}>0.0</span>
-                                    <span style={{ fontWeight: 600 }}>{totalGST}</span>
-                                </div>  */}
 
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total Amount : </label>
-                                        <label className="font-bold">Discount (%) : </label>
-                                        <label className="font-bold">Other Amount : </label>
-                                        <label className="font-bold">Loyalty Points : </label>
-                                        <label className="font-bold">Round Off : </label>
-                                        {/* <label className="font-bold">Discount Amount : </label> */}
-                                        <label className="font-bold" >Net Amount : </label>
+                                <div style={{ display: 'flex' }}>
+                                    <div className="invoice_total_fld" style={{ display: 'flex', flexDirection: 'column', alignSelf: "center", fontSize: '14px' }}>
+                                        <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }}
+                                            onClick={() => {
+                                                const prevIndex = (currentIndex - 1 + saleData.length) % saleData.length;
+                                                const prevId = saleData[prevIndex]?.id;
+                                                if (prevId) {
+                                                    history.push(`/salebill/view/${prevId}`);
+                                                }
+                                            }}
+                                        >
+                                            <label style={{ textTransform: "uppercase" }}>Next Bill</label>
+                                            <FaArrowUp size={20} />
+                                        </div>
+                                        <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }} onClick={() => {
+                                            const nextIndex = (currentIndex + 1) % saleData.length;
+                                            const nextId = saleData[nextIndex]?.id;
+                                            if (nextId) {
+                                                history.push(`/salebill/view/${nextId}`);
+                                            }
+                                        }} >
+                                            <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
+                                            <FaArrowDown size={20} />
+                                        </div>
                                     </div>
-                                    <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.total_amount}</span>
-                                        <span style={{ fontWeight: 600, color: "red" }}>{tableData?.discount_amount !== 0 && <span>{tableData?.discount_amount > 0 ? `-${tableData?.discount_amount}` : tableData?.discount_amount}</span>} ({tableData?.total_discount}%)</span>
 
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
 
-                                        {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
-                                        <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.roylti_point}</span>
-                                        {/* <span style={{ fontWeight: 600 }}>{tableData?.round_off}</span> */}
-                                        <span style={{ fontWeight: 600 }}>
-                                            {/* {tableData?.round_off === "0.00"
-                                        ? tableData?.round_off
-                                        : tableData?.round_off < 0
-                                            ? `-${Math.abs(tableData?.round_off)}`
-                                            : `+${Math.abs(tableData?.round_off)}`} */}
-                                            {!tableData?.round_off ? 0 : tableData?.round_off}
-                                        </span>
-                                        <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
+                                            <label className="font-bold">Net Amount : </label>
+                                            <span style={{ fontWeight: 800, fontSize: '22px' }}>{tableData?.net_amount}</span>
+                                            <FaCaretUp />
+
+                                        </div>
+
+                                        <Modal
+                                            show={isModalOpen}
+                                            onClose={toggleModal}
+                                            size="lg"
+                                            position="bottom-center"
+                                            className="modal_amount"
+                                        // style={{ width: "50%" }}
+                                        >
+                                            <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                                                <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                                                <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                                            </div>
+                                            <div
+                                                style={{
+                                                    background: "white",
+                                                    padding: "20px",
+                                                    width: "100%",
+                                                    maxWidth: "600px",
+                                                    margin: "0 auto",
+                                                    lineHeight: "2.5rem"
+                                                }}
+                                            >
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                    <label className="font-bold">Total Amount : </label>
+                                                    <span style={{ fontWeight: 600 }}>{tableData?.total_amount}</span>
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                    <label className="font-bold">Discount (%) : </label>
+                                                    <span style={{ fontWeight: 600, color: "red" }}>{tableData?.discount_amount !== 0 && <span>{tableData?.discount_amount > 0 ? `-${tableData?.discount_amount}` : tableData?.discount_amount}</span>} ({tableData?.total_discount}%)</span>
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                    <label className="font-bold">Other Amount : </label>
+                                                    <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                    <label className="font-bold">Loyalty Points : </label>
+                                                    <span style={{ fontWeight: 600 }}>{tableData?.roylti_point}</span>
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                                                    <label className="font-bold">Round Off : </label>
+                                                    <span style={{ fontWeight: 600 }}>
+                                                        {!tableData?.round_off ? 0 : tableData?.round_off}
+                                                    </span>
+                                                </div>
+
+                                                <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+
+                                                    <label className="font-bold">Net Amount: </label>
+                                                    <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{tableData?.net_amount}</span>
+                                                </div>
+                                            </div>
+                                        </Modal>
                                     </div>
                                 </div>
+
                             </div>
-
                         </div>
-                        <div className="flex justify-between" style={{ width: '100%', position: 'absolute', bottom: '20px', padding: "0 20px" }}>
+                        {/* <div className="flex justify-between" style={{ width: '100%', position: 'absolute', bottom: '20px', padding: "0 20px" }}>
                             <span onClick={() => {
                                 const prevIndex = (currentIndex - 1 + saleData.length) % saleData.length;
                                 const prevId = saleData[prevIndex]?.id;
@@ -326,7 +451,7 @@ const SaleView = () => {
                                     <IoArrowForwardCircleOutline size={25} color="white" cursor='pointer' />
                                     NEXT BILL</Button>
                             </span>
-                        </div>
+                        </div> */}
                     </>
                 }
 

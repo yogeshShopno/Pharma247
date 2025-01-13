@@ -240,9 +240,7 @@ const SalereturnList = () => {
 
                         <div >
                             <div className="firstrow">
-                                <div className='overflow-x-auto' style={{
-                                    overflow: "hidden", // Prevent corners from being overridden by table contents
-                                }}>
+                                <div className='overflow-x-auto' >
                                     <table className=" w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                         <thead>
                                             <tr>

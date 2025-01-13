@@ -1327,7 +1327,7 @@ const BankAccount = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button style={{ background: "#3f6212" }} autoFocus variant="contained" onClick={handleAddBank}>
+                        <Button style={{ background: "var(--COLOR_UI_PHARMACY)" }} autoFocus variant="contained" onClick={handleAddBank}>
                             Save
                         </Button>
                     </DialogActions>
@@ -1475,7 +1475,7 @@ const BankAccount = () => {
                     </DialogContent>
 
                     <DialogActions>
-                        <Button style={{ backgroundColor: "#3f6212", color: "white" }} autoFocus variant="contained" onClick={handleAdjustBalance} >
+                        <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} autoFocus variant="contained" onClick={handleAdjustBalance} >
                             Save
                         </Button>
 

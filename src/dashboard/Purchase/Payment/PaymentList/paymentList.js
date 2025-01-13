@@ -604,7 +604,7 @@ const PaymentList = () => {
                     </div>
 
                     <Dialog open={open}  >
-                        <DialogTitle sx={{ color: "#3f6212" }} id="alert-dialog-title  ">
+                        <DialogTitle sx={{ color: "var(--COLOR_UI_PHARMACY)" }} id="alert-dialog-title  ">
                             {paymentLabel}
                         </DialogTitle>
                         <IconButton
@@ -771,7 +771,7 @@ const PaymentList = () => {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button autoFocus sx={{ backgroundColor: "#3f6212" }} variant="contained" onClick={handlePermission} >
+                            <Button autoFocus sx={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }} variant="contained" onClick={handlePermission} >
                                 {buttonLabel}
                             </Button>
                         </DialogActions>

@@ -304,7 +304,7 @@ const LoyaltyPoint = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
-                                <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Loyalty point</Button>
+                                <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Loyalty point</Button>
                             </div>
                         </div>
                         <div className="firstrow p-4">
@@ -330,7 +330,7 @@ const LoyaltyPoint = () => {
                                     />
                                 </div>
                                 <div>
-                                    <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
+                                    <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
                             </div> */}
                             <div className="overflow-x-auto mt-4">
@@ -460,7 +460,7 @@ const LoyaltyPoint = () => {
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
-                                                            color: '#3f6212',
+                                                            color: 'var(--COLOR_UI_PHARMACY)',
                                                         }
                                                     }}
                                                 />
@@ -481,7 +481,7 @@ const LoyaltyPoint = () => {
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
-                                                            color: '#3f6212',
+                                                            color: 'var(--COLOR_UI_PHARMACY)',
                                                         }
                                                     }}
                                                 />
@@ -510,7 +510,7 @@ const LoyaltyPoint = () => {
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
-                                                            color: '#3f6212',
+                                                            color: 'var(--COLOR_UI_PHARMACY)',
                                                         }
                                                     }}
                                                 />
@@ -522,7 +522,7 @@ const LoyaltyPoint = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" className="p-5" style={{ backgroundColor: "#3f6212", color: "white" }}
+                        <Button autoFocus variant="contained" className="p-5" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}

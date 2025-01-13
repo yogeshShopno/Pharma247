@@ -401,7 +401,7 @@ const Company = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }}
+                        <Button autoFocus variant="contained" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}

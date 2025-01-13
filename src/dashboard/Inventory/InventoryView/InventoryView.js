@@ -255,7 +255,7 @@ const InventoryView = () => {
             .then((response) => {
                 setDrugGroupList(response.data.data);
                 setIsLoading(false);
-               
+
             })
             .catch((error) => {
                 console.error("API error:", error);
@@ -327,7 +327,7 @@ const InventoryView = () => {
             } else if (response.data.status === 400) {
                 toast.error(response.data.message);
             }
-            
+
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.error(error.response.data.message);
@@ -359,7 +359,7 @@ const InventoryView = () => {
             }
             ).then((response) => {
                 setOpenAddPopUp(false);
-               
+
             })
 
         } catch (error) {
@@ -442,12 +442,12 @@ const InventoryView = () => {
             .then((response) => {
                 setStaffList(response.data.data);
                 setIsLoading(false);
-               
+
             })
 
             .catch((error) => {
                 console.error("API error:", error);
-                
+
 
             });
     }
@@ -492,7 +492,7 @@ const InventoryView = () => {
                 setItemAllData(response.data.data);
                 setLoc(response?.data?.data?.location)
                 setIsLoading(false);
-               
+
             })
 
         } catch (error) {
@@ -522,7 +522,7 @@ const InventoryView = () => {
                 setBatchListData(response.data.data);
                 // setLoc(response?.data?.data?.location)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -615,7 +615,7 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseListData(response.data.data);
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -648,7 +648,7 @@ const InventoryView = () => {
             ).then((response) => {
                 setPurchaseReturnListData(response.data.data);
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -681,7 +681,7 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleListData(response.data.data);
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -713,7 +713,7 @@ const InventoryView = () => {
             ).then((response) => {
                 setsaleReturnListData(response.data.data);
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -741,7 +741,7 @@ const InventoryView = () => {
             ).then((response) => {
                 setLedgerListData(response.data.data);
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -767,7 +767,7 @@ const InventoryView = () => {
             ).then((response) => {
                 itemGetByID();
                 setIsDelete(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -933,7 +933,7 @@ const InventoryView = () => {
                                                 sx={{
                                                     color: "#628a2f", // Color for unchecked checkboxes
                                                     '&.Mui-checked': {
-                                                        color: "#3f6212", // Color for checked checkboxes
+                                                        color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                                     },
                                                 }}
 
@@ -943,11 +943,7 @@ const InventoryView = () => {
                                             <span style={{ color: 'var(--color1)', fontSize: '15px', fontWeight: 800, marginLeft: '10px' }}> Hide Zero Quantity</span>
                                         </div>
 
-                                        <div className="overflow-x-auto pl-2 pr-2"
-                                            style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}
-                                        >
+                                        <div className="overflow-x-auto pl-2 pr-2" >
                                             <table className="custom-table w-full" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                 <thead>
                                                     <tr>
@@ -1083,9 +1079,8 @@ const InventoryView = () => {
 
                                                 </div>
                                             </div>
-                                            <div className="overflow-x-auto pl-2 pr-2" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                                            <div className="overflow-x-auto pl-2 pr-2"
+                                            >
                                                 <table className="custom-table w-full border-collapse mt-5" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
@@ -1255,9 +1250,7 @@ const InventoryView = () => {
 
                                                 </div>
                                             </div>
-                                            <div className="overflow-x-auto pl-2 pr-2" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                                            <div className="overflow-x-auto pl-2 pr-2" >
                                                 <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
@@ -1398,9 +1391,7 @@ const InventoryView = () => {
 
                                                 </div>
                                             </div>
-                                            <div className="overflow-x-auto pl-2 pr-2" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                                            <div className="overflow-x-auto pl-2 pr-2" >
                                                 <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>
@@ -1556,9 +1547,7 @@ const InventoryView = () => {
                                                     </Select>
                                                 </div>
                                             </div>
-                                            <div className="overflow-x-auto pl-2 pr-2" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                                            <div className="overflow-x-auto pl-2 pr-2" >
                                                 <table className="custom-table w-full border-collapse" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                                     <thead>
                                                         <tr>

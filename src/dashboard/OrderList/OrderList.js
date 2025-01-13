@@ -405,9 +405,7 @@ const OrderList = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto mt-4" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                            <div className="overflow-x-auto mt-4" >
                                 <table className="w-full bg-transparent border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead className="bg-gray-100">
                                         <tr>
@@ -666,7 +664,7 @@ const OrderList = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions style={{ padding: '24px' }}>
-                                <Button autoFocus variant="contained" className="p-5" style={{ textTransform: 'none', backgroundColor: "#3f6212" }} onClick={PlaceOrder} >
+                                <Button autoFocus variant="contained" className="p-5" style={{ textTransform: 'none', backgroundColor: "var(--COLOR_UI_PHARMACY)" }} onClick={PlaceOrder} >
                                     Place Order
                                 </Button>
                                 <Button autoFocus variant="contained" style={{ textTransform: 'none', backgroundColor: "#F31C1C" }} onClick={resetAddDialog}  >

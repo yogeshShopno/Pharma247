@@ -27,6 +27,10 @@ import Loader from "../../../../componets/loader/Loader";
 import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { VscDebugStepBack } from "react-icons/vsc";
+import { FaCaretUp, FaStore } from "react-icons/fa6";
+import { FaShippingFast, FaWalking } from "react-icons/fa";
+import { Modal } from "flowbite-react";
+import { IoMdClose } from "react-icons/io";
 
 const EditSaleBill = () => {
   const token = localStorage.getItem("token");
@@ -43,8 +47,9 @@ const EditSaleBill = () => {
   const [doctor, setDoctor] = useState("");
 
   const pickupOptions = [
-    { id: 1, label: "Pickup" },
-    { id: 2, label: "Delivery" },
+    { id: 1, label: "Counter", icon: <FaStore /> },
+    { id: 2, label: "Pickup", icon: <FaWalking /> },
+    { id: 3, label: "Delivery", icon: <FaShippingFast /> },
   ];
   const location = useLocation();
   const { paymentType: initialPayment } = location.state
@@ -74,6 +79,9 @@ const EditSaleBill = () => {
   const [qty, setQty] = useState('')
   const [tempQty, setTempQty] = useState('')
   const [marginNetProfit, setMarginNetProfit] = useState(0);
+  const [todayLoyltyPoint, setTodayLoyaltyPoint] = useState('')
+  const [previousLoyaltyPoints, setPreviousLoyaltyPoints] = useState('')
+  const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
 
   const [order, setOrder] = useState("");
   const [gst, setGst] = useState("");
@@ -110,6 +118,13 @@ const EditSaleBill = () => {
   const [barcode, setBarcode] = useState("");
   const [itemEditID, setItemEditID] = useState(0);
   const [highlightedRowId, setHighlightedRowId] = useState(null);
+
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -155,7 +170,7 @@ const EditSaleBill = () => {
       //     setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
       //     calculatedNetAmount = 0;
       // }
-      let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
+      let loyaltyPointsDeduction = loyaltyVal;
       let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
       if (calculatedNetAmount < 0) {
@@ -278,12 +293,13 @@ const EditSaleBill = () => {
 
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
-      setMaxValue(record.roylti_point);
+      // setPreviousLoyaltyPoints(record.roylti_point);
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
       setTotalgst(record.total_gst);
       setTotalAmount(record.sales_amount);
       setOtherAmt(record.other_amount);
+      setTodayLoyaltyPoint(record.today_loylti_point)
       setRoundOff(record.round_off)
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);
@@ -300,11 +316,14 @@ const EditSaleBill = () => {
       setMargin(record.total_margin);
       setPaymentType(record.payment_name)
       setPickup(record.pickup)
+      // setPickup(pickupOptions.find(option => option.label === record.pickup));
+
       // setCustomer(response.data.data.customer_name)
       const foundCustomer = customerData.find(
         (option) => option.name === record.customer_name
       );
       setCustomer(foundCustomer || '');
+      setPreviousLoyaltyPoints(foundCustomer.roylti_point)
 
       if (record.doctor_name && record.doctor_name !== "-") {
         const foundDoctor = doctorData.find(
@@ -357,8 +376,16 @@ const EditSaleBill = () => {
       });
       const customerData = response.data.data;
       setCustomerDetails(response.data.data);
-      setCustomer(response.data.data[0] || '');
+      // setCustomer(response.data.data[0] || '');
       setIsLoading(false);
+
+      if (customer.length > 0) {
+        const firstCustomer = customer[0];
+        setCustomer(firstCustomer);
+        setPreviousLoyaltyPoints(firstCustomer.roylti_point || 0);
+        console.log('PreviousLoyaltyPoints :>> ', firstCustomer);
+        // setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
+      }
       return customerData;
     } catch (error) {
       setIsLoading(false);
@@ -512,8 +539,18 @@ const EditSaleBill = () => {
 
   const handleCustomerOption = (event, newValue) => {
     setUnsavedItems(true);
-
     setCustomer(newValue);
+
+    if (newValue) {
+      const points = newValue.roylti_point || 0;
+      setPreviousLoyaltyPoints(points);
+
+      // setMaxLoyaltyPoints(points);
+    } else {
+      setPreviousLoyaltyPoints(0);
+      // setMaxLoyaltyPoints(0);
+      setLoyaltyVal(0);
+    }
   };
 
   const handleDoctorOption = (event, newValue) => {
@@ -768,7 +805,7 @@ const EditSaleBill = () => {
     data.append("margin_net_profit", marginNetProfit || 0);
     data.append("net_rate", netRateAmount || 0);
     data.append("margin", margin || 0);
-    data.append("roylti_point", loyaltyVal)
+    data.append("roylti_point", loyaltyVal || 0)
 
     const params = {
       id: id || '',
@@ -926,8 +963,9 @@ const EditSaleBill = () => {
           <div
             style={{
               // backgroundColor: "rgb(240, 240, 240)",
-              height: "calc(99vh - 55px)",
+              height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
+              overflow: "auto",
             }}
           >
             <div>
@@ -963,7 +1001,7 @@ const EditSaleBill = () => {
                   >
                     Edit
                   </span>
-                  <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                  <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                 </div>
                 <div className="headerList">
                   <input
@@ -1066,7 +1104,7 @@ const EditSaleBill = () => {
                     style={{
                       display: "flex",
                       flexDirection: "column",
-                      // width: "100%"
+                      width: "100%"
                     }}
                   >
                     <span
@@ -1083,17 +1121,15 @@ const EditSaleBill = () => {
                       value={customer} // Ensure `customer` is a valid object from `customerDetails`.
                       options={customerDetails}
                       onChange={handleCustomerOption}
-                      getOptionLabel={(option) => option.name || ""}
+                      getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}] [${option.roylti_point}]` : option.phone_number || ''}
                       isOptionEqualToValue={(option, value) => option.name === value.name}
                       disabled
                       sx={{
                         width: "100%",
-                        minWidth: {
-                          xs: '350px',
-                          sm: '500px',
-                          md: '500px',
-                          lg: '400px',
-                        },
+                        // minWidth: {
+                        //   xs: "320px",
+                        //   sm: "400px",
+                        // },
                         "& .MuiInputBase-root": {
                           height: 20,
                           fontSize: "1.10rem",
@@ -1106,7 +1142,7 @@ const EditSaleBill = () => {
                         <ListItem {...props}>
                           <ListItemText
                             primary={`${option.name}`}
-                            secondary={`Mobile No: ${option.phone_number}`}
+                            secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point}`}
                           />
                         </ListItem>
                       )}
@@ -1129,9 +1165,7 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  <div className="detail custommedia"
-                  //  style={{ width: '100%' }}
-                  >
+                  <div className="detail custommedia" style={{ width: '100%' }}>
                     <span
                       className="heading mb-2"
                       style={{
@@ -1152,12 +1186,6 @@ const EditSaleBill = () => {
                       }
                       sx={{
                         width: "100%",
-                        minWidth: {
-                          xs: '350px',
-                          sm: '500px',
-                          md: '500px',
-                          lg: '400px',
-                        },
                         // minWidth: {
                         //   xs: "320px",
                         //   sm: "400px",
@@ -1202,7 +1230,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{ borderBottom: '1px solid lightgray' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray',background: 'rgba(63, 98, 18, 0.09)' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1236,9 +1264,7 @@ const EditSaleBill = () => {
                               onClick={resetValue}
                             />
                             {searchItem} */}
-                            <div className="search_fld_divv"
-                              style={{ width: '100%' }}
-                            >
+                            <div className="search_fld_divv" style={{ width: '100%' }}>
                               <table style={{ maxWidth: '100%', width: '100%' }}>
                                 <Box
                                   sx={{
@@ -1430,7 +1456,7 @@ const EditSaleBill = () => {
                               type="number"
                               size="small"
                               value={unit}
-                              sx={{ width: "90px" }}
+                              sx={{ width: "130px" }}
                               onChange={(e) => {
                                 setUnit(e.target.value);
                               }}
@@ -1440,7 +1466,7 @@ const EditSaleBill = () => {
                             <TextField
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "110px" }}
+                              sx={{ width: "130px" }}
                               size="small"
                               disabled
                               value={batch}
@@ -1454,7 +1480,7 @@ const EditSaleBill = () => {
                               id="outlined-number"
                               disabled
                               size="small"
-                              sx={{ width: "100px" }}
+                              sx={{ width: "130px" }}
                               value={expiryDate}
                               onChange={handleExpiryDateChange}
                               placeholder="MM/YY"
@@ -1465,7 +1491,7 @@ const EditSaleBill = () => {
                               disabled
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "100px" }}
+                              sx={{ width: "130px" }}
                               size="small"
                               value={mrp}
                               onChange={(e) => {
@@ -1478,7 +1504,7 @@ const EditSaleBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "120px" }}
+                              sx={{ width: "130px" }}
                               size="small"
                               value={base}
                               onChange={(e) => {
@@ -1493,7 +1519,7 @@ const EditSaleBill = () => {
                               type="number"
                               disabled
                               size="small"
-                              sx={{ width: "80px" }}
+                              sx={{ width: "130px" }}
                               value={gst}
                               onChange={(e) => {
                                 setGst(e.target.value);
@@ -1505,7 +1531,7 @@ const EditSaleBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "70px" }}
+                              sx={{ width: "130px" }}
                               size="small"
                               value={qty}
                               onKeyPress={(e) => {
@@ -1529,7 +1555,7 @@ const EditSaleBill = () => {
                             <TextField
                               autoComplete="off"
                               id="outlined-number"
-                              sx={{ width: "80px" }}
+                              sx={{ width: "130px" }}
                               size="small"
                               value={order}
                               onChange={handleChange}
@@ -1540,7 +1566,7 @@ const EditSaleBill = () => {
                               id="outlined-number"
                               size="small"
                               disabled
-                              sx={{ width: "100px" }}
+                              sx={{ width: "130px" }}
                               value={loc}
                               onChange={(e) => {
                                 setLoc(e.target.value);
@@ -1589,6 +1615,7 @@ const EditSaleBill = () => {
                               style={{
                                 display: "flex",
                                 gap: "8px",
+                                whiteSpace: "nowrap",
                               }}
                             >
 
@@ -1627,14 +1654,26 @@ const EditSaleBill = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap">
-                <div
-                >
-                  <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
+              {/* <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap">
+                <div>
+                  <div>
                     <label className="font-bold">Total GST : </label>
+                    <span style={{ fontWeight: 600 }}> {totalgst} </span>
+                  </div>
+
+                  <div>
                     <label className="font-bold">Total Base : </label>
+                    <span style={{ fontWeight: 600 }}> {totalBase} </span>
+                  </div>
+
+                  <div>
                     <label className="font-bold">Profit : </label>
+                    <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(margin).toFixed(2)}%) </span>
+                  </div>
+
+                  <div>
                     <label className="font-bold">Total Net Rate : </label>
+                    <span style={{ fontWeight: 600 }}>₹ {netRateAmount} </span>
                   </div>
                 </div>
                 <div class="totals mr-3"
@@ -1645,10 +1684,6 @@ const EditSaleBill = () => {
                     alignItems: "end"
 
                   }}>
-                  <span style={{ fontWeight: 600 }}> {totalgst} </span>
-                  <span style={{ fontWeight: 600 }}> {totalBase} </span>
-                  <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(margin).toFixed(2)}%) </span>
-                  <span style={{ fontWeight: 600 }}>₹ {netRateAmount} </span>
                 </div>
 
                 <div
@@ -1840,9 +1875,380 @@ const EditSaleBill = () => {
                     </div>
                   </div>
                 </div>
+              </div> */}
+            </div>
+            <div className="" style={{ background: 'var(--color1)', display: "flex", flexDirection: 'column', position: 'fixed', width: '100%', bottom: '0', left: '0' }}>
+              <div className="" style={{ display: 'flex', gap: '40px', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px', color: 'white' }}>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Total GST : </label>
+
+                  <span style={{ fontWeight: 600 }}>₹{totalgst} </span>
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Total Base : </label>
+                  <span style={{ fontWeight: 600 }}> {totalBase} </span>
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Profit : </label>
+                  <span style={{ fontWeight: 600 }}>₹{marginNetProfit} ({Number(margin).toFixed(2)}%) </span>
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Total Net Rate : </label>
+                  <span style={{ fontWeight: 600 }}>₹{netRateAmount} </span>
+
+                </div>
+              </div>
+              <hr style={{
+                opacity: 0.5, position: 'sticky', left: '0', width: '100%'
+              }} />
+
+              <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', alignItems: 'baseline' }}>
+
+                <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'auto', position: 'sticky', padding: '20px', left: '0', color: 'white' }}>
+                  <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                    <label className="font-bold">Today Points : </label>
+                    {todayLoyltyPoint || 0}
+                  </div>
+                  <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                    <label className="font-bold">Previous Points : </label>
+                    {/* {previousLoyaltyPoints || 0} */}
+                    {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+                  </div>
+                  <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                    <label className="font-bold">Redeem : </label>
+                    <Input type="number"
+                      value={loyaltyVal}
+                      // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        const numericValue = Math.floor(Number(value));
+                        const maxAllowedPoints = Math.min(previousLoyaltyPoints, totalAmount);
+
+                        if (numericValue >= 0 && numericValue <= maxAllowedPoints) {
+                          setLoyaltyVal(numericValue);
+                        } else if (numericValue < 0) {
+                          setLoyaltyVal(0);
+                        }
+                      }}
+                      
+                      onKeyPress={(e) => {
+                        const value = e.target.value;
+                        const isMinusKey = e.key === '-';
+
+                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+
+                        if (isMinusKey && value.includes('-')) {
+                          e.preventDefault();
+                        }
+                      }}
+                      size="small"
+                      style={{
+                        width: "70px",
+                        background: "none",
+                        borderBottom: "1px solid gray",
+                        justifyItems: "end",
+                        outline: "none",
+                        color: 'white',
+
+                      }} sx={{
+                        '& .MuiInputBase-root': {
+                          height: '35px',
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                      }} />
+                    {/* {previousLoyaltyPoints} */}
+                  </div>
+                </div>
+
+                < div className="" style={{ display: 'flex', gap: '60px', whiteSpace: 'nowrap', padding: '20px', overflow: 'auto' }}>
+                  {/* <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Total Amount : </label>
+                  <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Discount (%) : </label>
+                  <Input
+                    type="number"
+                    // className="mt-2"
+                    value={finalDiscount}
+                    onChange={(e) => {
+                      let newValue = e.target.value;
+
+                      if (newValue > 100) {
+                        setFinalDiscount(100);
+                      } else if (newValue >= 0) {
+                        setFinalDiscount(newValue);
+                      }
+                      setUnsavedItems(true);
+                      localStorage.setItem('RandomNumber', randomNumber);
+                    }}
+                    onKeyPress={(e) => {
+                      if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px", background: "none", borderBottom: "1px solid gray", outline: "none", justifyItems: "end",
+                      color: 'white',
+                      alignItems: 'center'
+                    }}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "35px",
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" }
+                    }}
+                  />
+
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Other Amount : </label>
+                  <Input
+                    type="number"
+                    value={tempOtherAmt || otherAmt}
+                    onChange={handleOtherAmtChange}
+                    onKeyPress={(e) => {
+                      const value = e.target.value;
+                      const isMinusKey = e.key === '-';
+
+                      // Allow Backspace and numeric keys
+                      if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                        e.preventDefault();
+                      }
+
+                      // Allow only one '-' at the beginning of the input value
+                      if (isMinusKey && value.includes('-')) {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px",
+                      background: "none",
+                      borderBottom: "1px solid gray",
+                      outline: "none",
+                      justifyItems: "end",
+                      color: 'white',
+                      alignItems: 'center'
+                    }}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "35px",
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" },
+                    }}
+
+                  />
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Loyalty Points Redeem: </label>
+                  <Input
+                    type="number"
+                    value={loyaltyVal}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      const numericValue = Math.floor(Number(value));
+
+                      if (numericValue >= 0 && numericValue <= maxValue) {
+                        setLoyaltyVal(numericValue);
+                      } else if (numericValue < 0) {
+                        setLoyaltyVal(0);
+                      }
+                    }}
+
+                    onKeyPress={(e) => {
+                      const value = e.target.value;
+                      const isMinusKey = e.key === '-';
+
+                      if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                        e.preventDefault();
+                      }
+
+                      // Allow only one '-' at the beginning of the input value
+                      if (isMinusKey && value.includes('-')) {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px",
+                      background: "none",
+                      borderBottom: "1px solid gray",
+                      outline: "none",
+                      justifyItems: "end",
+                      color: 'white',
+                      alignItems: 'center'
+                    }}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "35px",
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" },
+                    }}
+
+                  />
+                </div>
+                <div className="gap-2" style={{ display: 'flex' }}>
+                  <label className="font-bold">Discount Amount : </label>
+                  <span>
+                    {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
+                  </span>
+                </div>
+                <div className="gap-2" style={{ display: 'flex', alignItems: 'center' }}>
+                  <label className="font-bold">Round Off : </label>
+                  <span >{!roundOff ? 0 : roundOff}</span>
+                </div> */}
+                  <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'white' }}>
+                    <label className="font-bold">Net Amount : </label>
+                    <span
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "22px"
+                      }}
+                    >
+                      {Number(netAmount).toFixed(2)}
+                    </span>
+                    <FaCaretUp />
+
+                  </div>
+
+                  <Modal
+                    show={isModalOpen}
+                    onClose={toggleModal}
+                    size="lg"
+                    position="bottom-center"
+                    className="modal_amount"
+                  // style={{ width: "50%" }}
+                  >
+                    <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                      <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                      <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                    </div>
+                    <div
+                      style={{
+                        background: "white",
+                        padding: "20px",
+                        width: "100%",
+                        maxWidth: "600px",
+                        margin: "0 auto",
+                        lineHeight: "2.5rem"
+                      }}
+                    >
+
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <label className="font-bold">Total Amount : </label>
+                        <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                      </div>
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <label className="font-bold">Discount(%) : </label>
+                        <Input
+                          type="number"
+                          // className="mt-2"
+                          value={finalDiscount}
+                          onChange={(e) => {
+                            let newValue = e.target.value;
+
+                            if (newValue > 100) {
+                              setFinalDiscount(100);
+                            } else if (newValue >= 0) {
+                              setFinalDiscount(newValue);
+                            }
+                            setUnsavedItems(true);
+                            localStorage.setItem('RandomNumber', randomNumber);
+                          }}
+                          onKeyPress={(e) => {
+                            if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
+                              e.preventDefault();
+                            }
+                          }}
+                          size="small"
+                          style={{
+                            width: "70px", background: "none",
+                            //  borderBottom: "1px solid gray",
+                            outline: "none", justifyItems: "end",
+                            alignItems: 'center'
+                          }}
+                          sx={{
+                            "& .MuiInputBase-root": {
+                              height: "35px",
+                            },
+                            "& .MuiInputBase-input": { textAlign: "end" }
+                          }}
+                        />
+
+
+                      </div>
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <label className="font-bold">Other Amount : </label>
+                        <Input
+                          type="number"
+                          value={tempOtherAmt || otherAmt}
+                          onChange={handleOtherAmtChange}
+                          onKeyPress={(e) => {
+                            const value = e.target.value;
+                            const isMinusKey = e.key === '-';
+
+                            // Allow Backspace and numeric keys
+                            if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                              e.preventDefault();
+                            }
+
+                            // Allow only one '-' at the beginning of the input value
+                            if (isMinusKey && value.includes('-')) {
+                              e.preventDefault();
+                            }
+                          }}
+                          size="small"
+                          style={{
+                            width: "70px",
+                            background: "none",
+                            // borderBottom: "1px solid gray",
+                            outline: "none",
+                            justifyItems: "end",
+                            alignItems: 'center'
+                          }}
+                          sx={{
+                            "& .MuiInputBase-root": {
+                              height: "35px",
+                            },
+                            "& .MuiInputBase-input": { textAlign: "end" },
+                          }}
+
+                        />
+                      </div>
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <label className="font-bold">Loyalty Points Redeem: </label>
+                        <span>{loyaltyVal || 0}</span>
+
+                      </div>
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                        <label className="font-bold">Discount Amount : </label>
+                        <span>
+                          {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
+                        </span>
+                      </div>
+
+                      <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                        <label className="font-bold">Round Off : </label>
+                        <span >{!roundOff ? 0 : roundOff}</span>
+                      </div>
+
+                      <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                        <label className="font-bold">Net Amount: </label>
+                        <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>  {Number(netAmount).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </Modal>
+                </div>
               </div>
             </div>
-
             {/* Delete PopUP */}
             <div
               id="modal"
@@ -1899,7 +2305,7 @@ const EditSaleBill = () => {
             </div>
           </div>
         )}
-      </div>
+      </div >
 
       <Prompt
         when={unsavedItems}

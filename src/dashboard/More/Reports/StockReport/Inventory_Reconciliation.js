@@ -809,7 +809,7 @@ const Inventory_Reconciliation = () => {
                                 onClick={validateForm}
                                 style={{
                                     color: "white",
-                                    background: "#3f6212",
+                                    background: "var(--COLOR_UI_PHARMACY)",
                                     outline: "none",
                                     boxShadow: "none",
                                 }}

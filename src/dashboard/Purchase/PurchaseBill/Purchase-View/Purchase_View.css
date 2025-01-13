@@ -4,7 +4,7 @@
   background-color: white;
   height: auto;
   padding: 13px 29px;
-  gap: 20px;
+  row-gap: 20px;
 }
 
 .manageExpenseRow {
@@ -21,7 +21,26 @@
   display: flex;
   flex-direction: column;
   width: auto;
-  min-width: 150px
+  min-width: 150px;
+}
+
+@media (max-width: 475px) {
+  .detail_main {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-width: 150px;
+  }
+}
+
+@media (min-width: 476px) {
+  .detail_main {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-width: 50%;
+    max-width: 50%;
+  }
 }
 
 .distributor-detail {
@@ -31,7 +50,6 @@
   min-width: 300px;
   min-height: 60px;
   gap: 6px;
-
 }
 
 .heading {
@@ -57,7 +75,6 @@
 .table-cashManage td {
   padding: 8px;
   text-align: right;
-
 }
 
 .table-cashManage th {
@@ -67,7 +84,6 @@
   border-bottom: 1px solid;
   border-top: 1px solid;
   padding: 10px;
-
 }
 
 .table-cashManage tbody tr td {
@@ -128,7 +144,8 @@
 }
 
 .amount {
-  background-color: rgba(221, 78, 90, 0.1);
+  background-color: var(--color3);
+  font-weight: 900 !important;
 }
 
 .amounttotal {
@@ -214,11 +231,131 @@
 }
 
 .invoice-table tr:hover {
-    background-color: rgba(4, 76, 157, 0.1);
+  background-color: rgba(4, 76, 157, 0.1);
 }
 
-.add_new_item_divv{
-    width: 100%;
-    flex-direction: column;
+.custommedia {
+  @media (max-width: 768px) {
+    max-width: 768px !important;
   }
-  
+  @media (min-width: 769px) {
+    max-width: 33.3333333333% !important;
+    padding: 0 5px;
+  }
+  @media (min-width: 1440px) {
+    max-width: 25.3333333333% !important;
+    padding: 0 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sale_dates_divv_main {
+    flex-direction: column !important;
+    align-items: end !important;
+    width: 100% !important;
+  }
+  .sale_dates_divv {
+    flex-direction: column !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
+  .sale_dates_divv_btn {
+    justify-content: end !important;
+  }
+}
+
+.search_fld_divv {
+  @media (max-width: 575px) {
+    flex-direction: column !important;
+    table {
+      max-width: 100% !important;
+    }
+  }
+  @media (max-width: 768px) {
+    flex-direction: column !important;
+    table {
+      max-width: 100% !important;
+    }
+  }
+}
+
+.header_sale_divv {
+  @media (max-width: 906px) {
+    display: grid !important;
+    padding: 13px 29px;
+    flex-direction: column-reverse;
+  }
+}
+
+.payment_btn_divv {
+  @media (max-width: 696px) {
+    width: 48.5%;
+  }
+}
+.payment_btn_divv {
+  @media (max-width: 430px) {
+    width: 100%;
+  }
+}
+
+.payment_divv {
+  @media (min-width: 431px) and (max-width: 696px) {
+    width: 48.5% !important;
+  }
+  @media (max-width: 430px) {
+    width: 100% !important;
+  }
+  @media (min-width: 697px) and (max-width: 1100px) {
+    width: 30% !important;
+  }
+  @media (min-width: 1101px) {
+    width: 200px !important;
+  }
+}
+
+.headerList {
+  @media (max-width: 696px) {
+    display: flex;
+  }
+}
+
+@media (min-width: 697px) and (max-width: 785px) {
+  .headerList {
+    flex-wrap: nowrap !important;
+  }
+}
+
+.add_new_item_divv {
+  width: 100%;
+  flex-direction: column;
+}
+
+.sale_rtn_add:has(:not(.sale_filtr_add)) {
+  height: calc(99vh - 55px);
+}
+
+.sale_rtn_add:has(.sale_filtr_add) {
+  height: calc(-120px + 100vh) !important;
+}
+
+@media (max-width: 768px) {
+  .filter_btn_add {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 45px !important;
+  }
+  .main_fltr_btn {
+    width: 100%;
+  }
+}
+
+.modal_amount div[role="dialog"] {
+  max-width: 30%;
+  align-content: end;
+  padding: 0;
+}
+
+.invoice_total_fld {
+  max-width: 200px;
+  min-width: 200px;
+}

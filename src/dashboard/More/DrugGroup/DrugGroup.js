@@ -312,7 +312,7 @@ const DrugGroup = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
                             </div>
                             <div className="headerList">
-                                <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
+                                <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} variant="contained" size='small' onClick={handelAddOpen} > <AddIcon />Add Drug Group</Button>
                             </div>
                         </div>
                         <div className="firstrow p-4">
@@ -339,7 +339,7 @@ const DrugGroup = () => {
                                     {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                                 </div>
                                 <div>
-                                    <Button style={{ backgroundColor: "#3f6212", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
+                                    <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} variant="contained" onClick={openBillDetails}>Search</Button>
                                 </div>
                             </div>
                             <div className="overflow-x-auto mt-4" style={{ overflowX: 'auto' }}>
@@ -459,7 +459,7 @@ const DrugGroup = () => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus variant="contained" className="p-5" style={{ backgroundColor: "#3f6212", color: "white" }}
+                        <Button autoFocus variant="contained" className="p-5" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                             onClick={validData}
                         >
                             {buttonLabel}

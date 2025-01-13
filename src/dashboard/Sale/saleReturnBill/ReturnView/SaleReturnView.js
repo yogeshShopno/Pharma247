@@ -10,6 +10,9 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { BsLightbulbFill } from "react-icons/bs";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
 import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
+import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
+import { Modal } from "flowbite-react";
+import { IoMdClose } from "react-icons/io";
 
 const SaleReturnView = () => {
     const [tableData, setTableData] = useState([]);
@@ -21,6 +24,12 @@ const SaleReturnView = () => {
     const permissions = usePermissions();
     const [currentIndex, setCurrentIndex] = useState(null);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
     useEffect(() => {
         saleReturnBillList();
     }, []);
@@ -31,7 +40,7 @@ const SaleReturnView = () => {
             setCurrentIndex(index);
             saleReturnBillGetByID(saleReturnData[index].id);
         }
-      
+
     }, [id, saleReturnData]);
 
     useEffect(() => {
@@ -95,7 +104,7 @@ const SaleReturnView = () => {
             ).then((response) => {
                 setTableData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -112,15 +121,15 @@ const SaleReturnView = () => {
                         <Loader />
                     </div> :
                         <>
-                            <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px", alignItems: "center" }} >
+                            <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                                 <div>
-                                    <div className='py-3 gap-4' style={{ display: 'flex', alignItems: "center" }}>
+                                    <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                                         <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px", flexWrap: "nowrap", whiteSpace: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
                                         <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                                         <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
                                         <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                                         <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
-                                        <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                        <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                         {hasPermission(permissions, "sale return bill edit") && (
                                             <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
                                                 <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
@@ -130,13 +139,13 @@ const SaleReturnView = () => {
                                 <div>
                                     <div className="firstrow flex">
 
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Bill No</span>
                                             <span className="data">
                                                 {tableData.bill_no}
                                             </span>
                                         </div>
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Bill Date</span>
                                             <span className="data">
                                                 {tableData.bill_date}
@@ -144,26 +153,26 @@ const SaleReturnView = () => {
                                             </span>
 
                                         </div>
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Customer </span>
                                             <span className="data">
                                                 {tableData.customer_name}
                                             </span>
 
                                         </div>
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Mobile No.</span>
                                             <span className="data">
                                                 {tableData.customer_number}
                                             </span>
                                         </div>
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Doctor </span>
                                             <span className="data">
                                                 {tableData.doctor_name || '-'}
                                             </span>
                                         </div>
-                                        <div className="detail">
+                                        <div className="detail_main">
                                             <span className="heading">Payment Mode</span>
                                             <span className="data">
                                                 {tableData.payment_name}
@@ -172,9 +181,9 @@ const SaleReturnView = () => {
                                         </div>
                                     </div>
                                     <div className='overflow-x-auto'>
-                                        <table className="customtable w-full border-collapse custom-table">
+                                        <table className="customtable w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                             <thead>
-                                                <tr>
+                                                <tr style={{ whiteSpace: "nowrap" }}>
                                                     <th >
                                                         Item Name
                                                     </th>
@@ -190,10 +199,10 @@ const SaleReturnView = () => {
                                                     <th >Amount  </th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{ background: "#3f621217" }}>
                                                 {tableData?.sales_retur_view?.map((item, index) => (
                                                     <tr >
-                                                        <td>
+                                                        <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                             <div className="itemName">
                                                                 {item.iteam_name}
                                                             </div>
@@ -207,13 +216,13 @@ const SaleReturnView = () => {
                                                         <td>{item.qty}</td>
                                                         {/* <td>{item.order}</td> */}
                                                         <td>{item.location}</td>
-                                                        <td className="amount">{item.net_rate}</td>
+                                                        <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.net_rate}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10"  >
+                                    {/* <div className="flex gap-10 justify-end mt-4 flex-wrap mr-10"  >
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <label className="font-bold">Total GST : </label>
                                             <label className="font-bold">Total Base : </label>
@@ -227,17 +236,6 @@ const SaleReturnView = () => {
                                             <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
                                         </div>
 
-                                        {/* <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                                        <label className="font-bold">SGST : </label>
-                                        <label className="font-bold">CGST: </label>
-                                        <label className="font-bold">IGST: </label>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.sgst}</span>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.cgst}</span>
-                                        <span style={{ fontWeight: 600 }}>{tableData?.igst}</span>
-                                    </div> */}
-
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <label className="font-bold">Total Amount : </label>
                                             <label className="font-bold">Other Amount : </label>
@@ -246,15 +244,119 @@ const SaleReturnView = () => {
                                         </div>
                                         <div className="mr-5" style={{ display: 'flex', gap: '24px', flexDirection: 'column', alignItems: "end" }}>
                                             <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}</span>
-                                            {/* <span style={{ fontWeight: 600 }}>{tableData?.total_discount}%</span> */}
+                                         
                                             <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
                                             <span style={{ fontWeight: 600 }}>{Number(tableData?.round_off || 0).toFixed(2)}</span>
                                             <span style={{ fontWeight: 800, fontSize: '22px', color: "Green" }}>{tableData?.net_amount}</span>
                                         </div>
+                                    </div> */}
+                                </div>
+                                <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', overflow: 'auto', bottom: '0', left: '0' }}>
+                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total GST : </label>
+
+                                            <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Base : </label>
+                                            <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Profit : </label>
+                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Net Rate : </label>
+                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex' }}>
+                                        <div className="invoice_total_fld" style={{ display: 'flex', flexDirection: 'column', alignSelf: "center", fontSize: '14px' }}>
+                                            <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }} onClick={() => {
+                                                const prevIndex = (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
+                                                const prevId = saleReturnData[prevIndex]?.id;
+                                                if (prevId) {
+                                                    history.push(`/SaleReturn/view/${prevId}`);
+                                                }
+                                            }} >
+                                                <label style={{ textTransform: "uppercase" }}>Next Bill</label>
+                                                <FaArrowUp size={20} />
+                                            </div>
+                                            <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }} onClick={() => {
+                                                const nextIndex = (currentIndex + 1) % saleReturnData.length;
+                                                const nextId = saleReturnData[nextIndex]?.id;
+                                                if (nextId) {
+                                                    history.push(`/SaleReturn/view/${nextId}`);
+                                                }
+                                            }}>
+                                                <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
+                                                <FaArrowDown size={20} />
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+
+                                                <label className="font-bold">Net Amount : </label>
+                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{tableData?.net_amount}</span>
+                                                <FaCaretUp />
+
+                                            </div>
+
+                                            <Modal
+                                                show={isModalOpen}
+                                                onClose={toggleModal}
+                                                size="lg"
+                                                position="bottom-center"
+                                                className="modal_amount"
+                                            // style={{ width: "50%" }}
+                                            >
+                                                <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                                                    <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                                                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        background: "white",
+                                                        padding: "20px",
+                                                        width: "100%",
+                                                        maxWidth: "600px",
+                                                        margin: "0 auto",
+                                                        lineHeight: "2.5rem"
+                                                    }}
+                                                >
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Total Amount : </label>
+                                                        <span style={{ fontWeight: 600 }}>{tableData?.mrp_total}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                        <label className="font-bold">Other Amount : </label>
+                                                        <span style={{ fontWeight: 600 }}>{tableData?.other_amount}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Round Off : </label>
+                                                        <span style={{ fontWeight: 600 }}>{Number(tableData?.round_off || 0).toFixed(2)}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Net Amount: </label>
+                                                        <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{tableData?.net_amount}</span>
+                                                    </div>
+                                                </div>
+                                            </Modal>
+                                        </div>
                                     </div>
                                 </div>
+
+
                             </div>
-                            <div className="flex justify-between" style={{ width: '100%', position: 'absolute', bottom: '20px', padding: "0 20px" }}>
+                            {/* <div className="flex justify-between" style={{ width: '100%', position: 'absolute', bottom: '20px', padding: "0 20px" }}>
                                 <span onClick={() => {
                                     const prevIndex = (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
                                     const prevId = saleReturnData[prevIndex]?.id;
@@ -279,11 +381,11 @@ const SaleReturnView = () => {
                                         <IoArrowForwardCircleOutline size={25} color="white" cursor='pointer' />
                                         NEXT BILL</Button>
                                 </span>
-                            </div>
+                            </div> */}
                         </>
                     }
                 </div >
-            </div>
+            </div >
         </>
     )
 }

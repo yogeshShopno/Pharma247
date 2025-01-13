@@ -402,9 +402,7 @@ const DistributerList = () => {
 
                         </div>
                     </div>
-                    <div className="overflow-x-auto firstrow" style={{
-                        overflow: "hidden", // Prevent corners from being overridden by table contents
-                    }}>
+                    <div className="overflow-x-auto firstrow" >
                         <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                             <thead className="bg-gray-100">
                                 <tr>
@@ -782,7 +780,7 @@ const DistributerList = () => {
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button autoFocus variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} onClick={editDistributor}>
+                                    <Button autoFocus variant="contained" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} onClick={editDistributor}>
                                         Update
                                     </Button>
                                     <Button autoFocus variant="contained" color="error" onClick={resetAddDialog}>
@@ -821,7 +819,7 @@ const DistributerList = () => {
                                         <span className='errorFile'>*select only .csv File</span>
                                     </div>
                                     <div>
-                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                                        <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}  >
                                             <CloudDownloadIcon className="mr-2" />
                                             Sample File Download
                                         </Button>
@@ -834,7 +832,7 @@ const DistributerList = () => {
                         <DialogActions>
                             <Button
                                 autoFocus
-                                style={{ backgroundColor: "#3f6212", color: "white" }}
+                                style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                                 variant="contained"
                                 onClick={uploadDistributorFile}>
                                 Save

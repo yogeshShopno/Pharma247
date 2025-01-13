@@ -1710,7 +1710,7 @@ const Itemmaster = () => {
             variant="contained"
             onClick={submitDrugGroup}
             disabled={!drugGroupName}
-            style={{ margin: "10px", background: "#3f6212", color: "white" }}
+            style={{ margin: "10px", background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
 
           >
             Submit
@@ -1746,7 +1746,7 @@ const Itemmaster = () => {
             onClick={submitCompany}
             variant="contained"
             disabled={!companyName}
-            style={{ background: "#3f6212", color: "white" }}
+            style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
           >
             Submit
           </Button>
@@ -1788,7 +1788,7 @@ const Itemmaster = () => {
                 <span className="errorFile">*select only .csv File.</span>
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }}  >
+                <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}  >
                   <CloudDownloadIcon className="mr-2" />
                   Sample File Download
                 </Button>

@@ -511,7 +511,7 @@ const CustomerList = () => {
                     </div>
                     <div className="bg-white p-4">
                         <div className="flex flex-wrap gap-6">
-                            <Chip label="Due Only" style={{ backgroundColor: "#3f6212", color: "white" }}
+                            <Chip label="Due Only" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                                 value={chipState.value}
                                 variant={chipState.variant}
                                 onClick={handleChipClick} />
@@ -767,7 +767,7 @@ sx={{
                                     </div>
                                     <div>
 
-                                        <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className='downloadFile'>
+                                        <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className='downloadFile'>
                                             <CloudDownloadIcon className="mr-2" />
 
                                             Sample File Download
@@ -932,7 +932,7 @@ sx={{
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button variant="contained" style={{ backgroundColor: "#3f6212", color: "white" }} autoFocus className="p-5" onClick={Addcustomer}>
+                                    <Button variant="contained" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} autoFocus className="p-5" onClick={Addcustomer}>
                                         {buttonLabel}
                                     </Button>
                                     <Button autoFocus variant="contained" onClick={resetAddDialog} color="error"  >

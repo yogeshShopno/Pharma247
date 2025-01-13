@@ -16,6 +16,9 @@ import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
+import { IoMdClose } from "react-icons/io";
+import { FaCaretUp } from "react-icons/fa6";
+import { Modal } from "flowbite-react";
 
 const EditSaleReturn = () => {
     const token = localStorage.getItem("token")
@@ -91,6 +94,11 @@ const EditSaleReturn = () => {
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
     const [uniqueId, setUniqueId] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     useEffect(() => {
         const totalAmount = qty / unit;
@@ -189,7 +197,7 @@ const EditSaleReturn = () => {
                 },
             });
             const record = response.data.data;
-           
+
             // setCustomer(response.data.data.customer_name)
             const foundCustomer = customerData.find(
                 (option) => option.name === record.customer_name
@@ -251,7 +259,7 @@ const EditSaleReturn = () => {
             const doctorData = response.data.data;
             setDoctorData(response.data.data);
             setDoctor(response.data.data[0] || null)
-           
+
             setIsLoading(false);
             return doctorData;
         } catch (error) {
@@ -275,7 +283,7 @@ const EditSaleReturn = () => {
             const customerData = response.data.data;
             setCustomerDetails(response.data.data);
             setCustomer(response.data.data[0] || '');
-           
+
 
             setIsLoading(false);
             return customerData;
@@ -622,20 +630,21 @@ const EditSaleReturn = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                    <div style={{ height: 'calc(100vh - 120px)', padding: "0px 20px 0px", overflow: 'auto' }} >
                         <div>
-                            <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                                 <div style={{ display: 'flex', gap: '5px', alignItems: "center" }}>
                                     <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "125px" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                     <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                     <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>Edit </span>
                                     <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 </div>
 
                                 <div className="headerList">
                                     <Select
                                         labelId="dropdown-label"
+                                        className="payment_divv"
                                         id="dropdown"
                                         disabled
                                         value={paymentType}
@@ -649,13 +658,12 @@ const EditSaleReturn = () => {
                                             <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                                         ))}
                                     </Select>
-                                    <Button variant="contained" sx={{ background: "var(--color1)" }} onClick={handleUpdate}> Update</Button>
-
+                                    <Button variant="contained" className="payment_btn_divv" style={{ background: "var(--color1)" }} onClick={handleUpdate}> Update</Button>
                                 </div>
                             </div>
                             <div className="border-b">
                                 <div className="firstrow flex">
-                                    <div className="detail mt-1" style={{ width: '250px' }}>
+                                    <div className="detail mt-1 custommedia" style={{ width: '250px' }}>
                                         <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
                                             <div className="flex gap-5">
@@ -665,7 +673,7 @@ const EditSaleReturn = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                                         <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
 
                                         <Autocomplete
@@ -676,17 +684,17 @@ const EditSaleReturn = () => {
                                             isOptionEqualToValue={(option, value) => option.id === value.id}
                                             sx={{
                                                 width: '100%',
-                                                minWidth: '400px',
+                                                // minWidth: '400px',
                                                 '& .MuiInputBase-root': {
-                                                    height: 20,
+                                                    // height: 20,
                                                     fontSize: '1.10rem',
                                                 },
                                                 '& .MuiAutocomplete-inputRoot': {
                                                     padding: '10px 14px',
                                                 },
-                                                '@media (max-width:600px)': {
-                                                    minWidth: '300px',
-                                                },
+                                                // '@media (max-width:600px)': {
+                                                //     minWidth: '300px',
+                                                // },
                                             }}
 
                                             renderOption={(props, option) => (
@@ -699,7 +707,7 @@ const EditSaleReturn = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     {...params}
                                                     value={customer}
 
@@ -763,8 +771,8 @@ const EditSaleReturn = () => {
                                             }} variant="outlined" />
                                     </div> */}
 
-                                    <div className="detail">
-                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>
+                                    <div className="detail custommedia" style={{ display: 'flex', width: '100%' }}>
+                                        <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Doctor </span>
                                         <Autocomplete
                                             value={doctor || ''}
                                             onChange={handleDoctorOption}
@@ -774,17 +782,17 @@ const EditSaleReturn = () => {
                                             isOptionEqualToValue={(option, value) => option.name === value.name}
                                             sx={{
                                                 width: '100%',
-                                                minWidth: '400px',
+                                                // minWidth: '400px',
                                                 '& .MuiInputBase-root': {
-                                                    height: 20,
-                                                    fontSize: '1.10rem',
+                                                    // height: 20,
+                                                    // fontSize: '1.10rem',
                                                 },
                                                 '& .MuiAutocomplete-inputRoot': {
-                                                    padding: '10px 14px',
+                                                    // padding: '10px 14px',
                                                 },
-                                                '@media (max-width:600px)': {
-                                                    minWidth: '300px',
-                                                },
+                                                // '@media (max-width:600px)': {
+                                                //     minWidth: '300px',
+                                                // },
                                             }}
                                             renderOption={(props, option) => (
                                                 <ListItem {...props}>
@@ -796,7 +804,7 @@ const EditSaleReturn = () => {
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     {...params}
                                                     variant="outlined"
                                                     placeholder="Search by DR. Name"
@@ -820,7 +828,7 @@ const EditSaleReturn = () => {
                                     <div className="scroll-two">
                                         <table className="saleTable">
                                             <thead>
-                                                <tr className="item-List border-b border-gray-400">
+                                                <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                                                     <th className="w-1/4">Item Name</th>
                                                     <th >Unit </th>
                                                     <th >Batch </th>
@@ -835,7 +843,7 @@ const EditSaleReturn = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
+                                                <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                     <td >
                                                         <DeleteIcon className="delete-icon" onClick={resetValue} />
                                                         {searchItem}
@@ -843,7 +851,7 @@ const EditSaleReturn = () => {
                                                     <td>
 
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
@@ -862,7 +870,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
                                                             sx={{ width: '110px', textAlign: 'right' }}
@@ -879,7 +887,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
@@ -897,7 +905,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
@@ -916,7 +924,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '120px', textAlign: 'right' }}
@@ -938,7 +946,7 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             disabled
@@ -958,7 +966,7 @@ const EditSaleReturn = () => {
                                                     <td>
 
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
                                                             sx={{ width: '70px', textAlign: 'right' }}
@@ -986,7 +994,7 @@ const EditSaleReturn = () => {
 
                                                     <td>
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
                                                             inputRef={inputRef9}
@@ -1004,18 +1012,12 @@ const EditSaleReturn = () => {
                                                     </td>
                                                     <td className="total ">{itemAmount}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                <tr style={{ borderBottom: '1px solid lightgray' }}>
+
+                                                    <td colSpan={9}></td>
+
                                                     <td >
-                                                        <Button variant="contained" color="success" marginRight="20px" onClick={editSaleReturnItem}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                                        <Button variant="contained" className="gap-2" style={{ backgroundColor: 'var(--color1)' }} marginRight="20px" onClick={editSaleReturnItem}>< BorderColorIcon className="w-7 h-6 text-white p-1 cursor-pointer" />Edit</Button>
                                                     </td>
                                                 </tr>
                                                 {saleReturnItems?.sales_iteam?.map(item => (
@@ -1023,7 +1025,8 @@ const EditSaleReturn = () => {
                                                         onClick={() => handleEditClick(item)}
                                                     >
                                                         <td style={{
-                                                            display: 'flex', gap: '8px', alignItems: "center"
+                                                            display: 'flex', gap: '8px', alignItems: "center",
+                                                            whiteSpace: 'nowrap'
                                                         }}>
                                                             <td>
                                                                 <Checkbox
@@ -1064,7 +1067,8 @@ const EditSaleReturn = () => {
                                         </table>
                                     </div>
                                 </div>
-                                {saleReturnItems?.sales_iteam?.length > 0 && (
+
+                                {/* {saleReturnItems?.sales_iteam?.length > 0 && (
                                     <div className="flex gap-10 justify-end mt-4 mr-10 flex-wrap"  >
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <div>
@@ -1191,7 +1195,132 @@ const EditSaleReturn = () => {
                                         </div>
                                     </div>
                                 )}
+                                 */}
+                                {saleReturnItems?.sales_iteam?.length > 0 && (
 
+                                    <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0' }}>
+
+                                        <div className="" style={{ display: 'flex', gap: '40px', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px' }}>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Total GST : </label>
+
+                                                <span style={{ fontWeight: 600 }}>{totalGst} </span>
+                                            </div>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Total Base : </label>
+                                                <span style={{ fontWeight: 600 }}>{totalBase} </span>
+                                            </div>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Profit : </label>
+                                                <span style={{ fontWeight: 600 }}>
+                                                    ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)} %)  </span>
+                                            </div>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Total Net Rate : </label>
+                                                <span style={{ fontWeight: 600 }}>
+                                                    ₹ {totalNetRate}  </span>
+
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex' }}>
+                                            <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                                <label className="font-bold">Net Amount : </label>
+                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                                <FaCaretUp />
+
+                                            </div>
+
+                                            <Modal
+                                                show={isModalOpen}
+                                                onClose={toggleModal}
+                                                size="lg"
+                                                position="bottom-center"
+                                                className="modal_amount"
+                                            // style={{ width: "50%" }}
+                                            >
+                                                <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                                                    <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                                                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        background: "white",
+                                                        padding: "20px",
+                                                        width: "100%",
+                                                        maxWidth: "600px",
+                                                        margin: "0 auto",
+                                                        lineHeight: "2.5rem"
+                                                    }}
+                                                >
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Total Amount : </label>
+                                                        <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                        <label className="font-bold">Other Amount : </label>
+                                                        <Input
+                                                            value={otherAmt}
+                                                            onKeyPress={(e) => {
+                                                                const value = e.target.value;
+                                                                const isMinusKey = e.key === '-';
+
+                                                                // Allow Backspace and numeric keys
+                                                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                                    e.preventDefault();
+                                                                }
+
+                                                                // Allow only one '-' at the beginning of the input value
+                                                                if (isMinusKey && value.includes('-')) {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
+                                                            onChange={(e) => {
+                                                                setUnsavedItems(true);
+                                                                const x = e.target.value
+                                                                const y = (x)
+
+                                                                if (-y >= totalAmount) {
+                                                                    setOtherAmt((-totalAmount))
+                                                                } else {
+                                                                    setOtherAmt(y)
+                                                                }
+                                                            }}
+                                                            size="small"
+                                                            style={{
+                                                                width: "70px",
+                                                                background: "none",
+                                                                // borderBottom: "1px solid gray",
+                                                                justifyItems: "end",
+                                                                outline: "none",
+
+                                                            }} sx={{
+                                                                '& .MuiInputBase-root': {
+                                                                    height: '35px',
+                                                                },
+                                                                "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                            }} />
+                                                    </div>
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Round Off : </label>
+                                                        <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Net Amount: </label>
+                                                        <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
+                                                    </div>
+                                                </div>
+                                            </Modal>
+                                        </div>
+                                    </div>
+
+                                )}
                                 {/* Delete PopUP */}
                                 <div id="modal" value={IsDelete}
                                     className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"

@@ -228,7 +228,7 @@ const Salelist = () => {
 
                 const PDFURL = response.data.data.pdf_url;
                 toast.success(response.data.meassage)
-               
+
                 setOpenAddPopUp(false)
                 setIsLoading(false);
                 handlePdf(PDFURL);
@@ -298,9 +298,7 @@ const Salelist = () => {
                         </div>
 
                         <div className="firstrow">
-                            <div className="overflow-x-auto mt-4" style={{
-                                                overflow: "hidden", // Prevent corners from being overridden by table contents
-                                            }}>
+                            <div className="overflow-x-auto mt-4" >
                                 <table className="w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                     <thead>
                                         <tr >
@@ -310,7 +308,7 @@ const Salelist = () => {
                                                     <div className='headerStyle'>
                                                         <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                         <TextField
-                 autoComplete="off"
+                                                            autoComplete="off"
                                                             // label={`Search ${column.label}`}
                                                             label='Type Here'
                                                             id="filled-basic"
@@ -328,7 +326,7 @@ const Salelist = () => {
                                     <tbody style={{ background: "#3f621217" }}>
                                         {filteredList.length === 0 ? (
                                             <tr>
-                                                <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
+                                                <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>

@@ -13,8 +13,8 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import { FaPlusCircle } from "react-icons/fa";
-import { Alert, AlertTitle, Box, CircularProgress, Input, MenuItem, Modal, Select, Tooltip } from '@mui/material';
+import { FaPlusCircle, FaShippingFast, FaWalking } from "react-icons/fa";
+import { Alert, AlertTitle, Box, CircularProgress, Input, MenuItem, Select, Tooltip } from '@mui/material';
 import { BsLightbulbFill } from "react-icons/bs";
 import { FiPrinter } from "react-icons/fi";
 import HistoryIcon from '@mui/icons-material/History';
@@ -29,6 +29,10 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
+import { FaCaretUp, FaStore } from "react-icons/fa6";
+import { Modal } from "flowbite-react";
+import { IoMdClose } from "react-icons/io";
+
 const Addsale = () => {
     const token = localStorage.getItem("token")
     const searchInputRef = useRef(null);
@@ -54,7 +58,8 @@ const Addsale = () => {
     const paymentOptions = [
         { id: 1, label: 'Cash' },
         { id: 2, label: 'UPI' }]
-    const pickupOptions = [{ id: 1, label: 'Counter' }, { id: 2, label: 'Pickup' }, { id: 3, label: 'Delivery' }]
+    const pickupOptions = [{ id: 1, label: 'Counter', icon: <FaStore /> }, { id: 2, label: 'Pickup', icon: <FaWalking /> }, { id: 3, label: 'Delivery', icon: <FaShippingFast /> }]
+    const [todayLoyltyPoint, setTodayLoyaltyPoint] = useState(0);
     const userId = localStorage.getItem("userId");
     const [customer, setCustomer] = useState('')
     const [paymentType, setPaymentType] = useState('cash');
@@ -129,6 +134,8 @@ const Addsale = () => {
     const [discount, setDiscount] = useState();
     const [barcodeItemName, setBarcodeItemName] = useState('');
     const [loyaltyPoints, setLoyaltyPoints] = useState([]);
+    const [previousLoyaltyPoints, setPreviousLoyaltyPoints] = useState(0);
+    const [previousLoyaltyPointVal, setPreviousLoyaltyPointVal] = useState(0)
     const [loyaltyVal, setLoyaltyVal] = useState(0);
     const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
     const [addItemName, setAddItemName] = useState("");
@@ -136,6 +143,13 @@ const Addsale = () => {
     const [addUnit, setAddUnit] = useState("");
     const [barcodeBatch, setBarcodeBatch] = useState("");
     const [billNo, setBillNo] = useState(localStorage.getItem('BillNo'));
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
         { id: 'qty', label: 'QTY', minWidth: 100 },
@@ -181,7 +195,7 @@ const Addsale = () => {
             //     calculatedNetAmount = 0;
             // }
 
-            let loyaltyPointsDeduction = loyaltyVal || loyaltyPoints;
+            let loyaltyPointsDeduction = loyaltyVal;
             let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
             if (calculatedNetAmount < 0) {
@@ -253,6 +267,7 @@ const Addsale = () => {
                             },
                         }
                     );
+                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
                 } catch (error) {
@@ -434,6 +449,7 @@ const Addsale = () => {
             const allOutOfStock = items.every(item => item.stock === 0);
 
             if (allOutOfStock) {
+                // console.log('Search Item-------');
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -454,9 +470,11 @@ const Addsale = () => {
             });
 
             if (res.data) {
+                // console.log('Item Drug Group Data:', res.data.data.data);
                 if (res.data.data) {
                     const filteredItems = res.data.data.data.filter(item => item.stock > 0);
                     setItemList(filteredItems);
+                    // console.log('Filtered itemList:', filteredItems);
                 }
             }
         } catch (error) {
@@ -492,7 +510,7 @@ const Addsale = () => {
             if (customers.length > 0) {
                 const firstCustomer = customers[0];
                 setCustomer(firstCustomer);
-                setLoyaltyPoints(firstCustomer.roylti_point || 0);
+                setPreviousLoyaltyPoints(firstCustomer.roylti_point || 0);
                 setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
             }
         } catch (error) {
@@ -541,11 +559,11 @@ const Addsale = () => {
 
         if (newValue) {
             const points = newValue.roylti_point || 0;
-            setLoyaltyPoints(points);
+            setPreviousLoyaltyPoints(points);
 
             setMaxLoyaltyPoints(points);
         } else {
-            setLoyaltyPoints(0);
+            setPreviousLoyaltyPoints(0);
             setMaxLoyaltyPoints(0);
             setLoyaltyVal(0);
         }
@@ -769,6 +787,7 @@ const Addsale = () => {
             ).then((response) => {
                 // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
+                setTodayLoyaltyPoint(response.data.data.today_loylti_point)
                 setTotalAmount(response.data.data.sales_amount)
                 setTotalBase(response.data.data.total_base)
                 setTotalgst(response.data.data.total_gst)
@@ -1004,7 +1023,7 @@ const Addsale = () => {
             newErrors.totalAmount = 'Total Amount must be greater than 0';
             toast.error('Total Amount must be greater than 0');
         }
-        if (loyaltyPoints > totalAmount) {
+        if (loyaltyVal > totalAmount) {
             newErrors.totalAmount = 'Total Amount must be greater than Loyalty points';
             toast.error('Total Amount must be greater than Loyalty points');
         }
@@ -1021,6 +1040,8 @@ const Addsale = () => {
     const submitSaleData = (async () => {
         let data = new FormData();
         // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
+        const calculatedPreviousLoyaltyPoint = Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0;
+
         data.append("bill_no", billNo);
         data.append("customer_id", customer?.id ? customer?.id : '');
         data.append("status", 'Completed');
@@ -1051,7 +1072,9 @@ const Addsale = () => {
         data.append("ptr", ptr ? ptr : '')
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
-        data.append("roylti_point", loyaltyVal || loyaltyPoints)
+        data.append("roylti_point", loyaltyVal || 0)
+        data.append("previous_loylti_point ", calculatedPreviousLoyaltyPoint || 0)
+        data.append("today_loylti_point  ", todayLoyltyPoint || 0)
 
         try {
             const response = await axios.post("create-sales", data, {
@@ -1072,7 +1095,7 @@ const Addsale = () => {
 
                 if (lowStockItems.length > 0) {
                     bulkOrderData();
-                    console.log('Low stock items:', lowStockItems);
+                    // console.log('Low stock items:', lowStockItems);
                 }
 
 
@@ -1306,7 +1329,7 @@ const Addsale = () => {
         data.append("order", order ? order : '');
         data.append("discount", discount ? discount : '')
         data.append("total_gst", totalgst || '')
-
+        data.append("today_loylti_point ", todayLoyltyPoint || '')
         const params = {
             id: selectedEditItemId || ''
         };
@@ -1327,7 +1350,6 @@ const Addsale = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
             setTotalAmount(0)
             saleItemList();
             setUnit('')
@@ -1344,7 +1366,6 @@ const Addsale = () => {
             setIsEditMode(false);
 
             toast.success(response.data.message);
-
 
             // if (quantityDifference === 1) {
             //     bulkOrderData();
@@ -1507,20 +1528,20 @@ const Addsale = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div className="" style={{ height: 'calc(100vh - 225px)', padding: "0px 20px 0px", overflow: 'auto' }}>
                     <div>
                         <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', fontWeight: 700, fontSize: '20px' }}>New</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Button
                                     variant="contained"
-                                    style={{ backgroundColor: "var(--color1)" }}
-
+                                    style={{ backgroundColor: "var(--color1)", whiteSpace: "nowrap" }}
+                                    className="payment_btn_divv"
                                     onClick={handelAddItemOpen}
                                 >
                                     <ControlPointIcon className="mr-2" />
@@ -1548,16 +1569,26 @@ const Addsale = () => {
                                     labelId="dropdown-label"
                                     id="dropdown"
                                     value={pickup}
-                                    className="payment_divv"
+                                    className="payment_divv "
                                     onChange={(e) => {
                                         setPickup(e.target.value);
                                         setUnsavedItems(true);
-
                                     }}
                                     size="small"
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            display: 'flex',
+                                            whiteSpace: 'nowrap',
+                                            alignItems: 'center',
+                                            gap: '1rem'
+                                        }
+                                    }}
                                 >
                                     {pickupOptions.map(option => (
-                                        <MenuItem key={option.id} value={option.label}>{option.label}</MenuItem>
+                                        <MenuItem key={option.id} value={option.label} className="gap-4">
+                                            {option.icon && option.icon}
+                                            {option.label}
+                                        </MenuItem>
                                     ))}
                                 </Select>
                                 <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
@@ -1626,10 +1657,7 @@ const Addsale = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{
-                                    display: 'flex', flexDirection: 'column',
-                                    // width: "100%"
-                                }}                                >
+                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
                                     <Autocomplete
@@ -1644,13 +1672,13 @@ const Addsale = () => {
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
                                         loading={isLoading}
                                         sx={{
-                                            width: '100% !important',
-                                            minWidth: {
-                                                xs: '350px',
-                                                sm: '500px',
-                                                md: '500px',
-                                                lg: '400px',
-                                            },
+                                            width: '100%',
+                                            // minWidth: {
+                                            //     xs: '350px',
+                                            //     sm: '500px',
+                                            //     md: '500px',
+                                            //     lg: '400px',
+                                            // },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1680,7 +1708,7 @@ const Addsale = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    style: { height: 55 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -1693,9 +1721,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia"
-                                // style={{ width: '100%' }}
-                                >
+                                <div className="detail custommedia" style={{ width: '100%' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1710,12 +1736,12 @@ const Addsale = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            minWidth: {
-                                                xs: '350px',
-                                                sm: '500px',
-                                                md: '500px',
-                                                lg: '400px',
-                                            },
+                                            // minWidth: {
+                                            //     xs: '350px',
+                                            //     sm: '500px',
+                                            //     md: '500px',
+                                            //     lg: '400px',
+                                            // },
                                             '& .MuiInputBase-root': {
                                                 height: 20,
                                                 fontSize: '1.10rem',
@@ -1745,7 +1771,7 @@ const Addsale = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    style: { height: 55 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -1758,7 +1784,7 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                {/* <div className="flex gap-5 search_fld_divv" style={{ width: '100%' }} >
+                                {/* <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
                                     <table style={{ maxWidth: '50%', width: '100%' }} >
                                         <Box
                                             sx={{
@@ -1778,7 +1804,7 @@ const Addsale = () => {
                                                     //     lg: '1000px'
                                                     // },
                                                     width: '100%',
-                                                    background: '#ffffff',
+                                                    background: '#ceecfd',
                                                     borderRadius: '7px',
                                                 }}
                                             >
@@ -1786,6 +1812,7 @@ const Addsale = () => {
                                                     value={selectedOption}
                                                     blurOnSelect
                                                     size="small"
+                                                    sx={{ fontSize: "1.5rem" }}
                                                     onChange={handleOptionChange}
                                                     onInputChange={handleInputChange}
                                                     options={itemList}
@@ -1802,15 +1829,16 @@ const Addsale = () => {
                                                                 //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
                                                                 //     </>
                                                                 // }
-                                                                secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
-
+                                                                secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                                                sx={{
+                                                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
+                                                                }}
                                                             />
                                                         </ListItem>
                                                     )}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            inputRef={searchInputRef}
                                                             variant="outlined"
                                                             id="searchResults"
                                                             placeholder="Search Item Name..."
@@ -1820,7 +1848,7 @@ const Addsale = () => {
 
                                                                 startAdornment: (
                                                                     <InputAdornment position="start">
-                                                                        <SearchIcon sx={{ color: "var(--color1)", cursor: "pointer" }} />
+                                                                        <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
                                                                     </InputAdornment>
                                                                 ),
                                                             }}
@@ -1870,7 +1898,6 @@ const Addsale = () => {
                                                                 <th>Batch Number</th>
                                                                 <th>Unit</th>
                                                                 <th>Expiry Date</th>
-                                                                <th>MRP</th>
                                                                 <th>QTY</th>
                                                                 <th>Loc</th>
                                                             </tr>
@@ -1894,7 +1921,6 @@ const Addsale = () => {
                                                                             <td className="text-base font-semibold">{item.batch_number}</td>
                                                                             <td className="text-base font-semibold">{item.unit}</td>
                                                                             <td className="text-base font-semibold">{item.expiry_date}</td>
-                                                                            <td className="text-base font-semibold">{item.mrp}</td>
                                                                             <td className="text-base font-semibold">{item.qty}</td>
                                                                             <td className="text-base font-semibold">{item.location}</td>
                                                                         </tr>
@@ -1927,7 +1953,7 @@ const Addsale = () => {
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
+                                            <tr style={{ borderBottom: '1px solid lightgray' ,background: 'rgba(63, 98, 18, 0.09)'}}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -1981,6 +2007,7 @@ const Addsale = () => {
                                                                         value={selectedOption}
                                                                         blurOnSelect
                                                                         size="small"
+                                                                        sx={{ fontSize: "1.5rem" }}
                                                                         onChange={handleOptionChange}
                                                                         onInputChange={handleInputChange}
                                                                         options={itemList}
@@ -1998,7 +2025,6 @@ const Addsale = () => {
                                                                                     //     </>
                                                                                     // }
                                                                                     secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
-
                                                                                 />
                                                                             </ListItem>
                                                                         )}
@@ -2121,14 +2147,14 @@ const Addsale = () => {
                                                         onKeyDown={handleKeyDown}
                                                         size="small"
                                                         value={unit}
-                                                        sx={{ width: '90px' }}
+                                                        sx={{ width: '130px' }}
                                                         onChange={(e) => { setUnit(e.target.value) }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <TextField
                                                         id="outlined-number"
-                                                        sx={{ width: '110px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         disabled
                                                         value={batch}
@@ -2140,7 +2166,7 @@ const Addsale = () => {
                                                         id="outlined-number"
                                                         disabled
                                                         size="small"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         inputRef={inputRef3}
                                                         onKeyDown={handleKeyDown}
                                                         value={expiryDate}
@@ -2153,7 +2179,7 @@ const Addsale = () => {
                                                         disabled
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         inputRef={inputRef4}
                                                         onKeyDown={handleKeyDown}
@@ -2166,7 +2192,7 @@ const Addsale = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '120px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         inputRef={inputRef5}
                                                         onKeyDown={handleKeyDown}
@@ -2182,7 +2208,7 @@ const Addsale = () => {
                                                         size="small"
                                                         inputRef={inputRef6}
                                                         onKeyDown={handleKeyDown}
-                                                        sx={{ width: '80px' }}
+                                                        sx={{ width: '130px' }}
                                                         value={gst}
                                                         onChange={(e) => { setGst(e.target.value) }}
                                                     />
@@ -2192,7 +2218,7 @@ const Addsale = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '70px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         inputRef={inputRef7}
                                                         onKeyDown={handleKeyDown}
@@ -2211,7 +2237,7 @@ const Addsale = () => {
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
-                                                        sx={{ width: '80px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         value={order}
                                                         inputRef={inputRef8}
@@ -2239,7 +2265,7 @@ const Addsale = () => {
                                                         inputRef={inputRef9}
                                                         onKeyDown={handleKeyDown}
                                                         disabled
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         value={loc}
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                     />
@@ -2271,11 +2297,12 @@ const Addsale = () => {
                                                 </td>
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (
-                                                <tr key={item.id} className="item-List border-b border-gray-400 "
+                                                <tr key={item.id} style={{ whiteSpace: 'nowrap' }} className="item-List border-b border-gray-400 "
                                                     onClick={() => handleEditClick(item)}
                                                 >
                                                     <td style={{
                                                         display: 'flex', gap: '8px',
+                                                        whiteSpace: 'nowrap',
                                                     }}>
                                                         <BorderColorIcon color="primary" className="cursor-pointer" onClick={(e) => {
                                                             e.stopPropagation();
@@ -2305,7 +2332,311 @@ const Addsale = () => {
                                 {/* } */}
 
                             </div>
+
                             {ItemSaleList.sales_item.length > 0 && (
+                                <div className="sale_filtr_add" style={{ background: 'var(--color1)', color: 'white', display: "flex", flexDirection: 'column', position: 'fixed', width: '100%', bottom: '0', left: '0' }}>
+                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px' }}>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total GST : </label>
+
+                                            <span style={{ fontWeight: 600 }}> {totalgst} </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Base : </label>
+                                            <span style={{ fontWeight: 600 }}> {totalBase} </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Profit : </label>
+                                            <span style={{ fontWeight: 600 }}>₹ {marginNetProfit || 0} ({Number(totalMargin || 0).toFixed(2)}%)</span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Net Rate : </label>
+                                            <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
+                                        </div>
+                                    </div>
+                                    <hr style={{
+                                        opacity: 0.5, position: 'sticky', left: '0', width: '100%'
+                                    }} />
+                                    <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', padding: '20px', alignItems: 'baseline' }}>
+
+                                        <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'auto', position: 'sticky', left: '0' }}>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Today Points : </label>
+                                                {todayLoyltyPoint || 0}
+                                            </div>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Previous Points : </label>
+                                                {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+                                            </div>
+                                            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Redeem : </label>
+                                                <Input type="number"
+                                                    value={loyaltyVal}
+                                                    // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+
+                                                        const numericValue = Math.floor(Number(value));
+
+                                                        const maxAllowedPoints = Math.min(maxLoyaltyPoints, totalAmount);
+
+                                                        if (numericValue >= 0 && numericValue <= maxAllowedPoints) {
+                                                            setLoyaltyVal(numericValue);
+                                                        } else if (numericValue < 0) {
+                                                            setLoyaltyVal(0);
+                                                        }
+                                                        setUnsavedItems(true);
+                                                    }}
+                                                    onKeyPress={(e) => {
+                                                        const value = e.target.value;
+                                                        const isMinusKey = e.key === '-';
+
+                                                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                            e.preventDefault();
+                                                        }
+
+                                                        if (isMinusKey && value.includes('-')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        justifyItems: "end",
+                                                        outline: "none",
+                                                        color: 'white',
+
+                                                    }} sx={{
+                                                        '& .MuiInputBase-root': {
+                                                            height: '35px',
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                    }} />
+                                                {/* {previousLoyaltyPoints} */}
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', whiteSpace: 'nowrap' }}>
+                                            {/* <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Total Amount : </label>
+                                                <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                            </div>
+                                            <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Discount(%) : </label>
+                                                <Input type="number"
+                                                    value={finalDiscount}
+                                                    onKeyPress={(e) => {
+                                                        if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        let newValue = e.target.value
+
+                                                        if (newValue > 100) {
+
+                                                            setFinalDiscount(100)
+                                                        } else if (newValue >= 0) {
+                                                            setFinalDiscount(newValue)
+
+                                                        }
+
+                                                    }}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        outline: "none",
+                                                        justifyItems: "end",
+                                                        color: 'white',
+
+                                                    }} sx={{
+                                                        '& .MuiInputBase-root': {
+                                                            height: '35px'
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                    }} />
+
+                                            </div>
+                                            <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Other Amount : </label>
+                                                <Input type="number" value={otherAmt}
+                                                    onKeyPress={(e) => {
+                                                        const value = e.target.value;
+                                                        const isMinusKey = e.key === '-';
+
+                                                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                            e.preventDefault();
+                                                        }
+
+                                                        if (isMinusKey && value.includes('-')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    onChange={handleOtherAmtChange}
+                                                    size="small"
+                                                    style={{
+                                                        width: "70px",
+                                                        background: "none",
+                                                        borderBottom: "1px solid gray",
+                                                        justifyItems: "end",
+                                                        outline: "none",
+                                                        color: 'white',
+
+                                                    }} sx={{
+                                                        '& .MuiInputBase-root': {
+                                                            height: '35px',
+                                                        },
+                                                        "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                    }} />
+                                            </div>
+                                            <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Loyalty Points Redeem: </label>
+                                                <span>{loyaltyVal || 0}</span>
+                                            </div>
+                                            <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Discount Amount : </label>
+                                                {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
+                                            </div>
+                                            <div className="gap-2" style={{ display: 'flex' }}>
+                                                <label className="font-bold">Round Off : </label>
+                                                <span >{!roundOff ? 0 : roundOff}</span>
+                                            </div> */}
+                                            <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                                <label className="font-bold">Net Amount: </label>
+                                                <span style={{ fontWeight: 800, fontSize: "22px" }}>{netAmount}</span>
+                                                <FaCaretUp />
+                                            </div>
+
+                                            <Modal
+                                                show={isModalOpen}
+                                                onClose={toggleModal}
+                                                size="lg"
+                                                position="bottom-center"
+                                                className="modal_amount"
+                                            // style={{ width: "50%" }}
+                                            >
+                                                <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                                                    <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                                                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        background: "white",
+                                                        padding: "20px",
+                                                        width: "100%",
+                                                        maxWidth: "600px",
+                                                        margin: "0 auto",
+                                                        lineHeight: "2.5rem"
+                                                    }}
+                                                >
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Total Amount : </label>
+                                                        <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                                    </div>
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Discount(%) : </label>
+                                                        <Input type="number"
+                                                            value={finalDiscount}
+                                                            onKeyPress={(e) => {
+                                                                if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
+                                                            onChange={(e) => {
+                                                                let newValue = e.target.value
+
+                                                                if (newValue > 100) {
+
+                                                                    setFinalDiscount(100)
+                                                                } else if (newValue >= 0) {
+                                                                    setFinalDiscount(newValue)
+
+                                                                }
+
+                                                            }}
+                                                            size="small"
+                                                            style={{
+                                                                width: "70px",
+                                                                background: "none",
+                                                                // borderBottom: "1px solid gray",
+                                                                outline: "none",
+                                                                justifyItems: "end",
+
+                                                            }} sx={{
+                                                                '& .MuiInputBase-root': {
+                                                                    height: '35px'
+                                                                },
+                                                                "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                            }} />
+
+                                                    </div>
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Other Amount : </label>
+                                                        <Input type="number" value={otherAmt}
+                                                            onKeyPress={(e) => {
+                                                                const value = e.target.value;
+                                                                const isMinusKey = e.key === '-';
+
+                                                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                                    e.preventDefault();
+                                                                }
+
+                                                                if (isMinusKey && value.includes('-')) {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
+                                                            onChange={handleOtherAmtChange}
+                                                            size="small"
+                                                            style={{
+                                                                width: "70px",
+                                                                background: "none",
+                                                                // borderBottom: "1px solid gray",
+                                                                justifyItems: "end",
+                                                                outline: "none",
+
+                                                            }} sx={{
+                                                                '& .MuiInputBase-root': {
+                                                                    height: '35px',
+                                                                },
+                                                                "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                            }} />
+                                                    </div>
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                        <label className="font-bold">Loyalty Points Redeem: </label>
+                                                        <span>{loyaltyVal || 0}</span>
+                                                    </div>
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                        <label className="font-bold">Discount Amount : </label>
+                                                        {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
+                                                    </div>
+
+                                                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Round Off : </label>
+                                                        <span >{!roundOff ? 0 : roundOff}</span>
+                                                    </div>
+
+                                                    <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                                                        <label className="font-bold">Net Amount: </label>
+                                                        <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
+                                                    </div>
+                                                </div>
+                                            </Modal>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            {/* {ItemSaleList.sales_item.length > 0 && (
                                 <div className="flex gap-10 justify-end mt-4 flex-wrap "  >
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <label className="font-bold">Total GST : </label>
@@ -2410,6 +2741,7 @@ const Addsale = () => {
 
                                                 }} />
                                         </div>
+
                                         <div className="">
                                             <Input type="number"
                                                 value={loyaltyVal || loyaltyPoints}
@@ -2465,7 +2797,8 @@ const Addsale = () => {
                                             <span style={{ fontWeight: 800, fontSize: '22px' }}>{netAmount}</span>
                                         </div>
                                     </div>
-                                </div>)}
+                                </div>
+                            )} */}
                         </div>
                     </div>
                 </div>
@@ -2495,7 +2828,7 @@ const Addsale = () => {
                                             value={doctorName}
                                             onChange={(e) => { setDoctorName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard "
                                         />
                                         <div className="mb-2" >
                                             <span className="label primary" >Clinic Name</span>
@@ -2507,7 +2840,7 @@ const Addsale = () => {
                                             value={clinic}
                                             onChange={(e) => { setClinic(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard "
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter") {
                                                     AddDoctorRecord();
@@ -2553,7 +2886,7 @@ const Addsale = () => {
                                             value={customerName}
                                             onChange={(e) => { setCustomerName(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard "
                                         />
                                         <div className="mb-2" >
                                             <span className="label primary" >Mobile Number</span>
@@ -2565,7 +2898,7 @@ const Addsale = () => {
                                             value={mobileNo}
                                             onChange={(e) => { setMobileNo(e.target.value); setUnsavedItems(true) }}
                                             style={{ minWidth: 340 }}
-                                            variant="outlined"
+                                            variant="standard "
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter") {
                                                     AddCustomerRecord();
@@ -2645,6 +2978,7 @@ const Addsale = () => {
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
+
                 <Dialog open={openAddItemPopUp}
                 >
                     <DialogTitle id="alert-dialog-title" className="secondary">
@@ -2661,7 +2995,8 @@ const Addsale = () => {
 
                             <div className="bg-white">
                                 <div
-                                    className="mainform bg-white rounded-lg" style={{ padding: "20px" }}
+                                    className="mainform bg-white rounded-lg"
+                                    style={{ padding: "20px" }}
                                 >
                                     <div className="row">
                                         <div className="fields add_new_item_divv">
@@ -2671,6 +3006,7 @@ const Addsale = () => {
                                                 inputRef={itemNameInputRef}
                                                 onKeyDown={handleKeyDown}
                                                 size="small"
+                                                sx={{ minWidth: "150px" }}
                                                 value={addItemName}
                                                 onChange={(e) => setAddItemName(e.target.value)}
 
@@ -2684,13 +3020,12 @@ const Addsale = () => {
                                                 onKeyDown={handleKeyDown}
                                                 type="number"
                                                 size="small"
+                                                sx={{ minWidth: "150px" }}
                                                 value={addBarcode}
                                                 onChange={(e) => setAddBarcode(Number(e.target.value))}
 
                                             />
                                         </div>
-                                    </div>
-                                    <div className="row">
                                         <div className="fields add_new_item_divv">
                                             <label className="label secondary">Unit</label>
                                             <TextField
@@ -2698,6 +3033,7 @@ const Addsale = () => {
                                                 type="number"
                                                 inputRef={unitInputRef}
                                                 size="small"
+                                                sx={{ minWidth: "150px" }}
                                                 value={addUnit}
                                                 onChange={(e) => setAddUnit(e.target.value)}
                                                 onKeyDown={(e) => {
@@ -2714,33 +3050,35 @@ const Addsale = () => {
                                                 disabled
                                                 id="outlined-number"
                                                 size="small"
+                                                sx={{ minWidth: "150px" }}
                                                 value={`1 * ${addUnit} `}
                                             />
                                         </div>
 
 
                                     </div>
-                                    <div className="row" style={{ justifyContent: "flex-end", paddingRight: "4px", paddingTop: "8%" }}>
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                backgroundColor: "#3f6212",
-                                                "&:hover": {
-                                                    backgroundColor: "#3f6212", // Keep the hover color same
-                                                },
-                                            }}
-                                            onClick={handleAddNewItemValidation}
-                                        >
-                                            <ControlPointIcon className="" />
-                                            Add New Item
-                                        </Button>
-                                    </div>
                                 </div>
 
                             </div>
                         </DialogContentText>
                     </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                "&:hover": {
+                                    backgroundColor: "var(--COLOR_UI_PHARMACY)", // Keep the hover color same
+                                },
+                            }}
+                            onClick={handleAddNewItemValidation}
 
+                        >
+                            <ControlPointIcon className="mr-2" />
+                            Add New Item
+                        </Button>
+
+                    </DialogActions>
                 </Dialog >
 
                 <div id="modal" value={IsDelete}

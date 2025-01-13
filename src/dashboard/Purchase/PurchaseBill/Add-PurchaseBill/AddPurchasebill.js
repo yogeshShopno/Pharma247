@@ -2338,7 +2338,7 @@ const AddPurchaseBill = () => {
                         style={{
                           fontWeight: 600,
                           fontSize: "22px",
-                          color: "#3f6212"
+                          color: "var(--COLOR_UI_PHARMACY)"
                         }}
                       >
                         {netAmount.toFixed(2)}
@@ -2511,9 +2511,9 @@ const AddPurchaseBill = () => {
                     <Button
                       variant="contained"
                       sx={{
-                        backgroundColor: "#3f6212",
+                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
                         "&:hover": {
-                          backgroundColor: "#3f6212",
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
                         },
                       }}
                       onClick={handleAddNewItem}

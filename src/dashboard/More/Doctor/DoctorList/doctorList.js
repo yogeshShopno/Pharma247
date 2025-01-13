@@ -731,7 +731,7 @@ const DoctorList = () => {
                       </span>
                     </div>
                     <div>
-                      <Button onClick={handleDownload} style={{ backgroundColor: "#3f6212", color: "white" }} className="downloadFile">
+                      <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className="downloadFile">
                         <CloudDownloadIcon className="mr-2" />
 
                         Sample File Download
@@ -926,7 +926,7 @@ const DoctorList = () => {
                     <Button
                       autoFocus
                       variant="contained"
-                      style={{ backgroundColor: "#3f6212", color: "white" }}
+                      style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                       onClick={AddDoctor}
                     >
                       {buttonLabel}

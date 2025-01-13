@@ -214,7 +214,7 @@ const CashManage = () => {
                                         size="small"
                                         onClick={CaseManageMentList}
                                         className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
-                                        style={{ background: "#3f6212" }}
+                                        style={{ background: "var(--COLOR_UI_PHARMACY)" }}
                                     >
                                         <FilterAltIcon className="text-white text-lg" />
                                         Filter

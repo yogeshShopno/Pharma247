@@ -22,6 +22,9 @@ import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
 import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
+import { IoMdClose } from "react-icons/io";
+import { FaCaretUp } from "react-icons/fa6";
+import { Modal } from "flowbite-react";
 
 const Salereturn = () => {
     const token = localStorage.getItem("token")
@@ -105,6 +108,12 @@ const Salereturn = () => {
     const [nextPath, setNextPath] = useState("");
     const [errors, setErrors] = useState({});
     const [uniqueId, setUniqueId] = useState([]);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     useEffect(() => {
         if (searchDoctor) {
@@ -660,10 +669,10 @@ const Salereturn = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
+                <div className="sale_rtn_add" style={{ padding: "0px 20px 0px", overflow: "auto" }} >
                     <div>
-                        <div className='py-3 gap-4' style={{ display: 'flex', alignItems: "center" }}>
-                            <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
+                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
                                 <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer", whiteSpace: "nowrap", flexWrap: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
@@ -673,6 +682,7 @@ const Salereturn = () => {
                                 <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
+                                    className="payment_divv"
                                     value={paymentType}
                                     sx={{ minWidth: '150px' }}
                                     onChange={(e) => { setPaymentType(e.target.value) }}
@@ -685,13 +695,13 @@ const Salereturn = () => {
                                     ))}
                                 </Select>
                                 {/* <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
+                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
 
                             </div>
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex">
-                                <div className="detail mt-1" >
+                                <div className="detail mt-1 custommedia" >
                                     <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
@@ -740,8 +750,8 @@ const Salereturn = () => {
 
                                     </div>
                                 </div>
-                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Customer Mobile / Name</span>
+                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name</span>
                                     <Autocomplete
                                         value={customer}
                                         onChange={handleCustomerOption}
@@ -755,18 +765,26 @@ const Salereturn = () => {
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
                                         loading={isLoading}
                                         sx={{
-                                            width: '10%',
-                                            minWidth: '400px',
+                                            width: '100%',
+                                            // minWidth: '400px',
                                             '& .MuiInputBase-root': {
-
-                                                // fontSize: '1.10rem',
+                                                // height: 20,
+                                                fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '10px 14px',
+                                                padding: '8px 8px',
                                             },
-                                            '@media (max-width:600px)': {
-                                                minWidth: '300px',
-                                            },
+
+                                            // '& .MuiInputBase-root': {
+
+                                            // fontSize: '1.10rem',
+                                            // },
+                                            // '& .MuiAutocomplete-inputRoot': {
+                                            // padding: '10px 14px',
+                                            // },
+                                            // '@media (max-width:600px)': {
+                                            //     minWidth: '300px',
+                                            // },
                                         }}
 
                                         renderOption={(props, option) => (
@@ -791,7 +809,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    // style: { height: 55 },
+                                                    style: { height: 53 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -804,8 +822,8 @@ const Salereturn = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor </span>
+                                <div className="detail custommedia" style={{ display: 'flex', width: '100%' }}>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
                                         onChange={handleDoctorOption}
@@ -821,7 +839,7 @@ const Salereturn = () => {
                                         loading={isLoading}
                                         sx={{
                                             width: '100%',
-                                            minWidth: '400px',
+                                            // minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 // fontSize: '1.10rem',
@@ -855,7 +873,7 @@ const Salereturn = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    // style: { height: 45 },
+                                                    style: { height: 53 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -868,9 +886,9 @@ const Salereturn = () => {
                                     />
                                 </div>
 
-                                <div className='flex items-center gap-4'>
-                                    <div className='flex gap-8 pb-4'>
-                                        <div >
+                                <div className='flex items-center sale_dates_divv_main '>
+                                    <div className='flex pb-4 sale_dates_divv'>
+                                        <div style={{ padding: "0 5px", width: '100%' }}>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date</span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
@@ -880,14 +898,19 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{ width: '200px' }}
+                                                    sx={{
+                                                        width: "100%",
+                                                        "& .MuiInputBase-root": {
+                                                            height: "53px", // Set height here
+                                                        },
+                                                    }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
 
-                                        <div>
+                                        <div style={{ padding: "0 5px", width: '100%' }}>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs} >
                                                 <DatePicker
                                                     value={endDate}
                                                     onChange={(newDate) => {
@@ -895,26 +918,33 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{ width: '200px' }}
+                                                    sx={{
+                                                        width: "100%",
+                                                        "& .MuiInputBase-root": {
+                                                            height: "53px", // Set height here
+                                                        },
+                                                    }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
                                     </div>
-
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        style={{
-                                            minHeight: '41px',
-                                            alignItems: "center",
-                                            height: '41px',
-                                            marginTop: "7px",
-                                            background: "var(--color1)"
-                                        }}
-                                        onClick={validfilter}
-                                    >
-                                        <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
-                                    </Button>
+                                    <div className="mt-2 main_fltr_btn" style={{ padding: "0 5px" }}>
+                                        <Button
+                                            variant="contained"
+                                            className="gap-2 sale_dates_divv_btn filter_btn_add"
+                                            size="small"
+                                            style={{
+                                                // minHeight: '41px',
+                                                alignItems: "center",
+                                                height: '53px',
+                                                // marginTop: "7px",
+                                                background: "var(--color1)"
+                                            }}
+                                            onClick={validfilter}
+                                        >
+                                            <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -940,7 +970,7 @@ const Salereturn = () => {
                                 <div className="scroll-two">
                                     <table className="saleTable ">
                                         <thead>
-                                            <tr>
+                                            <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                                                 <th className="w-1/4 " style={{ textAlign: "center" }}>Item Name</th>
                                                 <th >Unit </th>
                                                 <th >Batch </th>
@@ -978,7 +1008,7 @@ const Salereturn = () => {
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
-                                                            sx={{ width: '90px', textAlign: 'right', }}
+                                                            sx={{ width: '130px', textAlign: 'right', }}
                                                             onChange={(e) => { setUnit(e.target.value) }}
 
                                                             InputProps={{
@@ -992,7 +1022,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-number"
                                                             type="string"
-                                                            sx={{ width: '110px' }}
+                                                            sx={{ width: '130px' }}
                                                             size="small"
                                                             disabled
                                                             value={batch}
@@ -1009,7 +1039,7 @@ const Salereturn = () => {
                                                             id="outlined-number"
                                                             disabled
                                                             size="small"
-                                                            sx={{ width: '100px' }}
+                                                            sx={{ width: '130px' }}
                                                             inputRef={inputRef3}
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
@@ -1026,7 +1056,7 @@ const Salereturn = () => {
                                                             disabled
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '100px' }}
+                                                            sx={{ width: '130px' }}
                                                             size="small"
                                                             inputRef={inputRef4}
                                                             onKeyDown={handleKeyDown}
@@ -1043,7 +1073,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '120px' }}
+                                                            sx={{ width: '130px' }}
                                                             size="small"
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
@@ -1064,7 +1094,7 @@ const Salereturn = () => {
                                                             size="small"
                                                             inputRef={inputRef8}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: '80px' }}
+                                                            sx={{ width: '130px' }}
                                                             value={gst}
                                                             onChange={(e) => { setGst(e.target.value) }}
                                                             InputProps={{
@@ -1079,7 +1109,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-number"
                                                             type="number"
-                                                            sx={{ width: '70px' }}
+                                                            sx={{ width: '130px' }}
                                                             size="small"
                                                             inputRef={inputRef5}
                                                             onKeyDown={handleKeyDown}
@@ -1117,7 +1147,7 @@ const Salereturn = () => {
                                                             inputRef={inputRef9}
                                                             onKeyDown={handleKeyDown}
                                                             disabled
-                                                            sx={{ width: '100px' }}
+                                                            sx={{ width: '130px' }}
                                                             value={loc}
                                                             onChange={(e) => { setLoc(e.target.value) }}
                                                             InputProps={{
@@ -1134,7 +1164,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-basic"
                                                             size="small"
-                                                            sx={{ width: "90%", marginLeft: "20px", marginBlock: "10px" }}
+                                                            sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
                                                             value={search}
                                                             onChange={handleInputChange}
                                                             variant="outlined"
@@ -1148,24 +1178,17 @@ const Salereturn = () => {
                                                                 type: "search",
                                                             }}
                                                         />
-                                                    </td>                                                    <td></td>
-                                                    <td></td>
-                                                    {/* <td></td> */}
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    </td>
+                                                    <td colSpan={8}></td>
                                                     <td style={{ textAlign: "right" }} >
-                                                        <Button variant="contained" color="success" marginRight="20px" onClick={editReturnItem}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                                        <Button variant="contained" marginRight="20px" onClick={editReturnItem} style={{ backgroundColor: "var(--color1)" }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                                     </td>
                                                 </tr>
                                                 {saleItems.sales_item.length > 0 ?
                                                     <>
                                                         {saleItems?.sales_item?.map(item => (
                                                             <tr key={item.id} className="item-List border-b border-gray-400 "
-                                                                onClick={(event) => handleEditClick(item, event.target)}                                                            >
+                                                                onClick={(event) => handleEditClick(item, event.target)} style={{ whiteSpace: 'nowrap' }}                        >
                                                                 <td style={{
                                                                     display: 'flex', gap: '8px', alignItems: "center"
                                                                 }}>
@@ -1216,7 +1239,8 @@ const Salereturn = () => {
                                     </table>
                                 </div>
                             </div>
-                            {saleItems?.sales_item?.length > 0 && (
+
+                            {/* {saleItems?.sales_item?.length > 0 && (
                                 <div className="flex gap-10 justify-end mt-4 flex-wrap mr-5"  >
                                     <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                         <div>
@@ -1262,14 +1286,7 @@ const Salereturn = () => {
                                         <div>
                                             <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                                         </div>
-                                        {/* <div>
-                                            <TextField
-                 autoComplete="off" value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px'
-                                                },
-                                            }} />
-                                        </div> */}
+                                      
                                         <div>
                                             <Input
                                                 value={otherAmt}
@@ -1321,7 +1338,129 @@ const Salereturn = () => {
                                         </div>
                                     </div>
                                 </div>
+                            )} */}
+
+                            {saleItems?.sales_item?.length > 0 && (
+                                <div className="sale_filtr_add" style={{ background: 'var(--color1)', color: 'white', display: "flex", position: 'fixed', width: '100%', bottom: '0', left: '0', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px' }}>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total GST : </label>
+
+                                            <span style={{ fontWeight: 600 }}>{totalGst || 0}</span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Base : </label>
+                                            <span style={{ fontWeight: 600 }}>{totalBase}</span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Profit : </label>
+                                            <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)} %) </span>
+                                        </div>
+                                        <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                                            <label className="font-bold">Total Net Rate : </label>
+                                            <span style={{ fontWeight: 600 }}>₹ {totalNetRate} </span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                            <label className="font-bold">Net Amount : </label>
+                                            <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
+                                            <FaCaretUp />
+
+                                        </div>
+
+                                        <Modal
+                                            show={isModalOpen}
+                                            onClose={toggleModal}
+                                            size="lg"
+                                            position="bottom-center"
+                                            className="modal_amount"
+                                        // style={{ width: "50%" }}
+                                        >
+                                            <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                                                <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                                                <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                                            </div>
+                                            <div
+                                                style={{
+                                                    background: "white",
+                                                    padding: "20px",
+                                                    width: "100%",
+                                                    maxWidth: "600px",
+                                                    margin: "0 auto",
+                                                    lineHeight: "2.5rem"
+                                                }}
+                                            >
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                                                    <label className="font-bold">Total Amount : </label>
+                                                    <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                                                    <label className="font-bold">Other Amount : </label>
+                                                    <Input
+                                                        value={otherAmt}
+                                                        onKeyPress={(e) => {
+                                                            const value = e.target.value;
+                                                            const isMinusKey = e.key === '-';
+
+                                                            // Allow Backspace and numeric keys
+                                                            if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Allow only one '-' at the beginning of the input value
+                                                            if (isMinusKey && value.includes('-')) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onChange={(e) => {
+                                                            setUnsavedItems(true);
+                                                            const x = e.target.value
+                                                            const y = (x)
+
+                                                            if (-y >= totalAmount) {
+                                                                setOtherAmt((-totalAmount))
+                                                            } else {
+                                                                setOtherAmt(y)
+                                                            }
+                                                        }}
+                                                        size="small"
+                                                        style={{
+                                                            width: "70px",
+                                                            background: "none",
+                                                            // borderBottom: "1px solid gray",
+                                                            justifyItems: "end",
+                                                            outline: "none",
+
+                                                        }} sx={{
+                                                            '& .MuiInputBase-root': {
+                                                                height: '35px',
+                                                            },
+                                                            "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                        }} />
+                                                </div>
+
+                                                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                                                    <label className="font-bold">Round Off : </label>
+                                                    <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
+                                                </div>
+
+                                                <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                                                    <label className="font-bold">Net Amount: </label>
+                                                    <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
+                                                </div>
+                                            </div>
+                                        </Modal>
+                                    </div>
+                                </div>
+
                             )}
+
                             {/* Delete PopUP */}
                             <div id="modal" value={IsDelete}
                                 className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"

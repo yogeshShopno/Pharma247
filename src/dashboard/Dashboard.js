@@ -325,7 +325,7 @@ const Dashboard = () => {
                             <div>Customer</div>
                             <div>Bill Amount</div>
                           </div>
-                          <div style={{ minHeight: "210px" }}>
+                          <div style={{ minHeight: "170px" }}>
                             {customer.map((item) =>
                               <div className='p-2 border-b border-blue-200 flex justify-between items-center' >
                                 <div className='flex' >

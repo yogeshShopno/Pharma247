@@ -539,7 +539,7 @@ const StaffMember = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button     style={{
-                                            background: "#3f6212",
+                                            background: "var(--COLOR_UI_PHARMACY)",
                                             color: "white",
                                         }} autoFocus variant="contained" color="success" onClick={validateForm}>
                         {buttonLabel}

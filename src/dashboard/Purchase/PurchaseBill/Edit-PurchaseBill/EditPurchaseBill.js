@@ -1872,7 +1872,7 @@ const EditPurchaseBill = () => {
                           style={{
                             fontWeight: 600,
                             fontSize: "22px",
-                            color: "#3f6212"
+                            color: "var(--COLOR_UI_PHARMACY)"
 
                           }}
                         >

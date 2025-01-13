@@ -823,7 +823,7 @@ const InventoryList = () => {
               <Box>
                 <h1
                   className="text-2xl flex items-center justify-start p-2"
-                  style={{ color: "#3f6212" }}
+                  style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                 >
                   Inventory
                   <BsLightbulbFill className="ml-4 secondary hover-yellow" />
@@ -832,7 +832,7 @@ const InventoryList = () => {
               </Box>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }} sx={{ my: 0 }}>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }} sx={{ my: 0 }}>
                     Items
                   </Typography>
                 </AccordionSummary>
@@ -845,12 +845,12 @@ const InventoryList = () => {
                         name="radio-buttons-group"
                         value={selectedOption}
                         sx={{
-                          color: "#3f6212", // Apply color to labels
+                          color: "var(--COLOR_UI_PHARMACY)", // Apply color to labels
                           '& .MuiRadio-root': {
                             color: "var(--color2)", // Unchecked radio button color
                           },
                           '& .Mui-checked': {
-                            color: "#3f6212", // Checked radio button color
+                            color: "var(--COLOR_UI_PHARMACY)", // Checked radio button color
                           },
                         }}
                         onChange={(e) => setSelectedOption(e.target.value)}
@@ -887,7 +887,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Category</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Category</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -900,7 +900,7 @@ const InventoryList = () => {
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
                                 '&.Mui-checked': {
-                                  color: "#3f6212", // Color for checked checkboxes
+                                  color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
 
@@ -920,7 +920,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
                     Packging Type
                   </Typography>
                 </AccordionSummary>
@@ -935,7 +935,7 @@ const InventoryList = () => {
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
                                 '&.Mui-checked': {
-                                  color: "#3f6212", // Color for checked checkboxes
+                                  color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
                               checked={selectedPackgingIds.includes(packging.id)}
@@ -954,7 +954,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Expiry</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Expiry</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -971,7 +971,7 @@ const InventoryList = () => {
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
                                   '&.Mui-checked': {
-                                    color: "#3f6212", // Color for checked checkboxes
+                                    color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
                                 checked={selectedOptionExpiry.includes("expired")}
@@ -987,7 +987,7 @@ const InventoryList = () => {
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
                                   '&.Mui-checked': {
-                                    color: "#3f6212", // Color for checked checkboxes
+                                    color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
                                 checked={selectedOptionExpiry.includes(
@@ -1004,7 +1004,7 @@ const InventoryList = () => {
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
                                   '&.Mui-checked': {
-                                    color: "#3f6212", // Color for checked checkboxes
+                                    color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
                                 checked={selectedOptionExpiry.includes(
@@ -1021,7 +1021,7 @@ const InventoryList = () => {
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
                                   '&.Mui-checked': {
-                                    color: "#3f6212", // Color for checked checkboxes
+                                    color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
                                 checked={selectedOptionExpiry.includes(
@@ -1040,7 +1040,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Stock</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Stock</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1050,12 +1050,12 @@ const InventoryList = () => {
                         defaultValue="items"
                         name="radio-buttons-group"
                         sx={{
-                          color: "#3f6212", // Apply color to labels
+                          color: "var(--COLOR_UI_PHARMACY)", // Apply color to labels
                           '& .MuiRadio-root': {
                             color: "#628a2f", // Unchecked radio button color
                           },
                           '& .Mui-checked': {
-                            color: "#3f6212", // Checked radio button color
+                            color: "var(--COLOR_UI_PHARMACY)", // Checked radio button color
                           },
                         }}
                         value={selectedOptionStock}
@@ -1088,7 +1088,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Company</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Company</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1124,7 +1124,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Drug Group</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Drug Group</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1160,7 +1160,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>GST</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>GST</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1173,7 +1173,7 @@ const InventoryList = () => {
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
                                 '&.Mui-checked': {
-                                  color: "#3f6212", // Color for checked checkboxes
+                                  color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
                               checked={selectedGstIds.includes(gst.id)}
@@ -1192,7 +1192,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Location</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Location</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1229,7 +1229,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>HSN Code</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>HSN Code</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1249,7 +1249,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>Margin%</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Margin%</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1283,7 +1283,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>MRP</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>MRP</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1317,7 +1317,7 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "#3f6212" }}>PTR</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>PTR</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1372,7 +1372,7 @@ const InventoryList = () => {
               <Button
                 variant="contained"
                 style={{
-                  background: "#3f6212",
+                  background: "var(--COLOR_UI_PHARMACY)",
                   width: "50%",
                   color: "white",
                   size: "large",
@@ -2074,7 +2074,7 @@ const InventoryList = () => {
                           sx={{
                             color: "#628a2f", // Color for unchecked checkboxes
                             '&.Mui-checked': {
-                              color: "#3f6212", // Color for checked checkboxes
+                              color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                             },
                           }}
                           checked={selectedItems.length === data.length}
@@ -2135,11 +2135,11 @@ const InventoryList = () => {
                     {data.map((item, index) => (
                       <tr 
                         key={index}
-                        style={{
-                          backgroundColor:
-                            selectedIndex === index ? "#ceecfd" : "transparent",
-                          color: selectedIndex === index ? "black" : "inherit",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     selectedIndex === index ? "#ceecfd" : "transparent",
+                        //   color: selectedIndex === index ? "black" : "inherit",
+                        // }}
                       >
                         <td
                           style={{ borderRadius: "10px 0 0 10px" }}
@@ -2153,7 +2153,7 @@ const InventoryList = () => {
                             sx={{
                               color: "#628a2f", // Color for unchecked checkboxes
                               '&.Mui-checked': {
-                                color: "#3f6212", // Color for checked checkboxes
+                                color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                               },
                             }}
 
@@ -2490,7 +2490,7 @@ const InventoryList = () => {
               onClick={validateForm}
               style={{
                 color: "white",
-                background: "#3f6212",
+                background: "var(--COLOR_UI_PHARMACY)",
                 outline: "none",
                 boxShadow: "none",
               }}
@@ -2588,7 +2588,7 @@ const InventoryList = () => {
               autoFocus
               variant="contained"
               className="p-5"
-              style={{ backgroundColor: "#3f6212", color: "white" }}
+              style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
               onClick={validateBulkForm}
             >
               Saved
@@ -2620,7 +2620,7 @@ const InventoryList = () => {
         </DialogContent>
         <DialogActions>
           <Button className="primary-bg"
-            style={{ backgroundColor: "#3f6212" }}
+            style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }}
 
             autoFocus variant="contained" onClick={validateBulkOrder}>
             Yes

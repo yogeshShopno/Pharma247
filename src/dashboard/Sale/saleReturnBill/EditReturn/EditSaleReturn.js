@@ -711,7 +711,7 @@ const EditSaleReturn = () => {
                                                     {...params}
                                                     value={customer}
 
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     placeholder="Search by Mobile, Name"
                                                     InputProps={{
                                                         ...params.InputProps,
@@ -768,7 +768,7 @@ const EditSaleReturn = () => {
                                                 '& .MuiAutocomplete-inputRoot': {
                                                     padding: '10px 14px',
                                                 },
-                                            }} variant="standard" />
+                                            }} variant="outlined" />
                                     </div> */}
 
                                     <div className="detail custommedia" style={{ display: 'flex', width: '100%' }}>
@@ -806,7 +806,7 @@ const EditSaleReturn = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     {...params}
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     placeholder="Search by DR. Name"
                                                     InputProps={{
                                                         ...params.InputProps,
@@ -1226,7 +1226,7 @@ const EditSaleReturn = () => {
                                         <div style={{ display: 'flex', padding: '0 20px' ,whiteSpace:'noWrap'}}>
                                             <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                                 <label className="font-bold">Net Amount : </label>
-                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}
+                                                <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}
                                                     <FaCaretUp />
                                                 </span>
 

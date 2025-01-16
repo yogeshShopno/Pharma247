@@ -1953,7 +1953,7 @@ const Addsale = () => {
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid lightgray' ,background: 'rgba(63, 98, 18, 0.09)'}}>
+                                            <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                                                 <th className="w-1/4">Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch</th>
@@ -2508,10 +2508,11 @@ const Addsale = () => {
                                                 <label className="font-bold">Round Off : </label>
                                                 <span >{!roundOff ? 0 : roundOff}</span>
                                             </div> */}
-                                            <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                                                <label className="font-bold">Net Amount: </label>
-                                                <span style={{ fontWeight: 800, fontSize: "22px" }}>{netAmount}</span>
-                                                <FaCaretUp />
+                                            <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                                <label className="font-bold">Net Amount : </label>
+                                                <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{netAmount}
+                                                    <FaCaretUp />
+                                                </span>
                                             </div>
 
                                             <Modal
@@ -3140,7 +3141,7 @@ const Addsale = () => {
                     <div className="flex gap-5 justify-center">
                         <button
                             type="submit"
-                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                             onClick={handleLeavePage}
                         >
                             Yes

@@ -1230,7 +1230,7 @@ const EditSaleBill = () => {
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
-                        <tr style={{ borderBottom: '1px solid lightgray',background: 'rgba(63, 98, 18, 0.09)' }}>
+                        <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                           <th className="w-1/4">Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
@@ -1878,21 +1878,21 @@ const EditSaleBill = () => {
               </div> */}
             </div>
             <div className="" style={{ background: 'var(--color1)', display: "flex", flexDirection: 'column', position: 'fixed', width: '100%', bottom: '0', left: '0' }}>
-              <div className="" style={{ display: 'flex', gap: '40px', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px', color: 'white' }}>
-                <div className="gap-2" style={{ display: 'flex' }}>
+              <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px', color: 'white' }}>
+                <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                   <label className="font-bold">Total GST : </label>
 
                   <span style={{ fontWeight: 600 }}>₹{totalgst} </span>
                 </div>
-                <div className="gap-2" style={{ display: 'flex' }}>
+                <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                   <label className="font-bold">Total Base : </label>
                   <span style={{ fontWeight: 600 }}> {totalBase} </span>
                 </div>
-                <div className="gap-2" style={{ display: 'flex' }}>
+                <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                   <label className="font-bold">Profit : </label>
                   <span style={{ fontWeight: 600 }}>₹{marginNetProfit} ({Number(margin).toFixed(2)}%) </span>
                 </div>
-                <div className="gap-2" style={{ display: 'flex' }}>
+                <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                   <label className="font-bold">Total Net Rate : </label>
                   <span style={{ fontWeight: 600 }}>₹{netRateAmount} </span>
 
@@ -1931,7 +1931,7 @@ const EditSaleBill = () => {
                           setLoyaltyVal(0);
                         }
                       }}
-                      
+
                       onKeyPress={(e) => {
                         const value = e.target.value;
                         const isMinusKey = e.key === '-';
@@ -2104,17 +2104,12 @@ const EditSaleBill = () => {
                   <label className="font-bold">Round Off : </label>
                   <span >{!roundOff ? 0 : roundOff}</span>
                 </div> */}
-                  <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'white' }}>
+                  <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer",color:'white' }}>
                     <label className="font-bold">Net Amount : </label>
-                    <span
-                      style={{
-                        fontWeight: 800,
-                        fontSize: "22px"
-                      }}
-                    >
+                    <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
                       {Number(netAmount).toFixed(2)}
+                      <FaCaretUp />
                     </span>
-                    <FaCaretUp />
 
                   </div>
 
@@ -2331,7 +2326,7 @@ const EditSaleBill = () => {
           <div className="flex gap-5 justify-center">
             <button
               type="submit"
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
               onClick={handleLeavePage}
             >
               Yes

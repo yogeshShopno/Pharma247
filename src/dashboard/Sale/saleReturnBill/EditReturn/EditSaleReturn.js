@@ -1223,11 +1223,12 @@ const EditSaleReturn = () => {
                                             </div>
                                         </div>
 
-                                        <div style={{ display: 'flex' }}>
-                                            <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                        <div style={{ display: 'flex', padding: '0 20px' ,whiteSpace:'noWrap'}}>
+                                            <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                                 <label className="font-bold">Net Amount : </label>
-                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
-                                                <FaCaretUp />
+                                                <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}
+                                                    <FaCaretUp />
+                                                </span>
 
                                             </div>
 
@@ -1379,7 +1380,7 @@ const EditSaleReturn = () => {
                             <div className="flex gap-5 justify-center">
                                 <button
                                     type="submit"
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                                     onClick={handleLeavePage}>
                                     Yes
                                 </button>

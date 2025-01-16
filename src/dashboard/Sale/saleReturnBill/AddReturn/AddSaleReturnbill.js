@@ -799,7 +799,7 @@ const Salereturn = () => {
                                             <TextField
                                                 autoComplete="off"
                                                 {...params}
-                                                variant="standard"
+                                                variant="outlined"
                                                 placeholder="Search by Mobile, Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -863,7 +863,7 @@ const Salereturn = () => {
                                             <TextField
                                                 autoComplete="off"
                                                 {...params}
-                                                variant="standard"
+                                                variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
                                                 InputProps={{
                                                     ...params.InputProps,
@@ -1362,12 +1362,12 @@ const Salereturn = () => {
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <div className="gap-2 invoice_total_fld" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                    <div style={{ padding: '0 20px',whiteSpace:'noWrap' }}>
+                                        <div className="gap-2" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                             <label className="font-bold">Net Amount : </label>
-                                            <span style={{ fontWeight: 800, fontSize: '22px' }}>{!netAmount ? 0 : netAmount}</span>
-                                            <FaCaretUp />
-
+                                            <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}
+                                                <FaCaretUp />
+                                            </span>
                                         </div>
 
                                         <Modal
@@ -1521,7 +1521,7 @@ const Salereturn = () => {
                     <div className="flex gap-5 justify-center">
                         <button
                             type="submit"
-                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                            className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                             onClick={handleLeavePage}
                         >
                             Yes

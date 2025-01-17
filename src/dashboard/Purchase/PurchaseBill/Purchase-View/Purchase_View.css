@@ -376,6 +376,7 @@
     padding: 0;
   }
 }
+
 @media (min-width: 769px) and (max-width: 1024px) {
   .modal_amount div[role="dialog"] {
     max-width: 60%;
@@ -395,4 +396,20 @@
 .invoice_total_fld {
   max-width: 200px;
   min-width: 200px;
+}
+
+@media (max-width: 375px) {
+  .main_header_txt {
+    flex-direction: column;
+  }
+
+  .order_list_btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 425px) {
+  .place_order_dlg{
+    width: 100%;
+  }
 }

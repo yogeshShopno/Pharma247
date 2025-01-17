@@ -20,11 +20,11 @@ const OrderList = () => {
 
     const rowsPerPage = 10;
     const OnlineOrdercolumns = [
-        { id: 'company_name', label: 'Company Name', minWidth: 170, height: 100 },
-        { id: 'iteam_name', label: 'Item Name', minWidth: 100 },
-        { id: 'y_n', label: 'Status', minWidth: 100 },
-        { id: 'supplier_name', label: 'Last Purchase', minWidth: 100 },
-        { id: 'stock', label: 'Stock', minWidth: 100 }
+        { id: 'company_name', label: 'Company Name', minWidth: 150, height: 100 },
+        { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
+        { id: 'y_n', label: 'Status', minWidth: 150 },
+        { id: 'supplier_name', label: 'Last Purchase', minWidth: 150 },
+        { id: 'stock', label: 'Stock', minWidth: 150 }
     ];
     const LastPurchaseListcolumns = [
         { id: 'supplier_name', label: 'Distributor Name', minWidth: 170, height: 100 },
@@ -307,13 +307,13 @@ const OrderList = () => {
                     <Loader />
                 </div> :
                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
+                        <div className='py-3 main_header_txt' style={{ display: 'flex', gap: '4px' }}  >
                             <div style={{ display: 'flex', gap: '7px', }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "100px" }}  >Order List</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
-                            <div className="headerList">
-                                <Button variant="contained" style={{ display: 'flex', gap: '4px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="" /> Place Order</Button>
+                            <div className="headerList ">
+                                <Button variant="contained" className="order_list_btn" style={{ display: 'flex', gap: '4px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="" /> Place Order</Button>
                             </div>
                         </div>
 
@@ -579,7 +579,7 @@ const OrderList = () => {
                             </DialogContent>
                         </Dialog>
 
-                        <Dialog open={openAddPopUpPlaceOrder}>
+                        <Dialog className="place_order_dlg" open={openAddPopUpPlaceOrder}>
                             <DialogTitle id="alert-dialog-title" className="primary">
                                 Place Order
                             </DialogTitle>
@@ -593,14 +593,14 @@ const OrderList = () => {
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     <div className="flex flex-col gap-5">
-                                        <FormControl size="small">
+                                        <FormControl size="small" style={{width:'100%'}}>
                                             <InputLabel id="demo-select-small-label">Item Name</InputLabel>
                                             <Select
                                                 labelId="demo-select-small-label"
                                                 id="demo-select-small"
                                                 multiple
                                                 value={items}
-                                                sx={{ minWidth: '250px' }}
+                                                sx={{ width: '100%' }}
                                                 onChange={handleChangeFilter}
                                                 renderValue={renderValue}
                                                 label="Item Name"
@@ -642,13 +642,13 @@ const OrderList = () => {
                                         </FormControl>
 
 
-                                        <FormControl size="small">
+                                        <FormControl size="small" style={{width:'100%'}}>
                                             {/* <InputLabel id="demo-select-small-label">Status</InputLabel> */}
                                             <Select
                                                 labelId="demo-select-small-label"
                                                 id="demo-select-small-label"
                                                 value={statusName}
-                                                sx={{ minWidth: '250px' }}
+                                                sx={{ width: '100%' }}
                                                 onChange={(e) => setStatusName(e.target.value)}
                                                 size="small"
                                                 // label="Status"

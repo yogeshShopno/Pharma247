@@ -52,6 +52,7 @@ const EditSaleReturn = () => {
     const [tempQty, setTempQty] = useState('')
     const [selectedItem, setSelectedItem] = useState([]);
     const [randomNum, setRandomNum] = useState('')
+    const [isEditMode, setIsEditMode] = useState(false);
 
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
@@ -149,23 +150,23 @@ const EditSaleReturn = () => {
         BankList();
     }, []);
 
-    useEffect(() => {
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.iteam_name)
-            setSearchItemID(selectedEditItem.item_id)
-            setUnit(selectedEditItem.unit);
-            setBatch(selectedEditItem.batch);
-            setExpiryDate(selectedEditItem.exp);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setBase(selectedEditItem.base);
-            setOrder(selectedEditItem.order)
-            setGst(selectedEditItem.gst);
-            setLoc(selectedEditItem.location);
-            setItemAmount(selectedEditItem.net_rate);
-        }
+    // useEffect(() => {
+    //     if (selectedEditItem) {
+    //         setSearchItem(selectedEditItem.iteam_name)
+    //         setSearchItemID(selectedEditItem.item_id)
+    //         setUnit(selectedEditItem.unit);
+    //         setBatch(selectedEditItem.batch);
+    //         setExpiryDate(selectedEditItem.exp);
+    //         setMRP(selectedEditItem.mrp);
+    //         setQty(selectedEditItem.qty);
+    //         setBase(selectedEditItem.base);
+    //         setOrder(selectedEditItem.order)
+    //         setGst(selectedEditItem.gst);
+    //         setLoc(selectedEditItem.location);
+    //         setItemAmount(selectedEditItem.net_rate);
+    //     }
 
-    }, [selectedEditItem]);
+    // }, [selectedEditItem]);
 
     const BankList = async () => {
         let data = new FormData()
@@ -384,27 +385,34 @@ const EditSaleReturn = () => {
         };
 
         try {
-            await axios.post("sales-return-edit-iteam-second?", data, {
-                params: params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
 
+            if (isEditMode) {
+                // If in edit mode, include item_id with the request
+                await axios.post("sales-return-edit-iteam-second?", data, {
+                    params: params,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                // Fetch updated sale bill details
                 saleBillGetBySaleID();
-                setSearchItem(null)
-                setUnit('')
-                setBatch('')
-                setExpiryDate('');
-                setMRP('')
-                setQty(0)
-                setBase('')
-                setGst('')
-                setBatch('')
-                setLoc('')
-            })
+            }
+            setSearchItem(null)
+            setUnit('')
+            setBatch('')
+            setExpiryDate('');
+            setMRP('')
+            setQty(0)
+            setBase('')
+            setGst('')
+            setBatch('')
+            setLoc('')
+            setIsEditMode(false);
 
         }
+
+
         catch (e) {
         }
     }
@@ -561,8 +569,24 @@ const EditSaleReturn = () => {
         }
 
         setSelectedEditItem(item);
+        setIsEditMode(true);
+
         setSelectedEditItemId(item.id);
 
+        if (selectedEditItem) {
+            setSearchItem(selectedEditItem.iteam_name)
+            setSearchItemID(selectedEditItem.item_id)
+            setUnit(selectedEditItem.unit);
+            setBatch(selectedEditItem.batch);
+            setExpiryDate(selectedEditItem.exp);
+            setMRP(selectedEditItem.mrp);
+            setQty(item.qty);
+            setBase(item.base);
+            setOrder(selectedEditItem.order)
+            setGst(selectedEditItem.gst);
+            setLoc(selectedEditItem.location);
+            setItemAmount(selectedEditItem.net_rate);
+        }
     };
 
     const handleQty = (value) => {

@@ -372,7 +372,7 @@ const Company = () => {
                                             value={companyName}
                                             onChange={(e) => { setCompanyName(e.target.value) }}
                                             style={{ minWidth: 450 }}
-                                            variant="standard"
+                                            variant="outlined"
                                         /> */}
                                         <Autocomplete
                                             value={companyName}

@@ -231,7 +231,7 @@ const PurchasePaymentSummary = () => {
                                                     sx={{ minWidth: '300px' }}
                                                     size="small"
                                                     onChange={(e) => setSearchDistributor(e.target.value)}
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     placeholder="Search by Bill No"
                                                     InputProps={{
                                                         endAdornment: (

@@ -106,7 +106,11 @@ const CustomerList = () => {
                     saveAs(blob, 'customers.csv');
                 }
 
-                setTableData(response.data.data)
+                setTableData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 setIsLoading(false);
 
             })
@@ -430,7 +434,11 @@ const CustomerList = () => {
                 },
             }
             ).then((response) => {
-                setTableData(response.data.data)
+                setTableData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 setIsLoading(false);
 
             })
@@ -589,7 +597,7 @@ sx={{
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
                                                     <TextField
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         autoComplete="off"
                                                         label={`Search ${column.label}`}
                                                         id="filled-basic"
@@ -825,7 +833,7 @@ sx={{
                                                         value={customer}
                                                         onChange={(e) => { setCustomer(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                     {errors.customer && <span style={{ color: 'red', fontSize: '12px' }}>{errors.customer}</span>}
                                                 </div>
@@ -856,7 +864,7 @@ sx={{
                                                         value={emailId}
                                                         onChange={(e) => { setEmailId(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -869,7 +877,7 @@ sx={{
                                                         value={amount}
                                                         onChange={(e) => { setAmount(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                             </div>
@@ -884,7 +892,7 @@ sx={{
                                                         value={area}
                                                         onChange={(e) => { setArea(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -896,7 +904,7 @@ sx={{
                                                         value={city}
                                                         onChange={(e) => { setCity(e.target.value) }}
                                                         style={{ minWidth: 250 }}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                             </div>
@@ -912,7 +920,7 @@ sx={{
                                                         onChange={(e) => { setAddress(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
@@ -925,7 +933,7 @@ sx={{
                                                         onChange={(e) => { setState(e.target.value) }}
                                                         style={{ minWidth: 250 }}
 
-                                                        variant="standard"
+                                                        variant="outlined"
                                                     />
                                                 </div>
                                             </div>

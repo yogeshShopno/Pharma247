@@ -269,6 +269,10 @@ const Addsale = () => {
                     );
                     // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                     setIsLoading(false);
                 } catch (error) {
                     setIsLoading(false);
@@ -504,7 +508,6 @@ const Addsale = () => {
             );
             const customers = response.data.data || [];
             setCustomerDetails(customers);
-            setIsLoading(false);
 
             // Set the first customer as default if available
             if (customers.length > 0) {
@@ -513,6 +516,12 @@ const Addsale = () => {
                 setPreviousLoyaltyPoints(firstCustomer.roylti_point || 0);
                 setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
             }
+
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
+            setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -528,7 +537,11 @@ const Addsale = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);

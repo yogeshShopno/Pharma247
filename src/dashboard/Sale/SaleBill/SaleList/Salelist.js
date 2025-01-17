@@ -20,14 +20,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import DatePicker from 'react-datepicker';
 
 const columns = [
-    { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
-    { id: 'bill_date', label: 'Bill Date', minWidth: 50 },
+    { id: 'bill_no', label: 'Bill No', minWidth: 150, height: 100 },
+    { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
     // { id: 'name', label: 'Customer Name', minWidth: 100 },
     // { id: 'mobile_numbr', label: 'Mobile No. ', minWidth: 100 },
-    { id: 'customer_info', label: 'Customer Info', minWidth: 200 },
-    { id: "payment_name", label: 'Payment Mode', minWidth: 100 },
-    { id: 'status', label: 'Status', minWidth: 100 },
-    { id: 'net_amt', label: 'Bill Amount', minWidth: 100 },
+    { id: 'customer_info', label: 'Customer Info', minWidth: 150 },
+    { id: "payment_name", label: 'Payment Mode', minWidth: 150 },
+    { id: 'status', label: 'Status', minWidth: 150 },
+    { id: 'net_amt', label: 'Bill Amount', minWidth: 150 },
 ];
 const Salelist = () => {
     const permissions = usePermissions();

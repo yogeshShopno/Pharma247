@@ -832,7 +832,7 @@ const DoctorList = () => {
                                 setClinic(e.target.value);
                               }}
                               className="w-full"
-                              variant="standard"
+                              variant="outlined"
                             />
                             {errors.clinic && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -855,7 +855,7 @@ const DoctorList = () => {
                                 setEmailId(e.target.value);
                               }}
                               className="w-full"
-                              variant="standard"
+                              variant="outlined"
                             />
                           </div>
                           <div
@@ -915,7 +915,7 @@ const DoctorList = () => {
                                 setAddress(e.target.value);
                               }}
                               className="w-full"
-                              variant="standard"
+                              variant="outlined"
                             />
                           </div>
                         </div>

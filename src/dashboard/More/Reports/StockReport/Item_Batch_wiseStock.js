@@ -228,7 +228,7 @@ const Item_Batch_wiseStock = () => {
                                                         value={companyName}
                                                         size="small"
                                                         onChange={(e) => setCompanyName(e.target.value)}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -254,7 +254,7 @@ const Item_Batch_wiseStock = () => {
                                                         value={drugGroup}
                                                         size="small"
                                                         onChange={(e) => setDrugGroup(e.target.value)}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -280,7 +280,7 @@ const Item_Batch_wiseStock = () => {
                                                         value={location}
                                                         size="small"
                                                         onChange={(e) => setLocation(e.target.value)}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (

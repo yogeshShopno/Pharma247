@@ -176,7 +176,11 @@ const EditSaleReturn = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -287,6 +291,11 @@ const EditSaleReturn = () => {
 
             setIsLoading(false);
             return customerData;
+
+            if (response.data.status === 401) {
+                history.push('/');
+                localStorage.clear();
+            }
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
@@ -1223,7 +1232,7 @@ const EditSaleReturn = () => {
                                             </div>
                                         </div>
 
-                                        <div style={{ display: 'flex', padding: '0 20px' ,whiteSpace:'noWrap'}}>
+                                        <div style={{ display: 'flex', padding: '0 20px', whiteSpace: 'noWrap' }}>
                                             <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                                 <label className="font-bold">Net Amount : </label>
                                                 <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}

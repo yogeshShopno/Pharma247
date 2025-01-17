@@ -334,7 +334,7 @@ const DrugGroup = () => {
                                         options={drugGroupData}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                                            variant="standard"
+                                            variant="outlined"
 
                                             autoComplete="off" {...params} label="Search Drug Name" />}
                                     />
@@ -433,7 +433,7 @@ const DrugGroup = () => {
                                             value={drugGroupName}
                                             onChange={(e) => { setDrugGroupName(e.target.value) }}
                                             style={{ minWidth: 450 }}
-                                            variant="standard"
+                                            variant="outlined"
                                         /> */}
                                         <Autocomplete
                                             value={drugGroupName}

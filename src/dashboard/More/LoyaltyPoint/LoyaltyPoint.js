@@ -456,7 +456,7 @@ const LoyaltyPoint = () => {
                                                         setMinimumAmount(e.target.value)
                                                     }}
                                                     label="Minimum"
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {
@@ -477,7 +477,7 @@ const LoyaltyPoint = () => {
                                                         setMaximumAmount(e.target.value)
                                                     }}
                                                     label="Maximum"
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     size="medium"
                                                     sx={{
                                                         '& .MuiInputLabel-root.Mui-focused': {

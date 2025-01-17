@@ -183,6 +183,10 @@ const EditPurchaseBill = () => {
         })
         .then((response) => {
           setBankData(response.data.data);
+          if (response.data.status === 401) {
+            history.push('/');
+            localStorage.clear();
+        }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1278,7 +1282,7 @@ const EditPurchaseBill = () => {
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
                       <TextField
-                        variant="standard"
+                        variant="outlined"
                         autoComplete="off"
                         {...params}
                       />
@@ -1293,7 +1297,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Sr No.</span>
                   <TextField
-                    variant="standard"
+                    variant="outlined"
                     autoComplete="off"
                     id="outlined-number"
                     size="small"
@@ -1308,7 +1312,7 @@ const EditPurchaseBill = () => {
                 <div className="detail">
                   <span className="title mb-2">Bill No. / Order No.</span>
                   <TextField
-                    variant="standard"
+                    variant="outlined"
                     autoComplete="off"
                     id="outlined-number"
                     disabled
@@ -1330,7 +1334,7 @@ const EditPurchaseBill = () => {
                   <span className="title mb-2">Bill Date</span>
                   <div style={{ width: "215px" }}>
                     <DatePicker
-                      variant="standard"
+                      variant="outlined"
                       disabled
                       className="custom-datepicker "
                       selected={selectedDate}
@@ -1358,7 +1362,7 @@ const EditPurchaseBill = () => {
                   <span className="title mb-2">Scan Barcode</span>
 
                   <TextField
-                    variant="standard"
+                    variant="outlined"
                     autoComplete="off"
                     id="outlined-number"
                     type="number"
@@ -1444,7 +1448,7 @@ const EditPurchaseBill = () => {
                               )}
                               renderInput={(params) => (
                                 <TextField
-                                  variant="standard"
+                                  variant="outlined"
                                   autoComplete="off"
                                   {...params}
                                   // label="Search Item Name"
@@ -1458,7 +1462,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <TextField
                             autoComplete="off"
-                            variant="standard"
+                            variant="outlined"
                             id="outlined-number"
                             type="number"
                             inputRef={inputRef1}
@@ -1484,7 +1488,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             type="text"
@@ -1516,7 +1520,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <TextField
                             autoComplete="off"
-                            variant="standard"
+                            variant="outlined"
                             id="outlined-number"
                             inputRef={inputRef2}
                             onKeyDown={handleKeyDown}
@@ -1533,7 +1537,7 @@ const EditPurchaseBill = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-number"
-                            variant="standard"
+                            variant="outlined"
                             size="small"
                             sx={{ width: "80px" }}
                             inputRef={inputRef3}
@@ -1553,7 +1557,7 @@ const EditPurchaseBill = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-number"
-                            variant="standard"
+                            variant="outlined"
                             type="number"
                             sx={{ width: "100px" }}
                             size="small"
@@ -1580,7 +1584,7 @@ const EditPurchaseBill = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-number"
-                            variant="standard"
+                            variant="outlined"
                             type="number"
                             sx={{ width: "80px" }}
                             size="small"
@@ -1606,7 +1610,7 @@ const EditPurchaseBill = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-number"
-                            variant="standard"
+                            variant="outlined"
                             size="small"
                             type="number"
                             sx={{ width: "50px" }}
@@ -1631,7 +1635,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             type="number"
@@ -1652,7 +1656,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "60px" }}
@@ -1680,7 +1684,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             sx={{ width: "90px" }}
@@ -1698,7 +1702,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             type="number"
@@ -1720,7 +1724,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <Select
-                            variant="standard"
+                            variant="outlined"
                             labelId="dropdown-label"
                             id="dropdown"
                             value={gst.name}
@@ -1744,7 +1748,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <TextField
-                            variant="standard"
+                            variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
                             inputRef={inputRef12}
@@ -1761,7 +1765,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1775,7 +1779,7 @@ const EditPurchaseBill = () => {
                         <td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1802,7 +1806,7 @@ const EditPurchaseBill = () => {
                       <tr>
                         <td>
                           {/* <TextField
-                            variant="standard"
+                            variant="outlined"
 
                             autoComplete="off"
                             id="outlined-number"

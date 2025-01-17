@@ -165,7 +165,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Pharmacy Name"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={pharmacyName}
                   onChange={(e) => {
@@ -180,7 +180,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Owner Name"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={ownerName}
                   onChange={(e) => {
@@ -196,7 +196,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="GSTN"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={gstN}
                   onChange={(e) => setGSTN(e.target.value.toUpperCase())}
@@ -206,7 +206,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="PAN"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={panCard}
                   onChange={(e) => setPanCard(e.target.value.toUpperCase())}
@@ -218,7 +218,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Mobile No."
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={mobileNo}
                   onChange={(e) => setMobileNo(Number(e.target.value))}
@@ -228,7 +228,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Email ID"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={emailID}
                   onChange={(e) => setEmailID(e.target.value)}
@@ -240,7 +240,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Address 1"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={address1}
                   onChange={(e) => {
@@ -254,7 +254,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Pincode"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={pincode}
                   onChange={(e) => setPincode(e.target.value)}
@@ -266,7 +266,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="Area"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={area}
                   onChange={(e) => {
@@ -280,7 +280,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="City"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={city}
                   onChange={(e) => {
@@ -294,7 +294,7 @@ const [reRender, setreRender] = useState(0);
                  autoComplete="off"
                   id="standard-basic"
                   label="state"
-                  variant="standard"
+                  variant="outlined"
                   className="aboutTextField"
                   value={state}
                   onChange={(e) => {

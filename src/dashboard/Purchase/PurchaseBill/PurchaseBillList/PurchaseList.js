@@ -24,11 +24,11 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 const columns = [
-  { id: 'sr_no', label: 'Sr No.', minWidth: 10 },
-  { id: 'bill_no', label: 'Bill No.', minWidth: 10 },
-  { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-  { id: 'distributor_name', label: 'Distributor', minWidth: 100 },
-  { id: 'total_amount', label: 'Bill Amount', minWidth: 100 },
+  { id: 'sr_no', label: 'Sr No.', minWidth: 150 },
+  { id: 'bill_no', label: 'Bill No.', minWidth: 150 },
+  { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+  { id: 'distributor_name', label: 'Distributor', minWidth: 150 },
+  { id: 'total_amount', label: 'Bill Amount', minWidth: 150 },
 ];
 
 const Purchasebill = () => {

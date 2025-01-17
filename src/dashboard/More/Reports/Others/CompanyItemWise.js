@@ -210,7 +210,7 @@ const CompanyItemWise = () => {
                                                     sx={{ minWidth: '300px' }}
                                                     size="small"
                                                     onChange={(e) => setSearchManu(e.target.value)}
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     placeholder="Search by Company Name"
                                                     InputProps={{
                                                         endAdornment: (

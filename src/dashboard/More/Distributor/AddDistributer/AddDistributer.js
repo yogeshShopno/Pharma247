@@ -163,7 +163,7 @@ const AddDistributer = () => {
 
                                     <TextField
                                     
-                                    variant="standard"
+                                    variant="outlined"
                                     autoComplete="off"
                                         sx={{
                                             '.MuiInputBase-input': {
@@ -196,7 +196,7 @@ const AddDistributer = () => {
                                     Distributor Name
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -224,7 +224,7 @@ const AddDistributer = () => {
                                     Mobile No.
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -278,7 +278,7 @@ sx={{
                                     Email ID
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -303,7 +303,7 @@ sx={{
                                     Whatsapp No.
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -327,7 +327,7 @@ sx={{
                                     state
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -366,7 +366,7 @@ sx={{
                                     Address
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -394,7 +394,7 @@ sx={{
                                     Area
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -419,7 +419,7 @@ sx={{
                                     Pincode
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -446,7 +446,7 @@ sx={{
                                     Distributor Drug License No.
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -474,7 +474,7 @@ sx={{
                                     Food Licence No.
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -505,7 +505,7 @@ sx={{
                                     Credit Due Days
                                 </label>
                                 <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                     autoComplete="off"
                                     sx={{
@@ -540,7 +540,7 @@ sx={{
 
                                         <div class="relative w-full">
                                             <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                                 autoComplete="off"
                                                 sx={{
@@ -579,7 +579,7 @@ sx={{
                                             Account No.
                                         </label>
                                         <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                             autoComplete="off"
                                             sx={{
@@ -604,7 +604,7 @@ sx={{
                                             IFSC Code
                                         </label>
                                         <TextField
-                                    variant="standard"
+                                    variant="outlined"
 
                                             autoComplete="off"
                                             sx={{

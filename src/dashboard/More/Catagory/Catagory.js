@@ -351,7 +351,7 @@ const Catagory = () => {
                       onChange={(e) => { setCategoryName(e.target.value) }}
                       style={{ minWidth: 450 }}
 
-                      variant="standard"
+                      variant="outlined"
                     />
                   </div>
                 </div>

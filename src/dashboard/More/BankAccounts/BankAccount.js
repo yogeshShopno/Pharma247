@@ -259,9 +259,12 @@ const BankAccount = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 setIsLoading(false)
-               
             })
 
         } catch (error) {
@@ -288,7 +291,7 @@ const BankAccount = () => {
             ).then((response) => {
                 setBankDetails(response.data.data)
                 setIsLoading(false)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -377,7 +380,7 @@ const BankAccount = () => {
 
     const handlePaymentTypeChange = async (e) => {
         const selectedPaymentType = e.target.value;
- 
+
         setPaymentType(selectedPaymentType);
         const selectedBankData = bankData.find(bank => bank.id === selectedPaymentType);
         if (selectedPaymentType == 'cash') {
@@ -576,7 +579,7 @@ const BankAccount = () => {
                                                         value={search}
                                                         size="small"
                                                         onChange={(e) => setSearch(e.target.value)}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -789,7 +792,7 @@ const BankAccount = () => {
                                                         value={search}
                                                         size="small"
                                                         onChange={(e) => setSearch(e.target.value)}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Type Here..."
                                                         InputProps={{
                                                             startAdornment: (
@@ -896,7 +899,7 @@ const BankAccount = () => {
                                             value={bankName}
                                             onChange={(e) => { setBankName(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
 
                                         />
                                         {errors.bankName && <span className="error">{errors.bankName}</span>}
@@ -913,7 +916,7 @@ const BankAccount = () => {
                                             value={accountType}
                                             onChange={(e) => { setAccountType(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
 
                                         />
                                         {errors.accountType && <span className="error">{errors.accountType}</span>}
@@ -931,7 +934,7 @@ const BankAccount = () => {
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
                                         />
                                     </div>
                                     <div>
@@ -972,7 +975,7 @@ const BankAccount = () => {
                                                 value={accountNumber}
                                                 onChange={(e) => { setAccountNumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
 
                                             />
                                             {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
@@ -989,7 +992,7 @@ const BankAccount = () => {
                                                 value={reEnterAccountNumber}
                                                 onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
 
                                             />
                                             {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
@@ -1009,7 +1012,7 @@ const BankAccount = () => {
                                                 value={ifscCode}
                                                 onChange={(e) => { setIfscCode(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
 
                                             />
                                             {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
@@ -1027,7 +1030,7 @@ const BankAccount = () => {
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="standard"
+                                                    variant="outlined"
 
                                                 />
                                                 {errors.branchName && <span className="error">{errors.branchName}</span>}
@@ -1051,7 +1054,7 @@ const BankAccount = () => {
                                                 value={accountHolderName}
                                                 onChange={(e) => { setAccountHolderName(e.target.value) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
                                         </div>
@@ -1067,7 +1070,7 @@ const BankAccount = () => {
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="standard"
+                                                    variant="outlined"
 
                                                 />
                                             </div>
@@ -1132,7 +1135,7 @@ const BankAccount = () => {
                                                 setBankName(uppercasedValue);
                                             }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.bankName && <span className="error">{errors.bankName}</span>}
@@ -1154,7 +1157,7 @@ const BankAccount = () => {
                                                     .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue)
                                             }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.accountType && <span className="error">{errors.accountType}</span>}
@@ -1172,7 +1175,7 @@ const BankAccount = () => {
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
                                             style={{ minWidth: 250 }}
-                                            variant="standard"
+                                            variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                     </div>
@@ -1217,7 +1220,7 @@ const BankAccount = () => {
                                                     setAccountNumber(numericValue)
                                                 }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
@@ -1237,7 +1240,7 @@ const BankAccount = () => {
                                                     const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
                                                     setReEnterAccountNumber(numericValue);
                                                 }} style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
@@ -1256,7 +1259,7 @@ const BankAccount = () => {
                                                 value={ifscCode}
                                                 onChange={(e) => { const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
@@ -1274,7 +1277,7 @@ const BankAccount = () => {
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     fullWidth={fullScreen}
                                                 />
                                                 {errors.branchName && <span className="error">{errors.branchName}</span>}
@@ -1299,7 +1302,7 @@ const BankAccount = () => {
                                                     setAccountHolderName(capitalizedValue)
                                                 }}
                                                 style={{ minWidth: 250 }}
-                                                variant="standard"
+                                                variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
@@ -1316,7 +1319,7 @@ const BankAccount = () => {
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
                                                     style={{ minWidth: 250 }}
-                                                    variant="standard"
+                                                    variant="outlined"
                                                     fullWidth={fullScreen}
                                                 />
                                             </div>

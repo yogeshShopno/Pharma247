@@ -208,7 +208,11 @@ const Salereturn = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -271,6 +275,10 @@ const Salereturn = () => {
                     );
                     setCustomerDetails(response.data.data);
                     setIsLoading(false);
+                    if (response.data.status === 401) {
+                        history.push('/');
+                        localStorage.clear();
+                    }
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
@@ -963,7 +971,7 @@ const Salereturn = () => {
                                             '& .MuiAutocomplete-inputRoot': {
                                                 // padding: '10px 14px',
                                             },
-                                        }} variant="standard" />
+                                        }} variant="outlined" />
                                 </div> */}
 
 
@@ -1167,7 +1175,7 @@ const Salereturn = () => {
                                                             sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
                                                             value={search}
                                                             onChange={handleInputChange}
-                                                            variant="standard"
+                                                            variant="outlined"
                                                             placeholder="Please search any items.."
                                                             InputProps={{
                                                                 endAdornment: (
@@ -1362,7 +1370,7 @@ const Salereturn = () => {
                                         </div>
                                     </div>
 
-                                    <div style={{ padding: '0 20px',whiteSpace:'noWrap' }}>
+                                    <div style={{ padding: '0 20px', whiteSpace: 'noWrap' }}>
                                         <div className="gap-2" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                             <label className="font-bold">Net Amount : </label>
                                             <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}

@@ -1777,7 +1777,7 @@ const InventoryView = () => {
                                         value={loc}
                                         onChange={(e) => { setLoc(e.target.value) }}
                                         className="w-full"
-                                        variant="standard"
+                                        variant="outlined"
                                     />
                                 </div>
                             </div>

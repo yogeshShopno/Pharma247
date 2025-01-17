@@ -364,8 +364,11 @@ const EditReturnBill = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
-
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -1294,7 +1297,7 @@ const EditReturnBill = () => {
                                                         sx={{ width: "75%", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
-                                                        variant="standard"
+                                                        variant="outlined"
                                                         placeholder="Please search any items.."
                                                         InputProps={{
                                                             endAdornment: (

@@ -407,7 +407,7 @@ const AdjustStock = () => {
                                     sx={{ width: 'auto' }}
                                     size="small"
                                     onChange={(e) => setSearch(e.target.value)}
-                                    variant="standard"
+                                    variant="outlined"
                                     onKeyPress={handleKeyPress}
                                     placeholder="Search by Item name,Batch No"
                                     InputProps={{

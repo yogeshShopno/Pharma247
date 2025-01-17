@@ -259,7 +259,7 @@ const ManageStaffRole = () => {
                                             Yes
                                         </Button>
                                         <Button
-                                            variant="standard"
+                                            variant="outlined"
                                             onClick={resetAddDialogDeactive}
                                         >
                                             No

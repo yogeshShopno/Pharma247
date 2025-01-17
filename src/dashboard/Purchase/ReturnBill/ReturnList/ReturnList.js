@@ -27,13 +27,13 @@ const ReturnList = () => {
     const permissions = usePermissions();
 
     const columns = [
-        { id: 'bill_no', label: 'Bill No', minWidth: 100 },
-        { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-        { id: 'user_name', label: 'Entry By', minWidth: 100 },
-        { id: 'distributor_name', label: 'Distributor', minWidth: 100 },
-        { id: 'total_amount', label: 'Amount', minWidth: 100 },
-        // { id: 'status', label: 'Status', minWidth: 100 },
-        { id: 'cn_amount', label: 'Cn Amount', minWidth: 100 },
+        { id: 'bill_no', label: 'Bill No', minWidth: 150 },
+        { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+        { id: 'user_name', label: 'Entry By', minWidth: 150 },
+        { id: 'distributor_name', label: 'Distributor', minWidth: 150 },
+        { id: 'total_amount', label: 'Amount', minWidth: 150 },
+        // { id: 'status', label: 'Status', minWidth: 150 },
+        { id: 'cn_amount', label: 'Cn Amount', minWidth: 150 },
     ];
     const initialSearchTerms = columns.map(() => '');
     const [searchTerms, setSearchTerms] = useState(initialSearchTerms);

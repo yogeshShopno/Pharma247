@@ -220,8 +220,11 @@ const PaymentList = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
-               
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
             })
         } catch (error) {
             console.error("API error:", error);
@@ -628,7 +631,7 @@ const PaymentList = () => {
                                                 value={distributor}
                                                 sx={{ minWidth: 550 }}
                                                 rows={2}
-                                                variant="standard"
+                                                variant="outlined"
                                             /> :
                                             <>
                                                 <Autocomplete
@@ -699,7 +702,7 @@ const PaymentList = () => {
                                             onChange={(e) => { setNote(e.target.value) }}
                                             style={{ minWidth: 500 }}
                                             rows={2}
-                                            variant="standard"
+                                            variant="outlined"
                                         />
                                     </div>
                                     <div>
@@ -788,7 +791,7 @@ const PaymentList = () => {
                             <Button autoFocus variant="contained" onClick={submitPayment}>
                                 Yes
                             </Button>
-                            <Button autoFocus variant="standard" onClick={() => setConfirm(false)}>
+                            <Button autoFocus variant="outlined" onClick={() => setConfirm(false)}>
                                 No
                             </Button>
                         </DialogActions>

@@ -261,6 +261,10 @@ const EditSaleBill = () => {
         })
         .then((response) => {
           setBankData(response.data.data);
+          if (response.data.status === 401) {
+            history.push('/');
+            localStorage.clear();
+        }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -387,6 +391,11 @@ const EditSaleBill = () => {
         // setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
       }
       return customerData;
+
+      if (response.data.status === 401) {
+        history.push('/');
+        localStorage.clear();
+      }
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
@@ -2104,7 +2113,7 @@ const EditSaleBill = () => {
                   <label className="font-bold">Round Off : </label>
                   <span >{!roundOff ? 0 : roundOff}</span>
                 </div> */}
-                  <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer",color:'white' }}>
+                  <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer", color: 'white' }}>
                     <label className="font-bold">Net Amount : </label>
                     <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
                       {Number(netAmount).toFixed(2)}

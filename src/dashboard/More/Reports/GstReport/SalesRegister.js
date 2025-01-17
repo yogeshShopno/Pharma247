@@ -295,7 +295,7 @@
 //                                                 sx={{ minWidth: '300px' }}
 //                                                 size="small"
 //                                                 onChange={(e) => setSearchItem(e.target.value)}
-//                                                 variant="standard"
+//                                                 variant="outlined"
 //                                                 placeholder="Search by Customer Name"
 //                                                 InputProps={{
 //                                                     endAdornment: (

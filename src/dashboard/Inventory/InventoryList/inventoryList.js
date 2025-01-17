@@ -1118,7 +1118,7 @@ const InventoryList = () => {
                       ref={autocompleteRef}
                     />
                     {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type Company" variant="standard" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
                   </ListItem>
                 </AccordionDetails>
               </Accordion>
@@ -1154,7 +1154,7 @@ const InventoryList = () => {
                       ref={autocompleteRef}
                     />
                     {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="standard" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
                   </ListItem>
                 </AccordionDetails>
               </Accordion>
@@ -1223,7 +1223,7 @@ const InventoryList = () => {
                     />
 
                     {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type Location" variant="standard" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
                   </ListItem>
                 </AccordionDetails>
               </Accordion>
@@ -1237,7 +1237,7 @@ const InventoryList = () => {
                       autoComplete="off"
                       id="outlined-basic"
                       label="Type HSN Code"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       value={hsnCode}
                       onChange={(e) => {
@@ -1256,7 +1256,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       placeholder="10"
                       value={marginStart}
@@ -1269,7 +1269,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       placeholder="25"
                       value={marginEnd}
@@ -1290,7 +1290,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       value={mrpStart}
                       onChange={(e) => {
@@ -1303,7 +1303,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       value={mrpEnd}
                       onChange={(e) => {
@@ -1324,7 +1324,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       value={ptrStart}
                       onChange={(e) => {
@@ -1337,7 +1337,7 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-basic"
-                      variant="standard"
+                      variant="outlined"
                       size="small"
                       value={ptrEnd}
                       onChange={(e) => {
@@ -1710,7 +1710,7 @@ const InventoryList = () => {
                     ref={autocompleteRef}
                   />
                   {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type Company" variant="standard" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1746,7 +1746,7 @@ const InventoryList = () => {
                     ref={autocompleteRef}
                   />
                   {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="standard" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1815,7 +1815,7 @@ const InventoryList = () => {
                   />
 
                   {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type Location" variant="standard" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
+                 autoComplete="off" id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
                 </ListItem>
               </AccordionDetails>
             </Accordion>
@@ -1829,7 +1829,7 @@ const InventoryList = () => {
                     autoComplete="off"
                     id="outlined-basic"
                     label="Type HSN Code"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     value={hsnCode}
                     onChange={(e) => {
@@ -1848,7 +1848,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     placeholder="10"
                     value={marginStart}
@@ -1861,7 +1861,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     placeholder="25"
                     value={marginEnd}
@@ -1882,7 +1882,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     value={mrpStart}
                     onChange={(e) => {
@@ -1895,7 +1895,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     value={mrpEnd}
                     onChange={(e) => {
@@ -1916,7 +1916,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     value={ptrStart}
                     onChange={(e) => {
@@ -1929,7 +1929,7 @@ const InventoryList = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-basic"
-                    variant="standard"
+                    variant="outlined"
                     size="small"
                     value={ptrEnd}
                     onChange={(e) => {
@@ -1983,7 +1983,7 @@ const InventoryList = () => {
               sx={{ width: "75%", marginTop: "5px" }}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyPress={handleKeyPress}
-              variant="standard"
+              variant="outlined"
               placeholder="Please search any items.."
               InputProps={{
                 endAdornment: (
@@ -2629,7 +2629,7 @@ const InventoryList = () => {
             style={{ backgroundColor: "#F31C1C", color: "white" }}
             autoFocus
 
-            variant="standard"
+            variant="outlined"
             onClick={() => setBulkOrder(false)}
           >
             No

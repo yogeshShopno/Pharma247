@@ -114,11 +114,13 @@ const ManageExpense = () => {
                 }
             }
             ).then((response) => {
-                setBankData(response.data.data)
+                setBankData(response.data.data);
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 setIsLoading(false);
-               
-
-            })
+                           })
         } catch (error) {
             console.error("API error:", error);
 

@@ -368,7 +368,7 @@ const SignUp = () => {
                   <label className="block text-gray-700 text-sm font-bold mb-1">
                     Password
                   </label>
-                  {/* <FormControl sx={{ width: '600', height: '42px' }} variant="standard">
+                  {/* <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
                     <OutlinedInput
                       value={password}
                       sx={{ minWidth: 370 }}
@@ -389,7 +389,7 @@ const SignUp = () => {
                       sx={{ height: '42px' }}
                     />
                   </FormControl> */}
-                  <FormControl sx={{ width: '600', height: '42px' }} variant="standard">
+                  <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
                     <OutlinedInput
                       value={password}
                       className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
@@ -427,7 +427,7 @@ const SignUp = () => {
                 <div className=" flex mt-4 gap-4">
                   <div className="w-1/2">
 
-                    <Button variant="standard" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                    <Button variant="outlined" className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
                       onClick={handleBack}
                     >
                       Back
@@ -548,7 +548,7 @@ const SignUp = () => {
                 </div>
                 <div>
                   <span className="flex primary font-semibold my-2 font-medium">Password</span>
-                  <FormControl variant="standard">
+                  <FormControl variant="outlined">
                     <OutlinedInput
                       value={password}
                       sx={{ minWidth: 370 }}

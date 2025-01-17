@@ -19,13 +19,13 @@ import { format, subDays } from "date-fns";
 import CloseIcon from '@mui/icons-material/Close';
 
 const columns = [
-    { id: 'bill_no', label: 'Bill No', minWidth: 70, height: 100 },
-    { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
+    { id: 'bill_no', label: 'Bill No', minWidth: 150, height: 100 },
+    { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
     // { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
     // { id: 'phone_number', label: 'Mobile No ', minWidth: 100 },
-    { id: 'customer_info', label: 'Customer Info', minWidth: 200 }, // Updated column
-    { id: 'payment_name', label: 'Payment Mode', minWidth: 100 },
-    { id: 'net_amount', label: 'Bill Amount', minWidth: 100 },
+    { id: 'customer_info', label: 'Customer Info', minWidth: 150 }, // Updated column
+    { id: 'payment_name', label: 'Payment Mode', minWidth: 150 },
+    { id: 'net_amount', label: 'Bill Amount', minWidth: 150 },
 ];
 const SalereturnList = () => {
     const token = localStorage.getItem("token");

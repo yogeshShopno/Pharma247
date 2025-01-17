@@ -336,7 +336,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="standard"
+                                        variant="outlined"
                                         fullWidth
                                     /> */}
                                     <Autocomplete
@@ -358,7 +358,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                                        variant="standard"
+                                        variant="outlined"
                                             autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
@@ -384,7 +384,7 @@ const OrderList = () => {
                                                 padding: '10px 14px',
                                             },
                                         }}
-                                        variant="standard"
+                                        variant="outlined"
                                         fullWidth
                                     />
                                 </div>

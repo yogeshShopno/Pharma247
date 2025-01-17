@@ -237,7 +237,7 @@ const ItemWiseMargin = () => {
                                                 value={searchItem}
                                                 size="small"
                                                 onChange={(e) => setSearchItem(e.target.value)}
-                                                variant="standard"
+                                                variant="outlined"
                                                 placeholder="Type Here..."
                                                 InputProps={{
                                                     startAdornment: (

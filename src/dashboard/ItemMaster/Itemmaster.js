@@ -1630,7 +1630,7 @@ const Itemmaster = () => {
                   }}
                   className="w-full"
                   rows={4}
-                  variant="standard"
+                  variant="outlined"
                 />
               </div>
             </div>

@@ -139,7 +139,7 @@ const Password = () => {
                             </div>
 
                             <div>
-                                <FormControl variant="standard">
+                                <FormControl variant="outlined">
                                     <InputLabel htmlFor="standard-adornment-password">New Password</InputLabel>
                                     <Input
                                         className="aboutTextField"
@@ -163,7 +163,7 @@ const Password = () => {
                                 </FormControl>
                             </div>
                             <div className="mb-10">
-                                <FormControl variant="standard">
+                                <FormControl variant="outlined">
                                     <InputLabel htmlFor="standard-adornment-password">Confirm Password</InputLabel>
                                     <Input
                                         className="aboutTextField"

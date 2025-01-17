@@ -292,6 +292,10 @@ const AddPurchaseBill = () => {
         })
         .then((response) => {
           setBankData(response.data.data);
+          if (response.data.status === 401) {
+            history.push('/');
+            localStorage.clear();
+        }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1660,7 +1664,7 @@ const AddPurchaseBill = () => {
                     <TextField
                       autoFocus={focusedField === "distributor"}
                       autoComplete="off"
-                      variant="standard"
+                      variant="outlined"
                       {...params}
                     />
                   )}
@@ -1679,7 +1683,7 @@ const AddPurchaseBill = () => {
                   size="small"
                   style={{ width: "200px" }}
                   value={srNo}
-                  variant="standard"
+                  variant="outlined"
                   disabled
                   onChange={(e) => {
                     setSrNo(e.target.value);
@@ -1692,7 +1696,7 @@ const AddPurchaseBill = () => {
                   autoComplete="off"
                   id="outlined-number"
                   size="small"
-                  variant="standard"
+                  variant="outlined"
                   style={{ width: "250px" }}
                   value={billNo}
                   onChange={(e) => {
@@ -1712,7 +1716,7 @@ const AddPurchaseBill = () => {
                   <DatePicker
                     className="custom-datepicker "
                     selected={selectedDate}
-                    variant="standard"
+                    variant="outlined"
                     onChange={(newDate) => setSelectedDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     filterDate={(date) => !isDateDisabled(date)}
@@ -1726,7 +1730,7 @@ const AddPurchaseBill = () => {
                   <DatePicker
                     className="custom-datepicker "
                     selected={dueDate}
-                    variant="standard"
+                    variant="outlined"
                     onChange={(newDate) => setDueDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     minDate={new Date()}
@@ -1741,7 +1745,7 @@ const AddPurchaseBill = () => {
                   id="outlined-number"
                   type="number"
                   size="small"
-                  variant="standard"
+                  variant="outlined"
                   value={barcode}
                   placeholder="scan barcode"
                   // inputRef={inputRef10}
@@ -1856,7 +1860,7 @@ const AddPurchaseBill = () => {
                                   )}
                                   renderInput={(params) => (
                                     <TextField
-                                      variant="standard"
+                                      variant="outlined"
                                       autoComplete="off"
                                       sx={{ width: 400, paddingLeft: "10px" }}
                                       autoFocus={focusedField === "item"}
@@ -1871,7 +1875,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="text"
@@ -1902,7 +1906,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="text"
@@ -1934,7 +1938,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef2}
@@ -1955,7 +1959,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
@@ -1970,7 +1974,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -1999,7 +2003,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -2028,7 +2032,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
@@ -2053,7 +2057,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -2080,7 +2084,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "60px" }}
@@ -2109,7 +2113,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               sx={{ width: "90px" }}
@@ -2122,7 +2126,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -2141,7 +2145,7 @@ const AddPurchaseBill = () => {
                             <Select
                               labelId="dropdown-label"
                               id="dropdown"
-                              variant="standard"
+                              variant="outlined"
                               value={gst.name}
                               sx={{ minWidth: "80px" }}
                               onChange={(e) => {
@@ -2164,7 +2168,7 @@ const AddPurchaseBill = () => {
 
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               // inputRef={inputRef12}
@@ -2180,7 +2184,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
@@ -2192,7 +2196,7 @@ const AddPurchaseBill = () => {
                           </td>
                           <td>
                             <TextField
-                              variant="standard"
+                              variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
                               type="number"

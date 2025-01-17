@@ -579,7 +579,7 @@ const OrderList = () => {
                             </DialogContent>
                         </Dialog>
 
-                        <Dialog className="place_order_dlg" open={openAddPopUpPlaceOrder}>
+                        <Dialog className="order_list_ml" open={openAddPopUpPlaceOrder}>
                             <DialogTitle id="alert-dialog-title" className="primary">
                                 Place Order
                             </DialogTitle>

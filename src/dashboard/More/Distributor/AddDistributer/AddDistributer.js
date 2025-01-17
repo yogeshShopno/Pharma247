@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 
 import { TextField } from "@mui/material";
 
@@ -30,38 +30,38 @@ const AddDistributer = () => {
     const [foodLicence, setFoodLicence] = useState('');
     const [durgLicence, setDurgLicence] = useState('');
     const [dueDays, setDueDays] = useState('');
-    
+
     // const [isEditMode, setIsEditMode] = useState('');
 
     const handleSubmit = () => {
 
-            const newErrors = {};
-            if (!distributorName) {
-                newErrors.distributorName = 'Distributor is required'
-                toast.error('Distributor is required');
+        const newErrors = {};
+        if (!distributorName) {
+            newErrors.distributorName = 'Distributor is required'
+            toast.error('Distributor is required');
 
-            };
-            if (!GSTNumber){ 
-                newErrors.GSTNumber = 'GST Number is required'
-                toast.error('GST Number is required')
-            };
-          
-            if (!mobileno) {
-                newErrors.mobileno = 'Mobile No is required';
-                toast.error('Mobile No is required');
+        };
+        if (!GSTNumber) {
+            newErrors.GSTNumber = 'GST Number is required'
+            toast.error('GST Number is required')
+        };
 
-            } else if (!/^\d{10}$/.test(mobileno)) {
-                newErrors.mobileno = 'Mobile number must be 10 digits';
-                toast.error('Mobile number must be 10 digits');
+        if (!mobileno) {
+            newErrors.mobileno = 'Mobile No is required';
+            toast.error('Mobile No is required');
 
-            }
+        } else if (!/^\d{10}$/.test(mobileno)) {
+            newErrors.mobileno = 'Mobile number must be 10 digits';
+            toast.error('Mobile number must be 10 digits');
 
-            setError(newErrors);
-            const isValid = Object.keys(newErrors).length === 0;
-            if (isValid) {
-                AddDistributor();
-            }
-        
+        }
+
+        setError(newErrors);
+        const isValid = Object.keys(newErrors).length === 0;
+        if (isValid) {
+            AddDistributor();
+        }
+
 
     };
 
@@ -114,7 +114,7 @@ const AddDistributer = () => {
                 setTimeout(() => {
                     history.push('/more/DistributorList');
                 }, 1000);
-               
+
             })
         } catch (error) {
             // setIsLoading(false);
@@ -162,9 +162,9 @@ const AddDistributer = () => {
                                 <div class="relative w-full">
 
                                     <TextField
-                                    
-                                    variant="outlined"
-                                    autoComplete="off"
+
+                                        variant="outlined"
+                                        autoComplete="off"
                                         sx={{
                                             '.MuiInputBase-input': {
                                                 padding: '10px 12px', // Remove padding from the input field
@@ -177,7 +177,7 @@ const AddDistributer = () => {
                                         onChange={(e) => {
                                             const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                                             setGSTNumber(value);
-                                        }}/>
+                                        }} />
 
 
                                     <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">
@@ -210,7 +210,7 @@ const AddDistributer = () => {
                                     name="distributor_name"
                                     type="text"
                                     onChange={(e) => {
-                                  
+
                                         setDistributorName((e.target.value).toUpperCase());
                                     }}
                                 />
@@ -346,8 +346,8 @@ sx={{
                                         setState(formattedValue);
                                     }}
 
-                                   
-                                    
+
+
                                 />
                                 <div
                                     name="state"
@@ -524,7 +524,7 @@ sx={{
                             </div>
 
                         </div>
-                        <div className="border-b-2 border-blue-400 my-8 "></div>
+                        <div className="border-b border-dashed my-8" style={{borderColor:'var(--color1)'}}></div>
                         <div>
                             <h1 className="text-2xl font-bold mb-12 primary">Add Bank Details</h1>
                             <div>
@@ -540,7 +540,7 @@ sx={{
 
                                         <div class="relative w-full">
                                             <TextField
-                                    variant="outlined"
+                                                variant="outlined"
 
                                                 autoComplete="off"
                                                 sx={{
@@ -579,7 +579,7 @@ sx={{
                                             Account No.
                                         </label>
                                         <TextField
-                                    variant="outlined"
+                                            variant="outlined"
 
                                             autoComplete="off"
                                             sx={{
@@ -604,7 +604,7 @@ sx={{
                                             IFSC Code
                                         </label>
                                         <TextField
-                                    variant="outlined"
+                                            variant="outlined"
 
                                             autoComplete="off"
                                             sx={{

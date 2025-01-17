@@ -408,8 +408,17 @@
   }
 }
 
-@media (max-width: 425px) {
-  .place_order_dlg{
-    width: 100%;
+@media (max-width: 639px) {
+  .order_list_ml div[role='dialog'] {
+    width: 80%;
+    max-width: 600px;
+
+  }
+}
+
+@media (min-width: 640px) {
+  .order_list_ml div[role='dialog'] {
+    width: 50%;
+    max-width: 425px;
   }
 }

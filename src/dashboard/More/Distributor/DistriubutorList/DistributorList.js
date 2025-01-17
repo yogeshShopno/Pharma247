@@ -22,10 +22,10 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 import usePermissions, { hasPermission } from "../../../../componets/permission";
 const columns = [
-    { id: 'name', label: 'Name', minWidth: 10 },
-    { id: 'email', label: 'Email', minWidth: 100 },
-    { id: 'gst', label: 'GST', minWidth: 100 },
-    { id: 'phone_number', label: 'Phone Number', minWidth: 100 },
+    { id: 'name', label: 'Name', minWidth: 150 },
+    { id: 'email', label: 'Email', minWidth: 150 },
+    { id: 'gst', label: 'GST', minWidth: 150 },
+    { id: 'phone_number', label: 'Phone Number', minWidth: 150 },
 ];
 const DistributerList = () => {
     const token = localStorage.getItem("token");
@@ -522,7 +522,7 @@ const DistributerList = () => {
                         <div className="flex justify-center items-center h-auto">
                             <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
                                 <div className="flex justify-between items-center">
-                                    <DialogTitle id="alert-dialog-title" className="primary">
+                                    <DialogTitle id="alert-dialog-title" style={{ color: 'var(--COLOR_UI_PHARMACY)' ,fontWeight:600}}>
                                         {header}
                                     </DialogTitle>
                                     <IconButton
@@ -784,7 +784,7 @@ const DistributerList = () => {
                                         </div>
                                     </DialogContentText>
                                 </DialogContent>
-                                <DialogActions>
+                                <DialogActions style={{ padding: '16px 24px' }}>
                                     <Button autoFocus variant="contained" style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} onClick={editDistributor}>
                                         Update
                                     </Button>

@@ -13,7 +13,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
-  const logo = process.env.PUBLIC_URL + "pharmalogo.png";
+  const logo = process.env.PUBLIC_URL + "pharmalogo.webp";
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
 

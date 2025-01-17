@@ -86,7 +86,7 @@ const Plans = () => {
           currency: "INR",
           name: "pharma 24*7",
           description: plan.name,
-          image: "pharmalogo.png",
+          image: "pharmalogo.webp",
           planId: plan.id,
 
           handler: function (response) {

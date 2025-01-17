@@ -281,7 +281,7 @@ const Header = () => {
             <Link to="/admindashboard">
               <img
                 className="h-14 w-28"
-                src="../../../pharmalogo.png"
+                src="../../../pharmalogo.webp"
                 alt="Workflow"
               />
             </Link>

@@ -7,7 +7,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast, ToastContainer } from 'react-toastify';
 
 const Forgot = () => {
-    const logo = process.env.PUBLIC_URL + 'pharmalogo.png';
+    const logo = process.env.PUBLIC_URL + 'pharmalogo.webp';
     const [mobileNumber, setMobileNumber] = useState('');
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({});

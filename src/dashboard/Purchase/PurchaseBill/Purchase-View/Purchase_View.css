@@ -238,10 +238,12 @@
   @media (max-width: 768px) {
     max-width: 768px !important;
   }
+
   @media (min-width: 769px) {
     max-width: 33.3333333333% !important;
     padding: 0 5px;
   }
+
   @media (min-width: 1440px) {
     max-width: 25.3333333333% !important;
     padding: 0 5px;
@@ -254,11 +256,13 @@
     align-items: end !important;
     width: 100% !important;
   }
+
   .sale_dates_divv {
     flex-direction: column !important;
     gap: 20px !important;
     width: 100% !important;
   }
+
   .sale_dates_divv_btn {
     justify-content: end !important;
   }
@@ -267,12 +271,15 @@
 .search_fld_divv {
   @media (max-width: 575px) {
     flex-direction: column !important;
+
     table {
       max-width: 100% !important;
     }
   }
+
   @media (max-width: 768px) {
     flex-direction: column !important;
+
     table {
       max-width: 100% !important;
     }
@@ -292,6 +299,7 @@
     width: 48.5%;
   }
 }
+
 .payment_btn_divv {
   @media (max-width: 430px) {
     width: 100%;
@@ -302,12 +310,15 @@
   @media (min-width: 431px) and (max-width: 696px) {
     width: 48.5% !important;
   }
+
   @media (max-width: 430px) {
     width: 100% !important;
   }
+
   @media (min-width: 697px) and (max-width: 1100px) {
     width: 30% !important;
   }
+
   @media (min-width: 1101px) {
     width: 200px !important;
   }
@@ -344,15 +355,41 @@
     justify-content: center !important;
     height: 45px !important;
   }
+
   .main_fltr_btn {
     width: 100%;
   }
 }
 
-.modal_amount div[role="dialog"] {
-  max-width: 30%;
-  align-content: end;
-  padding: 0;
+@media (max-width:600px) {
+  .modal_amount div[role="dialog"] {
+    max-width: 100%;
+    align-content: end;
+    padding: 0;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 768px) {
+  .modal_amount div[role="dialog"] {
+    max-width: 80%;
+    align-content: end;
+    padding: 0;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modal_amount div[role="dialog"] {
+    max-width: 60%;
+    align-content: end;
+    padding: 0;
+  }
+}
+
+@media (min-width:1025px) {
+  .modal_amount div[role="dialog"] {
+    max-width: 30%;
+    align-content: end;
+    padding: 0;
+  }
 }
 
 .invoice_total_fld {

@@ -357,7 +357,7 @@ const SaleView = () => {
                                     </div>
 
                                     <div style={{ display: 'flex', alignItems: 'center',padding:'0 20px' }}>
-                                        <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                                        <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer",whiteSpace: 'nowrap' }}>
                                             <label className="font-bold">Net Amount : </label>
                                             <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{tableData?.net_amount}
                                                 <FaCaretUp />

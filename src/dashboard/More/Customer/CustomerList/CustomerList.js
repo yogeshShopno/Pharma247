@@ -854,11 +854,10 @@ sx={{
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous{" "}
@@ -895,11 +894,10 @@ sx={{
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next{" "}
@@ -980,14 +978,14 @@ sx={{
 
           <Dialog
             open={openAddPopUp}
-            // sx={{
-            //     "& .MuiDialog-container": {
-            //         "& .MuiPaper-root": {
-            //             width: "36%",
-            //             maxWidth: "600px",  // Set your width here
-            //         },
-            //     },
-            // }}
+          // sx={{
+          //     "& .MuiDialog-container": {
+          //         "& .MuiPaper-root": {
+          //             width: "36%",
+          //             maxWidth: "600px",  // Set your width here
+          //         },
+          //     },
+          // }}
           >
             <div className="flex justify-center items-center h-auto">
               <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
@@ -1005,7 +1003,7 @@ sx={{
                     aria-label="close"
                     onClick={resetAddDialog}
                     className="text-gray-500"
-                    // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                  // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
                   >
                     <CloseIcon />
                   </IconButton>
@@ -1029,7 +1027,7 @@ sx={{
                             onChange={(e) => {
                               setCustomer(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                           {errors.customer && (
@@ -1054,7 +1052,7 @@ sx={{
                                 +91
                               </InputAdornment>
                             }
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             size="small"
                           />
                           {errors.mobileNo && (
@@ -1076,7 +1074,7 @@ sx={{
                             onChange={(e) => {
                               setEmailId(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>
@@ -1091,7 +1089,7 @@ sx={{
                             onChange={(e) => {
                               setAmount(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>
@@ -1108,7 +1106,7 @@ sx={{
                             onChange={(e) => {
                               setArea(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>
@@ -1122,7 +1120,7 @@ sx={{
                             onChange={(e) => {
                               setCity(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>
@@ -1139,7 +1137,7 @@ sx={{
                             onChange={(e) => {
                               setAddress(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>
@@ -1153,7 +1151,7 @@ sx={{
                             onChange={(e) => {
                               setState(e.target.value);
                             }}
-                            style={{ minWidth: 250 }}
+                            style={{ width: '100%' }}
                             variant="outlined"
                           />
                         </div>

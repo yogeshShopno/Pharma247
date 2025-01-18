@@ -580,7 +580,7 @@ const OrderList = () => {
                         </Dialog>
 
                         <Dialog className="order_list_ml" open={openAddPopUpPlaceOrder}>
-                            <DialogTitle id="alert-dialog-title" className="primary">
+                            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
                                 Place Order
                             </DialogTitle>
                             <IconButton

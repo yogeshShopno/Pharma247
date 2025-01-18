@@ -1,6 +1,7 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
 #root {
   --color1: #3f6212;
   --color2: #628a2f;
@@ -13,15 +14,19 @@
 .primary {
   color: #3f6212;
 }
+
 .primary-bg {
   background-color: #3f6212;
 }
+
 .secondary {
   color: #628a2f;
 }
+
 .secondary-bg {
   background-color: #628a2f;
 }
+
 .primhover:hover {
   background-color: #628a2f;
 }
@@ -53,8 +58,9 @@ input[type="number"] {
 }
 
 @media (max-width: 640px) {
-  body > aside,
-  body > main {
+
+  body>aside,
+  body>main {
     grid-area: stack;
   }
 }
@@ -96,7 +102,7 @@ input[type="number"] {
     transition: transform var(--duration) var(--easeOutExpo);
   }
 
-  #sidenav-open:target ~ main {
+  #sidenav-open:target~main {
     filter: blur(0.5em);
     z-index: -1;
   }
@@ -659,9 +665,21 @@ body {
 .custom-datepicker {
   padding: 7px !important;
   border-radius: 5px !important;
-  border: 1px solid var(--color1) !important; 
+  border: 1px solid var(--color1) !important;
   height: 38px;
 }
+
+.custom-datepicker_mn {
+  padding: 7px !important;
+  border-radius: 5px !important;
+  border: 1px solid #3f6212;
+  height: 38px;
+  width: 100%;
+}
+.react-datepicker-wrapper {
+  width: 100% !important;
+}
+
 
 /* More specific selector for the react-datepicker component */
 .react-datepicker {
@@ -671,7 +689,7 @@ body {
 }
 
 .react-datepicker__header {
-  background-color: var(--color3)!important;
+  background-color: var(--color3) !important;
 }
 
 .react-datepicker__day--selected {
@@ -715,7 +733,7 @@ body {
   padding: 5px 10px;
   border-radius: 5px;
   color: #3f6212;
-  
+
 }
 
 .pendingStatus {
@@ -733,4 +751,5 @@ body {
   border-radius: 5px;
   color: #f60909;
 }
+
 /* Additional styles */

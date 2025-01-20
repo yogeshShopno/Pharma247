@@ -27,20 +27,20 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import { setId } from "@material-tailwind/react/components/Tabs/TabsContext";
 const saleColumns = [
-  { id: "bill_no", label: "Bill NO", minWidth: 70, height: 100 },
-  { id: "bill_date", label: "Bill Date", minWidth: 100 },
-  { id: "qty", label: "Quantity", minWidth: 100 },
-  { id: "payment_mode", label: "Payment Mode", minWidth: 100 },
-  { id: "amt", label: "Bill Amount", minWidth: 100 },
-  { id: "roylti_point", label: "Loyalty Points", minWidth: 100 },
+  { id: "bill_no", label: "Bill NO", minWidth: 150, height: 100 },
+  { id: "bill_date", label: "Bill Date", minWidth: 150 },
+  { id: "qty", label: "Quantity", minWidth: 150 },
+  { id: "payment_mode", label: "Payment Mode", minWidth: 150 },
+  { id: "amt", label: "Bill Amount", minWidth: 150 },
+  { id: "roylti_point", label: "Loyalty Points", minWidth: 150 },
 ];
 
 const saleReturnColumns = [
-  { id: "bill_no", label: "Bill NO", minWidth: 70, height: 100 },
-  { id: "bill_date", label: "Bill Date", minWidth: 100 },
-  { id: "qty", label: "Quantity", minWidth: 100 },
-  // { id: 'status', label: 'Status', minWidth: 100 },
-  { id: "amt", label: "Bill Amount", minWidth: 100 },
+  { id: "bill_no", label: "Bill NO", minWidth: 150, height: 100 },
+  { id: "bill_date", label: "Bill Date", minWidth: 150 },
+  { id: "qty", label: "Quantity", minWidth: 150 },
+  // { id: 'status', label: 'Status', minWidth: 150 },
+  { id: "amt", label: "Bill Amount", minWidth: 150 },
 ];
 const CustomerView = () => {
   const { id } = useParams();
@@ -303,11 +303,6 @@ const CustomerView = () => {
             <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
               <div
                 className="cust_tab_val"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
               >
                 <Tabs
                   value={tabValue}
@@ -318,7 +313,7 @@ const CustomerView = () => {
                     },
                   }}
                   onChange={handleChange}
-                  style={{ marginBottom: "10px" }}
+                // style={{ marginBottom: "10px" }}
                 >
                   <Tab
                     label="Sale"
@@ -342,7 +337,7 @@ const CustomerView = () => {
                     }}
                   />
                 </Tabs>
-                <div>
+                <div class='total_amount_fld'>
                   {tabValue === 0 && (
                     <div
                       className="mx-4 my-2 "
@@ -359,6 +354,7 @@ const CustomerView = () => {
                           color: "var(--color1)",
                           fontSize: "18px",
                           fontWeight: 800,
+                          whiteSpace: 'noWrap'
                         }}
                       >
                         {" "}
@@ -388,6 +384,7 @@ const CustomerView = () => {
                           color: "var(--color1)",
                           fontSize: "18px",
                           fontWeight: 800,
+                          whiteSpace: 'noWrap'
                         }}
                       >
                         {" "}
@@ -429,6 +426,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
+                        overflow:'auto'
                       }}
                     >
                       <thead>
@@ -454,8 +452,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleColumns.length - 1 // Last column for right-side radius
-                                    ? { borderRadius: "0 10px 10px 0" }
-                                    : {}
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
                                 }
                               >
                                 {column.id === "bill_no" ? (
@@ -524,6 +522,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
+                        overflow:'auto'
                       }}
                     >
                       <thead>
@@ -548,8 +547,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleReturnColumns.length - 1 // Last column for right-side radius
-                                    ? { borderRadius: "0 10px 10px 0" }
-                                    : {}
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
                                 }
                               >
                                 {item[column.id]}

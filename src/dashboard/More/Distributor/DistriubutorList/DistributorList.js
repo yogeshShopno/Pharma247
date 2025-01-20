@@ -397,7 +397,7 @@ const DistributerList = () => {
           }}
         >
           <div>
-            <div style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
+            <div className="py-3 cust_list_main_hdr_bg" style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
               <div
                 style={{ display: "flex", gap: "7px", alignItems: "center" }}
                 className="mt-2"
@@ -409,61 +409,62 @@ const DistributerList = () => {
                     alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
-                    width: "150px",
+                    width: "136px",
                   }}
                 >
                   Distributor List
                 </span>
                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
               </div>
-              <div className="headerList mt-2">
+              <div className="headerList cust_hdr_mn_bg mt-2">
                 {hasPermission(permissions, "distributor import") && (
-                  <div>
-                    <Button
-                      variant="contained"
-                      style={{
-                        background: "var(--color1)",
-                        display: "flex",
-                        gap: "10px",
-                      }}
-                      onClick={openFilePopUP}
-                    >
-                      <CloudUploadIcon /> Import
-                    </Button>
-                  </div>
-                )}
-                {hasPermission(permissions, "distributor create") && (
-                  <div>
-                    <Button
-                      variant="contained"
-                      style={{ background: "var(--color1)" }}
-                      onClick={() => {
-                        history.push("/more/addDistributer");
-                      }}
-                    >
-                      {" "}
-                      <AddIcon className="mr-2" />
-                      Add Distributor
-                    </Button>
-                  </div>
-                )}
-                {hasPermission(permissions, "distributor download") && (
                   <Button
                     variant="contained"
                     style={{
                       background: "var(--color1)",
+                      display: "flex",
+                    }}
+                    className="gap-2"
+                    onClick={openFilePopUP}
+                  >
+                    <CloudUploadIcon /> Import
+                  </Button>
+                )}
+                {hasPermission(permissions, "distributor create") && (
+                  <Button
+                    variant="contained"
+                    style={{ background: "var(--color1)", display: "flex", }}
+                    onClick={() => {
+                      history.push("/more/addDistributer");
+                    }}
+                    className="gap-2"
+                  >
+                    {" "}
+                    <AddIcon className="" />
+                    Add Distributor
+                  </Button>
+                )}
+                {hasPermission(permissions, "distributor download") && (
+                  <Button
+                    className="gap-7"
+                    variant="contained"
+                    style={{
+                      background: "var(--color1)",
                       color: "white",
+                      // paddingLeft: "35px",
                       textTransform: "none",
-                      paddingLeft: "35px",
+                      display: "flex",
                     }}
                     onClick={exportToExcel}
                   >
                     {" "}
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv Icon"
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img
+                        src="/csv-file.png"
+                        className="report-icon absolute"
+                        alt="csv Icon"
+                      />
+                    </div>
                     Download
                   </Button>
                 )}
@@ -483,7 +484,7 @@ const DistributerList = () => {
                 <tr>
                   <th>SR. No</th>
                   {columns.map((column, index) => (
-                    <th key={column.id}>
+                    <th key={column.id} style={{ minWidth: column.minWidth }}>
                       <div className="headerStyle">
                         <span>{column.label}</span>
                         <SwapVertIcon
@@ -496,6 +497,7 @@ const DistributerList = () => {
                           label={`Search ${column.label}`}
                           id="filled-basic"
                           size="small"
+                          sx={{ width: "150px" }}
                           value={searchTerms[index]}
                           onChange={(e) =>
                             handleSearchChange(index, e.target.value)
@@ -580,11 +582,10 @@ const DistributerList = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -621,11 +622,10 @@ const DistributerList = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next

@@ -185,7 +185,7 @@ const CustomerView = () => {
           }}
         >
           <div>
-            <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
               <span
                 style={{
                   color: "var(--color2)",
@@ -194,7 +194,7 @@ const CustomerView = () => {
                   fontWeight: 700,
                   fontSize: "20px",
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer cust_header_txt_main"
                 onClick={() => {
                   history.push("/more/customer");
                 }}
@@ -202,13 +202,14 @@ const CustomerView = () => {
                 Customers
               </span>
               <ArrowForwardIosIcon
+                className="cust_header_txt"
                 style={{
                   fontSize: "20px",
-                  marginTop: "6px",
                   color: "var(--color1)",
                 }}
               />
               <span
+                className="cust_header_txt"
                 style={{
                   color: "var(--color1)",
                   display: "flex",
@@ -220,13 +221,14 @@ const CustomerView = () => {
                 View{" "}
               </span>
               <ArrowForwardIosIcon
+                className="cust_header_txt"
                 style={{
                   fontSize: "20px",
-                  marginTop: "6px",
                   color: "var(--color1)",
                 }}
               />
               <span
+                className="cust_header_txt"
                 style={{
                   color: "var(--color1)",
                   display: "flex",
@@ -241,23 +243,23 @@ const CustomerView = () => {
           </div>
           <div>
             <div
-              className="header_main_txt mt-2 "
+              className="header_main_txt_CV mt-2 "
               style={{ background: "none" }}
             >
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Customer Name</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Customer Name</span>
                 <span className="data_bg">
                   {tableData.name ? tableData.name : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Mobile No</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Mobile No</span>
                 <span className="data_bg">
                   {tableData.phone_number ? tableData.phone_number : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Email ID</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Email ID</span>
                 <span
                   className="data_bg"
                   style={{ textTransform: "lowercase" }}
@@ -265,32 +267,32 @@ const CustomerView = () => {
                   {tableData.email ? tableData.email : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Total Amount</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Total Amount</span>
                 <span className="data_bg">
                   {tableData.balance ? tableData.balance : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Loyalty Points</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Loyalty Points</span>
                 <span className="data_bg">
                   {tableData.roylti_point ? tableData.roylti_point : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Area</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Area</span>
                 <span className="data_bg">
                   {tableData.area ? tableData.area : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">City</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">City</span>
                 <span className="data_bg">
                   {tableData.city ? tableData.city : "____"}
                 </span>
               </div>
-              <div className="detail_main_bg">
-                <span className="heading mb-2">Address</span>
+              <div className="detail_main_bg_CV">
+                <span className="heading_othr">Address</span>
                 <span className="data_bg">
                   {tableData.address ? tableData.address : "____"}
                 </span>
@@ -350,6 +352,7 @@ const CustomerView = () => {
                       }}
                     >
                       <Typography
+                        className="total_amount_txt"
                         style={{
                           color: "var(--color1)",
                           fontSize: "18px",
@@ -380,6 +383,8 @@ const CustomerView = () => {
                       }}
                     >
                       <Typography
+                        className="total_amount_txt"
+
                         style={{
                           color: "var(--color1)",
                           fontSize: "18px",
@@ -426,7 +431,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow:'auto'
+                        overflow: 'auto'
                       }}
                     >
                       <thead>
@@ -522,7 +527,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow:'auto'
+                        overflow: 'auto'
                       }}
                     >
                       <thead>

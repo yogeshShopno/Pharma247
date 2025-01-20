@@ -523,12 +523,12 @@ const CustomerList = () => {
             padding: "0px 20px 0px",
           }}
         >
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+          <div className="py-3 cust_list_main_hdr" style={{ display: "flex", gap: "4px" }}>
             <div
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                width: "500px",
+                width: "200px",
                 gap: "7px",
               }}
             >
@@ -544,15 +544,15 @@ const CustomerList = () => {
               </span>
               <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
             </div>
-            <div className="headerList">
+            <div className="headerList cust_hdr_mn">
               {hasPermission(permissions, "customer import") && (
                 <Button
                   variant="contained"
                   style={{
                     background: "var(--color1)",
                     display: "flex",
-                    gap: "10px",
                   }}
+                  className="gap-2"
                   onClick={openFilePopUP}
                 >
                   <CloudUploadIcon /> Import
@@ -565,8 +565,8 @@ const CustomerList = () => {
                   style={{
                     background: "var(--color1)",
                     display: "flex",
-                    gap: "0px",
                   }}
+                  className="gap-2"
                   onClick={handelAddOpen}
                 >
                   <AddIcon /> Add
@@ -574,20 +574,24 @@ const CustomerList = () => {
               )}
               {hasPermission(permissions, "customer download") && (
                 <Button
+                  className="gap-7"
                   variant="contained"
                   style={{
                     background: "var(--color1)",
                     color: "white",
-                    paddingLeft: "35px",
+                    // paddingLeft: "35px",
                     textTransform: "none",
+                    display: "flex",
                   }}
                   onClick={exportToExcel}
                 >
-                  <img
-                    src="/csv-file.png"
-                    className="report-icon absolute mr-10"
-                    alt="csv Icon"
-                  />
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <img
+                      src="/csv-file.png"
+                      className="report-icon absolute"
+                      alt="csv Icon"
+                    />
+                  </div>
                   Download
                 </Button>
               )}
@@ -855,8 +859,8 @@ sx={{
               <button
                 onClick={handlePrevious}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage === 1}
               >
@@ -895,8 +899,8 @@ sx={{
               <button
                 onClick={handleNext}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={filteredList.length === 0}
               >

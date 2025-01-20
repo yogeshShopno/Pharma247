@@ -57,7 +57,7 @@ const PaymentList = () => {
     const [distributorsId, setDistributorsId] = useState(null);
     const [distributorList, setDistributorList] = useState([]);
     const [note, setNote] = useState('');
-    const [paymentLabel, setPaymentLabel] = useState('');
+    const [paymentLabel, setPaymentLabel] = useState('');  
     const [buttonLabel, setButtonLabel] = useState('');
     const [paymentDate, setPaymentDate] = useState(new Date());
     const [amounts, setAmounts] = useState({});

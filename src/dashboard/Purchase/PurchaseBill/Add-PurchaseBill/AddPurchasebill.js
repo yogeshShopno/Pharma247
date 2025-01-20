@@ -172,6 +172,7 @@ const AddPurchaseBill = () => {
   const [id, setId] = useState(null);
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
+  /*<================================================================================ PTR and MRP validation =======================================================================> */
 
   useEffect(() => {
     const newErrors = {};
@@ -182,6 +183,7 @@ const AddPurchaseBill = () => {
 
     setErrors(newErrors);
   }, [ptr, mrp]);
+  /*<================================================================= Clear old purchase item if user leave the browswer =========================================================> */
 
   useEffect(() => {
     generateRandomNumber();
@@ -195,19 +197,16 @@ const AddPurchaseBill = () => {
     initialize();
   }, []);
 
+  /*<===================================================== handle add item using barcode function if add value in barcode field =================================================> */
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       handleBarcode();
     }, 100);
     return () => clearTimeout(timeoutId);
-    // handleBarcode();
   }, [barcode]);
 
-  // useEffect(() => {
-
-  //   generateRandomNumber()
-  //   handleLeavePage()
-  // },)
+  /*<=========================================================================== get essential details intially =================================================================> */
 
   useEffect(() => {
     if (id) {
@@ -218,6 +217,8 @@ const AddPurchaseBill = () => {
     listOfGst();
     setSrNo(localStorage.getItem("Purchase_SrNo"));
   }, [id]);
+
+  /*<============================================================================ Clear old purchase item data ====================================================================> */
 
   useEffect(() => {
     if (localStorage.getItem("RandomNumber") !== null) {
@@ -231,20 +232,20 @@ const AddPurchaseBill = () => {
     };
   }, []);
 
-  // useEffect(()=>{
-  //   setNetAmount(netAmount?.toFixed(2));
-
-  // },[netAmount])
+  /*<================================================================== Clear old purchase item if user leave the browswer ==========================================================> */
 
   useEffect(() => {
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
 
-    // Calculate totalBase
+    /*<=========================================================================== Calculate totalBase ================================================================================> */
+
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
-    // Calculate totalAmount
+
+    /*<============================================================================= Calculate totalAmount ==============================================================================> */
+
     const totalAmount = parseFloat(
       (totalBase + (totalBase * gst.name) / 100).toFixed(2)
     );
@@ -254,7 +255,8 @@ const AddPurchaseBill = () => {
       setItemTotalAmount(0);
     }
 
-    // Net Rate calculation
+    /*<======================================================================================= Net Rate calculation ====================================================================> */
+
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
     const netRate = parseFloat(
@@ -262,10 +264,13 @@ const AddPurchaseBill = () => {
     );
     setNetRate(netRate);
 
-    // Margin Caluculation
+    /*<================================================================================= Margin calculation =========================================================================> */
+
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
   }, [qty, ptr, disc, gst.name, free, ItemTotalAmount, barcodeBatch]);
+
+  /*<============================================================================== CN calculation realtime ========================================================================> */
 
   useEffect(() => {
     const total = Object.values(cnTotalAmount)
@@ -274,20 +279,51 @@ const AddPurchaseBill = () => {
     setCnAmount(total);
   }, [cnTotalAmount]);
 
-  // useEffect(() => {
-  //   const handleKeyDown = (event) => {
-  //     if (event.key === 'Enter') {
-  //       handleAddButtonClick();
-  //     }
-  //   };
+  /*<================================================================================ get bank list =============================================================================> */
 
-  //   window.addEventListener('keydown', handleKeyDown);
+  const BankList = async () => {
+    let data = new FormData();
+    try {
+      await axios
+        .post("bank-list", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setBankData(response.data.data);
+        });
+    } catch (error) {
+      console.error("API error:", error);
+      if (error.response.status === 401) {
+        setUnsavedItems(false);
+      }
+    }
+  };
 
-  //   return () => {
-  //     window.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, []);
-  const handleFileChange = (e) => {
+  /*<============================================================================ expiry date validation =========================================================================> */
+
+  const handleExpiryDate = (event) => {
+    let inputValue = event.target.value;
+    inputValue = inputValue.replace(/\D/g, "");
+
+    if (inputValue.length > 2) {
+      const month = inputValue.slice(0, 2);
+      const year = inputValue.slice(2, 4);
+      if (parseInt(month) > 12) {
+        inputValue = "MM";
+      } else if (parseInt(month) < 1) {
+        inputValue = "01";
+      }
+      inputValue = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
+    }
+
+    setExpiryDate(inputValue);
+  };
+
+  /*<================================================================================= select file to upload =========================================================================> */
+
+  const handleFileSelect = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const fileType = selectedFile.type;
@@ -299,13 +335,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  const openFileUpload = () => {
-    setOpenFile(true);
-  };
-
-  const handleFileClose = () => {
-    setOpenFile(false);
-  };
+  /*<=================================================================================== upload selected file =======================================================================> */
 
   const handleFileUpload = async () => {
     generateRandomNumber();
@@ -343,6 +373,8 @@ const AddPurchaseBill = () => {
     }
   };
 
+  /*<================================================================================ download selected file =============================================================================> */
+
   const handleDownload = () => {
     const link = document.createElement("a");
     link.href = "/purchase_add_sample.csv";
@@ -352,276 +384,191 @@ const AddPurchaseBill = () => {
     document.body.removeChild(link);
   };
 
-  const BankList = async () => {
-    let data = new FormData();
-    try {
-      await axios
-        .post("bank-list", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setBankData(response.data.data);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-      if (error.response.status === 401) {
-        setUnsavedItems(false);
-      }
-    }
-  };
-
-  const handleExpiryDateChange = (event) => {
-    let inputValue = event.target.value;
-    inputValue = inputValue.replace(/\D/g, "");
-
-    if (inputValue.length > 2) {
-      const month = inputValue.slice(0, 2);
-      const year = inputValue.slice(2, 4);
-      if (parseInt(month) > 12) {
-        inputValue = "MM";
-      } else if (parseInt(month) < 1) {
-        inputValue = "01";
-      }
-      inputValue = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
-    }
-
-    setExpiryDate(inputValue);
-  };
+/*<============================================================================ barcode functionality =========================================================================> */
 
   const handleBarcode = async () => {
+   
     setIsEditMode(false);
     if (!barcode) {
       return;
     }
-    // let data = new FormData();
-    // data.append("barcode", barcode);
 
-    const params = {
-      random_number: localStorage.getItem("RandomNumber"),
-    };
+ /*<============================================================================ get barcode batch list =========================================================================> */
+
     try {
-      const res = axios
-        .post(
-          "barcode-batch-list?",
-          { barcode: barcode },
-          {
-            // params: params,
-            headers: {
+      const res = axios.post("barcode-batch-list?",{ barcode: barcode },
+          {headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          // data.append("unit_id", Number(0));
-          // data.append("random_number", localStorage.getItem("RandomNumber"));
-          // data.append("item_id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
-          // data.append("weightage", response?.data?.data[0]?.batch_list[0]?.unit ? Number(response?.data?.data[0]?.batch_list[0]?.unit) : 1);
-          // data.append("batch_number", response?.data?.data[0]?.batch_list[0]?.batch_number ? response?.data?.data[0]?.batch_list[0]?.batch_number : 0);
-          // data.append("expiry", response?.data?.data[0]?.batch_list[0]?.expiry_date);
-          // data.append("mrp", response?.data?.data[0]?.batch_list[0]?.mrp ? response?.data?.data[0]?.batch_list[0]?.mrp : 0);
-          // data.append("qty", response?.data?.data[0]?.batch_list[0]?.qty ? response?.data?.data[0]?.batch_list[0]?.qty : 0);
-          // data.append("free_qty", 0);
-          // data.append("ptr", response?.data?.data[0]?.batch_list[0]?.ptr ? response?.data?.data[0]?.batch_list[0]?.ptr : 0);
-          // data.append("discount", response?.data?.data[0]?.batch_list[0]?.discount ? response?.data?.data[0]?.batch_list[0]?.discount : 0);
-          // data.append("scheme_account", response?.data?.data[0]?.batch_list[0]?.scheme_account ? response?.data?.data[0]?.batch_list[0]?.scheme_account : 0);
-          // data.append("base_price", response?.data?.data[0]?.batch_list[0]?.base ? response?.data?.data[0]?.batch_list[0]?.base : 0);
-          // data.append("gst", response?.data?.data[0]?.batch_list[0]?.gst ? response?.data?.data[0]?.batch_list[0]?.gst : 0);
-          // data.append("location", response?.data?.data[0]?.batch_list[0]?.location ? response?.data?.data[0]?.batch_list[0]?.location : 0);
-          // data.append("margin", response?.data?.data[0]?.batch_list[0]?.margin ? response?.data?.data[0]?.batch_list[0]?.margin : 0);
-          // data.append("net_rate", response?.data?.data[0]?.batch_list[0]?.netRate ? response?.data?.data[0]?.batch_list[0]?.netRate : 0);
-          // data.append("id", response?.data?.data[0]?.batch_list[0]?.item_id ? response?.data?.data[0]?.batch_list[0]?.item_id : 0);
-
-          // setValue (response?.data?.data[0]?.batch_list[0]?.iteam_id)
-          // setValue.unit_id(response.data.data[0]?.unit)
-
-          // setBarcodeBatch(response?.data?.data[0])
-          // setUnit(Number(response?.data?.data[0]?.batch_list[0]?.unit))
-          // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-          // setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-          // setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
-          // setQty(Number(response?.data?.data[0]?.batch_list[0]?.unit))
-          // setFree(Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty))
-          // setPTR(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
-          // setDisc(Number(response?.data?.data[0]?.batch_list[0]?.discount))
-          // setSchAmt(Number(response?.data?.data[0]?.batch_list[0]?.scheme_account))
-          // setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
-          // setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst));
-          // setLoc(response?.data?.data[0]?.batch_list[0]?.location)
-          // setMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
-          // setNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
-          // setSearchItem(response?.data?.data[0]?.iteam_name)
-
-          // setItemId(Number(response.data.data[0]?.id))
-          // setItemEditID(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
-          // setSelectedEditItemId(Number(response?.data?.data[0]?.id))
-          // setItemEditID(Number(response.data.data[0]?.id))
-
+            },}
+        ).then((response) => {
           setTimeout(() => {
-            handleBarcodeItem();
-            // handleAddItem()
-          }, 100);
+            const handleBarcodeItem = async () => {
+              setUnsavedItems(true);
+              let data = new FormData();
 
-          const handleBarcodeItem = async () => {
-            setUnsavedItems(true);
-            let data = new FormData();
+              data.append(
+                "random_number",
+                localStorage.getItem("RandomNumber")
+              );
+              data.append(
+                "weightage",
+                Number(response?.data?.data[0]?.batch_list[0]?.unit)
+              );
+              data.append(
+                "batch_number",
+                response?.data?.data[0]?.batch_list[0]?.batch_name
+                  ? response?.data?.data[0]?.batch_list[0]?.batch_name
+                  : 0
+              );
+              data.append(
+                "expiry",
+                response?.data?.data[0]?.batch_list[0]?.expiry_date
+              );
+              data.append(
+                "mrp",
+                Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                  : 0
+              );
+              data.append(
+                "qty",
+                Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                  : 0
+              );
+              data.append(
+                "free_qty",
+                Number(
+                  response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                )
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                    )
+                  : 0
+              );
+              data.append(
+                "ptr",
+                Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                  : 0
+              );
+              data.append(
+                "discount",
+                Number(response?.data?.data[0]?.batch_list[0]?.discount)
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.scheme_account
+                    )
+                  : 0
+              );
+              data.append(
+                "scheme_account",
+                Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.scheme_account
+                    )
+                  : 0
+              );
+              data.append(
+                "base_price",
+                Number(response?.data?.data[0]?.batch_list[0]?.base)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+                  : 0
+              );
+              data.append(
+                "gst",
+                Number(response?.data?.data[0]?.batch_list[0]?.gst)
+              );
+              data.append(
+                "location",
+                response?.data?.data[0]?.batch_list[0]?.location
+                  ? response?.data?.data[0]?.batch_list[0]?.location
+                  : 0
+              );
+              data.append(
+                "margin",
+                Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                  : 0
+              );
+              data.append(
+                "net_rate",
+                Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                  : 0
+              );
 
-            data.append("random_number", localStorage.getItem("RandomNumber"));
-            data.append(
-              "weightage",
-              Number(response?.data?.data[0]?.batch_list[0]?.unit)
-            );
-            data.append(
-              "batch_number",
-              response?.data?.data[0]?.batch_list[0]?.batch_name
-                ? response?.data?.data[0]?.batch_list[0]?.batch_name
-                : 0
-            );
-            data.append(
-              "expiry",
-              response?.data?.data[0]?.batch_list[0]?.expiry_date
-            );
-            data.append(
-              "mrp",
-              Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                : 0
-            );
-            data.append(
-              "qty",
-              Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                : 0
-            );
-            data.append(
-              "free_qty",
-              Number(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-                ? Number(
-                    response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                  )
-                : 0
-            );
-            data.append(
-              "ptr",
-              Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                : 0
-            );
-            data.append(
-              "discount",
-              Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                : 0
-            );
-            data.append(
-              "scheme_account",
-              Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                : 0
-            );
-            data.append(
-              "base_price",
-              Number(response?.data?.data[0]?.batch_list[0]?.base)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-                : 0
-            );
-            data.append(
-              "gst",
-              Number(response?.data?.data[0]?.batch_list[0]?.gst)
-            );
-            data.append(
-              "location",
-              response?.data?.data[0]?.batch_list[0]?.location
-                ? response?.data?.data[0]?.batch_list[0]?.location
-                : 0
-            );
-            data.append(
-              "margin",
-              Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                : 0
-            );
-            data.append(
-              "net_rate",
-              Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                : 0
-            );
+              data.append(
+                "item_id",
+                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  : 0
+              );
+              data.append("unit_id", Number(0));
+              data.append("user_id", userId);
 
-            data.append(
-              "item_id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
-            data.append("unit_id", Number(0));
-            data.append("user_id", userId);
+              data.append(
+                "id",
+                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  : 0
+              );
 
-            data.append(
-              "id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
+              data.append(
+                "total_amount",
+                Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                  : 0
+              );
 
-            data.append(
-              "total_amount",
-              Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                : 0
-            );
+              const params = {
+                id: selectedEditItemId,
+              };
+/*<========================================================================== call add item api to add barcode item  ===================================================================> */
 
-            const params = {
-              id: selectedEditItemId,
-            };
-            try {
-              const response = await axios.post("item-purchase", data, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              setItemTotalAmount(0);
-              setDeleteAll(true);
-              itemPurchaseList();
-              setUnit("");
-              setBatch("");
-              setHSN("");
-              setExpiryDate("");
-              setMRP("");
-              setQty("");
-              setFree("");
-              setPTR("");
-              setGst("");
-              setDisc("");
-              setBase("");
-              setNetRate("");
-              setSchAmt("");
-              setMargin("");
-              setLoc("");
+              try {
+                const response = await axios.post("item-purchase", data, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+                setItemTotalAmount(0);
+                setDeleteAll(true);
+                itemPurchaseList();
+                setUnit("");
+                setBatch("");
+                setHSN("");
+                setExpiryDate("");
+                setMRP("");
+                setQty("");
+                setFree("");
+                setPTR("");
+                setGst("");
+                setDisc("");
+                setBase("");
+                setNetRate("");
+                setSchAmt("");
+                setMargin("");
+                setLoc("");
+                setIsEditMode(false);
+                setSelectedEditItemId(null);
+                setBarcode("");
+                setValue("");
+                setValue("");
+                setSearchItem("");
 
-              if (ItemTotalAmount <= finalCnAmount) {
-                setFinalCnAmount(0);
-                setSelectedRows([]);
-                setCnTotalAmount({});
+                if (ItemTotalAmount <= finalCnAmount) {
+                  setFinalCnAmount(0);
+                  setSelectedRows([]);
+                  setCnTotalAmount({});
+                }
+              } catch (e) {
+                setUnsavedItems(false);
               }
-              // setNetAmount(totalAmount)
-              // handleCalNetAmount()
-              setIsEditMode(false);
-              setSelectedEditItemId(null);
+            };
 
-              setBarcode("");
-              setValue("");
-              // Reset Autocomplete field
-              setValue("");
-              setSearchItem("");
-
-              // setAutocompleteDisabled(false);
-            } catch (e) {
-              setUnsavedItems(false);
-            }
-          };
+            handleBarcodeItem();
+          }, 100);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -629,79 +576,8 @@ const AddPurchaseBill = () => {
     }
   };
 
-  // const handleBarcodeItem = async () => {
+/*<========================================================================== delete purchase item data   ===================================================================> */
 
-  //   setUnsavedItems(true)
-  //   let data = new FormData();
-  //   data.append("random_number", localStorage.getItem("RandomNumber"));
-  //   data.append("weightage", unit ? Number(unit) : 1);
-  //   data.append("batch_number", batch ? batch : 0);
-  //   data.append("expiry", expiryDate);
-  //   data.append("mrp", mrp ? mrp : 0);
-  //   data.append("qty", qty ? qty : 0);
-  //   data.append("free_qty", free ? free : 0);
-  //   data.append("ptr", ptr ? ptr : 0);
-  //   data.append("discount", disc ? disc : 0);
-  //   data.append("scheme_account", schAmt ? schAmt : 0);
-  //   data.append("base_price", base ? base : 0);
-  //   data.append("gst", gst.id);
-  //   data.append("location", loc ? loc : 0);
-  //   data.append("margin", margin ? margin : 0);
-  //   data.append("net_rate", netRate ? netRate : 0);
-  //   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
-  //   data.append("item_id", ItemId);
-  //   data.append("unit_id", Number(0));
-  //   data.append("user_id", userId);
-  //   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
-  //   data.append("total_amount", ItemTotalAmount ? ItemTotalAmount : 0);
-
-  //   const params = {
-  //     id: selectedEditItemId,
-  //   };
-  //   try {
-  //     const response = await axios.post("item-purchase", data, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     setItemTotalAmount(0);
-  //     setDeleteAll(true);
-  //     itemPurchaseList();
-  //     setUnit("");
-  //     setBatch("");
-  //     setExpiryDate("");
-  //     setMRP("");
-  //     setQty("");
-  //     setFree("");
-  //     setPTR("");
-  //     setGst("");
-  //     setDisc("");
-  //     setBase("");
-  //     setNetRate("");
-  //     setSchAmt("");
-  //     setBatch("");
-  //     setMargin("");
-  //     setLoc("");
-
-  //     if (ItemTotalAmount <= finalCnAmount) {
-  //       setFinalCnAmount(0);
-  //       setSelectedRows([]);
-  //       setCnTotalAmount({});
-  //     }
-  //     // setNetAmount(totalAmount)
-  //     // handleCalNetAmount()
-  //     setIsEditMode(false);
-  //     setSelectedEditItemId(null);
-  //     setBarcode("")
-  //     setValue("")
-  //     // Reset Autocomplete field
-  //     setValue("");
-  //     setSearchItem("");
-  //     // setAutocompleteDisabled(false);
-  //   } catch (e) {
-  //   }
-  // }
 
   const handlePopState = () => {
     let data = new FormData();
@@ -730,6 +606,8 @@ const AddPurchaseBill = () => {
     }
   };
 
+/*<================================================================================ Generate random number   ========================================================================> */
+
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
       const number = Math.floor(Math.random() * 100000) + 1;
@@ -739,6 +617,9 @@ const AddPurchaseBill = () => {
       return;
     }
   };
+
+/*<================================================================================ Get GST List   =================================================================================> */
+
 
   let listOfGst = () => {
     axios
@@ -755,6 +636,9 @@ const AddPurchaseBill = () => {
       });
   };
 
+/*<================================================================================ Get Distributor List   =================================================================================> */
+
+
   let listDistributor = () => {
     axios
       .get("list-distributer", {
@@ -770,6 +654,8 @@ const AddPurchaseBill = () => {
         setUnsavedItems(false);
       });
   };
+
+/*<================================================================================ Get Item purchase List   =================================================================================> */
 
   const itemPurchaseList = async () => {
     let data = new FormData();
@@ -793,25 +679,31 @@ const AddPurchaseBill = () => {
           handleCalNetAmount(response.data.data.total_price);
           setTotalBase(response.data.data.total_base);
           setTotalFRee(response.data.data.total_free);
-          // setNetAmount(response.data.data.total_price)
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
     }
   };
+
+ /*<========================================================================= disable to select date of past  ====================================================================> */
+
   const isDateDisabled = (date) => {
     const today = new Date();
-    // Set time to 00:00:00 to compare only date part
+    // Set time to 00:00:00 to compare only date part--------------------------
     today.setHours(0, 0, 0, 0);
-    // Disable dates that are greater than today
+    // Disable dates that are greater than today-------------------------------------
     return date > today;
   };
+
+ /*<========================================================================= delete added  item  ====================================================================> */
 
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
   };
+
+ /*<========================================================================= get batch list to select item while add  ====================================================================> */
 
   const batchList = async () => {
     let data = new FormData();
@@ -866,8 +758,11 @@ const AddPurchaseBill = () => {
     }
   };
 
+ /*<========================================================================= Add and Edit validation  ====================================================================> */
+
   const handleAddButtonClick = async () => {
-    setFocusedField("item"); // Focus the item field
+
+    setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
     generateRandomNumber();
@@ -885,7 +780,6 @@ const AddPurchaseBill = () => {
       newErrors.HSN = "HSN is required";
     }
 
-    // if (!batch) newErrors.batch = "Batch is required";
     if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -917,11 +811,7 @@ const AddPurchaseBill = () => {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-    // if (!base) newErrors.base = "Base is required";
     if (!gst.name) newErrors.gst = "GST is required";
-    // if (!loc) newErrors.loc = 'Location is required';
-    // if (!netRate) newErrors.netRate = "Net rate is required";
-    // if (!margin) newErrors.margin = "Margin is required";
     if (!searchItem) {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
@@ -937,6 +827,8 @@ const AddPurchaseBill = () => {
     }
     return isValid;
   };
+
+ /*<========================================================================= Add and Edit item function  ====================================================================> */
 
   const handleAddItem = async () => {
     setItemAutofoucs(true);
@@ -1014,27 +906,24 @@ const AddPurchaseBill = () => {
       setSchAmt("");
       setMargin("");
       setLoc("");
+      
+      setIsEditMode(false);
+      setSelectedEditItemId(null);
+      setBarcode("");
+      setValue("");
+      setSearchItem("");
 
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
         setSelectedRows([]);
         setCnTotalAmount({});
       }
-      // setNetAmount(totalAmount)
-      // handleCalNetAmount()
-      setIsEditMode(false);
-      setSelectedEditItemId(null);
-
-      setBarcode("");
-      setValue("");
-      // Reset Autocomplete field
-      setValue("");
-      setSearchItem("");
-      // setAutocompleteDisabled(false);
     } catch (e) {
       setUnsavedItems(false);
     }
   };
+
+ /*<========================================================================= Add new item to item master  ====================================================================> */
 
   const handleAddNewItem = async () => {
     if (!addItemName && !addUnit && !addBarcode) {
@@ -1090,6 +979,8 @@ const AddPurchaseBill = () => {
     }
   };
 
+ /*<=================================================================================== search item name  ==============================================================================> */
+
   const handleSearch = async () => {
     let data = new FormData();
     data.append("search", searchItem);
@@ -1107,16 +998,14 @@ const AddPurchaseBill = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-
-          // if(id){
-          //     batchList(id);
-          // }
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
     }
   };
+
+ /*<=========================================================================== select row using up down arrow  ======================================================================> */
 
   useEffect(() => {
     if (isVisible && tableRef.current) {
@@ -1127,6 +1016,26 @@ const AddPurchaseBill = () => {
       }
     }
   }, [isVisible, ItemPurchaseList]);
+
+  const handleRowSelect = (id, totalAmount) => {
+    const newSelectedRows = selectedRows.includes(id)
+      ? selectedRows.filter((rowId) => rowId !== id)
+      : [...selectedRows, id];
+
+    setSelectedRows(newSelectedRows);
+
+    if (newSelectedRows.includes(id)) {
+      setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
+      setCnAmount((prev) => prev + parseFloat(totalAmount));
+    } else {
+      setCnTotalAmount((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+      setCnAmount((prev) => prev - parseFloat(totalAmount));
+    }
+  };
 
   const handleMouseEnter = (e) => {
     const hoveredRow = e.currentTarget;
@@ -1171,6 +1080,8 @@ const AddPurchaseBill = () => {
     }
   };
 
+ /*<================================================================================= delete added item  ============================================================================> */
+
   const handleDeleteItem = async (ItemId) => {
     if (!ItemId) return;
     let data = new FormData();
@@ -1196,6 +1107,8 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     }
   };
+
+ /*<============================================================================== submit purchase bill  ==========================================================================> */
 
   const submitPurchaseData = async () => {
     let data = new FormData();
@@ -1241,6 +1154,8 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     }
   };
+
+ /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -1290,30 +1205,11 @@ const AddPurchaseBill = () => {
     }
   }, [selectedEditItem]);
 
-  //   useEffect(() => {
-  //     if (addBarcode) {
-  //       setUnitEditID(barcodeBatch.unit_id);
-  //       setUnit(barcodeBatch.unit);
-  //       setBatch(barcodeBatch.batch_number);
-  //       setExpiryDate(barcodeBatch.expiry_date);
-  //       setMRP(barcodeBatch.mrp);
-  //       setQty(barcodeBatch.qty);
-  //       setFree(barcodeBatch.purchase_free_qty);
-  //       setPTR(barcodeBatch.ptr);
-  //       setDisc(barcodeBatch.discount);
-  //       setSchAmt(barcodeBatch.scheme_account);
-  //       setBase(barcodeBatch.base_price);
-  //       setGst(barcodeBatch.gst);
-  //       setLoc(barcodeBatch.location);
-  //       setMargin(barcodeBatch.margin);
-  //       setNetRate(barcodeBatch.net_rate);
-  //       setSearchItem(barcodeBatch.iteam_name);
-  //       setItemEditID(barcodeBatch.item_id);
-  //     }
-  // }, [addBarcode]);
+
+ /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleEditClick = (item) => {
-    // setSelectedOption(item.iteam_name);
+    
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -1331,14 +1227,9 @@ const AddPurchaseBill = () => {
         })
         .then((response) => {
           setPurchaseReturnPending(response.data.data);
-          // setCnTotalAmount(response.data.data.total_amount)
-
-          // toast.success(response.data.message);
         });
     } catch (error) {
       setUnsavedItems(false);
-
-      // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.error(error.response.data.message);
       } else {
@@ -1346,16 +1237,23 @@ const AddPurchaseBill = () => {
     }
   };
 
+ /*<============================================================================== open CN Adjust popup  ==========================================================================> */
+
   const handelAddOpen = () => {
     setUnsavedItems(true);
     setOpenAddPopUp(true);
 
     purchaseReturnData();
   };
+
+ /*<============================================================================== open item master popup  ==========================================================================> */
+
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
     setOpenAddItemPopUp(true);
   };
+
+ /*<============================================================================== close CN Adjust popup  ==========================================================================> */
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
@@ -1366,10 +1264,14 @@ const AddPurchaseBill = () => {
     // setCnAmount(0);
   };
 
-  const handleDistributorChange = (event, newValue) => {
+ /*<============================================================================== Distributor select  ==========================================================================> */
+
+  const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
     purchaseReturnData(id);
   };
+
+ /*<============================================================================== Select Item  ==========================================================================> */
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue.toUpperCase());
@@ -1390,11 +1292,8 @@ const AddPurchaseBill = () => {
     handleSearch(itemName);
   };
 
-  const handlePTR = (e) => {
-    const setptr = e.target.value.replace(/[eE]/g, "");
-    setPTR(setptr);
-    // setBase(setptr);
-  };
+ /*<============================================================================== Discount calculation  ==========================================================================> */
+
 
   const handleSchAmt = (e) => {
     const inputDiscount =
@@ -1418,9 +1317,10 @@ const AddPurchaseBill = () => {
     setBase(totalBase);
   };
 
+ /*<============================================================================== Remove Item  ==========================================================================> */
+
   const removeItem = () => {
     setIsEditMode(false);
-    // setAutocompleteDisabled(false);
     setUnit("");
     setBatch("");
     setHSN("");
@@ -1439,25 +1339,9 @@ const AddPurchaseBill = () => {
     setLoc("");
   };
 
-  const handleRowSelect = (id, totalAmount) => {
-    const newSelectedRows = selectedRows.includes(id)
-      ? selectedRows.filter((rowId) => rowId !== id)
-      : [...selectedRows, id];
+ /*<================================================================================== select all CN Bill ==============================================================================> */
 
-    setSelectedRows(newSelectedRows);
-
-    if (newSelectedRows.includes(id)) {
-      setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
-      setCnAmount((prev) => prev + parseFloat(totalAmount));
-    } else {
-      setCnTotalAmount((prev) => {
-        const updated = { ...prev };
-        delete updated[id];
-        return updated;
-      });
-      setCnAmount((prev) => prev - parseFloat(totalAmount));
-    }
-  };
+ 
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1479,6 +1363,8 @@ const AddPurchaseBill = () => {
       setCnAmount(0);
     }
   };
+
+ /*<================================================================================== CN Amount Calculation ==============================================================================> */
 
   const handleCnAmountChange = (id, value, totalAmount) => {
     const numericValue = parseFloat(value) || 0;
@@ -1563,6 +1449,7 @@ const AddPurchaseBill = () => {
     resetAddDialog();
     // Reset dialog after submission
   };
+
   const handleNavigation = (path) => {
     setOpenAddPopUp(false);
     setIsOpenBox(true);
@@ -1573,6 +1460,9 @@ const AddPurchaseBill = () => {
     setIsOpenBox(false);
     // setPendingNavigation(null);
   };
+
+ /*<============================================================================== CN Amount Calculation ==========================================================================> */
+
 
   const handleLeavePage = async () => {
     let data = new FormData();
@@ -1664,15 +1554,7 @@ const AddPurchaseBill = () => {
             </div>
 
             <div className="headerList">
-              <Button
-                variant="contained"
-                style={{ backgroundColor: "var(--color1)" }}
-                onClick={openFileUpload}
-              >
-                <CloudUploadIcon className="mr-2" />
-                Import CSV
-              </Button>
-              {/* <Select
+            <Select
                 labelId="dropdown-label"
                 id="dropdown"
                 value={paymentType}
@@ -1689,7 +1571,18 @@ const AddPurchaseBill = () => {
                     {option.bank_name}
                   </MenuItem>
                 ))}
-              </Select> */}
+              </Select>
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "var(--color1)" }}
+                onClick={() => {
+                  setOpenFile(true);
+                }}
+              >
+                <CloudUploadIcon className="mr-2" />
+                Import CSV
+              </Button>
+              
               {!distributor || ItemPurchaseList?.item?.length === 0 ? (
                 <></>
               ) : (
@@ -1717,36 +1610,11 @@ const AddPurchaseBill = () => {
                   CN Adjust
                 </Button>
               )}
-              {/* <div className="flex gap-6">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ backgroundColor: "var(--color1)" }}
-                  sx={{
-                    textTransform: "none",
-                    backgroundColor: "var(--color1)",
-
-                    "&:disabled": {
-                      backgroundColor: "var(--color3)",
-                      color: "var(--color1)",
-                      opacity: 0.7,
-                      cursor: "pointer",
-                    },
-                  }}
-                  onClick={handelAddOpen}
-                  disabled={
-                    !distributor || ItemPurchaseList?.item?.length === 0
-                  }
-                >
-                  <AddIcon className="mr-2" />
-                  CN Adjust
-                </Button>
-              </div> */}
+             
               <Button
                 variant="contained"
                 style={{ backgroundColor: "var(--color1)" }}
-                onClick={handelAddItemOpen}
-              >
+                onClick={handelAddItemOpen}>
                 <ControlPointIcon className="mr-2" />
                 Add New Item
               </Button>
@@ -1758,8 +1626,11 @@ const AddPurchaseBill = () => {
               >
                 Save
               </Button>
+
             </div>
           </div>
+{/*<============================================================================== details at top  =============================================================================> */}
+
           <div className="bg-white">
             <div className="firstrow flex">
               <div className="detail">
@@ -1782,7 +1653,7 @@ const AddPurchaseBill = () => {
                     },
                   }}
                   size="small"
-                  onChange={handleDistributorChange}
+                  onChange={handleDistributorSelect}
                   options={distributorList}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => (
@@ -1881,35 +1752,13 @@ const AddPurchaseBill = () => {
                   }}
                 />
               </div>
-
-              {/* <div className="flex gap-6">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ textTransform: 'none', marginTop: "25px", background: "var(--color1)" }}
-                  onClick={handelAddOpen}
-                  disabled={!distributor || ItemPurchaseList?.item?.length === 0}
-                >
-                  <AddIcon className="mr-2" />
-                  CN Adjust
-                </Button>
-              </div> */}
-              {/* 
-              <Button
-                variant="contained"
-                style={{ backgroundColor: "var(--color1)" }}
-
-                onClick={handelAddItemOpen}
-              >
-                <ControlPointIcon className="mr-2" />
-                Add New Item
-              </Button> */}
-
               <div
                 className="overflow-x-auto "
                 ref={tableRef}
                 onKeyDown={handleTableKeyDown}
               >
+{/*<============================================================================== add Item field  =============================================================================> */}
+
                 <table
                   ref={tableRef}
                   className="customtable  w-full border-collapse custom-table"
@@ -1952,6 +1801,7 @@ const AddPurchaseBill = () => {
                       </tr>
                     ) : (
                       <>
+
                         <tr>
                           {isEditMode ? (
                             <td style={{ width: "600px" }}>
@@ -2114,7 +1964,7 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               error={!!errors.expiryDate}
                               value={expiryDate}
-                              onChange={handleExpiryDateChange}
+                              onChange={handleExpiryDate}
                               placeholder="MM/YY"
                             />
                           </td>
@@ -2222,7 +2072,10 @@ const AddPurchaseBill = () => {
                                   e.preventDefault();
                                 }
                               }}
-                              onChange={handlePTR}
+                              onChange={(e)=>{
+                                const setptr = e.target.value.replace(/[eE]/g, "");
+                                setPTR(setptr);
+                              }}
                             />
                           </td>
                           <td>
@@ -2357,23 +2210,7 @@ const AddPurchaseBill = () => {
                           </td>
                         </tr>
                         <tr>
-                          <td>
-                            {/* <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              size="small"
-                              value={barcode}
-                              placeholder="scan barcode"
-                              // inputRef={inputRef10}
-                              // onKeyDown={handleKeyDown}
-                              sx={{ width: "250px" }}
-                              onChange={(e) => {
-                                setBarcode(e.target.value)
-
-                              }}
-                            /> */}
-                          </td>
+                          <td></td>
                           <td></td>
                           <td> </td>
                           <td></td>
@@ -2401,6 +2238,8 @@ const AddPurchaseBill = () => {
                             </Button>
                           </td>
                         </tr>
+{/*<============================================================================== added Item  =============================================================================> */}
+
                         {ItemPurchaseList?.item?.map((item) => (
                           <tr
                             key={item.id}
@@ -2428,7 +2267,7 @@ const AddPurchaseBill = () => {
                               <DeleteIcon
                                 style={{ color: "var(--color6)" }}
                                 className="delete-icon bg-none"
-                                onClick={() => deleteOpen(item.id)}
+                                onClick={() => {deleteOpen(item.id)}}
                               />
                               {item.iteam_name}
                             </td>
@@ -2454,6 +2293,8 @@ const AddPurchaseBill = () => {
                     )}
                   </tbody>
                 </table>
+{/*<============================================================================== total and other details  =============================================================================> */}
+
                 <div className="flex gap-10 justify-end mt-4 ">
                   <div
                     style={{
@@ -2590,7 +2431,9 @@ const AddPurchaseBill = () => {
             </div>
           </div>
         </div>
-        {/* CN amount PopUp Box */}
+
+{/*<============================================================================== CN amount PopUp Box  =============================================================================> */}
+
         <Dialog open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add Amount
@@ -2709,13 +2552,15 @@ const AddPurchaseBill = () => {
             </Button>
           </DialogActions>
         </Dialog>
-
-        {/*Bulk Import csv   */}
+{/*<============================================================================== Bulk Import csv =============================================================================> */}
+        
         <Dialog open={openFile} className="custom-dialog">
           <DialogTitle className="primary">Import Item</DialogTitle>
           <IconButton
             aria-label="close"
-            onClick={handleFileClose}
+            onClick={() => {
+              setOpenFile(false);
+            }}
             sx={{
               position: "absolute",
               right: 8,
@@ -2741,7 +2586,7 @@ const AddPurchaseBill = () => {
                     type="file"
                     accept=".csv"
                     id="file-upload"
-                    onChange={handleFileChange}
+                    onChange={handleFileSelect}
                   />
                   <span className="errorFile">*select only .csv File.</span>
                 </div>
@@ -2769,7 +2614,7 @@ const AddPurchaseBill = () => {
           </DialogActions>
         </Dialog>
 
-        {/* add item  PopUp Box */}
+{/*<============================================================================== add item  PopUp Box  =============================================================================> */}
 
         <Dialog open={openAddItemPopUp}>
           <DialogTitle id="alert-dialog-title" className="primary">
@@ -2869,7 +2714,9 @@ const AddPurchaseBill = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-        {/* Delete PopUP */}
+
+{/*<==============================================================================  Delete PopUP   =============================================================================> */}
+
         <div
           id="modal"
           value={IsDelete}
@@ -2926,6 +2773,9 @@ const AddPurchaseBill = () => {
             </div>
           </div>
         </div>
+
+{/*<============================================================================== Leave page  PopUp Box  =============================================================================> */}
+
         <Prompt
           when={unsavedItems}
           message={(location) => {
@@ -2933,6 +2783,7 @@ const AddPurchaseBill = () => {
             return false;
           }}
         />
+        
         <div
           id="modal"
           value={isOpenBox}
@@ -2977,3 +2828,79 @@ const AddPurchaseBill = () => {
 };
 
 export default AddPurchaseBill;
+
+/*<================================================================================ temp  handleBarcodeItem logic =================================================================================> */
+
+// const handleBarcodeItem = async () => {
+
+//   setUnsavedItems(true)
+//   let data = new FormData();
+//   data.append("random_number", localStorage.getItem("RandomNumber"));
+//   data.append("weightage", unit ? Number(unit) : 1);
+//   data.append("batch_number", batch ? batch : 0);
+//   data.append("expiry", expiryDate);
+//   data.append("mrp", mrp ? mrp : 0);
+//   data.append("qty", qty ? qty : 0);
+//   data.append("free_qty", free ? free : 0);
+//   data.append("ptr", ptr ? ptr : 0);
+//   data.append("discount", disc ? disc : 0);
+//   data.append("scheme_account", schAmt ? schAmt : 0);
+//   data.append("base_price", base ? base : 0);
+//   data.append("gst", gst.id);
+//   data.append("location", loc ? loc : 0);
+//   data.append("margin", margin ? margin : 0);
+//   data.append("net_rate", netRate ? netRate : 0);
+//   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+//   data.append("item_id", ItemId);
+//   data.append("unit_id", Number(0));
+//   data.append("user_id", userId);
+//   data.append("id", selectedEditItemId ? selectedEditItemId : 0);
+//   data.append("total_amount", ItemTotalAmount ? ItemTotalAmount : 0);
+
+//   const params = {
+//     id: selectedEditItemId,
+//   };
+//   try {
+//     const response = await axios.post("item-purchase", data, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     setItemTotalAmount(0);
+//     setDeleteAll(true);
+//     itemPurchaseList();
+//     setUnit("");
+//     setBatch("");
+//     setExpiryDate("");
+//     setMRP("");
+//     setQty("");
+//     setFree("");
+//     setPTR("");
+//     setGst("");
+//     setDisc("");
+//     setBase("");
+//     setNetRate("");
+//     setSchAmt("");
+//     setBatch("");
+//     setMargin("");
+//     setLoc("");
+
+//     if (ItemTotalAmount <= finalCnAmount) {
+//       setFinalCnAmount(0);
+//       setSelectedRows([]);
+//       setCnTotalAmount({});
+//     }
+//     // setNetAmount(totalAmount)
+//     // handleCalNetAmount()
+//     setIsEditMode(false);
+//     setSelectedEditItemId(null);
+//     setBarcode("")
+//     setValue("")
+//     // Reset Autocomplete field
+//     setValue("");
+//     setSearchItem("");
+//     // setAutocompleteDisabled(false);
+//   } catch (e) {
+//   }
+// }

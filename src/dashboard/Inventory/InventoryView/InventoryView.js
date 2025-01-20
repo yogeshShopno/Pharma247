@@ -22,6 +22,7 @@ import { addDays, format, subDays } from 'date-fns';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ListItem from '@mui/material/ListItem';
 const InventoryView = () => {
+    
     const { id } = useParams();
     const history = useHistory();
     const [hideZeroQuantity, setHideZeroQuantity] = useState(true);

@@ -25,6 +25,7 @@ import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { encryptData, decryptData } from "../componets/cryptoUtils";
 import { toast, ToastContainer } from "react-toastify";
+import Search from "./Search";
 
 const Header = () => {
   const history = useHistory();
@@ -39,6 +40,8 @@ const Header = () => {
   // const token = localStorage.getItem("token");
   const [permission, setPermission] = useState([]);
   const [checkedper, setCheckedper] = useState();
+  const [searchPage, setSearchPage] = useState(false);
+
   // const [renderPlease, setRenderPlease] = useState(0);
 
 
@@ -278,7 +281,7 @@ const Header = () => {
             <Link to="/admindashboard">
               <img
                 className="h-14 w-28"
-                src="../../../pharmalogo.png"
+                src="../../../pharmalogo.webp"
                 alt="Workflow"
               />
             </Link>
@@ -294,6 +297,7 @@ const Header = () => {
                         <button
                           className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                           data-toggle="dropdown"
+                          
                         >
                           <Link to="/itemmaster">
                             <span className="mr-1">Item master</span>
@@ -647,7 +651,11 @@ const Header = () => {
               <div className="hidden xl:flex">
                 <div>
                   <div className="text-white mr-4 bg-transparent mr-2">
-                    <IoSearch  style={{ fontSize: "1.5rem" }} />
+                    <IoSearch onClick={()=>setSearchPage(!searchPage)}  style={{ fontSize: "1.5rem" }} />
+                    {searchPage && <Search searchPage={searchPage} setSearchPage={setSearchPage} />}
+
+
+              
                   </div>
                 </div>
                 {/* <div className="text-white mr-4 bg-transparent mr-2" >

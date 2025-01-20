@@ -74,7 +74,7 @@ const InventoryList = () => {
   const [drugGroup, setDrugGroup] = useState(null);
   const [hsnCode, setHsnCode] = useState("");
   const token = localStorage.getItem("token");
-  const defaultList = "../../pharmalogo.png";
+  const defaultList = "../../pharmalogo.webp";
   const history = useHistory();
   const [sortConfig, setSortConfig] = useState({
     key: null,

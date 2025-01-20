@@ -8,357 +8,131 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import { InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-// import GetAppIcon from "@mui/icons-material/GetApp";
-
-import ReplyAllIcon from '@mui/icons-material/ReplyAll'; 
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import { toast } from "react-toastify";
 
 const Search = ({ searchPage, setSearchPage }) => {
+    const history = useHistory();
+  
   const token = localStorage.getItem("token");
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [tableData, setTableData] = useState(
-    [{
-      "id": 11,
-      "payment_date": "2025-01-09 to 2026-01-09",
-      "plan_name": "",
-      "expiry_date": "2026-01-09",
-      "paid_on": "2025-01-09 02:55 PM",
-      "payment_id": "pay_PhIKDGsQM3NSDZ",
-      "entity": "payment",
-      "amount": 600000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Pharma Plan Purchase",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 14160,
-      "tax": 2160,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736414725
-    },
-    {
-      "id": 13,
-      "payment_date": "2025-01-09 to 2026-01-09",
-      "plan_name": "",
-      "expiry_date": "2026-01-09",
-      "paid_on": "2025-01-09 03:21 PM",
-      "payment_id": "pay_PhIl2zj1huUSIm",
-      "entity": "payment",
-      "amount": 300000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Pharma Plan Purchase",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 7080,
-      "tax": 1080,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736416250
-    },
-    {
-      "id": 14,
-      "payment_date": "2025-01-09 to 2026-01-09",
-      "plan_name": "",
-      "expiry_date": "2026-01-09",
-      "paid_on": "2025-01-09 05:57 PM",
-      "payment_id": "pay_PhLPw2JfVNprwb",
-      "entity": "payment",
-      "amount": 600000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Pharma Plan Purchase",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 14160,
-      "tax": 2160,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736425615
-    },
-    {
-      "id": 15,
-      "payment_date": "2025-01-10 to 2026-01-10",
-      "plan_name": "",
-      "expiry_date": "2026-01-10",
-      "paid_on": "2025-01-10 02:57 PM",
-      "payment_id": "pay_PhgtZwk89F0Pbo",
-      "entity": "payment",
-      "amount": 300000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Pharma Plan Purchase",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 7080,
-      "tax": 1080,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736501253
-    },
-    {
-      "id": 16,
-      "payment_date": "2025-01-10 to 2026-01-10",
-      "plan_name": "",
-      "expiry_date": "2026-01-10",
-      "paid_on": "2025-01-10 04:59 PM",
-      "payment_id": "pay_PhixmKpUqBK05y",
-      "entity": "payment",
-      "amount": 600000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Pharma Plan Purchase",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 14160,
-      "tax": 2160,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736508535
-    },
-    {
-      "id": 17,
-      "payment_date": "2025-01-10 to 2026-01-10",
-      "plan_name": "",
-      "expiry_date": "2026-01-10",
-      "paid_on": "2025-01-10 05:07 PM",
-      "payment_id": "pay_Phj6dBe8D8IkR1",
-      "entity": "payment",
-      "amount": 600000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Advanced",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 14160,
-      "tax": 2160,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736509037
-    },
-    {
-      "id": 18,
-      "payment_date": "2025-01-10 to 2026-01-10",
-      "plan_name": "",
-      "expiry_date": "2026-01-10",
-      "paid_on": "2025-01-10 05:19 PM",
-      "payment_id": "pay_PhjJ4gcGOYcEXC",
-      "entity": "payment",
-      "amount": 300000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Basic",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 7080,
-      "tax": 1080,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736509744
-    },
-    {
-      "id": 19,
-      "payment_date": "2025-01-11 to 2026-01-11",
-      "plan_name": "",
-      "expiry_date": "2026-01-11",
-      "paid_on": "2025-01-11 05:52 PM",
-      "payment_id": "pay_Pi8Or9G562Rms6",
-      "entity": "payment",
-      "amount": 600000,
-      "currency": "INR",
-      "status": "captured",
-      "order_id": "",
-      "invoice_id": "",
-      "method": "wallet",
-      "amount_refunded": 0,
-      "refund_status": "",
-      "captured": true,
-      "description": "Advanced",
-      "card_id": "",
-      "bank": "",
-      "wallet": "airtelmoney",
-      "vpa": "",
-      "email": "krishnachemist207@gmail.com",
-      "contact": "+919558822345",
-      "fee": 14160,
-      "tax": 2160,
-      "acquirer_data": {
-        "transaction_id": null
-      },
-      "created_at": 1736598113
-    }]);
 
-  /*<================================================================================== Plans column ==================================================================================> */
+  
+  const [medicineTableData, setMedicineTableData] = useState([])
+  const [drugsTableData, setDrugsTableData] = useState([])
+  const [distributorTableData, setDistributorTableData] = useState([])
+  const [customerTableData, setCustomerTableData] = useState([])
 
- const [plansColumns,setPlansColumns] = useState([
-  { id: "subscription", label: "Subscription", minWidth: 100 },
-    { id: "status", label: "Status", minWidth: 100 },
-    { id: "duration", label: "Duration", minWidth: 100 },
-    { id: "payment", label: "Payment", minWidth: 100 },
-    { id: "paidon", label: "Paid on", minWidth: 100 },
-    { id: "paymentmode", label: "Payment Mode", minWidth: 100 },
-]) 
+  const [medicineColumns, setMedicineColumns] = useState([
+    { id: "iteam_name", label: "Item Name", minWidth: 100 },
+    { id: "weightage", label: "weightage", minWidth: 100 },
+    { id: "drug_group", label: "drug_group", minWidth: 100 },
+    { id: "mrp", label: "mrp", minWidth: 100 },
+    { id: "stock", label: "stock", minWidth: 100 },
+  ])
 
-  const SearchType = (value) =>{
+  const [drugsColumns, setDrugsColumns] = useState([
+    { id: "id", label: "Drug Group ID", minWidth: 100 },
+    { id: "name", label: "Drug Group", minWidth: 100 },
+    { id: "count", label: "Count", minWidth: 100 },
+  ])
+
+  const [distributorColumns, setDistributorColumns] = useState([
+    { id: "name", label: "Distributor Name", minWidth: 100 },
+    { id: "gst", label: "gst", minWidth: 100 },
+  ])
+
+  const [customerColumns, setCustomerColumns] = useState([
+    { id: "name", label: "Customer Name", minWidth: 100 },
+    { id: "phone_number", label: "Mobile No.", minWidth: 100 },
+    { id: "total_order", label: "Total Order", minWidth: 100 },
+    { id: "roylti_point", label: "Loyalty Points", minWidth: 100 },
+    { id: "total_amount", label: "Total Amount", minWidth: 100 },
+  ])
+
+  /*<================================================================================== seaech fn ==================================================================================> */
+
+  const SearchType = (value) => {
     setSearchType(value)
     setSearchQuery("")
+    // setMedicineColumns([])
+    // setDrugsColumns([])
+    // setDistributorColumns([])
+    // setCustomerColumns([])
+
+    // setMedicineTableData([])
+    // setDrugsTableData([])
+    // setDistributorTableData([])
+    // setCustomerTableData([])
   }
-
-  useEffect(() => {
-    if(searchQuery){
-      searchData()
-
-    }
-    
-
-  }, [searchQuery]
-
-  )
-
-  const apiEndpoints = {
-    1: "item-search",     // Medicine
-    2: "drug-list",       // Drug Group
-    3: "list-distributer",    // Distributor
-    4: "list-customer",   // Customer
+  
+  const handleSearchQueryChange = (e) => {
+    const newValue = e.target.value;
+    setSearchQuery(newValue);       
+    searchData(newValue);
   };
 
-  /*<================================================================================== Plans column ==================================================================================> */
+  /*<================================================================================== call Search API  ==================================================================================> */
+
+  const apiEndpoints = {
+    1: "item-search",    
+    2: "drug-list",      
+    3: "list-distributer",    
+    4: "list-customer",   
+  };
 
   const searchData = async () => {
-    if (!searchQuery && !searchType){
+    if (!searchQuery && !searchType) {
 
       toast.error("select ")
       return; // Avoid calling API with empty input
-    } 
-  
+    }
+
     console.log(searchQuery, "value");
-  
+
     const api = apiEndpoints[searchType];
     if (!api) {
       console.error("Invalid search type");
       return;
     }
-  
+
     const data = new FormData();
     data.append("search", searchQuery);
-  
+
     try {
       const response = await axios.post(api, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
   
-      if (response?.data?.data) 
-        if(searchType === 1){
-          setTableData(response?.data?.data?.data)
-
-        }else{
-        setTableData(response?.data?.data)
-
+      if (response?.data?.data) {
+        if (searchType == "1") {
+          setMedicineTableData(response.data.data.data)
+        } else if (searchType == "2") {
+          setDrugsTableData(response.data.data)
+        } else if (searchType == "3") {
+          setDistributorTableData(response.data.data)
+        } else if (searchType == "4") {
+          setCustomerTableData(response.data.data)
         }
-        setTableData(response?.data?.data?.data)
+      }
 
-        const object  = response.data.data[0]; // Assume this is ["description", "amount", ...]
-
-        const keys = Object.keys(object);
-
-        const columns = keys.map((key) => ({
-          key: key,
-          label: key,
-          minWidth: "100"
+      const object = response.data.data[0];
+      const keys = Object.keys(object);
+      const columns = keys.map((key) => ({
+        key: key,
+        label: key,
+        minWidth: "100"
       }));
 
-        console.log(columns,"key")
+      console.log(response.data.data, "response")
+      // setPlansColumns(columns); 
 
-     
-        setPlansColumns(columns); 
-    
-    
-    
-     else {
-        console.error("Invalid API response structure", response);
-      }
     } catch (error) {
       console.error("API error:", error);
     }
@@ -389,7 +163,7 @@ const Search = ({ searchPage, setSearchPage }) => {
               <FormControl fullWidth>
                 <InputLabel id="Select">Select</InputLabel>
                 <Select
-                
+
                   labelId="select"
                   id="select"
                   value={searchType}
@@ -410,7 +184,7 @@ const Search = ({ searchPage, setSearchPage }) => {
               autoFocus
               value={searchQuery} // Bind the value to searchQuery
               sx={{ width: "75%", marginTop: "5px" }}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchQueryChange(e)}
               variant="standard"
               placeholder="please search ......"
               InputProps={{
@@ -423,34 +197,109 @@ const Search = ({ searchPage, setSearchPage }) => {
               }}
             />
           </div>
+{/*======================================================================================== table ======================================================================================== */}
+
           <div>
-            <table className="table-cashManage my-5 p-4">
-              <thead>
-                <tr>
-                  {plansColumns.map((column) => (
-                    <th
-                      key={column.id}
-                      style={{ minWidth: 100 }}
-                    >
-                      {column.label}
-                    </th>
-                  ))}
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData?.map((item, index) => (
-                  <tr className="" key={index}>
-                    {plansColumns.map((column) => (
-                      <td className="primary" key={column.id}>{item[column.id]}</td>
-                    ))}
-                    <td>
-                      <ReplyAllIcon className="primary transform -scale-x-100"/>
-                    </td>
+            <div>
+              <table className="table-cashManage my-5 p-4">
+                <thead>
+                  <tr>
+                    <th>Sr No.</th>
+                    {(() => {
+                      let columns;
+                      switch (searchType) {
+                        case 1:
+                          columns = medicineColumns;
+                          break;
+                        case 2:
+                          columns = drugsColumns;
+                          break;
+                        case 3:
+                          columns = distributorColumns;
+                          break;
+                        case 4:
+                          columns = customerColumns;
+                          break;
+                        default:
+                          columns = [];
+                      }
+                      return columns.map((column) => (
+                        <th key={column.id} style={{ minWidth: 100 }}>
+                          {column.label}
+                        </th>
+                      ));
+                    })()}
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {(() => {
+                    let columns, tableData;
+
+                    // Match columns and table data based on searchType
+                    switch (searchType) {
+                      case 1:
+                        columns = medicineColumns;
+                        tableData = medicineTableData;
+                        break;
+                      case 2:
+                        columns = drugsColumns;
+                        tableData = drugsTableData;
+                        break;
+                      case 3:
+                        columns = distributorColumns;
+                        tableData = distributorTableData;
+                        break;
+                      case 4:
+                        columns = customerColumns;
+                        tableData = customerTableData;
+                        break;
+                      default:
+                        columns = [];
+                        tableData = [];
+                    }
+
+                    return tableData && tableData.length > 0 ? (
+                      tableData.map((row, index) => (
+                        <tr className="primary" key={index}>
+                          <td>{index + 1}</td> {/* Serial Number */}
+                          {columns.map((column) => (
+                            <td  
+                            onClick={()=> {
+                              if(searchType == 1){
+                                 history.push(`/inventoryView/${row.id}`)
+                                }else if (searchType == 2){
+                                  // history.push(`/DistributerView/${row.id}`)
+                                }else if (searchType == 3){
+                                  history.push(`/DistributerView/${row.id}`)
+                                }else if (searchType == 4){
+                                  history.push(`/more/customerView/${row.id}`)
+                                }
+                              
+                              }}  className="" key={column.id}>
+                              {row[column.id] || "-"} {/* Render data or fallback */}
+                            </td>
+
+                          ))}
+                          <td>
+                            <ReplyAllIcon className="primary transform -scale-x-100" />
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={columns.length + 2} className="text-center primary">
+                          No data found
+                        </td>
+                      </tr>
+                    );
+                    
+                  })()}
+                </tbody>
+
+              </table>
+            </div>
+
           </div>
         </div>
       </div>

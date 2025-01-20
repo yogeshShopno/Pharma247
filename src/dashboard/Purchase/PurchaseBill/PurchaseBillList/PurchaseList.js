@@ -408,7 +408,7 @@ const Purchasebill = () => {
                         {columns.map((column,colIndex) => {
                           const value = row[column.id];
                           return (
-                            <td
+                            <td 
                             style={colIndex === 0 ? { borderRadius: "10px 0 0 10px" } : colIndex === columns.length ? { borderRadius: "0 10px 10px 0" } : {}}
                               key={column.id}
                               className="capitalize"

@@ -68,10 +68,10 @@ const DoctorList = () => {
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
 
   const columns = [
-    { id: "name", label: "Doctor Name", minWidth: 100 },
-    { id: "phone_number", label: "Mobile No", minWidth: 100 },
-    { id: "email", label: "Email ID", minWidth: 100 },
-    { id: "clinic", label: "Clinic Name", minWidth: 100 },
+    { id: "name", label: "Doctor Name", minWidth: 150 },
+    { id: "phone_number", label: "Mobile No", minWidth: 150 },
+    { id: "email", label: "Email ID", minWidth: 150 },
+    { id: "clinic", label: "Clinic Name", minWidth: 150 },
   ];
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
@@ -452,36 +452,34 @@ const DoctorList = () => {
           <div
             style={{
               backgroundColor: "rgba(153, 153, 153, 0.1)",
-              height: "calc(99vh - 55px)",
+             height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
             }}
           >
-            <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3 cust_list_main_hdr_bg" style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
               <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  width: "500px",
-                  gap: "7px",
-                }}
+                style={{ display: "flex", gap: "7px", alignItems: "center" }}
+                className="mt-2"
               >
                 <span
                   style={{
                     color: "var(--color1)",
                     display: "flex",
+                    alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
                   }}
                 >
                   Doctors
                 </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
               </div>
-              <div className="headerList">
+              <div className="headerList cust_hdr_mn_bg mt-2">
                 {hasPermission(permissions, "doctor import") && (
                   <Button
                     variant="contained"
-                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px' }}
+                    className="gap-2"
+                    style={{ background: 'var(--color1)', display: 'flex' }}
                     onClick={openFilePopUP}
                   >
                     <CloudUploadIcon /> Import
@@ -490,8 +488,8 @@ const DoctorList = () => {
                 {hasPermission(permissions, "doctor create") && (
                   <Button
                     variant="contained"
-
-                    style={{ background: 'var(--color1)', display: "flex", gap: "0px" }}
+                    className="gap-2"
+                    style={{ background: 'var(--color1)', display: "flex" }}
                     onClick={handelAddOpen}
                   >
                     <AddIcon /> Add Doctor
@@ -500,14 +498,23 @@ const DoctorList = () => {
                 {hasPermission(permissions, "doctor download") && (
                   <Button
                     variant="contained"
-
-                    style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px" }}
+                    className="gap-7"
+                    style={{
+                      background: "var(--color1)",
+                      color: "white",
+                      // paddingLeft: "35px",
+                      textTransform: "none",
+                      display: "flex",
+                    }}
                     onClick={exportToCSV}
                   >
-                    <img src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv Icon"
-                    />
+
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img src="/csv-file.png"
+                        className="report-icon absolute mr-10"
+                        alt="csv Icon"
+                      />
+                    </div>
                     Download
                   </Button>
                 )}
@@ -520,7 +527,7 @@ const DoctorList = () => {
                     <tr>
                       <th>SR. No</th>
                       {columns.map((column, index) => (
-                        <th key={column.id}>
+                        <th key={column.id} style={{ minWidth: column.minWidth }}>
                           <div className="headerStyle">
                             <span onClick={() => sortByColumn(column.id)}>
                               {column.label}
@@ -531,6 +538,7 @@ const DoctorList = () => {
                               label={`Search ${column.label}`}
                               id="filled-basic"
                               size="small"
+                              sx={{ minWidth: "150px" }}
                               value={searchTerms[index]}
                               onChange={(e) =>
                                 handleSearchChange(index, e.target.value)
@@ -547,7 +555,7 @@ const DoctorList = () => {
                       <tr>
                         <td
                           colSpan={columns.length + 2}
-                          style={{ textAlign: "center", color: "gray" ,borderRadius: "10px 10px 10px 10px" }}
+                          style={{ textAlign: "center", color: "gray", borderRadius: "10px 10px 10px 10px" }}
                         >
                           No data found
                         </td>
@@ -774,7 +782,7 @@ const DoctorList = () => {
                     <DialogContentText id="alert-dialog-description">
                       <div className="flex flex-col gap-5">
                         <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                          <div className="flex flex-col " style={{ width: "100%" }}>
                             <div className="mb-1">
                               <span className="label primary mb-4">
                                 Doctor Name
@@ -784,7 +792,7 @@ const DoctorList = () => {
                             <Autocomplete
                               value={doctor}
                               // inputValue={searchItem.toUpperCase()}
-                              sx={{ width: 220 }}
+                              style={{ width: ' 100%' }}
                               size="small"
                               onChange={handleOptionChange}
                               onInputChange={handleInputChange}
@@ -816,7 +824,7 @@ const DoctorList = () => {
                               </span>
                             )}
                           </div>
-                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                          <div className="flex flex-col " style={{ width: "100%" }}>
                             <div className="mb-1">
                               <span className="label primary">
                                 Clinic Name
@@ -842,7 +850,7 @@ const DoctorList = () => {
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                          <div className="flex flex-col " style={{ width: "100%" }}>
                             <span className="label primary">
                               Email ID
                             </span>
@@ -859,10 +867,7 @@ const DoctorList = () => {
                             />
                           </div>
                           <div
-                            style={{
-                              display: "flex ",
-                              flexDirection: "column",
-                            }}
+                            className="flex flex-col " style={{ width: "100%" }}
                           >
                             <div className="mb-1">
                               <span className="label primary">
@@ -890,7 +895,7 @@ const DoctorList = () => {
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                          <div className="flex flex-col " style={{width: "100%"}}>
                             <span className="label primary">
                               Licence No.
                             </span>
@@ -904,7 +909,7 @@ const DoctorList = () => {
                               size="small"
                             />
                           </div>
-                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                          <div className="flex flex-col " style={{width: "100%"}}>
                             <span className="label primary">Address</span>
                             <TextField
                               autoComplete="off"
@@ -922,7 +927,7 @@ const DoctorList = () => {
                       </div>
                     </DialogContentText>
                   </DialogContent>
-                  <DialogActions>
+                  <DialogActions style={{ padding: '20px 24px' }}>
                     <Button
                       autoFocus
                       variant="contained"

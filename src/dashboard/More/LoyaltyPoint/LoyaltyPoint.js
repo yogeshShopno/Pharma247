@@ -29,9 +29,9 @@ const LoyaltyPoint = () => {
   const inputRef3 = useRef(null);
 
   const loyaltyPointLabel = [
-    { id: "minimum", label: "Minimum Amount", minWidth: 100 },
-    { id: "maximum", label: "Maximum Amount", minWidth: 100 },
-    { id: "percent", label: "Percentage", minWidth: 100 },
+    { id: "minimum", label: "Minimum Amount", minWidth: 150 },
+    { id: "maximum", label: "Maximum Amount", minWidth: 150 },
+    { id: "percent", label: "Percentage", minWidth: 150 },
   ];
 
   const [minimumAmount, setMinimumAmount] = useState("");
@@ -309,11 +309,11 @@ const LoyaltyPoint = () => {
           <div
             style={{
               background: "rgba(153, 153, 153, 0.1)",
-              height: "calc(99vh - 55px)",
+              height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
             }}
           >
-            <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3 lyl_main_header_txt" style={{ display: "flex", gap: "4px" }}>
               <div
                 style={{ display: "flex", gap: "5px", alignItems: "center" }}
               >
@@ -323,7 +323,8 @@ const LoyaltyPoint = () => {
                     display: "flex",
                     fontWeight: 700,
                     fontSize: "20px",
-                    width: "130px",
+                    // width: "130px",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   loyalty point
@@ -336,6 +337,7 @@ const LoyaltyPoint = () => {
                     backgroundColor: "var(--COLOR_UI_PHARMACY)",
                     color: "white",
                   }}
+                  className="add_lyl_btn"
                   variant="contained"
                   size="small"
                   onClick={handelAddOpen}
@@ -448,7 +450,7 @@ const LoyaltyPoint = () => {
                             <td key={column.id}>{item[column.id]}</td>
                           ))}
                           <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <div className="px-2">
+                            <div className="flex gap-2 px-2 justify-center">
                               <BorderColorIcon
                                 style={{ color: "var(--color1)" }}
                                 onClick={() => handleEditOpen(item)}
@@ -480,14 +482,14 @@ const LoyaltyPoint = () => {
         <Dialog
           open={openAddPopUp}
           className="order_list_ml"
-          // sx={{
-          //     "& .MuiDialog-container": {
-          //         "& .MuiPaper-root": {
-          //             width: "50%",
-          //             maxWidth: "500px",  // Set your width here
-          //         },
-          //     },
-          // }}
+        // sx={{
+        //     "& .MuiDialog-container": {
+        //         "& .MuiPaper-root": {
+        //             width: "50%",
+        //             maxWidth: "500px",  // Set your width here
+        //         },
+        //     },
+        // }}
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
             {header}
@@ -646,9 +648,8 @@ const LoyaltyPoint = () => {
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsDelete ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

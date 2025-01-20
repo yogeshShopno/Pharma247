@@ -282,7 +282,7 @@ const Company = () => {
           <div
             style={{
               background: "rgba(153, 153, 153, 0.1)",
-              height: "calc(99vh - 55px)",
+             height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
             }}
           >

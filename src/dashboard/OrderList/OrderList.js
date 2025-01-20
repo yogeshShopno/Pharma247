@@ -309,7 +309,7 @@ const OrderList = () => {
                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                         <div className='py-3 main_header_txt' style={{ display: 'flex', gap: '4px' }}  >
                             <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "100px" }}  >Order List</span>
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px',whiteSpace: "nowrap" }}  >Order List</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList ">

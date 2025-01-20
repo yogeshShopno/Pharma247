@@ -150,7 +150,7 @@ const AddDistributer = () => {
                             <h1 className="text-xl font-bold primary cursor-pointer add_dist_dst_lst" onClick={() => history.push('/more/DistributorList')}> <ReplyAllIcon className='mb-2 mr-2' />Distributor List</h1>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                             <div >
                                 <label
                                     className="block  text-gray-700 font-bold mb-2"
@@ -247,7 +247,7 @@ const AddDistributer = () => {
 
 
                         </div>
-                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
 
                             {/* <div>
                                 <label
@@ -357,7 +357,7 @@ sx={{
                             </div>
 
                         </div>
-                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                             <div>
                                 <label
                                     className="block text-gray-700 font-bold mb-2"
@@ -437,7 +437,7 @@ sx={{
                                 <div name="pincode" />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                             <div>
                                 <label
                                     className="block text-gray-700 font-bold mb-2"
@@ -528,7 +528,7 @@ sx={{
                         <div>
                             <h1 className="text-2xl font-bold mb-12 primary">Add Bank Details</h1>
                             <div>
-                                <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                                     <div>
                                         <label
                                             className="block text-gray-700 font-bold mb-2"

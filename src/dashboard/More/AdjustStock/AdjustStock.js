@@ -23,17 +23,17 @@ const AdjustStock = () => {
     const history = useHistory()
 
     const stockList = [
-        { id: 'adjusted_by', label: 'Adjust By', minWidth: 10 },
-        { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 10 },
-        { id: 'iteam_name', label: 'Item Name', minWidth: 100 },
-        { id: 'batch_name', label: 'Batch', minWidth: 100 },
-        { id: 'unite', label: 'Unit', minWidth: 100 },
-        { id: 'expriy', label: 'Expiry', minWidth: 100 },
-        { id: 'company_name', label: 'Company Name', minWidth: 100 },
-        { id: 'mrp', label: 'MRP', minWidth: 100 },
-        { id: 'stock', label: 'Total Stock', minWidth: 100 },
-        { id: 'stock_adjust', label: 'Stock Adjusted', minWidth: 100 },
-        { id: 'remaining_stock', label: 'Remaining Stock', minWidth: 100 },
+        { id: 'adjusted_by', label: 'Adjust By', minWidth: 150 },
+        { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 150 },
+        { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
+        { id: 'batch_name', label: 'Batch', minWidth: 150 },
+        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'expriy', label: 'Expiry', minWidth: 150 },
+        { id: 'company_name', label: 'Company Name', minWidth: 150 },
+        { id: 'mrp', label: 'MRP', minWidth: 150 },
+        { id: 'stock', label: 'Total Stock', minWidth: 150 },
+        { id: 'stock_adjust', label: 'Stock Adjusted', minWidth: 150 },
+        { id: 'remaining_stock', label: 'Remaining Stock', minWidth: 150 },
     ];
     const [stock, setStock] = useState('')
     const [adjustStockListData, setAdjustStockListData] = useState([]);
@@ -124,8 +124,8 @@ const AdjustStock = () => {
                 setCompanyList(response.data.data);
             })
             .catch((error) => {
-               
-        console.error("API error:", error);
+
+                console.error("API error:", error);
 
 
             });
@@ -143,8 +143,8 @@ const AdjustStock = () => {
                 setpurchaseItemData(response.data.data);
             })
             .catch((error) => {
-              
-        console.error("API error:", error);
+
+                console.error("API error:", error);
 
 
             });
@@ -267,7 +267,7 @@ const AdjustStock = () => {
         setStock(newValue?.qty)
         const company = companyList.find(x => x.id == batchListData[0]?.company_id)
         setSelectedCompany(company)
-        
+
     };
 
     const validateForm = async () => {
@@ -387,29 +387,29 @@ const AdjustStock = () => {
             </div> :
 
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
-                    <div className='py-3' style={{ display: 'flex', gap: '4px' }}  >
+                    <div className='py-3 adjst_stk_head' style={{ display: 'flex', gap: '4px' }}  >
                         <div style={{ display: 'flex', gap: '7px', }}>
-                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "130px", textWrap: "nowrap" }}  > Adjust Stock</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', textWrap: "nowrap" }}  > Adjust Stock</span>
                             <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
-                            <Button variant="contained" style={{ display: 'flex', gap: '0px', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="ml-2" />  Adjust Stock</Button>
+                            <Button className="gap-2 adjst_btn" variant="contained" style={{ display: 'flex', background: "var(--color1)" }} onClick={handelAddOpen}><AddIcon className="" />  Adjust Stock</Button>
                         </div>
                     </div>
 
                     <div className="firstrow p-4">
                         <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
-                            <div className="detail" >
+                            <div className="detail drug_fltr_fld" >
                                 <TextField
                                     autoComplete="off"
                                     id="outlined-basic"
                                     value={search}
-                                    sx={{ width: 'auto' }}
+                                    sx={{ width: '100%' }}
                                     size="small"
                                     onChange={(e) => setSearch(e.target.value)}
                                     variant="outlined"
                                     onKeyPress={handleKeyPress}
-                                    placeholder="Search by Item name,Batch No"
+                                    placeholder="Search by Item name , Batch No"
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end" >
@@ -420,7 +420,7 @@ const AdjustStock = () => {
                                     }}
                                 />
                             </div>
-                            <div>
+                            <div className="text-end">
                                 <Button
                                     style={{ background: "var(--color1)" }}
                                     variant="contained" onClick={adjustStockList}
@@ -436,7 +436,7 @@ const AdjustStock = () => {
                                     <tr>
                                         <th className="px-4 py-2 ">SR. No</th>
                                         {stockList.map((column, index) => (
-                                            <th key={column.id} className="">
+                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
                                                 <div >
                                                     <span>{column.label}</span>
                                                     <SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
@@ -590,30 +590,34 @@ const AdjustStock = () => {
 
 
                     <Dialog open={openAddPopUp} >
-                        <DialogTitle id="alert-dialog-title" className="secondary">
-                            Stock Adjustment
-                        </DialogTitle>
-                        <IconButton
-                            aria-label="close"
-                            onClick={resetAddDialog}
-                            sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
-                                    <div className="flex gap-4">
-                                        <div>
-                                            <span className="title mb-2">Adjustment Date</span>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={adjustmentDate}
-                                                onChange={(newDate) => setAdjustDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                                minDate={subDays(new Date(), 15)}//
-                                            />
-                                            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <div className="flex justify-center items-center h-auto">
+                            <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
+                                <div className="flex justify-between items-center">
+                                    <DialogTitle id="alert-dialog-title" className="primary">
+                                        Stock Adjustment
+                                    </DialogTitle>
+                                    <IconButton
+                                        aria-label="close"
+                                        onClick={resetAddDialog}
+                                        sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                </div>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Adjustment Date</span>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={adjustmentDate}
+                                                        onChange={(newDate) => setAdjustDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        minDate={subDays(new Date(), 15)}//
+                                                    />
+                                                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     sx={{ width: 250 }}
                                                     value={adjustmentDate}
@@ -621,125 +625,129 @@ const AdjustStock = () => {
                                                     format="DD/MM/YYYY"
                                                 />
                                             </LocalizationProvider> */}
-                                        </div>
-                                        <div>
-                                            <span className="title mb-2">Item Name</span>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="combo-box-demo"
-                                                options={purchaseItemData}
-                                                size="small"
-                                                value={selectedItem}
-                                                onChange={handleOptionChange}
-                                                sx={{ width: 200 }}
-                                                getOptionLabel={(option) => option.iteam_name}
-                                                renderInput={(params) => (
+                                                </div>
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Item Name</span>
+                                                    <Autocomplete
+                                                        disablePortal
+                                                        id="combo-box-demo"
+                                                        options={purchaseItemData}
+                                                        size="small"
+                                                        value={selectedItem}
+                                                        onChange={handleOptionChange}
+                                                        sx={{ width: '100%' }}
+                                                        getOptionLabel={(option) => option.iteam_name}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                {...params}
+                                                                label="Select Item"
+                                                            />
+                                                        )} />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Batch</span>
+                                                    <Autocomplete
+                                                        disablePortal
+                                                        id="combo-box-demo"
+                                                        options={batchListData}
+                                                        size="small"
+                                                        value={batch}
+                                                        onChange={handleBatchData}
+                                                        sx={{ width: '100%' }}
+                                                        getOptionLabel={(option) => option.batch_number}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                {...params}
+                                                                label="Select Batch"
+                                                            />
+                                                        )} />
+
+                                                </div>
+
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Company</span>
+                                                    <Autocomplete
+                                                        disablePortal
+                                                        id="combo-box-demo"
+                                                        options={companyList}
+                                                        size="small"
+                                                        value={selectedCompany}
+                                                        onChange={(e, value) => setSelectedCompany(value)}
+                                                        sx={{ width: '100%' }}
+                                                        disabled
+                                                        getOptionLabel={(option) => option.company_name}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                autoComplete="off" {...params} />
+                                                        )}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Unit</span>
                                                     <TextField
                                                         autoComplete="off"
-                                                        {...params}
-                                                        label="Select Item"
+                                                        disabled
+                                                        required
+                                                        id="outlined-number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        value={unit}
+                                                        onChange={(e) => setUnit(e.target.value)}
                                                     />
-                                                )} />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div>
-                                            <span className="title mb-2">Batch</span>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="combo-box-demo"
-                                                options={batchListData}
-                                                size="small"
-                                                value={batch}
-                                                onChange={handleBatchData}
-                                                sx={{ width: 200 }}
-                                                getOptionLabel={(option) => option.batch_number}
-                                                renderInput={(params) => (
+                                                </div>
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Expiry</span>
                                                     <TextField
                                                         autoComplete="off"
-                                                        {...params}
-                                                        label="Select Batch"
+                                                        id="outlined-number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        disabled
+                                                        value={expiry}
+                                                        onChange={(e) => { setExpiry(e.target.value) }}
                                                     />
-                                                )} />
+                                                </div>
 
-                                        </div>
-
-                                        <div >
-                                            <span className="title mb-2">Company</span>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="combo-box-demo"
-                                                options={companyList}
-                                                size="small"
-                                                value={selectedCompany}
-                                                onChange={(e, value) => setSelectedCompany(value)}
-                                                sx={{ width: 200 }}
-                                                disabled
-                                                getOptionLabel={(option) => option.company_name}
-                                                renderInput={(params) => (
+                                            </div>
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">MRP</span>
                                                     <TextField
-                                                        autoComplete="off" {...params} />
-                                                )}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div>
-                                            <span className="title mb-2">Unit</span>
-                                            <TextField
-                                                autoComplete="off"
-                                                disabled
-                                                required
-                                                id="outlined-number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                value={unit}
-                                                onChange={(e) => setUnit(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <span className="title mb-2">Expiry</span>
-                                            <TextField
-                                                autoComplete="off"
-                                                id="outlined-number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                disabled
-                                                value={expiry}
-                                                onChange={(e) => { setExpiry(e.target.value) }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <span className="title mb-2">MRP</span>
-                                            <TextField
-                                                autoComplete="off"
-                                                id="outlined-number"
-                                                type="number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                disabled
-                                                value={mrp}
-                                                onChange={(e) => { setMrp(e.target.value) }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div>
-                                            <span className="title mb-2">Stock </span>
-                                            <TextField
-                                                autoComplete="off"
-                                                id="outlined-number"
-                                                type="number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                disabled
-                                                value={stock}
-                                                onChange={(e) => { setStock(e.target.value) }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <span className="title mb-2">Stock Adjusted </span>
-                                            {/* <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        disabled
+                                                        value={mrp}
+                                                        onChange={(e) => { setMrp(e.target.value) }}
+                                                    />
+                                                </div>
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Stock </span>
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        disabled
+                                                        value={stock}
+                                                        onChange={(e) => { setStock(e.target.value) }}
+                                                    />
+                                                </div>
+
+                                            </div>
+                                            <div className="flex flex-col md:flex-row gap-4">
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Stock Adjusted </span>
+                                                    {/* <TextField
                  autoComplete="off"
                                                 id="outlined-number"
                                                 type="number"
@@ -748,43 +756,47 @@ const AdjustStock = () => {
                                                 value={stockAdjust}
                                                 onChange={(e) => { setStockAdjust(e.target.value) }}
                                             /> */}
-                                            <TextField
-                                                autoComplete="off"
-                                                id="outlined-number"
-                                                type="number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                value={stockAdjust}
-                                                onChange={(e) => {
-                                                    const value = parseFloat(e.target.value);
-                                                    setStockAdjust(value > 0 ? -value : value);
-                                                }}
-                                            />
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        value={stockAdjust}
+                                                        onChange={(e) => {
+                                                            const value = parseFloat(e.target.value);
+                                                            setStockAdjust(value > 0 ? -value : value);
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div style={{ width: '100%' }}>
+                                                    <span className="title primary mb-2">Remaining Stock  </span>
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        disabled
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        value={remainingStock}
+                                                    />
+                                                </div>
+
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span className="title mb-2">Remaining Stock  </span>
-                                            <TextField
-                                                autoComplete="off"
-                                                disabled
-                                                id="outlined-number"
-                                                type="number"
-                                                sx={{ width: '130px' }}
-                                                size="small"
-                                                value={remainingStock}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button style={{ background: "var(--COLOR_UI_PHARMACY)" }} autoFocus variant="contained" className="p-5" onClick={validateForm}>
-                                Save
-                            </Button>
-                            <Button style={{ background: "#F31C1C" }} autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
-                                Cancel
-                            </Button>
-                        </DialogActions>
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions style={{ padding: '20px 24px' }}>
+                                    <Button style={{ background: "var(--COLOR_UI_PHARMACY)" }} autoFocus variant="contained" className="" onClick={validateForm}>
+                                        Save
+                                    </Button>
+                                    <Button style={{ background: "#F31C1C" }} autoFocus variant="contained" onClick={resetAddDialog} color="error"  >
+                                        Cancel
+                                    </Button>
+                                </DialogActions>
+                            </div>
+                        </div>
+
                     </Dialog>
                 </div >
             }

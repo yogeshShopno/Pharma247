@@ -12,20 +12,20 @@ import Box from '@mui/material/Box';
 import { TablePagination, Typography } from '@mui/material';
 
 const saleColumns = [
-    { id: 'bill_no', label: 'Bill NO', minWidth: 70, height: 100 },
-    { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-    { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
-    { id: 'phone_number', label: 'Mobile No', minWidth: 100 },
-    { id: 'qty', label: 'Quantity', minWidth: 100 },
-    { id: 'amt', label: 'Bill Amount', minWidth: 100 },
+    { id: 'bill_no', label: 'Bill NO', minWidth: 150, height: 100 },
+    { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+    { id: 'customer_name', label: 'Customer Name', minWidth: 150 },
+    { id: 'phone_number', label: 'Mobile No', minWidth: 150 },
+    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'amt', label: 'Bill Amount', minWidth: 150 },
 ];
 const saleReturnColumns = [
-    { id: 'bill_no', label: 'Bill NO', minWidth: 70, height: 100 },
-    { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-    { id: 'customer_name', label: 'Customer Name', minWidth: 100 },
-    { id: 'phone_number', label: 'Mobile No', minWidth: 100 },
-    { id: 'qty', label: 'Quantity', minWidth: 100 },
-    { id: 'amt', label: 'Amount', minWidth: 100 },
+    { id: 'bill_no', label: 'Bill NO', minWidth: 150, height: 150 },
+    { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+    { id: 'customer_name', label: 'Customer Name', minWidth: 150 },
+    { id: 'phone_number', label: 'Mobile No', minWidth: 150 },
+    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'amt', label: 'Amount', minWidth: 150 },
 
 ];
 const DoctorView = () => {
@@ -60,7 +60,7 @@ const DoctorView = () => {
             ).then((response) => {
                 setIsLoading(false)
                 setDoctorDetails(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -105,69 +105,133 @@ const DoctorView = () => {
                                     <FaUser className='text-white w-4 h-4' />
                                 </div>
                             </div>
-                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '18px', minWidth: '200px' }}> {doctorDetails.name}</span>
+                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '18px' }}> {doctorDetails.name}</span>
 
                         </div>
                     </div>
 
                     <div >
-                        <div className="firstrow flex" style={{ background: "none" }}>
-                            <div className="detail">
-                                <span className="text-gray-800 font-bold mb-2">Doctor Name</span>
-                                <span className="data">{doctorDetails.name ? doctorDetails.name : '____'}</span>
+                        <div className="firstrow flex header_main_txt_CV" style={{ background: "none" }}>
+                            <div className="detail_main_bg_CV">
+                                <span className="heading_othr mb-2">Doctor Name</span>
+                                <span className="data_bg">{doctorDetails.name ? doctorDetails.name : '____'}</span>
 
                             </div>
 
-                            <div className="detail">
-                                <span className="text-gray-800 font-bold mb-2">Clinic Name</span>
-                                <span className="data">{doctorDetails.clinic ? doctorDetails.clinic : '____'}</span>
+                            <div className="detail_main_bg_CV">
+                                <span className="heading_othr mb-2">Clinic Name</span>
+                                <span className="data_bg">{doctorDetails.clinic ? doctorDetails.clinic : '____'}</span>
 
                             </div>
-                            <div className="detail">
-                                <span className="text-gray-800 font-bold mb-2">Mobile No</span>
-                                <span className="data">{doctorDetails.phone_number ? doctorDetails.phone_number : '____'}</span>
+                            <div className="detail_main_bg_CV">
+                                <span className="heading_othr mb-2">Mobile No</span>
+                                <span className="data_bg">{doctorDetails.phone_number ? doctorDetails.phone_number : '____'}</span>
                             </div>
 
-                            <div className="detail">
-                                <span className="text-gray-800 font-bold mb-2">License Number</span>
-                                <span className="data">{doctorDetails.license ? doctorDetails.license : '____'}</span>
+                            <div className="detail_main_bg_CV">
+                                <span className="heading_othr mb-2">License Number</span>
+                                <span className="data_bg">{doctorDetails.license ? doctorDetails.license : '____'}</span>
                             </div>
-                            <div className="detail">
-                                <span className="text-gray-800 font-bold mb-2">Address</span>
-                                <span className="data">{doctorDetails.address ? doctorDetails.address : '____'}</span>
+                            <div className="detail_main_bg_CV">
+                                <span className="heading_othr mb-2">Address</span>
+                                <span className="data_bg">{doctorDetails.address ? doctorDetails.address : '____'}</span>
                             </div>
                         </div>
                     </div>
                     <div className='p-6' >
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} >
-                            <Tabs value={tabValue} onChange={handleChange}
-                                TabIndicatorProps={{
-                                    style: {
-                                        backgroundColor: "var(--color1)",
-                                        color: "var(--color1)",
-                                    },
-                                }}>
-                                <Tab label="Sale" sx={{
-                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
-                                    "&.Mui-selected": {
-                                        color: "var(--color1)",
-                                    },
-                                }} />
-                                <Tab label="Sales Return" sx={{
-                                    mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
-                                    "&.Mui-selected": {
-                                        color: "var(--color1)",
-                                    },
-                                }} />
+                            <div
+                                className="cust_tab_val"
+                            >
+                                <Tabs value={tabValue} onChange={handleChange}
+                                    TabIndicatorProps={{
+                                        style: {
+                                            backgroundColor: "var(--color1)",
+                                            color: "var(--color1)",
+                                        },
+                                    }}>
+                                    <Tab label="Sale" sx={{
+                                        mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
+                                        "&.Mui-selected": {
+                                            color: "var(--color1)",
+                                        },
+                                    }} />
+                                    <Tab label="Sales Return" sx={{
+                                        mx: 2, color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
+                                        "&.Mui-selected": {
+                                            color: "var(--color1)",
+                                        },
+                                    }} />
 
-                            </Tabs>
+                                </Tabs>
+                                <div class='total_amount_fld'>
+                                    {tabValue === 0 && (
+                                        <div
+                                            className="mx-4 my-2 "
+                                            style={{
+                                                border: "1px solid var(--color2)",
+                                                padding: "10px",
+                                                borderRadius: "6px",
+                                                backgroundColor: "rgba(63, 98, 18, 0.09)",
+                                                width: "fit-content",
+                                            }}
+                                        >
+                                            <Typography
+                                                className="total_amount_txt"
+                                                style={{
+                                                    color: "var(--color1)",
+                                                    fontSize: "18px",
+                                                    fontWeight: 800,
+                                                    whiteSpace: 'noWrap'
+                                                }}
+                                            >
+                                                {" "}
+                                                Total Sale Amount :-{" "}
+                                                <span style={{ color: "var(--color2)" }}>
+                                                    Rs.
+                                                    {doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0} 
+                                                </span>
+                                            </Typography>
+                                        </div>
+                                    )}
+                                    {tabValue === 1 && (
+                                        <div
+                                            className="mx-4 my-2 "
+                                            style={{
+                                                border: "1px solid var(--color2)",
+                                                padding: "10px",
+                                                borderRadius: "6px",
+                                                backgroundColor: "rgba(63, 98, 18, 0.09)",
+                                                width: "fit-content",
+                                            }}
+                                        >
+                                            <Typography
+                                                className="total_amount_txt"
 
+                                                style={{
+                                                    color: "var(--color1)",
+                                                    fontSize: "18px",
+                                                    fontWeight: 800,
+                                                    whiteSpace: 'noWrap'
+                                                }}
+                                            >
+                                                {" "}
+                                                Total Sale Return Amount :-{" "}
+                                                <span style={{ color: "var(--color2)" }}>
+                                                    Rs.
+                                                    {doctorDetails?.sales_return?.length > 0 ? doctorDetails?.sales_return[0]?.total_amount : 0}
+                                                </span>
+                                            </Typography>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                             {tabValue === 0 && (
-                                <div>
-                                    <div className="mx-4 my-2 ">
+                                <div style={{ margin: "25px" }}>
+                                    {/* <div className="mx-4 my-2 ">
                                         <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0} </span></Typography>
-                                    </div>
-                                    <div className="overflow-x-auto">
+                                    </div> */}
+                                    <div className="overflow-x-auto mt-4">
                                         <table className="w-full border-collapse custom-table">
                                             <thead>
                                                 <tr>
@@ -205,11 +269,11 @@ const DoctorView = () => {
                             )}
 
                             {tabValue === 1 && (
-                                <div>
-                                    <div className="mx-4 my-2 ">
+                                <div style={{ margin: "25px" }}>
+                                    {/* <div className="mx-4 my-2 ">
                                         <Typography style={{ color: 'var(--color1)', fontSize: '18px', fontWeight: 800, marginLeft: '10px' }}> Total Sale Return Amount :- <span style={{ color: '#628A2F' }}>Rs.{doctorDetails?.sales_return?.length > 0 ? doctorDetails?.sales_return[0]?.total_amount : 0} </span></Typography>
-                                    </div>
-                                    <div className="overflow-x-auto">
+                                    </div> */}
+                                    <div className="overflow-x-auto mt-4">
                                         <table className="w-full border-collapse custom-table">
                                             <thead>
                                                 <tr>

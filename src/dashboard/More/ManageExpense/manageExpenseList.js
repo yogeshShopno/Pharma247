@@ -94,7 +94,7 @@ const ManageExpense = () => {
             ).then((response) => {
                 setCatagoryList(response.data.data)
                 setIsLoading(false);
-               
+
 
             })
         } catch (error) {
@@ -120,7 +120,7 @@ const ManageExpense = () => {
                     localStorage.clear();
                 }
                 setIsLoading(false);
-                           })
+            })
         } catch (error) {
             console.error("API error:", error);
 
@@ -267,7 +267,7 @@ const ManageExpense = () => {
                 // setOpenAddPopUp(false);
                 setExpenseData(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -350,30 +350,33 @@ const ManageExpense = () => {
                     <Loader />
                 </div> :
                     <div>
-                        <div style={{ backgroundColor: 'rgb(239 239 239)', padding: '0px 20px 0px' }}>
-                            <div className='pt-4' style={{ display: 'flex', gap: '4px' }}>
+                        <div style={{ backgroundColor: 'rgb(239 239 239)', height: "calc(100vh - 225px)", padding: '0px 20px 0px' }}>
+                            <div className='py-3 mng_expnse_main_hdr' style={{ display: 'flex', gap: '4px' }}>
                                 <div style={{ display: 'flex', gap: '7px', marginBottom: "10px", alignItems: 'center' }}>
-                                    <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', width: '165px' }} >Manage Expense
+                                    <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap" }} >Manage Expense
                                     </span>
                                     <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                 </div>
-                                <div className="headerList" style={{ marginBottom: "10px" }}>
-                                    <Button variant="contained" style={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="mr-2" />Add</Button>
+                                <div className="headerList both_btn_expn" style={{ marginBottom: "10px" }}>
+                                    <Button variant="contained" className="gap-2 add_btn_expn" style={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setOpenAddPopUp(true)}> <AddIcon className="" />Add</Button>
                                     <Button
                                         variant="contained"
+                                        className="gap-7 add_btn_expn"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
                                         onClick={handlePdf}
                                     >
-                                        <img src="/csv-file.png"
-                                            className="report-icon absolute mr-10"
-                                            alt="csv Icon"
-                                        />
-
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon"
+                                            />
+                                        </div>
                                         Download
                                     </Button>
                                 </div>
@@ -384,7 +387,7 @@ const ManageExpense = () => {
                                         <span className="text-gray-500 py-2" >Start Date</span>
                                         <div >
                                             <DatePicker
-                                                className='md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker'
+                                                className='md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn'
                                                 selected={startDate}
                                                 onChange={handleStartDate}
                                                 dateFormat="dd/MM/yyyy"
@@ -395,7 +398,7 @@ const ManageExpense = () => {
                                         <span className="text-gray-500" >End Date</span>
                                         <div >
                                             <DatePicker
-                                                className='md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker'
+                                                className='md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn'
                                                 selected={endDate}
                                                 onChange={handleEndDate}
                                                 dateFormat="dd/MM/yyyy"
@@ -408,9 +411,10 @@ const ManageExpense = () => {
                                         <div>
                                             <Select
                                                 labelId="dropdown-label"
+                                                className="category_fld"
                                                 id="dropdown"
                                                 value={catagory}
-                                                sx={{ minWidth: '200px' }}
+                                                sx={{ width: '100%' }}
                                                 onChange={handleCategoryFilter}
                                                 size="small"
                                                 displayEmpty
@@ -424,7 +428,7 @@ const ManageExpense = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px" }}  >
+                                    <div className="total_mng_expn" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
                                         <div>
                                             <div className="relative" >
                                                 <h2 className="text-red-600 font-medium text-xl  ">Total </h2>
@@ -432,7 +436,7 @@ const ManageExpense = () => {
                                         </div>
                                         <div className="flex">
                                             <div>
-                                                <h2 className="text-red-600 font-bold text-xl ">Rs.{expenseData.total}</h2>
+                                                <h2 className="text-red-600 font-bold text-xl ">Rs.{Number(expenseData.total).toFixed(2)}</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -753,7 +757,7 @@ const ManageExpense = () => {
                                     <div className="flex flex-col lg:flex-row gap-4 mb-3">
                                         <div className="w-full lg:w-1/3 border-b lg:border-b-0 lg:border-r border-blue-700">
                                             <span className="primary">Category</span>
-                                            <FormControl>
+                                            <FormControl style={{ whiteSpace: 'nowrap' }}>
                                                 <RadioGroup
                                                     aria-labelledby="demo-radio-buttons-group-label"
                                                     defaultValue="items"
@@ -786,9 +790,9 @@ const ManageExpense = () => {
                                         <div className="w-full lg:w-2/3 flex flex-col gap-5">
                                             <div className="flex flex-col md:flex-row gap-5">
                                                 <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Expense Date</span>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Expense Date</span>
                                                     <DatePicker
-                                                        className='custom-datepicker w-[170px]'
+                                                        className='custom-datepicker_mn w-[170px]'
                                                         selected={expenseDate}
                                                         onChange={(newDate) => setExpenseDate(newDate)}
                                                         dateFormat="dd/MM/yyyy"
@@ -796,9 +800,9 @@ const ManageExpense = () => {
                                                     {errors.expenseDate && <div className="error">{errors.expenseDate}</div>}
                                                 </div>
                                                 <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Payment Date</span>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Payment Date</span>
                                                     <DatePicker
-                                                        className='custom-datepicker w-[170px]'
+                                                        className='custom-datepicker_mn w-[170px]'
                                                         selected={paymentdate}
                                                         onChange={(newDate) => setPaymentDate(newDate)}
                                                         dateFormat="dd/MM/yyyy"
@@ -834,8 +838,8 @@ const ManageExpense = () => {
                                             {selectedGSTOption === 'with_GST' && (
                                                 <>
                                                     <div className="flex flex-col md:flex-row gap-5">
-                                                        <div className="w-full md:w-1/2">
-                                                            <span className="ExpenseBoxSubTitle">GST(%)</span>
+                                                        <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                            <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>GST(%)</span>
                                                             <TextField
                                                                 autoComplete="off"
                                                                 required
@@ -848,8 +852,8 @@ const ManageExpense = () => {
                                                             />
                                                             {errors.gst && <div className="error">{errors.gst}</div>}
                                                         </div>
-                                                        <div className="w-full md:w-1/2">
-                                                            <span className="ExpenseBoxSubTitle">GSTN Number</span>
+                                                        <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                            <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>GSTN Number</span>
                                                             <TextField
                                                                 autoComplete="off"
                                                                 required
@@ -860,8 +864,8 @@ const ManageExpense = () => {
                                                             {errors.gstIN && <div className="error">{errors.gstIN}</div>}
                                                         </div>
                                                     </div>
-                                                    <div className="w-full md:w-1/2">
-                                                        <span className="ExpenseBoxSubTitle">Party Name</span>
+                                                    <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                        <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Party Name</span>
                                                         <TextField
                                                             autoComplete="off"
                                                             required
@@ -875,8 +879,8 @@ const ManageExpense = () => {
                                             )}
 
                                             <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">without GST Amount</span>
+                                                <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>without GST Amount</span>
                                                     {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
                                                     <TextField
                                                         autoComplete="off"
@@ -888,8 +892,8 @@ const ManageExpense = () => {
                                                     />
                                                     {errors.amount && <div className="error">{errors.amount}</div>}
                                                 </div>
-                                                <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Total</span>
+                                                <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Total</span>
                                                     <TextField
                                                         autoComplete="off"
                                                         required
@@ -903,8 +907,8 @@ const ManageExpense = () => {
                                             </div>
 
                                             <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Payment Mode</span>
+                                                <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Payment Mode</span>
                                                     <Select
                                                         className="w-full md:w-full"
                                                         value={paymentType}
@@ -918,8 +922,8 @@ const ManageExpense = () => {
                                                     </Select>
                                                     {errors.paymentType && <div className="error">{errors.paymentType}</div>}
                                                 </div>
-                                                <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Reference No.</span>
+                                                <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Reference No.</span>
                                                     <TextField
                                                         autoComplete="off"
                                                         required
@@ -932,8 +936,8 @@ const ManageExpense = () => {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="w-full md:w-1/2">
-                                                    <span className="ExpenseBoxSubTitle">Remark</span>
+                                                <div className="w-full md:w-1/2" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span className="" style={{ color: 'var(--COLOR_UI_PHARMACY)' }}>Remark</span>
                                                     <TextField
                                                         autoComplete="off"
                                                         required

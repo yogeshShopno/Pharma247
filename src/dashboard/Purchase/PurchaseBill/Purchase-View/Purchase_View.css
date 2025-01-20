@@ -86,6 +86,13 @@
     align-items: unset; */
   }
 
+  .total_mng_expn {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
   .total_amount_fld {
     display: flex;
     justify-content: end;
@@ -555,6 +562,12 @@
   .add_company_hdr {
     flex-direction: column;
   }
+  .adjst_stk_head {
+    flex-direction: column;
+  }
+  .adjst_btn {
+    width: 100%;
+  }
 }
 
 @media (min-width: 1024px) and (max-width: 1440px) {
@@ -678,5 +691,110 @@
     min-width: 200px;
     /* margin-top: 1rem; */
     font-size: 13px;
+  }
+}
+
+@media (max-width: 424px) {
+  .cash_mngmt_header {
+    flex-direction: column;
+  }
+  .downld_btn_csh {
+    width: 100%;
+  }
+}
+
+/* @media (max-width: 569px) {
+  .ttl_csh_mng_txt {
+    font-size: 1rem !important;
+  }
+  .ttl_txt_hd{
+    white-space: nowrap;
+    font-size: 1.3rem;
+  }
+} */
+
+@media (max-width: 992px) {
+  .cash_mng_hed_ttl {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row !important;
+  }
+}
+@media (max-width: 570px) {
+  .cash_mng_hed_ttl {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column !important;
+  }
+
+  .csh_tl_txt {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color2);
+    padding-bottom: 15px;
+  }
+  .csh_tl_txt_lst {
+    padding-bottom: 15px;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+  }
+  .csh_tl_txt_1st {
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 424px) {
+  .csh_mng_main_hdr {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 400px) {
+  .csh_tl_txt {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+  }
+  .csh_tl_txt_lst {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+  }
+  .ttl_txt_hd {
+    margin-left: 15%;
+    width: 100%;
+  }
+  .ttl_csh_mng_txt {
+    margin-left: 15%;
+  }
+  .lyl_main_header_txt {
+    flex-direction: column;
+  }
+  .add_lyl_btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 458px) {
+  .mng_expnse_main_hdr {
+    flex-direction: column;
+  }
+  .both_btn_expn {
+    width: 100%;
+    display: flex;
+  }
+  .add_btn_expn {
+    width: 48%;
+  }
+}
+
+@media (min-width: 768px) {
+  .category_fld {
+    width: 100%;
+    min-width: 200px !important;
   }
 }

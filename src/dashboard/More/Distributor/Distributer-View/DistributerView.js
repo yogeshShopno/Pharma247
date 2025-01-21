@@ -2,7 +2,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useParams } from 'react-router-dom';
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import Header from "../../../Header";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
@@ -18,6 +18,10 @@ const DistributerView = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
 
+    const [distributorName, setDistributorName] = useState('');
+    const [companyList, setCompanyList] = useState([]);
+    const pdfRef = useRef(); // Reference for the content to print
+
     const PaymentHistory = [
         { id: "bill_no", label: "Bill No" },
         { id: "payment_date", label: "Payment Date" },
@@ -30,6 +34,9 @@ const DistributerView = () => {
         distributerDetail(id);
     }, [page, rowsPerPage])
 
+    
+      
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -38,6 +45,85 @@ const DistributerView = () => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    
+    const handleDownloadPDF = async () => {
+        console.log('Fetching Company List for ID:', id);
+    
+        let data = new FormData();
+        data.append('id', id);
+    
+        try {
+          // Fetch data from the API
+          const response = await axios.post(
+            'distributer-company-list',
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          const distributorData = response.data.data;
+          console.log('Fetched Distributor Data:', distributorData);
+    
+          // Pass the fetched data to generate the PDF
+          downloadPDF(distributorData);
+        } catch (error) {
+          console.error('Error fetching distributor data:', error);
+        }
+      };
+    
+      const downloadPDF = (distributorData) => {
+        const { name, company_list } = distributorData;
+    
+        const content = `
+          <html>
+            <head>
+              <title>Company List</title>
+              <style>
+                body { font-family: Arial, sans-serif; }
+                h1 { font-size: 20px; text-align: center; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f4f4f4; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>Distributor: ${name}</h1>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Company Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${company_list
+                    .map(
+                      (company, index) =>
+                        `<tr>
+                          <td>${index + 1}</td>
+                          <td>${company}</td>
+                        </tr>`
+                    )
+                    .join('')}
+                </tbody>
+              </table>
+            </body>
+          </html>
+        `;
+    
+        // Open a new tab and write the content to it
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(content);
+        printWindow.document.close();
+    
+        // Trigger print dialog
+        printWindow.print();
+      };
+    
 
     const distributerDetail = (id) => {
         let data = new FormData();
@@ -85,12 +171,13 @@ const DistributerView = () => {
                             <ArrowForwardIosIcon style={{ fontSize: '20px', marginTop: '6px', color: "var(--color1)" }} />
                             <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.name}</span>
                         </div>
-                        <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px",  }}
+                        <Button  onClick={()=>handleDownloadPDF()} variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', paddingLeft: "35px",  }}
 
 
                         >    <img src="/csv-file.png"
                             className=" report-icon absolute mr-10 "
-                            alt="csv Icon"
+                            alt="csv Icon" 
+                           
                             />
                             Download Compony List</Button>
 

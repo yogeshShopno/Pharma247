@@ -49,7 +49,7 @@ const Top_Customers = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setTopCustomerData(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -121,16 +121,21 @@ const Top_Customers = () => {
                             <div className="headerList" >
                                 <Button
                                     variant="contained"
+                                    className="gap-7 downld_btn_csh"
                                     style={{
                                         background: "var(--color1)",
                                         color: "white",
+                                        // paddingLeft: "35px",
                                         textTransform: "none",
-                                        paddingLeft: "35px",
+                                        display: "flex",
                                     }}
                                     onClick={exportToCSV}>
-                                    <img src="/csv-file.png"
-                                        className="report-icon absolute mr-10"
-                                        alt="csv Icon" />
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                    </div>
 
                                     Download
                                 </Button> </div>
@@ -160,8 +165,8 @@ const Top_Customers = () => {
                                     </div>
                                     <div className="mt-6">
                                         <Button style={{
-                                                background: "var(--color1)",
-                                            }}  variant="contained" onClick={handlefilterData} >
+                                            background: "var(--color1)",
+                                        }} variant="contained" onClick={handlefilterData} >
                                             Go
                                         </Button>
                                     </div>

@@ -76,7 +76,7 @@ const Item_Batch_wiseStock = () => {
                 // setTotal(response.data.data.total_amount)
                 // setTotalNetProfit(response.data.data.total_net_profite)
                 // setQTY(response.data.data.total_qty)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -185,13 +185,18 @@ const Item_Batch_wiseStock = () => {
                                             style={{
                                                 background: "var(--color1)",
                                                 color: "white",
+                                                // paddingLeft: "35px",
                                                 textTransform: "none",
-                                                paddingLeft: "35px",
+                                                display: "flex",
                                             }}
+                                            className="gap-7 downld_btn_csh"
                                             onClick={exportToCSV}>
-                                            <img src="/csv-file.png"
-                                                className="report-icon absolute mr-10"
-                                                alt="csv Icon" />
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <img src="/csv-file.png"
+                                                    className="report-icon absolute mr-10"
+                                                    alt="csv Icon" />
+
+                                            </div>
 
                                             Download
                                         </Button>
@@ -223,7 +228,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }}>
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-basic"
                                                         value={companyName}
                                                         size="small"
@@ -249,7 +254,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-basic"
                                                         value={drugGroup}
                                                         size="small"
@@ -275,7 +280,7 @@ const Item_Batch_wiseStock = () => {
                                             <div className="mt-6">
                                                 <div style={{ maxWidth: "300px" }} >
                                                     <TextField
-                 autoComplete="off"
+                                                        autoComplete="off"
                                                         id="outlined-basic"
                                                         value={location}
                                                         size="small"
@@ -301,8 +306,8 @@ const Item_Batch_wiseStock = () => {
 
                                             <div className="mt-6">
                                                 <Button style={{
-                                                background: "var(--color1)",
-                                            }} variant="contained" onClick={() => handlefilterData(currentPage)}>
+                                                    background: "var(--color1)",
+                                                }} variant="contained" onClick={() => handlefilterData(currentPage)}>
                                                     Go
                                                 </Button>
                                             </div>

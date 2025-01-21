@@ -125,7 +125,7 @@ const DayWiseSummary = () => {
                 } else if (reportType == 3) {
                     saveAs(blob, 'Sale-Return-DayWise-Summary-Report.xlsx');
                 }
-               
+
             } catch (error) {
                 console.error("API error:", error);
 
@@ -162,22 +162,24 @@ const DayWiseSummary = () => {
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                    <Button
-                                        variant="contained"
-                                        style={{
-                                            background: "var(--color1)",
-                                            color: "white",
-                                            textTransform: "none",
-                                            paddingLeft: "35px",
-                                        }}
-                                        onClick={exportToCSV}>
+                                <Button
+                                    variant="contained"
+                                    className="gap-7 downld_btn_csh"
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        // paddingLeft: "35px",
+                                        textTransform: "none",
+                                        display: "flex",
+                                    }}
+                                    onClick={exportToCSV}> <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <img src="/csv-file.png"
                                             className="report-icon absolute mr-10"
                                             alt="csv Icon" />
-
-                                        Download
-                                    </Button>
-                                </div>
+                                    </div>
+                                    Download
+                                </Button>
+                            </div>
                         </div>
                         <div className="bg-white ">
                             <div className="manageExpenseRow" style={{
@@ -220,8 +222,8 @@ const DayWiseSummary = () => {
 
                                     <div>
                                         <Button style={{
-                                                background: "var(--color1)",
-                                            }}  variant="contained" onClick={handlefilterData}>
+                                            background: "var(--color1)",
+                                        }} variant="contained" onClick={handlefilterData}>
                                             Go
                                         </Button>
                                     </div>

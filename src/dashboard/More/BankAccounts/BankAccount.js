@@ -701,7 +701,7 @@ const BankAccount = () => {
                         onClick={() => toggleDrawer(false)}
                     >
                         <Box>
-                            <h1 className="text-xl sm:text-2xl flex justify-center p-2" style={{ color: "black" }}>Bank Accounts</h1>
+                            <h1 className="text-xl sm:text-2xl flex justify-center p-2" style={{ color: "var(--color1)" }}>Bank Accounts</h1>
                         </Box>
                         <List>
                             {bankData.map((account, index) => (
@@ -716,7 +716,7 @@ const BankAccount = () => {
                                 </ListItem>
                             ))}
                         </List>
-                        <Divider />
+                        <Divider style={{ borderColor: 'var(--color2) !important' }} />
                     </Box>
                     <Box className="flex-grow">
                         <Box sx={{ width: "100%", bgcolor: 'background.paper', padding: "0px 20px 0px" }}>
@@ -737,11 +737,22 @@ const BankAccount = () => {
                                 >
                                     <AddIcon />Add New Bank
                                 </Button>
-                                <Button variant="contained" style={{ background: 'var(--color1)', color: 'white', paddingLeft: "35px", textTransform: 'none' }}  >
-                                    <img src="/csv-file.png"
-                                        className="report-icon absolute mr-10"
-                                        alt="csv Icon"
-                                    />Download</Button>
+                                <Button variant="contained"
+                                    className="gap-7 downld_btn_csh"
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        // paddingLeft: "35px",
+                                        textTransform: "none",
+                                        display: "flex",
+                                    }}  >
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon"
+                                        />
+                                    </div>
+                                    Download</Button>
                             </div>
                             {isLoading ? (
                                 <div className="loader-container">
@@ -898,7 +909,7 @@ const BankAccount = () => {
                                             size="small"
                                             value={bankName}
                                             onChange={(e) => { setBankName(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+                                           style={{width:"100%"}}
                                             variant="outlined"
 
                                         />
@@ -915,7 +926,7 @@ const BankAccount = () => {
                                             size="small"
                                             value={accountType}
                                             onChange={(e) => { setAccountType(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+                                           style={{width:"100%"}}
                                             variant="outlined"
 
                                         />
@@ -933,7 +944,7 @@ const BankAccount = () => {
                                             size="small"
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+                                           style={{width:"100%"}}
                                             variant="outlined"
                                         />
                                     </div>
@@ -974,7 +985,7 @@ const BankAccount = () => {
                                                 size="small"
                                                 value={accountNumber}
                                                 onChange={(e) => { setAccountNumber(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                               style={{width:"100%"}}
                                                 variant="outlined"
 
                                             />
@@ -991,7 +1002,7 @@ const BankAccount = () => {
                                                 size="small"
                                                 value={reEnterAccountNumber}
                                                 onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                               style={{width:"100%"}}
                                                 variant="outlined"
 
                                             />
@@ -1011,7 +1022,7 @@ const BankAccount = () => {
                                                 size="small"
                                                 value={ifscCode}
                                                 onChange={(e) => { setIfscCode(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                               style={{width:"100%"}}
                                                 variant="outlined"
 
                                             />
@@ -1029,7 +1040,7 @@ const BankAccount = () => {
                                                     size="small"
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
-                                                    style={{ minWidth: 250 }}
+                                                   style={{width:"100%"}}
                                                     variant="outlined"
 
                                                 />
@@ -1053,7 +1064,7 @@ const BankAccount = () => {
                                                 size="small"
                                                 value={accountHolderName}
                                                 onChange={(e) => { setAccountHolderName(e.target.value) }}
-                                                style={{ minWidth: 250 }}
+                                               style={{width:"100%"}}
                                                 variant="outlined"
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
@@ -1069,7 +1080,7 @@ const BankAccount = () => {
                                                     size="small"
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
-                                                    style={{ minWidth: 250 }}
+                                                   style={{width:"100%"}}
                                                     variant="outlined"
 
                                                 />
@@ -1093,18 +1104,9 @@ const BankAccount = () => {
                 <Dialog
                     open={openAddPopUp}
                     onClose={handleCloseDialog}
-                    fullScreen={fullScreen}
-                    sx={{
-                        "& .MuiDialog-container": {
-                            "& .MuiPaper-root": {
-                                width: fullScreen ? "100%" : "70%",
-                                minWidth: fullScreen ? "100%" : "300px",
-                                margin: fullScreen ? 0 : 'auto',
-                            },
-                        },
-                    }}
+
                 >
-                    <DialogTitle id="alert-dialog-title" className="secondary">
+                    <DialogTitle id="alert-dialog-title" className="primary">
                         Add Bank Account
                     </DialogTitle>
                     <IconButton
@@ -1117,8 +1119,8 @@ const BankAccount = () => {
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             <div className="flex my-4" style={{ flexDirection: 'column', gap: '19px' }}>
-                                <div className="flex gap-5 " style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
-                                    <div>
+                                <div className="flex flex-col md:flex-row gap-5 ">
+                                    <div style={{ width: "100%" }}>
                                         <div className="mb-2">
                                             <span className="label primary mb-4">Bank Name</span>
                                             <span className="text-red-600 ml-1">*</span>
@@ -1134,13 +1136,13 @@ const BankAccount = () => {
                                                 const uppercasedValue = e.target.value.toUpperCase();
                                                 setBankName(uppercasedValue);
                                             }}
-                                            style={{ minWidth: 250 }}
+                                            style={{ width: "100%" }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.bankName && <span className="error">{errors.bankName}</span>}
                                     </div>
-                                    <div>
+                                    <div style={{ width: "100%" }}>
                                         <div className="mb-2">
                                             <span className="label primary">Account Type</span>
                                             <span className="text-red-600 ml-1">*</span>
@@ -1156,15 +1158,15 @@ const BankAccount = () => {
                                                     .toLowerCase()
                                                     .replace(/\b\w/g, (char) => char.toUpperCase()); setAccountType(capitalizedValue)
                                             }}
-                                            style={{ minWidth: 250 }}
+                                            style={{ width: "100%" }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                         {errors.accountType && <span className="error">{errors.accountType}</span>}
                                     </div>
                                 </div>
-                                <div className="flex gap-5" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
-                                    <div>
+                                <div className="flex flex-col md:flex-row gap-5">
+                                    <div style={{ width: "100%" }}>
                                         <div className="mb-2">
                                             <span className="label primary mb-4">Opening Balance</span>
                                         </div>
@@ -1174,19 +1176,19 @@ const BankAccount = () => {
                                             size="small"
                                             value={openingBalance}
                                             onChange={(e) => { setOpeningBalance(e.target.value) }}
-                                            style={{ minWidth: 250 }}
+                                            style={{ width: "100%" }}
                                             variant="outlined"
                                             fullWidth={fullScreen}
                                         />
                                     </div>
-                                    <div>
+                                    <div style={{ width: "100%" }}>
                                         <div className="mb-2">
                                             <span className="label primary">As of Date</span>
                                         </div>
                                         <div className="detail">
-                                            <div style={{ width: fullScreen ? "100%" : "215px" }}>
+                                            <div style={{ width: "100%" }}>
                                                 <DatePicker
-                                                    className='custom-datepicker'
+                                                    className='custom-datepicker_mn'
                                                     selected={asOfDate}
                                                     onChange={(newDate) => setAsOfDate(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -1199,12 +1201,29 @@ const BankAccount = () => {
                             </div>
                             <div className="border-1 text-black font-bold secondary flex justify-between items-center">
                                 Add Bank Details
-                                <Switch checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} />
+                                <Switch checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} sx={{
+                                    "& .MuiSwitch-track": {
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                    },
+                                    "&.Mui-checked .MuiSwitch-track": {
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
+                                    },
+                                    "& .MuiSwitch-thumb": {
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                    },
+                                    "&.Mui-checked .MuiSwitch-thumb": {
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                    },
+                                    "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track": {
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
+
+                                    }
+                                }} />
                             </div>
                             {switchCheck && (
                                 <>
-                                    <div className="flex gap-5 my-4" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
-                                        <div>
+                                    <div className="flex flex-col md:flex-row gap-5 my-4">
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary mb-4">Bank Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
@@ -1219,13 +1238,13 @@ const BankAccount = () => {
 
                                                     setAccountNumber(numericValue)
                                                 }}
-                                                style={{ minWidth: 250 }}
+                                                style={{ width: "100%" }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
                                         </div>
-                                        <div>
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary">Re-Enter Account Number</span>
                                                 <span className="text-red-600 ml-1">*</span>
@@ -1239,15 +1258,16 @@ const BankAccount = () => {
                                                     // Allow only numeric input
                                                     const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
                                                     setReEnterAccountNumber(numericValue);
-                                                }} style={{ minWidth: 250 }}
+                                                }}
+                                                style={{ width: "100%" }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
                                         </div>
                                     </div>
-                                    <div className="flex gap-5 my-4" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
-                                        <div>
+                                    <div className="flex flex-col md:flex-row gap-5 my-4">
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary mb-4">IFSC Code</span>
                                                 <span className="text-red-600 ml-1">*</span>
@@ -1258,13 +1278,13 @@ const BankAccount = () => {
                                                 size="small"
                                                 value={ifscCode}
                                                 onChange={(e) => { const uppercasedValue = e.target.value.toUpperCase(); setIfscCode(uppercasedValue) }}
-                                                style={{ minWidth: 250 }}
+                                                style={{ width: "100%" }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
                                         </div>
-                                        <div>
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary">Branch Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
@@ -1276,7 +1296,7 @@ const BankAccount = () => {
                                                     size="small"
                                                     value={branchName}
                                                     onChange={(e) => { setBranchName(e.target.value) }}
-                                                    style={{ minWidth: 250 }}
+                                                    style={{ width: "100%" }}
                                                     variant="outlined"
                                                     fullWidth={fullScreen}
                                                 />
@@ -1284,8 +1304,8 @@ const BankAccount = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex gap-5" style={{ flexDirection: fullScreen ? 'column' : 'row' }}>
-                                        <div>
+                                    <div className="flex flex-col md:flex-row gap-5">
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary mb-4">Account Holder Name</span>
                                                 <span className="text-red-600 ml-1">*</span>
@@ -1301,13 +1321,13 @@ const BankAccount = () => {
                                                         .replace(/\b\w/g, (char) => char.toUpperCase());
                                                     setAccountHolderName(capitalizedValue)
                                                 }}
-                                                style={{ minWidth: 250 }}
+                                                style={{ width: "100%" }}
                                                 variant="outlined"
                                                 fullWidth={fullScreen}
                                             />
                                             {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
                                         </div>
-                                        <div>
+                                        <div style={{ width: "100%" }}>
                                             <div className="mb-2">
                                                 <span className="label primary">UPI ID</span>
                                             </div>
@@ -1318,7 +1338,7 @@ const BankAccount = () => {
                                                     size="small"
                                                     value={upiId}
                                                     onChange={(e) => { setUpiId(e.target.value) }}
-                                                    style={{ minWidth: 250 }}
+                                                    style={{ width: "100%" }}
                                                     variant="outlined"
                                                     fullWidth={fullScreen}
                                                 />
@@ -1329,7 +1349,7 @@ const BankAccount = () => {
                             )}
                         </DialogContentText>
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions style={{ padding: '20px 24px' }}>
                         <Button style={{ background: "var(--COLOR_UI_PHARMACY)" }} autoFocus variant="contained" onClick={handleAddBank}>
                             Save
                         </Button>
@@ -1338,7 +1358,7 @@ const BankAccount = () => {
                 {/* className="custom-dialog" */}
                 {/* Add Fund Dialog Box */}
                 <Dialog open={openAddPopUpAdjust} >
-                    <DialogTitle id="alert-dialog-title" className="secondary">
+                    <DialogTitle id="alert-dialog-title" className="primary">
                         Adjust Balance
                     </DialogTitle>
                     <IconButton
@@ -1353,12 +1373,13 @@ const BankAccount = () => {
                         <DialogContentText id="alert-dialog-description">
 
                             <div className="detail mb-4">
-                                <span className="primary">Payment Mode</span>
+                                <span className="label  primary ">Payment Mode</span>
                                 <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
+                                    className="mb-2"
                                     value={paymentType}
-                                    sx={{ minWidth: '200px' }}
+                                    sx={{ width: '100%' }}
                                     onChange={handlePaymentTypeChange}
                                     size="small"
                                 >
@@ -1371,9 +1392,9 @@ const BankAccount = () => {
                                 {errors.paymentType && <div className="error">{errors.paymentType}</div>}
                             </div>
                             <div className="detail mb-4">
-                                <span className="primary mb-4">Add or Reduce</span>
-                                <div className="ml-4 flex">
-                                    <div className="mr-4">
+                                <span className="label primary mb-2">Add or Reduce</span>
+                                <div className="flex flex-col sm:flex-row gap-5 mb-4">
+                                    <div className="">
                                         <Button autoFocus style={Addbutton} onClick={handleAddBtn} >
                                             <AddIcon /> Add Money
                                         </Button>
@@ -1388,8 +1409,8 @@ const BankAccount = () => {
                                 {errors.reduceclicked && <div className="error">{errors.reduceclicked}</div>}
                             </div>
                             <div className="detail mb-4 ">
-                                <div className="flex justify-between gap-5">
-                                    <div className="mb-2">
+                                <div className="flex flex-col md:flex-row justify-between gap-5">
+                                    <div className="mb-2" style={{ width: "100%" }}>
                                         <span className="label primary">Current Balance</span>
                                         <div >
                                             <OutlinedInput
@@ -1397,13 +1418,13 @@ const BankAccount = () => {
                                                 value={currentBalance}
                                                 disabled
                                                 startAdornment={<InputAdornment position="start">Rs.</InputAdornment>}
-                                                sx={{ width: 200 }}
+                                                sx={{ width: '100%' }}
                                                 size="small"
                                             />
 
                                         </div>
                                     </div>
-                                    <div className="mb-2">
+                                    <div className="mb-2" style={{ width: "100%" }}>
                                         <span className="label primary">Date</span>
                                         <div >
                                             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1415,13 +1436,13 @@ const BankAccount = () => {
                                                     maxDate={dayjs()}
                                                 />
                                             </LocalizationProvider> */}
-                                            <div style={{ width: "215px" }}>
+                                            <div style={{ width: "100%" }}>
                                                 <DatePicker
-                                                    className='custom-datepicker '
+                                                    className='custom-datepicker_mn '
                                                     selected={adjustDate}
                                                     onChange={(newDate) => setAdjustDate(newDate)}
                                                     dateFormat="dd/MM/yyyy"
-                                                    minDate={new Date()}
+                                                // minDate={new Date()}
                                                 />
                                             </div>
                                         </div>
@@ -1430,8 +1451,8 @@ const BankAccount = () => {
                             </div>
 
                             <div className="detail mb-4 ">
-                                <div className="flex justify-between gap-5">
-                                    <div className="mb-2">
+                                <div className="flex flex-col md:flex-row justify-between gap-5">
+                                    <div className="mb-2" style={{ width: "100%" }}>
                                         <span className="label primary">Enter Amount</span>
                                         <div>
                                             <OutlinedInput
@@ -1439,13 +1460,13 @@ const BankAccount = () => {
                                                 value={enterAmt}
                                                 onChange={(e) => setEnterAmt(e.target.value)}
                                                 startAdornment={<InputAdornment position="start">Rs.</InputAdornment>}
-                                                sx={{ width: 200 }}
+                                                sx={{ width: '100%' }}
                                                 size="small"
                                             />
                                             {errors.enterAmt && <div className="error">{errors.enterAmt}</div>}
                                         </div>
                                     </div>
-                                    <div className="mb-2">
+                                    <div className="mb-2" style={{ width: "100%" }}>
                                         <span className="label primary">Latest Balance</span>
                                         <div>
                                             <OutlinedInput
@@ -1453,7 +1474,7 @@ const BankAccount = () => {
                                                 value={latestAmt}
                                                 disabled
                                                 startAdornment={<InputAdornment position="start">Rs.</InputAdornment>}
-                                                sx={{ width: 200 }}
+                                                sx={{ width: '100%' }}
                                                 size="small"
                                             />
                                         </div>
@@ -1461,13 +1482,13 @@ const BankAccount = () => {
                                 </div>
                             </div>
 
-                            <div className="detail mb-4">
-                                <span className="primary">Remarks</span>
+                            <div className="detail mb-2" style={{ width: "100%" }}>
+                                <span className="label primary">Remarks</span>
                                 <div>
                                     <OutlinedInput
                                         value={remarks}
                                         onChange={(e) => setRemarks(e.target.value)}
-                                        sx={{ minWidth: '420px' }}
+                                        sx={{ width: '100%' }}
                                         size="small"
                                     />
                                     {/* {errors.paymentType && <div className="error">{errors.paymentType}</div>} */}
@@ -1477,7 +1498,7 @@ const BankAccount = () => {
 
                     </DialogContent>
 
-                    <DialogActions>
+                    <DialogActions style={{ padding: '20px 24px' }}>
                         <Button style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} autoFocus variant="contained" onClick={handleAdjustBalance} >
                             Save
                         </Button>

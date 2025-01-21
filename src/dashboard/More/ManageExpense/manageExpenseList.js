@@ -754,8 +754,8 @@ const ManageExpense = () => {
                             </IconButton>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
-                                    <div className="flex flex-col lg:flex-row gap-4 mb-3">
-                                        <div className="w-full lg:w-1/3 border-b lg:border-b-0 lg:border-r border-blue-700">
+                                    <div className="flex flex-col sm:flex-col md:flex-row gap-4 mb-3">
+                                        <div className="w-full lg:w-1/3 border-b md:border-b-0 md:border-r" style={{ display: 'flex', flexDirection: 'column', lineHeight: '2rem', width: 'inherit' }}>
                                             <span className="primary">Category</span>
                                             <FormControl style={{ whiteSpace: 'nowrap' }}>
                                                 <RadioGroup
@@ -776,6 +776,7 @@ const ManageExpense = () => {
                                                 >
                                                     {catagoryList.map((category) => (
                                                         <FormControlLabel
+                                                            style={{ color: 'var(--COLOR_UI_PHARMACY)' }}
                                                             key={category.id}
                                                             value={category.id}
                                                             control={<Radio />}
@@ -829,8 +830,8 @@ const ManageExpense = () => {
                                                             },
                                                         }}
                                                     >
-                                                        <FormControlLabel value="with_GST" control={<Radio />} label="With GST" />
-                                                        <FormControlLabel value="withOut_GST" control={<Radio />} label="Without GST" />
+                                                        <FormControlLabel value="with_GST" style={{ color: 'var(--COLOR_UI_PHARMACY)' }} control={<Radio />} label="With GST" />
+                                                        <FormControlLabel value="withOut_GST" style={{ color: 'var(--COLOR_UI_PHARMACY)' }} control={<Radio />} label="Without GST" />
                                                     </RadioGroup>
                                                 </FormControl>
                                             </div>
@@ -952,7 +953,7 @@ const ManageExpense = () => {
                                     </div>
                                 </DialogContentText>
                             </DialogContent>
-                            <DialogActions>
+                            <DialogActions style={{ padding: '20px 24px' }}>
                                 <Button autoFocus variant="contained" style={{ background: "var(--COLOR_UI_PHARMACY)" }} onClick={handleAddExpense}>
                                     Save
                                 </Button>

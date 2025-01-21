@@ -176,16 +176,21 @@ const BillItemWiseMargin = () => {
                                 <div className="headerList">
                                     <Button
                                         variant="contained"
+                                        className="gap-7 downld_btn_csh"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
                                         onClick={exportToCSV}>
-                                        <img src="/csv-file.png"
-                                            className="report-icon absolute mr-10"
-                                            alt="csv Icon" />
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon" />
+
+                                        </div>
 
                                         Download
                                     </Button>
@@ -242,7 +247,7 @@ const BillItemWiseMargin = () => {
                                         <div className="mt-6">
                                             <div className="detail" >
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     id="outlined-basic"
                                                     value={searchItem}
                                                     size="small"

@@ -2011,18 +2011,22 @@ const InventoryList = () => {
               </Button>
               <Button
                 variant="contained"
+                className="gap-7 downld_btn_csh"
                 style={{
                   background: "var(--color1)",
                   color: "white",
+                  // paddingLeft: "35px",
                   textTransform: "none",
-                  paddingLeft: "35px",
+                  display: "flex",
                 }}
                 onClick={handleFilterData}
               >
-                <img src="/csv-file.png"
-                  className="report-icon absolute mr-10"
-                  alt="csv Icon"
-                />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src="/csv-file.png"
+                    className="report-icon absolute mr-10"
+                    alt="csv Icon"
+                  />
+                </div>
 
                 Download
               </Button>
@@ -2133,13 +2137,13 @@ const InventoryList = () => {
                   </thead>
                   <tbody style={{ backgroundColor: "#3f621217" }}>
                     {data.map((item, index) => (
-                      <tr 
+                      <tr
                         key={index}
-                        // style={{
-                        //   backgroundColor:
-                        //     selectedIndex === index ? "#ceecfd" : "transparent",
-                        //   color: selectedIndex === index ? "black" : "inherit",
-                        // }}
+                      // style={{
+                      //   backgroundColor:
+                      //     selectedIndex === index ? "#ceecfd" : "transparent",
+                      //   color: selectedIndex === index ? "black" : "inherit",
+                      // }}
                       >
                         <td
                           style={{ borderRadius: "10px 0 0 10px" }}

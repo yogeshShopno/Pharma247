@@ -199,13 +199,18 @@ const DoctorItemWise = () => {
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
+                                        className="gap-7 downld_btn_csh"
                                         onClick={exportToCSV}>
+                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <img src="/csv-file.png"
                                             className="report-icon absolute mr-10"
                                             alt="csv Icon" />
+                                            
+                                                                                         </div>
 
                                         Download
                                     </Button> </div>

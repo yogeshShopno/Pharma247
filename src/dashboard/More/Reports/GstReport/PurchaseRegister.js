@@ -62,7 +62,18 @@ const PurchaseRegister = () => {
                             <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList" style={{ marginBottom: "10px" }}>
-                            <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} ><img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+                            <Button variant="contained"
+                                className="gap-7 downld_btn_csh" style={{
+                                    background: "var(--color1)",
+                                    color: "white",
+                                    // paddingLeft: "35px",
+                                    textTransform: "none",
+                                    display: "flex",
+                                }} >
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />
+                                </div>
+                                Download</Button>
                         </div>
                     </div>
                     <div className="bg-white ">
@@ -79,7 +90,7 @@ const PurchaseRegister = () => {
                                             value={startDate}
                                             onChange={(newDate) => setStartDate(newDate)}
                                             renderInput={(params) => <TextField
-                 autoComplete="off" {...params} />}
+                                                autoComplete="off" {...params} />}
                                         />
                                     </LocalizationProvider>
                                 </div>

@@ -53,7 +53,7 @@ const SaleSummary = () => {
             }
             ).then((response) => {
                 setBankData(response.data.data)
-                if(response.data.status === 401){ 
+                if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
                 }
@@ -100,7 +100,7 @@ const SaleSummary = () => {
                     setIsLoading(false);
                     setSaleSummaryData(response.data.data)
                     setTotalSale(response.data.data.total_amount)
-                    if(response.data.status === 401){ 
+                    if (response.data.status === 401) {
                         history.push('/');
                         localStorage.clear();
                     }
@@ -179,18 +179,23 @@ const SaleSummary = () => {
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
-                                <Button
+                                    <Button
                                         variant="contained"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
-                                        >
-                                        <img src="/csv-file.png"
-                                            className="report-icon absolute mr-10"
-                                            alt="csv Icon" />
+                                        className="gap-7 downld_btn_csh"
+                                    >
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon" />
+
+                                        </div>
 
                                         Download
                                     </Button> </div>
@@ -249,45 +254,45 @@ sx={{
                                                         <ListItemText primary="All" />
                                                     </MenuItem> */}
                                                     <MenuItem value="cash">
-                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('cash') > -1} />
+                                                        <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }} checked={paymentMode.indexOf('cash') > -1} />
                                                         <ListItemText primary="Cash" />
                                                     </MenuItem>
                                                     <MenuItem value="credit">
-                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('credit') > -1} />
+                                                        <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }} checked={paymentMode.indexOf('credit') > -1} />
                                                         <ListItemText primary="Credit" />
                                                     </MenuItem>
                                                     {bankData?.map((option) => (
                                                         <MenuItem key={option.id} value={option.id}>
-                                                            <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf(option.id) > -1} />
+                                                            <Checkbox
+                                                                sx={{
+                                                                    color: "var(--color2)", // Color for unchecked checkboxes
+                                                                    '&.Mui-checked': {
+                                                                        color: "var(--color1)", // Color for checked checkboxes
+                                                                    },
+                                                                }} checked={paymentMode.indexOf(option.id) > -1} />
                                                             <ListItemText primary={option.bank_name} />
                                                         </MenuItem>
                                                     ))}
                                                     <MenuItem value="loyaltyPoints">
-                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('loyaltyPoints') > -1} />
+                                                        <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }} checked={paymentMode.indexOf('loyaltyPoints') > -1} />
                                                         <ListItemText primary="Loyalty Points" />
                                                     </MenuItem>
                                                 </Select>
@@ -317,7 +322,7 @@ sx={{
                                         <div className="mt-6">
                                             <Button style={{
                                                 background: "var(--color1)",
-                                            }}  variant="contained" onClick={handlefilterData}>
+                                            }} variant="contained" onClick={handlefilterData}>
                                                 Go
                                             </Button>
                                         </div>

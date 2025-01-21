@@ -69,7 +69,7 @@ const ItemWiseMargin = () => {
                 ).then((response) => {
                     setIsLoading(false);
                     setItemMarginData(response.data.data)
-                    if(response.data.status === 401){ 
+                    if (response.data.status === 401) {
                         history.push('/');
                         localStorage.clear();
                     }
@@ -165,20 +165,25 @@ const ItemWiseMargin = () => {
                             </div>
                             <div className="headerList">
                                 <Button
-                                                                       variant="contained"
-                                                                       style={{
-                                                                           background: "var(--color1)",
-                                                                           color: "white",
-                                                                           textTransform: "none",
-                                                                           paddingLeft: "35px",
-                                                                       }}
-                                                                       onClick={exportToCSV}>
-                                                                       <img src="/csv-file.png"
-                                                                           className="report-icon absolute mr-10"
-                                                                           alt="csv Icon" />
-                               
-                                                                       Download
-                                                                   </Button>
+                                    variant="contained"
+                                    className="gap-7 downld_btn_csh"
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        // paddingLeft: "35px",
+                                        textTransform: "none",
+                                        display: "flex",
+                                    }}
+                                    onClick={exportToCSV}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+
+                                    </div>
+                                    Download
+                                </Button>
                             </div>
                         </div>
                         <div className="bg-white">
@@ -232,7 +237,7 @@ const ItemWiseMargin = () => {
                                     <div className="mt-6">
                                         <div className="detail" >
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-basic"
                                                 value={searchItem}
                                                 size="small"
@@ -257,8 +262,8 @@ const ItemWiseMargin = () => {
                                     </div>
                                     <div className="mt-6">
                                         <Button style={{
-                                                background: "var(--color1)",
-                                            }} variant="contained" onClick={handlefilterData}>
+                                            background: "var(--color1)",
+                                        }} variant="contained" onClick={handlefilterData}>
                                             Go
                                         </Button>
                                     </div>

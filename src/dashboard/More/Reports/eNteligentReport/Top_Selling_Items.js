@@ -86,7 +86,7 @@ const Top_Selling_Items = () => {
             ).then((response) => {
                 setIsLoading(false);
                 setTopSaleData(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -176,21 +176,26 @@ const Top_Selling_Items = () => {
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                            <Button
-                                        variant="contained"
-                                        style={{
-                                            background: "var(--color1)",
-                                            color: "white",
-                                            textTransform: "none",
-                                            paddingLeft: "35px",
-                                        }}
-                                        onClick={exportToCSV}>
+                                <Button
+                                    variant="contained"
+                                    className="gap-7 downld_btn_csh"
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        // paddingLeft: "35px",
+                                        textTransform: "none",
+                                        display: "flex",
+                                    }}
+                                    onClick={exportToCSV}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <img src="/csv-file.png"
                                             className="report-icon absolute mr-10"
                                             alt="csv Icon" />
 
-                                        Download
-                                    </Button> </div>
+                                    </div>
+
+                                    Download
+                                </Button> </div>
                         </div>
                         <div className="bg-white">
                             <div className="manageExpenseRow" style={{
@@ -227,7 +232,7 @@ const Top_Selling_Items = () => {
                                             getOptionLabel={(option) => option.company_name}
                                             renderInput={(params) => (
                                                 <TextField
-                 autoComplete="off"
+                                                    autoComplete="off"
                                                     {...params}
                                                     label="Select Company"
                                                 />
@@ -236,8 +241,8 @@ const Top_Selling_Items = () => {
                                     </div>
                                     <div className="mt-6">
                                         <Button style={{
-                                                background: "var(--color1)",
-                                            }}  variant="contained" onClick={() => handlefilterData(currentPage)} >
+                                            background: "var(--color1)",
+                                        }} variant="contained" onClick={() => handlefilterData(currentPage)} >
                                             Go
                                         </Button>
                                     </div>

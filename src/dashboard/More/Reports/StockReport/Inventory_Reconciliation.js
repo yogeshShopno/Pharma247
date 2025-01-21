@@ -302,7 +302,7 @@ const Inventory_Reconciliation = () => {
                 } else {
                     toast.error("No data available for the selected criteria.");
                 }
-            } 
+            }
         } catch (error) {
             console.error("API error:", error);
 
@@ -386,13 +386,17 @@ const Inventory_Reconciliation = () => {
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
+                                        className="gap-7 downld_btn_csh"
                                         onClick={exportToCSV}>
-                                        <img src="/csv-file.png"
-                                            className="report-icon absolute mr-10"
-                                            alt="csv Icon" />
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon" />
+                                        </div>
 
                                         Download
                                     </Button>
@@ -613,7 +617,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Item Name</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -641,7 +645,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Batch</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -669,7 +673,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Company</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             // type="number"
                                             disabled
@@ -702,7 +706,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Unit</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             disabled
                                             required
                                             id="outlined-number"
@@ -715,7 +719,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Expiry</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             sx={{ width: "130px" }}
                                             size="small"
@@ -729,7 +733,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">MRP</span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -746,7 +750,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Stock </span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -770,7 +774,7 @@ const Inventory_Reconciliation = () => {
                                         onChange={(e) => { setStockAdjust(e.target.value) }}
                                     /> */}
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             id="outlined-number"
                                             type="number"
                                             sx={{ width: "130px" }}
@@ -787,7 +791,7 @@ const Inventory_Reconciliation = () => {
                                     <div>
                                         <span className="title mb-2">Remaining Stock </span>
                                         <TextField
-                 autoComplete="off"
+                                            autoComplete="off"
                                             disabled
                                             id="outlined-number"
                                             type="number"

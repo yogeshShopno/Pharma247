@@ -67,7 +67,7 @@ const Non_Moving_items = () => {
 
                 // Use FileSaver to save the file
                 saveAs(blob, 'non-moving-items.csv');
-               
+
             } catch (error) {
                 console.error("API error:", error);
 
@@ -117,7 +117,7 @@ const Non_Moving_items = () => {
                                 <span className="text-xl secondary">Non Moving Time Duration </span>
                                 <div style={{ width: "50%" }}>
                                     <TextField
-                 autoComplete="off"
+                                        autoComplete="off"
                                         id="outlined-basic"
                                         value={nonMovingDate}
                                         sx={{ minWidth: '300px', marginTop: "10px" }}
@@ -130,16 +130,21 @@ const Non_Moving_items = () => {
                                 <div style={{ marginTop: "25px" }}>
                                     <Button
                                         variant="contained"
+                                        className="gap-7 downld_btn_csh"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
+                                            // paddingLeft: "35px",
                                             textTransform: "none",
-                                            paddingLeft: "35px",
+                                            display: "flex",
                                         }}
                                         onClick={handlefilterData}>
-                                        <img src="/csv-file.png"
-                                            className="report-icon absolute mr-10"
-                                            alt="csv Icon" />
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src="/csv-file.png"
+                                                className="report-icon absolute mr-10"
+                                                alt="csv Icon" />
+
+                                        </div>
 
                                         Download
                                     </Button>

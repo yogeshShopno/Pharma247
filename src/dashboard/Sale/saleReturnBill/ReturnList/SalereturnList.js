@@ -252,50 +252,58 @@ const SalereturnList = () => {
           <div
             style={{
               backgroundColor: "rgba(153, 153, 153, 0.1)",
-             height: "calc(100vh - 225px)",
+              height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
               alignItems: "center",
             }}
           >
             <div
-              className="py-3"
-              style={{ display: "flex", gap: "4px", alignItems: "center" }}
+              className="py-3 sales_RTN_hdr_mn"
+              style={{ display: "flex", gap: "4px" }}
             >
-              <span
-                style={{
-                  color: "var(--color2)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Sales Return
-              </span>
-              {hasPermission(permissions, "sale return bill create") && (
-                <>
-                  <ArrowForwardIosIcon
-                    style={{ fontSize: "18px", color: "var(--color1)" }}
-                  />
-                  <Button
-                    variant="contained"
-                    size="small"
+              <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
+                  <span
                     style={{
-                      backgroundColor: "var(--color1)",
-                      fontSize: "12px",
-                      marginLeft: "5px",
+                      color: "var(--color2)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      whiteSpace: "nowrap",
                     }}
-                    onClick={goIntoAdd}
                   >
-                    <AddIcon />
-                    New{" "}
-                  </Button>
-                </>
-              )}
+                    Sales Return
+                  </span>
+                  <div>
+                    <ArrowForwardIosIcon
+                      style={{ fontSize: "18px", color: "var(--color1)" }}
+                    />
+                  </div>
+                </div>
+                {hasPermission(permissions, "sale return bill create") && (
+                  <>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className="sale_add_btn gap-2"
+                      style={{
+                        backgroundColor: "var(--color1)",
+                        fontSize: "12px",
+                        marginLeft: "5px",
+                      }}
+                      onClick={goIntoAdd}
+                    >
+                      <AddIcon />
+                      New{" "}
+                    </Button>
+                  </>
+                )}
+              </div>
               <div className="headerList">
                 <Button
                   variant="contained"
+                  className="sale_add_pdf"
                   style={{ background: "var(--color1)", color: "white" }}
                   onClick={() => {
                     setOpenAddPopUp(true);
@@ -434,11 +442,10 @@ const SalereturnList = () => {
                 <div className="flex justify-center mt-4">
                   <button
                     onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === 1
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
-                    }`}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                      }`}
                     disabled={currentPage === 1}
                   >
                     Previous
@@ -475,11 +482,10 @@ const SalereturnList = () => {
                   )}
                   <button
                     onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === rowsPerPage
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
-                    }`}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                      }`}
                     disabled={filteredList.length === 0}
                   >
                     Next
@@ -488,9 +494,8 @@ const SalereturnList = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                    IsDelete ? "block" : "hidden"
-                  }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                    }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -554,7 +559,7 @@ const SalereturnList = () => {
                   // }}
                   className="order_list_ml"
                 >
-                  <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+                  <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
                     Generate PDF
                   </DialogTitle>
                   <IconButton

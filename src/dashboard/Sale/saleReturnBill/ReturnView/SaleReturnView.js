@@ -123,16 +123,18 @@ const SaleReturnView = () => {
                         <>
                             <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                                 <div>
-                                    <div className='py-3' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
-                                        <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px", flexWrap: "nowrap", whiteSpace: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
-                                        <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
-                                        <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
-                                        <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
-                                        <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
-                                        <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+                                    <div className='py-3 sal-rtn-fff' style={{ display: 'flex', gap: '4px' }}>
+                                        <div className="flex flex-row gap-2" style={{alignItems: "center"}}>
+                                            <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px", flexWrap: "nowrap", whiteSpace: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
+                                            <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
+                                            <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>View</span>
+                                            <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
+                                            <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData.bill_no}</span>
+                                            <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+                                        </div>
                                         {hasPermission(permissions, "sale return bill edit") && (
                                             <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                                <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
+                                                <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} className="sale_add_btn gap-2" onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
                                             </div>)}
                                     </div>
                                 </div>

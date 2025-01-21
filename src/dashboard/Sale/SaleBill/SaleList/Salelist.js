@@ -307,50 +307,58 @@ const Salelist = () => {
           <div
             style={{
               backgroundColor: "rgba(153, 153, 153, 0.1)",
-             height: "calc(100vh - 225px)",
+              height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
               alignItems: "center",
             }}
             className="justify-between"
           >
             <div
-              className="py-3"
-              style={{ display: "flex", gap: "4px", alignItems: "center" }}
+              className="py-3 sales_hdr_mn"
+              style={{ display: "flex", gap: "4px" }}
             >
-              <span
-                style={{
-                  color: "var(--color2)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                }}
-              >
-                Sales
-              </span>
-              {hasPermission(permissions, "sale bill create") && (
-                <>
-                  <ArrowForwardIosIcon
-                    style={{ fontSize: "18px", color: "var(--color1)" }}
-                  />
-                  <Button
-                    className="gap-2"
-                    variant="contained"
-                    size="small"
+              <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                <div className="flex flex-row gap-2 sale_lt_txt" style={{alignItems: "center"}}>
+                  <span
                     style={{
-                      backgroundColor: "var(--color1)",
-                      fontSize: "12px",
+                      color: "var(--color2)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
                     }}
-                    onClick={goIntoAdd}
                   >
-                    <AddIcon />
-                    New{" "}
-                  </Button>
-                </>
-              )}
+                    Sales
+                  </span>
+                  <div>
+                    <ArrowForwardIosIcon
+                      style={{ fontSize: "18px", color: "var(--color1)" }}
+                    />
+                  </div>
+                </div>
+                {hasPermission(permissions, "sale bill create") && (
+                  <>
+                    <Button
+                      variant="contained"
+                      className="sale_add_btn gap-2"
+                      size="small"
+                      style={{
+                        backgroundColor: "var(--color1)",
+                        fontSize: "12px",
+                      }}
+                      onClick={goIntoAdd}
+                    >
+                      <AddIcon />
+                      New{" "}
+                    </Button>
+                  </>
+                )}
+
+              </div>
               <div className="headerList">
                 <Button
                   variant="contained"
+                  className="sale_add_pdf"
                   style={{ background: "var(--color1)", color: "white" }}
                   onClick={() => {
                     setOpenAddPopUp(true);
@@ -458,13 +466,13 @@ const Salelist = () => {
                             <td style={{ borderRadius: "0 10px 10px 0" }}>
                               <div className="flex gap-4">
                                 <VisibilityIcon
-                                  color="primary"
+                                  className="cursor-pointer primary hover:secondary"
                                   onClick={() => {
                                     history.push(`/salebill/view/${row.id}`);
                                   }}
                                 />
                                 <FaFilePdf
-                                  className="w-5 h-5 text-gray-700 hover:text-black"
+                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
                                   onClick={() => pdfGenerator(row.id)}
                                 />
                               </div>
@@ -479,11 +487,10 @@ const Salelist = () => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -520,11 +527,10 @@ const Salelist = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
                   disabled={filteredList.length === 0}
                 >
                   Next
@@ -569,19 +575,19 @@ const Salelist = () => {
             <Dialog
               open={openAddPopUp}
               className="order_list_ml"
-              //   sx={{
-              //     "& .MuiDialog-container": {
-              //       "& .MuiPaper-root": {
-              //         width: "50%",
-              //         height: "50%",
-              //         maxWidth: "500px", // Set your width here
-              //         maxHeight: "80vh", // Set your height here
-              //         overflowY: "auto", // Enable vertical scrolling if content overflows
-              //       },
-              //     },
-              //   }}
+            //   sx={{
+            //     "& .MuiDialog-container": {
+            //       "& .MuiPaper-root": {
+            //         width: "50%",
+            //         height: "50%",
+            //         maxWidth: "500px", // Set your width here
+            //         maxHeight: "80vh", // Set your height here
+            //         overflowY: "auto", // Enable vertical scrolling if content overflows
+            //       },
+            //     },
+            //   }}
             >
-              <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+              <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
                 Generate PDF
               </DialogTitle>
               <IconButton

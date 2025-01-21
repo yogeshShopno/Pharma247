@@ -327,49 +327,57 @@ const Purchasebill = () => {
       ) : (
         <div
           style={{
-           height: "calc(100vh - 225px)",
+            height: "calc(100vh - 225px)",
             padding: "0px 20px 0px",
             padding: "0px 20px 0px",
           }}
         >
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
-            <span
-              style={{
-                color: "var(--color2)",
-                display: "flex",
-                alignItems: "center",
-                fontWeight: 700,
-                fontSize: "20px",
-              }}
-              onClick={() => {
-                history.push("/purchase/purchasebill");
-              }}
-            >
-              Purchase
-            </span>
-            {hasPermission(permissions, "purchase bill create") && (
-              <>
-                <ArrowForwardIosIcon
+          <div className="py-3 sales_hdr_mn" style={{ display: "flex", gap: "4px" }}>
+            <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+              <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
+                <span
                   style={{
+                    color: "var(--color2)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
                     fontSize: "20px",
-                    marginTop: "6px",
-                    color: "var(--color1)",
                   }}
-                />
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ background: "var(--color1)", fontSize: "12px" }}
-                  onClick={goIntoAdd}
+                  onClick={() => {
+                    history.push("/purchase/purchasebill");
+                  }}
                 >
-                  <AddIcon />
-                  New
-                </Button>
-              </>
-            )}
+                  Purchase
+                </span>
+                <div>
+                  <ArrowForwardIosIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "var(--color1)",
+                    }}
+                  />
+                </div>
+              </div>
+              {hasPermission(permissions, "purchase bill create") && (
+                <>
+                  <Button
+                    variant="contained"
+                    className="sale_add_btn gap-2"
+                    size="small"
+                    style={{ background: "var(--color1)", fontSize: "12px" }}
+                    onClick={goIntoAdd}
+                  >
+                    <AddIcon />
+                    New
+                  </Button>
+                </>
+              )}
+            </div>
+
             <div className="headerList">
               <Button
                 variant="contained"
+                className="sale_add_pdf"
                 style={{ background: "var(--color1)" }}
                 onClick={() => {
                   setOpenAddPopUp(true);
@@ -382,23 +390,23 @@ const Purchasebill = () => {
 
           <div className="firstrow bg-white p-4">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-              <div className="flex flex-col md:flex-row w-full">
-                <div className="w-full md:w-auto">
+              <div className="flex flex-col md:flex-row  gap-2">
+                <div className="" style={{ width: '100%' }}>
                   <span className="text-gray-500 block">Start Date</span>
-                  <div className="w-full md:w-[215px]">
+                  <div className="" style={{ width: '100%' }}>
                     <DatePicker
-                      className="custom-datepicker w-full"
+                      className="custom-datepicker_mn"
                       selected={startDate}
                       onChange={(newDate) => setStartDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                     />
                   </div>
                 </div>
-                <div className="w-full md:w-auto">
+                <div className="" style={{ width: '100%' }}>
                   <span className="text-gray-500 block">End Date</span>
-                  <div className="w-full md:w-[215px]">
+                  <div className="" style={{ width: '100%' }}>
                     <DatePicker
-                      className="custom-datepicker w-full"
+                      className="custom-datepicker_mn"
                       selected={endDate}
                       onChange={(newDate) => setEndDate(newDate)}
                       dateFormat="dd/MM/yyyy"
@@ -441,8 +449,8 @@ const Purchasebill = () => {
                     {/* <th>SR. No</th> */}
                     {/* <th></th> */}
                     {columns.map((column, index) => (
-                      <th key={column.id} className="text-left">
-                        <div className="flex flex-col md:flex-row md:items-center gap-2">
+                      <th key={column.id} className="text-left" style={{ minWidth: column.minWidth }}>
+                        <div className="headerStyle gap-2">
                           <span>{column.label}</span>
                           <SwapVertIcon
                             className="cursor-pointer"
@@ -450,9 +458,9 @@ const Purchasebill = () => {
                           />
                           <TextField
                             autoComplete="off"
-                            label={`Search ${column.label}`}
+                            label={`Type Here`}
                             size="small"
-                            className="w-full md:w-auto"
+                            style={{ minWidth: 150 }}
                             value={searchTerms[index]}
                             onChange={(e) =>
                               handleSearchChange(index, e.target.value)
@@ -492,8 +500,8 @@ const Purchasebill = () => {
                                 colIndex === 0
                                   ? { borderRadius: "10px 0 0 10px" }
                                   : colIndex === columns.length
-                                  ? { borderRadius: "0 10px 10px 0" }
-                                  : {}
+                                    ? { borderRadius: "0 10px 10px 0" }
+                                    : {}
                               }
                               key={column.id}
                               className="capitalize"
@@ -523,12 +531,12 @@ const Purchasebill = () => {
                               permissions,
                               "purchase bill delete"
                             ) && (
-                              <DeleteIcon
-                                style={{ color: "#F31C1C" }}
-                                className="cursor-pointer "
-                                onClick={() => deleteOpen(row.id)}
-                              />
-                            )}
+                                <DeleteIcon
+                                  style={{ color: "#F31C1C" }}
+                                  className="cursor-pointer "
+                                  onClick={() => deleteOpen(row.id)}
+                                />
+                              )}
                           </div>
                         </td>
                       </tr>
@@ -540,11 +548,10 @@ const Purchasebill = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -581,11 +588,10 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -596,9 +602,8 @@ const Purchasebill = () => {
           <div
             id="modal"
             value={IsDelete}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              IsDelete ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -651,19 +656,19 @@ const Purchasebill = () => {
           <Dialog
             open={openAddPopUp}
             className="order_list_ml"
-            // sx={{
-            //   "& .MuiDialog-container": {
-            //     "& .MuiPaper-root": {
-            //       width: "50%",
-            //       height: "50%",
-            //       maxWidth: "500px", // Set your width here
-            //       maxHeight: "80vh", // Set your height here
-            //       overflowY: "auto", // Enable vertical scrolling if content overflows
-            //     },
-            //   },
-            // }}
+          // sx={{
+          //   "& .MuiDialog-container": {
+          //     "& .MuiPaper-root": {
+          //       width: "50%",
+          //       height: "50%",
+          //       maxWidth: "500px", // Set your width here
+          //       maxHeight: "80vh", // Set your height here
+          //       overflowY: "auto", // Enable vertical scrolling if content overflows
+          //     },
+          //   },
+          // }}
           >
-            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
               Generate PDF
             </DialogTitle>
             <IconButton

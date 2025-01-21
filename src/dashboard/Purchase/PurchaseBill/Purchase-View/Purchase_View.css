@@ -544,6 +544,37 @@
   }
 }
 
+@media (max-width: 375px) {
+  .sales_hdr_mn {
+    flex-direction: column;
+  }
+  .sale_list_pg {
+    flex-direction: column;
+    align-items: start !important;
+  }
+  .sale_add_btn {
+    width: 100%;
+  }
+  .sale_add_pdf {
+    width: 100%;
+  }
+}
+
+@media (max-width: 415px) {
+  .sales_RTN_hdr_mn {
+    flex-direction: column;
+  }
+
+  .sale_add_btn {
+    width: 100%;
+  }
+  .sale_add_pdf {
+    width: 100%;
+  }
+  .sal-rtn-fff{
+    flex-direction: column;
+  }
+}
 @media (max-width: 639px) {
   .order_list_ml div[role="dialog"] {
     width: 80%;

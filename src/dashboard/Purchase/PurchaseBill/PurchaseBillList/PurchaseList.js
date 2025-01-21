@@ -327,10 +327,11 @@ const Purchasebill = () => {
       ) : (
         <div
           style={{
+            backgroundColor: "rgba(153, 153, 153, 0.1)",
             height: "calc(100vh - 225px)",
             padding: "0px 20px 0px",
-            padding: "0px 20px 0px",
           }}
+          className="justify-between"
         >
           <div className="py-3 sales_hdr_mn" style={{ display: "flex", gap: "4px" }}>
             <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
@@ -388,50 +389,50 @@ const Purchasebill = () => {
             </div>
           </div>
 
-          <div className="firstrow bg-white p-4">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-              <div className="flex flex-col md:flex-row  gap-2">
+          <div className="firstrow bg-white p-4" >
+
+            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row " >
+              <div className="detail flex flex-col" >
+                <span className="text-gray-500 block">Start Date</span>
                 <div className="" style={{ width: '100%' }}>
-                  <span className="text-gray-500 block">Start Date</span>
-                  <div className="" style={{ width: '100%' }}>
-                    <DatePicker
-                      className="custom-datepicker_mn"
-                      selected={startDate}
-                      onChange={(newDate) => setStartDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </div>
+                  <DatePicker
+                    className="custom-datepicker_mn"
+                    selected={startDate}
+                    onChange={(newDate) => setStartDate(newDate)}
+                    dateFormat="dd/MM/yyyy"
+                  />
                 </div>
+              </div>
+              <div className="detail flex flex-col" >
+                <span className="text-gray-500 block">End Date</span>
                 <div className="" style={{ width: '100%' }}>
-                  <span className="text-gray-500 block">End Date</span>
-                  <div className="" style={{ width: '100%' }}>
-                    <DatePicker
-                      className="custom-datepicker_mn"
-                      selected={endDate}
-                      onChange={(newDate) => setEndDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </div>
+                  <DatePicker
+                    className="custom-datepicker_mn"
+                    selected={endDate}
+                    onChange={(newDate) => setEndDate(newDate)}
+                    dateFormat="dd/MM/yyyy"
+                  />
                 </div>
-                <div className="w-full md:w-auto">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{
-                      minHeight: "38px",
-                      alignItems: "center",
-                      marginTop: "24px",
-                      background: "var(--color1)",
-                    }}
-                    onClick={() => purchaseBillList(currentPage)}
-                  >
-                    <FilterAltIcon
-                      size="large"
-                      style={{ color: "white", fontSize: "20px" }}
-                    />{" "}
-                    Filter
-                  </Button>
-                </div>
+              </div>
+              <div className="" style={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
+                <Button
+                  variant="contained"
+                  className=""
+                  size="small"
+                  style={{
+                    minHeight: "38px",
+                    alignItems: "center",
+                    // marginTop: "24px",
+                    background: "var(--color1)",
+                  }}
+                  onClick={() => purchaseBillList(currentPage)}
+                >
+                  <FilterAltIcon
+                    size="large"
+                    style={{ color: "white", fontSize: "20px" }}
+                  />{" "}
+                  Filter
+                </Button>
               </div>
             </div>
 

@@ -110,35 +110,39 @@ const DoctorView = () => {
                         </div>
                     </div>
 
-                    <div >
+                    <div style={{
+                        backgroundColor: 'rgb(63 98 18 / 11%)',
+                        borderRadius: '10px',
+                        paddingTop: '0.5%'
+                    }}>
                         <div className="firstrow flex header_main_txt_CV" style={{ background: "none" }}>
                             <div className="detail_main_bg_CV">
-                                <span className="heading_othr mb-2">Doctor Name</span>
+                                <span className="heading_othr ">Doctor Name</span>
                                 <span className="data_bg">{doctorDetails.name ? doctorDetails.name : '____'}</span>
 
                             </div>
 
                             <div className="detail_main_bg_CV">
-                                <span className="heading_othr mb-2">Clinic Name</span>
+                                <span className="heading_othr ">Clinic Name</span>
                                 <span className="data_bg">{doctorDetails.clinic ? doctorDetails.clinic : '____'}</span>
 
                             </div>
                             <div className="detail_main_bg_CV">
-                                <span className="heading_othr mb-2">Mobile No</span>
+                                <span className="heading_othr ">Mobile No</span>
                                 <span className="data_bg">{doctorDetails.phone_number ? doctorDetails.phone_number : '____'}</span>
                             </div>
 
                             <div className="detail_main_bg_CV">
-                                <span className="heading_othr mb-2">License Number</span>
+                                <span className="heading_othr ">License Number</span>
                                 <span className="data_bg">{doctorDetails.license ? doctorDetails.license : '____'}</span>
                             </div>
                             <div className="detail_main_bg_CV">
-                                <span className="heading_othr mb-2">Address</span>
+                                <span className="heading_othr ">Address</span>
                                 <span className="data_bg">{doctorDetails.address ? doctorDetails.address : '____'}</span>
                             </div>
                         </div>
                     </div>
-                    <div className='p-6' >
+                    <div className='mt-5' >
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} >
                             <div
                                 className="cust_tab_val"
@@ -189,7 +193,7 @@ const DoctorView = () => {
                                                 Total Sale Amount :-{" "}
                                                 <span style={{ color: "var(--color2)" }}>
                                                     Rs.
-                                                    {doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0} 
+                                                    {doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0}
                                                 </span>
                                             </Typography>
                                         </div>

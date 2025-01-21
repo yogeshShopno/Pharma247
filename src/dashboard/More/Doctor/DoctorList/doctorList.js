@@ -452,7 +452,7 @@ const DoctorList = () => {
           <div
             style={{
               backgroundColor: "rgba(153, 153, 153, 0.1)",
-             height: "calc(100vh - 225px)",
+              height: "calc(100vh - 225px)",
               padding: "0px 20px 0px",
             }}
           >
@@ -718,7 +718,7 @@ const DoctorList = () => {
               </IconButton>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  <div className="secondary">Item File Upload</div>
+                  <div className="primary">Item File Upload</div>
                   <div
                     style={{
                       display: "flex",
@@ -726,7 +726,7 @@ const DoctorList = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <div>
+                    <div className="mt-2">
                       <input
                         className="File-upload"
                         type="file"
@@ -734,11 +734,11 @@ const DoctorList = () => {
                         id="file-upload"
                         onChange={handleFileChange}
                       />
-                      <span className="errorFile">
+                      <span className="errorFile" style={{ fontSize: 'small' }}>
                         *select only .csv, File.
                       </span>
                     </div>
-                    <div>
+                    <div className="mt-2">
                       <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className="downloadFile">
                         <CloudDownloadIcon className="mr-2" />
 
@@ -748,11 +748,14 @@ const DoctorList = () => {
                   </div>
                 </DialogContentText>
               </DialogContent>
-              <DialogActions>
+              <DialogActions style={{ padding: '20px 24px' }}>
                 <Button
                   autoFocus
                   variant="contained"
-                  color="primary"
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white",
+                  }}
                   onClick={uploadDoctorFile}
                 >
                   Save
@@ -895,7 +898,7 @@ const DoctorList = () => {
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col " style={{width: "100%"}}>
+                          <div className="flex flex-col " style={{ width: "100%" }}>
                             <span className="label primary">
                               Licence No.
                             </span>
@@ -909,7 +912,7 @@ const DoctorList = () => {
                               size="small"
                             />
                           </div>
-                          <div className="flex flex-col " style={{width: "100%"}}>
+                          <div className="flex flex-col " style={{ width: "100%" }}>
                             <span className="label primary">Address</span>
                             <TextField
                               autoComplete="off"

@@ -64,7 +64,7 @@
     height: auto;
     padding: 0px 9px;
     row-gap: 20px;
-    margin-top: 1rem;
+    padding: 1rem;
   }
 
   .header_main_txt {
@@ -91,7 +91,7 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-}
+  }
 
   .total_amount_fld {
     display: flex;
@@ -549,12 +549,18 @@
     width: 80%;
     max-width: 600px;
   }
+  .fst_mdl_bnk {
+    height: 100% !important;
+  }
 }
 
 @media (min-width: 640px) {
   .order_list_ml div[role="dialog"] {
     width: 50%;
     max-width: 425px;
+  }
+  .fst_mdl_bnk {
+    height: calc(100vh - 56px) !important;
   }
 }
 
@@ -663,7 +669,7 @@
     min-width: 190px !important;
     min-height: 60px;
     gap: 6px;
-    font-size: 13px;
+    /* font-size: 13px; */
   }
   .heading_othr {
     font-size: 15px;
@@ -679,7 +685,7 @@
     height: auto;
     padding: 0px 9px;
     row-gap: 20px;
-    margin-top: 1rem;
+    padding: 2rem;
   }
 }
 
@@ -752,6 +758,11 @@
     flex-direction: column;
   }
 }
+@media (max-width: 477px) {
+  .bnk_acc_hdr {
+    flex-direction: column;
+  }
+}
 
 @media (max-width: 400px) {
   .csh_tl_txt {
@@ -796,5 +807,28 @@
   .category_fld {
     width: 100%;
     min-width: 200px !important;
+  }
+}
+
+@media (max-width: 766px) {
+  .add_rdc_btn {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+  .downld_btn_csh {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 639px) {
+  .bnk_acc_mdl {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 757px) {
+  .detail_st_ed_dt {
+    flex-direction: column;
   }
 }

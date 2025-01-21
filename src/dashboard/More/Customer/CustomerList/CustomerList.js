@@ -519,7 +519,7 @@ const CustomerList = () => {
         <div
           style={{
             backgroundColor: "rgba(153, 153, 153, 0.1)",
-           height: "calc(100vh - 225px)",
+            height: "calc(100vh - 225px)",
             padding: "0px 20px 0px",
           }}
         >
@@ -585,7 +585,7 @@ const CustomerList = () => {
                   }}
                   onClick={exportToExcel}
                 >
-                  <div style={{display:'flex',alignItems:'center'}}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
                       src="/csv-file.png"
                       className="report-icon absolute"
@@ -942,7 +942,7 @@ sx={{
                     flexDirection: "column",
                   }}
                 >
-                  <div>
+                  <div className="mt-2">
                     <input
                       className="File-upload"
                       type="file"
@@ -950,9 +950,9 @@ sx={{
                       id="file-upload"
                       onChange={handleFileChange}
                     />
-                    <span className="errorFile">*select only .csv File</span>
+                    <span className="errorFile" style={{ fontSize: 'small' }}>*select only .csv File</span>
                   </div>
-                  <div>
+                  <div className="mt-2">
                     <Button
                       onClick={handleDownload}
                       style={{
@@ -968,11 +968,14 @@ sx={{
                 </div>
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
+            <DialogActions style={{ padding: '20px 24px' }}>
               <Button
                 autoFocus
                 variant="contained"
-                color="success"
+                style={{
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                  color: "white",
+                }}
                 onClick={uploadCustomerFile}
               >
                 Save

@@ -35,6 +35,8 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
+import Switch from '@mui/material/Switch';
+
 const columns = [
   { id: "name", label: "Name", minWidth: 150 },
   { id: "email", label: "Email", minWidth: 150 },
@@ -84,6 +86,7 @@ const DistributerList = () => {
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
   const [openUpload, setOpenUpload] = useState(false);
   const [file, setFile] = useState(null);
+  const [switchCheck, setSwitchChecked] = useState(false);
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -392,7 +395,7 @@ const DistributerList = () => {
         <div
           style={{
             backgroundColor: "rgba(153, 153, 153, 0.1)",
-           height: "calc(100vh - 225px)",
+            height: "calc(100vh - 225px)",
             padding: "0px 20px 0px",
           }}
         >
@@ -838,90 +841,116 @@ const DistributerList = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">
-                            {" "}
-                            Distributor Drug License No.
-                          </span>
-                          <OutlinedInput
-                            type="text"
-                            value={distributorDrugLicenseNo}
-                            onChange={(e) => {
-                              const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                              setDistributorDrugLicenseNo(value);
-                            }}
-                            className="w-full"
-                            size="small"
-                          />
-                        </div>
-
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">
-                            Food Licence No.
-                          </span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={licenceNo}
-                            onChange={(e) => {
-                              const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                              setLicenceNo(value);
-                            }}
-                            className="w-full"
-                            variant="outlined"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">Bank Name</span>
-                          <TextField
-                            autoComplete="off"
-                            value={bankName}
-                            onChange={(e) => {
-                              const uppercasedValue = e.target.value
-                                .toUpperCase()
-                                .replace(/[^A-Z]/g, "");
-                              setBankName(uppercasedValue);
-                            }}
-                            className="w-full"
-                            size="small"
-                          />
-                        </div>
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">IFSC Code</span>
-                          <TextField
-                            autoComplete="off"
-                            value={ifscCode}
-                            onChange={(e) => setIfscCode(e.target.value)}
-                            // type="text"
-                            // onChange={(e) => {
-                            //     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                            //     setIfscCode(value);
-                            // }}
-                            className="w-full"
-                            size="small"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div className="flex flex-col w-full ">
-                          <span className="label primary">Account No.</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            type="number"
-                            value={accountNo}
-                            onChange={(e) => setAccountNo(e.target.value)}
-                            className="w-full"
-                            variant="outlined"
-                          />
-                        </div>
-                      </div>
                     </div>
+
+                    <div className="border-1 text-black font-bold secondary flex justify-between items-center mt-5">
+                      Add More Details
+                      <Switch checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} sx={{
+                        "& .MuiSwitch-track": {
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                        },
+                        "&.Mui-checked .MuiSwitch-track": {
+                          backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
+                        },
+                        "& .MuiSwitch-thumb": {
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                        },
+                        "&.Mui-checked .MuiSwitch-thumb": {
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                        },
+                        "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track": {
+                          backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
+
+                        }
+                      }} />
+                    </div>
+                    {switchCheck && (
+                      <div className="mt-5 flex flex-col gap-5">
+                        <div className="flex flex-col md:flex-row gap-5">
+                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                            <span className="label primary">
+                              {" "}
+                              Distributor Drug License No.
+                            </span>
+                            <OutlinedInput
+                              type="text"
+                              value={distributorDrugLicenseNo}
+                              onChange={(e) => {
+                                const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                setDistributorDrugLicenseNo(value);
+                              }}
+                              className="w-full"
+                              size="small"
+                            />
+                          </div>
+
+                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                            <span className="label primary">
+                              Food Licence No.
+                            </span>
+                            <TextField
+                              autoComplete="off"
+                              id="outlined-multiline-static"
+                              size="small"
+                              value={licenceNo}
+                              onChange={(e) => {
+                                const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
+                                setLicenceNo(value);
+                              }}
+                              className="w-full"
+                              variant="outlined"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-5">
+                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                            <span className="label primary">Bank Name</span>
+                            <TextField
+                              autoComplete="off"
+                              value={bankName}
+                              onChange={(e) => {
+                                const uppercasedValue = e.target.value
+                                  .toUpperCase()
+                                  .replace(/[^A-Z]/g, "");
+                                setBankName(uppercasedValue);
+                              }}
+                              className="w-full"
+                              size="small"
+                            />
+                          </div>
+                          <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                            <span className="label primary">IFSC Code</span>
+                            <TextField
+                              autoComplete="off"
+                              value={ifscCode}
+                              onChange={(e) => setIfscCode(e.target.value)}
+                              // type="text"
+                              // onChange={(e) => {
+                              //     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                              //     setIfscCode(value);
+                              // }}
+                              className="w-full"
+                              size="small"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-5">
+                          <div className="flex flex-col w-full ">
+                            <span className="label primary">Account No.</span>
+                            <TextField
+                              autoComplete="off"
+                              id="outlined-multiline-static"
+                              size="small"
+                              type="number"
+                              value={accountNo}
+                              onChange={(e) => setAccountNo(e.target.value)}
+                              className="w-full"
+                              variant="outlined"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions style={{ padding: "16px 24px" }}>
@@ -973,7 +1002,7 @@ const DistributerList = () => {
             </IconButton>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <div className="secondary">Item File Upload</div>
+                <div className="primary">Item File Upload</div>
                 <div
                   style={{
                     display: "flex",
@@ -981,7 +1010,7 @@ const DistributerList = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <div>
+                  <div className="mt-2">
                     <input
                       className="File-upload"
                       type="file"
@@ -989,9 +1018,9 @@ const DistributerList = () => {
                       id="file-upload"
                       onChange={handleFileChange}
                     />
-                    <span className="errorFile">*select only .csv File</span>
+                    <span className="errorFile" style={{ fontSize: "small" }}>*select only .csv File</span>
                   </div>
-                  <div>
+                  <div className="mt-2">
                     <Button
                       onClick={handleDownload}
                       style={{
@@ -1006,7 +1035,7 @@ const DistributerList = () => {
                 </div>
               </DialogContentText>
             </DialogContent>
-            <DialogActions>
+            <DialogActions style={{ padding: '20px 24px' }}>
               <Button
                 autoFocus
                 style={{

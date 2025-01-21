@@ -34,12 +34,12 @@ const BankAccount = () => {
 
 
     const PassbookColumns = [
-        { id: 'date', label: 'Date' },
-        { id: 'party_name', label: 'Party Name' },
-        { id: 'deposit', label: 'Credit' },
-        { id: 'withdraw', label: 'Debit' },
-        { id: 'balance', label: 'Balance' },
-        { id: 'remark', label: 'Remark' },
+        { id: 'date', label: 'Date', minWidth: 150 },
+        { id: 'party_name', label: 'Party Name', minWidth: 150 },
+        { id: 'deposit', label: 'Credit', minWidth: 150 },
+        { id: 'withdraw', label: 'Debit', minWidth: 150 },
+        { id: 'balance', label: 'Balance', minWidth: 150 },
+        { id: 'remark', label: 'Remark', minWidth: 150 },
     ];
     const PaymentInitiatedColumns = [
         { id: 'bill_no', label: 'Cheque Date  ' },
@@ -290,6 +290,10 @@ const BankAccount = () => {
             }
             ).then((response) => {
                 setBankDetails(response.data.data)
+                if (response.data.status === 401) {
+                    history.push('/');
+                    localStorage.clear();
+                }
                 setIsLoading(false)
 
             })
@@ -681,32 +685,38 @@ const BankAccount = () => {
                 </Box> */}
                 <Box className="flex flex-col sm:flex-row">
                     <Box
-                        className="custom-scroll"
+                        className="custom-scroll fst_mdl_bnk"
                         sx={{
                             width: {
                                 xs: '100%',
-                                sm: 270,
+                                sm: '100%',
+                                md: '25%',
+                                lg: '18%',
+                                xl: '15%',
                             },
-                            height: {
-                                xs: 'calc(100vh - 100px)',
-                                sm: 800,
-                            },
+                            // height: {
+                            //     xs: 'calc(100vh - 56px)',
+                            //     sm: 'calc(100vh - 56px)',
+                            //     md: 'calc(100vh - 56px)',
+                            //     lg: 'calc(100vh - 56px)',
+                            // },
                             overflowY: 'auto',
                             padding: {
                                 xs: '10px',
                                 sm: '15px',
+                                md: '15px',
                             },
                         }}
                         role="presentation"
                         onClick={() => toggleDrawer(false)}
                     >
                         <Box>
-                            <h1 className="text-xl sm:text-2xl flex justify-center p-2" style={{ color: "var(--color1)" }}>Bank Accounts</h1>
+                            <h1 className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2" style={{ color: "var(--color1)" }}>Bank Accounts</h1>
                         </Box>
                         <List>
                             {bankData.map((account, index) => (
                                 <ListItem key={account.id} className={`list-bank ${highlightedIndex === index ? 'highlighted' : ''}`} disablePadding>
-                                    <ListItemButton style={{ width: '100%' }}>
+                                    <ListItemButton style={{ width: '100%', borderRadius: '10px' }}>
                                         <div onClick={() => handleAccountClick(account.id, index)} className="w-44">
                                             <p className="text-gray-700">{account.bank_account_number ? account.bank_account_number : 'Empty'}</p>
                                             <h6 className="font-semibold">{account.bank_name}</h6>
@@ -718,21 +728,21 @@ const BankAccount = () => {
                         </List>
                         <Divider style={{ borderColor: 'var(--color2) !important' }} />
                     </Box>
-                    <Box className="flex-grow">
+                    <Box className="flex-grow bnk_acc_mdl" style={{ width: '71%' }}>
                         <Box sx={{ width: "100%", bgcolor: 'background.paper', padding: "0px 20px 0px" }}>
-                            <div className="flex flex-wrap justify-end py-3 gap-2">
+                            <div className="flex justify-end py-3 bnk_acc_hdr gap-2">
                                 <Button
                                     variant="contained"
-                                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }}
-
-                                    className="mr-auto"
+                                    className='gap-2 add_rdc_btn'
+                                    style={{ background: 'var(--color1)', display: 'flex' }}
                                     onClick={() => { setOpenAddPopUpAdjust(true) }}
                                 >
                                     <AddIcon />Add/Reduce Money
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    style={{ background: 'var(--color1)', display: 'flex', gap: '10px', }}
+                                    className='gap-2 add_rdc_btn'
+                                    style={{ background: 'var(--color1)', display: 'flex' }}
                                     onClick={() => { setOpenAddPopUp(true) }}
                                 >
                                     <AddIcon />Add New Bank
@@ -760,43 +770,43 @@ const BankAccount = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <Box sx={{ marginTop: "20px" }}>
-                                        <div className="firstrow flex flex-wrap" style={{ background: "none" }}>
+                                    <Box sx={{ marginTop: "20px", backgroundColor: 'rgba(63, 98, 18, 0.09)', borderRadius: '10px' }}>
+                                        <div className="firstrow flex flex-wrap justify-between" style={{ background: "none" }}>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Bank Name</span>
-                                                <span className="font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
+                                                <span className="primary ">Bank Name</span>
+                                                <span className="primary font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Bank Account Number</span>
-                                                <span className="font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
+                                                <span className="primary ">Bank Account Number</span>
+                                                <span className="primary font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Account Type</span>
-                                                <span className="font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
+                                                <span className="primary ">Account Type</span>
+                                                <span className="primary font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">IFSC Code</span>
-                                                <span className="font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
+                                                <span className="primary ">IFSC Code</span>
+                                                <span className="primary font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Branch Name</span>
-                                                <span className="font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
+                                                <span className="primary ">Branch Name</span>
+                                                <span className="primary font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Account Holder Name</span>
-                                                <span className="font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
+                                                <span className="primary ">Account Holder Name</span>
+                                                <span className="primary font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
                                             </div>
                                             <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                <span className="primary font-bold">Current Balance</span>
-                                                <span className="font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
+                                                <span className="primary">Current Balance</span>
+                                                <span className="primary font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
                                             </div>
                                         </div>
                                     </Box>
 
                                     {tabValue === 0 && (
                                         <div>
-                                            <div className="flex flex-wrap gap-6 ml-4 sm:ml-12 mt-6">
-                                                <div style={{ marginTop: "25px" }}>
+                                            <div className="flex flex-row detail_st_ed_dt gap-6 mt-5" style={{ alignItems: 'end' }}>
+                                                <div className="detail" style={{ width: '100%' }}>
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-basic"
@@ -814,22 +824,22 @@ const BankAccount = () => {
                                                         }}
                                                     />
                                                 </div>
-                                                <div className="detail">
-                                                    <span className="text-gray-500">Start Date</span>
+                                                <div className="detail" style={{ width: '100%' }}>
+                                                    <span className="primary">Start Date</span>
                                                     <DatePicker
                                                         label="Start Date"
-                                                        className='custom-datepicker'
+                                                        className='custom-datepicker_mn'
                                                         selected={startDate}
                                                         onChange={handleStartDate}
                                                         dateFormat="dd/MM/yyyy"
                                                         filterDate={(date) => !isDateDisabled(date)}
                                                     />
                                                 </div>
-                                                <div className="detail">
-                                                    <span className="text-gray-500">End Date</span>
+                                                <div className="detail" style={{ width: '100%' }}>
+                                                    <span className="primary">End Date</span>
                                                     <DatePicker
                                                         label="End Date"
-                                                        className='custom-datepicker'
+                                                        className='custom-datepicker_mn'
                                                         selected={endDate}
                                                         onChange={handleEndDate}
                                                         dateFormat="dd/MM/yyyy"
@@ -853,9 +863,15 @@ const BankAccount = () => {
                                                         {bankDetails?.map((item, index) => (
                                                             <tr key={index}>
                                                                 {PassbookColumns.map((column, colIndex) => (
-                                                                    <td key={column.id} style={
-                                                                        colIndex === PassbookColumns.length - 1 ? { borderRadius: "0 10px 10px 0" } : {}
-                                                                    } className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}
+                                                                    <td key={column.id}
+                                                                        style={
+                                                                            colIndex === 0 ? {
+                                                                                borderRadius: "10px 0 0 10px",
+                                                                            } : colIndex === PassbookColumns.length - 1 ? {
+                                                                                borderRadius: "0 10px 10px 0",
+                                                                            } : {}
+                                                                        }
+                                                                        className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}
                                                                     >
                                                                         {item[column.id]}
                                                                     </td>

@@ -102,7 +102,7 @@ const OrderList = () => {
                 setOpenAddPopUpPlaceOrder(false)
                 setItems([])
                 setStatusName({ id: 2, name: 'Order' })
-               
+
 
             })
         } catch (error) {
@@ -131,7 +131,7 @@ const OrderList = () => {
                 setOnlineOrder(response.data.data)
                 setItemName(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -148,7 +148,7 @@ const OrderList = () => {
             }).then((response) => {
                 localStorage.setItem("distributor", response.data.data.distributor)
                 setDistributorList(response.data.data);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -164,7 +164,7 @@ const OrderList = () => {
                 },
             }).then((response) => {
                 setStatusOpation(response.data.data);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -188,7 +188,7 @@ const OrderList = () => {
             ).then((response) => {
                 setPurchaseHistory(response.data.data)
                 setIsLoading(false);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -309,7 +309,7 @@ const OrderList = () => {
                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
                         <div className='py-3 main_header_txt' style={{ display: 'flex', gap: '4px' }}  >
                             <div style={{ display: 'flex', gap: '7px', }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px',whiteSpace: "nowrap" }}  >Order List</span>
+                                <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap" }}  >Order List</span>
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList ">
@@ -358,7 +358,7 @@ const OrderList = () => {
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                                        variant="outlined"
+                                            variant="outlined"
                                             autoComplete="off"
                                             {...params}
                                             name={distributor?.name || ''}
@@ -440,14 +440,14 @@ const OrderList = () => {
                                     <tbody style={{ background: "#3f621217" }}>
                                         {filteredList.length === 0 ? (
                                             <tr>
-                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500" style={{ textAlign: "center"  ,borderRadius: "10px 10px 10px 10px"}}>
+                                                <td colSpan={OnlineOrdercolumns.length + 1} className="text-center py-4 text-gray-500" style={{ textAlign: "center", borderRadius: "10px 10px 10px 10px" }}>
                                                     No data found
                                                 </td>
                                             </tr>
                                         ) : (
                                             filteredList.map((row, index) => (
                                                 <tr key={row.code} className="hover:bg-gray-100">
-                                                    <td className="py-2 px-4"  style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
+                                                    <td className="py-2 px-4" style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
                                                     {OnlineOrdercolumns.map((column) => {
                                                         const value = row[column.id] || '-';
                                                         const isStatus = column.id === 'y_n';
@@ -515,16 +515,16 @@ const OrderList = () => {
                             sx={{
                                 "& .MuiDialog-container": {
                                     "& .MuiPaper-root": {
-                                        width: "50%",
-                                        maxWidth: "1900px",  // Set your width here
+                                        width: "100%",
+                                        maxWidth: "991px",  // Set your width here
                                     },
                                 },
                             }}>
-                            <DialogTitle id="alert-dialog-title" className="secondary">
+                            <DialogTitle id="alert-dialog-title" className="primary">
                                 Item Purchase History
                             </DialogTitle>
                             <div className="px-6" >
-                                <Alert severity="info" className="info_box_fld">
+                                <Alert severity="info" className="" style={{width:'100%'}}>
                                     <AlertTitle>Info</AlertTitle>
                                     Lastest 5 Purchase History.
                                 </Alert>
@@ -539,7 +539,14 @@ const OrderList = () => {
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     <div className="flex" style={{ flexDirection: 'column', gap: '19px', whiteSpace: 'nowrap' }}>
-                                        <table className="custom-table" style={{ background: "none" }}>
+                                        <table
+                                            className="w-full border-collapse custom-table"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                borderCollapse: "separate",
+                                                borderSpacing: "0 6px",
+                                            }}
+                                        >
                                             <thead>
                                                 <tr>
                                                     {LastPurchaseListcolumns.map((column, index) => (
@@ -552,16 +559,23 @@ const OrderList = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody >
+                                            <tbody style={{ background: "#3f621217" }}>
                                                 {purchaseHistory
                                                     .map((row, index) => {
                                                         return (
                                                             <tr hover tabIndex={-1} key={row.code} onClick={(() => setOpenAddPopUp(true))} >
-                                                                {LastPurchaseListcolumns.map((column) => {
+                                                                {LastPurchaseListcolumns.map((column, colIndex) => {
                                                                     const value = row[column.id];
 
                                                                     return (
                                                                         <td key={column.id} align={column.align}
+                                                                            style={
+                                                                                colIndex === 0 ? {
+                                                                                    borderRadius: "10px 0 0 10px",
+                                                                                } : colIndex === LastPurchaseListcolumns.length - 1 ? {
+                                                                                    borderRadius: "0 10px 10px 0",
+                                                                                } : {}
+                                                                            }
                                                                         >
                                                                             {column.format && typeof value === 'number'
                                                                                 ? column.format(value)
@@ -580,7 +594,7 @@ const OrderList = () => {
                         </Dialog>
 
                         <Dialog className="order_list_ml" open={openAddPopUpPlaceOrder}>
-                            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+                            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
                                 Place Order
                             </DialogTitle>
                             <IconButton
@@ -593,7 +607,7 @@ const OrderList = () => {
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     <div className="flex flex-col gap-5">
-                                        <FormControl size="small" style={{width:'100%'}}>
+                                        <FormControl size="small" style={{ width: '100%' }}>
                                             <InputLabel id="demo-select-small-label">Item Name</InputLabel>
                                             <Select
                                                 labelId="demo-select-small-label"
@@ -642,7 +656,7 @@ const OrderList = () => {
                                         </FormControl>
 
 
-                                        <FormControl size="small" style={{width:'100%'}}>
+                                        <FormControl size="small" style={{ width: '100%' }}>
                                             {/* <InputLabel id="demo-select-small-label">Status</InputLabel> */}
                                             <Select
                                                 labelId="demo-select-small-label"

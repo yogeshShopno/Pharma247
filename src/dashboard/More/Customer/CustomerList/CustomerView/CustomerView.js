@@ -241,7 +241,11 @@ const CustomerView = () => {
               </span>
             </div>
           </div>
-          <div>
+          <div style={{
+                        backgroundColor: 'rgb(63 98 18 / 11%)',
+                        borderRadius: '10px',
+                        paddingTop: '0.5%'
+                    }}>
             <div
               className="header_main_txt_CV mt-2 "
               style={{ background: "none" }}
@@ -301,7 +305,7 @@ const CustomerView = () => {
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="mt-5">
             <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
               <div
                 className="cust_tab_val"

@@ -95,7 +95,11 @@ const DistributerView = () => {
                             Download Compony List</Button>
 
                     </div>
-                    <div>
+                    <div style={{
+                        backgroundColor: 'rgb(63 98 18 / 11%)',
+                        borderRadius: '10px',
+                        paddingTop: '0.5%'
+                    }}>
                         <div className="firstrow flex header_main_txt_othr" style={{ background: "none", gap: 0 }}>
                             <div className="distributor-detail">
                                 <span className="heading_othr ">Distributor Name</span>
@@ -136,7 +140,7 @@ const DistributerView = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="p-6 bg-white">
+                    <div className="p-6 bg-white mt-5">
                         <div className="overflow-x-auto mt-4">
                             <table
                                 className="w-full border-collapse custom-table"

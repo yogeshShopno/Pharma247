@@ -175,7 +175,7 @@ const CashManage = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ backgroundColor: 'rgb(239 239 239)', height: "calc(100vh - 250px)", padding: "0px 20px 0px" }} >
+                    <div style={{ backgroundColor: 'rgb(239 239 239)', height: "calc(100vh - 225px)", padding: "0px 20px 0px" }} >
                         <div className='pt-4 csh_mng_main_hdr' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', marginBottom: "10px", alignItems: 'center' }}>
                                 <span className='primary' style={{ display: 'flex', fontWeight: 700, fontSize: '20px',whiteSpace:"nowrap" }} >Cash Management</span>

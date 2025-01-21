@@ -224,5 +224,10 @@ header {
 }
 
 .list-bank.highlighted {
-    background-color: rgb(186 186 173);
+    background-color: rgba(63, 98, 18, 0.09);
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
 }

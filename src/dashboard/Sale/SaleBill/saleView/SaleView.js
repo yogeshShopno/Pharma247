@@ -202,8 +202,12 @@ const SaleView = () => {
                                 </div>
                             </div>
 
-                            <div>
-                                <div className="firstrow flex mt-2">
+                            <div >
+                                <div className="firstrow flex mt-2 " style={{
+                                    backgroundColor: 'rgb(63 98 18 / 11%)',
+                                    borderRadius: '10px',
+                                    padding: '2rem'
+                                }}>
 
                                     <div className="detail_main">
                                         <span className="heading mb-2">Bill No</span>
@@ -264,7 +268,7 @@ const SaleView = () => {
                                     </span>
                                 </div> */}
                                 </div>
-                                <div className='overflow-x-auto'>
+                                <div className='overflow-x-auto mt-5'>
                                     <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                                         <thead>
                                             <tr style={{ whiteSpace: "nowrap" }}>
@@ -356,8 +360,8 @@ const SaleView = () => {
                                         </div>
                                     </div>
 
-                                    <div style={{ display: 'flex', alignItems: 'center',padding:'0 20px' }}>
-                                        <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer",whiteSpace: 'nowrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>
+                                        <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
                                             <label className="font-bold">Net Amount : </label>
                                             <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{tableData?.net_amount}
                                                 <FaCaretUp />

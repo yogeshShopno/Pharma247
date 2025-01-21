@@ -431,12 +431,12 @@ const ManageExpense = () => {
                                     <div className="total_mng_expn" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
                                         <div>
                                             <div className="relative" >
-                                                <h2 className="text-red-600 font-medium text-xl  ">Total </h2>
+                                                <h2 className="primary font-medium text-xl ">Total </h2>
                                             </div>
                                         </div>
                                         <div className="flex">
                                             <div>
-                                                <h2 className="text-red-600 font-bold text-xl ">Rs.{Number(expenseData.total).toFixed(2)}</h2>
+                                                <h2 className="secondary font-bold text-xl ">Rs.{Number(expenseData.total).toFixed(2)}</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -742,7 +742,7 @@ const ManageExpense = () => {
                         </Dialog> */}
 
                         <Dialog open={openAddPopUp}>
-                            <DialogTitle id="alert-dialog-title" className="secondary">
+                            <DialogTitle id="alert-dialog-title" className="primary">
                                 Add Expense
                             </DialogTitle>
                             <IconButton

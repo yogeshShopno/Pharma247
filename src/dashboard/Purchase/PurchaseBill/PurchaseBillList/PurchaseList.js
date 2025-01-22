@@ -330,6 +330,7 @@ const Purchasebill = () => {
             backgroundColor: "rgba(153, 153, 153, 0.1)",
             height: "calc(100vh - 225px)",
             padding: "0px 20px 0px",
+            overflow: "auto",
           }}
           className="justify-between"
         >

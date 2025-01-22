@@ -22,6 +22,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { VscDebugStepBack } from "react-icons/vsc";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import { IoMdClose } from 'react-icons/io';
+import { Modal } from 'flowbite-react';
+import { FaCaretUp } from 'react-icons/fa6';
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -108,6 +111,12 @@ const EditReturnBill = () => {
 
     const handleClose = () => {
         setIsDelete(false);
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
     };
 
     // useEffect(() => {
@@ -663,7 +672,7 @@ const EditReturnBill = () => {
                     Authorization: `Bearer ${token}`,
                 },
             })
-          ;
+                ;
             setUnsavedItems(true);
 
             setIsDeleteAll(true);
@@ -820,7 +829,7 @@ const EditReturnBill = () => {
         //     }
 
         // });
-       
+
 
         // setCheckedItems((prevCheckedItems) => [...prevCheckedItems, ItemId]);
 
@@ -834,7 +843,7 @@ const EditReturnBill = () => {
 
             }
             );
-           
+
         } catch (error) {
             console.error("API error:", error);
 
@@ -858,17 +867,22 @@ const EditReturnBill = () => {
                 <Loader />
             </div> :
 
-                <div style={{ height: 'calc(99vh - 75px)', padding: "0px 20px 0px" }} >
+                <div  style={{
+                    height: "calc(100vh - 225px)",
+                    padding: "0px 20px",
+                    overflow: "auto",
+                  }} >
                     <ToastContainer />
                     <div>
-                        <div className='py-3' style={{ display: 'flex', gap: '4px' }}>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '500px', gap: '7px', alignItems: "center" }}>
+                        <div className='py-3 edit_purchs_pg' style={{ display: 'flex', gap: '4px' }}>
+                            <div style={{ display: 'flex', whiteSpace: 'nowrap', gap: '7px', alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
-                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', fontWeight: 600, fontSize: '18px' }}>Edit </span>
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                             </div>
-                            <div className="headerList">
+                            <div className="headerList ">
                                 {/* <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
@@ -886,25 +900,30 @@ const EditReturnBill = () => {
                                 <Button
                                     style={{ background: 'var(--color1)' }}
                                     variant="contained"
+                                    className='edt_btn_ps'
                                     onClick={() => handleReturnUpdate(checkedItems)}  >
                                     Update
                                 </Button>
 
                             </div>
                         </div>
-                        <div>
+                        <div className="border-b">
                             <div className="firstrow flex" >
-                                <div className="detail">
-                                    <span className="title mb-2">Distributor</span>
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
+                                    <span className="heading mb-2">Distributor</span>
                                     <Autocomplete
                                         disabled
                                         value={distributor}
                                         sx={{
                                             width: '100%',
-                                            minWidth: '550px',
-                                            '@media (max-width:600px)': {
-                                                minWidth: '300px',
-                                            },
+                                            // minWidth: '550px',
+                                            // '@media (max-width:600px)': {
+                                            //     minWidth: '300px',
+                                            // },
                                         }}
                                         size='small'
                                         onChange={(e, value) => setDistributor(value)}
@@ -915,30 +934,40 @@ const EditReturnBill = () => {
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                 </div>
-                                <div className="detail">
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
                                     <span className="heading mb-2 ">Bill Date</span>
-                                    <DatePicker
-                                        className='custom-datepicker '
-                                        selected={selectedDate}
-                                        onChange={(newDate) => setSelectedDate(newDate)}
-                                        dateFormat="dd/MM/yyyy"
-                                        disabled
-                                        sx={colors = "#BDBDBD"}
-                                        style={{
-                                            color: '#BDBDBD',
-                                            backgroundColor: '#F0F0F0',
-                                            border: '1px solid #BDBDBD',
-                                            cursor: 'not-allowed',
-                                        }}
-                                    />
+                                    <div style={{ width: "100%" }}>
+                                        <DatePicker
+                                            className='custom-datepicker_mn '
+                                            selected={selectedDate}
+                                            onChange={(newDate) => setSelectedDate(newDate)}
+                                            dateFormat="dd/MM/yyyy"
+                                            disabled
+                                            sx={colors = "#BDBDBD"}
+                                            style={{
+                                                color: '#BDBDBD',
+                                                backgroundColor: '#F0F0F0',
+                                                border: '1px solid #BDBDBD',
+                                                cursor: 'not-allowed',
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="detail">
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-number"
                                         size="small"
-                                        sx={{ width: '250px' }}
+                                        sx={{ width: '100%' }}
                                         value={billNo}
                                         disabled
                                         onChange={(e) => { setBillNo(e.target.value) }}
@@ -946,16 +975,20 @@ const EditReturnBill = () => {
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
 
                                 </div>
-                                <div className="detail">
-                                    <span className="title mb-2">Start Date</span>
-                                    <div style={{ width: "215px" }}>
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
+                                    <span className="heading mb-2">Start Date</span>
+                                    <div style={{ width: "100%" }}>
                                         <TextField
                                             autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
                                             size="small"
-                                            sx={{ width: '200px' }}
+                                            sx={{ width: '100%' }}
                                             value={startDate}
                                         />
                                         {/* <DatePicker
@@ -975,9 +1008,13 @@ const EditReturnBill = () => {
                                         /> */}
                                     </div>
                                 </div>
-                                <div className="detail">
-                                    <span className="title mb-2">End Date</span>
-                                    <div style={{ width: "215px" }}>
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
+                                    <span className="heading mb-2">End Date</span>
+                                    <div style={{ width: "100%" }}>
                                         {/* <DatePicker
                                             className='custom-datepicker '
                                             selected={endDate}
@@ -999,12 +1036,16 @@ const EditReturnBill = () => {
                                             disabled
                                             id="outlined-number"
                                             size="small"
-                                            sx={{ width: '200px' }}
+                                            sx={{ width: '100%' }}
                                             value={endDate}
                                         />
                                     </div>
                                 </div>
-                                <div className="detail">
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "100%"
+                                }}>
                                     <span className="heading mb-2">Remark</span>
                                     <TextField
                                         autoComplete="off"
@@ -1012,10 +1053,10 @@ const EditReturnBill = () => {
                                         size="small"
                                         sx={{
                                             width: '100%',
-                                            minWidth: '550px',
-                                            '@media (max-width:600px)': {
-                                                minWidth: '300px',
-                                            },
+                                            // minWidth: '550px',
+                                            // '@media (max-width:600px)': {
+                                            //     minWidth: '300px',
+                                            // },
                                         }}
 
                                         value={remark}
@@ -1024,10 +1065,10 @@ const EditReturnBill = () => {
                                 </div>
                                 <div>
                                 </div>
-                                <div className='overflow-x-auto w-full'>
-                                    <table className="customtable  w-full border-collapse custom-table">
+                                <div className='scroll-two'>
+                                    <table className="saleTable">
                                         <thead>
-                                            <tr>
+                                            <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                                                 <th >Item Name</th>
                                                 <th >Unit</th>
                                                 <th >Batch  </th>
@@ -1043,7 +1084,7 @@ const EditReturnBill = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td style={{ width: '500px' }}>
                                                     <div >
                                                         <DeleteIcon className='delete-icon' onClick={removeItem}
@@ -1061,7 +1102,7 @@ const EditReturnBill = () => {
                                                         size="small"
                                                         error={!!errors.unit}
                                                         value={unit}
-                                                        sx={{ width: '80px' }}
+                                                        sx={{ width: '130px' }}
                                                         onChange={(e) => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
                                                             setUnit(value ? Number(value) : "");
@@ -1081,7 +1122,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         disabled
 
                                                         // inputRef={inputRef3}
@@ -1098,7 +1139,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         disabled
 
                                                         // inputRef={inputRef3}
@@ -1114,7 +1155,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         disabled
                                                         // inputRef={inputRef4}
@@ -1143,7 +1184,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         // inputRef={inputRef5}
                                                         // onKeyDown={handleKeyDown}
@@ -1174,7 +1215,7 @@ const EditReturnBill = () => {
                                                         id="outlined-number"
                                                         size="small"
                                                         type="number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         value={free}
                                                         // inputRef={inputRef6}
                                                         // error={!!errors.free}
@@ -1199,7 +1240,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         // inputRef={inputRef7}
                                                         // onKeyDown={handleKeyDown}
@@ -1225,7 +1266,7 @@ const EditReturnBill = () => {
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         size="small"
                                                         type="number"
                                                         // inputRef={inputRef8}
@@ -1255,7 +1296,7 @@ const EditReturnBill = () => {
                                                         labelId="dropdown-label"
                                                         id="dropdown"
                                                         value={gst.name}
-                                                        sx={{ minWidth: '80px' }}
+                                                        sx={{ width: '130px' }}
                                                         onChange={(e) => {
                                                             const selectedOption = gstList.find(option => option.name === e.target.value);
                                                             setGst(selectedOption);
@@ -1279,7 +1320,7 @@ const EditReturnBill = () => {
                                                         size="small"
                                                         value={loc}
                                                         // error={!!errors.loc}
-                                                        sx={{ width: '100px' }}
+                                                        sx={{ width: '130px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                     />
                                                 </td>
@@ -1287,14 +1328,14 @@ const EditReturnBill = () => {
 
                                                 <td className="total"><span>{ItemTotalAmount}</span></td>
                                             </tr>
-                                            <tr >
+                                            <tr style={{ borderBottom: '1px solid lightgray' }} >
                                                 <td>
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
                                                         autoFocus
-                                                        sx={{ width: "75%", marginTop: "5px" }}
+                                                        sx={{ width: "200px", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
@@ -1309,16 +1350,8 @@ const EditReturnBill = () => {
                                                         }}
                                                     />
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+
+                                                <td colSpan={10}></td>
                                                 <td >
                                                     <Button variant="contained"
                                                         style={{ background: 'var(--color1)' }}
@@ -1330,8 +1363,8 @@ const EditReturnBill = () => {
 
 
                                             {tableData?.item_list?.map((item) => (
-                                                <tr key={item.id} className="item-List" onClick={() => handleEditClick(item)}>
-                                                    <td>
+                                                <tr key={item.id} className="item-List border-b border-gray-400" onClick={() => handleEditClick(item)}>
+                                                    <td style={{ whiteSpace: 'nowrap' }}>
                                                         <Checkbox
                                                             sx={{
                                                                 color: "var(--color2)", // Color for unchecked checkboxes
@@ -1366,7 +1399,7 @@ const EditReturnBill = () => {
 
                                         </tbody>
                                     </table>
-                                    <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
+                                    {/* <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
                                             <div>
                                                 <label className="font-bold">Total GST : </label>
@@ -1374,16 +1407,14 @@ const EditReturnBill = () => {
                                             <div>
                                                 <label className="font-bold">Total Qty : </label>
                                             </div>
-                                            {/* <div>
-                                                <label className="font-bold">Net Rate : </label>
-                                            </div> */}
+                                            
                                         </div>
                                         <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
 
                                             <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                                 <span style={{ fontWeight: 600 }}>{totalGST}</span>
                                                 <span style={{ fontWeight: 600 }}>{totalQty}</span>
-                                                {/* <span style={{ fontWeight: 600 }}>{totalNetRate}</span> */}
+                                               
 
                                             </div>
                                         </div>
@@ -1395,9 +1426,7 @@ const EditReturnBill = () => {
                                             <div>
                                                 <label className="font-bold">Other Amount: </label>
                                             </div>
-                                            {/* <div>
-                                                <label className="font-bold">Profit : </label>
-                                            </div> */}
+                                            
 
                                             <div>
                                                 <label className="font-bold">Net Rate : </label>
@@ -1414,15 +1443,7 @@ const EditReturnBill = () => {
                                             <div>
                                                 <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
                                             </div>
-                                            {/* <div>
-                                            <TextField
-                 autoComplete="off" value={finalDiscount} onChange={(e) => { setFinalDiscount(e.target.value) }} size="small" style={{ width: '105px' }} sx={{
-                                                '& .MuiInputBase-root': {
-                                                    height: '35px'
-                                                },
-                                            }} />
-                                        </div> */}
-
+                                            
                                             <div>
                                                 <Input
                                                     type="number"
@@ -1443,9 +1464,7 @@ const EditReturnBill = () => {
 
                                                     }} />
                                             </div>
-                                            {/* <div className='mt-2'>
-                                                <span style={{ fontWeight: 600, }}>₹{!margin ? 0 : margin} &nbsp;({!totalMargin ? 0 : totalMargin})%</span>
-                                            </div> */}
+                                           
                                             <div className='mt-2'>
                                                 <span style={{ fontWeight: 600, }}>{totalNetRate}</span>
                                             </div>
@@ -1456,8 +1475,226 @@ const EditReturnBill = () => {
                                                 <span style={{ fontWeight: 600, fontSize: '22px' }} className='primary ' >{!netAmount ? 0 : netAmount}</span>
                                             </div>
                                         </div>
+                                    </div> */}
+                                </div>
+
+
+                                {/* modal here  */}
+                                <div
+                                    className=""
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        position: "fixed",
+                                        width: "100%",
+                                        bottom: "0",
+                                        left: "0",
+                                    }}
+                                >
+                                    <div
+                                        className=""
+                                        style={{
+                                            display: "flex",
+                                            gap: "40px",
+                                            whiteSpace: "nowrap",
+                                            position: "sticky",
+                                            left: "0",
+                                            overflow: "auto",
+                                            padding: "20px",
+                                        }}
+                                    >
+                                        <div
+                                            className="gap-2 invoice_total_fld"
+                                            style={{ display: "flex" }}
+                                        >
+                                            <label className="font-bold">Total GST : </label>
+
+                                            <span style={{ fontWeight: 600 }}>{totalGST} </span>
+                                        </div>
+                                        <div
+                                            className="gap-2 invoice_total_fld"
+                                            style={{ display: "flex" }}
+                                        >
+                                            <label className="font-bold">Total Qty : </label>
+                                            <span style={{ fontWeight: 600 }}>  {totalQty}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            padding: "0 20px",
+                                            whiteSpace: "noWrap",
+                                        }}
+                                    >
+                                        <div
+                                            className="gap-2 "
+                                            onClick={toggleModal}
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            <label className="font-bold">Net Amount : </label>
+                                            <span
+                                                className="gap-1"
+                                                style={{
+                                                    fontWeight: 800,
+                                                    fontSize: "22px",
+                                                    whiteSpace: "nowrap",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {!netAmount ? 0 : netAmount}
+                                                <FaCaretUp />
+                                            </span>
+                                        </div>
+
+                                        <Modal
+                                            show={isModalOpen}
+                                            onClose={toggleModal}
+                                            size="lg"
+                                            position="bottom-center"
+                                            className="modal_amount"
+                                        // style={{ width: "50%" }}
+                                        >
+                                            <div
+                                                style={{
+                                                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                                    color: "white",
+                                                    padding: "20px",
+                                                    fontSize: "larger",
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                }}
+                                            >
+                                                <h2 style={{ textTransform: "uppercase" }}>
+                                                    invoice total
+                                                </h2>
+                                                <IoMdClose
+                                                    onClick={toggleModal}
+                                                    cursor={"pointer"}
+                                                    size={30}
+                                                />
+                                            </div>
+                                            <div
+                                                style={{
+                                                    background: "white",
+                                                    padding: "20px",
+                                                    width: "100%",
+                                                    maxWidth: "600px",
+                                                    margin: "0 auto",
+                                                    lineHeight: "2.5rem",
+                                                }}
+                                            >
+                                                <div
+                                                    className=""
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                    }}
+                                                >
+                                                    <label className="font-bold">Total Amount : </label>
+                                                    <span style={{ fontWeight: 600 }}>
+                                                        {totalAmount ? totalAmount : 0}
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    className=""
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                    }}
+                                                >
+                                                    <label className="font-bold">Other Amount : </label>
+                                                    <div>
+                                                        <Input
+                                                            type="number"
+                                                            value={otherAmount}
+                                                            onChange={handleOtherAmount}
+                                                            size="small"
+                                                            style={{
+                                                                width: "70px",
+                                                                background: "none",
+                                                                justifyItems: "end",
+                                                                outline: "none",
+                                                            }} sx={{
+                                                                '& .MuiInputBase-root': {
+                                                                    height: '35px',
+                                                                },
+                                                                "& .MuiInputBase-input": { textAlign: "end" }
+
+                                                            }} />
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    className=""
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        paddingBottom: "5px",
+                                                    }}
+                                                >
+                                                    <label className="font-bold">Total Net Rate : </label>
+                                                    <span
+                                                        style={{
+                                                            fontWeight: 600,
+                                                            color: "#F31C1C",
+                                                        }}
+                                                    >
+                                                        {totalNetRate}
+                                                    </span>
+                                                </div>
+
+                                                <div
+                                                    className="font-bold"
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        paddingBottom: "5px",
+                                                        borderTop:
+                                                            "1px solid var(--toastify-spinner-color-empty-area)",
+                                                        paddingTop: "5px",
+                                                    }}
+                                                >
+                                                    <label className="font-bold">Round Off : </label>
+                                                    <span>{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
+                                                </div>
+
+                                                <div
+                                                    className=""
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        cursor: "pointer",
+                                                        justifyContent: "space-between",
+                                                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                                                        paddingTop: "5px",
+                                                    }}
+                                                >
+                                                    <label className="font-bold">Net Amount: </label>
+                                                    <span
+                                                        style={{
+                                                            fontWeight: 800,
+                                                            fontSize: "22px",
+                                                            color: "var(--COLOR_UI_PHARMACY)",
+                                                        }}
+                                                    >
+                                                        {!netAmount ? 0 : netAmount}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </Modal>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 

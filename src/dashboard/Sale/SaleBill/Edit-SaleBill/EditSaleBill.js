@@ -1050,7 +1050,7 @@ const EditSaleBill = () => {
                 </div>
               </div>
               <div className="border-b">
-                <div className="firstrow flex">
+                <div className="firstrow flex ">
                   <div className="detail mt-1 custommedia" style={{ whiteSpace: "pre" }}>
                     <div
                       className="detail  p-2 rounded-md"
@@ -1629,7 +1629,7 @@ const EditSaleBill = () => {
                             >
 
                               <BorderColorIcon
-                                color="primary"
+                              style={{color: "var(--color1)"}}
                                 className="cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation(); // Prevents row click

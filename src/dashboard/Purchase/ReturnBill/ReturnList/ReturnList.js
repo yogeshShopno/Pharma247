@@ -271,54 +271,56 @@ const ReturnList = () => {
           <Loader />
         </div>
       ) : (
-        <div style={{height: "calc(100vh - 225px)", padding: "0px 20px 0px" }}>
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
-            <span
-              style={{
-                color: "var(--color2)",
-                display: "flex",
-                alignItems: "center",
-                fontWeight: 700,
-                fontSize: "20px",
-              }}
-              onClick={() => {
-                history.push("/purchase/purchasebill");
-              }}
-            >
-              Purchase
-            </span>
-            <ArrowForwardIosIcon
-              style={{
-                fontSize: "20px",
-                marginTop: "6px",
-                color: "var(--color1)",
-              }}
-            />
-            <span
-              style={{
-                color: "var(--color1)",
-                display: "flex",
-                alignItems: "center",
-                fontWeight: 700,
-                fontSize: "18px",
-              }}
-            >
-              Return
-            </span>
-            {hasPermission(permissions, "purchase return bill create") && (
-              <Button
-                variant="contained"
-                size="small"
-                style={{ background: "var(--color1)", fontSize: "12px" }}
-                onClick={goIntoAdd}
-              >
-                <AddIcon />
-                New
-              </Button>
-            )}
+        <div style={{
+          backgroundColor: "rgba(153, 153, 153, 0.1)",
+          height: "calc(100vh - 225px)",
+          padding: "0px 20px 0px",
+          overflow: "auto",
+        }}>
+          <div className="py-3 purchs_hdr_mn" style={{ display: "flex", gap: "4px" }}>
+            <div className="flex flex-row sale_list_pgd" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+              <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
+                <span
+                  style={{
+                    color: "var(--color2)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    whiteSpace: "nowrap",
+                  }}
+                  onClick={() => {
+                    history.push("/purchase/purchasebill");
+                  }}
+                >
+                  Purchase Return
+                </span>
+                <div>
+                  <ArrowForwardIosIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "var(--color1)",
+                    }}
+                  />
+                </div>
+              </div>
+              {hasPermission(permissions, "purchase return bill create") && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  className="sale_add_btn gap-2"
+                  style={{ background: "var(--color1)", fontSize: "12px" }}
+                  onClick={goIntoAdd}
+                >
+                  <AddIcon />
+                  New
+                </Button>
+              )}
+            </div>
             <div className="headerList">
               <Button
                 variant="contained"
+                className="sale_add_pdf"
                 style={{ background: "var(--color1) " }}
                 onClick={() => {
                   setOpenAddPopUp(true);
@@ -343,7 +345,7 @@ const ReturnList = () => {
                   <tr>
                     <th>SR. No</th>
                     {columns.map((column, index) => (
-                      <th key={column.id}>
+                      <th key={column.id} style={{ width: column.minWidth }}>
                         <div className="headerStyle">
                           <span>{column.label}</span>
                           <SwapVertIcon
@@ -352,9 +354,10 @@ const ReturnList = () => {
                           />
                           <TextField
                             autoComplete="off"
-                            label={`Search ${column.label}`}
+                            label={`Type Here`}
                             id="filled-basic"
                             size="small"
+                            style={{ width: "150px" }}
                             value={searchTerms[index]}
                             onChange={(e) =>
                               handleSearchChange(index, e.target.value)
@@ -430,15 +433,15 @@ const ReturnList = () => {
                               isStatus && value === "Paid"
                                 ? "text-black"
                                 : isStatus && value === "Due"
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             const dueAmountClass =
                               isDueAmount && row.status === "Paid"
                                 ? "text-black"
                                 : isDueAmount && value > 0
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             return (
                               <td
@@ -450,9 +453,8 @@ const ReturnList = () => {
                                 className="text-lg"
                               >
                                 <span
-                                  className={`text ${
-                                    isStatus ? statusClass : ""
-                                  } ${isDueAmount ? dueAmountClass : ""}`}
+                                  className={`text ${isStatus ? statusClass : ""
+                                    } ${isDueAmount ? dueAmountClass : ""}`}
                                 >
                                   {column.format && typeof value === "number"
                                     ? column.format(value)
@@ -464,7 +466,7 @@ const ReturnList = () => {
 
                           <td>
                             {row.cn_amount_bills &&
-                            row.cn_amount_bills.length > 0 ? (
+                              row.cn_amount_bills.length > 0 ? (
                               <ul>
                                 <Button
                                   variant="contained"
@@ -492,7 +494,7 @@ const ReturnList = () => {
                                           aria-label="close"
                                           // onClick={resetAddDialog}
                                           className="text-gray-500"
-                                          // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                                        // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
                                         >
                                           <CloseIcon
                                             onClick={() => {
@@ -594,12 +596,12 @@ const ReturnList = () => {
                                 permissions,
                                 "purchase return bill delete"
                               ) && (
-                                <DeleteIcon
-                                  style={{ color: "#F31C1C" }}
-                                  className="delete-icon"
-                                  onClick={() => deleteOpen(row.id)}
-                                />
-                              )}
+                                  <DeleteIcon
+                                    style={{ color: "#F31C1C" }}
+                                    className="delete-icon"
+                                    onClick={() => deleteOpen(row.id)}
+                                  />
+                                )}
                             </div>
                           </td>
                         </tr>
@@ -612,11 +614,10 @@ const ReturnList = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -653,11 +654,10 @@ const ReturnList = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -667,9 +667,8 @@ const ReturnList = () => {
             <div
               id="modal"
               value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                IsDelete ? "block" : "hidden"
-              }`}
+              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                }`}
             >
               <div />
               <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -721,20 +720,20 @@ const ReturnList = () => {
           </div>
           <Dialog
             open={openAddPopUp}
-             className="order_list_ml"
-            // sx={{
-            //   "& .MuiDialog-container": {
-            //     "& .MuiPaper-root": {
-            //       width: "50%",
-            //       height: "50%",
-            //       maxWidth: "500px", // Set your width here
-            //       maxHeight: "80vh", // Set your height here
-            //       overflowY: "auto", // Enable vertical scrolling if content overflows
-            //     },
-            //   },
-            // }}
+            className="order_list_ml"
+          // sx={{
+          //   "& .MuiDialog-container": {
+          //     "& .MuiPaper-root": {
+          //       width: "50%",
+          //       height: "50%",
+          //       maxWidth: "500px", // Set your width here
+          //       maxHeight: "80vh", // Set your height here
+          //       overflowY: "auto", // Enable vertical scrolling if content overflows
+          //     },
+          //   },
+          // }}
           >
-            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
               Generate PDF
             </DialogTitle>
             <IconButton
@@ -820,7 +819,7 @@ const ReturnList = () => {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </div >
       )}
     </>
   );

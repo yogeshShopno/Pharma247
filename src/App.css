@@ -392,12 +392,12 @@ body {
 }
 
 .scroll-two::-webkit-scrollbar-thumb {
-  background: #39511c;
+  background: var(--color2);
   border-radius: 5px;
 }
 
 .custom-scroll-sale::-webkit-scrollbar-thumb {
-  background: #39511c;
+  background: var(--color2);
   border-radius: 5px;
 }
 
@@ -408,12 +408,12 @@ body {
 }
 
 .scroll-two::-webkit-scrollbar {
-  height: 6px !important;
+  height: 4px !important;
   width: 8px !important;
 }
 
 .scroll-two::-webkit-scrollbar-thumb {
-  background: #39511c !important;
+  background: var(--color2) !important;
   border-radius: 4px !important;
 }
 

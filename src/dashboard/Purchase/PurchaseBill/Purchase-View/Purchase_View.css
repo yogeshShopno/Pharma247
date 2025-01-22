@@ -377,8 +377,20 @@
   }
 
   @media (min-width: 1440px) {
-    max-width: 25.3333333333% !important;
+    max-width: 25% !important;
     padding: 0 5px;
+  }
+}
+
+@media (max-width: 450px) {
+  .purchs_hdr_mn {
+    flex-direction: column;
+  }
+  .sale_add_pdf {
+    width: 100%;
+  }
+  .sale_add_btn {
+    width: 100%;
   }
 }
 
@@ -521,7 +533,14 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .modal_amount div[role="dialog"] {
+    max-width: 40%;
+    align-content: end;
+    padding: 0;
+  }
+}
+@media (min-width: 1441px) {
   .modal_amount div[role="dialog"] {
     max-width: 30%;
     align-content: end;
@@ -571,7 +590,7 @@
   .sale_add_pdf {
     width: 100%;
   }
-  .sal-rtn-fff{
+  .sal-rtn-fff {
     flex-direction: column;
   }
 }
@@ -861,5 +880,20 @@
 @media (max-width: 757px) {
   .detail_st_ed_dt {
     flex-direction: column;
+  }
+}
+
+@media (max-width:468px) {
+  .edit_purchs_pg{
+    flex-direction: column;
+  }
+  .edt_purchase_fled{
+    flex-direction: column;
+  }
+  .cn_fls{
+    width: 100%;
+  }
+  .edt_btn_ps{
+    width: 100%;
   }
 }

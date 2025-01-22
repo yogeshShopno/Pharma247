@@ -27,6 +27,10 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
+import { BsLightbulbFill } from "react-icons/bs";
+import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
+import { Modal } from "flowbite-react";
+import { IoMdClose } from "react-icons/io";
 
 const PurchaseView = () => {
   const { id } = useParams();
@@ -41,6 +45,12 @@ const PurchaseView = () => {
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [roundOffAmount, setRoundOffAmount] = useState("");
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  
   useEffect(() => {
     purchaseBillList();
   }, []);
@@ -166,61 +176,61 @@ const PurchaseView = () => {
           <Loader />
         </div>
       ) : (
-        <div style={{height: "calc(100vh - 225px)", padding: "0px 20px 0px" }}>
+        <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
           <div>
-            <div className="py-3" style={{ display: "flex", gap: "4px" }}>
-              <span
-                style={{
-                  color: "var(--color2)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  history.push("/purchase/purchasebill");
-                }}
-              >
-                Purchase
-              </span>
-              <ArrowForwardIosIcon
-                style={{
-                  fontSize: "20px",
-                  marginTop: "9px",
-                  color: "var(--color1)",
-                }}
-              />
-              <span
-                style={{
-                  color: "var(--color1)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                }}
-              >
-                View
-              </span>
-              <ArrowForwardIosIcon
-                style={{
-                  fontSize: "20px",
-                  marginTop: "9px",
-                  color: "var(--color1)",
-                }}
-              />
-              <span
-                style={{
-                  color: "var(--color1)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  minWidth: "150px",
-                }}
-              >
-                {data.bill_no}
-              </span>
+            <div className="py-3 sal-rtn-fff" style={{ display: "flex", gap: "4px" }}>
+              <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
+                <span
+                  style={{
+                    color: "var(--color2)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    history.push("/purchase/purchasebill");
+                  }}
+                >
+                  Purchase
+                </span>
+                <ArrowForwardIosIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "var(--color1)",
+                  }}
+                />
+                <span
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                  }}
+                >
+                  View
+                </span>
+                <ArrowForwardIosIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "var(--color1)",
+                  }}
+                />
+                <span
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                  }}
+                >
+                  {data.bill_no}
+                </span>
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+              </div>
               {/* {permissions.some(permission => permission["purchase bill edit"]) && ( */}
 
               {hasPermission(permissions, "purchase bill edit") && (
@@ -242,12 +252,13 @@ const PurchaseView = () => {
                   <Button
                     style={{ background: "var(--color1)" }}
                     variant="contained"
+                    className="sale_add_btn"
                     onClick={() => {
                       history.push(
                         "/purchase/edit/" +
-                          data.id +
-                          "/" +
-                          data?.item_list[0].random_number
+                        data.id +
+                        "/" +
+                        data?.item_list[0].random_number
                       );
                     }}
                   >
@@ -260,44 +271,48 @@ const PurchaseView = () => {
           </div>
 
           <div>
-            <div className="firstrow flex">
-              <div className="detail">
-                <span className="title mb-2">SR No.</span>
-                <span className="data">{data.sr_no}</span>
+            <div className="firstrow flex mt-2 " style={{
+              backgroundColor: 'rgb(63 98 18 / 11%)',
+              borderRadius: '10px',
+              padding: '2rem'
+            }}>
+              <div className="detail_main">
+                <span className="heading mb-2">SR No.</span>
+                <span className="data_bg">{data.sr_no}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2 ">Bill Creator</span>
-                {/* <span className="data">2 | Owner</span> */}
-                <span className="data capitalize">{data.user_name}</span>
+              <div className="detail_main">
+                <span className="heading mb-2 ">Bill Creator</span>
+                {/*  <span className="data_bg">2 | Owner</span> */}
+                <span className="data_bg capitalize">{data.user_name}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2">Bill No.</span>
-                <span className="data">{data.bill_no}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Bill No.</span>
+                <span className="data_bg">{data.bill_no}</span>
               </div>
 
-              <div className="detail">
-                <span className="title mb-2">Bill Date</span>
-                <span className="data">{data.bill_date}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Bill Date</span>
+                <span className="data_bg">{data.bill_date}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2">Due Date</span>
-                <span className="data">{data.due_date}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Due Date</span>
+                <span className="data_bg">{data.due_date}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2">Distributer</span>
-                <span className="data">{data.distributor_name}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Distributer</span>
+                <span className="data_bg">{data.distributor_name}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2">Payment Type</span>
-                <span className="data">{data.payment_type}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Payment Type</span>
+                <span className="data_bg">{data.payment_type}</span>
               </div>
-              <div className="detail">
-                <span className="title mb-2">Entery By</span>
-                <span className="data">{localStorage.getItem("UserName")}</span>
+              <div className="detail_main">
+                <span className="heading mb-2">Entery By</span>
+                <span className="data_bg">{localStorage.getItem("UserName")}</span>
               </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="customtable  w-full border-collapse custom-table">
+            <div className="overflow-x-auto mt-5">
+              <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                 <thead>
                   <tr>
                     <th>Item Name</th>
@@ -319,10 +334,10 @@ const PurchaseView = () => {
                     <th>Amount </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: "#3f621217" }}>
                   {data?.item_list?.map((item, index) => (
                     <tr key={index}>
-                      <td>
+                      <td style={{ borderRadius: "10px 0 0 10px" }}>
                         <div>{item.item_name}</div>
                       </td>
                       <td>{item.weightage}</td>
@@ -340,12 +355,12 @@ const PurchaseView = () => {
                       <td>{item.location}</td>
                       <td>{item.margin}</td>
                       <td>{item.net_rate}</td>
-                      <td className="amount">{item.amount} </td>
+                      <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.amount} </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10">
+              {/* <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10">
                 <div
                   style={{
                     display: "flex",
@@ -392,8 +407,7 @@ const PurchaseView = () => {
                 >
                   <label className="font-bold">Total Amount : </label>
                   <label className="font-bold">CN Amount : </label>
-                  <label className="font-bold">Round Of : </label>
-                  {/* <label className="font-bold">Profit : </label> */}
+                  <label className="font-bold">Round Off : </label>
                   <label className="font-bold">Net Amount : </label>
                 </div>
                 <div
@@ -416,10 +430,10 @@ const PurchaseView = () => {
                     {roundOffAmount === "0.00"
                       ? roundOffAmount
                       : roundOffAmount < 0
-                      ? `-${Math.abs(roundOffAmount)}`
-                      : `+${Math.abs(roundOffAmount)}`}
+                        ? `-${Math.abs(roundOffAmount)}`
+                        : `+${Math.abs(roundOffAmount)}`}
                   </span>
-                  {/* <span style={{ fontWeight: 600 }}>₹{data?.margin_net_profit} &nbsp; (₹{data?.total_margin})</span> */}
+                 
 
                   <span
                     style={{
@@ -431,7 +445,7 @@ const PurchaseView = () => {
                     {data?.net_amount ? data?.net_amount : 0}
                   </span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -497,39 +511,124 @@ const PurchaseView = () => {
             </DialogContent>
             <DialogActions></DialogActions>
           </Dialog>
-          <div
-            className="flex justify-between"
-            style={{ width: "98%", position: "absolute", bottom: "20px" }}
-          >
-            <Button
-              style={{ background: "var(--color1)" }}
-              variant="contained"
-              onClick={() => {
-                const prevIndex =
-                  (currentIndex - 1 + tableData.length) % tableData.length;
-                const prevId = tableData[prevIndex]?.id;
-                if (prevId) {
-                  history.push(`/purchase/view/${prevId}`);
-                }
-              }}
-            >
-              <IoArrowBackCircleOutline size={25} cursor="pointer" />
-              Previous Bill
-            </Button>
-            <Button
-              style={{ background: "var(--color1)" }}
-              variant="contained"
-              onClick={() => {
-                const nextIndex = (currentIndex + 1) % tableData.length;
-                const nextId = tableData[nextIndex]?.id;
-                if (nextId) {
-                  history.push(`/purchase/view/${nextId}`);
-                }
-              }}
-            >
-              <IoArrowForwardCircleOutline size={25} cursor="pointer" />
-              Next Bill
-            </Button>
+
+          <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
+            <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+              <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                <label className="font-bold">Total GST : </label>
+
+                <span style={{ fontWeight: 600 }}>   {data?.total_gst ? data?.total_gst : 0}{" "}</span>
+              </div>
+              <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                <label className="font-bold">Total Qty : </label>
+                <span style={{ fontWeight: 600 }}> {data?.total_qty ? data?.total_qty : 0} {"+"}&nbsp;
+
+                  <span className="">
+                    {data?.total_free_qty ? data?.total_free_qty : 0} Free{" "}
+                  </span>{" "}
+                </span>
+              </div>
+              <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                <label className="font-bold">Total Base : </label>
+                <span style={{ fontWeight: 600 }}>{data?.total_base}</span>
+              </div>
+              <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+                <label className="font-bold">Total Net Rate : </label>
+                <span style={{ fontWeight: 600 }}>₹ {data?.total_net_rate} </span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex' }}>
+              <div className="invoice_total_fld" style={{ display: 'flex', flexDirection: 'column', alignSelf: "center", fontSize: '14px' }}>
+                <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }}
+                  onClick={() => {
+                    const prevIndex =
+                      (currentIndex - 1 + tableData.length) % tableData.length;
+                    const prevId = tableData[prevIndex]?.id;
+                    if (prevId) {
+                      history.push(`/purchase/view/${prevId}`);
+                    }
+                  }}
+                >
+                  <label style={{ textTransform: "uppercase" }}>Next Bill</label>
+                  <FaArrowUp size={20} />
+                </div>
+
+                <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }}
+                  onClick={() => {
+                    const nextIndex = (currentIndex + 1) % tableData.length;
+                    const nextId = tableData[nextIndex]?.id;
+                    if (nextId) {
+                      history.push(`/purchase/view/${nextId}`);
+                    }
+                  }}
+                >
+                  <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
+                  <FaArrowDown size={20} />
+
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>
+                <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
+                  <label className="font-bold">Net Amount : </label>
+                  <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
+                    <FaCaretUp />
+                  </span>
+
+                </div>
+
+                <Modal
+                  show={isModalOpen}
+                  onClose={toggleModal}
+                  size="lg"
+                  position="bottom-center"
+                  className="modal_amount"
+                // style={{ width: "50%" }}
+                >
+                  <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                    <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+
+                  </div>
+                  <div
+                    style={{
+                      background: "white",
+                      padding: "20px",
+                      width: "100%",
+                      maxWidth: "600px",
+                      margin: "0 auto",
+                      lineHeight: "2.5rem"
+                    }}
+                  >
+
+                    <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                      <label className="font-bold">Total Amount : </label>
+                      <span style={{ fontWeight: 600 }}> {data?.total_amount ? data?.total_amount : 0}</span>
+                    </div>
+
+                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                      <label className="font-bold">CN Amount : </label>
+                      <span style={{ fontWeight: 600, color: "red" }}> {-(parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>
+                    </div>
+
+                    <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                      <label className="font-bold">Round Off : </label>
+                      <span style={{ fontWeight: 600 }}> {roundOffAmount === "0.00"
+                        ? roundOffAmount
+                        : roundOffAmount < 0
+                          ? `-${Math.abs(roundOffAmount)}`
+                          : `+${Math.abs(roundOffAmount)}`}</span>
+                    </div>
+
+                    <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+
+                      <label className="font-bold">Net Amount: </label>
+                      <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{data?.net_amount ? data?.net_amount : 0}</span>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
+            </div>
           </div>
         </div>
       )}

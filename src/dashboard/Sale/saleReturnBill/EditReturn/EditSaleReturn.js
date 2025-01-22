@@ -440,7 +440,7 @@ const EditSaleReturn = () => {
       setBatch("");
       setLoc("");
       setIsEditMode(false);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleKeyDown = (event) => {
@@ -1517,7 +1517,7 @@ const EditSaleReturn = () => {
                         size="lg"
                         position="bottom-center"
                         className="modal_amount"
-                        // style={{ width: "50%" }}
+                      // style={{ width: "50%" }}
                       >
                         <div
                           style={{
@@ -1663,9 +1663,8 @@ const EditSaleReturn = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                    IsDelete ? "block" : "hidden"
-                  }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                    }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1730,9 +1729,8 @@ const EditSaleReturn = () => {
           <div
             id="modal"
             value={openModal}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              openModal ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

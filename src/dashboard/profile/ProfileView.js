@@ -69,6 +69,14 @@ const ProfileView = () => {
                                             Plan
                                         </li>
                                     )}
+                                    {hasPermission(permissions, "profile plan view") && (
+                                        <li
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between  hover:bg-[var(--color1)] hover:text-white`}
+                                            onClick={() => handleItemClick('/refer&earn', 'refer&earn')}
+                                        >
+                                            Refer & Earn
+                                        </li>
+                                    )}
                                     <li
                                         className={`font-semibold p-2 cursor-pointer flex justify-between  hover:bg-[var(--color1)] hover:text-white`}
                                         onClick={() => handleItemClick('/password', 'Password')}

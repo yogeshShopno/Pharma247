@@ -17,7 +17,6 @@ const SignUp = () => {
     referral_code: "",
     type: 0,
   });
-  const [showCode, setShowCode] = useState(false);
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [showPasswordIcon, setShowPasswordIcon] = useState(false)
@@ -76,34 +75,39 @@ const SignUp = () => {
   }
 
   const handleRegister = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.pharmacy_name) {
-      newErrors.pharmacy_name = 'pharmacy Name is required';
-      toast.error('Pharmacy Name is required');
-    }
-    if (!formData.mobile_number) {
-      newErrors.mobile_number = 'mobile No is required';
-      toast.error('Mobile Number is required');
-    }
-    else if (!/^\d{10}$/.test(formData.mobile_number)) {
-      newErrors.mobile_number = 'Mobile number must be 10 digits';
-      toast.error('Mobile number must be 10 digits');
-    }
-    if (!formData.email) {
-      newErrors.email = 'Email Id is required';
-      toast.error('Email Id is required');
-    }
-    else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Enter a valid email address';
-      toast.error('Enter a valid email address');
-    }
+    const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5)+formData.mobile_number.slice(-5)+Math.random().toString(36).substring(2, 7);
+    console.log(refferalLink,"refferalLink")
+    // const newErrors = {};
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+   
+    // if (!formData.pharmacy_name) {
+    //   newErrors.pharmacy_name = 'pharmacy Name is required';
+    //   toast.error('Pharmacy Name is required');
+    // }
+    // if (!formData.mobile_number) {
+    //   newErrors.mobile_number = 'mobile No is required';
+    //   toast.error('Mobile Number is required');
+    // }
+    // else if (!/^\d{10}$/.test(formData.mobile_number)) {
+    //   newErrors.mobile_number = 'Mobile number must be 10 digits';
+    //   toast.error('Mobile number must be 10 digits');
+    // }
+    // if (!formData.email) {
+    //   newErrors.email = 'Email Id is required';
+    //   toast.error('Email Id is required');
+    // }
+    // else if (!emailRegex.test(formData.email)) {
+    //   newErrors.email = 'Enter a valid email address';
+    //   toast.error('Enter a valid email address');
+    // }
 
-    setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
-      handleSubmit();
-    }
+    // setErrors(newErrors);
+    // const isValid = Object.keys(newErrors).length === 0;
+    // if (isValid) {
+    //   handleSubmit();
+     
+    // }
   };
 
   const handleSubmit = async () => {
@@ -114,6 +118,8 @@ const SignUp = () => {
       data.append("email", formData.email);
       data.append("zip_code", formData.zip_code);
       data.append("referral_code", formData.referral_code);
+      data.append("coupon_code", formData.referral_code);
+
       data.append("type", formData.type);
       const response = await axios.post('resgiter', data);
       if (response.data.status === 200) {
@@ -295,7 +301,7 @@ const SignUp = () => {
                   />
                 </div>
 
-                {showCode && (
+            
                   <div className="mt-2 flex flex-col justify-between">
                     <label htmlFor="referral_code" className="block text-gray-700 text-sm font-bold mb-1">Referral Code (Optional)</label>
                     <OutlinedInput
@@ -308,12 +314,7 @@ const SignUp = () => {
                       onChange={handleChange}
                     />
                   </div>
-                )}
-                {!showCode && (
-                  <label htmlFor="referral_code" onClick={() => setShowCode(true)} className="text-x secondary  text-end w-full mt-2">
-                    Have a Referral code?
-                  </label>
-                )}
+        
                 <div className="mt-4">
                   <Button variant="contained"  style={{backgroundColor:"var(--color1)"}} className="text-white font-bold py-2 px-4 w-full rounded "
                     onClick={handleRegister}

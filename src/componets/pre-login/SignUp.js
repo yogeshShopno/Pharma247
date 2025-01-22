@@ -6,7 +6,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 
 const SignUp = () => {
-  const logo = process.env.PUBLIC_URL + 'pharmalogo.png';
+  const logo = process.env.PUBLIC_URL + 'pharmalogo.webp';
 
   const [userID, setUserID] = useState();
   const [formData, setFormData] = useState({

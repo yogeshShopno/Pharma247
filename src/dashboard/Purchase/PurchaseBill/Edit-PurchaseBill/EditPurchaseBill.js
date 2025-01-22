@@ -610,7 +610,6 @@ const EditPurchaseBill = () => {
           }
         )
         .then((response) => {
-
           setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
           setHSN(response?.data?.data[0]?.batch_list[0]?.hsn_code);
           setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);

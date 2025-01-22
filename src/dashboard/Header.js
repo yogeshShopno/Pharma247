@@ -25,6 +25,7 @@ import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { encryptData, decryptData } from "../componets/cryptoUtils";
 import { toast, ToastContainer } from "react-toastify";
+import Search from "./Search";
 
 const Header = () => {
   const history = useHistory();
@@ -39,6 +40,8 @@ const Header = () => {
   // const token = localStorage.getItem("token");
   const [permission, setPermission] = useState([]);
   const [checkedper, setCheckedper] = useState();
+  const [searchPage, setSearchPage] = useState(false);
+
   // const [renderPlease, setRenderPlease] = useState(0);
 
 
@@ -74,7 +77,7 @@ const Header = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  const handleProfile = () => {};
+  const handleProfile = () => { };
 
   const handleLogout = async () => {
     let data = new FormData();
@@ -162,13 +165,13 @@ const Header = () => {
             return permission[key] === true;
           });
           setPermission(filteredPermissions);
-          
+
           permission.forEach((item) => {
             Object.keys(item).forEach((key) => {
               // console.log(key);
             });
           });
-          
+
         });
     } catch (error) {
       console.error("API error:", error.response.status);
@@ -180,21 +183,20 @@ const Header = () => {
     }
   };
 
-  const handleCheck = (e) =>{
+  const handleCheck = (e) => {
     setCheckedper(e.target.value)
-    console.log(checkedper,"checkedper")
+    console.log(checkedper, "checkedper")
   }
   return (
     <div >
-      <div 
+      <div
         id="modal"
         value={IsLogout}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsLogout ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsLogout ? "block" : "hidden"
+          }`}
       >
         <div />
-        <div  className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-black "
@@ -231,9 +233,8 @@ const Header = () => {
       <div
         id="modal"
         value={IsClear}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsClear ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsClear ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -278,7 +279,7 @@ const Header = () => {
             <Link to="/admindashboard">
               <img
                 className="h-14 w-28"
-                src="../../../pharmalogo.png"
+                src="../../../pharmalogo.webp"
                 alt="Workflow"
               />
             </Link>
@@ -291,29 +292,30 @@ const Header = () => {
                     {/* <TextField value={checkedper} onChange={handleCheck} /> */}
                     {hasPermission(permissions, "Item master view") && (
                       <div>
-                        <button
-                          className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
-                          data-toggle="dropdown"
-                        >
-                          <Link to="/itemmaster">
+
+                        <Link to="/itemmaster">
+                          <button
+                            className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
+                            data-toggle="dropdown"
+
+                          >
                             <span className="mr-1">Item master</span>
-                          </Link>
-                          <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
-                        </button>
+                            <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
+                          </button>
+                        </Link>
                       </div>
                     )}
                     <div>
-                      <button
-                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md  primhover inline-flex items-center"
-                        data-toggle="dropdown"
-                      >
-                        <Link to="/inventory">
-                          <span href="" className="mr-1">
-                            Inventory
-                          </span>
-                        </Link>
-                        <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
-                      </button>
+                      <Link to="/inventory">
+                        <button
+                          className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md  primhover inline-flex items-center"
+                          data-toggle="dropdown"
+                        >
+                          <span href="" className="mr-1">Inventory</span>
+                          <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
+                        </button>
+                      </Link>
+
                     </div>
                     <div className="dropdown relative ">
                       <button
@@ -342,57 +344,57 @@ const Header = () => {
                             permissions,
                             "purchase bill create"
                           ) && (
-                            <div className="">
-                              <Link to="/purchase/addPurchaseBill">
-                                <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
-                              </Link>
-                            </div>
-                          )}
+                              <div className="">
+                                <Link to="/purchase/addPurchaseBill">
+                                  <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
+                                </Link>
+                              </div>
+                            )}
                         </li>
                         <li className="block flex items-center border-b bg-white hover:bg-[var(--color1)]  hover:text-white">
                           {hasPermission(
                             permissions,
                             "purchase return bill view"
                           ) && (
-                            <div className="w-36 border-r">
-                              <Link to="/purchase/return">
-                                <span
-                                  className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
-                                  href=""
-                                >
-                                  Returns
-                                </span>
-                              </Link>
-                            </div>
-                          )}
+                              <div className="w-36 border-r">
+                                <Link to="/purchase/return">
+                                  <span
+                                    className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                    href=""
+                                  >
+                                    Returns
+                                  </span>
+                                </Link>
+                              </div>
+                            )}
                           {/* {permissions.some(permission => permission["purchase bill create"]) && */}
                           {hasPermission(
                             permissions,
                             "purchase return bill create"
                           ) && (
-                            <div className="">
-                              <Link to="/return/add">
-                                <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
-                              </Link>
-                            </div>
-                          )}
+                              <div className="">
+                                <Link to="/return/add">
+                                  <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
+                                </Link>
+                              </div>
+                            )}
                         </li>
 
                         {hasPermission(
                           permissions,
                           "purchase payment view"
                         ) && (
-                          <li className="block">
-                            <Link to="/purchase/paymentList">
-                              <span
-                                className="bg-white   hover:bg-[var(--color1)]   transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black  hover:text-white flex"
-                                href=""
-                              >
-                                Payment
-                              </span>
-                            </Link>
-                          </li>
-                        )}
+                            <li className="block">
+                              <Link to="/purchase/paymentList">
+                                <span
+                                  className="bg-white   hover:bg-[var(--color1)]   transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black  hover:text-white flex"
+                                  href=""
+                                >
+                                  Payment
+                                </span>
+                              </Link>
+                            </li>
+                          )}
                       </ul>
                     </div>
                     <div className="dropdown relative">
@@ -431,27 +433,27 @@ const Header = () => {
                             permissions,
                             "sale return bill view"
                           ) && (
-                            <div className="w-36 border-r-2">
-                              <Link to="/saleReturn/list">
-                                <span
-                                  className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
-                                  href=""
-                                >
-                                  Return
-                                </span>
-                              </Link>
-                            </div>
-                          )}
+                              <div className="w-36 border-r-2">
+                                <Link to="/saleReturn/list">
+                                  <span
+                                    className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                    href=""
+                                  >
+                                    Return
+                                  </span>
+                                </Link>
+                              </div>
+                            )}
                           {hasPermission(
                             permissions,
                             "sale return bill create"
                           ) && (
-                            <div>
-                              <Link to="/saleReturn/Add">
-                                <FaPlusCircle className="fill-current h-3 w-3 ml-4 " />
-                              </Link>
-                            </div>
-                          )}
+                              <div>
+                                <Link to="/saleReturn/Add">
+                                  <FaPlusCircle className="fill-current h-3 w-3 ml-4 " />
+                                </Link>
+                              </div>
+                            )}
                         </li>
                       </ul>
                     </div>
@@ -647,7 +649,11 @@ const Header = () => {
               <div className="hidden xl:flex">
                 <div>
                   <div className="text-white mr-4 bg-transparent mr-2">
-                    <IoSearch  style={{ fontSize: "1.5rem" }} />
+                    <IoSearch onClick={() => setSearchPage(!searchPage)} style={{ fontSize: "1.5rem" }} />
+                    {searchPage && <Search searchPage={searchPage} setSearchPage={setSearchPage} />}
+
+
+
                   </div>
                 </div>
                 {/* <div className="text-white mr-4 bg-transparent mr-2" >
@@ -819,9 +825,8 @@ const Header = () => {
                   <span className="sr-only">Toggle menu</span>
                   {!isOpen ? (
                     <svg
-                      className={`block h-8 w-8 transition duration-300 ease-in-out ${
-                        isOpen ? "rotate-90" : "rotate-0"
-                      }`}
+                      className={`block h-8 w-8 transition duration-300 ease-in-out ${isOpen ? "rotate-90" : "rotate-0"
+                        }`}
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -837,9 +842,8 @@ const Header = () => {
                     </svg>
                   ) : (
                     <svg
-                      className={`block h-8 w-8 transition duration-300 ease-in-out ${
-                        isOpen ? "rotate-90" : "rotate-0"
-                      }`}
+                      className={`block h-8 w-8 transition duration-300 ease-in-out ${isOpen ? "rotate-90" : "rotate-0"
+                        }`}
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -939,27 +943,27 @@ const Header = () => {
                         permissions,
                         "purchase return bill view"
                       ) && (
-                        <div className="w-11/12 border-r border-black">
-                          <Link to="/purchase/return">
-                            <span
-                              className="bg-slate-300  py-2 px-4 pr-12 block  text-black flex"
-                              href=""
-                            >
-                              Returns
-                            </span>
-                          </Link>
-                        </div>
-                      )}
+                          <div className="w-11/12 border-r border-black">
+                            <Link to="/purchase/return">
+                              <span
+                                className="bg-slate-300  py-2 px-4 pr-12 block  text-black flex"
+                                href=""
+                              >
+                                Returns
+                              </span>
+                            </Link>
+                          </div>
+                        )}
                       {hasPermission(
                         permissions,
                         "purchase return bill create"
                       ) && (
-                        <div>
-                          <Link to="/return/add">
-                            <FaPlusCircle className="fill-current h-3 w-3 text-black" />
-                          </Link>
-                        </div>
-                      )}
+                          <div>
+                            <Link to="/return/add">
+                              <FaPlusCircle className="fill-current h-3 w-3 text-black" />
+                            </Link>
+                          </div>
+                        )}
                     </li>
                     {hasPermission(permissions, "purchase payment view") && (
                       <li className="block">
@@ -1021,12 +1025,12 @@ const Header = () => {
                         permissions,
                         "sale return bill create"
                       ) && (
-                        <div>
-                          <Link to="/saleReturn/Add">
-                            <FaPlusCircle className="fill-current h-3 w-3 " />
-                          </Link>
-                        </div>
-                      )}
+                          <div>
+                            <Link to="/saleReturn/Add">
+                              <FaPlusCircle className="fill-current h-3 w-3 " />
+                            </Link>
+                          </div>
+                        )}
                     </li>
                   </ul>
                 </div>

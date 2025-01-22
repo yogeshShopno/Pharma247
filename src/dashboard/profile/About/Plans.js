@@ -28,11 +28,11 @@ const Plans = () => {
     { id: "description", label: "Description", minWidth: 100 },
   ];
 
-
-  useEffect(() => {
-    getPlan();
-    getPurchaseHistory();
-  }, []);
+  useEffect( () =>  {
+    if(togglePage){
+      getPlan()
+    }
+  },[togglePage]);
 
   /*<================================================================ get various dynamic plans details  to render table ================================================================> */ 
 
@@ -40,7 +40,7 @@ const Plans = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("list-plan", {
+      const response = await axios.post("list-plan?", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,8 +49,8 @@ const Plans = () => {
       if (response.status == 200) {
         setPlansDetails(response.data.data);
         setIsLoading(false);
-
       }
+      getPurchaseHistory()
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
@@ -159,9 +159,9 @@ const Plans = () => {
 
 
   const getPurchaseHistory = async () => {
-    setIsLoading(true);
+   
     try {
-      const response = await axios.get("payment-history", {
+      const response = await axios.get("payment-history?",{}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -169,8 +169,9 @@ const Plans = () => {
 
       if (response.status == 200) {
         setTableData(response.data.data);
-      }
       setIsLoading(false);
+
+      }
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);

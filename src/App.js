@@ -76,7 +76,7 @@ import Gstr1 from './dashboard/More/Reports/GstReport/Gstr1';
 import Gstr_3B from './dashboard/More/Reports/GstReport/Gstr_3B';
 import AboutInfo from './dashboard/profile/About/AboutInfo';
 import Documents from './dashboard/profile/About/Documents';
-import Security from './dashboard/profile/About/Security';
+import ReferEarn from './dashboard/profile/About/ReferEarn';
 import Plans from './dashboard/profile/About/Plans';
 import Password from './dashboard/profile/About/Password';
 import StaffMember from './dashboard/profile/Staff-Sessions/StaffMember';
@@ -99,7 +99,6 @@ import CssBaseline from '@mui/material/CssBaseline'; // Reset default styles
 import { ThemeProvider } from '@material-tailwind/react';
 import theme from './theme';
 import { useEffect } from 'react';
-
 
 function App() {
   useEffect(() => {
@@ -504,14 +503,14 @@ function App() {
                 <Documents />
               </Protected>
             </Route>
-            <Route path='/security'>
-              <Protected>
-                <Security />
-              </Protected>
-            </Route>
-            <Route path='/plans'>
+                        <Route path='/plans'>
               <Protected>
                 <Plans />
+              </Protected>
+            </Route>
+            <Route path='/refer&earn'>
+              <Protected>
+                <ReferEarn />
               </Protected>
             </Route>
             <Route path='/password'>

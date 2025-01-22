@@ -360,7 +360,7 @@ const DrugGroup = () => {
             </div>
             <div className="firstrow p-4">
               {/* <div className="bg-white"> */}
-              <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
+              <div className="flex flex-col gap-2 lg:flex-row lg:gap-2 pb-2">
                 <div className="detail drug_fltr_fld">
                   <Autocomplete
                     value={drugGroupFilter}
@@ -388,6 +388,7 @@ const DrugGroup = () => {
                 </div>
                 <div style={{ justifyContent: "end", display: "flex" }}>
                   <Button
+                  className="serch_btn_ad"
                     style={{
                       backgroundColor: "var(--COLOR_UI_PHARMACY)",
                       color: "white",
@@ -400,11 +401,11 @@ const DrugGroup = () => {
                 </div>
               </div>
               <div
-                className="overflow-x-auto mt-4"
+                className="overflow-x-auto mt-4 border-t"
                 style={{ overflowX: "auto" }}
               >
                 <table
-                  className="w-full border-collapse custom-table"
+                  className="w-full border-collapse custom-table pt-2"
                   style={{
                     whiteSpace: "nowrap",
                     borderCollapse: "separate",

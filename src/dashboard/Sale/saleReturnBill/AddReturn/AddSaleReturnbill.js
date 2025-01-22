@@ -1349,8 +1349,8 @@ const Salereturn = () => {
                             )} */}
 
                             {saleItems?.sales_item?.length > 0 && (
-                                <div className="sale_filtr_add" style={{ background: 'var(--color1)', color: 'white', display: "flex", position: 'fixed', width: '100%', bottom: '0', left: '0', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', position: 'sticky', left: '0', overflow: 'auto', padding: '20px' }}>
+                                <div className="sale_filtr_add" style={{ background: 'var(--color1)', color: 'white', display: "flex", position: 'fixed', width: '100%', bottom: '0', left: '0', justifyContent: 'space-between', alignItems: 'center', overflow: 'auto' }}>
+                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
                                         <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                             <label className="font-bold">Total GST : </label>
 

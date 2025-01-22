@@ -382,7 +382,7 @@ const LoyaltyPoint = () => {
                     borderSpacing: "0 6px",
                   }}
                 >
-                  <thead className="bg-gray-100">
+                  <thead className="">
                     <tr>
                       <th>SR No.</th>
                       {loyaltyPointLabel.map((column) => (

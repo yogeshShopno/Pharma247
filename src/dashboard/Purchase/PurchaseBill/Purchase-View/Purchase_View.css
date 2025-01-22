@@ -579,6 +579,15 @@
   }
 }
 
+@media (max-width: 453px) {
+  .purch_hdr_mn {
+    flex-direction: column;
+  }
+  .sale_add_btns {
+    width: 100%;
+  }
+}
+
 @media (max-width: 415px) {
   .sales_RTN_hdr_mn {
     flex-direction: column;
@@ -812,6 +821,9 @@
   .bnk_acc_hdr {
     flex-direction: column;
   }
+  .serch_btn_ad {
+    width: 100%;
+  }
 }
 
 @media (max-width: 400px) {
@@ -883,17 +895,17 @@
   }
 }
 
-@media (max-width:468px) {
-  .edit_purchs_pg{
+@media (max-width: 468px) {
+  .edit_purchs_pg {
     flex-direction: column;
   }
-  .edt_purchase_fled{
+  .edt_purchase_fled {
     flex-direction: column;
   }
-  .cn_fls{
+  .cn_fls {
     width: 100%;
   }
-  .edt_btn_ps{
+  .edt_btn_ps {
     width: 100%;
   }
 }

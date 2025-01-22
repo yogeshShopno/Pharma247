@@ -2370,9 +2370,9 @@ const Addsale = () => {
                                     <hr style={{
                                         opacity: 0.5, position: 'sticky', left: '0', width: '100%'
                                     }} />
-                                    <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', padding: '20px', alignItems: 'baseline' }}>
+                                    <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', padding: '20px', alignItems: 'baseline' ,overflow: 'auto'}}>
 
-                                        <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'auto', position: 'sticky', left: '0' }}>
+                                        <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0'}}>
                                             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                                 <label className="font-bold">Today Points : </label>
                                                 {todayLoyltyPoint || 0}

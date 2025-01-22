@@ -1280,7 +1280,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Distributor</span>
+                  <span className="heading  mb-2">Distributor</span>
                   <Autocomplete
                     value={distributor}
                     disabled
@@ -1314,7 +1314,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Sr No.</span>
+                  <span className="heading  mb-2">Sr No.</span>
                   <TextField
                     variant="outlined"
                     autoComplete="off"
@@ -1333,7 +1333,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Bill No. / Order No.</span>
+                  <span className="heading  mb-2">Bill No. / Order No.</span>
                   <TextField
                     variant="outlined"
                     autoComplete="off"
@@ -1358,7 +1358,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Bill Date</span>
+                  <span className="heading  mb-2">Bill Date</span>
                   <DatePicker
                     variant="outlined"
                     disabled
@@ -1375,7 +1375,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Due Date</span>
+                  <span className="heading  mb-2">Due Date</span>
                   <DatePicker
                     disabled
                     className="custom-datepicker_mn "
@@ -1390,7 +1390,7 @@ const EditPurchaseBill = () => {
                   flexDirection: "column",
                   width: "100%"
                 }}>
-                  <span className="heading title mb-2">Scan Barcode</span>
+                  <span className="heading  mb-2">Scan Barcode</span>
 
                   <TextField
                     variant="outlined"
@@ -2075,6 +2075,7 @@ const EditPurchaseBill = () => {
               color: "white",
               display: "flex",
               justifyContent: "space-between",
+              overflow: "auto",
               position: "fixed",
               width: "100%",
               bottom: "0",
@@ -2087,9 +2088,7 @@ const EditPurchaseBill = () => {
                 display: "flex",
                 gap: "40px",
                 whiteSpace: "nowrap",
-                position: "sticky",
                 left: "0",
-                overflow: "auto",
                 padding: "20px",
               }}
             >

@@ -523,7 +523,7 @@ const DoctorList = () => {
             <div className="bg-white p-4">
               <div className="overflow-x-auto mt-4">
                 <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
-                  <thead className="bg-gray-100">
+                  <thead className="">
                     <tr>
                       <th>SR. No</th>
                       {columns.map((column, index) => (

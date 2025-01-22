@@ -318,7 +318,7 @@ const OrderList = () => {
                         </div>
 
                         <div className="firstrow p-4">
-                            <div className="oreder_list_fld flex flex-col gap-8 md:flex-row lg:flex-row lg:gap-8 md:gap-8">
+                            <div className="oreder_list_fld flex flex-col gap-8 md:flex-row lg:flex-row lg:gap-8 md:gap-8 pb-2">
                                 <div className="detail flex flex-col">
                                     <span className="text-gray-500">Distributor</span>
                                     {/* <TextField
@@ -405,9 +405,9 @@ const OrderList = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto mt-4" >
-                                <table className="w-full bg-transparent border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
-                                    <thead className="bg-gray-100">
+                            <div className="overflow-x-auto mt-4 border-t" >
+                                <table className="w-full bg-transparent border-collapse custom-table pt-2" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
+                                    <thead className="">
                                         <tr>
                                             <th className="py-2 px-4 text-left">SR. No</th>
                                             {OnlineOrdercolumns.map((column, index) => (

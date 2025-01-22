@@ -398,7 +398,7 @@ const AdjustStock = () => {
                     </div>
 
                     <div className="firstrow p-4">
-                        <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
+                        <div className="flex flex-col gap-2 lg:flex-row lg:gap-2 pb-2">
                             <div className="detail drug_fltr_fld" >
                                 <TextField
                                     autoComplete="off"
@@ -430,9 +430,9 @@ const AdjustStock = () => {
                                 </Button>
                             </div>
                         </div>
-                        <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
-                                <thead className="bg-gray-100">
+                        <div className="overflow-x-auto mt-4 border-t">
+                            <table className="w-full border-collapse custom-table pt-2" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
+                                <thead className="">
                                     <tr>
                                         <th className="px-4 py-2 ">SR. No</th>
                                         {stockList.map((column, index) => (

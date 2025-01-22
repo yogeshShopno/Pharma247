@@ -392,9 +392,9 @@ const Purchasebill = () => {
 
           <div className="firstrow bg-white p-4" >
 
-            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row " >
+            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row pb-2" >
               <div className="detail flex flex-col" >
-                <span className="text-gray-500 block">Start Date</span>
+                <span className="primary block">Start Date</span>
                 <div className="" style={{ width: '100%' }}>
                   <DatePicker
                     className="custom-datepicker_mn"
@@ -405,7 +405,7 @@ const Purchasebill = () => {
                 </div>
               </div>
               <div className="detail flex flex-col" >
-                <span className="text-gray-500 block">End Date</span>
+                <span className="primary block">End Date</span>
                 <div className="" style={{ width: '100%' }}>
                   <DatePicker
                     className="custom-datepicker_mn"
@@ -437,9 +437,9 @@ const Purchasebill = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto mt-4" style={{ overflowX: "auto" }}>
+            <div className="overflow-x-auto mt-4 border-t" style={{ overflowX: "auto" }}>
               <table
-                className="w-full border-collapse custom-table"
+                className="w-full border-collapse custom-table pt-2"
                 style={{
                   whiteSpace: "nowrap",
                   borderCollapse: "separate",

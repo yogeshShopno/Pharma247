@@ -39,6 +39,9 @@ import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { Modal } from "flowbite-react";
+import { FaCaretUp } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
 
 const debounce = (func, delay) => {
   let timeout;
@@ -170,6 +173,13 @@ const AddPurchaseBill = () => {
   const [paymentType, setPaymentType] = useState("credit");
   const [bankData, setBankData] = useState([]);
   const [id, setId] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
   /*<================================================================================ PTR and MRP validation =======================================================================> */
@@ -295,7 +305,7 @@ const AddPurchaseBill = () => {
           if (response.data.status === 401) {
             history.push('/');
             localStorage.clear();
-        }
+          }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -388,199 +398,201 @@ const AddPurchaseBill = () => {
     document.body.removeChild(link);
   };
 
-/*<============================================================================ barcode functionality =========================================================================> */
+  /*<============================================================================ barcode functionality =========================================================================> */
 
   const handleBarcode = async () => {
-   
+
     setIsEditMode(false);
     if (!barcode) {
       return;
     }
 
- /*<============================================================================ get barcode batch list =========================================================================> */
+    /*<============================================================================ get barcode batch list =========================================================================> */
 
     try {
-      const res = axios.post("barcode-batch-list?",{ barcode: barcode },
-          {headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },}
-        ).then((response) => {
-          setTimeout(() => {
-            const handleBarcodeItem = async () => {
-              setUnsavedItems(true);
-              let data = new FormData();
+      const res = axios.post("barcode-batch-list?", { barcode: barcode },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ).then((response) => {
+        setTimeout(() => {
+          const handleBarcodeItem = async () => {
+            setUnsavedItems(true);
+            let data = new FormData();
 
-              data.append(
-                "random_number",
-                localStorage.getItem("RandomNumber")
-              );
-              data.append(
-                "weightage",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit)
-              );
-              data.append(
-                "batch_number",
-                response?.data?.data[0]?.batch_list[0]?.batch_name
-                  ? response?.data?.data[0]?.batch_list[0]?.batch_name
-                  : 0
-              );
-              data.append(
-                "expiry",
-                response?.data?.data[0]?.batch_list[0]?.expiry_date
-              );
-              data.append(
-                "mrp",
-                Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                  : 0
-              );
-              data.append(
-                "qty",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                  : 0
-              );
-              data.append(
-                "free_qty",
-                Number(
+            data.append(
+              "random_number",
+              localStorage.getItem("RandomNumber")
+            );
+            data.append(
+              "weightage",
+              Number(response?.data?.data[0]?.batch_list[0]?.unit)
+            );
+            data.append(
+              "batch_number",
+              response?.data?.data[0]?.batch_list[0]?.batch_name
+                ? response?.data?.data[0]?.batch_list[0]?.batch_name
+                : 0
+            );
+            data.append(
+              "expiry",
+              response?.data?.data[0]?.batch_list[0]?.expiry_date
+            );
+            data.append(
+              "mrp",
+              Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                : 0
+            );
+            data.append(
+              "qty",
+              Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                : 0
+            );
+            data.append(
+              "free_qty",
+              Number(
+                response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+              )
+                ? Number(
                   response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
                 )
-                  ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                    )
-                  : 0
-              );
-              data.append(
-                "ptr",
-                Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                  : 0
-              );
-              data.append(
-                "discount",
-                Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                  ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
-                  : 0
-              );
-              data.append(
-                "scheme_account",
-                Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                  ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
-                  : 0
-              );
-              data.append(
-                "base_price",
-                Number(response?.data?.data[0]?.batch_list[0]?.base)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-                  : 0
-              );
-              data.append(
-                "gst",
-                Number(response?.data?.data[0]?.batch_list[0]?.gst)
-              );
-              data.append(
-                "location",
-                response?.data?.data[0]?.batch_list[0]?.location
-                  ? response?.data?.data[0]?.batch_list[0]?.location
-                  : 0
-              );
-              data.append(
-                "margin",
-                Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                  : 0
-              );
-              data.append(
-                "net_rate",
-                Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                  : 0
-              );
+                : 0
+            );
+            data.append(
+              "ptr",
+              Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                : 0
+            );
+            data.append(
+              "discount",
+              Number(response?.data?.data[0]?.batch_list[0]?.discount)
+                ? Number(
+                  response?.data?.data[0]?.batch_list[0]?.scheme_account
+                )
+                : 0
+            );
+            data.append(
+              "scheme_account",
+              Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                ? Number(
+                  response?.data?.data[0]?.batch_list[0]?.scheme_account
+                )
+                : 0
+            );
+            data.append(
+              "base_price",
+              Number(response?.data?.data[0]?.batch_list[0]?.base)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+                : 0
+            );
+            data.append(
+              "gst",
+              Number(response?.data?.data[0]?.batch_list[0]?.gst)
+            );
+            data.append(
+              "location",
+              response?.data?.data[0]?.batch_list[0]?.location
+                ? response?.data?.data[0]?.batch_list[0]?.location
+                : 0
+            );
+            data.append(
+              "margin",
+              Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                : 0
+            );
+            data.append(
+              "net_rate",
+              Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                : 0
+            );
 
-              data.append(
-                "item_id",
-                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  : 0
-              );
-              data.append("unit_id", Number(0));
-              data.append("user_id", userId);
+            data.append(
+              "item_id",
+              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                : 0
+            );
+            data.append("unit_id", Number(0));
+            data.append("user_id", userId);
 
-              data.append(
-                "id",
-                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  : 0
-              );
+            data.append(
+              "id",
+              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                : 0
+            );
 
-              data.append(
-                "total_amount",
-                Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                  : 0
-              );
+            data.append(
+              "total_amount",
+              Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                : 0
+            );
 
-              const params = {
-                id: selectedEditItemId,
-              };
-/*<========================================================================== call add item api to add barcode item  ===================================================================> */
-
-              try {
-                const response = await axios.post("item-purchase", data, {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                });
-                setItemTotalAmount(0);
-                setDeleteAll(true);
-                itemPurchaseList();
-                setUnit("");
-                setBatch("");
-                setHSN("");
-                setExpiryDate("");
-                setMRP("");
-                setQty("");
-                setFree("");
-                setPTR("");
-                setGst("");
-                setDisc("");
-                setBase("");
-                setNetRate("");
-                setSchAmt("");
-                setMargin("");
-                setLoc("");
-                setIsEditMode(false);
-                setSelectedEditItemId(null);
-                setBarcode("");
-                setValue("");
-                setValue("");
-                setSearchItem("");
-
-                if (ItemTotalAmount <= finalCnAmount) {
-                  setFinalCnAmount(0);
-                  setSelectedRows([]);
-                  setCnTotalAmount({});
-                }
-              } catch (e) {
-                setUnsavedItems(false);
-              }
+            const params = {
+              id: selectedEditItemId,
             };
+            /*<========================================================================== call add item api to add barcode item  ===================================================================> */
 
-            handleBarcodeItem();
-          }, 100);
-        });
+            try {
+              const response = await axios.post("item-purchase", data, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+              setItemTotalAmount(0);
+              setDeleteAll(true);
+              itemPurchaseList();
+              setUnit("");
+              setBatch("");
+              setHSN("");
+              setExpiryDate("");
+              setMRP("");
+              setQty("");
+              setFree("");
+              setPTR("");
+              setGst("");
+              setDisc("");
+              setBase("");
+              setNetRate("");
+              setSchAmt("");
+              setMargin("");
+              setLoc("");
+              setIsEditMode(false);
+              setSelectedEditItemId(null);
+              setBarcode("");
+              setValue("");
+              setValue("");
+              setSearchItem("");
+
+              if (ItemTotalAmount <= finalCnAmount) {
+                setFinalCnAmount(0);
+                setSelectedRows([]);
+                setCnTotalAmount({});
+              }
+            } catch (e) {
+              setUnsavedItems(false);
+            }
+          };
+
+          handleBarcodeItem();
+        }, 100);
+      });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
     }
   };
 
-/*<========================================================================== delete purchase item data   ===================================================================> */
+  /*<========================================================================== delete purchase item data   ===================================================================> */
 
 
   const handlePopState = () => {
@@ -610,7 +622,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-/*<================================================================================ Generate random number   ========================================================================> */
+  /*<================================================================================ Generate random number   ========================================================================> */
 
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
@@ -622,7 +634,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-/*<================================================================================ Get GST List   =================================================================================> */
+  /*<================================================================================ Get GST List   =================================================================================> */
 
 
   let listOfGst = () => {
@@ -640,7 +652,7 @@ const AddPurchaseBill = () => {
       });
   };
 
-/*<================================================================================ Get Distributor List   =================================================================================> */
+  /*<================================================================================ Get Distributor List   =================================================================================> */
 
 
   let listDistributor = () => {
@@ -659,7 +671,7 @@ const AddPurchaseBill = () => {
       });
   };
 
-/*<================================================================================ Get Item purchase List   =================================================================================> */
+  /*<================================================================================ Get Item purchase List   =================================================================================> */
 
   const itemPurchaseList = async () => {
     let data = new FormData();
@@ -690,7 +702,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<========================================================================= disable to select date of past  ====================================================================> */
+  /*<========================================================================= disable to select date of past  ====================================================================> */
 
   const isDateDisabled = (date) => {
     const today = new Date();
@@ -700,14 +712,14 @@ const AddPurchaseBill = () => {
     return date > today;
   };
 
- /*<========================================================================= delete added  item  ====================================================================> */
+  /*<========================================================================= delete added  item  ====================================================================> */
 
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
   };
 
- /*<========================================================================= get batch list to select item while add  ====================================================================> */
+  /*<========================================================================= get batch list to select item while add  ====================================================================> */
 
   const batchList = async () => {
     let data = new FormData();
@@ -762,7 +774,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<========================================================================= Add and Edit validation  ====================================================================> */
+  /*<========================================================================= Add and Edit validation  ====================================================================> */
 
   const handleAddButtonClick = async () => {
 
@@ -832,7 +844,7 @@ const AddPurchaseBill = () => {
     return isValid;
   };
 
- /*<========================================================================= Add and Edit item function  ====================================================================> */
+  /*<========================================================================= Add and Edit item function  ====================================================================> */
 
   const handleAddItem = async () => {
     setItemAutofoucs(true);
@@ -880,16 +892,16 @@ const AddPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : await axios.post("item-purchase", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       setSelectedOption(null);
       setSearchItem("");
       setItemTotalAmount(0);
@@ -910,7 +922,7 @@ const AddPurchaseBill = () => {
       setSchAmt("");
       setMargin("");
       setLoc("");
-      
+
       setIsEditMode(false);
       setSelectedEditItemId(null);
       setBarcode("");
@@ -927,7 +939,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<========================================================================= Add new item to item master  ====================================================================> */
+  /*<========================================================================= Add new item to item master  ====================================================================> */
 
   const handleAddNewItem = async () => {
     if (!addItemName && !addUnit && !addBarcode) {
@@ -983,7 +995,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<=================================================================================== search item name  ==============================================================================> */
+  /*<=================================================================================== search item name  ==============================================================================> */
 
   const handleSearch = async () => {
     let data = new FormData();
@@ -1009,7 +1021,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<=========================================================================== select row using up down arrow  ======================================================================> */
+  /*<=========================================================================== select row using up down arrow  ======================================================================> */
 
   useEffect(() => {
     if (isVisible && tableRef.current) {
@@ -1084,7 +1096,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<================================================================================= delete added item  ============================================================================> */
+  /*<================================================================================= delete added item  ============================================================================> */
 
   const handleDeleteItem = async (ItemId) => {
     if (!ItemId) return;
@@ -1112,7 +1124,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<============================================================================== submit purchase bill  ==========================================================================> */
+  /*<============================================================================== submit purchase bill  ==========================================================================> */
 
   const submitPurchaseData = async () => {
     let data = new FormData();
@@ -1159,7 +1171,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<============================================================================== validation  purchase bill  ==========================================================================> */
+  /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -1210,10 +1222,10 @@ const AddPurchaseBill = () => {
   }, [selectedEditItem]);
 
 
- /*<============================================================================== validation  purchase bill  ==========================================================================> */
+  /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleEditClick = (item) => {
-    
+
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -1241,7 +1253,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<============================================================================== open CN Adjust popup  ==========================================================================> */
+  /*<============================================================================== open CN Adjust popup  ==========================================================================> */
 
   const handelAddOpen = () => {
     setUnsavedItems(true);
@@ -1250,14 +1262,14 @@ const AddPurchaseBill = () => {
     purchaseReturnData();
   };
 
- /*<============================================================================== open item master popup  ==========================================================================> */
+  /*<============================================================================== open item master popup  ==========================================================================> */
 
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
     setOpenAddItemPopUp(true);
   };
 
- /*<============================================================================== close CN Adjust popup  ==========================================================================> */
+  /*<============================================================================== close CN Adjust popup  ==========================================================================> */
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
@@ -1268,14 +1280,14 @@ const AddPurchaseBill = () => {
     // setCnAmount(0);
   };
 
- /*<============================================================================== Distributor select  ==========================================================================> */
+  /*<============================================================================== Distributor select  ==========================================================================> */
 
   const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
     purchaseReturnData(id);
   };
 
- /*<============================================================================== Select Item  ==========================================================================> */
+  /*<============================================================================== Select Item  ==========================================================================> */
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue.toUpperCase());
@@ -1296,7 +1308,7 @@ const AddPurchaseBill = () => {
     handleSearch(itemName);
   };
 
- /*<============================================================================== Discount calculation  ==========================================================================> */
+  /*<============================================================================== Discount calculation  ==========================================================================> */
 
 
   const handleSchAmt = (e) => {
@@ -1321,7 +1333,7 @@ const AddPurchaseBill = () => {
     setBase(totalBase);
   };
 
- /*<============================================================================== Remove Item  ==========================================================================> */
+  /*<============================================================================== Remove Item  ==========================================================================> */
 
   const removeItem = () => {
     setIsEditMode(false);
@@ -1343,9 +1355,9 @@ const AddPurchaseBill = () => {
     setLoc("");
   };
 
- /*<================================================================================== select all CN Bill ==============================================================================> */
+  /*<================================================================================== select all CN Bill ==============================================================================> */
 
- 
+
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1368,7 +1380,7 @@ const AddPurchaseBill = () => {
     }
   };
 
- /*<================================================================================== CN Amount Calculation ==============================================================================> */
+  /*<================================================================================== CN Amount Calculation ==============================================================================> */
 
   const handleCnAmountChange = (id, value, totalAmount) => {
     const numericValue = parseFloat(value) || 0;
@@ -1465,7 +1477,7 @@ const AddPurchaseBill = () => {
     // setPendingNavigation(null);
   };
 
- /*<============================================================================== CN Amount Calculation ==========================================================================> */
+  /*<============================================================================== CN Amount Calculation ==========================================================================> */
 
 
   const handleLeavePage = async () => {
@@ -1516,13 +1528,14 @@ const AddPurchaseBill = () => {
       />
       <div
         style={{
-         height: "calc(100vh - 225px)",
+          height: "calc(100vh - 225px)",
           padding: "0px 20px 0px",
+          overflow: 'auto'
         }}
       >
         <div>
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
-            <div style={{ display: "flex", gap: "7px" }}>
+          <div className="py-3 header_sale_divv" style={{ display: "flex", gap: "4px" }}>
+            <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
               <span
                 style={{
                   color: "var(--color2)",
@@ -1540,7 +1553,6 @@ const AddPurchaseBill = () => {
               <ArrowForwardIosIcon
                 style={{
                   fontSize: "18px",
-                  marginTop: "8px",
                   color: "var(--color1)",
                 }}
               />
@@ -1558,11 +1570,21 @@ const AddPurchaseBill = () => {
             </div>
 
             <div className="headerList">
-            <Select
+              <Button
+                variant="contained"
+                className="payment_btn_divv"
+
+                style={{ backgroundColor: "var(--color1)" }}
+                onClick={handelAddItemOpen}>
+                <ControlPointIcon className="mr-2" />
+                Add New Item
+              </Button>
+
+              <Select
                 labelId="dropdown-label"
                 id="dropdown"
                 value={paymentType}
-                sx={{ minWidth: "150px" }}
+                className="payment_divv"
                 onChange={(e) => {
                   setPaymentType(e.target.value);
                 }}
@@ -1578,6 +1600,7 @@ const AddPurchaseBill = () => {
               </Select>
               <Button
                 variant="contained"
+                className="payment_btn_divv"
                 style={{ backgroundColor: "var(--color1)" }}
                 onClick={() => {
                   setOpenFile(true);
@@ -1586,12 +1609,14 @@ const AddPurchaseBill = () => {
                 <CloudUploadIcon className="mr-2" />
                 Import CSV
               </Button>
-              
+
               {!distributor || ItemPurchaseList?.item?.length === 0 ? (
                 <></>
               ) : (
                 <Button
                   variant="contained"
+                  className="payment_btn_divv"
+
                   color="primary"
                   style={{ backgroundColor: "var(--color1)" }}
                   sx={{
@@ -1614,31 +1639,29 @@ const AddPurchaseBill = () => {
                   CN Adjust
                 </Button>
               )}
-             
               <Button
                 variant="contained"
-                style={{ backgroundColor: "var(--color1)" }}
-                onClick={handelAddItemOpen}>
-                <ControlPointIcon className="mr-2" />
-                Add New Item
-              </Button>
+                className="payment_btn_divv"
 
-              <Button
-                variant="contained"
                 style={{ background: "var(--color1)" }}
                 onClick={handleSubmit}
               >
                 Save
               </Button>
 
+
             </div>
           </div>
-{/*<============================================================================== details at top  =============================================================================> */}
+          {/*<============================================================================== details at top  =============================================================================> */}
 
-          <div className="bg-white">
+          <div className="border-b">
             <div className="firstrow flex">
-              <div className="detail">
-                <span className="title mb-2">
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2 flex gap-2" style={{ alignItems: "center" }}>
                   Distributor
                   <FaPlusCircle
                     className="primary cursor-pointer"
@@ -1651,10 +1674,10 @@ const AddPurchaseBill = () => {
                   value={distributor}
                   sx={{
                     width: "100%",
-                    minWidth: "350px",
-                    "@media (max-width:600px)": {
-                      minWidth: "250px",
-                    },
+                    // minWidth: "350px",
+                    // "@media (max-width:600px)": {
+                    //   minWidth: "250px",
+                    // },
                   }}
                   size="small"
                   onChange={handleDistributorSelect}
@@ -1675,13 +1698,17 @@ const AddPurchaseBill = () => {
                   </span>
                 )}
               </div>
-              <div className="detail">
-                <span className="title mb-2">Sr No.</span>
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2">Sr No.</span>
                 <TextField
                   autoComplete="off"
                   id="outlined-number"
                   size="small"
-                  style={{ width: "200px" }}
+                  style={{ width: "100%" }}
                   value={srNo}
                   variant="outlined"
                   disabled
@@ -1690,14 +1717,18 @@ const AddPurchaseBill = () => {
                   }}
                 />
               </div>
-              <div className="detail">
-                <span className="title mb-2">Bill No. / Order No.</span>
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2">Bill No. / Order No.</span>
                 <TextField
                   autoComplete="off"
                   id="outlined-number"
                   size="small"
                   variant="outlined"
-                  style={{ width: "250px" }}
+                  style={{ width: "100%" }}
                   value={billNo}
                   onChange={(e) => {
                     setbillNo(e.target.value.toUpperCase());
@@ -1710,35 +1741,43 @@ const AddPurchaseBill = () => {
                 )}
               </div>
 
-              <div className="detail">
-                <span className="title mb-2">Bill Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={selectedDate}
-                    variant="outlined"
-                    onChange={(newDate) => setSelectedDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    filterDate={(date) => !isDateDisabled(date)}
-                  />
-                </div>
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2">Bill Date</span>
+                <DatePicker
+                  className="custom-datepicker_mn "
+                  selected={selectedDate}
+                  variant="outlined"
+                  onChange={(newDate) => setSelectedDate(newDate)}
+                  dateFormat="dd/MM/yyyy"
+                  filterDate={(date) => !isDateDisabled(date)}
+                />
               </div>
 
-              <div className="detail">
-                <span className="title mb-2">Due Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={dueDate}
-                    variant="outlined"
-                    onChange={(newDate) => setDueDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    minDate={new Date()}
-                  />
-                </div>
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2">Due Date</span>
+                <DatePicker
+                  className="custom-datepicker_mn "
+                  selected={dueDate}
+                  variant="outlined"
+                  onChange={(newDate) => setDueDate(newDate)}
+                  dateFormat="dd/MM/yyyy"
+                  minDate={new Date()}
+                />
               </div>
-              <div className="detail">
-                <span className="title mb-2">Scan Barcode</span>
+              <div className="detail custommedia" style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%"
+              }}>
+                <span className="heading mb-2">Scan Barcode</span>
 
                 <TextField
                   autoComplete="off"
@@ -1750,25 +1789,25 @@ const AddPurchaseBill = () => {
                   placeholder="scan barcode"
                   // inputRef={inputRef10}
                   // onKeyDown={handleKeyDown}
-                  sx={{ width: "250px" }}
+                  sx={{ width: "100%" }}
                   onChange={(e) => {
                     setBarcode(e.target.value);
                   }}
                 />
               </div>
               <div
-                className="overflow-x-auto "
+                className="scroll-two"
                 ref={tableRef}
                 onKeyDown={handleTableKeyDown}
               >
-{/*<============================================================================== add Item field  =============================================================================> */}
+                {/*<============================================================================== add Item field  =============================================================================> */}
 
                 <table
                   ref={tableRef}
-                  className="customtable  w-full border-collapse custom-table"
+                  className="saleTable"
                 >
                   <thead>
-                    <tr>
+                    <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                       <th>Search Item Name</th>
                       <th>Unit</th>
                       <th>HSN</th>
@@ -1806,9 +1845,9 @@ const AddPurchaseBill = () => {
                     ) : (
                       <>
 
-                        <tr>
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
                           {isEditMode ? (
-                            <td style={{ width: "600px" }}>
+                            <td style={{ width: "500px" }}>
                               <div>
                                 <BorderColorIcon
                                   style={{ color: "var(--color1)" }}
@@ -1835,7 +1874,7 @@ const AddPurchaseBill = () => {
                                   key={autocompleteKey} // Ensure re-render
                                   value={selectedOption}
                                   // value={searchItem?.iteam_name}
-                                  sx={{ width: 400 }}
+                                  sx={{ width: 370 }}
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
@@ -1848,13 +1887,11 @@ const AddPurchaseBill = () => {
                                     <ListItem {...props}>
                                       <ListItemText
                                         primary={`${option.iteam_name}`}
-                                        secondary={` ${
-                                          option.stock === 0
-                                            ? `Unit: ${option.weightage}`
-                                            : `Pack: ${option.pack}`
-                                        } | MRP: ${option.mrp}  | Location: ${
-                                          option.location
-                                        }  | Current Stock: ${option.stock}`}
+                                        secondary={` ${option.stock === 0
+                                          ? `Unit: ${option.weightage}`
+                                          : `Pack: ${option.pack}`
+                                          } | MRP: ${option.mrp}  | Location: ${option.location
+                                          }  | Current Stock: ${option.stock}`}
                                       />
                                     </ListItem>
                                   )}
@@ -1862,7 +1899,7 @@ const AddPurchaseBill = () => {
                                     <TextField
                                       variant="outlined"
                                       autoComplete="off"
-                                      sx={{ width: 400, paddingLeft: "10px" }}
+                                      sx={{ width: 370 }}
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
@@ -1882,7 +1919,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               error={!!errors.unit}
                               value={unit}
-                              sx={{ width: "65px" }}
+                              sx={{ width: "100px" }}
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
@@ -1913,7 +1950,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               error={!!errors.HSN}
                               value={HSN}
-                              sx={{ width: "65px" }}
+                              sx={{ width: "100px" }}
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
@@ -1945,7 +1982,7 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               size="small"
                               value={batch}
-                              sx={{ width: "90px" }}
+                              sx={{ width: "100px" }}
                               // error={!!errors.batch}
                               onChange={(e) => {
                                 setBatch(e.target.value);
@@ -1963,7 +2000,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
-                              sx={{ width: "80px" }}
+                              sx={{ width: "100px" }}
                               // inputRef={inputRef3}
                               // onKeyDown={handleKeyDown}
                               error={!!errors.expiryDate}
@@ -1978,7 +2015,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "90px" }}
+                              sx={{ width: "100px" }}
                               size="small"
                               // inputRef={inputRef4}
                               error={!!errors.mrp}
@@ -2007,7 +2044,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "80px" }}
+                              sx={{ width: "100px" }}
                               size="small"
                               // inputRef={inputRef5}
 
@@ -2037,7 +2074,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               size="small"
                               type="number"
-                              sx={{ width: "50px" }}
+                              sx={{ width: "100px" }}
                               value={free}
                               error={!!errors.free}
                               // inputRef={inputRef6}
@@ -2061,7 +2098,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "90px" }}
+                              sx={{ width: "100px" }}
                               size="small"
                               // inputRef={inputRef7}
                               // onKeyDown={handleKeyDown}
@@ -2076,7 +2113,7 @@ const AddPurchaseBill = () => {
                                   e.preventDefault();
                                 }
                               }}
-                              onChange={(e)=>{
+                              onChange={(e) => {
                                 const setptr = e.target.value.replace(/[eE]/g, "");
                                 setPTR(setptr);
                               }}
@@ -2087,7 +2124,7 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
-                              sx={{ width: "60px" }}
+                              sx={{ width: "100px" }}
                               size="small"
                               type="number"
                               // inputRef={inputRef8}
@@ -2116,7 +2153,7 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
-                              sx={{ width: "90px" }}
+                              sx={{ width: "100px" }}
                               size="small"
                               // inputRef={inputRef9}
                               // onKeyDown={handleKeyDown}
@@ -2147,7 +2184,7 @@ const AddPurchaseBill = () => {
                               id="dropdown"
                               variant="outlined"
                               value={gst.name}
-                              sx={{ minWidth: "80px" }}
+                              sx={{ minWidth: "100px" }}
                               onChange={(e) => {
                                 const selectedGST = gstList.find(
                                   (option) => option.name === e.target.value
@@ -2213,24 +2250,8 @@ const AddPurchaseBill = () => {
                             <span>{ItemTotalAmount.toFixed(2)}</span>
                           </td>
                         </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td> </td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-
+                        <tr style={{ borderBottom: '1px solid lightgray' }}>
+                          <td colSpan={16}></td>
                           <td>
                             <Button
                               variant="contained"
@@ -2242,7 +2263,7 @@ const AddPurchaseBill = () => {
                             </Button>
                           </td>
                         </tr>
-{/*<============================================================================== added Item  =============================================================================> */}
+                        {/*<============================================================================== added Item  =============================================================================> */}
 
                         {ItemPurchaseList?.item?.map((item) => (
                           <tr
@@ -2252,11 +2273,7 @@ const AddPurchaseBill = () => {
                             onClick={() => handleEditClick(item)}
                             onMouseEnter={handleMouseEnter}
                             ref={tableRef}
-                            className={` item-List  cursor-pointer saleTable custom-hover ${
-                              highlightedRowId === String(item.id)
-                                ? "highlighted-row"
-                                : ""
-                            }`}
+                            className='item-List border-b border-gray-400'
                           >
                             <td
                               style={{
@@ -2271,7 +2288,7 @@ const AddPurchaseBill = () => {
                               <DeleteIcon
                                 style={{ color: "var(--color6)" }}
                                 className="delete-icon bg-none"
-                                onClick={() => {deleteOpen(item.id)}}
+                                onClick={() => { deleteOpen(item.id) }}
                               />
                               {item.iteam_name}
                             </td>
@@ -2297,146 +2314,222 @@ const AddPurchaseBill = () => {
                     )}
                   </tbody>
                 </table>
-{/*<============================================================================== total and other details  =============================================================================> */}
+                {/*<============================================================================== total and other details  =============================================================================> */}
 
-                <div className="flex gap-10 justify-end mt-4 ">
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "20px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div>
-                      <label className="font-bold">Total GST : </label>
-                    </div>
 
-                    <div>
-                      <label className="font-bold">Total Qty : </label>
-                    </div>
-
-                    <div>
-                      <label className="font-bold">Total Net Profit : </label>
-                    </div>
-
-                    <div>
-                      <label className="font-bold">Total Base : </label>
-                    </div>
-                  </div>
-                  <div class="totals-purchase  text-end ">
-                    <div className="font-bold">{totalGst ? totalGst : 0}</div>
-
-                    <div className="font-bold mt-5">
-                      {totalQty ? totalQty : 0} +{" "}
-                      <span className="primary">
-                        {totalFree ? totalFree : 0} Free{" "}
-                      </span>
-                    </div>
-
-                    <div className="font-bold mt-5">
-                      {totalNetRate ? totalNetRate : 0}
-                    </div>
-
-                    <div className="font-bold mt-5">
-                      {totalBase ? totalBase : 0}
-                    </div>
-                  </div>
-                  <div
-                    className="totals"
-                    style={{
-                      display: "flex",
-                      gap: "22px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div>
-                      <label className="font-bold">Total Amount : </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">CN Amount : </label>
-                    </div>
-                    {/* <div>
-                      <label className="font-bold">Profit : </label>
-                    </div> */}
-                    <div>
-                      <label className="font-bold">Round of : </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">Net Amount : </label>
-                    </div>
-                  </div>
-                  <div className="totals text-end ">
-                    <div>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          gap: "22px",
-                          flexDirection: "column",
-                        }}
-                      >
-                        {finalTotalAmount?.toFixed(2)}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "23px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          paddingTop: "10px",
-                          color: "red",
-                        }}
-                      >
-                        -{finalCnAmount?.toFixed(2)}
-                      </span>
-                    </div>
-                    {/* <div style={{
-                      marginTop: "23px"
-                    }}>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          paddingTop: "10px",
-                        }}
-                      >
-                        ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
-                      </span>
-                    </div> */}
-                    <div style={{ marginTop: "23px" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {roundOffAmount === "0.00"
-                          ? roundOffAmount
-                          : roundOffAmount < 0
-                          ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                          : `${Math.abs(roundOffAmount.toFixed(2))}`}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "15px",
-                        font: "var(-color1)",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          fontSize: "22px",
-                          color: "#3f6212",
-                        }}
-                      >
-                        {netAmount.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </div>
 
-{/*<============================================================================== CN amount PopUp Box  =============================================================================> */}
+        <div
+          className=""
+          style={{
+            background: "var(--color1)",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            position: "fixed",
+            width: "100%",
+            bottom: "0",
+            overflow: "auto",
+            left: "0",
+          }}
+        >
+          <div
+            className=""
+            style={{
+              display: "flex",
+              gap: "40px",
+              whiteSpace: "nowrap",
+              left: "0",
+              padding: "20px",
+            }}
+          >
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total GST : </label>
+
+              <span style={{ fontWeight: 600 }}>{totalGst ? totalGst : 0} </span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total Qty : </label>
+              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0} +{" "}
+                <span className="">
+                  {totalFree ? totalFree : 0} Free{" "}
+                </span></span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total Base : </label>
+              <span style={{ fontWeight: 600 }}> {totalBase ? totalBase : 0}
+              </span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total Net Rate : </label>
+              <span style={{ fontWeight: 600 }}>
+                ₹  {totalNetRate ? totalNetRate : 0}
+              </span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              padding: "0 20px",
+              whiteSpace: "noWrap",
+            }}
+          >
+            <div
+              className="gap-2 "
+              onClick={toggleModal}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <label className="font-bold">Net Amount : </label>
+              <span
+                className="gap-1"
+                style={{
+                  fontWeight: 800,
+                  fontSize: "22px",
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                {netAmount.toFixed(2)}
+                <FaCaretUp />
+              </span>
+            </div>
+
+            <Modal
+              show={isModalOpen}
+              onClose={toggleModal}
+              size="lg"
+              position="bottom-center"
+              className="modal_amount"
+            // style={{ width: "50%" }}
+            >
+              <div
+                style={{
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                  color: "white",
+                  padding: "20px",
+                  fontSize: "larger",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <h2 style={{ textTransform: "uppercase" }}>
+                  invoice total
+                </h2>
+                <IoMdClose
+                  onClick={toggleModal}
+                  cursor={"pointer"}
+                  size={30}
+                />
+              </div>
+              <div
+                style={{
+                  background: "white",
+                  padding: "20px",
+                  width: "100%",
+                  maxWidth: "600px",
+                  margin: "0 auto",
+                  lineHeight: "2.5rem",
+                }}
+              >
+                <div
+                  className=""
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <label className="font-bold">Total Amount : </label>
+                  <span style={{ fontWeight: 600 }}>
+                    {finalTotalAmount?.toFixed(2)}
+                  </span>
+                </div>
+
+                <div
+                  className=""
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingBottom: "5px",
+                  }}
+                >
+                  <label className="font-bold">CN Amount : </label>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: "#F31C1C",
+                    }}
+                  >
+                    -{finalCnAmount?.toFixed(2)}
+                  </span>
+                </div>
+
+                <div
+                  className="font-bold"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingBottom: "5px",
+                    borderTop:
+                      "1px solid var(--toastify-spinner-color-empty-area)",
+                    paddingTop: "5px",
+                  }}
+                >
+                  <label className="font-bold">Round Off : </label>
+                  <span> {roundOffAmount === "0.00"
+                    ? roundOffAmount
+                    : roundOffAmount < 0
+                      ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                      : `${Math.abs(roundOffAmount.toFixed(2))}`}</span>
+                </div>
+
+                <div
+                  className=""
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    justifyContent: "space-between",
+                    borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                    paddingTop: "5px",
+                  }}
+                >
+                  <label className="font-bold">Net Amount: </label>
+                  <span
+                    style={{
+                      fontWeight: 800,
+                      fontSize: "22px",
+                      color: "var(--COLOR_UI_PHARMACY)",
+                    }}
+                  >
+                    {netAmount.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        </div>
+        {/*<============================================================================== CN amount PopUp Box  =============================================================================> */}
 
         <Dialog open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -2467,7 +2560,7 @@ const AddPurchaseBill = () => {
                             onChange={handleSelectAll}
                             checked={
                               selectedRows.length ===
-                                purchaseReturnPending.length &&
+                              purchaseReturnPending.length &&
                               purchaseReturnPending.length > 0
                             }
                           />
@@ -2556,8 +2649,8 @@ const AddPurchaseBill = () => {
             </Button>
           </DialogActions>
         </Dialog>
-{/*<============================================================================== Bulk Import csv =============================================================================> */}
-        
+        {/*<============================================================================== Bulk Import csv =============================================================================> */}
+
         <Dialog open={openFile} className="custom-dialog">
           <DialogTitle className="primary">Import Item</DialogTitle>
           <IconButton
@@ -2618,7 +2711,7 @@ const AddPurchaseBill = () => {
           </DialogActions>
         </Dialog>
 
-{/*<============================================================================== add item  PopUp Box  =============================================================================> */}
+        {/*<============================================================================== add item  PopUp Box  =============================================================================> */}
 
         <Dialog open={openAddItemPopUp}>
           <DialogTitle id="alert-dialog-title" className="primary">
@@ -2719,14 +2812,13 @@ const AddPurchaseBill = () => {
           </DialogContent>
         </Dialog>
 
-{/*<==============================================================================  Delete PopUP   =============================================================================> */}
+        {/*<==============================================================================  Delete PopUP   =============================================================================> */}
 
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            IsDelete ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -2778,7 +2870,7 @@ const AddPurchaseBill = () => {
           </div>
         </div>
 
-{/*<============================================================================== Leave page  PopUp Box  =============================================================================> */}
+        {/*<============================================================================== Leave page  PopUp Box  =============================================================================> */}
 
         <Prompt
           when={unsavedItems}
@@ -2787,13 +2879,12 @@ const AddPurchaseBill = () => {
             return false;
           }}
         />
-        
+
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            isOpenBox ? "block" : "hidden"
-          }`}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

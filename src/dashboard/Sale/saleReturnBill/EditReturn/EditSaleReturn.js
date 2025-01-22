@@ -1429,6 +1429,7 @@ const EditSaleReturn = () => {
                       width: "100%",
                       bottom: "0",
                       left: "0",
+                      overflow: "auto",
                     }}
                   >
                     <div
@@ -1437,9 +1438,7 @@ const EditSaleReturn = () => {
                         display: "flex",
                         gap: "40px",
                         whiteSpace: "nowrap",
-                        position: "sticky",
                         left: "0",
-                        overflow: "auto",
                         padding: "20px",
                       }}
                     >

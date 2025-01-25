@@ -479,21 +479,22 @@ body {
   transition: all 0.3s ease;
   height: 180px;
   text-align: center;
+  justify-content: center;
   width: 155px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 30px;
+  /* margin-left: 30px; */
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 25px;
+  /* margin-bottom: 25px; */
   box-shadow: 0 2px 4px rgba(17, 17, 17, 0.1);
 }
 
 .custom-box-report:hover {
   box-shadow: 0 16px 32px rgba(17, 17, 17, 0.2);
-  border: 1px solid var(--color1);
+  border: 1px solid var(--color2);
 }
 
 .css-9mgopn-MuiDivider-root {
@@ -570,7 +571,7 @@ body {
   justify-content: center;
   width: 100%;
   align-items: center;
-  min-height: 80vh;
+  min-height: 85vh;
 }
 
 .DateNonMoving {

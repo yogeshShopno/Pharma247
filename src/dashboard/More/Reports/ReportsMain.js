@@ -329,7 +329,7 @@ const ReportsMain = () => {
                                         return (
                                             <li key={favorite} className="font-semibold p-2">
                                                 <div className="custom-box-report" onClick={() => history.push(report.path)}>
-                                                    <img src={report?.icon} className="w-1/2 mt-6" alt="Report Icon" />
+                                                    <img src={report?.icon} className="w-1/2" alt="Report Icon" />
                                                     <span className="font-semibold text-sm">
                                                         {favorite}
                                                     </span>

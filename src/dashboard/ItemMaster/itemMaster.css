@@ -442,6 +442,34 @@
   }
 }
 
+@media (max-width: 1215px) and (min-width: 768px) {
+  .oreder_list_fld_rp {
+    flex-direction: column !important;
+    display: flex;
+  }
+  .purch_report_hdr{
+    width: 100% !important;
+  }
+  .detail_report {
+    width: 100% !important;
+  }
+}
+
+@media(max-width:767px){
+  .oreder_list_fld_rp{
+    flex-direction: column !important;
+    align-items: start !important;
+
+  }
+  .purch_report_hdr{
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .detail_report {
+    width: 100% !important;
+  }
+}
+
 @media (min-width: 811px) {
   .dst_fld_odr {
     min-width: 300px !important;

@@ -159,7 +159,7 @@ const Gstr1 = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
+                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
@@ -171,35 +171,35 @@ const Gstr1 = () => {
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                         </div>
-                        <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
-                            <div style={{ width: "40%" }}>
-                                <div >
-                                    <div style={{ maxWidth: "500px", marginBottom: "20px" }}>
+                        <div className="IconNonMoving " style={{ background: "white"}}>
+                            <div>
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <div className="img_gst" >
                                         <img src="../imgpsh_fullsize_anim.png" ></img>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "100px", height: "400px" }}>
-                                <div className="flex flex-col gap-2">
+                            <div className="rept_date">
+                                <div className="flex flex-col gap-2" style={{ border: '1px solid lightgray', padding: '25px',  borderRadius: '6px' }}>
 
                                     <span className="flex  secondary text-lg">Choose Date</span>
 
                                     <DatePicker
-                                        className='custom-datepicker '
+                                        className='custom-datepicker_mn mb-3'
                                         selected={monthDate}
                                         onChange={(newDate) => setMonthDate(newDate)}
                                         dateFormat="MM/yyyy"
                                         showMonthYearPicker
-                                        sx={{ width: '200px' }}
 
                                     />
 
-                                    <span className="flex mt-5 secondary text-lg" >Report Type </span>
+                                    <span className="flex secondary text-lg" >Report Type </span>
                                     <Select
                                         labelId="dropdown-label"
+                                        className="mb-5"
                                         id="dropdown"
                                         value={reportType} // Value can be null
-                                        sx={{ width: '187px' }}
+                                        sx={{ width: '100%' }}
                                         onChange={(e) => setReportType(e.target.value)}
                                         size="small"
                                         displayEmpty
@@ -212,7 +212,7 @@ const Gstr1 = () => {
                                     </Select>
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 downld_btn_csh mt-5"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",

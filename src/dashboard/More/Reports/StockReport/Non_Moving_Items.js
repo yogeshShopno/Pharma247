@@ -94,43 +94,42 @@ const Non_Moving_items = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
+                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
-                            <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
+                            <div className="report_hdr" style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "200px" }}> Non Moving Items Report
+                                <span className="report_hdr_txt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', whiteSpace: 'nowrap' }}> Non Moving Items Report
                                 </span>
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                         </div>
-                        <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
-                            <div style={{ width: "40%" }}>
-                                <div >
-                                    <div style={{ maxWidth: "500px", marginBottom: "20px" }}>
+                        <div className="IconNonMoving" style={{ background: "white" }}>
+                            <div>
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <div className="img_gst" >
                                         <img src="../imgpsh_fullsize_anim.png" ></img>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "100px", height: "380px" }}>
-                                <span className="text-xl secondary">Non Moving Time Duration </span>
-                                <div style={{ width: "50%" }}>
+                            <div className="rept_date">
+                                <div className="flex flex-col gap-2" style={{ border: '1px solid lightgray', padding: '25px', borderRadius: '6px' }}>
+                                    <span className="flex  secondary text-lg">Non Moving Time Duration </span>
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-basic"
+
                                         value={nonMovingDate}
-                                        sx={{ minWidth: '300px', marginTop: "10px" }}
+                                        sx={{ width: '100%', marginBottom: '1.25rem' }}
                                         size="small"
                                         onChange={(e) => setNonMovingDate(e.target.value)}
                                         variant="outlined"
                                         placeholder="Please Enter Days"
                                     />
-                                </div>
-                                <div style={{ marginTop: "25px" }}>
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 downld_btn_csh mt-5"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
@@ -151,7 +150,6 @@ const Non_Moving_items = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div >
             }

@@ -32,18 +32,18 @@ const PaymentList = () => {
     const rowsPerPage = 11;
     const token = localStorage.getItem("token");
     const permissions = usePermissions();
-    
+
     const columns = [
-        { id: 'bill_no', label: 'Bill No', minWidth: 170, height: 100 },
-        { id: 'distributor_name', label: 'Distributor Name', minWidth: 100 },
-        { id: 'payment_date', label: 'Payment Date', minWidth: 100 },
-        { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
-        { id: 'status', label: 'Status', minWidth: 100 },
-        { id: 'bill_amount', label: 'Bill Amount', minWidth: 100 },
-        { id: 'paid_amount', label: 'Paid Amount', minWidth: 100 },
-        { id: 'due_amount', label: 'Due Amount', minWidth: 100 },
+        { id: 'bill_no', label: 'Bill No', minWidth: 150, height: 100 },
+        { id: 'distributor_name', label: 'Distributor Name', minWidth: 150 },
+        { id: 'payment_date', label: 'Payment Date', minWidth: 150 },
+        { id: 'payment_mode', label: 'Payment Mode', minWidth: 150 },
+        { id: 'status', label: 'Status', minWidth: 150 },
+        { id: 'bill_amount', label: 'Bill Amount', minWidth: 150 },
+        { id: 'paid_amount', label: 'Paid Amount', minWidth: 150 },
+        { id: 'due_amount', label: 'Due Amount', minWidth: 150 },
     ];
-    
+
     const [editId, setEditId] = useState(null)
     const [confirm, setConfirm] = useState(false);
     const [open, setOpen] = useState(false);
@@ -57,7 +57,7 @@ const PaymentList = () => {
     const [distributorsId, setDistributorsId] = useState(null);
     const [distributorList, setDistributorList] = useState([]);
     const [note, setNote] = useState('');
-    const [paymentLabel, setPaymentLabel] = useState('');  
+    const [paymentLabel, setPaymentLabel] = useState('');
     const [buttonLabel, setButtonLabel] = useState('');
     const [paymentDate, setPaymentDate] = useState(new Date());
     const [amounts, setAmounts] = useState({});
@@ -74,7 +74,7 @@ const PaymentList = () => {
     const paginatedData = tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [isEditMode, setIsEditMode] = useState(false);
-    const [paymentType, setPaymentType] = useState('cash');
+    const [paymentType, setPaymentType] = useState('');
     const [bankData, setBankData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -87,6 +87,7 @@ const PaymentList = () => {
         { value: 'rtgs/neft', label: 'RTGS/NEFT' }]
 
     const handleEditOpen = (row) => {
+        console.log(row)
         setOpen(true);
         setShowTable(false);
         setIsEditMode(true);
@@ -333,7 +334,7 @@ const PaymentList = () => {
             ).then((response) => {
                 setPurchaseBill(response?.data?.data)
                 // setIsLoading(false);
-               
+
             })
         } catch (error) {
             setIsLoading(false);
@@ -457,24 +458,26 @@ const PaymentList = () => {
                 <Loader />
             </div> :
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }}>
-                    <div className='py-3' style={{ display: 'flex', gap: '2px' }}>
-                        <span style={{ color: 'var(--color2)', display: 'flex', minWidth: '250px', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Purchase Payment</span>
+                    <div className='py-3 purch_hdr_mn' style={{ display: 'flex', gap: '2px' }}>
+                        <span style={{ color: 'var(--color2)', display: 'flex', whiteSpace: 'nowrap', alignItems: 'center', fontWeight: 700, fontSize: '20px' }} >Purchase Payment</span>
                         {hasPermission(permissions, "purchase payment create") && (
-                            <div className="headerList pr-4">
-                                <Button variant="contained" size='small' style={{ fontSize: '12px', background: 'var(--color1)' }} onClick={handelAddOpen} ><AddIcon />Add New Payment</Button>
+                            <div className="headerList">
+                                <Button variant="contained"
+                                    className="sale_add_btns gap-2"
+                                    size='small' style={{ fontSize: '12px', background: 'var(--color1)' }} onClick={handelAddOpen} ><AddIcon />Add New Payment</Button>
                             </div>)}
                     </div>
                     <div className="firstrow p-4">
-                        <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
-                            <div className="detail" >
+                        <div className="flex flex-col gap-2 lg:flex-row lg:gap-2 pb-2">
+                            <div className="detail drug_fltr_fld">
                                 <Autocomplete
                                     value={distributorValue}
                                     sx={{
                                         width: '100%',
-                                        minWidth: '400px',
-                                        '@media (max-width:600px)': {
-                                            minWidth: '300px',
-                                        },
+                                        // minWidth: '400px',
+                                        // '@media (max-width:600px)': {
+                                        //     minWidth: '300px',
+                                        // },
                                     }}
                                     size='small'
                                     autoFocus
@@ -482,23 +485,33 @@ const PaymentList = () => {
                                     options={distributorList}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => <TextField autoFocus
-                                   
+
                                         {...params} label="Search Distributor Name" />}
                                 />
                                 {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>}
                             </div>
-                            <div>
-                                <Button style={{ background: 'var(--color1)' }} variant="contained" onClick={openBillDetails}>Search</Button>
+                            <div style={{ justifyContent: "end", display: "flex" }}>
+                                <Button className="serch_btn_ad" style={{ background: 'var(--color1)' }} variant="contained" onClick={openBillDetails}>Search</Button>
                             </div>
                         </div>
-                        <div className="overflow-x-auto mt-4">
-                            <table className="w-full border-collapse custom-table">
-                                <thead className="bg-gray-100">
+                        <div
+                            className="overflow-x-auto mt-4 border-t"
+                            style={{ overflowX: "auto" }}
+                        >
+                            <table
+                                className="w-full border-collapse custom-table pt-2"
+                                style={{
+                                    whiteSpace: "nowrap",
+                                    borderCollapse: "separate",
+                                    borderSpacing: "0 6px",
+                                }}
+                            >
+                                <thead className="">
                                     <tr>
                                         <th>SR. No
                                         </th>
                                         {columns.map((column, index) => (
-                                            <th key={column.id} onClick={() => sortByColumn(column.id)}>
+                                            <th key={column.id} onClick={() => sortByColumn(column.id)} style={{ width: column.width }}>
 
                                                 <div className='headerStyle'>
                                                     <span>{column.label}</span><SwapVertIcon />
@@ -509,10 +522,10 @@ const PaymentList = () => {
                                             <th>Action</th>)}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style={{ backgroundColor: "#3f621217" }}>
                                     {filteredList.length === 0 ? (
                                         <tr>
-                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' ,borderRadius: "10px 10px 10px 10px" }}>
+                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray', borderRadius: "10px 10px 10px 10px" }}>
                                                 No data found
                                             </td>
                                         </tr>
@@ -520,7 +533,7 @@ const PaymentList = () => {
                                         .map((row, index) => {
                                             return (
                                                 <tr hover role="checkbox" tabIndex={-1} key={row.code} >
-                                                    <td>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
                                                         {startIndex + index}
                                                     </td>
                                                     {columns.map((column) => {
@@ -547,8 +560,8 @@ const PaymentList = () => {
                                                         );
                                                     })}
                                                     {hasPermission(permissions, "purchase payment edit") && (
-                                                        <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer', justifyContent: "center" }}>
-                                                            < BorderColorIcon color="primary" onClick={() => handleEditOpen(row)} />
+                                                        <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                            < BorderColorIcon style={{ color: "var(--color1)" }} onClick={() => handleEditOpen(row)} />
                                                         </td>)}
                                                 </tr>
                                             );
@@ -607,7 +620,7 @@ const PaymentList = () => {
                     </div>
 
                     <Dialog open={open}  >
-                        <DialogTitle sx={{ color: "var(--COLOR_UI_PHARMACY)" }} id="alert-dialog-title  ">
+                        <DialogTitle style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }} id="alert-dialog-title  ">
                             {paymentLabel}
                         </DialogTitle>
                         <IconButton
@@ -619,9 +632,9 @@ const PaymentList = () => {
                         </IconButton>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
-                                <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}>
-                                    <div >
-                                        <span className="secondary" >Distributor Name</span>
+                                <div className="flex flex-col gap-4">
+                                    <div style={{ width: '100%' }}>
+                                        <span className="label primary">Distributor Name</span>
                                         {isEditMode == true ?
                                             <TextField
                                                 autoComplete="off"
@@ -629,7 +642,7 @@ const PaymentList = () => {
                                                 disabled
                                                 size="small"
                                                 value={distributor}
-                                                sx={{ minWidth: 550 }}
+                                                sx={{ width: '100%' }}
                                                 rows={2}
                                                 variant="outlined"
                                             /> :
@@ -645,15 +658,15 @@ const PaymentList = () => {
                                                     getOptionLabel={(option) => option.name}
                                                     renderInput={(params) => <TextField
 
-                                                    {...params} />}
+                                                        {...params} />}
                                                 />
                                                 {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
                                             </>
                                         }
                                     </div>
-                                    <div style={{ display: 'flex', gap: 30, }}>
-                                        <div style={{ display: 'flex', gap: 10, flexDirection: 'column' }}>
-                                            <span className="secondary" >Payment Date</span>
+                                    <div className="flex flex-col md:flex-row gap-4" style={{alignItems:'end'}}>
+                                        <div style={{ width: '100%' }}>
+                                            <span className="label primary" >Payment Date</span>
                                             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
                                                         value={paymentDate}
@@ -664,24 +677,25 @@ const PaymentList = () => {
                                                 </LocalizationProvider> */}
 
                                             <DatePicker
-                                                className='custom-datepicker '
+                                                className='custom-datepicker_mn '
                                                 selected={paymentDate}
                                                 onChange={(newDate) => setPaymentDate(newDate)}
                                                 dateFormat="dd/MM/yyyy"
                                                 minDate={new Date()} //
                                             />
+
                                         </div>
-                                        <div style={{ display: 'flex', gap: 10, flexDirection: 'column', flexWrap: 'wrap' }}>
-                                            <span className="secondary" >Payment Mode</span>
+                                        <div style={{ width: '100%' }}>
+                                            <span className="label primary" >Payment Mode</span>
                                             <Select
                                                 labelId="dropdown-label"
                                                 id="dropdown"
                                                 value={paymentType}
-                                                sx={{ minWidth: 260 }}
+                                                sx={{ width: '100%' }}
                                                 onChange={(e) => { setPaymentType(e.target.value) }}
                                                 size="small"
                                             >
-                                                <MenuItem value="cash">Cash</MenuItem>
+                                                {/* <MenuItem value="cash">Cash</MenuItem> */}
                                                 {/* <MenuItem value="credit">Credit</MenuItem> */}
                                                 {bankData?.map(option => (
                                                     <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
@@ -691,8 +705,8 @@ const PaymentList = () => {
 
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: 10, flexDirection: 'column' }}>
-                                        <span className="label secondary">Note</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <span className="label primary">Note</span>
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-multiline-static"
@@ -700,20 +714,20 @@ const PaymentList = () => {
                                             size="small"
                                             value={note}
                                             onChange={(e) => { setNote(e.target.value) }}
-                                            style={{ minWidth: 500 }}
+                                            style={{ width: '100%' }}
                                             rows={2}
                                             variant="outlined"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="overflow-x-auto mt-4">
                                         {showTable && (
-                                            <table className="invoice-table">
+                                            <table className="invoice-table w-full border-collapse custom-table">
                                                 <thead>
-                                                    <tr>
-                                                        <th>Bill No</th>
-                                                        <th>Date</th>
-                                                        <th>Bill Amount</th>
-                                                        <th>Action</th>
+                                                    <tr style={{ whiteSpace: 'nowrap' }}>
+                                                        <th style={{ minWidth: '100px' }}>Bill No</th>
+                                                        <th style={{ minWidth: '100px' }}>Date</th>
+                                                        <th style={{ minWidth: '100px' }}>Bill Amount</th>
+                                                        <th style={{ minWidth: '100px' }}>Action</th>
                                                     </tr>
                                                 </thead>
                                                 {purchaseBill?.pruches_bill && distributorId ?
@@ -721,7 +735,7 @@ const PaymentList = () => {
                                                         {purchaseBill?.pruches_bill.map((row, index) => {
                                                             return (
                                                                 <>
-                                                                    <tr hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                    <tr hover role="checkbox" tabIndex={-1} key={row.code} style={{ whiteSpace: 'nowrap' }}>
                                                                         <td>{row.bill_no}</td>
                                                                         <td>{row.date}</td>
                                                                         <td >
@@ -756,15 +770,17 @@ const PaymentList = () => {
                                                             <td></td>
                                                             <td></td>
                                                             <td>
-                                                                <span style={{ fontSize: '14px', fontWeight: 800, color: 'black' }}>Rs.{totalpayAmount}</span>
+                                                                <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--COLOR_UI_PHARMACY)' }}>Rs.{totalpayAmount}</span>
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                     :
                                                     <tbody>
-                                                        <div>
-                                                            No Record Found
-                                                        </div>
+                                                        <tr>
+                                                            <div className="pt-3" style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                                                                No Record Found
+                                                            </div>
+                                                        </tr>
                                                     </tbody>
                                                 }
                                             </table>
@@ -773,8 +789,8 @@ const PaymentList = () => {
                                 </div>
                             </DialogContentText>
                         </DialogContent>
-                        <DialogActions>
-                            <Button autoFocus sx={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }} variant="contained" onClick={handlePermission} >
+                        <DialogActions style={{ padding: '20px 24px' }}>
+                            <Button autoFocus style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }} variant="contained" onClick={handlePermission} >
                                 {buttonLabel}
                             </Button>
                         </DialogActions>

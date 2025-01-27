@@ -447,26 +447,46 @@
     flex-direction: column !important;
     display: flex;
   }
-  .purch_report_hdr{
+  .purch_report_hdr {
     width: 100% !important;
+    justify-content: end;
+    display: flex;
   }
   .detail_report {
     width: 100% !important;
+  }
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
   }
 }
 
-@media(max-width:767px){
-  .oreder_list_fld_rp{
+@media (max-width: 767px) {
+  .oreder_list_fld_rp {
     flex-direction: column !important;
     align-items: start !important;
-
   }
-  .purch_report_hdr{
+  .purch_report_hdr {
     flex-direction: column !important;
     width: 100% !important;
+  }
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
   }
   .detail_report {
     width: 100% !important;
+  }
+  .go_btn_divv {
+    width: 100% !important;
+  }
+  .report_btn_purch {
+    font-size: 15px !important;
+    white-space: nowrap;
   }
 }
 

@@ -171,10 +171,10 @@ const SaleSummary = () => {
                         <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
                             <div className="flex gap-2 pb-2">
                                 <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                     </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}>  Sales Summary
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}>  Sales Summary
                                     </span>
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>

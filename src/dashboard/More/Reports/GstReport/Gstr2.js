@@ -159,10 +159,10 @@ const Gstr2 = () => {
                     <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-2 Report
+                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}> GSTR-2 Report
 
                                 </span>
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />

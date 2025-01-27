@@ -37,6 +37,12 @@
     width: auto;
     min-width: 150px;
   }
+  .detail_report {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-width: 238px;
+  }
   .total_amount_txt {
     font-size: 15px !important;
     font-weight: 800;
@@ -630,10 +636,10 @@
   .report_hdr_txt_ec {
     font-size: 13px;
   }
-
+  .report_btn_purch {
+    width: 100%;
+  }
 }
-
-
 
 @media (max-width: 365px) {
   .report_hdr {

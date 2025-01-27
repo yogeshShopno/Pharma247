@@ -163,12 +163,10 @@ const Purchase_Return_Report = () => {
                                 <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
                                     <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                     </span>
-
                                     <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
 
                                 </div>
-
-                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}>
+                                <span className="report_hdr_txt_ec  gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>
                                     Purchase Return Report
                                     <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </span>

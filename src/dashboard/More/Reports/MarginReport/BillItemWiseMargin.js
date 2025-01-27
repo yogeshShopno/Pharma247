@@ -207,7 +207,7 @@ const BillItemWiseMargin = () => {
                                         <div className="flex gap-2 purch_report_hdr">
 
                                             <div className="detail_report detail_report_sss flex flex-col" >
-                                                <span className="text-gray-500">Start Date</span>
+                                                <span className="primary">Start Date</span>
                                                 <div style={{ width: "100%" }}>
                                                     <DatePicker
                                                         className='custom-datepicker_mn '
@@ -219,7 +219,7 @@ const BillItemWiseMargin = () => {
                                             </div>
 
                                             <div className="detail_report detail_report_sss flex flex-col" >
-                                                <span className="text-gray-500">End Date</span>
+                                                <span className="primary">End Date</span>
                                                 <div style={{ width: "100%" }}>
                                                     <DatePicker
                                                         className='custom-datepicker_mn '

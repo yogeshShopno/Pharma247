@@ -34,17 +34,17 @@ const DoctorItemWise = () => {
     const [doctorItemWiseData, setDoctorItemWiseData] = useState([])
     const totalPages = Math.ceil(doctorItemWiseData.length / rowsPerPage);
     const DoctorItemWiseColumns = [
-        { id: "bill_no", label: "Bill No", minWidth: 100 },
-        { id: "bill_date", label: "Bill Date", minWidth: 100 },
-        { id: 'doctor_name', label: "Doctor Name ", minWidth: 100 },
-        { id: 'phone_number', label: "Mobile", minWidth: 100 },
-        { id: 'item_name', label: 'Item Name', minWidth: 100 },
-        { id: 'unit', label: 'Unit', minWidth: 100 },
-        { id: 'exp', label: 'Expiry', minWidth: 100 },
-        { id: 'sales_rate', label: 'Sale Rate', minWidth: 100 },
-        { id: 'qty', label: 'Qty', minWidth: 100 },
-        { id: 'amount', label: 'Amount', minWidth: 100 },
-        { id: 'net_profit', label: 'Net Profit', minWidth: 100 },
+        { id: "bill_no", label: "Bill No", minWidth: 150 },
+        { id: "bill_date", label: "Bill Date", minWidth: 150 },
+        { id: 'doctor_name', label: "Doctor Name ", minWidth: 150 },
+        { id: 'phone_number', label: "Mobile", minWidth: 150 },
+        { id: 'item_name', label: 'Item Name', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
+        { id: 'exp', label: 'Expiry', minWidth: 150 },
+        { id: 'sales_rate', label: 'Sale Rate', minWidth: 150 },
+        { id: 'qty', label: 'Qty', minWidth: 150 },
+        { id: 'amount', label: 'Amount', minWidth: 150 },
+        { id: 'net_profit', label: 'Net Profit', minWidth: 150 },
     ];
     const fieldsWithCurrency = ['sales_rate', 'amount', 'net_profit'];
     const validateForm = () => {
@@ -81,7 +81,7 @@ const DoctorItemWise = () => {
                     setTotal(response.data.data.total_amount)
                     setTotalNetProfit(response.data.data.total_net_profite)
                     setQTY(response.data.data.total_qty)
-                    if(response.data.status === 401){ 
+                    if (response.data.status === 401) {
                         history.push('/');
                         localStorage.clear();
                     }
@@ -183,93 +183,101 @@ const DoctorItemWise = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                        <div className="flex gap-2 pb-2">
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "220px" }}>  Item Wise Doctor Wise Report
-                                </span>
+                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div className="py-3 flex report_hdr_main">
+                            <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                    </span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                </div>
+                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>   Item Wise Doctor Wise Report
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                </span>
                             </div>
                             <div className="headerList">
-                            <Button
-                                        variant="contained"
-                                        style={{
-                                            background: "var(--color1)",
-                                            color: "white",
-                                            // paddingLeft: "35px",
-                                            textTransform: "none",
-                                            display: "flex",
-                                        }}
-                                        className="gap-7 downld_btn_csh"
-                                        onClick={exportToCSV}>
-                                             <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Button
+                                    variant="contained"
+                                    style={{
+                                        background: "var(--color1)",
+                                        color: "white",
+                                        // paddingLeft: "35px",
+                                        textTransform: "none",
+                                        display: "flex",
+                                    }}
+                                    className="gap-7 report_btn_purch"
+                                    onClick={exportToCSV}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <img src="/csv-file.png"
                                             className="report-icon absolute mr-10"
                                             alt="csv Icon" />
-                                            
-                                                                                         </div>
 
-                                        Download
-                                    </Button> </div>
+                                    </div>
+
+                                    Download
+                                </Button> </div>
                         </div>
                         <div className="bg-white ">
                             <div className="manageExpenseRow" style={{
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="flex gap-5 flex-wrap" >
-                                    <div className="detail">
-                                        <span className="text-gray-500">Start Date</span>
-                                        <div style={{ width: "215px" }}>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={startDate}
-                                                onChange={(newDate) => setStartDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                            />
+                                <div className="item_btch_flddd oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                    <div className="flex gap-2 purch_report_hdr" >
+                                        <div className="detail_report detail_report_psss flex flex-col" >
+
+                                            <span className="primary">Start Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={startDate}
+                                                    onChange={(newDate) => setStartDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="detail_report detail_report_psss flex flex-col" >
+
+                                            <span className="primary">End Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={endDate}
+                                                    onChange={(newDate) => setEndDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="detail">
-                                        <span className="text-gray-500">End Date</span>
-                                        <div style={{ width: "215px" }}>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={endDate}
-                                                onChange={(newDate) => setEndDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                            />
+                                    <div className="flex gap-2 purch_report_hdr" >
+                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                            <FormControl sx={{ width: '100%' }} size="small">
+                                                <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    sx={{ width: '100%' }}
+                                                    id="demo-select-small"
+                                                    value={reportType}
+                                                    onChange={(e) => setReportType(e.target.value)}
+                                                    label="Report Type"
+
+                                                >
+                                                    <MenuItem value="" disabled>
+                                                        Select Report Type
+                                                    </MenuItem>
+                                                    <MenuItem value="0">Sale</MenuItem>
+                                                    <MenuItem value="1">Sale Return</MenuItem>
+                                                </Select>
+                                            </FormControl>
                                         </div>
-                                    </div>
-
-                                    <div className="mt-6">
-                                        <FormControl sx={{ minWidth: 250 }} size="small">
-                                            <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                            <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={reportType}
-                                                onChange={(e) => setReportType(e.target.value)}
-                                                label="Report Type"
-
-                                            >
-                                                <MenuItem value="" disabled>
-                                                    Select Report Type
-                                                </MenuItem>
-                                                <MenuItem value="0">Sale</MenuItem>
-                                                <MenuItem value="1">Sale Return</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-                                    <div className="mt-6">
-                                        <div className="detail" >
+                                        <div className="detail_report detail_report_psss flex flex-col" >
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-basic"
                                                 value={doctorSearch}
-                                                sx={{ minWidth: '250px' }}
+                                                sx={{ width: '100%' }}
                                                 size="small"
                                                 onChange={(e) => setDoctorSearch(e.target.value)}
                                                 variant="outlined"
@@ -285,13 +293,13 @@ const DoctorItemWise = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="mt-6">
-                                        <div className="detail" >
+                                    <div className="flex gap-2 purch_report_hdr" >
+                                        <div className="detail_report detail_report_psss flex flex-col" >
                                             <TextField
-                 autoComplete="off"
+                                                autoComplete="off"
                                                 id="outlined-basic"
                                                 value={itemSearch}
-                                                sx={{ minWidth: '250px' }}
+                                                sx={{ width: '100%' }}
                                                 size="small"
                                                 onChange={(e) => setItemSearch(e.target.value)}
                                                 variant="outlined"
@@ -306,27 +314,42 @@ const DoctorItemWise = () => {
                                                 }}
                                             />
                                         </div>
-                                    </div>
-                                    <div className="mt-6">
-                                        <Button style={{
+                                        <div className="detail_report detail_report_psss flex flex-col">
+                                            <Button style={{
                                                 background: "var(--color1)",
-                                            }}  variant="contained" onClick={() => handlefilterData(currentPage)}>
-                                            Go
-                                        </Button>
+                                                height: '40px'
+                                            }} variant="contained" onClick={() => handlefilterData(currentPage)}>
+                                                Go
+                                            </Button>
+                                        </div>
                                     </div>
-
                                 </div>
-                                <div>
-                                    <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                        <span className="primary text-xl">Total</span>
-                                        <p className="secondary text-xl">Rs. {total}</p>
+                                <div class="flex gap-2  ttl_dldld">
+                                    <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                        <div>
+                                            <div className="relative" >
+                                                <h2 className="primary font-medium text-xl ">Total </h2>
+                                            </div>
+                                        </div>
+                                        <div className="flex">
+                                            <div>
+                                                <h2 className="secondary font-bold text-xl ">Rs.{total}</h2>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             {doctorItemWiseData?.doctor_report?.length > 0 ?
-                                <div className="p-4">
+                                <div className="firstrow">
                                     <div className="overflow-x-auto mt-4">
-                                        <table className="saleRegisterTotal-table w-full border-collapse">
+                                        <table
+                                            className="w-full border-collapse custom-table"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                borderCollapse: "separate",
+                                                borderSpacing: "0 6px",
+                                            }}
+                                        >
                                             <thead>
                                                 <tr>
                                                     {/* <th>SR No.</th> */}
@@ -352,11 +375,18 @@ const DoctorItemWise = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{ background: "#3f621217" }}>
+
                                                 {doctorItemWiseData?.doctor_report?.map((item, index) => (
                                                     <tr key={index} >
-                                                        {DoctorItemWiseColumns.map((column) => (
-                                                            <td key={column.id} style={{ minWidth: column.minWidth }}>
+                                                        {DoctorItemWiseColumns.map((column, colIndex) => (
+                                                            <td key={column.id} style={
+                                                                colIndex === 0 ? {
+                                                                    borderRadius: "10px 0 0 10px",
+                                                                } : colIndex === DoctorItemWiseColumns.length - 1 ? {
+                                                                    borderRadius: "0 10px 10px 0",
+                                                                } : {}
+                                                            }>
                                                                 {fieldsWithCurrency.includes(column.id) ? `Rs.${item[column.id]}` : item[column.id]}
                                                             </td>
                                                         ))}
@@ -432,7 +462,7 @@ const DoctorItemWise = () => {
 
                     </div>
                 }
-            </div>
+            </div >
         </>
     )
 }

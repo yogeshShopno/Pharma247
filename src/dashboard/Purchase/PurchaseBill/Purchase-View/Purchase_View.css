@@ -30,6 +30,11 @@
   min-width: 255px;
 }
 
+@media (max-width: 370px) {
+  .txt_hdr_rpt {
+    font-size: 16px !important;
+  }
+}
 @media (max-width: 475px) {
   .detail_main {
     display: flex;
@@ -42,6 +47,7 @@
     flex-direction: column;
     width: auto;
     min-width: 238px;
+    margin-top: 10px;
   }
   .total_amount_txt {
     font-size: 15px !important;
@@ -1094,7 +1100,7 @@
   }
 }
 
-@media (max-width:425px) {
+@media (max-width: 425px) {
   .sub_itm_mrg_fld {
     display: flex;
     width: 100%;

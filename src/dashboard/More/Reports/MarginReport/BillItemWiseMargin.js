@@ -27,21 +27,21 @@ const BillItemWiseMargin = () => {
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
 
     const BillItemWiseColumns = [
-        { id: "entry_by", label: "Entry By", minWidth: 100 },
-        { id: 'bill_no', label: 'Bill No.', minWidth: 100 },
-        { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-        { id: 'patient_name', label: 'Customer Name', minWidth: 100 },
-        { id: 'name', label: 'Item Name', minWidth: 100 },
-        { id: 'category', label: 'Category', minWidth: 100 },
-        { id: 'unite', label: 'Unit', minWidth: 100 },
-        { id: 'company', label: 'Manu.', minWidth: 100 },
-        { id: 'sales_count', label: 'Sale', minWidth: 100 },
-        { id: 'stock', label: 'Stock', minWidth: 100 },
-        { id: 'mrp', label: 'MRP', minWidth: 100 },
-        { id: 'sales_amount', label: 'Sale Amt.', minWidth: 100 },
-        { id: 'purches_amount', label: 'Purchase', minWidth: 100 },
-        { id: 'net_gst', label: 'Net GST', minWidth: 100 },
-        { id: 'net_profit', label: 'Profit(%)', minWidth: 100 },
+        { id: "entry_by", label: "Entry By", minWidth: 120 },
+        { id: 'bill_no', label: 'Bill No.', minWidth: 120 },
+        { id: 'bill_date', label: 'Bill Date', minWidth: 120 },
+        { id: 'patient_name', label: 'Customer Name', minWidth: 120 },
+        { id: 'name', label: 'Item Name', minWidth: 120 },
+        { id: 'category', label: 'Category', minWidth: 120 },
+        { id: 'unite', label: 'Unit', minWidth: 120 },
+        { id: 'company', label: 'Manu.', minWidth: 120 },
+        { id: 'sales_count', label: 'Sale', minWidth: 120 },
+        { id: 'stock', label: 'Stock', minWidth: 120 },
+        { id: 'mrp', label: 'MRP', minWidth: 120 },
+        { id: 'sales_amount', label: 'Sale Amt.', minWidth: 120 },
+        { id: 'purches_amount', label: 'Purchase', minWidth: 120 },
+        { id: 'net_gst', label: 'Net GST', minWidth: 120 },
+        { id: 'net_profit', label: 'Profit(%)', minWidth: 120 },
     ];
 
     const validateForm = () => {
@@ -164,19 +164,22 @@ const BillItemWiseMargin = () => {
             </div> :
                 <div>
                     <div>
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '900px', gap: '7px', alignItems: "center" }}>
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+
                                     <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                     </span>
                                     <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "200px" }}> Bill-Item Wise Margin Report </span>
-                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                    <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> Bill-Item Wise Margin Report
+                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                    </span>
+
                                 </div>
                                 <div className="headerList">
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 report_btn_purch"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
@@ -200,79 +203,84 @@ const BillItemWiseMargin = () => {
                                 <div className="manageExpenseRow" style={{
                                     padding: ' 12px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
-                                    <div className="flex gap-5 flex-wrap" >
+                                    <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className="flex gap-2 purch_report_hdr">
 
-                                        <div className="detail">
-                                            <span className="text-gray-500">Start Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+                                                <span className="text-gray-500">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={startDate}
+                                                        onChange={(newDate) => setStartDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+                                                <span className="text-gray-500">End Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={endDate}
+                                                        onChange={(newDate) => setEndDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className="flex gap-2 purch_report_hdr">
+                                            <div className="detail_report detail_report_sss flex flex-col">
+                                                <FormControl sx={{ width: '100%' }} size="small">
+                                                    <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={reportType}
+                                                        onChange={(e) => setReprtType(e.target.value)}
+                                                        label="Report Type"
 
-                                        <div className="detail">
-                                            <span className="text-gray-500">End Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Select Report Type
+                                                        </MenuItem>
+                                                        <MenuItem value="0">Sale</MenuItem>
+                                                        <MenuItem value="1">Sale Return</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                            <div className="detail_report detail_report_sss flex flex-col">
+                                                <div className="detail" >
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-basic"
+                                                        value={searchItem}
+                                                        size="small"
+                                                        onChange={(e) => setSearchItem(e.target.value)}
+                                                        variant="outlined"
+                                                        placeholder="Type Here..."
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start" >
+                                                                    <span className="text-black">Item Name</span>
+                                                                </InputAdornment>
+                                                            ),
+                                                            endAdornment: (
+                                                                <InputAdornment position="end" >
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: 'search'
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 250 }} size="small">
-                                                <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={reportType}
-                                                    onChange={(e) => setReprtType(e.target.value)}
-                                                    label="Report Type"
-
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        Select Report Type
-                                                    </MenuItem>
-                                                    <MenuItem value="0">Sale</MenuItem>
-                                                    <MenuItem value="1">Sale Return</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <div className="mt-6">
-                                            <div className="detail" >
-                                                <TextField
-                                                    autoComplete="off"
-                                                    id="outlined-basic"
-                                                    value={searchItem}
-                                                    size="small"
-                                                    onChange={(e) => setSearchItem(e.target.value)}
-                                                    variant="outlined"
-                                                    placeholder="Type Here..."
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start" >
-                                                                <span className="text-black">Item Name</span>
-                                                            </InputAdornment>
-                                                        ),
-                                                        endAdornment: (
-                                                            <InputAdornment position="end" >
-                                                                <SearchIcon />
-                                                            </InputAdornment>
-                                                        ),
-                                                        type: 'search'
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="mt-6">
+                                        <div className="purch_report_hdr detail_report detail_report_sss">
                                             <Button style={{
                                                 background: "var(--color1)",
+                                                height: '40px'
                                             }} variant="contained" onClick={handlefilterData}>
                                                 Go
                                             </Button>
@@ -280,60 +288,86 @@ const BillItemWiseMargin = () => {
                                     </div>
                                 </div>
                                 {billMarginData?.bill_margin_report?.length > 0 ?
-                                    <div>
-                                        <div className="flex gap-8 justify-end flex-wrap" style={{ padding: ' 20px 24px' }} >
-                                            <div>
-                                                <span className="primary">
-                                                    Total Sale Amt.
-                                                </span>
-                                                <p className="secondary font-semibold p-1.5">Rs. {parseFloat(billMarginData.total_sales).toFixed(2)}</p>
-                                            </div>
-                                            <div>
-                                                <span className="primary">
-                                                    Total Purchase
-                                                </span>
-                                                <p className="primary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_purches).toFixed(2)}</p>
-                                            </div>
-                                            <div>
-                                                <span className="primary">
-                                                    Total Net GST
-                                                </span>
-                                                <p className="secondary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_net_gst).toFixed(2)}</p>
-                                            </div>
-                                            <div>
-                                                <span className="primary">
-                                                    Total Profit
-                                                </span>
-                                                <p className="  font-semibold p-1.5" style={{ color: "rgba(0, 197, 220, .8)" }}>Rs.  {parseFloat(billMarginData?.total_net_profit).toFixed(2)}</p>
+                                    <>
+                                        <div style={{
+                                            backgroundColor: 'white', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
+                                        }} >
+                                            <div className="flex gap-8 justify-end flex-wrap" style={{ padding: '20px 24px' }} >
+                                                <div className="flex gap-8 justify-end flex-wrap itm_main_flds" style={{
+                                                    padding: '20px 24px', background: "#3f621217",
+                                                    borderRadius: '8px'
+                                                }}>
+                                                    <div className="sub_itm_mrg_fld">
+                                                        <span className="primary font-bold">
+                                                            Total Sale Amt.
+                                                        </span>
+                                                        <p className="secondary font-semibold p-1.5">Rs. {parseFloat(billMarginData.total_sales).toFixed(2)}</p>
+                                                    </div>
+                                                    <div className="sub_itm_mrg_fld">
+                                                        <span className="primary font-bold">
+                                                            Total Purchase
+                                                        </span>
+                                                        <p className="secondary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_purches).toFixed(2)}</p>
+                                                    </div>
+                                                    <div className="sub_itm_mrg_fld">
+                                                        <span className="primary font-bold">
+                                                            Total Net GST
+                                                        </span>
+                                                        <p className="secondary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_net_gst).toFixed(2)}</p>
+                                                    </div>
+                                                    <div className="sub_itm_mrg_fld">
+                                                        <span className="primary font-bold">
+                                                            Total Profit
+                                                        </span>
+                                                        <p className="  font-semibold p-1.5" style={{ color: "var(--color2)" }}>Rs.  {parseFloat(billMarginData?.total_net_profit).toFixed(2)}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="overflow-x-auto mt-4">
-                                            <table className="table-cashManage w-full border-collapse" s>
-                                                <thead>
-                                                    <tr>
-                                                        {BillItemWiseColumns.map((column) => (
-                                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                                {column.label}
-                                                            </th>
-                                                        ))}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {billMarginData?.bill_margin_report?.map((item, index) => (
-                                                        <tr key={index} >
+                                        <div className="firstrow">
+                                            <div className="overflow-x-auto mt-4">
+                                                <table
+                                                    className="w-full border-collapse custom-table"
+                                                    style={{
+                                                        whiteSpace: "nowrap",
+                                                        borderCollapse: "separate",
+                                                        borderSpacing: "0 6px",
+                                                    }}
+                                                >
+                                                    <thead>
+                                                        <tr>
                                                             {BillItemWiseColumns.map((column) => (
-                                                                <td key={column.id}>
-                                                                    {item[column.id] && item[column.id].charAt(0).toUpperCase() + item[column.id].slice(1)}
-                                                                </td>
+                                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                                    {column.label}
+                                                                </th>
                                                             ))}
-
                                                         </tr>
-                                                    ))}
+                                                    </thead>
+                                                    <tbody style={{ background: "#3f621217" }}>
 
-                                                </tbody>
-                                            </table>
+                                                        {billMarginData?.bill_margin_report?.map((item, index) => (
+                                                            <tr key={index} >
+                                                                {BillItemWiseColumns.map((column, colIndex) => (
+                                                                    <td key={column.id}
+                                                                        style={
+                                                                            colIndex === 0 ? {
+                                                                                borderRadius: "10px 0 0 10px",
+                                                                            } : colIndex === BillItemWiseColumns.length - 1 ? {
+                                                                                borderRadius: "0 10px 10px 0",
+                                                                            } : {}
+                                                                        }>
+                                                                        {item[column.id] && item[column.id].charAt(0).toUpperCase() + item[column.id].slice(1)}
+                                                                    </td>
+                                                                ))}
+
+                                                            </tr>
+                                                        ))}
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </>
                                     :
                                     <div>
                                         <div className="SearchIcon">
@@ -350,7 +384,7 @@ const BillItemWiseMargin = () => {
 
                         </div>
                     </div >
-                </div>
+                </div >
             }
         </>
     )

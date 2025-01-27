@@ -1054,6 +1054,10 @@
     width: 49% !important;
   }
 
+  .pur_itm_vld_fld {
+    width: 100% !important;
+  }
+
   .detail_report_psss {
     display: flex;
     flex-direction: column;
@@ -1074,5 +1078,29 @@
 @media (max-width: 436px) {
   .invrnt_flddd {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 659px) {
+  .itm_main_flds {
+    width: 100%;
+    gap: 1rem;
+  }
+  .sub_itm_mrg_fld {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width:425px) {
+  .sub_itm_mrg_fld {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: column;
+    white-space: nowrap;
+    align-items: start;
   }
 }

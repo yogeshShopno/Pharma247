@@ -190,7 +190,7 @@ const PurchasePaymentSummary = () => {
                                     <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
 
                                         <div className="flex gap-2 purch_report_hdr">
-                                            <div className="detail_report flex flex-col" >
+                                            <div className="detail_report detail_report_sss flex flex-col" >
 
                                                 <span className="primary">Start Date</span>
                                                 <div style={{ width: "100%" }}>
@@ -203,7 +203,7 @@ const PurchasePaymentSummary = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="detail_report flex flex-col" >
+                                            <div className="detail_report detail_report_sss flex flex-col" >
 
                                                 <span className="primary">End Date</span>
                                                 <div style={{ width: "100%" }}>
@@ -218,7 +218,7 @@ const PurchasePaymentSummary = () => {
                                         </div>
 
                                         <div className="flex gap-2 purch_report_hdr">
-                                            <div className="detail_report flex flex-col">
+                                            <div className="detail_report detail_report_sss flex flex-col">
                                                 <FormControl style={{ width: '100% ' }} size="small">
                                                     <InputLabel id="demo-select-small-label"> Purchase Payment Status</InputLabel>
                                                     <Select
@@ -238,7 +238,7 @@ const PurchasePaymentSummary = () => {
                                                     </Select>
                                                 </FormControl>
                                             </div>
-                                            <div className="detail_report flex flex-col ">
+                                            <div className="detail_report detail_report_sss flex flex-col ">
                                                 {/* <div className="detail" > */}
                                                 <TextField
                                                     autoComplete="off"
@@ -263,11 +263,13 @@ const PurchasePaymentSummary = () => {
 
                                         </div>
 
-                                        <div className="purch_report_hdr">
+                                        <div className="purch_report_hdr detail_report detail_report_sss">
+
                                             <Button
-                                                className="go_btn_divv"
+                                                // className="go_btn_divv"
                                                 style={{
-                                                    background: "var(--color1)",
+                                                    background: "var(--color1)", height: '40px'
+                                                    , width: '100%'
                                                 }} variant="contained" onClick={handleFilterData}>
                                                 Go
                                             </Button>

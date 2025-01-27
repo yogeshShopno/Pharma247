@@ -209,9 +209,9 @@ const Item_Batch_wiseStock = () => {
                                     <div className="manageExpenseRow" style={{
                                         padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                     }}>
-                                        <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className="item_btch_flddd oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
                                             <div className="flex gap-2 purch_report_hdr" >
-                                                <div className="detail_report flex flex-col" >
+                                                <div className="detail_report detail_report_psss flex flex-col" >
 
                                                     <span className="primary">Start Date</span>
                                                     <div style={{ width: "100%" }}>
@@ -223,7 +223,7 @@ const Item_Batch_wiseStock = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="detail_report flex flex-col" >
+                                                <div className="detail_report detail_report_psss flex flex-col" >
 
                                                     <span className="primary">End Date</span>
                                                     <div style={{ width: "100%" }}>
@@ -238,13 +238,14 @@ const Item_Batch_wiseStock = () => {
                                             </div>
 
                                             <div className="flex gap-2 purch_report_hdr" style={{ width: "100%" }}>
-                                                <div className="mt-6">
+                                                <div className="detail_report detail_report_psss flex flex-col">
                                                     <div style={{ width: "100%" }}>
                                                         <TextField
                                                             autoComplete="off"
                                                             id="outlined-basic"
                                                             value={companyName}
                                                             size="small"
+                                                            sx={{ width: '100%' }}
                                                             onChange={(e) => setCompanyName(e.target.value)}
                                                             variant="outlined"
                                                             placeholder="Type Here..."
@@ -264,13 +265,14 @@ const Item_Batch_wiseStock = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="mt-6">
+                                                <div className="detail_report detail_report_psss flex flex-col">
                                                     <div style={{ width: "100%" }} >
                                                         <TextField
                                                             autoComplete="off"
                                                             id="outlined-basic"
                                                             value={drugGroup}
                                                             size="small"
+                                                            sx={{ width: '100%' }}
                                                             onChange={(e) => setDrugGroup(e.target.value)}
                                                             variant="outlined"
                                                             placeholder="Type Here..."
@@ -293,12 +295,13 @@ const Item_Batch_wiseStock = () => {
 
                                             </div>
                                             <div className="flex gap-2 purch_report_hdr" style={{ width: "100%" }}>
-                                                <div className="mt-6">
+                                                <div className="detail_report detail_report_psss flex flex-col">
                                                     <div style={{ width: "100%" }} >
                                                         <TextField
                                                             autoComplete="off"
                                                             id="outlined-basic"
                                                             value={location}
+                                                            sx={{ width: '100%' }}
                                                             size="small"
                                                             onChange={(e) => setLocation(e.target.value)}
                                                             variant="outlined"
@@ -320,9 +323,9 @@ const Item_Batch_wiseStock = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="mt-6">
+                                                <div className="detail_report detail_report_psss flex flex-col">
                                                     <Button style={{
-                                                        background: "var(--color1)",
+                                                        background: "var(--color1)", height: '40px'
                                                     }} variant="contained" onClick={() => handlefilterData(currentPage)}>
                                                         Go
                                                     </Button>

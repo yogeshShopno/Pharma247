@@ -461,6 +461,11 @@
     width: 100% !important;
     justify-content: space-between;
   }
+  .ttl_dldld{
+    width: 100% !important;
+    justify-content: end;
+    display: flex;
+  }
 }
 
 @media (max-width: 767px) {
@@ -487,6 +492,12 @@
   .report_btn_purch {
     font-size: 15px !important;
     white-space: nowrap;
+  }
+  .ttl_dldld{
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: column;
+    display: flex;
   }
 }
 

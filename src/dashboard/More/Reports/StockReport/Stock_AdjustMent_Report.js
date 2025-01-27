@@ -34,18 +34,18 @@ const Stock_AdjustMent_Report = () => {
     const [total, setTotal] = useState(0)
 
     const GstSaleRegisterColumns = [
-        { id: 'adjusted_by', label: 'Adjusted By', minWidth: 100 },
+        { id: 'adjusted_by', label: 'Adjusted By', minWidth: 150 },
         { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 10 },
-        { id: 'iteam_name', label: 'Item Name', minWidth: 100 },
-        { id: 'batch_name', label: 'Batch', minWidth: 100 },
-        { id: 'unite', label: 'Unit', minWidth: 100 },
-        { id: 'expriy', label: 'Expiry', minWidth: 100 },
-        { id: 'company_name', label: 'Company Name', minWidth: 100 },
-        { id: 'mrp', label: 'MRP', minWidth: 100 },
-        { id: 'stock', label: 'Total Stock', minWidth: 100 },
-        { id: 'stock_adjust', label: 'Stock Adjusted', minWidth: 100 },
-        // { id: 'remaining_stock', label: 'Remaining Stock', minWidth: 100 },
-        { id: 'stock_adjust_amount', label: 'Stock Adjust Amount', minWidth: 100 },
+        { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
+        { id: 'batch_name', label: 'Batch', minWidth: 150 },
+        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'expriy', label: 'Expiry', minWidth: 150 },
+        { id: 'company_name', label: 'Company Name', minWidth: 150 },
+        { id: 'mrp', label: 'MRP', minWidth: 150 },
+        { id: 'stock', label: 'Total Stock', minWidth: 150 },
+        { id: 'stock_adjust', label: 'Stock Adjusted', minWidth: 150 },
+        // { id: 'remaining_stock', label: 'Remaining Stock', minWidth: 150 },
+        { id: 'stock_adjust_amount', label: 'Stock Adjust Amount', minWidth: 150 },
     ];
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
 
@@ -163,16 +163,20 @@ const Stock_AdjustMent_Report = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                    </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "182px" }}>  Stock Adjustment Report
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                        <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                        </span>
+                                    </div>
 
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                    <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}>  Stock Adjustment Report
+
+                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </span>
-                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
                                     <Button
@@ -184,7 +188,7 @@ const Stock_AdjustMent_Report = () => {
                                             textTransform: "none",
                                             display: "flex",
                                         }}
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 report_btn_purch"
                                         onClick={exportToCSV}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <img src="/csv-file.png"
@@ -198,81 +202,101 @@ const Stock_AdjustMent_Report = () => {
                                 </div>
                             </div>
                             <div className="bg-white ">
-                                <div
-                                    className="manageExpenseRow"
-                                    style={{
-                                        padding: '20px 24px',
-                                        borderBottom: "2px solid rgb(0 0 0 / 0.1)",
-                                    }}
-                                >
-                                    <div className="contents flex-wrap">
-                                        <div className="flex gap-5 flex-wrap">
-                                            <div className="detail">
-                                                <span className="text-gray-500">Start Date</span>
-                                                <DatePicker
-                                                    className="custom-datepicker"
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                <div className="manageExpenseRow" style={{
+                                    padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
+                                }}>
+                                    <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className="flex gap-2 ttl_dldld" >
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+
+                                                    <DatePicker
+                                                        className="custom-datepicker_mn"
+                                                        selected={startDate}
+                                                        onChange={(newDate) => setStartDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">End Date</span>
+                                                <div style={{ width: "100%" }}>
+
+                                                    <DatePicker
+                                                        className="custom-datepicker_mn"
+                                                        selected={endDate}
+                                                        onChange={(newDate) => setEndDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 ttl_dldld " style={{ width: "100%" }}>
+                                            <div className="detail_report flex flex-col">
+                                                <div style={{ width: "100%" }}>
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-basic"
+                                                        value={itemSearch}
+                                                        sx={{ width: '100%' }}
+                                                        size="small"
+                                                        onChange={(e) => setItemSearch(e.target.value)}
+                                                        variant="outlined"
+                                                        placeholder="Search by Item name, adjusted by"
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: 'search',
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
 
-                                            <div className="detail">
-                                                <span className="text-gray-500">End Date</span>
-                                                <DatePicker
-                                                    className="custom-datepicker"
-                                                    selected={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
-                                            </div>
-
-                                            <div className="detail mt-6">
-                                                <TextField
-                                                    autoComplete="off"
-                                                    id="outlined-basic"
-                                                    value={itemSearch}
-                                                    sx={{ minWidth: '300px' }}
-                                                    size="small"
-                                                    onChange={(e) => setItemSearch(e.target.value)}
-                                                    variant="outlined"
-                                                    placeholder="Search by Item name, adjusted by"
-                                                    InputProps={{
-                                                        endAdornment: (
-                                                            <InputAdornment position="end">
-                                                                <SearchIcon />
-                                                            </InputAdornment>
-                                                        ),
-                                                        type: 'search',
-                                                    }}
-                                                />
-                                            </div>
-
-                                            <div className="mt-6">
+                                            <div className="detail_report flex flex-col">
                                                 <Button
+                                                    // className="go_btn_divv"
                                                     style={{
                                                         background: "var(--color1)",
-                                                    }} variant="contained" onClick={() => adjustStockList(currentPage)}>
+                                                        width: '100%',
+                                                        height: "40px"
+                                                    }} variant="contained" onClick={() => adjustStockList(currentPage)}
+                                                >
                                                     Go
                                                 </Button>
                                             </div>
                                         </div>
-                                        <div className="mt-6 ml-auto">
-                                            <div
-                                                className="flex gap-5 p-2 rounded-md"
-                                                style={{ background: "rgba(4, 76, 157, 0.1)" }}
-                                            >
-                                                <span className="primary text-xl">Total</span>
-                                                <p className="secondary text-xl">Rs.{total}</p>
+                                        <div class="flex gap-2  ttl_dldld">
+                                            <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                                <div>
+                                                    <div className="relative" >
+                                                        <h2 className="primary font-medium text-xl ">Total </h2>
+                                                    </div>
+                                                </div>
+                                                <div className="flex">
+                                                    <div>
+                                                        <h2 className="secondary font-bold text-xl ">Rs.{total}</h2>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {adjustStockListData.length > 0 ?
-                                    <div className="p-4">
+                                    <div className="firstrow">
                                         <div className="overflow-x-auto mt-4">
-                                            <table className="table-cashManage w-full border-collapse">
+                                            <table
+                                                className="w-full border-collapse custom-table"
+                                                style={{
+                                                    whiteSpace: "nowrap",
+                                                    borderCollapse: "separate",
+                                                    borderSpacing: "0 6px",
+                                                }}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         {GstSaleRegisterColumns.map((column) => (
@@ -282,11 +306,19 @@ const Stock_AdjustMent_Report = () => {
                                                         ))}
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style={{ background: "#3f621217" }}>
                                                     {adjustStockListData?.map((item, index) => (
                                                         <tr key={index} >
-                                                            {GstSaleRegisterColumns.map((column) => (
-                                                                <td key={column.id}>
+                                                            {GstSaleRegisterColumns.map((column, colIndex) => (
+                                                                <td key={column.id}
+                                                                    style={
+                                                                        colIndex === 0 ? {
+                                                                            borderRadius: "10px 0 0 10px",
+                                                                        } : colIndex === GstSaleRegisterColumns.length - 1 ? {
+                                                                            borderRadius: "0 10px 10px 0",
+                                                                        } : {}
+                                                                    }
+                                                                >
                                                                     {item[column.id] && item[column.id].charAt(0).toUpperCase() + item[column.id].slice(1)}
                                                                 </td>
                                                             ))}

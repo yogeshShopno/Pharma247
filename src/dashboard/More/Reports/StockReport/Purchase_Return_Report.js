@@ -201,7 +201,7 @@ const Purchase_Return_Report = () => {
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
                                 <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
-                                    <div className="flex gap-2 purch_report_hdr" >
+                                    <div className="flex gap-2 ttl_dldld" >
 
                                         <div className="detail_report flex flex-col" >
                                             <span className="primary">Start Date</span>
@@ -227,7 +227,7 @@ const Purchase_Return_Report = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-2 purch_report_hdr" style={{ width: "100%" }}>
+                                    <div className="flex gap-2 ttl_dldld" style={{ width: "100%" }}>
                                         <div className="detail_report flex flex-col">
                                             <div style={{ width: "100%" }}>
                                                 <TextField
@@ -256,12 +256,13 @@ const Purchase_Return_Report = () => {
                                             </div>
                                         </div>
 
-                                        <div className="purch_report_hdr">
+                                        <div className="detail_report flex flex-col">
                                             <Button
                                                 className="go_btn_divv"
                                                 style={{
                                                     background: "var(--color1)",
-                                                    width: '100%'
+                                                    width: '100%',
+                                                    height: "40px"
                                                 }} variant="contained" onClick={() => handlefilterData(currentPage)}
                                             >
                                                 Go
@@ -269,7 +270,7 @@ const Purchase_Return_Report = () => {
                                         </div>
 
                                     </div>
-                                    <div class="flex gap-2 purch_report_hdr">
+                                    <div class="flex gap-2 ttl_dldld">
                                         <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
                                             <div>
                                                 <div className="relative" >

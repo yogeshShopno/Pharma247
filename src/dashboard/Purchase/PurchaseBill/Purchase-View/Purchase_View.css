@@ -1059,14 +1059,20 @@
     flex-direction: column;
     width: 100%;
     min-width: 255px !important;
-}
+  }
 }
 
-@media (min-width:1216px) and (max-width:1410px) {
+@media (min-width: 1216px) and (max-width: 1410px) {
   .detail_report_sss {
     display: flex;
     flex-direction: column;
     width: auto;
     min-width: 220px;
+  }
 }
+
+@media (max-width: 436px) {
+  .invrnt_flddd {
+    flex-wrap: wrap;
+  }
 }

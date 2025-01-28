@@ -25,7 +25,7 @@ const DistributerView = () => {
         { id: "paid_amount", label: "Paid Amount", minWidth: 150 },
         { id: "due_amount", label: "Due Amount", minWidth: 150 }
     ]
-    /*<======================================================================= get distributor details  =======================================================================> */
+/*<======================================================================= get distributor details  =======================================================================> */
 
     useEffect(() => {
         distributerDetail(id);
@@ -171,11 +171,13 @@ const DistributerView = () => {
                             <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
                         </div>
                         <Button className="gap-7" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: "flex" }}
+                        onClick={()=>handleGetCompanyList()}
                         >
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img src="/csv-file.png"
                                     className=" report-icon absolute "
                                     alt="csv Icon"
+                                    
                                 />
                             </div>
                             Download Compony List</Button>

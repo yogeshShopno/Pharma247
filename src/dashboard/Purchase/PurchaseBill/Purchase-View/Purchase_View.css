@@ -1087,7 +1087,7 @@
   }
 }
 
-@media (max-width: 659px) {
+@media (max-width: 660px) {
   .itm_main_flds {
     width: 100%;
     gap: 1rem;
@@ -1097,6 +1097,13 @@
     width: 100%;
     align-items: center;
     justify-content: space-between;
+    /* border-bottom: 1px solid lightgray; */
+  }
+}
+
+@media (min-width: 661px) {
+  .bit_itm_summ {
+    padding-top: 0.5rem !important;
   }
 }
 
@@ -1108,5 +1115,77 @@
     flex-direction: column;
     white-space: nowrap;
     align-items: start;
+  }
+}
+
+@media (min-width: 1411px) and (max-width: 1470px) {
+  .detail_report_sale_summery {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-width: 245px !important;
+  }
+}
+
+@media (max-width: 1297px) {
+  .sale_summery_hdr {
+    flex-direction: column !important;
+  }
+  .sale_summ_sec {
+    flex-direction: column;
+    width: 100% !important;
+  }
+  .sale_summary_ttl {
+    width: 100% !important;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+  }
+  .detail_report_sss_btn {
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+    min-width: 220px;
+  }
+  .sale_summ_fldss_sec {
+    width: 100% !important;
+  }
+  .sale_summ_fldss_sec_inli {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1738px) {
+  .doc_type_hd {
+    flex-wrap: nowrap !important;
+  }
+}
+@media (max-width: 1737px) {
+  .detail_report_doc_btn {
+    min-width: 230px !important;
+  }
+  .doc_type_hd {
+    flex-wrap: nowrap !important;
+  }
+}
+
+@media (max-width: 1680px) {
+  .doc_type_hd {
+    flex-direction: column;
+  }
+  .detail_report_doc_btn {
+    min-width: 255px !important;
+  }
+  .doc_summary_ttl {
+    width: 100% !important;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 881px) {
+  .day_wise_sum {
+    flex-direction: column;
   }
 }

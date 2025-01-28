@@ -192,7 +192,7 @@ const DoctorItemWise = () => {
                                     <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
 
                                 </div>
-                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>   Item Wise Doctor Wise Report
+                                <span className="report_hdr_txt_ec gap-2 txt_hdr_rpt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>   Item Wise Doctor Wise Report
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </span>
                             </div>
@@ -219,12 +219,12 @@ const DoctorItemWise = () => {
                                 </Button> </div>
                         </div>
                         <div className="bg-white ">
-                            <div className="manageExpenseRow" style={{
+                            <div className="manageExpenseRow doc_type_hd" style={{
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
                                 <div className="item_btch_flddd oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
                                     <div className="flex gap-2 purch_report_hdr" >
-                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn" >
 
                                             <span className="primary">Start Date</span>
                                             <div style={{ width: "100%" }}>
@@ -237,7 +237,7 @@ const DoctorItemWise = () => {
                                             </div>
                                         </div>
 
-                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn" >
 
                                             <span className="primary">End Date</span>
                                             <div style={{ width: "100%" }}>
@@ -252,7 +252,7 @@ const DoctorItemWise = () => {
                                     </div>
 
                                     <div className="flex gap-2 purch_report_hdr" >
-                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn" >
                                             <FormControl sx={{ width: '100%' }} size="small">
                                                 <InputLabel id="demo-select-small-label">Report Type</InputLabel>
                                                 <Select
@@ -272,7 +272,7 @@ const DoctorItemWise = () => {
                                                 </Select>
                                             </FormControl>
                                         </div>
-                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn" >
                                             <TextField
                                                 autoComplete="off"
                                                 id="outlined-basic"
@@ -294,7 +294,7 @@ const DoctorItemWise = () => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2 purch_report_hdr" >
-                                        <div className="detail_report detail_report_psss flex flex-col" >
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn" >
                                             <TextField
                                                 autoComplete="off"
                                                 id="outlined-basic"
@@ -314,7 +314,7 @@ const DoctorItemWise = () => {
                                                 }}
                                             />
                                         </div>
-                                        <div className="detail_report detail_report_psss flex flex-col">
+                                        <div className="detail_report detail_report_psss flex flex-col detail_report_doc_btn">
                                             <Button style={{
                                                 background: "var(--color1)",
                                                 height: '40px'
@@ -325,7 +325,7 @@ const DoctorItemWise = () => {
                                     </div>
                                 </div>
                                 <div class="flex gap-2  ttl_dldld">
-                                    <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                    <div className="total_mng_expn doc_summary_ttl  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
                                         <div>
                                             <div className="relative" >
                                                 <h2 className="primary font-medium text-xl ">Total </h2>

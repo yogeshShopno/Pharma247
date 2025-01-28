@@ -28,12 +28,12 @@ const DayWiseSummary = () => {
     const [errors, setErrors] = useState({});
     const [total, setTotal] = useState(0)
     const DayWiseSummaryColumns = [
-        { id: "bill_date", label: "Bill Date", minWidth: 100 },
-        { id: "bill_no", label: "Bill No", minWidth: 100 },
-        { id: 'name', label: "Person Name", minWidth: 100 },
-        { id: 'cgst', label: 'CGST', minWidth: 100 },
-        { id: 'sgst', label: 'SGST', minWidth: 100 },
-        { id: 'total_amount', label: 'Total', minWidth: 100 },
+        { id: "bill_date", label: "Bill Date", minWidth: 150 },
+        { id: "bill_no", label: "Bill No", minWidth: 150 },
+        { id: 'name', label: "Person Name", minWidth: 150 },
+        { id: 'cgst', label: 'CGST', minWidth: 150 },
+        { id: 'sgst', label: 'SGST', minWidth: 150 },
+        { id: 'total_amount', label: 'Total', minWidth: 150 },
     ];
     const validateForm = () => {
         const newErrors = {};
@@ -159,10 +159,10 @@ const DayWiseSummary = () => {
 
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
 
-                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> Day wise Summary
+                                <span className="report_hdr_txt_ec gap-2 txt_hdr_rpt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> Day wise Summary
 
+                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Button
@@ -188,49 +188,52 @@ const DayWiseSummary = () => {
                             <div className="manageExpenseRow" style={{
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
-                                    <div className="flex gap-2 ttl_dldld" style={{ alignItems: 'end' }}>
-                                        <div className="detail_report flex flex-col" >
-                                            <span className="primary">Start Date</span>
-                                            <div style={{ width: "100%" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker_mn '
-                                                    selected={monthDate}
-                                                    onChange={(newDate) => setMonthDate(newDate)}
-                                                    dateFormat="MM/yyyy"
-                                                    showMonthYearPicker
-                                                />
+                                <div className="oreder_list_fld_rp gap-2 " style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                                    <div className="flex flex-col gap-2 md:flex-row lg:flex-row pb-2 day_wise_sum" style={{ alignItems: 'end' }}>
+                                        <div className="flex gap-2 ttl_dldld day_summ_fldssss" style={{ alignItems: 'end' }}>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={monthDate}
+                                                        onChange={(newDate) => setMonthDate(newDate)}
+                                                        dateFormat="MM/yyyy"
+                                                        showMonthYearPicker
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+                                                <FormControl sx={{ width: "100%" }} size="small">
+                                                    <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={reportType}
+                                                        onChange={(e) => setReportType(e.target.value)}
+                                                        label="Report Type"
+
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Select Report Type
+                                                        </MenuItem>
+                                                        <MenuItem value="0">Purchase</MenuItem>
+                                                        <MenuItem value="1">Purchase Return</MenuItem>
+                                                        <MenuItem value="2">Sales</MenuItem>
+                                                        <MenuItem value="3">Sales Return</MenuItem>
+                                                    </Select>
+                                                </FormControl>
                                             </div>
                                         </div>
-
                                         <div className="detail_report detail_report_sss flex flex-col" >
-                                            <FormControl sx={{ width: "100%" }} size="small">
-                                                <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={reportType}
-                                                    onChange={(e) => setReportType(e.target.value)}
-                                                    label="Report Type"
-
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        Select Report Type
-                                                    </MenuItem>
-                                                    <MenuItem value="0">Purchase</MenuItem>
-                                                    <MenuItem value="1">Purchase Return</MenuItem>
-                                                    <MenuItem value="2">Sales</MenuItem>
-                                                    <MenuItem value="3">Sales Return</MenuItem>
-                                                </Select>
-                                            </FormControl>
+                                            <Button style={{
+                                                background: "var(--color1)", height: "40px"
+                                            }} variant="contained" onClick={handlefilterData}>
+                                                Go
+                                            </Button>
                                         </div>
-                                    </div>
-                                    <div className="detail_report detail_report_sss flex flex-col" >
-                                        <Button style={{
-                                            background: "var(--color1)", height: "40px"
-                                        }} variant="contained" onClick={handlefilterData}>
-                                            Go
-                                        </Button>
                                     </div>
 
                                     <div class="flex gap-2  ttl_dldld">

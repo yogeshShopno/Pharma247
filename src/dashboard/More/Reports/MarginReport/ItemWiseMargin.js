@@ -296,25 +296,25 @@ const ItemWiseMargin = () => {
                                                     <span className="primary font-bold">
                                                         Total Sale Amt.
                                                     </span>
-                                                    <p className="secondary font-semibold p-1.5">Rs. {itemMarginData?.total_sales}</p>
+                                                    <p className="secondary font-semibold bit_itm_summ">Rs. {itemMarginData?.total_sales}</p>
                                                 </div>
                                                 <div className="sub_itm_mrg_fld">
                                                     <span className="primary font-bold">
                                                         Total Purchase
                                                     </span>
-                                                    <p className="secondary font-semibold p-1.5">Rs. {itemMarginData?.total_purches}</p>
+                                                    <p className="secondary font-semibold bit_itm_summ">Rs. {itemMarginData?.total_purches}</p>
                                                 </div>
                                                 <div className="sub_itm_mrg_fld">
                                                     <span className="primary font-bold">
                                                         Total Net GST
                                                     </span>
-                                                    <p className="secondary font-semibold p-1.5">Rs. {itemMarginData?.total_net_gst}</p>
+                                                    <p className="secondary font-semibold bit_itm_summ">Rs. {itemMarginData?.total_net_gst}</p>
                                                 </div>
                                                 <div className="sub_itm_mrg_fld">
                                                     <span className="primary font-bold">
                                                         Total Profit
                                                     </span>
-                                                    <p className="  font-semibold p-1.5" style={{ color: "var(--color2)" }}>Rs. {parseFloat(itemMarginData?.total_net_profit).toFixed(2)}</p>
+                                                    <p className="  font-semibold bit_itm_summ" style={{ color: "var(--color2)" }}>Rs. {parseFloat(itemMarginData?.total_net_profit).toFixed(2)}</p>
                                                 </div>
                                             </div>
                                         </div>

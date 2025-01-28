@@ -510,6 +510,15 @@
     flex-direction: column;
     display: flex;
   }
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: row;
+    display: flex;
+  }
+  .day_wise_sum {
+    width: 100% !important;
+  }
 }
 
 @media (min-width: 811px) {
@@ -525,6 +534,18 @@
 
 @media (max-width: 1100px) {
   .info_box_fld {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 605px) {
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: column;
+    display: flex;
+  }
+  .day_wise_sum {
     width: 100% !important;
   }
 }

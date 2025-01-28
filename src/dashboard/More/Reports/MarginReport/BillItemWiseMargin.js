@@ -27,21 +27,21 @@ const BillItemWiseMargin = () => {
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
 
     const BillItemWiseColumns = [
-        { id: "entry_by", label: "Entry By", minWidth: 120 },
-        { id: 'bill_no', label: 'Bill No.', minWidth: 120 },
-        { id: 'bill_date', label: 'Bill Date', minWidth: 120 },
-        { id: 'patient_name', label: 'Customer Name', minWidth: 120 },
-        { id: 'name', label: 'Item Name', minWidth: 120 },
-        { id: 'category', label: 'Category', minWidth: 120 },
-        { id: 'unite', label: 'Unit', minWidth: 120 },
-        { id: 'company', label: 'Manu.', minWidth: 120 },
-        { id: 'sales_count', label: 'Sale', minWidth: 120 },
-        { id: 'stock', label: 'Stock', minWidth: 120 },
-        { id: 'mrp', label: 'MRP', minWidth: 120 },
-        { id: 'sales_amount', label: 'Sale Amt.', minWidth: 120 },
-        { id: 'purches_amount', label: 'Purchase', minWidth: 120 },
-        { id: 'net_gst', label: 'Net GST', minWidth: 120 },
-        { id: 'net_profit', label: 'Profit(%)', minWidth: 120 },
+        { id: "entry_by", label: "Entry By", minWidth: 110 },
+        { id: 'bill_no', label: 'Bill No.', minWidth: 110 },
+        { id: 'bill_date', label: 'Bill Date', minWidth: 110 },
+        { id: 'patient_name', label: 'Customer Name', minWidth: 110 },
+        { id: 'name', label: 'Item Name', minWidth: 110 },
+        { id: 'category', label: 'Category', minWidth: 110 },
+        { id: 'unite', label: 'Unit', minWidth: 110 },
+        { id: 'company', label: 'Manu.', minWidth: 110 },
+        { id: 'sales_count', label: 'Sale', minWidth: 110 },
+        { id: 'stock', label: 'Stock', minWidth: 110 },
+        { id: 'mrp', label: 'MRP', minWidth: 110 },
+        { id: 'sales_amount', label: 'Sale Amt.', minWidth: 110 },
+        { id: 'purches_amount', label: 'Purchase', minWidth: 110 },
+        { id: 'net_gst', label: 'Net GST', minWidth: 110 },
+        { id: 'net_profit', label: 'Profit(%)', minWidth: 110 },
     ];
 
     const validateForm = () => {
@@ -301,25 +301,25 @@ const BillItemWiseMargin = () => {
                                                         <span className="primary font-bold">
                                                             Total Sale Amt.
                                                         </span>
-                                                        <p className="secondary font-semibold p-1.5">Rs. {parseFloat(billMarginData.total_sales).toFixed(2)}</p>
+                                                        <p className="secondary font-semibold bit_itm_summ">Rs. {parseFloat(billMarginData.total_sales).toFixed(2)}</p>
                                                     </div>
                                                     <div className="sub_itm_mrg_fld">
                                                         <span className="primary font-bold">
                                                             Total Purchase
                                                         </span>
-                                                        <p className="secondary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_purches).toFixed(2)}</p>
+                                                        <p className="secondary font-semibold bit_itm_summ">Rs.  {parseFloat(billMarginData.total_purches).toFixed(2)}</p>
                                                     </div>
                                                     <div className="sub_itm_mrg_fld">
                                                         <span className="primary font-bold">
                                                             Total Net GST
                                                         </span>
-                                                        <p className="secondary font-semibold p-1.5">Rs.  {parseFloat(billMarginData.total_net_gst).toFixed(2)}</p>
+                                                        <p className="secondary font-semibold bit_itm_summ">Rs.  {parseFloat(billMarginData.total_net_gst).toFixed(2)}</p>
                                                     </div>
                                                     <div className="sub_itm_mrg_fld">
                                                         <span className="primary font-bold">
                                                             Total Profit
                                                         </span>
-                                                        <p className="  font-semibold p-1.5" style={{ color: "var(--color2)" }}>Rs.  {parseFloat(billMarginData?.total_net_profit).toFixed(2)}</p>
+                                                        <p className="  font-semibold bit_itm_summ" style={{ color: "var(--color2)" }}>Rs.  {parseFloat(billMarginData?.total_net_profit).toFixed(2)}</p>
                                                     </div>
                                                 </div>
                                             </div>

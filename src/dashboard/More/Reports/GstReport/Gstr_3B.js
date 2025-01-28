@@ -138,7 +138,7 @@ const Gstr_3B = () => {
                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}> GSTR-3B Report
+                                <span className="txt_hdr_rpt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}> GSTR-3B Report
                                 </span>
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>

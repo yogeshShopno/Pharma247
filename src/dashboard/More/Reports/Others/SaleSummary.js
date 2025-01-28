@@ -209,11 +209,11 @@ const SaleSummary = () => {
                                     padding: ' 12px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
                                     <div className="oreder_list_fld_rp gap-2 sale_summery_hdr" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                                        <div className=" flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className=" flex flex-col gap-2 md:flex-row lg:flex-row pb-2 sale_summ_sec" style={{ alignItems: 'end' }}>
 
-                                            <div className="flex gap-2 purch_report_hdr ">
+                                            <div className="flex gap-2 purch_report_hdr sale_summ_fldss_sec">
 
-                                                <div className="detail_report detail_report_sss flex flex-col" >
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli" >
                                                     <span className="primary">Start Date</span>
                                                     <div style={{ width: "100%" }}>
                                                         <DatePicker
@@ -225,7 +225,7 @@ const SaleSummary = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="detail_report detail_report_sss flex flex-col" >
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli" >
                                                     <span className="primary">End Date</span>
                                                     <div style={{ width: "100%" }}>
                                                         <DatePicker
@@ -237,8 +237,8 @@ const SaleSummary = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-2 purch_report_hdr ">
-                                                <div className="detail_report detail_report_sss flex flex-col">
+                                            <div className="flex gap-2 purch_report_hdr sale_summ_fldss_sec">
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli">
                                                     <FormControl sx={{ width: '100%' }} size="small">
                                                         <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
                                                         <Select
@@ -299,7 +299,7 @@ const SaleSummary = () => {
                                                         </Select>
                                                     </FormControl>
                                                 </div>
-                                                <div className="detail_report detail_report_sss flex flex-col">
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli">
                                                     <div className="detail" >
                                                         <FormControl sx={{ width: '100%' }} size="small">
                                                             <InputLabel id="demo-select-small-label">Select Data</InputLabel>
@@ -322,7 +322,7 @@ const SaleSummary = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="purch_report_hdr detail_report detail_report_sss">
+                                            <div className="purch_report_hdr detail_report detail_report_sss detail_report_sss_btn detail_report_sale_summery">
                                                 <Button style={{
                                                     background: "var(--color1)",
                                                     height: '40px'
@@ -334,8 +334,8 @@ const SaleSummary = () => {
                                         </div>
 
 
-                                        <div class="flex gap-2  ttl_dldld">
-                                            <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                        <div class="flex gap-2  ttl_dldld ">
+                                            <div className="total_mng_expn  detail_report_totl sale_summary_ttl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
                                                 <div>
                                                     <div className="relative" >
                                                         <h2 className="primary font-medium text-xl ">Total </h2>
@@ -385,8 +385,14 @@ const SaleSummary = () => {
                                                 <tbody style={{ background: "#3f621217" }}>
                                                     {saleSummaryData.sales?.map((item, index) => (
                                                         <tr key={index}>
-                                                            {Object.keys(item).map((key) => (
-                                                                <td key={key}>
+                                                            {Object.keys(item).map((key, colIndex, array) => (
+                                                                <td key={key} style={
+                                                                    colIndex === 0
+                                                                        ? { borderRadius: "10px 0 0 10px" }
+                                                                        : colIndex === array.length - 1
+                                                                            ? { borderRadius: "0 10px 10px 0" }
+                                                                            : {}
+                                                                }>
                                                                     {item[key]}
                                                                 </td>
                                                             ))}

@@ -1972,6 +1972,63 @@ const InventoryList = () => {
         </Box>
 
         <Box className="p-5 tbl_content_inv" sx={{ width: "100%" }}>
+        <Button
+              variant="contained"
+              style={{
+                background: "red",
+                color: "white",
+                size: "large",
+              }}
+           
+            >
+              Missing HSN :(0) 
+            </Button> 
+            <Button
+              variant="contained"
+              style={{
+                background: "red",
+                color: "white",
+                size: "large",
+              }}
+           
+            >
+              invalid MRP(0) 
+            </Button>
+             <Button
+              variant="contained"
+              style={{
+                background: "red",
+                color: "white",
+                size: "large",
+              }}
+           
+            >
+               Missing Location : (0) 
+            </Button> 
+            <Button
+              variant="contained"
+              style={{
+                background: "red",
+                color: "white",
+                size: "large",
+              }}
+           
+            >
+              Missing Category (0) 
+            </Button>
+            
+             <Button
+              variant="contained"
+              style={{
+                background: "red",
+                color: "white",
+                size: "large",
+              }}
+           
+            >
+              Invalid Price (0) 
+            </Button>
+
           <div className="flex flex-wrap  justify-between mb-4 relative inventory_search_main">
             <TextField
               autoComplete="off"

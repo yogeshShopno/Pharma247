@@ -136,13 +136,13 @@ const EditPurchaseBill = () => {
       
       console.log(key)
       if (key === "ArrowDown") {
-        // Move selection down
+     
         setSelectedIndex((prev) => prev < purchase?.item_list?.length - 1 ? prev + 1 : prev);
         const selectedRow = purchase?.item_list[selectedIndex];
         setSelectedEditItemId(selectedRow.id);
 
       } else if (key === "ArrowUp") {
-        // Move selection up
+       
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
         const selectedRow = purchase?.item_list[selectedIndex];
         setSelectedEditItemId(selectedRow.id);
@@ -162,7 +162,7 @@ const EditPurchaseBill = () => {
     useEffect(() => {
       const currentRef = tableRef.current;
       if (currentRef) {
-        currentRef.focus(); // Ensure focus for capturing key events
+        currentRef.focus(); 
         currentRef.addEventListener("keydown", handleKeyPress);
       }
   

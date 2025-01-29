@@ -2293,7 +2293,7 @@ const AddPurchaseBill = () => {
                             </Button>
                           </td>
                         </tr>
-                        {/*<=============================================================================== added Item  ==============================================================================> */}
+ {/*<=============================================================================== added Item  ==============================================================================> */}
 
                         {/* {ItemPurchaseList?.item?.map((item) => (
                           <tr
@@ -2351,7 +2351,7 @@ const AddPurchaseBill = () => {
                   <table
                   className="customtable  w-full border-collapse custom-table"
                     ref={tableRef}
-                    tabIndex={0} // Make the container focusable
+                    tabIndex={0} 
                   > <tbody 
                   >
                     {ItemPurchaseList?.item?.map((item) => (

@@ -172,61 +172,55 @@ const AddPurchaseBill = () => {
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
 
-    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
-    const [selectedId, setSelectedId] = useState(null); // ID of selected row
-    const tableRef = useRef(null); // Reference for table container
- 
-   
-  
-    // Ensure the table container listens for key events
-    useEffect(() => {
-      const currentRef = tableRef.current;
-      if (currentRef) {
-        currentRef.focus(); // Ensure focus for capturing key events
-        currentRef.addEventListener("keydown", handleKeyPress);
-      }
-  
-      return () => {
-        if (currentRef) {
-          currentRef.removeEventListener("keydown", handleKeyPress);
-        }
-      };
-    }, [selectedIndex, ItemPurchaseList]);
-  
-    // Update selectedId when selectedIndex changes
-    useEffect(() => {
-      if (selectedIndex >= 0) {
-        setSelectedId(ItemPurchaseList[selectedIndex]?.id || null);
-     
-      }
-    }, [selectedIndex, ItemPurchaseList]);
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+  const tableRef = useRef(null); // Reference for table container
 
-      // Update selectedId when selectedIndex changes
-      useEffect(() => {
-      
-          console.log(selectedId,"selectedId")
-        
-      }, [selectedId]);
-       // Handle key presses for navigating rows
-    const handleKeyPress = (e) => {
-      const key = e.key;
-      console.log(e,"key")
-  
-      if (key === "ArrowDown") {
-        // Move selection down
-        setSelectedIndex((prev) =>
-          prev < ItemPurchaseList.length - 1 ? prev + 1 : prev
-        );
-      } else if (key === "ArrowUp") {
-        // Move selection up
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      } else if (key === "Enter" && selectedIndex !== -1) {
-        // Confirm selection
-        const selectedRow = ItemPurchaseList[selectedIndex];
-        setSelectedId(selectedRow.id);
-        alert(`Selected ID: ${selectedRow.id}`);
+  // Handle key presses for navigating rows
+  const handleKeyPress = (e) => {
+    const key = e.key;
+    console.log(key)
+    if (key === "ArrowDown") {
+      // Move selection down
+      setSelectedIndex((prev) =>
+        prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
+      );
+    } else if (key === "ArrowUp") {
+      // Move selection up
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    } else if (key === "Enter" && selectedIndex !== -1) {
+      // Confirm selection
+      console.log("hi");
+      const selectedRow = ItemPurchaseList.item[selectedIndex];
+      setSelectedEditItemId(selectedRow.id);
+      console.log( ItemPurchaseList.item[selectedIndex],"hi")
+      handleEditClick(ItemPurchaseList.item[selectedIndex])
+      // alert(`Selected ID: ${selectedRow.id}`);
+    }
+  };
+
+  // Ensure the table container listens for key events
+  useEffect(() => {
+    const currentRef = tableRef.current;
+    if (currentRef) {
+      currentRef.focus(); // Ensure focus for capturing key events
+      currentRef.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("keydown", handleKeyPress);
       }
     };
+  }, [selectedIndex, ItemPurchaseList]);
+
+  // Update selectedEditItemId when selectedIndex changes
+
+  useEffect(() => {
+    if (selectedIndex >= 0) {
+      setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
+    }
+  }, [selectedIndex, ItemPurchaseList]);
+  
   /*<================================================================================ PTR and MRP validation =======================================================================> */
 
   useEffect(() => {
@@ -238,6 +232,7 @@ const AddPurchaseBill = () => {
 
     setErrors(newErrors);
   }, [ptr, mrp]);
+  
   /*<================================================================= Clear old purchase item if user leave the browswer =========================================================> */
 
   useEffect(() => {
@@ -360,15 +355,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=================================================================== Update the selected row when the index changes ================================================================> */
-
- 
-  // Update the selected row when the index changes
-  useEffect(() => {
-    if (selectedIndex >= 0) {
-      setSelectedId(ItemPurchaseList[selectedIndex]?.id || null);
-    }
-  }, [selectedIndex, ItemPurchaseList]);
 
   /*<============================================================================ expiry date validation =========================================================================> */
 
@@ -1281,7 +1267,7 @@ const AddPurchaseBill = () => {
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
-    setSelectedId(item.id)
+    setSelectedEditItemId(item.id)
     setSelectedEditItemId(item.id);
   };
 
@@ -1833,7 +1819,6 @@ const AddPurchaseBill = () => {
                 <table
 
                   className="customtable  w-full border-collapse custom-table"
-                  tabIndex={0} // Make the container focusable
                 >
                   <thead>
                     <tr>
@@ -1917,8 +1902,8 @@ const AddPurchaseBill = () => {
                                       <ListItemText
                                         primary={`${option.iteam_name}`}
                                         secondary={` ${option.stock === 0
-                                            ? `Unit: ${option.weightage}`
-                                            : `Pack: ${option.pack}`
+                                          ? `Unit: ${option.weightage}`
+                                          : `Pack: ${option.pack}`
                                           } | MRP: ${option.mrp}  | Location: ${option.location
                                           }  | Current Stock: ${option.stock}`}
                                       />
@@ -2308,7 +2293,7 @@ const AddPurchaseBill = () => {
                             </Button>
                           </td>
                         </tr>
- {/*<=============================================================================== added Item  ==============================================================================> */}
+                        {/*<=============================================================================== added Item  ==============================================================================> */}
 
                         {/* {ItemPurchaseList?.item?.map((item) => (
                           <tr
@@ -2317,7 +2302,7 @@ const AddPurchaseBill = () => {
                             key={item.id}
                             onClick={() => handleEditClick(item)}
 
-                            className={` item-List  cursor-pointer saleTable ${item.id === selectedId
+                            className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
                                 ? "highlighted-row"
                                 : ""
                               }`}
@@ -2362,57 +2347,67 @@ const AddPurchaseBill = () => {
                     )}
                   </tbody>
                 </table>
-                <table>
-                {ItemPurchaseList?.item?.map((item) => (
-                          <tr
-                          ref={tableRef}
-                          tabIndex={0} // Make the container focusable
-                            key={item.id}
+                < >
+                  <table
+                  className="customtable  w-full border-collapse custom-table"
+                    ref={tableRef}
+                    tabIndex={0} // Make the container focusable
+                  > <tbody 
+                  >
+                    {ItemPurchaseList?.item?.map((item) => (
+                      <tr
+
+                        key={item.id}
+                        onClick={() => handleEditClick(item)}
+
+                        className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
+                          ? "highlighted-row"
+                          : ""
+                          }`}
+
+                      >
+                        <td
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            width: "400px"
+                          }}
+                        >
+                          <BorderColorIcon
+                            style={{ color: "var(--color1)" }}
                             onClick={() => handleEditClick(item)}
+                          />
+                          <DeleteIcon
+                            style={{ color: "var(--color6)" }}
+                            className="delete-icon bg-none"
+                            
+                            onClick={() => { deleteOpen(item.id) }}
+                          />
+                          {item.iteam_name}
+                        </td>
+                        <td>{item.weightage}</td>
+                        <td>{item.hsn_code}</td>
+                        <td>{item.batch_number}</td>
+                        <td>{item.expiry}</td>
+                        <td>{item.mrp}</td>
+                        <td>{item.qty}</td>
+                        <td>{item.free_qty}</td>
+                        <td>{item.ptr}</td>
+                        <td>{item.discount}</td>
+                        <td>{item.scheme_account}</td>
+                        <td>{item.base_price}</td>
+                        <td>{item.gst}</td>
+                        <td>{item.location}</td>
+                        <td>{item.net_rate}</td>
+                        <td>{item.margin}</td>
+                        <td>{item.total_amount}</td>
+                      </tr>
+                    ))}
+                      </tbody>
 
-                            className={` item-List  cursor-pointer saleTable ${item.id === selectedId
-                                ? "highlighted-row"
-                                : ""
-                              }`}
-
-                          >
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                              }}
-                            >
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
-                                onClick={() => handleEditClick(item)}
-                              />
-                              <DeleteIcon
-                                style={{ color: "var(--color6)" }}
-                                className="delete-icon bg-none"
-                                onClick={() => { deleteOpen(item.id) }}
-                              />
-                              {item.iteam_name}
-                            </td>
-                            <td>{item.weightage}</td>
-                            <td>{item.hsn_code}</td>
-                            <td>{item.batch_number}</td>
-                            <td>{item.expiry}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.free_qty}</td>
-                            <td>{item.ptr}</td>
-                            <td>{item.discount}</td>
-                            <td>{item.scheme_account}</td>
-                            <td>{item.base_price}</td>
-                            <td>{item.gst}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                            <td>{item.margin}</td>
-                            <td>{item.total_amount}</td>
-                          </tr>
-                        ))}
-                </table>
-                {/*<============================================================================== total and other details  =============================================================================> */}
+                  </table>
+                </>
+{/*<============================================================================== total and other details  =============================================================================> */}
 
                 <div className="flex gap-10 justify-end mt-4 ">
                   <div

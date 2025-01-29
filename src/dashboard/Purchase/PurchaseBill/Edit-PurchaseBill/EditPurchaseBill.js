@@ -125,6 +125,63 @@ const EditPurchaseBill = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [ purchase, setPurchase] = useState([]);
+
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+    const tableRef = useRef(null); // Reference for table container
+  
+    // Handle key presses for navigating rows
+    const handleKeyPress = (e) => {
+      const key = e.key;
+      
+      console.log(key)
+      if (key === "ArrowDown") {
+        // Move selection down
+        setSelectedIndex((prev) => prev < purchase?.item_list?.length - 1 ? prev + 1 : prev);
+        const selectedRow = purchase?.item_list[selectedIndex];
+        setSelectedEditItemId(selectedRow.id);
+
+      } else if (key === "ArrowUp") {
+        // Move selection up
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        const selectedRow = purchase?.item_list[selectedIndex];
+        setSelectedEditItemId(selectedRow.id);
+        
+      } else if (key === "Enter" && selectedIndex !== -1) {
+        // Confirm selection
+        console.log("hi");
+        const selectedRow = purchase?.item_list[selectedIndex];
+        setSelectedEditItemId(selectedRow.id);
+        console.log( purchase?.item_list[selectedIndex],"hi")
+        handleEditClick(purchase?.item_list[selectedIndex])
+        // alert(`Selected ID: ${selectedRow.id}`);
+      }
+    };
+  
+    // Ensure the table container listens for key events
+    useEffect(() => {
+      const currentRef = tableRef.current;
+      if (currentRef) {
+        currentRef.focus(); // Ensure focus for capturing key events
+        currentRef.addEventListener("keydown", handleKeyPress);
+      }
+  
+      return () => {
+        if (currentRef) {
+          currentRef.removeEventListener("keydown", handleKeyPress);
+        }
+      };
+    }, [selectedIndex, purchase]);
+  
+    // Update selectedEditItemId when selectedIndex changes
+  
+    useEffect(() => {
+      if (selectedIndex >= 0) {
+        setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
+      }
+    }, [selectedIndex, purchase]);
+    
+
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -135,7 +192,6 @@ const EditPurchaseBill = () => {
 
   const { id, randomNumber } = useParams();
   // const {  } = useParams();
-  const [purchase, setPurchase] = useState([]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -856,6 +912,8 @@ const EditPurchaseBill = () => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
+  
+
     if (selectedEditItem) {
       setSearchItem(selectedEditItem.item_name);
       setUnit(selectedEditItem.weightage);
@@ -1871,7 +1929,7 @@ const EditPurchaseBill = () => {
                           {/* <Button variant="contained" color="success" onClick={addPurchaseValidation}><ControlPointIcon />Edit</Button> */}
                         </td>
                       </tr>
-                      {purchase?.item_list?.map((item) => (
+                      {/* {purchase?.item_list?.map((item) => (
                         <tr
                           key={item.id}
                           className="item-List border-b border-gray-400"
@@ -1911,9 +1969,65 @@ const EditPurchaseBill = () => {
                           <td>{item.margin}</td>
                           <td>{item.amount}</td>
                         </tr>
-                      ))}
+                      ))} */}
                     </tbody>
                   </table>
+                  <>
+                    <table
+                     className="customtable  w-full border-collapse custom-table"
+                     ref={tableRef}
+                     tabIndex={0} >
+                      <tbody 
+                      >
+                        {purchase?.item_list?.map((item) => (
+                          <tr
+                            key={item.id}
+                            // className="item-List border-b border-gray-400"
+                            onClick={() => handleEditClick(item)}
+                            
+                        className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
+                          ? "highlighted-row"
+                          : ""
+                          }`}
+                          >
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "8px",
+                                width: "300px",
+                              }}
+                            >
+                              <BorderColorIcon
+                                style={{ color: "var(--color1)" }}
+                                onClick={() => handleEditClick(item)}
+                              />
+                              <DeleteIcon
+                                className="delete-icon"
+                                onClick={() => deleteOpen(item.id)}
+                              />
+                              {item.item_name}
+                            </td>
+                            <td>{item.weightage}</td>
+                            <td>{item.hsn_code}</td>
+                            <td>{item.batch_number}</td>
+                            <td>{item.expiry}</td>
+                            <td>{item.mrp}</td>
+                            <td>{item.qty}</td>
+                            <td>{item.fr_qty}</td>
+                            <td>{item.ptr}</td>
+                            <td>{item.disocunt}</td>
+                            <td>{item.scheme_account}</td>
+                            <td>{item.base_price}</td>
+                            <td>{item.gst_name}</td>
+                            <td>{item.location}</td>
+                            <td>{item.net_rate}</td>
+                            <td>{item.margin}</td>
+                            <td>{item.amount}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
 
                   {/* <div className="flex gap-10 justify-end mt-5 ">
                     <div

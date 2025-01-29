@@ -13,14 +13,14 @@ import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import { toast } from "react-toastify";
 
 const Search = ({ searchPage, setSearchPage }) => {
-    const history = useHistory();
-  
+  const history = useHistory();
+
   const token = localStorage.getItem("token");
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
 
-  
+
   const [medicineTableData, setMedicineTableData] = useState([])
   const [drugsTableData, setDrugsTableData] = useState([])
   const [distributorTableData, setDistributorTableData] = useState([])
@@ -68,20 +68,20 @@ const Search = ({ searchPage, setSearchPage }) => {
     // setDistributorTableData([])
     // setCustomerTableData([])
   }
-  
+
   const handleSearchQueryChange = (e) => {
     const newValue = e.target.value;
-    setSearchQuery(newValue);       
+    setSearchQuery(newValue);
     searchData(newValue);
   };
 
   /*<================================================================================== call Search API  ==================================================================================> */
 
   const apiEndpoints = {
-    1: "item-search",    
-    2: "drug-list",      
-    3: "list-distributer",    
-    4: "list-customer",   
+    1: "item-search",
+    2: "drug-list",
+    3: "list-distributer",
+    4: "list-customer",
   };
 
   const searchData = async () => {
@@ -109,7 +109,7 @@ const Search = ({ searchPage, setSearchPage }) => {
         },
       });
 
-  
+
       if (response?.data?.data) {
         if (searchType == "1") {
           setMedicineTableData(response.data.data.data)
@@ -145,21 +145,21 @@ const Search = ({ searchPage, setSearchPage }) => {
       <div
         id="modal"
         value={searchPage}
-        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,25px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]
+        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,25px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.5)] overflow-hidden font-[sans-serif]
             ${searchPage ? "block" : "hidden"}`}
       >
         <div />
-        <div className="bg-white shadow-lg rounded-md p-4 relative">
+        <div className="bg-white shadow-lg rounded-md p-4 relative" style={{ width: "51%" }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6  absolute top-4 right-4 fill-current text-red-500 hover:text-red-500 "
+            className="w-6 h-6  absolute top-4 right-4 fill-current  primary"
             viewBox="0 0 24 24"
             onClick={() => setSearchPage(false)}
           >
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
           </svg>
-          <div className="my-4 flex  justify-evenly items-center" >
-            <Box className="my-5" sx={{ minWidth: 120 }}>
+          <div className="my-4 flex gap-4 justify-evenly items-center" style={{ position: 'sticky', top: '0' }}>
+            <Box className="my-5" sx={{ width: "40%" }}>
               <FormControl fullWidth>
                 <InputLabel id="Select">Select</InputLabel>
                 <Select
@@ -183,7 +183,7 @@ const Search = ({ searchPage, setSearchPage }) => {
               disabled={!searchType}
               autoFocus
               value={searchQuery} // Bind the value to searchQuery
-              sx={{ width: "75%", marginTop: "5px" }}
+              sx={{ width: "100%", marginTop: "22px" }}
               onChange={(e) => handleSearchQueryChange(e)}
               variant="standard"
               placeholder="please search ......"
@@ -197,13 +197,25 @@ const Search = ({ searchPage, setSearchPage }) => {
               }}
             />
           </div>
-{/*======================================================================================== table ======================================================================================== */}
+          {/*======================================================================================== table ======================================================================================== */}
 
-          <div>
-            <div>
-              <table className="table-cashManage my-5 p-4">
+          <div className="">
+            <div className="overflow-x-auto">
+              {/* <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                > */}
+              <table className="w-full border-collapse custom-table" style={{
+                whiteSpace: "nowrap",
+                borderCollapse: "separate",
+                borderSpacing: "0 6px",
+              }}>
                 <thead>
-                  <tr>
+                  <tr style={{ whiteSpace: 'nowrap' }}>
                     <th>Sr No.</th>
                     {(() => {
                       let columns;
@@ -224,7 +236,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                           columns = [];
                       }
                       return columns.map((column) => (
-                        <th key={column.id} style={{ minWidth: 100 }}>
+                        <th key={column.id} style={{ minWidth: 50 }}>
                           {column.label}
                         </th>
                       ));
@@ -232,7 +244,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: "#3f621217" ,overflow:'auto'}}>
                   {(() => {
                     let columns, tableData;
 
@@ -262,26 +274,26 @@ const Search = ({ searchPage, setSearchPage }) => {
                     return tableData && tableData.length > 0 ? (
                       tableData.map((row, index) => (
                         <tr className="primary" key={index}>
-                          <td>{index + 1}</td> {/* Serial Number */}
+                          <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td> {/* Serial Number */}
                           {columns.map((column) => (
-                            <td  
-                            onClick={()=> {
-                              if(searchType == 1){
-                                 history.push(`/inventoryView/${row.id}`)
-                                }else if (searchType == 2){
+                            <td
+                              onClick={() => {
+                                if (searchType == 1) {
+                                  history.push(`/inventoryView/${row.id}`)
+                                } else if (searchType == 2) {
                                   // history.push(`/DistributerView/${row.id}`)
-                                }else if (searchType == 3){
+                                } else if (searchType == 3) {
                                   history.push(`/DistributerView/${row.id}`)
-                                }else if (searchType == 4){
+                                } else if (searchType == 4) {
                                   history.push(`/more/customerView/${row.id}`)
                                 }
-                              
-                              }}  className="" key={column.id}>
+
+                              }} className="" key={column.id}>
                               {row[column.id] || "-"} {/* Render data or fallback */}
                             </td>
 
                           ))}
-                          <td>
+                          <td style={{ borderRadius: "0 10px 10px 0" }}>
                             <ReplyAllIcon className="primary transform -scale-x-100" />
                           </td>
                         </tr>
@@ -293,7 +305,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                         </td>
                       </tr>
                     );
-                    
+
                   })()}
                 </tbody>
 

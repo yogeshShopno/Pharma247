@@ -28,10 +28,10 @@ const ReportsMain = () => {
     const GSTIcon = `${process.env.PUBLIC_URL}/gstIcon.png`;
     const MarginIcon = `${process.env.PUBLIC_URL}/marginIcon.png`;
     const StockIcon = `${process.env.PUBLIC_URL}/stockIcon.png`;
-    const OtherIcon = `${process.env.PUBLIC_URL}/othersIcon.png`;
-    const ENtelligentIcon = `${process.env.PUBLIC_URL}/entelligentIcon.png`;
-    const AccouaccountingIcon = `${process.env.PUBLIC_URL}/accountingIcon.png`;
-    
+    const OtherIcon = `${process.env.PUBLIC_URL}/othersIcon1.png`;
+    const ENtelligentIcon = `${process.env.PUBLIC_URL}/entelligentIcon1.png`;
+    const AccouaccountingIcon = `${process.env.PUBLIC_URL}/accountingIcon1.png`;
+
 
     const [favorites, setFavorites] = useState([]);
 
@@ -111,11 +111,23 @@ const ReportsMain = () => {
                     sx={{
                         width: {
                             xs: '100%',
-                            sm: 450,
+                            sm: '100%',
+                            md: '38%',
+                            lg: '30%',
+                            xl: '22%',
                         },
                         height: {
-                            xs: 'calc(100vh - 100px)',
-                            sm: 800,
+                            xs: 'fit-content',
+                            sm: 'fit-content',
+                            md: 'calc(99.9vh - 0px)',
+                        },
+                        position: {
+                            xs: 'static',
+                            md: 'sticky',
+                        },
+                        top: {
+                            xs: 'unset',
+                            md: '0%',
                         },
                         overflowY: 'auto',
                         padding: {
@@ -134,8 +146,32 @@ const ReportsMain = () => {
                     {hasPermission(permissions, "report accounting") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={AccouaccountingIcon} className="reportMain-icon absolute mr-10" alt="Accounting Icon"></img>
+                                <Typography sx={{
+                                    my: 0, fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '20px',
+                                    }, whiteSpace: "noWrap", fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }} >
+                                    {/* <img src={AccouaccountingIcon} className="reportMain-icon absolute mr-10" alt="Accounting Icon"></img> */}
+                                    <Box
+                                        component="img"
+                                        src={AccouaccountingIcon}
+                                        alt="Accounting Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '36px',
+                                                sm: '41px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
                                     Accounting Reports
                                 </Typography>
                             </AccordionSummary>
@@ -144,7 +180,12 @@ const ReportsMain = () => {
                                     {accountingReport.map(report => (
                                         <ul className="hover-report" key={report.name}>
                                             <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div >
+                                                <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} sx={{
+                                                    fontSize: {
+                                                        xs: '15px',
+                                                        sm: '16px',
+                                                    }
+                                                }}>
                                                     {report.name}
                                                 </div>
                                                 <span className="heart-icon" onClick={(e) => {
@@ -164,8 +205,34 @@ const ReportsMain = () => {
                     {hasPermission(permissions, "report stock") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={StockIcon} className="reportMain-icon absolute mr-10" alt="Stock Icon"></img>
+                                <Typography sx={{
+                                    my: 0,
+                                    fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '20px',
+                                    }, whiteSpace: "noWrap",
+                                    fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }} >
+                                    {/* <img src={StockIcon} className="reportMain-icon absolute mr-10" alt="Stock Icon"></img> */}
+                                    <Box
+                                        component="img"
+                                        src={StockIcon}
+                                        alt="Stock Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
                                     Stock Reports
                                 </Typography>
                             </AccordionSummary>
@@ -174,7 +241,7 @@ const ReportsMain = () => {
                                     {stockReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
                                             <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div>
+                                                <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} >
                                                     {report.name}
                                                 </div>
                                                 <span className="heart-icon" onClick={(e) => {
@@ -194,8 +261,32 @@ const ReportsMain = () => {
                     {hasPermission(permissions, "report margin") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={MarginIcon} className="reportMain-icon absolute mr-10" alt="Margin Icon"></img>
+                                <Typography sx={{
+                                    my: 0, fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '20px',
+                                    }, whiteSpace: "noWrap", fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }} >
+                                    {/* <img src={MarginIcon} className="reportMain-icon absolute mr-10" alt="Margin Icon"></img> */}
+                                    <Box
+                                        component="img"
+                                        src={MarginIcon}
+                                        alt="Margin Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
                                     Margin Reports
                                 </Typography>
                             </AccordionSummary>
@@ -204,7 +295,12 @@ const ReportsMain = () => {
                                     {marginReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
                                             <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div >
+                                                <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} sx={{
+                                                    fontSize: {
+                                                        xs: '15px',
+                                                        sm: '16px',
+                                                    }
+                                                }}>
                                                     {report.name}
                                                 </div>
                                                 <span className="heart-icon" onClick={(e) => {
@@ -220,12 +316,36 @@ const ReportsMain = () => {
                             </AccordionDetails>
                         </Accordion>
                     }
-                     {hasPermission(permissions, "report entelligent") &&
+                    {hasPermission(permissions, "report entelligent") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px",textTransform: 'none', fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img>
-                                    eNtelligent Reports
+                                <Typography sx={{
+                                    my: 0, fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '20px',
+                                    }, whiteSpace: "noWrap", textTransform: 'none', fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }} >
+                                    {/* <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img> */}
+                                    <Box
+                                        component="img"
+                                        src={ENtelligentIcon}
+                                        alt="eNtelligent Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
+                                    Sales Insights
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
@@ -233,7 +353,12 @@ const ReportsMain = () => {
                                     {eNtelligentReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
                                             <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div >
+                                                <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} sx={{
+                                                    fontSize: {
+                                                        xs: '15px',
+                                                        sm: '16px',
+                                                    }
+                                                }}>
                                                     {report.name}
                                                 </div>
                                                 <span className="heart-icon" onClick={(e) => {
@@ -253,9 +378,34 @@ const ReportsMain = () => {
                     {hasPermission(permissions, "report gst") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }}>
-                                    <img src={GSTIcon} className="reportMain-icon absolute mr-10" alt="GST Icon" />
-                                    <span className="right-0">GST Reports</span>
+                                <Typography sx={{
+                                    my: 0, fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '20px',
+                                    }, whiteSpace: "noWrap", fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }}>
+                                    {/* <img src={GSTIcon} className="reportMain-icon absolute mr-10" alt="GST Icon" /> */}
+
+                                    <Box
+                                        component="img"
+                                        src={GSTIcon}
+                                        alt="GST Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
+                                    GST Reports
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
@@ -264,7 +414,12 @@ const ReportsMain = () => {
                                         {gstReports.map(report => (
                                             <ul className="hover-report" key={report}>
                                                 <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                    <div >
+                                                    <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} sx={{
+                                                        fontSize: {
+                                                        xs: '15px',
+                                                        sm: '16px',
+                                                    }
+                                                    }}>
                                                         {report.name}
                                                     </div>
                                                     <span className="heart-icon" onClick={(e) => {
@@ -282,14 +437,39 @@ const ReportsMain = () => {
                         </Accordion>
                     }
 
-                   
+
 
                     {hasPermission(permissions, "report others") &&
                         <Accordion sx={{ paddingX: '15px' }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography sx={{ my: 0, fontSize: "20px", fontWeight: "500", position: "relative", paddingLeft: "50px" }} >
-                                    <img src={OtherIcon} className="reportMain-icon absolute mr-10" alt="Other Icon"></img>
-                                    Others
+                                <Typography sx={{
+                                    my: 0, fontSize: {
+                                        xs: '15px',
+                                        sm: '17px',
+                                        md: '19px',
+                                    }, whiteSpace: "noWrap", fontWeight: "500", position: "relative", paddingLeft: "50px"
+                                }} >
+                                    {/* <img src={OtherIcon}className="reportMain-icon absolute mr-10" alt="Other Icon"></img> */}
+
+                                    <Box
+                                        component="img"
+                                        src={OtherIcon}
+                                        alt="Other Icon"
+                                        sx={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            width: {
+                                                xs: '30px',
+                                                sm: '35px',
+                                            },
+                                            height: {
+                                                xs: '30px',
+                                                sm: '39px',
+                                            },
+                                        }}
+                                        className="reportMain-icon"
+                                    />
+                                    MIS reports
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
@@ -297,7 +477,12 @@ const ReportsMain = () => {
                                     {othersReports.map(report => (
                                         <ul className="hover-report" key={report.name}>
                                             <li onClick={() => history.push(report.path)} className="font-semibold p-2 cursor-pointer flex justify-between">
-                                                <div >
+                                                <div style={{ paddingLeft: '23px' ,whiteSpace: "noWrap"}} sx={{
+                                                    fontSize: {
+                                                        xs: '15px',
+                                                        sm: '16px',
+                                                    }
+                                                }}>
                                                     {report.name}
                                                 </div>
                                                 <span className="heart-icon" onClick={(e) => {
@@ -317,17 +502,17 @@ const ReportsMain = () => {
 
                     <Divider />
                 </Box>
-                <Box sx={{ flex: 1 }}>
-                    <div className="p-6" style={{ width: "100%" }}>
+                <Box sx={{ flex: 1, overflow: "auto", padding: '16px' }}>
+                    <div className="p-2" style={{ width: "100%" }}>
                         {favorites.length > 0 ? (
                             <>
-                                <h2 className="text-xl mb-8 font-semibold">Favourite Reports</h2>
+                                <h1 className="text-2xl mb-8 primary font-semibold">Favourite Reports</h1>
 
-                                <ul className="flex flex-wrap">
+                                <ul className="flex flex-wrap gap-4 p-8">
                                     {favorites.map((favorite) => {
                                         const report = combinedReports.find(r => r.name === favorite);
                                         return (
-                                            <li key={favorite} className="font-semibold p-2">
+                                            <li key={favorite} className="font-semibold report_main_card">
                                                 <div className="custom-box-report" onClick={() => history.push(report.path)}>
                                                     <img src={report?.icon} className="w-1/2" alt="Report Icon" />
                                                     <span className="font-semibold text-sm">
@@ -344,7 +529,7 @@ const ReportsMain = () => {
                         ) : (
                             <>
                                 <p className="text-7xl w-full tracking-wide font-bold  my-20" style={{ color: "rgba(17, 17, 17, .1)" }}>Favorite Reports & Save Time</p>
-                                <p className="mt-4 text-xl tracking-wide"><FavoriteIcon className="mb-2 mr-2 text-red-500" />Mark reports as favorites to access them faster.</p>
+                                <p className="mt-4 text-xl tracking-wide gap-2" style={{display: "flex", alignItems: "center"}}><FavoriteIcon className="text-red-500" />Mark reports as favorites to access them faster.</p>
                             </>
                         )}
                     </div>

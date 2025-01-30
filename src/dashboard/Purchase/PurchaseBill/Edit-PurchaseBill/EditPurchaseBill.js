@@ -218,6 +218,7 @@ const EditPurchaseBill = () => {
     }, 1000);
     return () => clearTimeout(timeoutId);
   }, [barcode]);
+  /*<===================================================================================== get distributor list ===========================================================================> */
 
   const listDistributor = async () => {
     try {
@@ -236,6 +237,8 @@ const EditPurchaseBill = () => {
       return [];
     }
   };
+
+  /*<===================================================================================== get Bank list ===========================================================================> */
 
   const BankList = async () => {
     let data = new FormData();
@@ -257,6 +260,7 @@ const EditPurchaseBill = () => {
       console.error("API error:", error);
     }
   };
+  /*<===================================================================================== get purchase bill by ID ===========================================================================> */
 
   const purchaseBillGetByID = async (distributors) => {
     setPurchase("");
@@ -358,6 +362,7 @@ const EditPurchaseBill = () => {
       unlisten();
     };
   }, [history]); // Dependencies: history object
+  /*<================================================================================ get essntial details intially  ======================================================================> */
 
   useEffect(() => {
     const initializeData = async () => {
@@ -437,9 +442,11 @@ const EditPurchaseBill = () => {
       }
       inputValue = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
     }
-
     setExpiryDate(inputValue);
   };
+
+  /*<================================================================================ get essntial details intially  ======================================================================> */
+
   const handlePopState = () => {
     // Call the delete API
     let data = new FormData();
@@ -462,6 +469,8 @@ const EditPurchaseBill = () => {
       console.error("API error:", error);
     }
   };
+
+  /*<================================================================================ get essntial details intially  ======================================================================> */
 
   const purchaseReturnData = async () => {
     let data = new FormData();
@@ -486,6 +495,9 @@ const EditPurchaseBill = () => {
       }
     }
   };
+
+  /*<================================================================================ get list of gst  ======================================================================> */
+
   let listOfGst = () => {
     axios
       .get("gst-list", {
@@ -515,6 +527,9 @@ const EditPurchaseBill = () => {
 
   //     });
   // };
+
+  /*<================================================================================ get list of gst  ======================================================================> */
+
   const itemPurchaseList = async () => {
     let data = new FormData();
     const params = {

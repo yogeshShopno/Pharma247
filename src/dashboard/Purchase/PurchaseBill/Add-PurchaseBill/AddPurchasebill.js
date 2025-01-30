@@ -35,6 +35,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -221,6 +222,21 @@ const AddPurchaseBill = () => {
     }
   }, [selectedIndex, ItemPurchaseList]);
   
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault(); // Prevent the browser's save dialog
+        console.log("Ctrl+S pressed!");
+        handleSubmit(); // Call your function
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   /*<================================================================================ PTR and MRP validation =======================================================================> */
 
   useEffect(() => {
@@ -318,7 +334,7 @@ const AddPurchaseBill = () => {
 
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-  }, [qty, ptr, disc, gst.name, free, ItemTotalAmount, barcodeBatch]);
+  }, [qty, ptr, disc,mrp, gst.name, free, ItemTotalAmount, barcodeBatch]);
 
   /*<============================================================================== CN calculation realtime ========================================================================> */
 
@@ -832,10 +848,10 @@ const AddPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!HSN) {
-      toast.error("HSN is required");
-      newErrors.HSN = "HSN is required";
-    }
+    // if (!HSN) {
+    //   toast.error("HSN is required");
+    //   newErrors.HSN = "HSN is required";
+    // }
 
     if (!qty) newErrors.unit = "Qty is required";
     if (!expiryDate) {
@@ -1214,6 +1230,8 @@ const AddPurchaseBill = () => {
   /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
+    console.log(ItemPurchaseList,billNo,distributor,"hiiii")
+
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -1824,7 +1842,7 @@ const AddPurchaseBill = () => {
                     <tr>
                       <th>Search Item Name</th>
                       <th>Unit</th>
-                      <th>HSN</th>
+                      {/* <th>HSN</th> */}
                       <th>Batch </th>
                       <th>Expiry </th>
                       <th>MRP </th>
@@ -1832,7 +1850,7 @@ const AddPurchaseBill = () => {
                       <th>Free </th>
                       <th>PTR </th>
                       <th>CD%</th>
-                      <th>Sch. Amt</th>
+                      {/* <th>Sch. Amt</th> */}
                       <th>Base</th>
                       <th>GST% </th>
                       <th>Loc.</th>
@@ -1955,7 +1973,7 @@ const AddPurchaseBill = () => {
                               </span>
                             )}
                           </td>
-                          <td>
+                          {/* <td>
                             <TextField
                               variant="outlined"
                               autoComplete="off"
@@ -1985,7 +2003,7 @@ const AddPurchaseBill = () => {
                                 {error.HSN}
                               </span>
                             )}
-                          </td>
+                          </td> */}
 
                           <td>
                             <TextField
@@ -2155,14 +2173,14 @@ const AddPurchaseBill = () => {
                               }}
                               onChange={(e) => {
                                 const value = e.target.value;
-                                if (Number(value) > 100) {
-                                  e.target.value = 100;
+                                if (Number(value) > 99) {
+                                  e.target.value = 99;
                                 }
                                 handleSchAmt(e);
                               }}
                             />
                           </td>
-                          <td>
+                          {/* <td>
                             <TextField
                               variant="outlined"
                               autoComplete="off"
@@ -2174,7 +2192,7 @@ const AddPurchaseBill = () => {
                               value={schAmt}
                               disabled
                             />
-                          </td>
+                          </td> */}
                           <td>
                             <TextField
                               variant="outlined"
@@ -2229,7 +2247,13 @@ const AddPurchaseBill = () => {
                               // error={!!errors.loc}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
-                                setLoc(e.target.value);
+                                // setLoc(e.target.value);
+                           
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Tab') {
+                                  handleAddButtonClick();
+                                }
                               }}
                             />
                           </td>
@@ -2279,18 +2303,17 @@ const AddPurchaseBill = () => {
                           <td></td>
                           <td></td>
                           <td></td>
-                          <td></td>
-                          <td></td>
+                        
 
                           <td>
-                            <Button
+                            {/* <Button
                               variant="contained"
                               style={{ backgroundColor: "var(--color1)" }}
                               onClick={handleAddButtonClick}
                             >
                               <ControlPointIcon className="mr-2" />
                               {isEditMode ? "Edit" : "Add"}
-                            </Button>
+                            </Button> */}
                           </td>
                         </tr>
  {/*<=============================================================================== added Item  ==============================================================================> */}
@@ -2349,9 +2372,9 @@ const AddPurchaseBill = () => {
                 </table>
                 < >
                   <table
-                  className="customtable  w-full border-collapse custom-table"
+                  className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                    tabIndex={0} 
+                    // tabIndex={0} 
                   > <tbody 
                   >
                     {ItemPurchaseList?.item?.map((item) => (
@@ -2829,7 +2852,7 @@ const AddPurchaseBill = () => {
           </DialogContent>
         </Dialog>
 
-        {/*<==============================================================================  Delete PopUP   =============================================================================> */}
+{/*<==============================================================================  Delete PopUP   =============================================================================> */}
 
         <div
           id="modal"

@@ -4,6 +4,7 @@ import './chart.css';
 
 const DonutChart = ({ data }) => {
     const ref = useRef();
+    const tooltipRef = useRef();
 
     useEffect(() => {
         const width = 300;
@@ -37,7 +38,22 @@ const DonutChart = ({ data }) => {
         arcs.append('path')
             .attr('d', arc)
             // .attr('fill', (d, i) => color(i));
-            .attr('fill', d => colorMap[d.data.label] || 'gray');
+            .attr('fill', d => colorMap[d.data.label] || 'gray')
+            .on('mouseover', (event, d) => {
+                const tooltip = d3.select(tooltipRef.current)
+                tooltip.style('visibility', 'visible')
+                    .text(`${d.data.label}: ${d.data.value}`)
+                    .style('top', `${event.pageY - 10}px`)
+                    .style('left', `${event.pageX + 10}px`);
+            })
+            .on('mousemove', (event) => {
+                d3.select(tooltipRef.current)
+                    .style('top', `${event.pageY - 10}px`)
+                    .style('left', `${event.pageX + 10}px`);
+            })
+            .on('mouseout', () => {
+                d3.select(tooltipRef.current).style('visibility', 'hidden');
+            });
 
         arcs.append('text')
             .attr('transform', d => `translate(${arc.centroid(d)})`)
@@ -48,7 +64,12 @@ const DonutChart = ({ data }) => {
         // .text(d => d.data.label);
     }, [data]);
 
-    return <svg ref={ref} className="donut-chart"></svg>;
+    return (
+        <>
+            <svg ref={ref} className="donut-chart"></svg>
+            <div ref={tooltipRef} className="tooltip_donut"></div>
+        </>
+    );
 };
 
 export default DonutChart;

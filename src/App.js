@@ -165,6 +165,10 @@ function App() {
       .MuiInput-underline:after {
         border-bottom: 2px solid #3f6212; /* Focused underline color */
       }
+
+      .css-1aquho2-MuiTabs-indicator{
+      background-color: var(--color2) !important;
+      }
     `;
     document.head.appendChild(style);
 

@@ -27,6 +27,7 @@ import { Card } from 'flowbite-react';
 import DonutChart from './Chart/DonutChart';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
 import { PieChart } from '@mui/x-charts'
+import { Tooltip as RechartsTooltip } from 'recharts';
 
 const Dashboard = () => {
 
@@ -242,28 +243,28 @@ const Dashboard = () => {
         {isLoading ? <div className="loaderdash">
           <Loader />
         </div> :
-          <div className='p-5' style={{ background: '#f3f3f373' }}>
+          <div className='p-5' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
 
-            <div className='flex justify-between gap-6'>
+            <div className='flex flex-col justify-between gap-6'>
               <div className='flex flex-col ' style={{ width: '50%' }}>
                 <div>
                   <h1 style={{ color: 'var(--color2)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
                   <p style={{ color: 'gray' }}>Track sales, inventory, and customer trends in real-time</p>
                 </div>
                 <div>
-                  <div className='mt-8 mb-5 pb-5' style={{ display: 'flex', borderBottom: '1px solid lightgray ', justifyContent: 'left', gap: '16%' }}>
-                    <div className='gap-4' style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className='mb-5 pb-5 bg-white flex p-5 rounded-lg border border-gray-200 dark:border-gray-700' style={{ display: 'flex', justifyContent: 'space-between', gap: '16%', marginTop: "60px" }}>
+                    <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
                       <img src={stockByPTR} />
                       <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500 }}>Stock By PTR</h3>
-                        <div className={`text-lg font-bold primary`}>Rs.{record?.total_ptr == 0 ? 0 : record?.total_ptr}</div>
+                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px' }}>Stock By PTR</h3>
+                        <div className={`text-xl font-bold primary`}>Rs.{record?.total_ptr == 0 ? 0 : record?.total_ptr}</div>
                       </div>
                     </div>
-                    <div className='gap-4' style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
                       <img src={stockByMRP} />
                       <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500 }}>Stock By MRP</h3>
-                        <div className={`text-lg font-bold primary`}>Rs.{record?.total_mrp == 0 ? 0 : record?.total_mrp}</div>
+                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px' }}>Stock By MRP</h3>
+                        <div className={`text-xl font-bold primary`}>Rs.{record?.total_mrp == 0 ? 0 : record?.total_mrp}</div>
                       </div>
                     </div>
 
@@ -281,25 +282,32 @@ const Dashboard = () => {
                           aria-label="scrollable prevent tabs example"
                         >
                           {record?.chart?.map((e) => (
-                            <Tab key={e.id} value={e.title} label={e.title} />
+                            <Tab key={e.id} value={e.title} label={e.title} sx={
+                              {
+                                '&.Mui-selected': {
+                                  color: 'var(--color2)',
+                                  fontWeight: 'bold'
+                                },
+                              }
+                            } />
                           ))}
                         </Tabs>
                         <div className='pt-8 m-auto'>
                           {barChartData.every(item => item.value === 0) ? (
-                            <div className='flex justify-center' style={{ minHeight: "483px", alignItems: 'center' }}>
-                              <img src='../no_Data.png' className='nofound' alt="No Data" />
+                            <div className='flex justify-center' style={{ minHeight: "429px", alignItems: 'center' }}>
+                              <img src='../no_Data1.png' className='nofound' alt="No Data" />
                             </div>
                           ) : (
                             <BarChart
                               width={900}
-                              height={483}
+                              height={429}
                               data={barChartData}
                               margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
                             >
-                              {/* <CartesianGrid strokeDasharray="3 3" /> */}
+
                               <XAxis dataKey="name" tick={false} axisLine={{ stroke: "#ccc" }} />
                               <YAxis />
-                              <Tooltip />
+                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
                               <Legend />
                               <Bar dataKey="value" barSize={60} />
                             </BarChart>
@@ -353,106 +361,33 @@ const Dashboard = () => {
 
               <div className='flex flex-col gap-5' style={{ width: '50%' }}>
                 <div className='flex gap-5' style={{ width: '100%' }}>
-                  {/* <Card style={{ width: '100%' }}>
-                    <div className='p-2 '>
-                      <div className=''>
-                        <p className='font-bold '>Loyalty Points</p>
-                        <div class='pt-2'>
-                           <PieChart
-                            data={[
-                              { title: 'Issued', value: 10, color: '#2ECC71' },
-                              { title: 'Redeemed', value: 15, color: '#FFCA28' },
-                              { title: 'Total Loyalty Points', value: 20, color: '#00B8D4' },
-                            ]}
-                          /> 
-                          <DonutChart data={datas} />
-                          <div className='flex justify-between pt-2'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid #1f77b4', background: '#1f77b4', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Issued</h3>
-                            </div>
-                            <p>
-                              30
-                            </p>
-                          </div>
-                          <div className='flex justify-between pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid #ff7f0e', background: '#ff7f0e', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Redeemed</h3>
-                            </div>
-                            <p>
-                              {useLoyaltyPoints}
-                            </p>
-                          </div>
-                          <div className='flex justify-between pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid #2ca02c', background: '#2ca02c', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Total Loyalty Points</h3>
-                            </div>
-                            <p>
-                              {loyaltyPoints}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card> */}
                   <Card style={{ width: '100%' }}>
                     <div className='p-2 flex flex-col'>
                       <div className=''>
                         <p className='font-bold '>Top Customers
                           <Tooltip title="Latest Customers" arrow>
-                            <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                            <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                           </Tooltip></p>
                       </div>
                       <div class='pt-5'>
-                        {/* <PieChart
-                            data={[
-                              { title: 'Issued', value: 10, color: '#2ECC71' },
-                              { title: 'Redeemed', value: 15, color: '#FFCA28' },
-                              { title: 'Total Loyalty Points', value: 20, color: '#00B8D4' },
-                            ]}
-                          /> */}
                         {customer.length > 0 ? (
                           <>
-                            {/* <div className='flex justify-between font-bold text-blue-900 border-b border-blue-200'>
-                                <div>Customer</div>
-                                <div>Bill Amount</div>
-                              </div>
-                              <div style={{ minHeight: "170px" }}>
-                                {customer.map((item) => (
-                                  <div className='p-2 border-b border-blue-200 flex justify-between items-center' key={item.id}>
-                                    <div className='flex'>
-                                      <div className='bg-blue-900 w-8 h-8 rounded-full mt-3 flex items-center justify-center'>
-                                        <FaUser className='text-white w-4 h-4' />
-                                      </div>
-                                      <p className='ml-2 font-bold'>{item.name} <br />{item.mobile}</p>
-                                    </div>
-                                    <div className='text-lg font-bold' style={{ color: 'green' }}>Rs.{item.balance}</div>
-                                  </div>
-                                ))}
-                              </div> */}
-
-                            {/* Line Chart */}
                             <LineChart width={850} height={300} data={lineChartData}>
                               <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="name" />
+                              <XAxis dataKey="name" tick={{ style: { fontSize: '14px' } }} />
                               <YAxis />
-                              <Tooltip />
+                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
                               <Legend />
                               <Line dataKey="balance" stroke="#8884d8" />
                             </LineChart>
                           </>
                         ) : (
                           <div >
-                            <img src='../no_Data.png' className='nofound' alt="No Data" />
+                            <img src='../no_Data1.png' className='nofound' alt="No Data" />
                           </div>
                         )}
                       </div>
-                      <div className='text-blue-600 flex justify-end'>
+                      <div className='flex justify-end' style={{ color: 'rgb(0 39 123)' }}>
                         <Link to='/more/customer'>
                           <div>
                             <a href="">View all <ChevronRightIcon /></a>
@@ -468,13 +403,7 @@ const Dashboard = () => {
                       <div className=''>
                         <p className='font-bold '>Loyalty Points</p>
                         <div class='pt-2'>
-                          {/* <PieChart
-                            data={[
-                              { title: 'Issued', value: 10, color: '#2ECC71' },
-                              { title: 'Redeemed', value: 15, color: '#FFCA28' },
-                              { title: 'Total Loyalty Points', value: 20, color: '#00B8D4' },
-                            ]}
-                          /> */}
+
                           <DonutChart data={datas} />
                           <div className='flex justify-between pt-2'>
                             <div className='flex gap-2'>
@@ -540,7 +469,14 @@ const Dashboard = () => {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                               <TabList aria-label="lab API tabs example" onChange={handlestaffTabchange}>
                                 {pieChart.map((e) => (
-                                  <Tab key={e.id} value={e.id} label={e.value} />
+                                  <Tab key={e.id} value={e.id} label={e.value} sx={
+                                    {
+                                      '&.Mui-selected': {
+                                        color: 'var(--color2)',
+                                        fontWeight: 'bold'
+                                      },
+                                    }
+                                  } />
                                 ))}
                               </TabList>
                             </Box>
@@ -555,7 +491,7 @@ const Dashboard = () => {
                                       faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                                     },
                                   ]}
-                                  height={300}
+                                  height={301}
                                 />
 
                               </TabPanel>
@@ -570,30 +506,38 @@ const Dashboard = () => {
             </div>
 
             {/* <div className='grid grid-cols-1 pt-5'> */}
-            <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 pt-5'>
+            <div className='dashbd_crd_bx gap-4 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
               <div className='gap-4'>
-                <div className="flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
 
-                  <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
-                    <div className=''>
-                      <p className='font-bold' style={{ fontSize: '1.5625rem' }}>Top Five Bills</p>
+                  <div className='p-4 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
+                    <div className='top_fv_bll'>
+                      <p className='font-bold dash_first_crd' style={{ fontSize: '1.5625rem' }}>Top Five Bills</p>
                     </div>
-                    <div className='flex gap-8'>
+                    <div className='flex gap-8 dsh_crd_btn'>
                       <div>
                         <TabContext value={value}  >
                           <Box>
-                            <TabList aria-label="lab API tabs example" onChange={handlechange}>
+                            <TabList aria-label="lab API tabs example" onChange={handlechange} >
                               {types.map((e) => (
-                                <Tab key={e.id} value={e.id} label={e.value} />
+                                <Tab key={e.id} value={e.id} label={e.value} className='tab_txt_crd' sx={
+                                  {
+                                    '&.Mui-selected': {
+                                      color: 'var(--color2)',
+                                      fontWeight: 'bold'
+                                    },
+                                  }
+                                } />
                               ))}
                             </TabList>
                           </Box>
                         </TabContext>
                       </div>
                       {billData.length > 0 &&
-                        <FormControl sx={{ minWidth: 100 }}>
+                        <FormControl sx={{ minWidth: 100 }} >
                           <Select
                             labelId="demo-simple-select-helper-label"
+                            className='dash_select_box'
                             id="demo-simple-select-helper"
                             size='small'
                             value={typeValue}
@@ -614,17 +558,17 @@ const Dashboard = () => {
                             <TabPanel key={e.id} value={e.id} sx={{ height: '100%' }}>
 
                               <div className='flex flex-col justify-between' style={{ height: '100%' }}>
-                                <div className="">
-                                  <table className="w-full">
+                                <div className="overflow-x-auto">
+                                  <table className="w-full custom-table" style={{ whiteSpace: 'nowrap' }}>
                                     <thead className="primary">
                                       <tr>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                           {value == 0 ? "Distributors" : "Customers"}
                                         </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                           Contact Number
                                         </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                           Amount
                                         </th>
                                       </tr>
@@ -632,13 +576,13 @@ const Dashboard = () => {
                                     <tbody>
                                       {billData.map((item, index) => (
                                         <tr key={index} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
-                                          <td className=" px-4 py-2">
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                             {item.name}
                                           </td>
-                                          <td className=" px-4 py-2">
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                             {item.phone_number === "" ? "--" : item.phone_number}
                                           </td>
-                                          <td className=" px-4 py-2">
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
                                             Rs. {item.total_amount === 0 ? 0 : item.total_amount}
                                           </td>
                                         </tr>
@@ -648,7 +592,7 @@ const Dashboard = () => {
                                 </div>
 
                                 {/* View All Link */}
-                                <div className="text-blue-600 flex justify-end mt-5">
+                                <div className="flex justify-end mt-5" style={{ color: 'rgb(0 39 123)' }}>
                                   {value == 0 ? (
                                     <Link to="/purchase/purchasebill">
                                       <a href="#">View all <ChevronRightIcon /></a>
@@ -665,7 +609,7 @@ const Dashboard = () => {
                         </>
                       ) : (
                         <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data.png" className="nofound" />
+                          <img src="../no_Data1.png" className="nofound" />
                         </div>
                       )}
                     </TabContext>
@@ -674,7 +618,102 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className='gap-4'>
-                <div className="flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white  flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+
+                  <div className='p-5 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
+                    <div className='top_fv_bll'>
+                      <p className='font-bold dash_first_crd' style={{ fontSize: '1.5625rem' }}>Expiring Items
+                        <Tooltip title="Expiring Items" arrow>
+                          <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
+                        </Tooltip>
+                      </p>
+                    </div>
+                    <div className=' dsh_crd_btn1'>
+                      <FormControl sx={{ minWidth: 100 }}>
+                        <Select
+                          labelId="demo-simple-select-helper-label"
+                          id="demo-simple-select-helper"
+                          size='small'
+                          value={expiredValue}
+                          onChange={(e) => { setExpiredValue(e.target.value) }}
+                        >
+                          {expiryList.map((e) => (
+                            <MenuItem key={e.id} value={e.id}>{e.value}</MenuItem>))}
+                        </Select>
+                      </FormControl>
+                      <div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Box sx={{ height: '100%' }}>
+                    <TabContext value={value}>
+                      {expiry.length > 0 ? (
+                        <>
+                          {types.map((e) => (
+                            <TabPanel key={e.id} value={e.id} sx={{ height: '100%' }}>
+                              <div className='flex flex-col justify-between' style={{ height: '100%' }}>
+                                <div className='overflow-x-auto'>
+                                  <table className="w-full custom-table" style={{ whiteSpace: 'nowrap' }}>
+                                    <thead className="primary">
+                                      <tr>
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                          Item Name
+                                        </th>
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                          Qty.
+                                        </th>
+                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                          Expiry Date
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {expiry.map((item) => (
+                                        <tr key={item.id} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                            {item.name}
+                                          </td>
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                            {item.qty}
+                                          </td>
+                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
+                                            {item.expiry}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+
+                                {/* View All Link */}
+                                <div className="flex justify-end mt-5" style={{ color: 'rgb(0 39 123)' }}>
+                                  <Link to='/inventory'>
+                                    <div>
+                                      <a href="" >View all <ChevronRightIcon /></a>
+                                    </div>
+                                  </Link>
+                                </div>
+                              </div>
+
+                            </TabPanel>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
+                          <img src="../no_Data1.png" className="nofound" />
+                        </div>
+                      )}
+                    </TabContext>
+                  </Box>
+
+                </div>
+              </div>
+            </div>
+
+            <div className='dashbd_crd_bx1 gap-4 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
+              {/* <div className='gap-4'>
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
 
                   <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className=''>
@@ -742,8 +781,8 @@ const Dashboard = () => {
                                   </table>
                                 </div>
 
-                                {/* View All Link */}
-                                <div className="text-blue-600 flex justify-end mt-5">
+                                {/* View All Link 
+                                <div className="flex justify-end mt-5" style={{color:'rgb(0 39 123)'}}>
                                   <Link to='/inventory'>
                                     <div>
                                       <a href="" >View all <ChevronRightIcon /></a>
@@ -757,214 +796,88 @@ const Dashboard = () => {
                         </>
                       ) : (
                         <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data.png" className="nofound" />
+                          <img src="../no_Data1.png" className="nofound" />
                         </div>
                       )}
                     </TabContext>
                   </Box>
 
                 </div>
-              </div>
-            </div>
-
-            <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 pt-5'>
+              </div> */}
               <div className='gap-4'>
-                <div className="flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
 
                   <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className=''>
-                      <p className='font-bold' style={{ fontSize: '1.5625rem' }}>Expiring Items
-                        <Tooltip title="Expiring Items" arrow>
-                          <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                      <p className='font-bold' style={{ fontSize: '1.5625rem' }}>Top Distributors
+                        <Tooltip title="Latest Distributors" >
+                          <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                         </Tooltip>
                       </p>
                     </div>
-                    <div className='gap-8'>
-                      <FormControl sx={{ minWidth: 100 }}>
-                        <Select
-                          labelId="demo-simple-select-helper-label"
-                          id="demo-simple-select-helper"
-                          size='small'
-                          value={expiredValue}
-                          onChange={(e) => { setExpiredValue(e.target.value) }}
-                        >
-                          {expiryList.map((e) => (
-                            <MenuItem key={e.id} value={e.id}>{e.value}</MenuItem>))}
-                        </Select>
-                      </FormControl>
-                      <div>
-                      </div>
-                    </div>
                   </div>
 
-                  <Box sx={{ height: '100%' }}>
-                    <TabContext value={value}>
-                      {expiry.length > 0 ? (
-                        <>
-                          {types.map((e) => (
-                            <TabPanel key={e.id} value={e.id} sx={{ height: '100%' }}>
-                              <div className='flex flex-col justify-between' style={{ height: '100%' }}>
-                                <div>
-                                  <table className="w-full">
-                                    <thead className="primary">
-                                      <tr>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          Item Name
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          Qty.
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          Expiry Date
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {expiry.map((item) => (
-                                        <tr key={item.id} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
-                                          <td className=" px-4 py-2">
-                                            {item.name}
-                                          </td>
-                                          <td className=" px-4 py-2">
-                                            {item.qty}
-                                          </td>
-                                          <td className=" px-4 py-2">
-                                            {item.expiry}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
+                  <Box sx={{ height: '100%', padding: "24px" }}>
+                    {distributor.length > 0 ? (
+                      <>
+                        <div className='flex flex-col justify-between' style={{ height: '100%' }}>
+                          <div className="overflow-x-auto">
+                            <table className="w-full custom-table" style={{ whiteSpace: 'nowrap' }}>
+                              <thead className="primary">
+                                <tr>
+                                  <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                    Distributor
+                                  </th>
+                                  <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                    GST Number
+                                  </th>
+                                  <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                    Bill Amount
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {distributor.map((item, index) => (
+                                  <tr key={index} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
+                                    <td className="px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                      {item.name}
+                                    </td>
+                                    <td className="px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                      {item.gst_number}
+                                    </td>
+                                    <td className="px-4 py-2" style={{ minWidth: 180, fontSize: '16px' }}>
+                                      Rs.{item.due_amount == 0 ? 0 : item.due_amount}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
 
-                                {/* View All Link */}
-                                <div className="text-blue-600 flex justify-end mt-5">
-                                  <Link to='/inventory'>
-                                    <div>
-                                      <a href="" >View all <ChevronRightIcon /></a>
-                                    </div>
-                                  </Link>
-                                </div>
+                          {/* View All Link */}
+                          <div className="flex justify-end mt-5" style={{ color: 'rgb(0 39 123)' }}>
+                            <Link to='/more/DistributorList'>
+                              <div>
+                                <a href="" >View all <ChevronRightIcon /></a>
                               </div>
-
-                            </TabPanel>
-                          ))}
-                        </>
-                      ) : (
-                        <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data.png" className="nofound" />
+                            </Link>
+                          </div>
                         </div>
-                      )}
-                    </TabContext>
-                  </Box>
 
-                </div>
-              </div>
-              <div className='gap-4'>
-
-                <div className="flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
-
-                  <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
-                    <div className=''>
-                      <p className='font-bold' style={{ fontSize: '1.5625rem' }}>Top Distributors</p>
-                    </div>
-                    <div className='flex gap-8'>
-                      <div>
-                        <TabContext value={value}  >
-                          <Box>
-                            <TabList aria-label="lab API tabs example" onChange={handlechange}>
-                              {types.map((e) => (
-                                <Tab key={e.id} value={e.id} label={e.value} />
-                              ))}
-                            </TabList>
-                          </Box>
-                        </TabContext>
+                      </>
+                    ) : (
+                      <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
+                        <img src="../no_Data1.png" className="nofound" />
                       </div>
-                      {billData.length > 0 &&
-                        <FormControl sx={{ minWidth: 100 }}>
-                          <Select
-                            labelId="demo-simple-select-helper-label"
-                            id="demo-simple-select-helper"
-                            size='small'
-                            value={typeValue}
-                            onChange={typeHandlechange}
-                          >
-                            {staffList.map((e) => (
-                              <MenuItem key={e.id} value={e.id}>{e.value}</MenuItem>))}
-                          </Select>
-                        </FormControl>}
-                    </div>
-                  </div>
-
-                  <Box sx={{ height: '100%' }}>
-                    <TabContext value={value}>
-                      {billData.length > 0 ? (
-                        <>
-                          {types.map((e) => (
-                            <TabPanel key={e.id} value={e.id} sx={{ height: '100%' }}>
-                              <div className='flex flex-col justify-between' style={{ height: '100%' }}>
-                                <div className="">
-                                  <table className="w-full">
-                                    <thead className="primary">
-                                      <tr>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          {value == 0 ? "Distributors" : "Customers"}
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          Contact Number
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2">
-                                          Amount
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {billData.map((item, index) => (
-                                        <tr key={index} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
-                                          <td className=" px-4 py-2">
-                                            {item.name}
-                                          </td>
-                                          <td className=" px-4 py-2">
-                                            {item.phone_number === "" ? "--" : item.phone_number}
-                                          </td>
-                                          <td className=" px-4 py-2">
-                                            Rs. {item.total_amount === 0 ? 0 : item.total_amount}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-
-                                {/* View All Link */}
-                                <div className="text-blue-600 flex justify-end mt-5">
-                                  {value == 0 ? (
-                                    <Link to="/purchase/purchasebill">
-                                      <a href="#">View all <ChevronRightIcon /></a>
-                                    </Link>
-                                  ) : (
-                                    <Link to="/salelist">
-                                      <a href="#">View all <ChevronRightIcon /></a>
-                                    </Link>
-                                  )}
-                                </div>
-                              </div>
-                            </TabPanel>
-                          ))}
-                        </>
-                      ) : (
-                        <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data.png" className="nofound" />
-                        </div>
-                      )}
-                    </TabContext>
+                    )}
                   </Box>
 
                 </div>
               </div>
             </div>
 
-            <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-5'>
+            {/* <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-5'>
               <div className='gap-4'>
                 <div className="flex flex-col px-2 py-1 justify-between" style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)' }}>
                   <Box >
@@ -1077,7 +990,7 @@ const Dashboard = () => {
                           ))}
                         </> :
                         <div className='flex justify-center' style={{ minHeight: "400px", alignItems: 'center', }}>
-                          <img src='../no_Data.png' className='nofound' />
+                          <img src='../no_Data1.png' className='nofound' />
                         </div>
                       }
                     </TabContext>
@@ -1086,13 +999,13 @@ const Dashboard = () => {
 
                 </div>
 
-                {/* need to pay */}
+                {/* need to pay 
 
               </div>
               <div className='gap-4'>
                 <div>
 
-                  {/* need to collect */}
+                  {/* need to collect 
                   <div className=" p-4 h-fit justify-between " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)' }}>
                     <div>
                       <div>
@@ -1126,7 +1039,7 @@ const Dashboard = () => {
                           </div>
                         </> :
                         <div className='flex justify-center' style={{ minHeight: "300px", alignItems: 'center', }}>
-                          <img src='../no_Data.png' className='nofound' />
+                          <img src='../no_Data1.png' className='nofound' />
                         </div>
                       }
                       <div className='text-blue-600 flex justify-end'>
@@ -1139,7 +1052,7 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  {/* Stock by PTR and MRP */}
+                  {/* Stock by PTR and MRP 
                   <div className="flex flex-col p-2 justify-between mt-5" style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)' }}>
                     <div className='p-5 flex justify-between items-center gap-2'>
                       <div className=''>
@@ -1248,7 +1161,7 @@ const Dashboard = () => {
                             <Button ><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                           </Tooltip>
                         </div>
-                        {/* {expiry.length > 0 && */}
+                        {/* {expiry.length > 0 && 
                         <FormControl sx={{ minWidth: 100 }}>
                           <Select
                             labelId="demo-simple-select-helper-label"
@@ -1261,7 +1174,7 @@ const Dashboard = () => {
                               <MenuItem key={e.id} value={e.id}>{e.value}</MenuItem>))}
                           </Select>
                         </FormControl>
-                        {/* } */}
+                        {/* } 
                       </div>
                     </div>
                     {expiry.length > 0 ?
@@ -1291,7 +1204,7 @@ const Dashboard = () => {
                       </>
                       :
                       <div className='flex justify-center' style={{ minHeight: "300px", alignItems: 'center', }}>
-                        <img src='../no_Data.png' className='nofound' />
+                        <img src='../no_Data1.png' className='nofound' />
                       </div>
                     }
                     <div className='text-blue-600 flex justify-end'>
@@ -1338,7 +1251,7 @@ const Dashboard = () => {
                     </>
                     :
                     <div className='flex justify-center' style={{ minHeight: "300px", alignItems: 'center', }}>
-                      <img src='../no_Data.png' className='nofound' />
+                      <img src='../no_Data1.png' className='nofound' />
                     </div>
                   }
                   <div className='text-blue-600 flex justify-end'>
@@ -1350,7 +1263,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         }
       </div>

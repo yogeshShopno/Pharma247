@@ -11,9 +11,10 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import usePermissions, { hasPermission } from '../../../../componets/permission';
-import { FaArrowDown, FaArrowUp, FaCaretUp } from 'react-icons/fa6';
+import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
 import { Modal } from 'flowbite-react';
+import { toast } from 'react-toastify';
 
 
 
@@ -30,11 +31,11 @@ const ReturnView = () => {
     const [returnData, setReturnData] = useState([])
     const [roundOff, setRoundOff] = useState(0)
 
-      const [isModalOpen, setIsModalOpen] = useState(false);
-    
-      const toggleModal = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
-      };
+    };
 
     useEffect(() => {
         const index = returnData.findIndex(item => item.id == parseInt(id));
@@ -129,6 +130,38 @@ const ReturnView = () => {
         setIsDelete(true);
     };
 
+    const pdfGenerator = async (id) => {
+        let data = new FormData();
+        data.append("id", id);
+        setIsLoading(true);
+        try {
+            await axios
+                .post("purches-return-pdf", data, {
+                    params: { id },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    const PDFURL = response.data.data.pdf_url;
+                    toast.success(response.data.meassage);
+
+                    setIsLoading(false);
+                    handlePdf(PDFURL);
+                });
+        } catch (error) {
+            console.error("API error:", error);
+        }
+    };
+    const handlePdf = (url) => {
+        if (typeof url === "string") {
+            // Open the PDF in a new tab
+            window.open(url, "_blank");
+        } else {
+            console.error("Invalid URL for the PDF");
+        }
+    };
+
     // const handleDeleteItem = async (id) => {
     //     if (!id) return;
     //     let data = new FormData();
@@ -195,7 +228,7 @@ const ReturnView = () => {
             </div> :
                 <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                     <div>
-                        <div className='py-3 sal-rtn-fff' style={{ display: 'flex', gap: '4px' }}>
+                        <div className='py-3 sal-rtn-fff sale_view_btns' style={{ display: 'flex', gap: '4px' }}>
                             <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', whiteSpace: "nowrap", cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
@@ -204,8 +237,19 @@ const ReturnView = () => {
                                 <span style={{ color: 'var(--color1)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>{tableData?.bill_no}</span>
                             </div>
                             {hasPermission(permissions, "purchase return bill edit") && (
-                                <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px', }}>
-                                    <Button className="sale_add_btn" style={{ backgroundColor: 'var(--color1)', }} variant="contained" onClick={() => { history.push('/return/edit/' + tableData.id) }} >< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
+                                <div className='flex sale_ve_btnsss' style={{ width: '100%', justifyContent: 'end', gap: '10px', }}>
+                                    <Button
+                                        variant="contained"
+                                        className="sale_add_btn sale_dnls gap-2"
+                                        style={{ backgroundColor: "var(--color1)" }}
+                                        onClick={() => pdfGenerator(tableData.id)}
+                                    >
+                                        <FaFilePdf
+                                            className="w-5 h-5 hover:text-secondary cursor-pointer"
+                                        />
+                                        Download
+                                    </Button>
+                                    <Button className="sale_add_btn sale_dnls" style={{ backgroundColor: 'var(--color1)', }} variant="contained" onClick={() => { history.push('/return/edit/' + tableData.id) }} >< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
                                 </div>)}
                         </div>
                     </div>
@@ -297,7 +341,7 @@ const ReturnView = () => {
                                     </tbody>
                                 }
                             </table>
-                          
+
                         </div>
 
                         <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
@@ -309,10 +353,10 @@ const ReturnView = () => {
                                 </div>
                                 <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                     <label className="font-bold">Total Qty : </label>
-                                    <span style={{ fontWeight: 600 }}>{tableData?.total_qty ? tableData?.total_qty : 0} 
+                                    <span style={{ fontWeight: 600 }}>{tableData?.total_qty ? tableData?.total_qty : 0}
                                     </span>
                                 </div>
-                               
+
                             </div>
 
                             <div style={{ display: 'flex' }}>

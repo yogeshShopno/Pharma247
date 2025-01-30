@@ -1332,3 +1332,33 @@
     display: flex !important;
   }
 }
+
+.recharts-wrapper {
+  width: 100% !important;
+  height: auto !important;
+}
+
+.recharts-legend-wrapper {
+  width: 100% !important;
+  height: auto !important;
+}
+
+@media (max-width: 583px) {
+  .sale_view_btns {
+    flex-direction: column;
+  }
+  .sale_dnls{
+    width: 100%;
+  }
+  .sale_ve_btnsss{
+    margin-top: 2%;
+  }
+}
+@media (max-width: 400px) {
+  .sale_ve_btnsss {
+    flex-direction: column;
+  }
+  .sale_dnls{
+    width: 100%;
+  }
+}

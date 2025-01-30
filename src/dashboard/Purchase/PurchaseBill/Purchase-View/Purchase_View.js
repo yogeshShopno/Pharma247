@@ -28,9 +28,10 @@ import {
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
 import { BsLightbulbFill } from "react-icons/bs";
-import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
+import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const PurchaseView = () => {
   const { id } = useParams();
@@ -50,7 +51,7 @@ const PurchaseView = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  
+
   useEffect(() => {
     purchaseBillList();
   }, []);
@@ -87,6 +88,44 @@ const PurchaseView = () => {
       console.error("Error deleting items:", error);
     }
   };
+
+  const pdfGenerator = async (id) => {
+    let data = new FormData();
+    data.append("id", id);
+    setIsLoading(true);
+    try {
+      await axios
+        .post("purches-pdf-downloads", data, {
+          params: { id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const PDFURL = response.data.data.pdf_url;
+          toast.success(response.data.meassage);
+
+          setIsLoading(false);
+          handlePdf(PDFURL);
+          if (response.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+          }
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
+  const handlePdf = (url) => {
+    if (typeof url === "string") {
+      // Open the PDF in a new tab
+      window.open(url, "_blank");
+    } else {
+      console.error("Invalid URL for the PDF");
+    }
+  };
+
   const purchaseBillList = async (currentPage) => {
     let data = new FormData();
     setIsLoading(true);
@@ -178,7 +217,7 @@ const PurchaseView = () => {
       ) : (
         <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
           <div>
-            <div className="py-3 sal-rtn-fff" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
               <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
                 <span
                   style={{
@@ -235,7 +274,7 @@ const PurchaseView = () => {
 
               {hasPermission(permissions, "purchase bill edit") && (
                 <div
-                  className="flex"
+                  className="flex sale_ve_btnsss"
                   style={{ width: "100%", justifyContent: "end", gap: "10px" }}
                 >
                   {data?.cn_bill_list?.length !== 0 && (
@@ -249,10 +288,23 @@ const PurchaseView = () => {
                       CN View
                     </Button>
                   )}
+
+                  <Button
+                    variant="contained"
+                    className="sale_add_btn sale_dnls gap-2"
+                    style={{ backgroundColor: "var(--color1)" }}
+                    onClick={() => pdfGenerator(tableData.id)}
+                  >
+                    <FaFilePdf
+                      className="w-5 h-5 hover:text-secondary cursor-pointer"
+                    />
+                    Download
+                  </Button>
+
                   <Button
                     style={{ background: "var(--color1)" }}
                     variant="contained"
-                    className="sale_add_btn"
+                    className="sale_add_btn sale_dnls"
                     onClick={() => {
                       history.push(
                         "/purchase/edit/" +

@@ -201,7 +201,6 @@ const Dashboard = () => {
         setCustomer(initialData?.top_customer)
         setExpiry(initialData?.expiring_iteam)
         setDistributor(initialData?.top_distributor)
-        console.log('initialData :>> ', initialData?.loyalti_point_all_customer);
         setLoyaltyPoints(initialData?.loyalti_point_all_customer
         )
         setUseLoyaltyPoints(initialData?.loyalti_point_use_all_customer)
@@ -245,8 +244,8 @@ const Dashboard = () => {
         </div> :
           <div className='p-5' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
 
-            <div className='flex flex-col justify-between gap-6'>
-              <div className='flex flex-col ' style={{ width: '50%' }}>
+            <div className='flex flex-col md:flex-row justify-between gap-6'>
+              <div className='flex flex-col w-full md:w-1/2' style={{ width: '100%' }}>
                 <div>
                   <h1 style={{ color: 'var(--color2)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
                   <p style={{ color: 'gray' }}>Track sales, inventory, and customer trends in real-time</p>
@@ -359,7 +358,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className='flex flex-col gap-5' style={{ width: '50%' }}>
+              <div className='flex flex-col gap-5 w-full md:w-1/2' style={{ width: '100%' }}>
                 <div className='flex gap-5' style={{ width: '100%' }}>
                   <Card style={{ width: '100%' }}>
                     <div className='p-2 flex flex-col'>
@@ -372,9 +371,12 @@ const Dashboard = () => {
                       <div class='pt-5'>
                         {customer.length > 0 ? (
                           <>
-                            <LineChart width={850} height={300} data={lineChartData}>
+                            <LineChart
+                             width={850}
+                              height={300} 
+                             data={lineChartData}>
                               <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="name" tick={{ style: { fontSize: '14px' } }} />
+                              <XAxis dataKey="name" tick={{ style: { fontSize: '19px' } }} />
                               <YAxis />
                               <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
                               <Legend />
@@ -397,7 +399,7 @@ const Dashboard = () => {
                     </div>
                   </Card>
                 </div>
-                <div className='flex gap-5' style={{ width: '100%' }}>
+                <div className='flex flex-col gap-5 md:flex-row' style={{ width: '100%' }}>
                   <Card style={{ width: '100%' }}>
                     <div className='p-2 '>
                       <div className=''>

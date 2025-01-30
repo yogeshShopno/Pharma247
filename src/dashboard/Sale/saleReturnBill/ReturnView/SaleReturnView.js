@@ -10,9 +10,10 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { BsLightbulbFill } from "react-icons/bs";
 import usePermissions, { hasPermission } from "../../../../componets/permission";
 import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
-import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
+import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const SaleReturnView = () => {
     const [tableData, setTableData] = useState([]);
@@ -66,7 +67,39 @@ const SaleReturnView = () => {
         };
     })
 
+    const pdfGenerator = async (id) => {
+        let data = new FormData();
+        data.append("id", id);
+        setIsLoading(true);
+        try {
+          await axios
+            .post("sale-return-pdf-downloads", data, {
+              params: { id },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const PDFURL = response.data.data.pdf_url;
+              toast.success(response.data.meassage);
+    
+              setIsLoading(false);
+              handlePdf(PDFURL);
+            });
+        } catch (error) {
+          console.error("API error:", error);
+        }
+      };
 
+      const handlePdf = (url) => {
+        if (typeof url === "string") {
+          // Open the PDF in a new tab
+          window.open(url, "_blank");
+        } else {
+          console.error("Invalid URL for the PDF");
+        }
+      };
+    
     const saleReturnBillList = async (currentPage) => {
         setIsLoading(true);
         let data = new FormData();
@@ -123,7 +156,7 @@ const SaleReturnView = () => {
                         <>
                             <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                                 <div>
-                                    <div className='py-3 sal-rtn-fff' style={{ display: 'flex', gap: '4px' }}>
+                                    <div className='py-3 sal-rtn-fff sale_view_btns' style={{ display: 'flex', gap: '4px' }}>
                                         <div className="flex flex-row gap-2" style={{alignItems: "center"}}>
                                             <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer', minWidth: "105px", flexWrap: "nowrap", whiteSpace: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }}>Sale Return</span>
                                             <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
@@ -133,8 +166,20 @@ const SaleReturnView = () => {
                                             <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                         </div>
                                         {hasPermission(permissions, "sale return bill edit") && (
-                                            <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
-                                                <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} className="sale_add_btn gap-2" onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
+                                            <div className='flex sale_ve_btnsss' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
+                                                <Button
+                                                variant="contained"
+                                                className="sale_add_btn sale_dnls gap-2"
+                                                style={{ backgroundColor: "var(--color1)" }}
+                                                onClick={() => pdfGenerator(tableData.id)}
+                                            >
+                                                <FaFilePdf
+                                                    className="w-5 h-5 hover:text-secondary cursor-pointer"
+                                                />
+                                                Download
+                                                </Button>
+
+                                                <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} className="sale_add_btn sale_dnlssale_dnls gap-2" onClick={() => { history.push('/SaleReturn/Edit/' + tableData.id) }}>< BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />Edit</Button>
                                             </div>)}
                                     </div>
                                 </div>

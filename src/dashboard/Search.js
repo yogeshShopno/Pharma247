@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { TextField } from "@mui/material";
+import { TablePagination, TextField } from "@mui/material";
 import axios from "axios";
 import { InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -18,7 +18,8 @@ const Search = ({ searchPage, setSearchPage }) => {
   const token = localStorage.getItem("token");
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
   const [medicineTableData, setMedicineTableData] = useState([])
@@ -138,6 +139,15 @@ const Search = ({ searchPage, setSearchPage }) => {
     }
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0); // Reset page to 0 when changing rows per page
+  };
   /*<======================================================================================= UI =======================================================================================> */
 
   return (
@@ -244,7 +254,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody style={{ background: "#3f621217" ,overflow:'auto'}}>
+                <tbody style={{ background: "#3f621217", overflow: 'auto' }}>
                   {(() => {
                     let columns, tableData;
 
@@ -272,32 +282,35 @@ const Search = ({ searchPage, setSearchPage }) => {
                     }
 
                     return tableData && tableData.length > 0 ? (
-                      tableData.map((row, index) => (
-                        <tr className="primary" key={index}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td> {/* Serial Number */}
-                          {columns.map((column) => (
-                            <td
-                              onClick={() => {
-                                if (searchType == 1) {
-                                  history.push(`/inventoryView/${row.id}`)
-                                } else if (searchType == 2) {
-                                  // history.push(`/DistributerView/${row.id}`)
-                                } else if (searchType == 3) {
-                                  history.push(`/DistributerView/${row.id}`)
-                                } else if (searchType == 4) {
-                                  history.push(`/more/customerView/${row.id}`)
-                                }
 
-                              }} className="" key={column.id}>
-                              {row[column.id] || "-"} {/* Render data or fallback */}
+                      tableData
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => (
+                          <tr className="primary" key={index}>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>{page * rowsPerPage + index + 1}</td>
+                            {columns.map((column) => (
+                              <td
+                                onClick={() => {
+                                  if (searchType == 1) {
+                                    history.push(`/inventoryView/${row.id}`)
+                                  } else if (searchType == 2) {
+                                    // history.push(`/DistributerView/${row.id}`)
+                                  } else if (searchType == 3) {
+                                    history.push(`/DistributerView/${row.id}`)
+                                  } else if (searchType == 4) {
+                                    history.push(`/more/customerView/${row.id}`)
+                                  }
+
+                                }} className="" key={column.id}>
+                                {row[column.id] || "-"} {/* Render data or fallback */}
+                              </td>
+
+                            ))}
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <ReplyAllIcon className="primary transform -scale-x-100" />
                             </td>
-
-                          ))}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <ReplyAllIcon className="primary transform -scale-x-100" />
-                          </td>
-                        </tr>
-                      ))
+                          </tr>
+                        ))
                     ) : (
                       <tr>
                         <td colSpan={columns.length + 2} className="text-center primary">
@@ -311,7 +324,15 @@ const Search = ({ searchPage, setSearchPage }) => {
 
               </table>
             </div>
-
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={medicineTableData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </div>
         </div>
       </div>

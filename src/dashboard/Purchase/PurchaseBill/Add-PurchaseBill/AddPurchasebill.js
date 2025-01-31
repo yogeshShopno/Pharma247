@@ -176,8 +176,11 @@ const AddPurchaseBill = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
 
+  const inputRefs = useRef([]);
+
   // Handle key presses for navigating rows
   const handleKeyPress = (e) => {
+    // setTableFocus(true);
     const key = e.key;
     console.log(key)
     if (key === "ArrowDown") {
@@ -236,6 +239,18 @@ const AddPurchaseBill = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+    const handleKeyDown = (event, index) => {
+      console.log("hiii", index)
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission
+
+      const nextInput = inputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus(); // Move to next input
+      }
+    }
+  };
 
   /*<================================================================================ PTR and MRP validation =======================================================================> */
 
@@ -693,7 +708,6 @@ const AddPurchaseBill = () => {
 
   /*<================================================================================ Get GST List   =================================================================================> */
 
-
   let listOfGst = () => {
     axios
       .get("gst-list", {
@@ -710,7 +724,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<================================================================================ Get Distributor List   =================================================================================> */
-
 
   let listDistributor = () => {
     axios
@@ -897,6 +910,8 @@ const AddPurchaseBill = () => {
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       await handleAddItem();
+ setUnsavedItems(true)
+
     }
     return isValid;
   };
@@ -1079,12 +1094,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<=========================================================================== select row using up down arrow  ======================================================================> */
-
-
-
-
-
-
 
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
@@ -1736,6 +1745,7 @@ const AddPurchaseBill = () => {
                       autoComplete="off"
                       variant="outlined"
                       {...params}
+
                     />
                   )}
                 />
@@ -1745,7 +1755,7 @@ const AddPurchaseBill = () => {
                   </span>
                 )}
               </div>
-              <div className="detail">
+              {/* <div className="detail">
                 <span className="title mb-2">Sr No.</span>
                 <TextField
                   autoComplete="off"
@@ -1759,7 +1769,7 @@ const AddPurchaseBill = () => {
                     setSrNo(e.target.value);
                   }}
                 />
-              </div>
+              </div> */}
               <div className="detail">
                 <span className="title mb-2">Bill No. / Order No.</span>
                 <TextField
@@ -1910,7 +1920,7 @@ const AddPurchaseBill = () => {
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
-                                  inputRef={searchItemField}
+                                  // inputRef={searchItemField}
                                   getOptionLabel={(option) =>
                                     `${option.iteam_name} `
                                   }
@@ -1935,13 +1945,16 @@ const AddPurchaseBill = () => {
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
+                                      inputRef={(el) => (inputRefs.current[0] = el)}
+                                      onKeyDown={(e) => handleKeyDown(e, 0)}
+
                                     />
                                   )}
                                 />
                               )}
                             </td>
                           )}
-
+                          
                           <td>
                             <TextField
                               variant="outlined"
@@ -1952,6 +1965,7 @@ const AddPurchaseBill = () => {
                               error={!!errors.unit}
                               value={unit}
                               sx={{ width: "65px" }}
+                              
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
@@ -1959,13 +1973,16 @@ const AddPurchaseBill = () => {
                                 );
                                 setUnit(value ? Number(value) : "");
                               }}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
+
+                              inputRef={(el) => (inputRefs.current[1] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 1)}
                             />
                             {error.unit && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -2019,6 +2036,8 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
+                              inputRef={(el) => (inputRefs.current[2] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 2)}
                             />
                             {error.batch && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -2039,6 +2058,8 @@ const AddPurchaseBill = () => {
                               value={expiryDate}
                               onChange={handleExpiryDate}
                               placeholder="MM/YY"
+                              inputRef={(el) => (inputRefs.current[3] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 3)}
                             />
                           </td>
                           <td>
@@ -2059,15 +2080,17 @@ const AddPurchaseBill = () => {
                                   setMRP(value ? Number(value) : "");
                                 }
                               }}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
+                              //     (e.key === "." &&
+                              //       e.target.value.includes("."))
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
+                              inputRef={(el) => (inputRefs.current[4] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 4)}
                             />
                           </td>
                           <td>
@@ -2090,13 +2113,16 @@ const AddPurchaseBill = () => {
                                 );
                                 setQty(value ? Number(value) : "");
                               }}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              inputRef={(el) => (inputRefs.current[5] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 5)}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
+                           
                             />
                           </td>
                           <td>
@@ -2115,13 +2141,15 @@ const AddPurchaseBill = () => {
                                 const value = e.target.value.replace(/[^0-9]/g);
                                 setFree(value ? Number(value) : "");
                               }}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
+                              inputRef={(el) => (inputRefs.current[6] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 6)}
                             />
                           </td>
                           <td>
@@ -2136,19 +2164,21 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               value={ptr}
                               error={!!errors.ptr}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
+                              //     (e.key === "." &&
+                              //       e.target.value.includes("."))
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
                               onChange={(e) => {
                                 const setptr = e.target.value.replace(/[eE]/g, "");
                                 setPTR(setptr);
                               }}
+                              inputRef={(el) => (inputRefs.current[7] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 7)}
                             />
                           </td>
                           <td>
@@ -2162,15 +2192,15 @@ const AddPurchaseBill = () => {
                               // inputRef={inputRef8}
                               // onKeyDown={handleKeyDown}
                               value={disc}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
+                              // onKeyDown={(e) => {
+                              //   if (
+                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
+                              //     (e.key === "." &&
+                              //       e.target.value.includes("."))
+                              //   ) {
+                              //     e.preventDefault();
+                              //   }
+                              // }}
                               onChange={(e) => {
                                 const value = e.target.value;
                                 if (Number(value) > 99) {
@@ -2178,6 +2208,8 @@ const AddPurchaseBill = () => {
                                 }
                                 handleSchAmt(e);
                               }}
+                              inputRef={(el) => (inputRefs.current[8] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 8)}
                             />
                           </td>
                           {/* <td>
@@ -2208,6 +2240,7 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBase(e.target.value);
                               }}
+                            
                             />
                           </td>
                           <td>
@@ -2226,6 +2259,8 @@ const AddPurchaseBill = () => {
                               size="small"
                               displayEmpty
                               error={!!errors.gst}
+                              inputRef={(el) => (inputRefs.current[9] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 9)}
                             >
                               {gstList?.map((option) => (
                                 <MenuItem key={option.id} value={option.name}>
@@ -2247,14 +2282,15 @@ const AddPurchaseBill = () => {
                               // error={!!errors.loc}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
-                                // setLoc(e.target.value);
+                                setLoc(e.target.value);
                            
                               }}
                               onKeyDown={(e) => {
-                                if (e.key === 'Tab') {
+                                if (e.key === 'Enter') {
                                   handleAddButtonClick();
                                 }
                               }}
+                            
                             />
                           </td>
                           <td>
@@ -2267,6 +2303,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={netRate === 0 ? "" : netRate}
                               sx={{ width: "100px" }}
+                              
                             />
                           </td>
                           <td>
@@ -2288,107 +2325,24 @@ const AddPurchaseBill = () => {
                             <span>{ItemTotalAmount.toFixed(2)}</span>
                           </td>
                         </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td> </td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        
-
-                          <td>
-                            {/* <Button
-                              variant="contained"
-                              style={{ backgroundColor: "var(--color1)" }}
-                              onClick={handleAddButtonClick}
-                            >
-                              <ControlPointIcon className="mr-2" />
-                              {isEditMode ? "Edit" : "Add"}
-                            </Button> */}
-                          </td>
-                        </tr>
- {/*<=============================================================================== added Item  ==============================================================================> */}
-
-                        {/* {ItemPurchaseList?.item?.map((item) => (
-                          <tr
-                          ref={tableRef}
-                          tabIndex={0} // Make the container focusable
-                            key={item.id}
-                            onClick={() => handleEditClick(item)}
-
-                            className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
-                                ? "highlighted-row"
-                                : ""
-                              }`}
-
-                          >
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                              }}
-                            >
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
-                                onClick={() => handleEditClick(item)}
-                              />
-                              <DeleteIcon
-                                style={{ color: "var(--color6)" }}
-                                className="delete-icon bg-none"
-                                onClick={() => { deleteOpen(item.id) }}
-                              />
-                              {item.iteam_name}
-                            </td>
-                            <td>{item.weightage}</td>
-                            <td>{item.hsn_code}</td>
-                            <td>{item.batch_number}</td>
-                            <td>{item.expiry}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.free_qty}</td>
-                            <td>{item.ptr}</td>
-                            <td>{item.discount}</td>
-                            <td>{item.scheme_account}</td>
-                            <td>{item.base_price}</td>
-                            <td>{item.gst}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                            <td>{item.margin}</td>
-                            <td>{item.total_amount}</td>
-                          </tr>
-                        ))} */}
-                      </>
-                    )}
-                  </tbody>
+                        </>)}
+                        </tbody>
                 </table>
                 < >
+ {/*<=============================================================================== added Item  ==============================================================================> */}
+                  
                   <table
                   className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                    // tabIndex={0} 
-                  > <tbody 
-                  >
+                    // tabIndex={0}  
+                  > <tbody>
                     {ItemPurchaseList?.item?.map((item) => (
                       <tr
-
                         key={item.id}
                         onClick={() => handleEditClick(item)}
-
                         className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
                           ? "highlighted-row"
-                          : ""
-                          }`}
-
-                      >
+                          : ""}`}>
                         <td
                           style={{
                             display: "flex",
@@ -2427,7 +2381,6 @@ const AddPurchaseBill = () => {
                       </tr>
                     ))}
                       </tbody>
-
                   </table>
                 </>
 {/*<============================================================================== total and other details  =============================================================================> */}
@@ -3038,3 +2991,32 @@ export default AddPurchaseBill;
 //   } catch (e) {
 //   }
 // }
+
+/*<================================================================================ temp  handle Add button logic =================================================================================> */
+
+  {/* <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>
+                            <Button
+                              variant="contained"
+                              style={{ backgroundColor: "var(--color1)" }}
+                              onClick={handleAddButtonClick}
+                            >
+                              <ControlPointIcon className="mr-2" />
+                              {isEditMode ? "Edit" : "Add"}
+                            </Button>
+                          </td>
+                        </tr> */}

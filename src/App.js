@@ -169,6 +169,10 @@ function App() {
       .css-1aquho2-MuiTabs-indicator{
       background-color: var(--color2) !important;
       }
+
+      .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+    background-color: var(--COLOR_UI_PHARMACY) !important;
+}
     `;
     document.head.appendChild(style);
 

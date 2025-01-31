@@ -790,7 +790,7 @@ const PaymentList = () => {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions style={{ padding: '20px 24px' }}>
-                            <Button autoFocus style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }} variant="contained" onClick={handlePermission} >
+                            <Button autoFocus style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)",width:'100%' }} variant="contained" onClick={handlePermission} >
                                 {buttonLabel}
                             </Button>
                         </DialogActions>

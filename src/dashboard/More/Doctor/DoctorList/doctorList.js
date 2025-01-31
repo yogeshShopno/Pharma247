@@ -755,6 +755,7 @@ const DoctorList = () => {
                   style={{
                     backgroundColor: "var(--COLOR_UI_PHARMACY)",
                     color: "white",
+                    width: "100%"
                   }}
                   onClick={uploadDoctorFile}
                 >
@@ -934,7 +935,7 @@ const DoctorList = () => {
                     <Button
                       autoFocus
                       variant="contained"
-                      style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
+                      style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" ,width:"100%"}}
                       onClick={AddDoctor}
                     >
                       {buttonLabel}

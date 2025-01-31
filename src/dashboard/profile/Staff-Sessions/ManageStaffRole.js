@@ -66,7 +66,7 @@ const ManageStaffRole = () => {
                 setOpenAddPopUpDeactive(false)
                 listOfRolePermission();
                 // setManageStaffRoleData(response.data.data);
-               
+
             })
             .catch((error) => {
                 console.error("API error:", error);
@@ -115,7 +115,7 @@ const ManageStaffRole = () => {
             }
             ).then((response) => {
                 setRoleHistory(response.data.data)
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -130,12 +130,12 @@ const ManageStaffRole = () => {
                 <Loader />
             </div> :
                 <div>
-                    <Box sx={{ display: "flex" }}>
+                    <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
-                        <div className="p-8 w-full">
+                        <div className="p-8" style={{width:'100%',minWidth:'50px'}}>
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Manage Staff Roles
+                                    <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5 mng_role_stf_txt" style={{ marginBottom: "25px" }} >Manage Staff Roles
                                         <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                     </h1>
                                 </div>
@@ -150,50 +150,61 @@ const ManageStaffRole = () => {
                                         <AddIcon className="mr-2" />Create Role</Button>
                                 </div>
                             </div>
-                            <table className="table-cashManage p-4">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        {ManageStaffRole.map((column) => (
-                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                {column.label}
-                                            </th>
-                                        ))}
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {manageStaffRoleData?.map((item, index) => (
-                                        <tr key={index} >
-                                            <td>  {index + 1}</td>
-                                            {ManageStaffRole.map((column) => {
-                                                const value = item[column.id];
-                                                const isStatus = column.id === 'status';
-                                                const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
-                                                return (
-                                                    <td key={column.id} className={`text-lg `}>
-                                                        <span className={`text ${isStatus && statusClass}`}>
-                                                            {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive' : item[column.id]}
-                                                        </span>
-                                                    </td>
-                                                )
-                                            })}
-                                            <td className="flex justify-center">
-                                                <div className="flex" >
-                                                    <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
-                                                    <BorderColorIcon
-                                                        style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
-                                                    <Tooltip title="Deactivate" className="">
-                                                        {item.status == 'Active' ?
-                                                            <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
-                                                            <FaCheckCircle className="text-blue-600 mr-3" size={24} onClick={() => handleDeactive(item.id)} />}
-                                                    </Tooltip>
-                                                </div>
-                                            </td>
+                            <div className="overflow-x-auto mt-4 border-t pt-4">
+                                {/* <table className="table-cashManage p-4"> */}
+                                <table
+                                    className="w-full border-collapse custom-table"
+                                    style={{
+                                        whiteSpace: "nowrap",
+                                        borderCollapse: "separate",
+                                        borderSpacing: "0 6px",
+                                    }}
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            {ManageStaffRole.map((column) => (
+                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                    {column.label}
+                                                </th>
+                                            ))}
+                                            <th>Action</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody style={{ background: "#3f621217" }}>
+
+                                        {manageStaffRoleData?.map((item, index) => (
+                                            <tr key={index} >
+                                                <td style={{ borderRadius: "10px 0 0 10px" }}> {index + 1}</td>
+                                                {ManageStaffRole.map((column) => {
+                                                    const value = item[column.id];
+                                                    const isStatus = column.id === 'status';
+                                                    const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
+                                                    return (
+                                                        <td key={column.id} className={`text-lg `}>
+                                                            <span className={`text ${isStatus && statusClass}`}>
+                                                                {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive' : item[column.id]}
+                                                            </span>
+                                                        </td>
+                                                    )
+                                                })}
+                                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                    <div className="flex justify-center items-center">
+                                                        <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
+                                                        <BorderColorIcon
+                                                            style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
+                                                        <Tooltip title="Deactivate" className="">
+                                                            {item.status == 'Active' ?
+                                                                <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
+                                                                <FaCheckCircle className="text-blue-600 mr-3" size={24} onClick={() => handleDeactive(item.id)} />}
+                                                        </Tooltip>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </Box>
                     <Dialog open={openAddPopUp} sx={{ '& .MuiDialog-paper': { maxWidth: '1000px', width: '50%' } }} >

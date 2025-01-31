@@ -1041,6 +1041,7 @@ const DistributerList = () => {
                 style={{
                   backgroundColor: "var(--COLOR_UI_PHARMACY)",
                   color: "white",
+                  width: "100%",
                 }}
                 variant="contained"
                 onClick={uploadDistributorFile}

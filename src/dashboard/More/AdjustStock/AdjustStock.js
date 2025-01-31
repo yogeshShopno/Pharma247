@@ -787,7 +787,7 @@ const AdjustStock = () => {
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions style={{ padding: '20px 24px' }}>
-                                    <Button style={{ background: "var(--COLOR_UI_PHARMACY)" }} autoFocus variant="contained" className="" onClick={validateForm}>
+                                    <Button style={{ background: "var(--COLOR_UI_PHARMACY)" ,width:"100%"}} autoFocus variant="contained" className="" onClick={validateForm}>
                                         Save
                                     </Button>
                                     <Button style={{ background: "#F31C1C" }} autoFocus variant="contained" onClick={resetAddDialog} color="error"  >

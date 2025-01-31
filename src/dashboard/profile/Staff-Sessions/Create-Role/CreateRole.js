@@ -23,12 +23,22 @@ const CreateRole = () => {
     const [roleChecked, setRoleChecked] = useState({})
     const [selectedPermission, setSelectedPermission] = useState({});
     const [permissionValue, setPermissionValue] = useState([]);
+    const [expandedRoles, setExpandedRoles] = useState({});
+
     useEffect(() => {
         if (id) {
             editRolePermission();
         }
         listOfPermission();
     }, []);
+
+
+    const toggleRoleVisibility = (role) => {
+        setExpandedRoles((prev) => ({
+            ...prev,
+            [role]: !prev[role], // Toggle the visibility state
+        }));
+    };
 
     const editRolePermission = async () => {
         let data = new FormData();
@@ -72,7 +82,7 @@ const CreateRole = () => {
             .then((response) => {
                 setIsLoading(false)
                 setPermissionList(response.data.data);
-               
+
             })
             .catch((error) => {
                 setIsLoading(false);
@@ -177,7 +187,7 @@ const CreateRole = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <Box sx={{ display: "flex" }}>
+                    <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
                         <div className="p-6 w-full">
                             <div className="flex justify-between">
@@ -204,7 +214,7 @@ const CreateRole = () => {
                                         autoComplete="off" id="standard-basic"
                                         size="small"
                                         sx={{ width: '100%' }}
-                                        label="Enter Your Role Name"
+                                        // label="Enter Your Role Name"
                                         variant="outlined"
                                         value={roleName}
                                         onChange={(e) => setRoleName(e.target.value)}
@@ -217,49 +227,57 @@ const CreateRole = () => {
                                 <span className="text-red-600 text-xl">*</span>
                             </div>
 
-                            <div className="mt-2 w-full">
+                            <div className="mt-2 w-full flex flex-col gap-3">
                                 {Object.keys(permissionList).map((role, index) => (
-                                    <div key={index}>
-                                        <h2 className="primary text-xl flex items-center">
-                                            <PlayArrowIcon className="text-black" />
-                                            <span>{role}</span>
-                                            <Checkbox
-                                                sx={{
-                                                    color: "var(--color2)", // Color for unchecked checkboxes
-                                                    '&.Mui-checked': {
-                                                        color: "var(--color1)", // Color for checked checkboxes
-                                                    },
-                                                }}
-                                                {...label}
-                                                checked={permissionList[role].every(permission => roleChecked[permission])}
-                                                onChange={(event) => {
-                                                    const allChecked = event.target.checked;
-                                                    const newCheckedState = { ...roleChecked };
-                                                    permissionList[role].forEach(permission => {
-                                                        newCheckedState[permission] = allChecked;
-                                                    });
-                                                    setRoleChecked(newCheckedState);
-                                                }}
+                                    <div key={index} className="border border-gray-300 bg-white rounded-md p-2">
+                                        <h2 className="primary text-lg flex items-center gap-3" >
+                                            <PlayArrowIcon
+                                                className={`primary transform transition-transform duration-300 cursor-pointer ${expandedRoles[role] ? "rotate-90" : ""}`}
+                                                onClick={() => toggleRoleVisibility(role)}
                                             />
+                                            <div className="flex items-center gap-1">
+                                                <span>{role}</span>
+                                                <Checkbox
+                                                    sx={{
+                                                        color: "var(--color2)", // Color for unchecked checkboxes
+                                                        '&.Mui-checked': {
+                                                            color: "var(--color1)", // Color for checked checkboxes
+                                                        },
+                                                    }}
+                                                    {...label}
+                                                    checked={permissionList[role].every(permission => roleChecked[permission])}
+                                                    onChange={(event) => {
+                                                        const allChecked = event.target.checked;
+                                                        const newCheckedState = { ...roleChecked };
+                                                        permissionList[role].forEach(permission => {
+                                                            newCheckedState[permission] = allChecked;
+                                                        });
+                                                        setRoleChecked(newCheckedState);
+                                                    }}
+                                                />
+
+                                            </div>
                                         </h2>
-                                        <div className="pl-8">
-                                            {permissionList[role].map((permission, index) => (
-                                                <div key={index} className="flex items-center gap-2">
-                                                    <Checkbox
-                                                        sx={{
-                                                            color: "var(--color2)", // Color for unchecked checkboxes
-                                                            '&.Mui-checked': {
-                                                                color: "var(--color1)", // Color for checked checkboxes
-                                                            },
-                                                        }}
-                                                        {...label}
-                                                        checked={roleChecked[permission] || false}
-                                                        onChange={(event) => handleCheckboxChange(event, permission)}
-                                                    />
-                                                    <span>{permission}</span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        {expandedRoles[role] && (
+                                            <div className="pl-10">
+                                                {permissionList[role].map((permission, index) => (
+                                                    <div key={index} className="flex items-center gap-2">
+                                                        <Checkbox
+                                                            sx={{
+                                                                color: "var(--color2)", // Color for unchecked checkboxes
+                                                                '&.Mui-checked': {
+                                                                    color: "var(--color1)", // Color for checked checkboxes
+                                                                },
+                                                            }}
+                                                            {...label}
+                                                            checked={roleChecked[permission] || false}
+                                                            onChange={(event) => handleCheckboxChange(event, permission)}
+                                                        />
+                                                        <span>{permission}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

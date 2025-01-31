@@ -19,7 +19,7 @@ const Search = ({ searchPage, setSearchPage }) => {
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
 
   const [medicineTableData, setMedicineTableData] = useState([])
@@ -313,7 +313,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                         ))
                     ) : (
                       <tr>
-                        <td colSpan={columns.length + 2} className="text-center primary">
+                        <td colSpan={columns.length + 2} className="text-center primary" style={{borderRadius:'10px 10px 10px 10px'}}>
                           No data found
                         </td>
                       </tr>

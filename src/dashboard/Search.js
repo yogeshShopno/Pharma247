@@ -150,12 +150,27 @@ const Search = ({ searchPage, setSearchPage }) => {
   };
   /*<======================================================================================= UI =======================================================================================> */
 
+  useEffect(() => {
+    if (searchPage) {
+      // Disable scrolling
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scrolling
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup function to restore scroll when component unmounts
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [searchPage]);
+
   return (
     <>
       <div
         id="modal"
         value={searchPage}
-        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,25px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.5)] overflow-hidden font-[sans-serif]
+        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,31px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.5)] overflow-hidden font-[sans-serif]
             ${searchPage ? "block" : "hidden"}`}
       >
         <div />
@@ -313,7 +328,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                         ))
                     ) : (
                       <tr>
-                        <td colSpan={columns.length + 2} className="text-center primary" style={{borderRadius:'10px 10px 10px 10px'}}>
+                        <td colSpan={columns.length + 2} className="text-center primary" style={{ borderRadius: '10px 10px 10px 10px' }}>
                           No data found
                         </td>
                       </tr>

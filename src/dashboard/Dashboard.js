@@ -28,7 +28,9 @@ import DonutChart from './Chart/DonutChart';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
 import { PieChart } from '@mui/x-charts'
 import { Tooltip as RechartsTooltip } from 'recharts';
-
+import { Switch } from '@mui/material';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ListIcon from '@mui/icons-material/List';
 const Dashboard = () => {
 
   const history = useHistory()
@@ -39,7 +41,7 @@ const Dashboard = () => {
   const pieChart = [{ id: 1, value: 'sales' }, { id: 0, value: 'purchase' }]
   const types = [{ id: 1, value: 'sales' }, { id: 0, value: 'purchase' },]
   const [linechartValue, setLinechartValue] = useState('Today')
-  const [staffListValue, setStaffListValue] = useState('today')
+  const [staffListValue, setStaffListValue] = useState('7_day')
   const [typeValue, settypeValue] = useState('7_day')
   const [expiredValue, setExpiredValue] = useState('expired')
   const [record, setRecord] = useState()
@@ -53,7 +55,8 @@ const Dashboard = () => {
   const [data, setData] = useState([])
   const [loyaltyPoints, setLoyaltyPoints] = useState();
   const [useLoyaltyPoints, setUseLoyaltyPoints] = useState();
-
+  const [switchValue, setSwitchValue] = useState(false);
+  const [switchCustomerValue, setSwitchCustomerValue] = useState(false);
   const [reRender, setreRender] = useState(0);
   const [barChartData, setBarChartData] = useState([]);
 
@@ -234,6 +237,13 @@ const Dashboard = () => {
     }
   }
 
+  // const handleSwitchChange = (event) => {
+  //   setSwitchValue(event.target.checked);
+  // }
+  // const handleSwitchCustomerChange = (event) => {
+  //   setSwitchCustomerValue(event.target.checked);
+  // }
+
   return (
     <div >
       <div>
@@ -244,25 +254,25 @@ const Dashboard = () => {
         </div> :
           <div className='p-5' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
 
-            <div className='flex flex-col md:flex-row justify-between gap-6'>
+            <div className='flex flex-col md:flex-row justify-between gap-6 dash_card_chartss items-end'>
               <div className='flex flex-col w-full md:w-1/2' style={{ width: '100%' }}>
                 <div>
                   <h1 style={{ color: 'var(--color2)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
                   <p style={{ color: 'gray' }}>Track sales, inventory, and customer trends in real-time</p>
                 </div>
                 <div>
-                  <div className='mb-5 pb-5 bg-white flex p-5 rounded-lg border border-gray-200 dark:border-gray-700' style={{ display: 'flex', justifyContent: 'space-between', gap: '16%', marginTop: "60px" }}>
+                  <div className='dsh_card_chart mb-5 pb-5 bg-white flex p-5 rounded-lg border border-gray-200 dark:border-gray-700' style={{ display: 'flex', justifyContent: 'space-between', gap: '16%', marginTop: "60px" }}>
                     <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
                       <img src={stockByPTR} />
                       <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px' }}>Stock By PTR</h3>
+                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px', whiteSpace: 'nowrap' }}>Stock By PTR</h3>
                         <div className={`text-xl font-bold primary`}>Rs.{record?.total_ptr == 0 ? 0 : record?.total_ptr}</div>
                       </div>
                     </div>
                     <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
                       <img src={stockByMRP} />
                       <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px' }}>Stock By MRP</h3>
+                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px', whiteSpace: 'nowrap' }}>Stock By MRP</h3>
                         <div className={`text-xl font-bold primary`}>Rs.{record?.total_mrp == 0 ? 0 : record?.total_mrp}</div>
                       </div>
                     </div>
@@ -270,87 +280,137 @@ const Dashboard = () => {
 
                   </div>
 
+                  {/* Bar charts */}
                   <div className="bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between px-2 py-1 py-8 rounded-lg shadow-md">
                     <Box >
                       <Box>
-                        <Tabs
-                          value={linechartValue}
-                          onChange={lineHandleChange}
-                          variant="scrollable"
-                          scrollButtons={false}
-                          aria-label="scrollable prevent tabs example"
-                        >
-                          {record?.chart?.map((e) => (
-                            <Tab key={e.id} value={e.title} label={e.title} sx={
-                              {
-                                '&.Mui-selected': {
-                                  color: 'var(--color2)',
-                                  fontWeight: 'bold'
-                                },
-                              }
-                            } />
-                          ))}
-                        </Tabs>
-                        <div className='pt-8 m-auto'>
-                          {barChartData.every(item => item.value === 0) ? (
-                            <div className='flex justify-center' style={{ minHeight: "429px", alignItems: 'center' }}>
-                              <img src='../no_Data1.png' className='nofound' alt="No Data" />
-                            </div>
-                          ) : (
-                            <BarChart
-                              width={900}
-                              height={429}
-                              data={barChartData}
-                              margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-                            >
+                        <div className='p-2 flex flex-col'>
 
-                              <XAxis dataKey="name" tick={false} axisLine={{ stroke: "#ccc" }} />
-                              <YAxis />
-                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
-                              <Legend />
-                              <Bar dataKey="value" barSize={60} />
-                            </BarChart>
-                          )}
-                        </div>
-                        <div className='flex justify-between pl-8 pr-8 pt-8'>
-                          <div className='flex gap-2'>
-                            <div style={{ border: '1px solid var(--COLOR_UI_PHARMACY)', background: 'var(--COLOR_UI_PHARMACY)', padding: '0px 22px' }}>
-                            </div>
-                            <h3>Sales</h3>
+                          <div className='flex justify-between items-center'>
+
+                            <Tabs
+                              value={linechartValue}
+                              onChange={lineHandleChange}
+                              variant="scrollable"
+                              scrollButtons={false}
+                              aria-label="scrollable prevent tabs example"
+                            >
+                              {record?.chart?.map((e) => (
+                                <Tab key={e.id} value={e.title} label={e.title} sx={
+                                  {
+                                    '&.Mui-selected': {
+                                      color: 'var(--color2)',
+                                      fontWeight: 'bold'
+                                    },
+                                  }
+                                } />
+                              ))}
+                            </Tabs>
+
+                            {/* <div className='primary'>
+                              Graphical <Switch checked={switchValue} onChange={handleSwitchChange}
+                              // checkedIcon={<BarChartIcon sx={{ width: '27px', height: '27px', borderRadius: '50%', background: "var(--color1)", color: "white"}} />}
+                              //   icon={<ListIcon sx={{ width: '27px', height: '27px', borderRadius: '50%', background: "var(--color1)", color: "white"}} />} 
+                              /> Classical
+                            </div> */}
                           </div>
-                          <p>
-                            {record?.salesmodel_total_count} Bills
-                          </p>
-                        </div>
-                        <div className='flex justify-between pl-8 pr-8 pt-1'>
-                          <div className='flex gap-2'>
-                            <div style={{ border: '1px solid var(--color2)', background: 'var(--color2)', padding: '0px 22px' }}>
-                            </div>
-                            <h3>Sales Return</h3>
+
+                          {/* {switchValue ? (
+                            <Box >
+                              <Box sx={{ minHeight: "429px" }}>
+
+                                <div className='flex py-4 p-6 flex-wrap '>
+                                  <div className='w-1/2'>
+                                    <p>Sales</p>
+                                    <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.salesmodel_total ? 0 : record?.salesmodel_total}/- </h4>
+                                    <span>{record?.salesmodel_total_count} Bills</span>
+                                  </div>
+                                  <div className='w-1/2'>
+                                    <p>Purchase</p>
+                                    <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.purchesmodel_total ? 0 : record?.purchesmodel_total}/- </h4>
+                                    <span>{record?.purchesmodel_total_count} Bills</span>
+                                  </div>
+                                </div>
+                                <div className='flex py-4 p-6 justify-between'>
+                                  <div className='w-1/2' >
+                                    <p>Sale Return</p>
+                                    <h4 className='text-red-500 text-2xl font-bold'> Rs.{!record?.salesreturn_total ? 0 : record?.salesreturn_total}/-</h4>
+                                    <span>{record?.salesreturn_total_count} Bills</span>
+                                  </div>
+                                  <div className='w-1/2'>
+                                    <p>Purchase Return</p>
+                                    <h4 className='text-2xl font-bold' style={{ color: 'green' }}> Rs.{!record?.purchesreturn_total ? 0 : record?.purchesreturn_total}/- </h4>
+                                    <span>{record?.purchesreturn_total_count} Bills</span>
+                                  </div>
+                                </div>
+                              </Box>
+                            </Box>
+                          ) : (
+                            <> */}
+                          <div className='pt-8 m-auto'>
+                            {barChartData.every(item => item.value === 0) ? (
+                              <div className='flex justify-center' style={{ minHeight: "429px", alignItems: 'center' }}>
+                                <img src='../no_Data1.png' className='nofound' alt="No Data" />
+                              </div>
+                            ) : (
+
+                              <BarChart
+                                width={900}
+                                height={429}
+                                data={barChartData}
+                                margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                              >
+
+                                <XAxis dataKey="name" tick={false} axisLine={{ stroke: "#ccc" }} />
+                                <YAxis />
+                                <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
+                                <Legend />
+                                <Bar dataKey="value" barSize={60} />
+                              </BarChart>
+                            )}
                           </div>
-                          <p>
-                            {record?.salesreturn_total_count} Bills
-                          </p>
-                        </div>
-                        <div className='flex justify-between pl-8 pr-8 pt-1'>
-                          <div className='flex gap-2'>
-                            <div style={{ border: '1px solid #9fc172', background: '#9fc172', padding: '0px 22px' }}>
+                          <div className='flex justify-between pl-8 pr-8 pt-8'>
+                            <div className='flex gap-2'>
+                              <div style={{ border: '1px solid var(--COLOR_UI_PHARMACY)', background: 'var(--COLOR_UI_PHARMACY)', padding: '0px 22px' }}>
+                              </div>
+                              <h3>Sales</h3>
                             </div>
-                            <h3>Purchase</h3>
+                            <p>
+                              {record?.salesmodel_total_count} Bills
+                            </p>
                           </div>
-                          <p>
-                            {record?.purchesmodel_total_count} Bills
-                          </p>
-                        </div>
-                        <div className='flex justify-between pl-8 pr-8 pt-1'>
-                          <div className='flex gap-2'>
-                            <div style={{ border: '1px solid var(--color3)', background: 'var(--color3)', padding: '0px 22px' }}>
+                          <div className='flex justify-between pl-8 pr-8 pt-1'>
+                            <div className='flex gap-2'>
+                              <div style={{ border: '1px solid var(--color2)', background: 'var(--color2)', padding: '0px 22px' }}>
+                              </div>
+                              <h3>Sales Return</h3>
                             </div>
-                            <h3>Purchases Return</h3>
+                            <p>
+                              {record?.salesreturn_total_count} Bills
+                            </p>
                           </div>
-                          <p>
-                            {record?.purchesreturn_total_count} Bills
-                          </p>
+                          <div className='flex justify-between pl-8 pr-8 pt-1'>
+                            <div className='flex gap-2'>
+                              <div style={{ border: '1px solid #9fc172', background: '#9fc172', padding: '0px 22px' }}>
+                              </div>
+                              <h3>Purchase</h3>
+                            </div>
+                            <p>
+                              {record?.purchesmodel_total_count} Bills
+                            </p>
+                          </div>
+                          <div className='flex justify-between pl-8 pr-8 pt-1'>
+                            <div className='flex gap-2'>
+                              <div style={{ border: '1px solid var(--color3)', background: 'var(--color3)', padding: '0px 22px' }}>
+                              </div>
+                              <h3>Purchases Return</h3>
+                            </div>
+                            <p>
+                              {record?.purchesreturn_total_count} Bills
+                            </p>
+                          </div>
+                          {/* </> */}
+                          {/* )} */}
                         </div>
                       </Box>
                     </Box>
@@ -362,33 +422,73 @@ const Dashboard = () => {
                 <div className='flex gap-5' style={{ width: '100%' }}>
                   <Card style={{ width: '100%' }}>
                     <div className='p-2 flex flex-col'>
-                      <div className=''>
-                        <p className='font-bold '>Top Customers
-                          <Tooltip title="Latest Customers" arrow>
-                            <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
-                          </Tooltip></p>
+                      <div className='flex justify-between'>
+                        <div className=''>
+                          <p className='font-bold flex items-center'>Top Customers
+                            <Tooltip title="Latest Customers" arrow>
+                              <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
+                            </Tooltip></p>
+                        </div>
+
+                        {/* <div className='primary'>
+                          Graphical <Switch checked={switchCustomerValue} onChange={handleSwitchCustomerChange}
+                          /> Classical
+                        </div> */}
+
                       </div>
-                      <div class='pt-5'>
-                        {customer.length > 0 ? (
-                          <>
-                            <LineChart
-                             width={850}
-                              height={300} 
-                             data={lineChartData}>
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="name" tick={{ style: { fontSize: '19px' } }} />
-                              <YAxis />
-                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
-                              <Legend />
-                              <Line dataKey="balance" stroke="#8884d8" />
-                            </LineChart>
-                          </>
-                        ) : (
-                          <div >
-                            <img src='../no_Data1.png' className='nofound' alt="No Data" />
-                          </div>
-                        )}
-                      </div>
+                      {/* {switchCustomerValue ? (
+                        <>
+                          {
+                            customer.length > 0 ?
+                              <>
+                                <div className='flex justify-between  font-bold  text-gray-400 border-b border-blue-200 mt-3 pb-2'>
+                                  <div>Customer</div>
+                                  <div>Bill Amount</div>
+                                </div>
+                                <div className='' style={{ minHeight: "300px" }}>
+                                  {customer.map((item) =>
+                                    <div className='p-2 border-b border-blue-200 flex justify-between items-center' >
+                                      <div className='flex items-center mt-1 mb-1 gap-3' >
+                                        <div className='bg-blue-900 w-8 h-8 rounded-full flex items-center justify-center'>
+                                          <FaUser className='text-white w-4 h-4' />
+                                        </div>
+                                        <p className='font-bold text-sm'>{item.name} <br />{item.mobile}</p>
+                                      </div>
+                                      <div className='text-lg font-bold' style={{ color: 'green' }}>Rs.{item.balance}</div>
+                                    </div>
+                                  )}
+                                </div>
+                              </> :
+                              <div className='flex justify-center' style={{ minHeight: "300px", alignItems: 'center', }}>
+                                <img src='../no_Data1.png' className='nofound' />
+                              </div>
+                          }
+                        </>
+
+                      ) : ( */}
+                        <div class='pt-5'>
+                          {customer.length > 0 ? (
+                            <>
+                              <LineChart
+                                width={850}
+                                height={300}
+                                data={lineChartData}
+                                cursor="pointer"
+                                >
+                                <XAxis dataKey="name" tick={{ style: { fontSize: '16px' } }} />
+                                <YAxis />
+                                <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
+                                <Legend />
+                                <Line dataKey="balance" stroke="#8884d8" />
+                              </LineChart>
+                            </>
+                          ) : (
+                            <div >
+                              <img src='../no_Data1.png' className='nofound' alt="No Data" />
+                            </div>
+                          )}
+                        </div>
+                      {/* )} */}
                       <div className='flex justify-end' style={{ color: 'rgb(0 39 123)' }}>
                         <Link to='/more/customer'>
                           <div>
@@ -396,6 +496,7 @@ const Dashboard = () => {
                           </div>
                         </Link>
                       </div>
+
                     </div>
                   </Card>
                 </div>
@@ -514,7 +615,11 @@ const Dashboard = () => {
 
                   <div className='p-4 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className='top_fv_bll'>
-                      <p className='font-bold dash_first_crd' style={{ fontSize: '1.5625rem' }}>Top Five Bills</p>
+                      <p className='font-bold dash_first_crd flex items-center' style={{ fontSize: '1.5625rem' }}>Top Five Bills
+                        <Tooltip title="Top Five Bills" arrow>
+                          <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
+                        </Tooltip>
+                      </p>
                     </div>
                     <div className='flex gap-8 dsh_crd_btn'>
                       <div>
@@ -624,7 +729,7 @@ const Dashboard = () => {
 
                   <div className='p-5 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className='top_fv_bll'>
-                      <p className='font-bold dash_first_crd' style={{ fontSize: '1.5625rem' }}>Expiring Items
+                      <p className='font-bold dash_first_crd flex items-center' style={{ fontSize: '1.5625rem' }}>Expiring Items
                         <Tooltip title="Expiring Items" arrow>
                           <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                         </Tooltip>
@@ -812,7 +917,7 @@ const Dashboard = () => {
 
                   <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className=''>
-                      <p className='font-bold' style={{ fontSize: '1.5625rem' }}>Top Distributors
+                      <p className='font-bold flex items-center' style={{ fontSize: '1.5625rem' }}>Top Distributors
                         <Tooltip title="Latest Distributors" >
                           <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                         </Tooltip>

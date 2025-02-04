@@ -254,7 +254,7 @@ const Dashboard = () => {
         </div> :
           <div className='p-5' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
 
-            <div className='flex flex-col md:flex-row justify-between gap-6 dash_card_chartss items-end'>
+            <div className='flex flex-col md:flex-row justify-between gap-5 dash_card_chartss items-end'>
               <div className='flex flex-col w-full md:w-1/2' style={{ width: '100%' }}>
                 <div>
                   <h1 style={{ color: 'var(--color2)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
@@ -609,7 +609,7 @@ const Dashboard = () => {
             </div>
 
             {/* <div className='grid grid-cols-1 pt-5'> */}
-            <div className='dashbd_crd_bx gap-4 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
+            <div className='dashbd_crd_bx gap-5 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
               <div className='gap-4'>
                 <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
 
@@ -818,7 +818,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className='dashbd_crd_bx1 gap-4 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
+            <div className='dashbd_crd_bx1 gap-5 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
               {/* <div className='gap-4'>
                 <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
 

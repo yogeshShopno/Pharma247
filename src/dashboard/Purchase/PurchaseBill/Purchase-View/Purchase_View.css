@@ -531,6 +531,8 @@
     max-width: 100%;
     align-content: end;
     padding: 0;
+    outline: none !important;
+
   }
 }
 
@@ -539,6 +541,8 @@
     max-width: 80%;
     align-content: end;
     padding: 0;
+    outline: none !important;
+
   }
 }
 
@@ -547,6 +551,8 @@
     max-width: 60%;
     align-content: end;
     padding: 0;
+    outline: none !important;
+
   }
 }
 
@@ -680,6 +686,7 @@
     max-width: 40%;
     align-content: end;
     padding: 0;
+    outline: none !important;
   }
 }
 @media (min-width: 1441px) {
@@ -687,6 +694,8 @@
     max-width: 30%;
     align-content: end;
     padding: 0;
+    outline: none !important;
+
   }
 }
 

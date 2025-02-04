@@ -30,6 +30,7 @@ const SaleSummary = () => {
     const [totalSale, setTotalSale] = useState('');
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+
     const allOptions = [
         'all',
         'cash',
@@ -168,15 +169,18 @@ const SaleSummary = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                        <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                        </span>
+                                        <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                    </div>
+                                    <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>   Sales Summary
+                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}>  Sales Summary
-                                    </span>
-                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
                                     <Button
@@ -188,7 +192,7 @@ const SaleSummary = () => {
                                             textTransform: "none",
                                             display: "flex",
                                         }}
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 report_btn_purch"
                                     >
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <img src="/csv-file.png"
@@ -202,144 +206,161 @@ const SaleSummary = () => {
                             </div>
                             <div className="bg-white ">
                                 <div className="manageExpenseRow" style={{
-                                    padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
+                                    padding: ' 12px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
-                                    <div className="flex gap-5 flex-wrap" >
-                                        <div className="detail">
-                                            <span className="text-gray-500">Start Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                    <div className="oreder_list_fld_rp gap-2 sale_summery_hdr" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                        <div className=" flex flex-col gap-2 md:flex-row lg:flex-row pb-2 sale_summ_sec" style={{ alignItems: 'end' }}>
+
+                                            <div className="flex gap-2 purch_report_hdr sale_summ_fldss_sec">
+
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli" >
+                                                    <span className="primary">Start Date</span>
+                                                    <div style={{ width: "100%" }}>
+                                                        <DatePicker
+                                                            className='custom-datepicker_mn '
+                                                            selected={startDate}
+                                                            onChange={(newDate) => setStartDate(newDate)}
+                                                            dateFormat="dd/MM/yyyy"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli" >
+                                                    <span className="primary">End Date</span>
+                                                    <div style={{ width: "100%" }}>
+                                                        <DatePicker
+                                                            className='custom-datepicker_mn '
+                                                            selected={endDate}
+                                                            onChange={(newDate) => setEndDate(newDate)}
+                                                            dateFormat="dd/MM/yyyy"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2 purch_report_hdr sale_summ_fldss_sec">
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli">
+                                                    <FormControl sx={{ width: '100%' }} size="small">
+                                                        <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
+                                                        <Select
+                                                            labelId="demo-select-small-label"
+                                                            id="demo-select-small"
+                                                            multiple
+                                                            value={paymentMode}
+                                                            onChange={handleChange}
+                                                            renderValue={renderValue}
+                                                            label="All Payment Mode"
+                                                        >
+                                                            <MenuItem value="" disabled>
+                                                                All Payment Mode
+                                                            </MenuItem>
+
+                                                            <MenuItem value="cash">
+                                                                <Checkbox
+                                                                    sx={{
+                                                                        color: "var(--COLOR_UI_PHARMACY)", // Color for unchecked checkboxes
+                                                                        '&.Mui-checked': {
+                                                                            color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                                                                        },
+                                                                    }} checked={paymentMode.indexOf('cash') > -1} />
+                                                                <ListItemText className="primary" primary="Cash" />
+                                                            </MenuItem>
+                                                            <MenuItem value="credit">
+                                                                <Checkbox
+                                                                    sx={{
+                                                                        color: "var(--COLOR_UI_PHARMACY)", // Color for unchecked checkboxes
+                                                                        '&.Mui-checked': {
+                                                                            color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                                                                        },
+                                                                    }} checked={paymentMode.indexOf('credit') > -1} />
+                                                                <ListItemText className="primary" primary="Credit" />
+                                                            </MenuItem>
+                                                            {bankData?.map((option) => (
+                                                                <MenuItem key={option.id} value={option.id}>
+                                                                    <Checkbox
+                                                                        sx={{
+                                                                            color: "var(--COLOR_UI_PHARMACY)", // Color for unchecked checkboxes
+                                                                            '&.Mui-checked': {
+                                                                                color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                                                                            },
+                                                                        }} checked={paymentMode.indexOf(option.id) > -1} />
+                                                                    <ListItemText className="primary" primary={option.bank_name} />
+                                                                </MenuItem>
+                                                            ))}
+                                                            <MenuItem value="loyaltyPoints">
+                                                                <Checkbox
+                                                                    sx={{
+                                                                        color: "var(--COLOR_UI_PHARMACY)", // Color for unchecked checkboxes
+                                                                        '&.Mui-checked': {
+                                                                            color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                                                                        },
+                                                                    }} checked={paymentMode.indexOf('loyaltyPoints') > -1} />
+                                                                <ListItemText className="primary" primary="Loyalty Points" />
+                                                            </MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </div>
+                                                <div className="detail_report detail_report_sss detail_report_sale_summery flex flex-col sale_summ_fldss_sec_inli">
+                                                    <div className="detail" >
+                                                        <FormControl sx={{ width: '100%' }} size="small">
+                                                            <InputLabel id="demo-select-small-label">Select Data</InputLabel>
+                                                            <Select
+                                                                labelId="demo-select-small-label"
+                                                                id="demo-select-small"
+                                                                value={selectData}
+                                                                onChange={(e) => setSelectData(e.target.value)}
+                                                                label="Select Data"
+
+                                                            >
+                                                                <MenuItem value="" disabled>
+                                                                    Select Data
+                                                                </MenuItem>
+                                                                <MenuItem value="total_sales" selected>Total Sales</MenuItem>
+                                                                <MenuItem value="total_margin">Total Margin(Rs.)</MenuItem>
+                                                                <MenuItem value="avrage_margin"> Average Margin (%) </MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="purch_report_hdr detail_report detail_report_sss detail_report_sss_btn detail_report_sale_summery">
+                                                <Button style={{
+                                                    background: "var(--color1)",
+                                                    height: '40px'
+                                                }} variant="contained" onClick={handlefilterData}>
+                                                    Go
+                                                </Button>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="flex gap-2  ttl_dldld ">
+                                            <div className="total_mng_expn  detail_report_totl sale_summary_ttl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                                <div>
+                                                    <div className="relative" >
+                                                        <h2 className="primary font-medium text-xl ">Total </h2>
+                                                    </div>
+                                                </div>
+                                                <div className="flex">
+                                                    <div>
+                                                        <h2 className="secondary font-bold text-xl ">Rs.{totalSale}</h2>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="detail">
-                                            <span className="text-gray-500">End Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 240 }} size="small">
-                                                <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    multiple
-                                                    value={paymentMode}
-                                                    onChange={handleChange}
-                                                    renderValue={renderValue}
-                                                    label="All Payment Mode"
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        All Payment Mode
-                                                    </MenuItem>
-                                                    {/* <MenuItem value="">
-                                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.length === allOptions.length} />
-                                                        <ListItemText primary="All" />
-                                                    </MenuItem> */}
-                                                    <MenuItem value="cash">
-                                                        <Checkbox
-                                                            sx={{
-                                                                color: "var(--color2)", // Color for unchecked checkboxes
-                                                                '&.Mui-checked': {
-                                                                    color: "var(--color1)", // Color for checked checkboxes
-                                                                },
-                                                            }} checked={paymentMode.indexOf('cash') > -1} />
-                                                        <ListItemText primary="Cash" />
-                                                    </MenuItem>
-                                                    <MenuItem value="credit">
-                                                        <Checkbox
-                                                            sx={{
-                                                                color: "var(--color2)", // Color for unchecked checkboxes
-                                                                '&.Mui-checked': {
-                                                                    color: "var(--color1)", // Color for checked checkboxes
-                                                                },
-                                                            }} checked={paymentMode.indexOf('credit') > -1} />
-                                                        <ListItemText primary="Credit" />
-                                                    </MenuItem>
-                                                    {bankData?.map((option) => (
-                                                        <MenuItem key={option.id} value={option.id}>
-                                                            <Checkbox
-                                                                sx={{
-                                                                    color: "var(--color2)", // Color for unchecked checkboxes
-                                                                    '&.Mui-checked': {
-                                                                        color: "var(--color1)", // Color for checked checkboxes
-                                                                    },
-                                                                }} checked={paymentMode.indexOf(option.id) > -1} />
-                                                            <ListItemText primary={option.bank_name} />
-                                                        </MenuItem>
-                                                    ))}
-                                                    <MenuItem value="loyaltyPoints">
-                                                        <Checkbox
-                                                            sx={{
-                                                                color: "var(--color2)", // Color for unchecked checkboxes
-                                                                '&.Mui-checked': {
-                                                                    color: "var(--color1)", // Color for checked checkboxes
-                                                                },
-                                                            }} checked={paymentMode.indexOf('loyaltyPoints') > -1} />
-                                                        <ListItemText primary="Loyalty Points" />
-                                                    </MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 240 }} size="small">
-                                                <InputLabel id="demo-select-small-label">Select Data</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={selectData}
-                                                    onChange={(e) => setSelectData(e.target.value)}
-                                                    label="Select Data"
-
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        Select Data
-                                                    </MenuItem>
-                                                    <MenuItem value="total_sales" selected>Total Sales</MenuItem>
-                                                    <MenuItem value="total_margin">Total Margin(Rs.)</MenuItem>
-                                                    <MenuItem value="avrage_margin"> Average Margin (%) </MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-
-                                        <div className="mt-6">
-                                            <Button style={{
-                                                background: "var(--color1)",
-                                            }} variant="contained" onClick={handlefilterData}>
-                                                Go
-                                            </Button>
-                                        </div>
-
-                                    </div>
-                                    <div>
-                                        <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                            <span className="primary text-xl">Total</span>
-                                            <p className="secondary text-xl">Rs.639.75</p>
-                                        </div>
-
                                     </div>
                                 </div>
                                 {saleSummaryData?.sales?.length > 0 ?
-                                    <div>
+                                    <div className="firstrow">
                                         <div className="overflow-x-auto mt-4">
-                                            <table className="saleRegisterTotal-table w-full border-collapse">
+                                            <table
+                                                className="w-full border-collapse custom-table"
+                                                style={{
+                                                    whiteSpace: "nowrap",
+                                                    borderCollapse: "separate",
+                                                    borderSpacing: "0 6px",
+                                                }}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         {saleSummaryData.sales?.length > 0 &&
@@ -361,11 +382,17 @@ sx={{
                                                         }
                                                     </tr> */}
                                                 </thead>
-                                                <tbody>
+                                                <tbody style={{ background: "#3f621217" }}>
                                                     {saleSummaryData.sales?.map((item, index) => (
                                                         <tr key={index}>
-                                                            {Object.keys(item).map((key) => (
-                                                                <td key={key}>
+                                                            {Object.keys(item).map((key, colIndex, array) => (
+                                                                <td key={key} style={
+                                                                    colIndex === 0
+                                                                        ? { borderRadius: "10px 0 0 10px" }
+                                                                        : colIndex === array.length - 1
+                                                                            ? { borderRadius: "0 10px 10px 0" }
+                                                                            : {}
+                                                                }>
                                                                     {item[key]}
                                                                 </td>
                                                             ))}
@@ -390,8 +417,8 @@ sx={{
 
                         </div>
                     }
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     )
 }

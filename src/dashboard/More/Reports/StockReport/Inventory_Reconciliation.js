@@ -5,7 +5,7 @@ import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
 
 import DatePicker from 'react-datepicker';
-import { format, subDays } from 'date-fns';
+import { format, min, subDays } from 'date-fns';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 import { FormControl, MenuList, } from "@mui/material"
@@ -99,17 +99,17 @@ const Inventory_Reconciliation = () => {
 
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleRegisterColumns = [
-        { id: 'id', label: 'Sr No.', },
-        { id: 'reported_by', label: 'reported by', },
-        { id: 'location', label: 'Location', },
-        { id: 'unit', label: 'Unit', },
-        { id: 'iteam_name', label: 'Item Name', },
-        { id: 'physical_stock', label: 'Reported Stock', },
-        { id: 'current_stock', label: 'System Stock', },
-        { id: 'mrp', label: 'MRP', },
+        { id: 'id', label: 'Sr No.', minWidth: 150 },
+        { id: 'reported_by', label: 'reported by', minWidth: 150 },
+        { id: 'location', label: 'Location', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
+        { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
+        { id: 'physical_stock', label: 'Reported Stock', minWidth: 150 },
+        { id: 'current_stock', label: 'System Stock', minWidth: 150 },
+        { id: 'mrp', label: 'MRP', minWidth: 150 },
         // { id: 'company_name', label: 'company name', },
-        { id: 'rsImpact', label: 'Rs. Impact', },
-        { id: 'AdjustStock', label: 'Adjust Stock', },
+        { id: 'rsImpact', label: 'Rs. Impact', minWidth: 150 },
+        { id: 'AdjustStock', label: 'Adjust Stock', minWidth: 150 },
 
     ];
 
@@ -370,15 +370,17 @@ const Inventory_Reconciliation = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                    </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "180px" }}>  Reconciliation Report (Audit)
-                                    </span>
-                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <div className="invrnt_flddd" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                        <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, gap: '7px', fontSize: '20px', alignItems: "center", cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                            <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+                                        </span>
+                                        <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}>  Reconciliation Report (Audit)
+                                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="headerList">
                                     <Button
@@ -390,7 +392,7 @@ const Inventory_Reconciliation = () => {
                                             textTransform: "none",
                                             display: "flex",
                                         }}
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 report_btn_purch"
                                         onClick={exportToCSV}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <img src="/csv-file.png"
@@ -406,75 +408,99 @@ const Inventory_Reconciliation = () => {
                                 <div className="manageExpenseRow" style={{
                                     padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
-                                    <div className="flex gap-5 flex-wrap" >
-                                        <div className="detail">
-                                            <span className="text-gray-500">Start Date</span>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={startDate}
-                                                onChange={(newDate) => setStartDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                            />
+                                    <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className="flex gap-2 ttl_dldld" >
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={startDate}
+                                                        onChange={(newDate) => setStartDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">End Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={endDate}
+                                                        onChange={(newDate) => setEndDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="detail">
-                                            <span className="text-gray-500">End Date</span>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={endDate}
-                                                onChange={(newDate) => setEndDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                            />
-                                        </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 240 }} size="small">
-                                                <InputLabel id="demo-select-small-label">Stock Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={stockStatus}
-                                                    onChange={(e) => setStockStatus(e.target.value)}
-                                                    label="Stock Status"
+                                        <div className="flex gap-2 ttl_dldld " style={{ width: "100%" }}>
+                                            <div className="detail_report flex flex-col">
+                                                <FormControl sx={{ width: '100%' }} size="small">
+                                                    <InputLabel id="demo-select-small-label">Stock Status</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={stockStatus}
+                                                        onChange={(e) => setStockStatus(e.target.value)}
+                                                        label="Stock Status"
 
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        Stock Status
-                                                    </MenuItem>
-                                                    <MenuItem value="0">All</MenuItem>
-                                                    <MenuItem value="1">Correct Stock</MenuItem>
-                                                    <MenuItem value="2">MisMatch Stock</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <div className="mt-6">
-                                            <Button style={{
-                                                background: "var(--color1)",
-                                            }} onClick={getData} variant="contained">
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Stock Status
+                                                        </MenuItem>
+                                                        <MenuItem value="0">All</MenuItem>
+                                                        <MenuItem value="1">Correct Stock</MenuItem>
+                                                        <MenuItem value="2">MisMatch Stock</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                            <div className="detail_report flex flex-col">
+                                                <Button style={{
+                                                    background: "var(--color1)",
+                                                    width: '100%',
+                                                    height: "40px"
+                                                }} onClick={getData} variant="contained">
 
-                                                Go
-                                            </Button>
+                                                    Go
+                                                </Button>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                                 {reportData.length > 0 ?
                                     <>
-                                        <div>
-                                            <div className="overflow-x-auto m-8">
-                                                <table className="table-cashManage   border-collapse">
+                                        <div className="firstrow">
+                                            <div className="overflow-x-auto mt-4">
+                                                <table
+                                                    className="w-full border-collapse custom-table"
+                                                    style={{
+                                                        whiteSpace: "nowrap",
+                                                        borderCollapse: "separate",
+                                                        borderSpacing: "0 6px",
+                                                    }}
+                                                >
                                                     <thead>
                                                         <tr>
                                                             {GstSaleRegisterColumns.map((column) => (
                                                                 <th key={column.id}
-                                                                // style={{ minWidth: column.minWidth }}
+                                                                    style={{ minWidth: column.minWidth }}
                                                                 >{column.label}
                                                                 </th>
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ background: "#3f621217" }}>
                                                         {reportData.map((row, index) => (
                                                             <tr key={index}>
-                                                                {GstSaleRegisterColumns.map((column) => (
-                                                                    <td key={column.id} >
+                                                                {GstSaleRegisterColumns.map((column, colIndex) => (
+                                                                    <td key={column.id} style={
+                                                                        colIndex === 0 ? {
+                                                                            borderRadius: "10px 0 0 10px",
+                                                                        } : colIndex === GstSaleRegisterColumns.length - 1 ? {
+                                                                            borderRadius: "0 10px 10px 0",
+                                                                        } : {}
+                                                                    }>
 
                                                                         {column.id === 'rsImpact' ? (
                                                                             (() => {
@@ -837,7 +863,7 @@ const Inventory_Reconciliation = () => {
                         </div>
                     </DialogActions>
                 </Dialog>
-            </div>
+            </div >
         </>
     )
 }

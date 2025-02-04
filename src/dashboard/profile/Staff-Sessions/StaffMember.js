@@ -223,7 +223,7 @@ const StaffMember = () => {
                 setOpenAddPopUp(false)
                 toast.success(response.data.message);
                 setErrors({});
-               
+
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
@@ -232,7 +232,7 @@ const StaffMember = () => {
             console.error("API error:", error);
 
         }
- 
+
     }
 
     const EditStaffMemberRecord = async () => {
@@ -267,7 +267,7 @@ const StaffMember = () => {
                 setIsEditMode(false)
                 setErrors({});
                 toast.success(response.data.message);
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
@@ -309,7 +309,7 @@ const StaffMember = () => {
                 // listOfRolePermission();
                 staffList()
                 // setManageStaffRoleData(response.data.data);
-               
+
             })
             .catch((error) => {
                 console.error("API error:", error);
@@ -334,9 +334,9 @@ const StaffMember = () => {
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
-                <Box sx={{ display: "flex" }}>
+                <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                     <ProfileView />
-                    <div className="p-8 w-full">
+                    <div className="p-8" style={{ width: '100%', minWidth: '50px' }}>
                         <div className="flex justify-between items-center">
                             <div>
                                 <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }}>Staff Member
@@ -345,206 +345,230 @@ const StaffMember = () => {
                             </div>
 
                             <div className="flex gap-6">
-                                <Button variant="contained" color="primary" style={{background: "var(--color1)",color: "white", textTransform: 'none', marginBottom: "25px" }} onClick={handelAddOpen}> <AddIcon className="mr-2" />Add New Member</Button>
+                                <Button variant="contained" color="primary" style={{ background: "var(--color1)", color: "white", textTransform: 'none', marginBottom: "25px" }} onClick={handelAddOpen}> <AddIcon className="mr-2" />Add New Member</Button>
                             </div>
                         </div>
-                        <table className="table-cashManage p-4">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
 
-                                    {StaffMemberColumns.map((column) => (
-                                        <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                            {column.label}
-                                        </th>
-                                    ))}
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tableData?.map((item, index) => (
-                                    <tr key={index} >
-                                        <td>  {index + 1}</td>
-                                        {StaffMemberColumns.map((column) => {
-                                            const value = item[column.id];
-                                            const isStatus = column.id === 'status';
-                                            const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
-                                            return (
-                                                <td key={column.id} className={`text-lg `}>
-                                                    <span className={`text ${isStatus && statusClass}`}>
-                                                        {item.status === 1 ? item.status = 'Active' : item.status === 0 ? item.status = 'Disactive' : item[column.id]}
-                                                    </span>
-                                                </td>
-                                            )
-                                        })}
-                                        <td className="flex justify-center">
-                                            {hasPermission(permissions, "staff members edit") &&
-                                                <BorderColorIcon
-                                                    style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />}
-                                            {hasPermission(permissions, "staff members activation") && (
-                                                <Tooltip title="Deactivate" className="">
-                                                    {item.status === 'Active' ?
-                                                        <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
-                                                        <FaCheckCircle className="text-blue-600 mr-3" size={20} onClick={() => handleDeactive(item.id)} />}
-                                                </Tooltip>)}
-                                        </td>
+                        <div className="overflow-x-auto mt-4 border-t pt-4" style={{ overflowX: "auto" }}>
+                            <table
+                                className="w-full border-collapse custom-table pt-2"
+                                style={{
+                                    whiteSpace: "nowrap",
+                                    borderCollapse: "separate",
+                                    borderSpacing: "0 6px",
+                                }}
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+
+                                        {StaffMemberColumns.map((column) => (
+                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                {column.label}
+                                            </th>
+                                        ))}
+                                        <th>Action</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody style={{ background: "#3f621217" }}>
+                                    {tableData?.map((item, index) => (
+                                        <tr key={index} >
+                                            <td style={{ borderRadius: '10px 0 0 10px' }}>  {index + 1}</td>
+                                            {StaffMemberColumns.map((column) => {
+                                                const value = item[column.id];
+                                                const isStatus = column.id === 'status';
+                                                const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
+                                                return (
+                                                    <td key={column.id} className={`text-lg `}>
+                                                        <span className={`text ${isStatus && statusClass}`}>
+                                                            {item.status === 1 ? item.status = 'Active' : item.status === 0 ? item.status = 'Disactive' : item[column.id]}
+                                                        </span>
+                                                    </td>
+                                                )
+                                            })}
+                                            <td style={{ borderRadius: '0 10px 10px 0' }}>
+                                                <div className="flex justify-center items-center">
 
+                                                    {hasPermission(permissions, "staff members edit") &&
+                                                        <BorderColorIcon
+                                                            style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />}
+                                                    {hasPermission(permissions, "staff members activation") && (
+                                                        <Tooltip title="Deactivate" className="">
+                                                            {item.status === 'Active' ?
+                                                                <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
+                                                                <FaCheckCircle className="primary mr-3" size={20} onClick={() => handleDeactive(item.id)} />}
+                                                        </Tooltip>)}
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </Box>
             }
             <Dialog open={openAddPopUp} >
-                <DialogTitle id="alert-dialog-title" className="secondary">
-                    {header}
-                </DialogTitle>
-                <IconButton
-                    aria-label="close"
-                    onClick={resetAddDialog}
-                    sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-                >
-                    <CloseIcon />
-                </IconButton>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <div className="p-2">
-                            <div className="flex gap-6">
-                                <div >
-                                    <span className="flex primary mb-2 font-medium">Full Name</span>
-                                    <TextField
-                 autoComplete="off"id="standard-basic"
-                                        size="small"
-                                        sx={{ width: 250 }}
-                                        label="Full Name" variant="outlined"
-                                        value={fullName}
-                                        onChange={(e) => {
-                                            const capitalizedValue = e.target.value
-                                        .toLowerCase()
-                                        .replace(/\b\w/g, (char) => char.toUpperCase());
-                                        setFullName(capitalizedValue)
-                                         }}/>
-                                    {errors.fullName && <span style={{ color: 'red', fontSize: '12px' }}>{errors.fullName}</span>}
-
-                                </div>
-                                <div >
-                                    <span className="flex primary mb-2 font-medium">Mobile No</span>
-                                    <TextField
-                 autoComplete="off" id="standard-basic"
-                                        size="small"
-                                        sx={{ width: 250 }}
-                                        label="Mobile No" variant="outlined"
-                                        value={mobileNo}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.mobileNo && <span style={{ color: 'red', fontSize: '12px' }}>{errors.mobileNo}</span>}
-
-                                </div>
-                            </div>
+                <div className="flex justify-center items-center h-auto">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
+                        <div className="flex justify-between items-center">
+                            <DialogTitle id="alert-dialog-title" className="secondary">
+                                {header}
+                            </DialogTitle>
+                            <IconButton
+                                aria-label="close"
+                                onClick={resetAddDialog}
+                                sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
                         </div>
-                        <div className="p-2">
-                            <div className="flex gap-6">
-                                <div>
-                                    <span className="flex primary mb-2 font-medium">Assign Role</span>
-                                    <FormControl sx={{ minWidth: 250 }} size="small">
-                                        <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
-                                        <Select
-                                            labelId="demo-select-small-label"
-                                            id="demo-select-small"
-                                            value={selectedAssignRole}
-                                            onChange={(e) => setSelectedAssignRole(e.target.value)}
-                                            label="Assign Role"
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex flex-col md:flex-row gap-5">
+                                        <div className="flex flex-col " style={{ width: "100%" }}>
+                                            <div className="mb-1">
+                                                <span className="label primary mb-4">Full Name</span>
+                                            </div>
+                                            <TextField
+                                                autoComplete="off" id="standard-basic"
+                                                size="small"
+                                                sx={{ width: '100%' }}
+                                                label="Full Name" variant="outlined"
+                                                value={fullName}
+                                                onChange={(e) => {
+                                                    const capitalizedValue = e.target.value
+                                                        .toLowerCase()
+                                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                                                    setFullName(capitalizedValue)
+                                                }} />
+                                            {errors.fullName && <span style={{ color: 'red', fontSize: '12px' }}>{errors.fullName}</span>}
+
+                                        </div>
+                                        <div className="flex flex-col " style={{ width: "100%" }}>
+                                            <div className="mb-1">
+                                                <span className="label primary">Mobile No</span>
+                                            </div>
+                                            <TextField
+                                                autoComplete="off" id="standard-basic"
+                                                size="small"
+                                                sx={{ width: '100%' }}
+                                                label="Mobile No" variant="outlined"
+                                                value={mobileNo}
+                                                onChange={handleChange}
+                                            />
+                                            {errors.mobileNo && <span style={{ color: 'red', fontSize: '12px' }}>{errors.mobileNo}</span>}
+
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col md:flex-row gap-5">
+                                        <div className="flex flex-col " style={{ width: "100%" }}>
+                                            <span className="label primary">Assign Role</span>
+                                            <FormControl sx={{ width: '100%' }} size="small">
+                                                <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    id="demo-select-small"
+                                                    value={selectedAssignRole}
+                                                    onChange={(e) => setSelectedAssignRole(e.target.value)}
+                                                    label="Assign Role"
+                                                >
+                                                    <MenuItem value="" disabled>
+                                                        Select Assign Role
+                                                    </MenuItem>
+                                                    {manageStaffRoleData.map((item) =>
+                                                        <MenuItem value={item.id}>{item.role}</MenuItem>
+                                                    )}
+                                                </Select>
+                                                {errors.selectedAssignRole && <span style={{ color: 'red', fontSize: '12px' }}>{errors.selectedAssignRole}</span>}
+                                            </FormControl>
+                                        </div>
+                                        <div
+                                            className="flex flex-col " style={{ width: "100%" }}
                                         >
-                                            <MenuItem value="" disabled>
-                                                Select Assign Role
-                                            </MenuItem>
-                                            {manageStaffRoleData.map((item) =>
-                                                <MenuItem value={item.id}>{item.role}</MenuItem>
-                                            )}
-                                        </Select>
-                                        {errors.selectedAssignRole && <span style={{ color: 'red', fontSize: '12px' }}>{errors.selectedAssignRole}</span>}
-                                    </FormControl>
-                                </div>
-                                <div >
-                                    <span className="flex primary mb-2 font-medium">Email ID</span>
-                                    <TextField
-                 autoComplete="off" id="standard-basic"
-                                        size="small"
-                                        sx={{ width: 250 }}
-                                        label="Email ID" variant="outlined"
-                                        value={emailID}
-                                        onChange={(e) => setEmailID(e.target.value)} />
-                                    {errors.emailID && <span style={{ color: 'red', fontSize: '12px' }}>{errors.emailID}</span>}
+                                            <div className="mb-1">
+                                                <span className="label primary">Email ID</span>
+                                            </div>
+                                            <TextField
+                                                autoComplete="off" id="standard-basic"
+                                                size="small"
+                                                sx={{ width: '100%' }}
+                                                label="Email ID" variant="outlined"
+                                                value={emailID}
+                                                onChange={(e) => setEmailID(e.target.value)} />
+                                            {errors.emailID && <span style={{ color: 'red', fontSize: '12px' }}>{errors.emailID}</span>}
 
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col md:flex-row gap-5">
+                                        <div className="flex flex-col " style={{ width: "100%" }}>
+                                            <span className="label primary">Password</span>
+                                            <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
+                                                <OutlinedInput
+                                                    value={password}
+                                                    className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
+                                                    id="outlined-basic"
+                                                    type={PasswordIcon ? 'text' : 'password'}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    endAdornment={
+                                                        <InputAdornment position="end" sx={{ size: "small" }}>
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickPassword}
+                                                                onMouseDown={handleMouseDownPassword}
+                                                            >
+                                                                {PasswordIcon ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    sx={{ height: '42px' }}
+                                                />
+                                                {errors.password && <span style={{ color: 'red', fontSize: '12px' }}>{errors.password}</span>}
+                                            </FormControl>
+                                        </div>
+                                        <div className="flex flex-col " style={{ width: "100%" }}>
+                                            <span className="label primary">Re-enter Password</span>
+                                            <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
+                                                <OutlinedInput
+                                                    value={reEnterPassword}
+                                                    className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
+                                                    id="outlined-basic"
+                                                    type={reEnterPasswordIcon ? 'text' : 'password'}
+                                                    onChange={(e) => setReEnterPassword(e.target.value)}
+                                                    endAdornment={
+                                                        <InputAdornment position="end" sx={{ size: "small" }}>
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickReEnterPassword}
+                                                                onMouseDown={handleMouseDownPassword}
+                                                            >
+                                                                {reEnterPasswordIcon ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    sx={{ height: '42px' }}
+                                                />
+                                                {errors.reEnterPassword && <span style={{ color: 'red', fontSize: '12px' }}>{errors.reEnterPassword}</span>}
+                                            </FormControl>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="p-2">
-                            <div className="flex gap-6">
-                                <div >
-                                    <span className="flex primary mb-2 font-medium">Password</span>
-                                    <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
-                                        <OutlinedInput
-                                            value={password}
-                                            className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
-                                            id="outlined-basic"
-                                            type={PasswordIcon ? 'text' : 'password'}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            endAdornment={
-                                                <InputAdornment position="end" sx={{ size: "small" }}>
-                                                    <IconButton
-                                                        aria-label="toggle password visibility"
-                                                        onClick={handleClickPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                    >
-                                                        {PasswordIcon ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                            sx={{ height: '42px' }}
-                                        />
-                                        {errors.password && <span style={{ color: 'red', fontSize: '12px' }}>{errors.password}</span>}
-                                    </FormControl>
-                                </div>
-                                <div >
-                                    <span className="flex primary mb-2 font-medium">Re-enter Password</span>
-                                    <FormControl sx={{ width: '600', height: '42px' }} variant="outlined">
-                                        <OutlinedInput
-                                            value={reEnterPassword}
-                                            className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
-                                            id="outlined-basic"
-                                            type={reEnterPasswordIcon ? 'text' : 'password'}
-                                            onChange={(e) => setReEnterPassword(e.target.value)}
-                                            endAdornment={
-                                                <InputAdornment position="end" sx={{ size: "small" }}>
-                                                    <IconButton
-                                                        aria-label="toggle password visibility"
-                                                        onClick={handleClickReEnterPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                    >
-                                                        {reEnterPasswordIcon ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                            sx={{ height: '42px' }}
-                                        />
-                                        {errors.reEnterPassword && <span style={{ color: 'red', fontSize: '12px' }}>{errors.reEnterPassword}</span>}
-                                    </FormControl>
-                                </div>
-                            </div>
-                        </div>
 
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button     style={{
-                                            background: "var(--COLOR_UI_PHARMACY)",
-                                            color: "white",
-                                        }} autoFocus variant="contained" color="success" onClick={validateForm}>
-                        {buttonLabel}
-                    </Button>
-                </DialogActions>
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions style={{ padding: '20px 24px' }}>
+                            <Button style={{
+                                background: "var(--COLOR_UI_PHARMACY)",
+                                color: "white",
+                                width: "100%",
+                            }} autoFocus variant="contained" color="success" onClick={validateForm}>
+                                {buttonLabel}
+                            </Button>
+                        </DialogActions>
+                    </div>
+                </div>
             </Dialog >
 
 
@@ -555,15 +579,16 @@ const StaffMember = () => {
                             <div className="text-center">
                                 <span className='text-2xl text-gray-500'>Are You Sure?</span>
                             </div>
-                            <div className="flex gap-6 mt-5 justify-center">
+                            <div className="flex gap-6 mt-8 justify-center">
                                 <Button
                                     variant="contained"
-                                    color="primary"
+                                    style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
                                     onClick={handleDeactiveRole}
                                 >
                                     Yes
                                 </Button>
                                 <Button
+                                    style={{ color: "var(--COLOR_UI_PHARMACY)" ,borderColor:"var(--COLOR_UI_PHARMACY)"}}
                                     variant="outlined"
                                     onClick={resetAddDialogDeactive}
                                 >

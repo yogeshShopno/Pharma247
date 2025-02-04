@@ -28,12 +28,12 @@ const DayWiseSummary = () => {
     const [errors, setErrors] = useState({});
     const [total, setTotal] = useState(0)
     const DayWiseSummaryColumns = [
-        { id: "bill_date", label: "Bill Date", minWidth: 100 },
-        { id: "bill_no", label: "Bill No", minWidth: 100 },
-        { id: 'name', label: "Person Name", minWidth: 100 },
-        { id: 'cgst', label: 'CGST', minWidth: 100 },
-        { id: 'sgst', label: 'SGST', minWidth: 100 },
-        { id: 'total_amount', label: 'Total', minWidth: 100 },
+        { id: "bill_date", label: "Bill Date", minWidth: 150 },
+        { id: "bill_no", label: "Bill No", minWidth: 150 },
+        { id: 'name', label: "Person Name", minWidth: 150 },
+        { id: 'cgst', label: 'CGST', minWidth: 150 },
+        { id: 'sgst', label: 'SGST', minWidth: 150 },
+        { id: 'total_amount', label: 'Total', minWidth: 150 },
     ];
     const validateForm = () => {
         const newErrors = {};
@@ -150,21 +150,24 @@ const DayWiseSummary = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                        <div className="flex gap-2 pb-2">
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "150px" }}> Day wise Summary
+                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div className="py-3 flex report_hdr_main">
+                            <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
 
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+
+                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                <span className="report_hdr_txt_ec gap-2 txt_hdr_rpt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> Day wise Summary
+
+                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                </span>
                             </div>
                             <div className="headerList">
                                 <Button
                                     variant="contained"
-                                    className="gap-7 downld_btn_csh"
+                                    className="gap-7 report_btn_purch"
                                     style={{
                                         background: "var(--color1)",
                                         color: "white",
@@ -185,101 +188,128 @@ const DayWiseSummary = () => {
                             <div className="manageExpenseRow" style={{
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="flex gap-5 flex-wrap" >
-                                    <div>
-                                        <div style={{ width: "215px" }}>
-                                            <DatePicker
-                                                className='custom-datepicker '
-                                                selected={monthDate}
-                                                onChange={(newDate) => setMonthDate(newDate)}
-                                                dateFormat="MM/yyyy"
-                                                showMonthYearPicker
-                                            />
+                                <div className="oreder_list_fld_rp gap-2 " style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                                    <div className="flex flex-col gap-2 md:flex-row lg:flex-row pb-2 day_wise_sum" style={{ alignItems: 'end' }}>
+                                        <div className="flex gap-2 ttl_dldld day_summ_fldssss" style={{ alignItems: 'end' }}>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={monthDate}
+                                                        onChange={(newDate) => setMonthDate(newDate)}
+                                                        dateFormat="MM/yyyy"
+                                                        showMonthYearPicker
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+                                                <FormControl sx={{ width: "100%" }} size="small">
+                                                    <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={reportType}
+                                                        onChange={(e) => setReportType(e.target.value)}
+                                                        label="Report Type"
+
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Select Report Type
+                                                        </MenuItem>
+                                                        <MenuItem value="0">Purchase</MenuItem>
+                                                        <MenuItem value="1">Purchase Return</MenuItem>
+                                                        <MenuItem value="2">Sales</MenuItem>
+                                                        <MenuItem value="3">Sales Return</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                        <div className="detail_report detail_report_sss flex flex-col" >
+                                            <Button style={{
+                                                background: "var(--color1)", height: "40px"
+                                            }} variant="contained" onClick={handlefilterData}>
+                                                Go
+                                            </Button>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <FormControl sx={{ minWidth: 200 }} size="small">
-                                            <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                            <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={reportType}
-                                                onChange={(e) => setReportType(e.target.value)}
-                                                label="Report Type"
-
-                                            >
-                                                <MenuItem value="" disabled>
-                                                    Select Report Type
-                                                </MenuItem>
-                                                <MenuItem value="0">Purchase</MenuItem>
-                                                <MenuItem value="1">Purchase Return</MenuItem>
-                                                <MenuItem value="2">Sales</MenuItem>
-                                                <MenuItem value="3">Sales Return</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-
-                                    <div>
-                                        <Button style={{
-                                            background: "var(--color1)",
-                                        }} variant="contained" onClick={handlefilterData}>
-                                            Go
-                                        </Button>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                        <span className="primary text-xl">Total</span>
-                                        <p className="secondary text-xl">Rs. {total}</p>
+                                    <div class="flex gap-2  ttl_dldld">
+                                        <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                            <div>
+                                                <div className="relative" >
+                                                    <h2 className="primary font-medium text-xl ">Total </h2>
+                                                </div>
+                                            </div>
+                                            <div className="flex">
+                                                <div>
+                                                    <h2 className="secondary font-bold text-xl ">Rs.{total}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {dayWiseSummaryData?.bill_list?.length > 0 ?
-                                <div>
-                                    <div className="overflow-x-auto mt-4">
-                                        <table className="table-cashManage w-full border-collapse">
-                                            <thead>
-                                                <tr>
-                                                    {DayWiseSummaryColumns.map((column) => (
-                                                        <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                            {column.label}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {dayWiseSummaryData?.bill_list?.map((item, index) => (
-                                                    <tr key={index} >
-                                                        {DayWiseSummaryColumns.map((column) => (
-                                                            <td key={column.id}>
-                                                                {item[column.id]}
-                                                            </td>
-                                                        ))}
-
-                                                    </tr>
-                                                ))}
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                :
-                                <div>
-                                    <div className="SearchIcon">
-                                        <div>
-                                            <FaSearch className="IconSize" />
-                                        </div>
-                                        <p className="text-gray-500 font-semibold">Apply filter to get records.</p>
-                                    </div>
-                                </div>
-
-                            }
                         </div>
 
-                    </div>
-                </div>
+                        {dayWiseSummaryData?.bill_list?.length > 0 ?
+                            <div className="firstrow">
+                                <div className="overflow-x-auto mt-4">
+                                    <table
+                                        className="w-full border-collapse custom-table"
+                                        style={{
+                                            whiteSpace: "nowrap",
+                                            borderCollapse: "separate",
+                                            borderSpacing: "0 6px",
+                                        }}
+                                    >
+                                        <thead>
+                                            <tr>
+                                                {DayWiseSummaryColumns.map((column) => (
+                                                    <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                        {column.label}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody style={{ background: "#3f621217" }}>
+                                            {dayWiseSummaryData?.bill_list?.map((item, index) => (
+                                                <tr key={index} >
+                                                    {DayWiseSummaryColumns.map((column, colIndex) => (
+                                                        <td key={column.id} style={
+                                                            colIndex === 0 ? {
+                                                                borderRadius: "10px 0 0 10px",
+                                                            } : colIndex === DayWiseSummaryColumns.length - 1 ? {
+                                                                borderRadius: "0 10px 10px 0",
+                                                            } : {}
+                                                        }>
+                                                            {item[column.id]}
+                                                        </td>
+                                                    ))}
+
+                                                </tr>
+                                            ))}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                <div className="SearchIcon">
+                                    <div>
+                                        <FaSearch className="IconSize" />
+                                    </div>
+                                    <p className="text-gray-500 font-semibold">Apply filter to get records.</p>
+                                </div>
+                            </div>
+
+                        }
+                    </div >
+
+                </div >
             }
         </>
     )

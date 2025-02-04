@@ -264,7 +264,7 @@ const EditSaleBill = () => {
           if (response.data.status === 401) {
             history.push('/');
             localStorage.clear();
-        }
+          }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1629,7 +1629,7 @@ const EditSaleBill = () => {
                             >
 
                               <BorderColorIcon
-                              style={{color: "var(--color1)"}}
+                                style={{ color: "var(--color1)" }}
                                 className="cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation(); // Prevents row click
@@ -1911,9 +1911,9 @@ const EditSaleBill = () => {
                 opacity: 0.5, position: 'sticky', left: '0', width: '100%'
               }} />
 
-              <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', alignItems: 'baseline' }}>
+              <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', alignItems: 'baseline', overflow: 'auto' ,padding: '20px' }}>
 
-                <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'auto', position: 'sticky', padding: '20px', left: '0', color: 'white' }}>
+                <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', color: 'white' }}>
                   <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                     <label className="font-bold">Today Points : </label>
                     {todayLoyltyPoint || 0}
@@ -1973,7 +1973,7 @@ const EditSaleBill = () => {
                   </div>
                 </div>
 
-                < div className="" style={{ display: 'flex', gap: '60px', whiteSpace: 'nowrap', padding: '20px', overflow: 'auto' }}>
+                <div style={{ display: 'flex', whiteSpace: 'nowrap' }}>
                   {/* <div className="gap-2" style={{ display: 'flex' }}>
                   <label className="font-bold">Total Amount : </label>
                   <span style={{ fontWeight: 600 }}>{totalAmount}</span>

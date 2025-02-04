@@ -421,14 +421,13 @@ const SalereturnList = () => {
                             <td style={{ borderRadius: "0 10px 10px 0" }}>
                               <div className="flex gap-5 justify-center">
                                 <VisibilityIcon
-                                  className="cursor-pointer"
+                                  className="cursor-pointer primary"
                                   onClick={() => {
                                     history.push(`/purchase/view/${row.id}`);
                                   }}
-                                  color="primary"
                                 />
                                 <FaFilePdf
-                                  className="w-5 h-5 text-gray-700 hover:text-black"
+                                  className="w-5 h-5 primary"
                                   onClick={() => pdfGenerator(row.id)}
                                 />
                               </div>

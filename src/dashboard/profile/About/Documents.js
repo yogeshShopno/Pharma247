@@ -151,9 +151,9 @@ const Documents = () => {
                 <Loader />
             </div> :
                 <div>
-                    <Box sx={{ display: "flex" }}>
+                    <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
-                        <div className="p-5 ml-4" style={{ width: "100%" }}>
+                        <div className="p-5" style={{ width: "100%" }}>
                             <div className="flex justify-between">
                                 <div>
                                     <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-6" style={{ color: "var(--color1)", marginTop: "25px" }}>Documents
@@ -163,8 +163,8 @@ const Documents = () => {
 
                             </div>
 
-                            <div className="flex flex-wrap justify-around">
-                                <div className="w-2/5 flex-col justify-evenly align-center">
+                            <div className="flex flex-wrap justify-around dc_cdr_ff">
+                                <div className="w-2/5 flex-col justify-evenly align-center dc_impt_fldd">
                                     <div>
                                         <span className="primary text-lg font-bold">Drug License No.20</span>
                                     </div>
@@ -179,7 +179,7 @@ const Documents = () => {
                                                     required
                                                     autoComplete="off"
                                                     id="outlined-number"
-                                                    sx={{ width: '210px' }}
+                                                    sx={{ width: '100%' }}
                                                     size="small"
                                                     type="text"
                                                     value={licenseNo}
@@ -190,7 +190,7 @@ const Documents = () => {
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
 
-                                                    className="custom-datepicker"
+                                                    className="custom-datepicker_mn"
                                                     selected={licenseExpiryDate}
                                                     onChange={() => setLicenseExpiryDate()}
                                                     dateFormat="dd/MM/yyyy"
@@ -198,8 +198,8 @@ const Documents = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1">
-                                            <label htmlFor="upload-photo-file-one" className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
+                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                            <label htmlFor="upload-photo-file-one" className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -220,7 +220,7 @@ const Documents = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="w-2/5 flex-col justify-evenly align-center">
+                                <div className="w-2/5 flex-col justify-evenly align-center dc_impt_fldd">
                                     <div>
                                         <span className="primary text-lg font-bold">Drug License No.21</span>
                                     </div>
@@ -237,7 +237,7 @@ const Documents = () => {
 
                                                     required
                                                     id="outlined-number-two"
-                                                    sx={{ width: '210px' }}
+                                                    sx={{ width: '100%' }}
 
                                                     size="small"
                                                     type="text"
@@ -248,7 +248,7 @@ const Documents = () => {
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker"
+                                                    className="custom-datepicker_mn"
                                                     selected={licenseExpiryDateTwo}
                                                     onChange={(newDate) => setLicenseExpiryDateTwo(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -256,8 +256,8 @@ const Documents = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1">
-                                            <label htmlFor="upload-photo-file-two" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
+                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                            <label htmlFor="upload-photo-file-two" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -280,8 +280,8 @@ const Documents = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-around flex-wrap mt-5">
-                                <div className="w-2/5 flex-col justify-evenly align-center">
+                            <div className="flex justify-around flex-wrap dc_cdr_ff mt-5">
+                                <div className="w-2/5 flex-col justify-evenly align-center dc_impt_fldd">
                                     <div>
                                         <span className="primary text-lg font-bold">FSSAI No. (Optional)</span>
                                     </div>
@@ -296,7 +296,7 @@ const Documents = () => {
                                                 <TextField
                                                     required
                                                     id="outlined-number-three"
-                                                    sx={{ width: '210px' }}
+                                                    sx={{ width: '100%' }}
                                                     size="small"
                                                     type="text"
                                                     value={licenseNoThree}
@@ -306,7 +306,7 @@ const Documents = () => {
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker"
+                                                    className="custom-datepicker_mn"
                                                     selected={licenseExpiryDateThree}
                                                     onChange={(newDate) => setLicenseExpiryDateThree(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -314,8 +314,8 @@ const Documents = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1">
-                                            <label htmlFor="upload-photo-file-three" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
+                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                            <label htmlFor="upload-photo-file-three" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}
@@ -336,7 +336,7 @@ const Documents = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="w-2/5 flex-col justify-evenly align-center">
+                                <div className="w-2/5 flex-col justify-evenly align-center dc_impt_fldd">
                                     <div>
                                         <span className="primary text-lg font-bold">GSTN (Optional)</span>
                                     </div>
@@ -350,7 +350,7 @@ const Documents = () => {
                                                 <TextField
                                                     required
                                                     id="outlined-number-four"
-                                                    sx={{ width: '210px' }}
+                                                    sx={{ width: '100%' }}
                                                     size="small"
                                                     type="text"
                                                     value={licenseNoFour}
@@ -360,7 +360,7 @@ const Documents = () => {
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker"
+                                                    className="custom-datepicker_mn"
                                                     selected={licenseExpiryDateFour}
                                                     onChange={(newDate) => setLicenseExpiryDateFour(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -369,8 +369,8 @@ const Documents = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1">
-                                            <label htmlFor="upload-photo-file-four" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
+                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                            <label htmlFor="upload-photo-file-four" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
                                                     style={{ display: 'none' }}

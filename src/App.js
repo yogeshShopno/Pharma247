@@ -164,6 +164,110 @@ function App() {
       .MuiInput-underline:after {
         border-bottom: 2px solid #3f6212; /* Focused underline color */
       }
+
+      .css-1aquho2-MuiTabs-indicator{
+      background-color: var(--color2) !important;
+      }
+
+      .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+          background-color: var(--COLOR_UI_PHARMACY) !important;
+       }
+
+      .css-jsexje-MuiSwitch-thumb {
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+        background-color: var(--COLOR_UI_PHARMACY) !important;
+        width: 27px !important;
+        height: 27px !important;
+        border-radius: 50%;
+      }
+
+        .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+    -webkit-transform: translateX(20px);
+    -moz-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translate(24px,2.9px) !important;
+}
+    .css-julti5-MuiSwitch-root {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 70px !important;
+    height: 51px !important;
+    overflow: hidden;
+    padding: 12px;
+    box-sizing: border-box;
+    position: relative;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    z-index: 0;
+    vertical-align: middle;
+}
+
+.css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase {
+    transform: translate(3px,2.9px) !important;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: middle;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: inherit;
+    padding: 9px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    color: #fff;
+    -webkit-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,-webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+    .css-1yjjitx-MuiSwitch-track {
+    height: 100%;
+    width: 100%;
+    border-radius: 20px !important;
+    z-index: -1;
+    -webkit-transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #000;
+    opacity: 0.38;
+}
+
+.css-jsexje-MuiSwitch-thumb {
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+    background-color: var(--COLOR_UI_PHARMACY) !important;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+}
     `;
     document.head.appendChild(style);
 

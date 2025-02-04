@@ -442,6 +442,85 @@
   }
 }
 
+@media (max-width: 1215px) and (min-width: 768px) {
+  .oreder_list_fld_rp {
+    flex-direction: column !important;
+    display: flex;
+  }
+  .purch_report_hdr {
+    width: 100% !important;
+    justify-content: end;
+    display: flex;
+  }
+  .purch_report_hdr1 {
+    width: 100% !important;
+    justify-content: end;
+    display: flex;
+  }
+  .detail_report {
+    width: 100% !important;
+    margin-top: 10px;
+  }
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
+  }
+  .ttl_dldld {
+    width: 100% !important;
+    justify-content: end;
+    display: flex;
+  }
+}
+
+@media (max-width: 767px) {
+  .oreder_list_fld_rp {
+    flex-direction: column !important;
+    align-items: start !important;
+  }
+  .purch_report_hdr {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .purch_report_hdr1 {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
+  }
+  .detail_report {
+    width: 100% !important;
+    margin-top: 10px;
+  }
+  .go_btn_divv {
+    width: 100% !important;
+  }
+  .report_btn_purch {
+    font-size: 15px !important;
+    white-space: nowrap;
+  }
+  .ttl_dldld {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: column;
+    display: flex;
+  }
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: row;
+    display: flex;
+  }
+  .day_wise_sum {
+    width: 100% !important;
+  }
+}
+
 @media (min-width: 811px) {
   .dst_fld_odr {
     min-width: 300px !important;
@@ -457,4 +536,32 @@
   .info_box_fld {
     width: 100% !important;
   }
+}
+
+@media (max-width: 605px) {
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: column;
+    display: flex;
+  }
+  .day_wise_sum {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1086px) {
+  .dash_card_chartss {
+    flex-direction: column !important;
+  }
+}
+
+@media (min-width: 1087px) and (max-width: 1218px) {
+  .dsh_card_chart {
+    flex-direction: column !important;
+  }
+  .dsh_card_chart {
+    flex-direction: column !important;
+    gap: 35px !important;
+}
 }

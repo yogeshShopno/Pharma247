@@ -25,10 +25,10 @@ const Top_Distributor = () => {
     const [topDistributorData, setTopDistributorData] = useState([])
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const TopDistributorColumns = [
-        { id: 'distributor_name', label: 'Distributor Name', minWidth: 100 },
-        { id: 'gst_in', label: 'GSTIN', minWidth: 100 },
-        { id: 'total', label: 'Total Amount', minWidth: 100 },
-        { id: 'count', label: 'Orders Count', minWidth: 100 },
+        { id: 'distributor_name', label: 'Distributor Name', minWidth: 150 },
+        { id: 'gst_in', label: 'GSTIN', minWidth: 150 },
+        { id: 'total', label: 'Total Amount', minWidth: 150 },
+        { id: 'count', label: 'Orders Count', minWidth: 150 },
         // { id: 'uniqueMedicines', label: 'Unique Medicines', minWidth: 100 },
     ];
 
@@ -112,20 +112,23 @@ const Top_Distributor = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                        <div className="flex gap-2 pb-2">
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div className="py-3 flex report_hdr_main">
+                            <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
+
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "110px" }}> Top Distributors
+
+                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> Top Distributors
+                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList" >
                                 <Button
                                     variant="contained"
-                                    className="gap-7 downld_btn_csh"
+                                    className="gap-7 report_btn_purch"
                                     style={{
                                         background: "var(--color1)",
                                         color: "white",
@@ -138,9 +141,7 @@ const Top_Distributor = () => {
                                         <img src="/csv-file.png"
                                             className="report-icon absolute mr-10"
                                             alt="csv Icon" />
-
                                     </div>
-
                                     Download
                                 </Button></div>
                         </div>
@@ -148,29 +149,36 @@ const Top_Distributor = () => {
                             <div className="manageExpenseRow" style={{
                                 padding: ' 12px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="flex gap-5 flex-wrap" >
-                                    <div className="detail">
-                                        <span className="text-gray-500">Start Date</span>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={startDate}
-                                            onChange={(newDate) => setStartDate(newDate)}
-                                            dateFormat="dd/MM/yyyy"
-                                        />
-                                    </div>
-                                    <div className="detail">
-                                        <span className="text-gray-500">End Date</span>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={endDate}
-                                            onChange={(newDate) => setEndDate(newDate)}
-                                            dateFormat="dd/MM/yyyy"
-                                        />
-                                    </div>
+                                <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
 
-                                    <div className="mt-6">
+                                    <div className="flex gap-2 purch_report_hdr1 ">
+                                        <div className="detail_report detail_report_sss flex flex-col" >
+                                            <span className="primary">Start Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={startDate}
+                                                    onChange={(newDate) => setStartDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="detail_report detail_report_sss flex flex-col" >
+                                            <span className="primary">End Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={endDate}
+                                                    onChange={(newDate) => setEndDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="detail_report detail_report_sss flex flex-col" >
                                         <Button style={{
                                             background: "var(--color1)",
+                                            height: "40px",
                                         }} variant="contained" onClick={handlefilterData}>
                                             Go
                                         </Button>
@@ -178,9 +186,16 @@ const Top_Distributor = () => {
                                 </div>
                             </div>
                             {topDistributorData.length > 0 ?
-                                <div>
+                                <div className="firstrow">
                                     <div className="overflow-x-auto mt-4">
-                                        <table className="table-cashManage w-full border-collapse">
+                                        <table
+                                            className="w-full border-collapse custom-table"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                borderCollapse: "separate",
+                                                borderSpacing: "0 6px",
+                                            }}
+                                        >
                                             <thead>
                                                 <tr>
                                                     <th>SR. No</th>
@@ -191,12 +206,12 @@ const Top_Distributor = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{ background: "#3f621217" }}>
                                                 {topDistributorData.map((row, index) => {
                                                     return (
                                                         <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                            <td>{startIndex + index}</td>
-                                                            {TopDistributorColumns.map((column) => {
+                                                            <td style={{ borderRadius: '10px 0 0 10px' }}>{startIndex + index}</td>
+                                                            {TopDistributorColumns.map((column, colIndex) => {
                                                                 const value = row[column.id];
                                                                 const formattedValue =
                                                                     typeof value === 'string' && value.length > 0
@@ -204,7 +219,7 @@ const Top_Distributor = () => {
                                                                         : value;
 
                                                                 return (
-                                                                    <td key={column.id} align={column.align}>
+                                                                    <td key={column.id} align={column.align} style={colIndex === TopDistributorColumns.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}}>
                                                                         {column.format && typeof value === 'number'
                                                                             ? column.format(value)
                                                                             : formattedValue}

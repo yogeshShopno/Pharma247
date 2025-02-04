@@ -37,19 +37,19 @@ const Item_Batch_wiseStock = () => {
     const [itemWiseBatchData, setItemWiseBatchData] = useState([])
     const totalPages = Math.ceil(itemWiseBatchData.length / rowsPerPage);
     const ItemBatchWiseStockColumns = [
-        { id: 'company_name', label: 'Company Name', minWidth: 100 },
-        { id: 'item_name', label: 'Item Name', minWidth: 100 },
-        { id: 'unit', label: 'Unit', minWidth: 100 },
-        { id: 'batch_name', label: 'batch', minWidth: 100 },
-        { id: "expiry_date", label: "Exp. Date", minWidth: 100 },
-        { id: "stock", label: "Stock", minWidth: 100 },
-        { id: "ptr", label: "PTR", minWidth: 100 },
-        { id: "mrp", label: "MRP", minWidth: 100 },
-        { id: 'gst', label: 'GST%', minWidth: 100 },
-        { id: 'location', label: "Location", minWidth: 100 },
-        { id: "base", label: "Base Amount", minWidth: 100 },
-        { id: "category_name", label: "catagory", minWidth: 100 },
-        { id: 'drug_group', label: 'Drug Group', minWidth: 100 },
+        { id: 'company_name', label: 'Company Name', minWidth: 140 },
+        { id: 'item_name', label: 'Item Name', minWidth: 140 },
+        { id: 'unit', label: 'Unit', minWidth: 140 },
+        { id: 'batch_name', label: 'batch', minWidth: 140 },
+        { id: "expiry_date", label: "Exp. Date", minWidth: 140 },
+        { id: "stock", label: "Stock", minWidth: 140 },
+        { id: "ptr", label: "PTR", minWidth: 140 },
+        { id: "mrp", label: "MRP", minWidth: 140 },
+        { id: 'gst', label: 'GST%', minWidth: 140 },
+        { id: 'location', label: "Location", minWidth: 140 },
+        { id: "base", label: "Base Amount", minWidth: 140 },
+        { id: "category_name", label: "catagory", minWidth: 140 },
+        { id: 'drug_group', label: 'Drug Group', minWidth: 140 },
     ];
 
     const handlefilterData = async (currentPage) => {
@@ -168,16 +168,19 @@ const Item_Batch_wiseStock = () => {
                         {isLoading ? <div className="loader-container ">
                             <Loader />
                         </div> :
-                            <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                                <div className="flex gap-2 pb-2">
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                        <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                        </span>
-                                        <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                        <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "180px" }}>  Item Batch Wise Stock
+                            <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                                <div className="py-3 flex report_hdr_main">
+                                    <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                        <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                            </span>
+                                            <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                        </div>
+                                        <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>  Item Batch Wise Stock
+                                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
 
                                         </span>
-                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </div>
                                     <div className="headerList">
                                         <Button
@@ -189,7 +192,7 @@ const Item_Batch_wiseStock = () => {
                                                 textTransform: "none",
                                                 display: "flex",
                                             }}
-                                            className="gap-7 downld_btn_csh"
+                                            className="gap-7 report_btn_purch"
                                             onClick={exportToCSV}>
                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                                 <img src="/csv-file.png"
@@ -206,118 +209,142 @@ const Item_Batch_wiseStock = () => {
                                     <div className="manageExpenseRow" style={{
                                         padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                     }}>
-                                        <div className="flex gap-5 flex-wrap" >
-                                            <div className="detail">
-                                                <span className="text-gray-500">Start Date</span>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
-                                            </div>
-                                            <div className="detail">
-                                                <span className="text-gray-500">End Date</span>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
-                                            </div>
-                                            <div className="mt-6">
-                                                <div style={{ maxWidth: "300px" }}>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-basic"
-                                                        value={companyName}
-                                                        size="small"
-                                                        onChange={(e) => setCompanyName(e.target.value)}
-                                                        variant="outlined"
-                                                        placeholder="Type Here..."
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start" >
-                                                                    <span className="text-black">Company Name</span>
-                                                                </InputAdornment>
-                                                            ),
-                                                            endAdornment: (
-                                                                <InputAdornment position="end" >
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: 'search'
-                                                        }}
-                                                    />
+                                        <div className="item_btch_flddd oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                            <div className="flex gap-2 purch_report_hdr" >
+                                                <div className="detail_report detail_report_psss flex flex-col" >
+
+                                                    <span className="primary">Start Date</span>
+                                                    <div style={{ width: "100%" }}>
+                                                        <DatePicker
+                                                            className='custom-datepicker_mn '
+                                                            selected={startDate}
+                                                            onChange={(newDate) => setStartDate(newDate)}
+                                                            dateFormat="dd/MM/yyyy"
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="mt-6">
-                                                <div style={{ maxWidth: "300px" }} >
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-basic"
-                                                        value={drugGroup}
-                                                        size="small"
-                                                        onChange={(e) => setDrugGroup(e.target.value)}
-                                                        variant="outlined"
-                                                        placeholder="Type Here..."
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start" >
-                                                                    <span className="text-black">Drug Group</span>
-                                                                </InputAdornment>
-                                                            ),
-                                                            endAdornment: (
-                                                                <InputAdornment position="end" >
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: 'search'
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="mt-6">
-                                                <div style={{ maxWidth: "300px" }} >
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-basic"
-                                                        value={location}
-                                                        size="small"
-                                                        onChange={(e) => setLocation(e.target.value)}
-                                                        variant="outlined"
-                                                        placeholder="Type Here..."
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start" >
-                                                                    <span className="text-black">Location</span>
-                                                                </InputAdornment>
-                                                            ),
-                                                            endAdornment: (
-                                                                <InputAdornment position="end" >
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: 'search'
-                                                        }}
-                                                    />
+                                                <div className="detail_report detail_report_psss flex flex-col" >
+
+                                                    <span className="primary">End Date</span>
+                                                    <div style={{ width: "100%" }}>
+                                                        <DatePicker
+                                                            className='custom-datepicker_mn '
+                                                            selected={endDate}
+                                                            onChange={(newDate) => setEndDate(newDate)}
+                                                            dateFormat="dd/MM/yyyy"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div className="mt-6">
-                                                <Button style={{
-                                                    background: "var(--color1)",
-                                                }} variant="contained" onClick={() => handlefilterData(currentPage)}>
-                                                    Go
-                                                </Button>
-                                            </div>
+                                            <div className="flex gap-2 purch_report_hdr" style={{ width: "100%" }}>
+                                                <div className="detail_report detail_report_psss flex flex-col">
+                                                    <div style={{ width: "100%" }}>
+                                                        <TextField
+                                                            autoComplete="off"
+                                                            id="outlined-basic"
+                                                            value={companyName}
+                                                            size="small"
+                                                            sx={{ width: '100%' }}
+                                                            onChange={(e) => setCompanyName(e.target.value)}
+                                                            variant="outlined"
+                                                            placeholder="Type Here..."
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start" >
+                                                                        <span className="text-black">Company Name</span>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end" >
+                                                                        <SearchIcon />
+                                                                    </InputAdornment>
+                                                                ),
+                                                                type: 'search'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="detail_report detail_report_psss flex flex-col">
+                                                    <div style={{ width: "100%" }} >
+                                                        <TextField
+                                                            autoComplete="off"
+                                                            id="outlined-basic"
+                                                            value={drugGroup}
+                                                            size="small"
+                                                            sx={{ width: '100%' }}
+                                                            onChange={(e) => setDrugGroup(e.target.value)}
+                                                            variant="outlined"
+                                                            placeholder="Type Here..."
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start" >
+                                                                        <span className="text-black">Drug Group</span>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end" >
+                                                                        <SearchIcon />
+                                                                    </InputAdornment>
+                                                                ),
+                                                                type: 'search'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
 
+                                            </div>
+                                            <div className="flex gap-2 purch_report_hdr" style={{ width: "100%" }}>
+                                                <div className="detail_report detail_report_psss flex flex-col">
+                                                    <div style={{ width: "100%" }} >
+                                                        <TextField
+                                                            autoComplete="off"
+                                                            id="outlined-basic"
+                                                            value={location}
+                                                            sx={{ width: '100%' }}
+                                                            size="small"
+                                                            onChange={(e) => setLocation(e.target.value)}
+                                                            variant="outlined"
+                                                            placeholder="Type Here..."
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start" >
+                                                                        <span className="text-black">Location</span>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end" >
+                                                                        <SearchIcon />
+                                                                    </InputAdornment>
+                                                                ),
+                                                                type: 'search'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="detail_report detail_report_psss flex flex-col">
+                                                    <Button style={{
+                                                        background: "var(--color1)", height: '40px'
+                                                    }} variant="contained" onClick={() => handlefilterData(currentPage)}>
+                                                        Go
+                                                    </Button>
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                     {itemWiseBatchData.length > 0 ?
-                                        <div className="p-4">
+                                        <div className="firstrow">
                                             <div className="overflow-x-auto mt-4">
-                                                <table className="table-cashManage w-full border-collapse">
+                                                <table
+                                                    className="w-full border-collapse custom-table"
+                                                    style={{
+                                                        whiteSpace: "nowrap",
+                                                        borderCollapse: "separate",
+                                                        borderSpacing: "0 6px",
+                                                    }}
+                                                >
                                                     <thead>
                                                         <tr>
                                                             {ItemBatchWiseStockColumns.map((column) => (
@@ -327,11 +354,19 @@ const Item_Batch_wiseStock = () => {
                                                             ))}
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style={{ background: "#3f621217" }}>
                                                         {itemWiseBatchData?.map((item, index) => (
                                                             <tr key={index} >
-                                                                {ItemBatchWiseStockColumns.map((column) => (
-                                                                    <td key={column.id}>
+                                                                {ItemBatchWiseStockColumns.map((column, colIndex) => (
+                                                                    <td key={column.id}
+                                                                        style={
+                                                                            colIndex === 0 ? {
+                                                                                borderRadius: "10px 0 0 10px",
+                                                                            } : colIndex === ItemBatchWiseStockColumns.length - 1 ? {
+                                                                                borderRadius: "0 10px 10px 0",
+                                                                            } : {}
+                                                                        }
+                                                                    >
                                                                         {item[column.id] && item[column.id].charAt(0).toUpperCase() + item[column.id].slice(1)}
                                                                     </td>
                                                                 ))}

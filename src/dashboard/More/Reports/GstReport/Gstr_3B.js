@@ -132,51 +132,50 @@ const Gstr_3B = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
+                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "120px" }}> GSTR-3B Report
+                                <span className="txt_hdr_rpt" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}> GSTR-3B Report
                                 </span>
                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </div>
                         </div>
-                        <div className="IconNonMoving flex-wrap" style={{ background: "white" }}>
-                            <div style={{ width: "40%" }}>
-                                <div >
-                                    <div style={{ maxWidth: "500px", marginBottom: "20px" }}>
+                        <div className="IconNonMoving " style={{ background: "white" }}>
+                            <div>
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <div className="img_gst">
                                         <img src="../imgpsh_fullsize_anim.png" ></img>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "100px", height: "400px" }}>
-                                <div className="flex flex-col gap-2">
+                            <div className="rept_date">
+                                <div className="flex flex-col gap-2" style={{ border: '1px solid lightgray', padding: '25px', borderRadius: '6px' }}>
 
                                     <span className="flex  secondary text-lg">Start Date</span>
 
                                     <DatePicker
-                                        className='custom-datepicker'
+                                      className='custom-datepicker_mn mb-3'
                                         selected={startDate}
                                         onChange={(newDate) => setStartDate(newDate)}
                                         dateFormat="yyyy-MM-dd"
                                         showMonthYearPicker
-                                        sx={{ width: '200px' }} />
+                                        />
                                     <span className="flex  secondary text-lg">End Date</span>
 
                                     <DatePicker
-                                        className='custom-datepicker'
+                                        className='custom-datepicker_mn mb-5'
                                         selected={endDate}
                                         onChange={(newDate) => setEndDate(newDate)}
                                         dateFormat="yyyy-MM-dd"
                                         showMonthYearPicker
-                                        sx={{ width: '200px' }}
                                     ></DatePicker>
 
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 downld_btn_csh mt-5"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",

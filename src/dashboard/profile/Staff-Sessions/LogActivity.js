@@ -3,7 +3,7 @@ import Loader from "../../../componets/loader/Loader"
 import Header from "../../Header"
 import ProfileView from "../ProfileView";
 
-  import { Box, TablePagination ,  TableContainer,Paper} from "@mui/material";
+import { Box, TablePagination, TableContainer, Paper } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import { Button } from "flowbite-react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -19,9 +19,9 @@ const LogActivity = () => {
     const [page, setPage] = useState(0);
     const logactivityColumn = [
         // { id: 'UserID', label: 'UserID', minWidth: 100 },
-        { id: 'user_name', label: 'UserName', minWidth: 100 },
-        { id: 'message', label: 'Meassage', minWidth: 100 },
-        { id: 'date_time', label: 'Date/Time', minWidth: 100 },
+        { id: 'user_name', label: 'UserName', minWidth: 150 },
+        { id: 'message', label: 'Meassage', minWidth: 150 },
+        { id: 'date_time', label: 'Date/Time', minWidth: 150 },
     ];
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const LogActivity = () => {
             .then((response) => {
                 setIsLoading(false)
                 setLogAllData(response.data.data);
-               
+
             })
             .catch((error) => {
                 console.error("API error:", error);
@@ -67,9 +67,9 @@ const LogActivity = () => {
                 <Loader />
             </div> :
                 <div>
-                    <Box sx={{ display: "flex" }}>
+                    <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
-                        <div className="p-8 w-full">
+                        <div className="p-8" style={{ width: "100%", minWidth: '50px' }}>
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5" style={{ marginBottom: "25px" }} >Log Activity
@@ -77,58 +77,64 @@ const LogActivity = () => {
                                     </h1>
                                 </div>
                             </div>
-                            <TableContainer component={Paper} style={{ width: "100%", paddingInline: "25px", paddingBlock: "15px" }}>
-
-                            <table className="table-cashManage p-4">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        {logactivityColumn.map((column) => (
-                                            <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                {column.label}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {logAllData?.map((item, index) => (
-                                        <tr key={index} >
-                                            <td>  {index + 1}</td>
-                                            {logactivityColumn.map((column) => (
-                                                <>
-                                                    <td key={column.id}
-                                                    // style={{
-                                                    //     color: (item.status === 'Active' ? 'green' : 'red')
-                                                    // }}
-                                                    >
-                                                        {/* {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive ' :  */}
-                                                        {item[column.id]}
-                                                        {/* // } */}
-                                                    </td>
-
-                                                </>
-                                            ))}
-
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 12]}
-                                component="div"
-                                count={logAllData?.[0]?.count}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-            </TableContainer>
-
-                            
                            
+                                <div className="overflow-x-auto border-t pt-4 mt-4" style={{ overflowX: "auto" }}>
+                                    <table className="w-full border-collapse custom-table" style={{
+                                        whiteSpace: "nowrap",
+                                        borderCollapse: "separate",
+                                        borderSpacing: "0 6px",
+                                    }}>
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                {logactivityColumn.map((column) => (
+                                                    <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                        {column.label}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody style={{ background: "#3f621217" }}>
+                                            {logAllData?.map((item, index) => (
+                                                <tr key={index} >
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                                        {index + 1}</td>
+                                                    {logactivityColumn.map((column, colIndex) => (
+                                                        <>
+                                                            <td key={column.id} style={
+                                                                colIndex === logactivityColumn.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}
+                                                            }
+                                                            // style={{
+                                                            //     color: (item.status === 'Active' ? 'green' : 'red')
+                                                            // }}
+                                                            >
+                                                                {/* {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive ' :  */}
+                                                                {item[column.id]}
+                                                                {/* // } */}
+                                                            </td>
+
+                                                        </>
+                                                    ))}
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 12]}
+                                    component="div"
+                                    count={logAllData?.[0]?.count}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+
                         </div>
-                    </Box>
-                </div>
+                    </Box >
+                </div >
             }
         </>
     )

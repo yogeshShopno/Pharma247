@@ -186,7 +186,7 @@ const SaleView = () => {
                     <>
                         <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }} >
                             <div>
-                                <div className='py-3 sal-rtn-fff' style={{ display: 'flex', gap: '4px' }}>
+                                <div className='py-3 sal-rtn-fff sale_view_btns' style={{ display: 'flex', gap: '4px' }}>
                                     <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
                                         <span style={{ color: 'var(--color2)', display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: 'pointer' }} onClick={() => { history.push('/salelist') }}>Sale</span>
                                         <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
@@ -196,11 +196,23 @@ const SaleView = () => {
                                         <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                                     </div>
                                     {hasPermission(permissions, "sale bill edit") && (
-                                        <div className='flex' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
+                                        <div className='flex sale_ve_btnsss' style={{ width: '100%', justifyContent: 'end', gap: '10px' }}>
                                             {/* <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} > <FaFilePdf className="w-5 h-5 text-gray-700 hover:text-black" onClick={() => pdfGenerator()} style={{ color: 'white' }} />Download PDF</Button> */}
 
+                                            <Button
+                                                variant="contained"
+                                                className="sale_add_btn sale_dnls gap-2"
+                                                style={{ backgroundColor: "var(--color1)" }}
+                                                onClick={() => pdfGenerator(tableData.id)}
+                                            >
+                                                <FaFilePdf
+                                                    className="w-5 h-5 hover:text-secondary cursor-pointer"
+                                                />
+                                                Download
+                                                </Button>
+
                                             <Button variant="contained"
-                                                className="sale_add_btn gap-2"
+                                                className="sale_add_btn sale_dnls gap-2"
                                                 style={{ backgroundColor: "var(--color1)" }} onClick={() => { history.push({ pathname: '/salebill/edit/' + tableData.id + '/' + tableData?.sales_item[0].random_number, state: { paymentType } }) }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
                                         </div>)}
                                 </div>

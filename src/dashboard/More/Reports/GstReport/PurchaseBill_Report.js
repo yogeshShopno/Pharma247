@@ -27,13 +27,13 @@ const PurchaseBillReport = () => {
     const [total, setTotal] = useState(0)
 
     const GSTPurchaseColumns = [
-        { id: 'bill_no', label: 'Bill No', minWidth: 100 },
-        { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-        { id: 'distributor', label: 'Distributor', minWidth: 100 },
-        { id: 'sgst', label: 'SGST', minWidth: 100 },
-        { id: 'cgst', label: 'CGST', minWidth: 100 },
-        { id: 'igst', label: 'IGST', minWidth: 100 },
-        { id: 'net_amount', label: 'Bill Amount', minWidth: 100 },
+        { id: 'bill_no', label: 'Bill No', minWidth: 150 },
+        { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+        { id: 'distributor', label: 'Distributor', minWidth: 150 },
+        { id: 'sgst', label: 'SGST', minWidth: 150 },
+        { id: 'cgst', label: 'CGST', minWidth: 150 },
+        { id: 'igst', label: 'IGST', minWidth: 150 },
+        { id: 'net_amount', label: 'Bill Amount', minWidth: 150 },
     ];
     const [tableData, setTabledata] = useState([
         { id: "itemname", itemname: "dolo", category: "item", unit: 10, manu: "smart", sale: "10", stock: "50", mrp: "500", saleamt: "Rs.44.00", purchase: "Rs.445.00", netgst: "Rs.4.45", profit: "Rs.446(21)" },
@@ -129,19 +129,23 @@ const PurchaseBillReport = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                        <div className="flex gap-2 pb-2">
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }} s>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div className="py-3 flex report_hdr_main">
+                            <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                 </span>
+
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "180px" }}>GST Report Purchase Bills</span>
-                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+
+                                <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}>GST Report Purchase Bills
+                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                                </span>
                             </div>
                             <div className="headerList">
                                 <Button
                                     variant="contained"
-                                    className="gap-7 downld_btn_csh"
+                                    className="gap-7 report_btn_purch"
                                     style={{
                                         background: "var(--color1)",
                                         color: "white",
@@ -165,13 +169,14 @@ const PurchaseBillReport = () => {
                             <div className="manageExpenseRow" style={{
                                 padding: ' 12px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="flex gap-5 flex-wrap" >
-                                    <div >
-                                        <div className="detail">
-                                            {/* <span className="title mb-2">GST Report Month</span> */}
-                                            <div style={{ width: "215px" }}>
+                                <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                    <div className="flex gap-2 ttl_dldld" style={{ alignItems: 'end' }}>
+                                        <div className="detail_report flex flex-col" >
+                                            <span className="primary">Start Date</span>
+                                            <div style={{ width: "100%" }}>
+
                                                 <DatePicker
-                                                    className='custom-datepicker '
+                                                    className="custom-datepicker_mn"
                                                     selected={lastMonth}
                                                     onChange={(newDate) => setLastMonth(newDate)}
                                                     dateFormat="MM/yyyy"
@@ -179,99 +184,122 @@ const PurchaseBillReport = () => {
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <FormControl sx={{ minWidth: 250 }} size="small">
-                                            <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                            <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={reportType}
-                                                onChange={(e) => setReportType(e.target.value)}
-                                                label="Report Type">
-                                                <MenuItem value="" disabled>
-                                                    Select Report Type
-                                                </MenuItem>
-                                                <MenuItem value="0">Purchase</MenuItem>
-                                                <MenuItem value="1">Purchase Return</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-                                    </div>
-                                    <div>
-                                        <div className="detail" >
-                                            <FormControl sx={{ minWidth: 250 }} size="small">
-                                                <InputLabel id="demo-select-small-label">Purchase Type</InputLabel>
+                                        <div className="detail_report flex flex-col" >
+                                            <FormControl sx={{ width: '100%' }} size="small">
+                                                <InputLabel id="demo-select-small-label">Report Type</InputLabel>
                                                 <Select
                                                     labelId="demo-select-small-label"
                                                     id="demo-select-small"
-                                                    value={purchaseType}
-                                                    onChange={(e) => setPurchaseType(e.target.value)}
-                                                    label="Purchase Type">
-                                                    <MenuItem disabled>Select Purchase Type</MenuItem>
-                                                    <MenuItem value="0">With GST</MenuItem>
-                                                    <MenuItem value="1">Without GST</MenuItem>
+                                                    value={reportType}
+                                                    onChange={(e) => setReportType(e.target.value)}
+                                                    label="Report Type">
+                                                    <MenuItem value="" disabled>
+                                                        Select Report Type
+                                                    </MenuItem>
+                                                    <MenuItem value="0">Purchase</MenuItem>
+                                                    <MenuItem value="1">Purchase Return</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </div>
                                     </div>
-                                    <div>
-                                        <Button style={{
-                                            background: "var(--color1)",
-                                        }} variant="contained" onClick={handlefilterData}>Go</Button>
+                                    <div className="flex gap-2 ttl_dldld " style={{ width: "100%" }}>
+                                        <div className="detail_report flex flex-col">
+                                            <div style={{ width: "100%" }}>
+                                                <FormControl sx={{ width: '100%' }} size="small">
+                                                    <InputLabel id="demo-select-small-label">Purchase Type</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={purchaseType}
+                                                        onChange={(e) => setPurchaseType(e.target.value)}
+                                                        label="Purchase Type">
+                                                        <MenuItem disabled>Select Purchase Type</MenuItem>
+                                                        <MenuItem value="0">With GST</MenuItem>
+                                                        <MenuItem value="1">Without GST</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                        <div className="detail_report flex flex-col">
+                                            <Button style={{
+                                                background: "var(--color1)",
+                                                height: "40px",
+                                            }} variant="contained" onClick={handlefilterData}>Go</Button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                        <span className="primary text-xl">Total</span>
-                                        <p className="secondary text-xl">Rs. {total}</p>
+                                    <div class="flex gap-2  ttl_dldld">
+                                        <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                            <div>
+                                                <div className="relative" >
+                                                    <h2 className="primary font-medium text-xl ">Total </h2>
+                                                </div>
+                                            </div>
+                                            <div className="flex">
+                                                <div>
+                                                    <h2 className="secondary font-bold text-xl ">Rs.{total}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {purchaseGSTData?.purches?.length > 0 ?
-                                <div>
-                                    <div className="overflow-x-auto mt-4">
-                                        <table className="table-cashManage w-full border-collapse">
-                                            <thead>
-                                                <tr>
-                                                    {GSTPurchaseColumns.map((column) => (
-                                                        <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                            {column.label}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {purchaseGSTData?.purches?.map((item, index) => (
-                                                    <tr key={index} >
-                                                        {GSTPurchaseColumns.map((column) => (
-                                                            <td key={column.id}>
-                                                                {item[column.id]}
-                                                            </td>
-                                                        ))}
-
-                                                    </tr>
-                                                ))}
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                :
-                                <div>
-                                    <div className="SearchIcon">
-                                        <div>
-                                            <FaSearch className="IconSize" />
-                                        </div>
-                                        <p className="text-gray-500 font-semibold">Apply filter to get records.</p>
-                                    </div>
-                                </div>
-
-
-                            }
                         </div>
+                        {purchaseGSTData?.purches?.length > 0 ?
+                            <div className="firstrow">
+                                <div className="overflow-x-auto mt-4">
+                                    <table
+                                        className="w-full border-collapse custom-table"
+                                        style={{
+                                            whiteSpace: "nowrap",
+                                            borderCollapse: "separate",
+                                            borderSpacing: "0 6px",
+                                        }}
+                                    >
+                                        <thead>
+                                            <tr>
+                                                {GSTPurchaseColumns.map((column) => (
+                                                    <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                        {column.label}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody style={{ background: "#3f621217" }}>
+                                            {purchaseGSTData?.purches?.map((item, index) => (
+                                                <tr key={index} >
+                                                    {GSTPurchaseColumns.map((column, colIndex) => (
+                                                        <td key={column.id} style={
+                                                            colIndex === 0 ? {
+                                                                borderRadius: "10px 0 0 10px",
+                                                            } : colIndex === GSTPurchaseColumns.length - 1 ? {
+                                                                borderRadius: "0 10px 10px 0",
+                                                            } : {}
+                                                        }>
+                                                            {item[column.id]}
+                                                        </td>
+                                                    ))}
 
-                    </div>
+                                                </tr>
+                                            ))}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                <div className="SearchIcon">
+                                    <div>
+                                        <FaSearch className="IconSize" />
+                                    </div>
+                                    <p className="text-gray-500 font-semibold">Apply filter to get records.</p>
+                                </div>
+                            </div>
+
+
+                        }
+                    </div >
+
                 </div >
             }
         </>

@@ -24,14 +24,14 @@ const SalesBill = () => {
     const [saleGSTData, setSaleGSTData] = useState([])
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleBillColumns = [
-        { id: "bill_no", label: "Bill No", minWidth: 100 },
-        { id: "bill_date", label: "Bill Date", minWidth: 100 },
-        { id: 'customer', label: "Customer Name", minWidth: 100 },
-        { id: 'payment_type', label: "Payment Type ", minWidth: 100 },
-        { id: 'sgst', label: 'SGST', minWidth: 100 },
-        { id: 'cgst', label: 'CGST', minWidth: 100 },
-        { id: 'igst', label: "IGST ", minWidth: 100 },
-        { id: 'net_amount', label: 'Total Bill Amount', minWidth: 100 },
+        { id: "bill_no", label: "Bill No", minWidth: 150 },
+        { id: "bill_date", label: "Bill Date", minWidth: 150 },
+        { id: 'customer', label: "Customer Name", minWidth: 150 },
+        { id: 'payment_type', label: "Payment Type ", minWidth: 150 },
+        { id: 'sgst', label: 'SGST', minWidth: 150 },
+        { id: 'cgst', label: 'CGST', minWidth: 150 },
+        { id: 'igst', label: "IGST ", minWidth: 150 },
+        { id: 'net_amount', label: 'Total Bill Amount', minWidth: 150 },
     ];
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -180,20 +180,23 @@ const SalesBill = () => {
                     draggable
                     pauseOnHover
                 />
-                <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                    <div className="flex gap-2 pb-2">
-                        <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                    <div className="py-3 flex report_hdr_main">
+                        <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+
+                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                             </span>
-                            <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                            <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "100px" }}> GST Sales Bill
+
+                            <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                            <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}> GST Sales Bill
+                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                             </span>
-                            <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                         </div>
                         <div className="headerList">
                             <Button
                                 variant="contained"
-                                className="gap-7 downld_btn_csh"
+                                className="gap-7 report_btn_purch"
                                 style={{
                                     background: "var(--color1)",
                                     color: "white",
@@ -202,12 +205,12 @@ const SalesBill = () => {
                                     display: "flex",
                                 }}
                                 onClick={exportToCSV}>
-                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <img src="/csv-file.png"
-                                    className="report-icon absolute mr-10"
-                                    alt="csv Icon" />
-                                    
-                                                                         </div>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img src="/csv-file.png"
+                                        className="report-icon absolute mr-10"
+                                        alt="csv Icon" />
+
+                                </div>
 
                                 Download
                             </Button>
@@ -217,88 +220,100 @@ const SalesBill = () => {
                         <div className="manageExpenseRow" style={{
                             padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                         }}>
-                            <div className="flex gap-5 flex-wrap" >
-                                <div >
-                                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker
-                                            views={['month', 'year']}
-                                            sx={{ maxWidth: "150px" }}
-                                            value={startDate}
-                                            onChange={(newDate) => setStartDate(newDate)}
-                                            renderInput={(params) => <TextField
-                 autoComplete="off" {...params} />}
-                                        />
-                                    </LocalizationProvider> */}
-                                    <div style={{ width: "215px" }}>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={lastMonth}
-                                            onChange={(newDate) => setLastMonth(newDate)}
-                                            dateFormat="MM/yyyy"
-                                            showMonthYearPicker
-                                        />
+                            <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                <div className="flex gap-2 ttl_dldld" style={{ alignItems: 'end' }}>
+                                    <div className="detail_report flex flex-col" >
+                                        <span className="primary">Start Date</span>
+                                        <div style={{ width: "100%" }}>
+                                            <DatePicker
+                                                className='custom-datepicker_mn '
+                                                selected={lastMonth}
+                                                onChange={(newDate) => setLastMonth(newDate)}
+                                                dateFormat="MM/yyyy"
+                                                showMonthYearPicker
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="detail_report flex flex-col" >
+                                        <FormControl sx={{ width: "100%" }} size="small">
+                                            <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                            <Select
+                                                labelId="demo-select-small-label"
+                                                id="demo-select-small"
+                                                value={reportType}
+                                                onChange={(e) => setReportType(e.target.value)}
+                                                label="Report Type"
+
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    Select Report Type
+                                                </MenuItem>
+                                                <MenuItem value="0">Sales</MenuItem>
+                                                <MenuItem value="1">Sales Return</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                     </div>
                                 </div>
+                                <div className="flex gap-2 ttl_dldld " style={{ width: "100%" }}>
+                                    <div className="detail_report flex flex-col">
+                                        <div style={{ width: "100%" }}>
+                                            <FormControl sx={{ width: "100%" }} size="small">
+                                                <InputLabel id="demo-select-small-label">Payment Mode</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    id="demo-select-small"
+                                                    value={paymentMode}
+                                                    onChange={(e) => setPaymentMode(e.target.value)}
+                                                    label="Payment Mode"
 
-                                <div>
-                                    <FormControl sx={{ minWidth: 200 }} size="small">
-                                        <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                        <Select
-                                            labelId="demo-select-small-label"
-                                            id="demo-select-small"
-                                            value={reportType}
-                                            onChange={(e) => setReportType(e.target.value)}
-                                            label="Report Type"
-
-                                        >
-                                            <MenuItem value="" disabled>
-                                                Select Report Type
-                                            </MenuItem>
-                                            <MenuItem value="0">Sales</MenuItem>
-                                            <MenuItem value="1">Sales Return</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                                >
+                                                    <MenuItem value="" disabled>
+                                                        Select Payment Mode
+                                                    </MenuItem>
+                                                    <MenuItem value="all">All</MenuItem>
+                                                    <MenuItem value="cash">Cash</MenuItem>
+                                                    {bankData?.map(option => (
+                                                        <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </div>
+                                    </div>
+                                    <div className="detail_report flex flex-col">
+                                        <Button style={{
+                                            background: "var(--color1)",
+                                            height: "40px",
+                                        }} variant="contained" onClick={() => handlefilterData(currentPage)}>Go</Button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <FormControl sx={{ minWidth: 200 }} size="small">
-                                        <InputLabel id="demo-select-small-label">Payment Mode</InputLabel>
-                                        <Select
-                                            labelId="demo-select-small-label"
-                                            id="demo-select-small"
-                                            value={paymentMode}
-                                            onChange={(e) => setPaymentMode(e.target.value)}
-                                            label="Payment Mode"
-
-                                        >
-                                            <MenuItem value="" disabled>
-                                                Select Payment Mode
-                                            </MenuItem>
-                                            <MenuItem value="all">All</MenuItem>
-                                            <MenuItem value="cash">Cash</MenuItem>
-                                            {bankData?.map(option => (
-                                                <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </div>
-                                <div>
-                                    <Button style={{
-                                                background: "var(--color1)",
-                                            }}  variant="contained" onClick={() => handlefilterData(currentPage)}>Go</Button>
-                                </div>
-
-                            </div>
-                            <div>
-                                <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                    <span className="primary text-xl">Total</span>
-                                    <p className="secondary text-xl">Rs.{total}</p>
+                                <div class="flex gap-2  ttl_dldld">
+                                    <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                        <div>
+                                            <div className="relative" >
+                                                <h2 className="primary font-medium text-xl ">Total </h2>
+                                            </div>
+                                        </div>
+                                        <div className="flex">
+                                            <div>
+                                                <h2 className="secondary font-bold text-xl ">Rs.{total}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         {saleGSTData?.sales?.length > 0 ?
-                            <div className="p-4">
+                            <div className="firstrow">
                                 <div className="overflow-x-auto mt-4">
-                                    <table className="table-cashManage w-full border-collapse">
+                                    <table
+                                        className="w-full border-collapse custom-table"
+                                        style={{
+                                            whiteSpace: "nowrap",
+                                            borderCollapse: "separate",
+                                            borderSpacing: "0 6px",
+                                        }}
+                                    >
                                         <thead>
                                             <tr>
                                                 {GstSaleBillColumns.map((column) => (
@@ -308,11 +323,18 @@ const SalesBill = () => {
                                                 ))}
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style={{ background: "#3f621217" }}>
+
                                             {saleGSTData?.sales?.map((item, index) => (
                                                 <tr key={index} >
-                                                    {GstSaleBillColumns.map((column) => (
-                                                        <td key={column.id}>
+                                                    {GstSaleBillColumns.map((column, colIndex) => (
+                                                        <td key={column.id} style={
+                                                            colIndex === 0 ? {
+                                                                borderRadius: "10px 0 0 10px",
+                                                            } : colIndex === GstSaleBillColumns.length - 1 ? {
+                                                                borderRadius: "0 10px 10px 0",
+                                                            } : {}
+                                                        }>
                                                             {item[column.id]}
                                                         </td>
                                                     ))}

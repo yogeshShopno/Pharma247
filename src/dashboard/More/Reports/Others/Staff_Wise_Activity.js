@@ -134,21 +134,24 @@ const StaffWiseActivity = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                    </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "230px" }}>  Staff Wise Activity Summary
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                        <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                        </span>
+                                        <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
 
+                                    </div>
+                                    <span className="report_hdr_txt_ec txt_hdr_rpt gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>  Staff Wise Activity Summary
+
+                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </span>
-                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7 report_btn_purch"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
@@ -169,64 +172,87 @@ const StaffWiseActivity = () => {
                                 <div className="manageExpenseRow" style={{
                                     padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
-                                    <div className="flex gap-5 flex-wrap" >
-                                        <div className="detail">
-                                            <span className="text-gray-500">Start Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
-                                            </div>
-                                        </div>
+                                    <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                        <div className="flex gap-2 ttl_dldld" >
 
-                                        <div className="detail">
-                                            <span className="text-gray-500">End Date</span>
-                                            <div style={{ width: "215px" }}>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={startDate}
+                                                        onChange={(newDate) => setStartDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="detail_report flex flex-col" >
+                                                <span className="primary">End Date</span>
+                                                <div style={{ width: "100%" }}>
                                                 <DatePicker
-                                                    className='custom-datepicker '
+                                                    className='custom-datepicker_mn '
                                                     selected={endDate}
                                                     onChange={(newDate) => setEndDate(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                 />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 240 }} size="small">
-                                                <InputLabel id="demo-select-small-label">Report Type</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={reportType}
-                                                    onChange={(e) => setReportType(e.target.value)}
-                                                    label="Report Type"
 
+                                        <div className="flex gap-2 ttl_dldld" style={{ width: "100%" }}>
+                                            <div className="detail_report flex flex-col">
+                                                <div style={{ width: "100%" }}>
+                                                    <FormControl sx={{ width: "100%" }} size="small">
+                                                        <InputLabel id="demo-select-small-label">Report Type</InputLabel>
+                                                        <Select
+                                                            labelId="demo-select-small-label"
+                                                            id="demo-select-small"
+                                                            value={reportType}
+                                                            onChange={(e) => setReportType(e.target.value)}
+                                                            label="Report Type"
+
+                                                        >
+                                                            <MenuItem value="" disabled>
+                                                                Report Type
+                                                            </MenuItem>
+                                                            <MenuItem value="1">Purchase</MenuItem>
+                                                            <MenuItem value="2">Purchase Return</MenuItem>
+                                                            <MenuItem value="3">Sales</MenuItem>
+                                                            <MenuItem value="4">Sales Return</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </div>
+                                            </div>
+
+                                            <div className="detail_report flex flex-col">
+                                                <Button
+                                                    className="go_btn_divv"
+                                                    style={{
+                                                        background: "var(--color1)",
+                                                        width: '100%',
+                                                        height: "40px"
+                                                    }} variant="contained" onClick={handlefilterData}
                                                 >
-                                                    <MenuItem value="" disabled>
-                                                        Report Type
-                                                    </MenuItem>
-                                                    <MenuItem value="1">Purchase</MenuItem>
-                                                    <MenuItem value="2">Purchase Return</MenuItem>
-                                                    <MenuItem value="3">Sales</MenuItem>
-                                                    <MenuItem value="4">Sales Return</MenuItem>
-                                                </Select>
-                                            </FormControl>
+                                                    Go
+                                                </Button>
+                                            </div>
+
+                                        </div>
+                                        <div class="flex gap-2 ttl_dldld">
+                                            <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                                <div>
+                                                    <div className="relative" >
+                                                        <h2 className="primary font-medium text-xl ">Total </h2>
+                                                    </div>
+                                                </div>
+                                                <div className="flex">
+                                                    <div>
+                                                        <h2 className="secondary font-bold text-xl ">Rs.{staffActivityData?.bil_total}</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div className="mt-6">
-                                            <Button variant="contained" onClick={handlefilterData}>
-                                                Go
-                                            </Button>
-                                        </div>
-
-                                    </div>
-                                    <div>
-                                        <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                            <span className="primary text-xl">Total</span>
-                                            <p className="secondary text-xl">{staffActivityData?.bil_total}</p>
-                                        </div>
                                     </div>
                                 </div>
                                 {staffActivityData?.bil_list?.length > 0 ?

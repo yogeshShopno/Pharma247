@@ -867,11 +867,11 @@ const EditReturnBill = () => {
                 <Loader />
             </div> :
 
-                <div  style={{
+                <div style={{
                     height: "calc(100vh - 225px)",
                     padding: "0px 20px",
                     overflow: "auto",
-                  }} >
+                }} >
                     <ToastContainer />
                     <div>
                         <div className='py-3 edit_purchs_pg' style={{ display: 'flex', gap: '4px' }}>
@@ -1480,31 +1480,8 @@ const EditReturnBill = () => {
 
 
                                 {/* modal here  */}
-                                <div
-                                    className=""
-                                    style={{
-                                        background: "var(--color1)",
-                                        color: "white",
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        position: "fixed",
-                                        width: "100%",
-                                        bottom: "0",
-                                        left: "0",
-                                    }}
-                                >
-                                    <div
-                                        className=""
-                                        style={{
-                                            display: "flex",
-                                            gap: "40px",
-                                            whiteSpace: "nowrap",
-                                            position: "sticky",
-                                            left: "0",
-                                            overflow: "auto",
-                                            padding: "20px",
-                                        }}
-                                    >
+                                <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
+                                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
                                         <div
                                             className="gap-2 invoice_total_fld"
                                             style={{ display: "flex" }}

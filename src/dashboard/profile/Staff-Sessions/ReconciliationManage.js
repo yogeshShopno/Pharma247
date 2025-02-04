@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Loader from "../../../componets/loader/Loader";
 import Header from "../../Header";
 import ProfileView from "../ProfileView";
-import { Box, Switch, TextField, Button,} from "@mui/material";
+import { Box, Switch, TextField, Button, } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -73,7 +73,7 @@ const ReconciliationManage = () => {
       if (response.data.status === 200) {
         toast.success("Updated successfully");
         getData(); // Refresh data after update
-      } 
+      }
     } catch (error) {
       console.error("API error:", error);
 
@@ -124,10 +124,10 @@ const ReconciliationManage = () => {
         </div>
       ) : (
         <div>
-          <Box sx={{ display: "flex" }}>
+          <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
             <ProfileView />
             <div className="p-8 w-full">
-              <div className="flex justify-between items-center">
+              <div className="">
                 <div>
                   <h1 className="text-2xl flex items-center primary font-semibold p-2 mr-4">
                     Manage Reconciliation Audit
@@ -138,12 +138,12 @@ const ReconciliationManage = () => {
 
               </div>
 
-              <div className="flex flex-col items-start mt-6 p-4 bg-white rounded-lg shadow-lg w-80">
+              <div className="flex flex-col items-start mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-lg pass_boxx_flds">
 
                 <div className="flex flex-row justify-between items-center w-full mb-4">
                   <span className="text-gray-700 font-medium">Daily Item Counts:</span>
                   <TextField
-                 autoComplete="off"
+                    autoComplete="off"
                     id="outlined-number"
                     placeholder="Item Count"
                     value={count}
@@ -206,7 +206,7 @@ const ReconciliationManage = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="w-full">
+                <div className="w-full mt-2">
                   <Button
                     variant="contained"
                     style={{

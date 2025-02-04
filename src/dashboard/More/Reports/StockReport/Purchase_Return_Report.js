@@ -38,11 +38,11 @@ const Purchase_Return_Report = () => {
 
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleRegisterColumns = [
-        { id: 'bill_date', label: 'Bill Date', minWidth: 100 },
-        { id: 'bill_no', label: 'Bill No', minWidth: 100 },
-        { id: 'distributer', label: 'Distributor Name', minWidth: 100 },
-        { id: "type", label: "Type", minWidth: 100 },
-        { id: "amount", label: "Amount", minWidth: 100 }
+        { id: 'bill_date', label: 'Bill Date', minWidth: 150 },
+        { id: 'bill_no', label: 'Bill No', minWidth: 150 },
+        { id: 'distributer', label: 'Distributor Name', minWidth: 150 },
+        { id: "type", label: "Type", minWidth: 150 },
+        { id: "amount", label: "Amount", minWidth: 150 }
     ];
 
     const exportToCSV = () => {
@@ -124,7 +124,7 @@ const Purchase_Return_Report = () => {
             }).then((response) => {
                 setIsLoading(false)
                 setPurchaseReturnData(response.data.data)
-               
+
 
                 if (response.data.data.length >= rowsPerPage) {
                     // Implement a state variable or logic to disable the button
@@ -157,16 +157,20 @@ const Purchase_Return_Report = () => {
                 {isLoading ? <div className="loader-container ">
                     <Loader />
                 </div> :
-                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                        <div className="flex gap-2 pb-2">
-                            <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
-                                </span>
-                                <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "190px" }}>
+                    <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                        <div className="py-3 flex report_hdr_main">
+                            <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                <div style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                    </span>
+                                    <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
+
+                                </div>
+                                <span className="report_hdr_txt_ec  gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px' }}>
                                     Purchase Return Report
+                                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                 </span>
-                                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+
                             </div>
                             <div className="headerList">
                                 <Button
@@ -178,14 +182,14 @@ const Purchase_Return_Report = () => {
                                         textTransform: "none",
                                         display: "flex",
                                     }}
-                                    className="gap-7 downld_btn_csh"
+                                    className="gap-7 report_btn_purch"
                                     onClick={exportToCSV}>
-                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src="/csv-file.png"
-                                        className="report-icon absolute mr-10"
-                                        alt="csv Icon" />
-                                        
-                                                                                 </div>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <img src="/csv-file.png"
+                                            className="report-icon absolute mr-10"
+                                            alt="csv Icon" />
+
+                                    </div>
                                     Download
                                 </Button>
                             </div>
@@ -194,72 +198,104 @@ const Purchase_Return_Report = () => {
                             <div className="manageExpenseRow" style={{
                                 padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                             }}>
-                                <div className="flex gap-5 flex-wrap" >
-                                    <div className="detail">
-                                        <span className="text-gray-500">Start Date</span>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={startDate}
-                                            onChange={(newDate) => setStartDate(newDate)}
-                                            dateFormat="dd/MM/yyyy"
-                                        />
-                                    </div>
-                                    <div className="detail">
-                                        <span className="text-gray-500">End Date</span>
-                                        <DatePicker
-                                            className='custom-datepicker '
-                                            selected={endDate}
-                                            onChange={(newDate) => setEndDate(newDate)}
-                                            dateFormat="dd/MM/yyyy"
-                                        />
-                                    </div>
-                                    <div className="mt-6">
-                                        <div style={{ maxWidth: "300px" }}>
-                                            <TextField
-                 autoComplete="off"
-                                                id="outlined-basic"
-                                                value={distributorName}
-                                                size="small"
-                                                onChange={(e) => setDistributorName(e.target.value)}
-                                                variant="outlined"
-                                                placeholder="Type Here..."
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start" >
-                                                            <span className="text-black">Distributor Name</span>
-                                                        </InputAdornment>
-                                                    ),
-                                                    endAdornment: (
-                                                        <InputAdornment position="end" >
-                                                            <SearchIcon />
-                                                        </InputAdornment>
-                                                    ),
-                                                    type: 'search'
-                                                }}
-                                            />
+                                <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+                                    <div className="flex gap-2 ttl_dldld" >
+
+                                        <div className="detail_report flex flex-col" >
+                                            <span className="primary">Start Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={startDate}
+                                                    onChange={(newDate) => setStartDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="detail_report flex flex-col" >
+                                            <span className="primary">End Date</span>
+                                            <div style={{ width: "100%" }}>
+                                                <DatePicker
+                                                    className='custom-datepicker_mn '
+                                                    selected={endDate}
+                                                    onChange={(newDate) => setEndDate(newDate)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="mt-6">
-                                        <Button style={{
-                                                background: "var(--color1)",
-                                            }} variant="contained" onClick={() => handlefilterData(currentPage)}>
-                                            Go
-                                        </Button>
+                                    <div className="flex gap-2 ttl_dldld" style={{ width: "100%" }}>
+                                        <div className="detail_report flex flex-col">
+                                            <div style={{ width: "100%" }}>
+                                                <TextField
+                                                    autoComplete="off"
+                                                    id="outlined-basic"
+                                                    value={distributorName}
+                                                    size="small"
+                                                    sx={{ width: '100%' }}
+                                                    onChange={(e) => setDistributorName(e.target.value)}
+                                                    variant="outlined"
+                                                    placeholder="Type Here..."
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start" >
+                                                                <span className="text-black">Distributor Name</span>
+                                                            </InputAdornment>
+                                                        ),
+                                                        endAdornment: (
+                                                            <InputAdornment position="end" >
+                                                                <SearchIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                        type: 'search'
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="detail_report flex flex-col">
+                                            <Button
+                                                className="go_btn_divv"
+                                                style={{
+                                                    background: "var(--color1)",
+                                                    width: '100%',
+                                                    height: "40px"
+                                                }} variant="contained" onClick={() => handlefilterData(currentPage)}
+                                            >
+                                                Go
+                                            </Button>
+                                        </div>
+
+                                    </div>
+                                    <div class="flex gap-2 ttl_dldld">
+                                        <div className="total_mng_expn  detail_report_totl" style={{ background: "#f3f3f3", padding: "12px", borderRadius: "10px", whiteSpace: "nowrap" }}  >
+                                            <div>
+                                                <div className="relative" >
+                                                    <h2 className="primary font-medium text-xl ">Total </h2>
+                                                </div>
+                                            </div>
+                                            <div className="flex">
+                                                <div>
+                                                    <h2 className="secondary font-bold text-xl ">Rs.{!purchaseReturnData?.purches_return_total ? 0 : purchaseReturnData?.purches_return_total}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
-                                <div className="mt-6">
-                                    <div className="flex gap-5 ml-auto p-2 rounded-md" style={{ background: "rgba(4, 76, 157, 0.1)" }}>
-                                        <span className="primary text-xl">Total</span>
-                                        <p className="secondary text-xl">Rs. {!purchaseReturnData?.purches_return_total ? 0 : purchaseReturnData?.purches_return_total}</p>
-                                    </div>
-                                </div>
                             </div>
                             {purchaseReturnData?.purches_return?.length > 0 ?
-                                <div className="p-4">
+                                <div className="firstrow">
                                     <div className="overflow-x-auto mt-4">
-                                        <table className="table-cashManage w-full border-collapse">
+                                        <table
+                                            className="w-full border-collapse custom-table"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                borderCollapse: "separate",
+                                                borderSpacing: "0 6px",
+                                            }}
+                                        >
                                             <thead>
                                                 <tr>
                                                     {GstSaleRegisterColumns.map((column) => (
@@ -269,11 +305,20 @@ const Purchase_Return_Report = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{ background: "#3f621217" }}>
                                                 {purchaseReturnData?.purches_return?.map((item, index) => (
                                                     <tr key={index} >
-                                                        {GstSaleRegisterColumns.map((column) => (
-                                                            <td key={column.id}>
+                                                        {GstSaleRegisterColumns.map((column, colIndex) => (
+                                                            <td key={column.id}
+                                                                style={
+                                                                    colIndex === 0 ? {
+                                                                        borderRadius: "10px 0 0 10px",
+                                                                    } : colIndex === GstSaleRegisterColumns.length - 1 ? {
+                                                                        borderRadius: "0 10px 10px 0",
+                                                                    } : {}
+                                                                }
+
+                                                            >
                                                                 {item[column.id]}
                                                             </td>
                                                         ))}

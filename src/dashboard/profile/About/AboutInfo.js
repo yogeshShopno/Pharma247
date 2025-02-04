@@ -28,20 +28,20 @@ const AboutInfo = () => {
   const [pincode, setPincode] = useState("");
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
   const [frontImgUrl, setFrontImgUrl] = useState(null);
-const [reRender, setreRender] = useState(0);
-  
+  const [reRender, setreRender] = useState(0);
 
-   useEffect(() => {
-      if (reRender < 2) {
-  
-        const timeout = setTimeout(() => {
-          setreRender(reRender + 1);
-        }, 100);
-  
-        return () => clearTimeout(timeout); 
-      }
-  
-    }, [reRender]);
+
+  useEffect(() => {
+    if (reRender < 2) {
+
+      const timeout = setTimeout(() => {
+        setreRender(reRender + 1);
+      }, 100);
+
+      return () => clearTimeout(timeout);
+    }
+
+  }, [reRender]);
 
   useEffect(() => {
     fetchAboutDetails();
@@ -66,14 +66,14 @@ const [reRender, setreRender] = useState(0);
         setAddress1(data?.address);
         setPincode(data?.zip_code);
         setArea(data?.address_line_two);
-        setCity(data?.city);        
+        setCity(data?.city);
         setState(data?.state);
         setSelectedProfileFile(data?.pharmacy_logo)
         setFrontImgUrl(data?.pharmacy_logo)
-      }else if(response.data.status === 401){ 
+      } else if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();
-    }
+      }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -108,10 +108,10 @@ const [reRender, setreRender] = useState(0);
 
       fetchAboutDetails();
       setIsLoading(false);
-      if(response.data.status === 401){ 
+      if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();
-    }
+      }
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
@@ -144,218 +144,230 @@ const [reRender, setreRender] = useState(0);
         </div>
       ) : (
         <div>
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column",
+              sm: "column",
+              md: "row"
+            }
+          }}>
             <ProfileView />
 
-            <Box
-              className="p-5 ml-4"
-              sx={{ width: "60%", padding: "10px 20px" }}
-            >
-              <div>
-                <h1
-                  className="text-2xl flex items-center  font-semibold justify-start p-2 my-5"
-                  style={{ color: "var(--color1)" }}
-                >
-                  About Pharmacy
-                  <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
-                </h1>
-              </div>
-              <Box className="aboutPharmacy">
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Pharmacy Name"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={pharmacyName}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                .toLowerCase()
-                .replace(/\b\w/g, (char) => char.toUpperCase());
-                setPharmacyName(capitalizedValue)
-                 }}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Owner Name"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={ownerName}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
-                    setOwnerName(capitalizedValue)}}
-                  InputLabelProps={{}}
-                />
+            <div className="flex w-full abt_res_fldd">
+              <Box
+                className="p-5"
+                sx={{ width: "100%", padding: "10px 20px" }}
+              >
+                <div>
+                  <h1
+                    className="text-2xl flex items-center  font-semibold justify-start p-2 my-5"
+                    style={{ color: "var(--color1)", paddingLeft: '15px' }}
+                  >
+                    About Pharmacy
+                    <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
+                  </h1>
+                </div>
+                <Box className="aboutPharmacy  abt_fld_pf">
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Pharmacy Name"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={pharmacyName}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setPharmacyName(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Owner Name"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={ownerName}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setOwnerName(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                </Box>
+                <Box className="aboutPharmacy abt_fld_pf">
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="GSTN"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={gstN}
+                    onChange={(e) => setGSTN(e.target.value.toUpperCase())}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="PAN"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={panCard}
+                    onChange={(e) => setPanCard(e.target.value.toUpperCase())}
+                    InputLabelProps={{}}
+                  />
+                </Box>
+                <Box className="aboutPharmacy abt_fld_pf">
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Mobile No."
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={mobileNo}
+                    onChange={(e) => setMobileNo(Number(e.target.value))}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Email ID"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={emailID}
+                    onChange={(e) => setEmailID(e.target.value)}
+                    InputLabelProps={{}}
+                  />
+                </Box>
+                <Box className="aboutPharmacy abt_fld_pf">
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Address 1"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={address1}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setAddress1(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Pincode"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                    InputLabelProps={{}}
+                  />
+                </Box>
+                <Box className="aboutPharmacy abt_fld_pf">
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="Area"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={area}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setArea(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="City"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={city}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setCity(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                  <TextField
+                    autoComplete="off"
+                    id="standard-basic"
+                    label="state"
+                    variant="outlined"
+                    className="aboutTextField"
+                    value={state}
+                    onChange={(e) => {
+                      const capitalizedValue = e.target.value
+                        .toLowerCase()
+                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                      setState(capitalizedValue)
+                    }}
+                    InputLabelProps={{}}
+                  />
+                </Box>
+                <Box className="aboutPharmacy ">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      textTransform: "none",
+                      background: "var(--color1)",
+                    }}
+                    onClick={aboutDetails}
+                  >
+                    Update
+                  </Button>
+                </Box>
               </Box>
-              <Box className="aboutPharmacy">
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="GSTN"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={gstN}
-                  onChange={(e) => setGSTN(e.target.value.toUpperCase())}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="PAN"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={panCard}
-                  onChange={(e) => setPanCard(e.target.value.toUpperCase())}
-                  InputLabelProps={{}}
-                />
-              </Box>
-              <Box className="aboutPharmacy">
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Mobile No."
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={mobileNo}
-                  onChange={(e) => setMobileNo(Number(e.target.value))}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Email ID"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={emailID}
-                  onChange={(e) => setEmailID(e.target.value)}
-                  InputLabelProps={{}}
-                />
-              </Box>
-              <Box className="aboutPharmacy">
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Address 1"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={address1}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
-                    setAddress1(capitalizedValue)}}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Pincode"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value)}
-                  InputLabelProps={{}}
-                />
-              </Box>
-              <Box className="aboutPharmacy">
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="Area"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={area}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
-                    setArea(capitalizedValue)}}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="City"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={city}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
-                    setCity(capitalizedValue)}}
-                  InputLabelProps={{}}
-                />
-                <TextField
-                 autoComplete="off"
-                  id="standard-basic"
-                  label="state"
-                  variant="outlined"
-                  className="aboutTextField"
-                  value={state}
-                  onChange={(e) => {
-                    const capitalizedValue = e.target.value
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
-                    setState(capitalizedValue)}}
-                  InputLabelProps={{}}
-                />
-              </Box>
-              <Box className="ml-">
-                <Button
-                  variant="contained"
-                  sx={{
-                    textTransform: "none",
-                    background: "var(--color1)",
-                    paddingLeft: "18px",
-                    marginTop: "20px",
-                  }}
-                  onClick={aboutDetails}
-                >
-                  Update
-                </Button>
-              </Box>
-            </Box>
-                <div className="p-4">
-                <div className="profile-upload my-4">
-                    <input
+              <div className="p-4 img_prv_fldd ">
+                <div className="profile-upload">
+                  <input
                     accept="image/*"
                     style={{ display: "none" }}
                     id="front-photo-file"
                     type="file"
                     onChange={handleProfilePhoto}
-                    />
-                    {selectedProfileFile == null || selectedProfileFile == ""  ? (
-                    <div className="UploadClass">
-                        <img src={profileImage} width="50%" height="50%" />
+                  />
+                  {selectedProfileFile == null || selectedProfileFile == "" ? (
+                    <div className="UploadClass abt_imf_dd">
+                      <img src={profileImage} width="50%" height="50%" />
                     </div>
-                    ) : (
+                  ) : (
                     <img
-                        src={frontImgUrl}
-                        alt="Uploaded"
-                        className="rounded-md"
-                        style={{
+                      src={frontImgUrl}
+                      alt="Uploaded"
+                      className="rounded-md"
+                      style={{
                         height: "100px",
                         width: "100px",
                         marginTop: "15px",
-                        }}
+                      }}
                     />
-                    )}
-                    <label htmlFor="front-photo-file" style={{ margin: "10px" }}>
+                  )}
+                  <label htmlFor="front-photo-file" style={{ margin: "10px" }}>
                     <Button
-                        variant="contained"
-                        component="span"
-                        style={{ padding: "5px", background: "var(--color1)" }}
+                      variant="contained"
+                      component="span"
+                      style={{ padding: "5px", background: "var(--color1)" }}
                     >
-                        Choose Photo
+                      Choose Photo
                     </Button>
-                    </label>
+                  </label>
                 </div>
-                </div>
+              </div>
+            </div>
           </Box>
         </div>
       )}

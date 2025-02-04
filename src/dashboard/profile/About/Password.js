@@ -129,67 +129,70 @@ const Password = () => {
                 <Loader />
             </div> :
                 <div>
-                    <Box sx={{ display: "flex" }}>
+                    <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
-                        <div className="pt-8 pl-8 w-full">
+                        <div className="p-8 w-full">
                             <div>
                                 <h1 className="text-2xl flex items-center  font-semibold  p-2 mb-5" style={{ color: "var(--color1)", marginBottom: "25px" }}>Update Password
                                     <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
                                 </h1>
                             </div>
 
-                            <div>
-                                <FormControl variant="outlined">
-                                    <InputLabel htmlFor="standard-adornment-password">New Password</InputLabel>
-                                    <Input
-                                        className="aboutTextField"
-                                        value={newPassword}
-                                        sx={{ minWidth: 350 }}
-                                        id="standard-adornment-password"
-                                        type={newPasswordIcon ? 'text' : 'password'}
-                                        onChange={(e) => { setNewPassword(e.target.value) }}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickNewPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                >
-                                                    {newPasswordIcon ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
+
+                            <div className="border border-gray-300 rounded-md p-4 pass_boxx_flds">
+                                <div>
+                                    <FormControl variant="outlined" style={{ width: "100%" }}>
+                                        <InputLabel htmlFor="standard-adornment-password">New Password</InputLabel>
+                                        <Input
+                                            className="aboutTextField"
+                                            value={newPassword}
+                                            sx={{ width: "100%" }}
+                                            id="standard-adornment-password"
+                                            type={newPasswordIcon ? 'text' : 'password'}
+                                            onChange={(e) => { setNewPassword(e.target.value) }}
+                                            endAdornment={
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickNewPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {newPasswordIcon ? <VisibilityOff className="primary" /> : <Visibility className="primary" />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
+                                        />
+                                    </FormControl>
+                                </div>
+                                <div className="mb-8">
+                                    <FormControl variant="outlined" style={{ width: "100%" }}>
+                                        <InputLabel htmlFor="standard-adornment-password">Confirm Password</InputLabel>
+                                        <Input
+                                            className="aboutTextField"
+                                            value={currentPassword}
+                                            sx={{ width: "100%" }}
+                                            id="standard-adornment-password"
+                                            type={currentPasswordIcon ? 'text' : 'password'}
+                                            onChange={(e) => { setCurrentPassword(e.target.value) }}
+                                            endAdornment={
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickCurrentPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {currentPasswordIcon ? <VisibilityOff className="primary"/> : <Visibility className="primary"/>}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
+                                        />
+                                    </FormControl>
+                                    {passwordError && <div style={{ color: 'red', fontSize: '12px' }}>{passwordError}</div>}
+                                </div>
+                                <Box className='mb-4' style={{ width: "100%" }}>
+                                    <Button variant="contained" style={{ textTransform: 'none', background: "var(--color1)", paddingLeft: "20px", marginTop: "20px",width:"100%" }} onClick={handleUpdate} >Update</Button>
+                                </Box>
                             </div>
-                            <div className="mb-10">
-                                <FormControl variant="outlined">
-                                    <InputLabel htmlFor="standard-adornment-password">Confirm Password</InputLabel>
-                                    <Input
-                                        className="aboutTextField"
-                                        value={currentPassword}
-                                        sx={{ minWidth: 350 }}
-                                        id="standard-adornment-password"
-                                        type={currentPasswordIcon ? 'text' : 'password'}
-                                        onChange={(e) => { setCurrentPassword(e.target.value) }}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickCurrentPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                >
-                                                    {currentPasswordIcon ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
-                                {passwordError && <div style={{ color: 'red', fontSize: '12px' }}>{passwordError}</div>}
-                            </div>
-                            <Box className='ml-2'>
-                                <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)", paddingLeft: "20px", marginTop: "20px" }} onClick={handleUpdate} >Update</Button>
-                            </Box>
                         </div>
 
                     </Box>

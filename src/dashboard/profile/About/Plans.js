@@ -17,15 +17,15 @@ const Plans = () => {
   const [plansDetails, setPlansDetails] = useState([]);
   const [tableData, setTableData] = useState([]);
 
-   /*<================================================================================== Plans column ==================================================================================> */ 
+  /*<================================================================================== Plans column ==================================================================================> */
 
-   const plansColumns = [
-    { id: "email", label: "email", minWidth: 100 },
-    { id: "description", label: "description", minWidth: 100 },
-    { id: "amount", label: "amount", minWidth: 100 },
-    { id: "paid_on", label: "paid_on", minWidth: 100 },
-    { id: "method", label: "Payment Mode", minWidth: 100 },
-    { id: "description", label: "Description", minWidth: 100 },
+  const plansColumns = [
+    { id: "email", label: "email", minWidth: 150 },
+    { id: "description", label: "description", minWidth: 150 },
+    { id: "amount", label: "amount", minWidth: 150 },
+    { id: "paid_on", label: "paid_on", minWidth: 150 },
+    { id: "method", label: "Payment Mode", minWidth: 150 },
+    { id: "description", label: "Description", minWidth: 150 },
   ];
 
   useEffect( () =>  {
@@ -34,7 +34,7 @@ const Plans = () => {
     }
   },[togglePage]);
 
-  /*<================================================================ get various dynamic plans details  to render table ================================================================> */ 
+  /*<================================================================ get various dynamic plans details  to render table ================================================================> */
 
   const getPlan = async () => {
     setIsLoading(true);
@@ -58,8 +58,8 @@ const Plans = () => {
     }
   };
 
- 
-  /*<========================================================================= Call razorpay API to get payment =========================================================================> */ 
+
+  /*<========================================================================= Call razorpay API to get payment =========================================================================> */
 
   const loadRazorpay = async (plan) => {
     console.log(plan.annual_price, "plan");
@@ -122,7 +122,7 @@ const Plans = () => {
     }
   };
 
-  /*<========================================================= call backend API to store plans Details after getting success response frm razorpay ====================================> */ 
+  /*<========================================================= call backend API to store plans Details after getting success response frm razorpay ====================================> */
 
   const submitPlan = async (PaymentId, amount) => {
     console.log(PaymentId, "PaymentId");
@@ -155,7 +155,7 @@ const Plans = () => {
     }
   };
 
-  /*<====================================================================== get plans purchase history to render table ================================================================> */ 
+  /*<====================================================================== get plans purchase history to render table ================================================================> */
 
 
   const getPurchaseHistory = async () => {
@@ -197,9 +197,9 @@ const Plans = () => {
           <Loader />
         </div>
       ) : (
-        <Box sx={{ display: "flex" }}>
+        <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
           <ProfileView />
-          <div className="p-8 w-full">
+          <div className="p-8" style={{ width: '100%', minWidth: '50px' }}>
             <div className="flex justify-between items-center">
               <h1
                 className="text-2xl flex items-center primary font-semibold  "
@@ -217,51 +217,63 @@ const Plans = () => {
                     textTransform: "none",
                     marginBottom: "25px",
                   }}
-                  onClick={()=>{setTogglePage(!togglePage)}}
+                  onClick={() => { setTogglePage(!togglePage) }}
                 >
                   {togglePage ? "SEE HISTORY" : "SEE PLANS"}
                 </Button>
               </div>
             </div>
             {!togglePage ? (
-              <div>
-                <table className="table-cashManage my-5 p-4">
-                  <thead>
-                    <tr>
-                      {plansColumns.map((column) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          {column.label}
-                        </th>
-                      ))}
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData?.map((item, index) => (
-                      <tr key={index}>
+              // <div>
+              //   <table className="table-cashManage my-5 p-4">
+              <div className="firstrow">
+                <div className="overflow-x-auto mt-4 border-t pt-4">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
                         {plansColumns.map((column) => (
-                          <td key={column.id}>{item[column.id]}</td>
+                          <th
+                            key={column.id}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            {column.label}
+                          </th>
                         ))}
-                        <td>
-                          <GetAppIcon className="primary" />
-                        </td>
+                        <th>Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody style={{ background: "#3f621217" }}>
+                      {tableData?.map((item, index) => (
+                        <tr key={index}>
+                          {plansColumns.map((column) => (
+                            <td key={column.id} style={{ borderRadius: "10px 0 0 10px" }}>{item[column.id]}</td>
+                          ))}
+                          <td style={{ borderRadius: "0 10px 10px 0" }}>
+                            <GetAppIcon className="primary" />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <section class="py-8 bg-gray-50">
                 <div class="container mx-auto px-4">
                   <div class="text-center mb-8">
-                    <h2 class="text-3xl secondary font-bold">
+                    <h2 class="text-3xl secondary font-bold plans_hdr_txtsss">
                       Selecting the Best Pricing Plan for Your Pharmacy
                     </h2>
                   </div>
                   <div
+                    className=""
                     style={{
                       display: "flex",
                       gap: "20px",
@@ -269,33 +281,36 @@ const Plans = () => {
                       marginTop: "20px",
                     }}
                   ></div>
-                  <div class="flex justify-around ">
+                  <div class="flex justify-around mt-5 gap-6 plns_cds">
                     {plansDetails.map((plan) => (
                       <div
                         key={plan.id}
-                        class="border w-96	 rounded-lg shadow-md bg-white text-center p-6">
-                        <div class="mb-4 ">
+                        class="border rounded-lg shadow-md bg-white text-center p-6" style={{ width: '100%' }}>
+                        <div class="mb-4" style={{ borderBottom: '1px solid lightgray' }}>
                           <h5 class="text-xl font-semibold ">{plan.name}</h5>
                           <h2 class="text-2xl my-1 secondary font-bold">
                             {plan.annual_price} / Year
                           </h2>
                         </div>
-                        <ul
-                          class="text-sm text-gray-600 space-y-2 "
-                          style={{
-                            maxHeight: "450px", 
-                            overflowY: "auto",
-                            paddingRight: "8px", 
-                          }}
-                        >
-                          {plan.enable_modules.map((feature, index) => (
-                            <li key={index}>{feature}</li>
-                          ))}
-                        </ul>
-                        <div class="mt-6" onClick={() => loadRazorpay(plan)}>
-                          <a class="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white">
-                            Buy Plan
-                          </a>
+
+                        <div className="flex flex-col justify-between" style={{ height: "86%" }}>
+                          <ul
+                            class="text-sm text-gray-600 space-y-2 "
+                            style={{
+                              maxHeight: "450px",
+                              overflowY: "auto",
+                              paddingRight: "8px",
+                            }}
+                          >
+                            {plan.enable_modules.map((feature, index) => (
+                              <li key={index}>{feature}</li>
+                            ))}
+                          </ul>
+                          <div class="mt-6" onClick={() => loadRazorpay(plan)}>
+                            <a class="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white cursor-pointer">
+                              Buy Plan
+                            </a>
+                          </div>
                         </div>
                       </div>
                     ))}

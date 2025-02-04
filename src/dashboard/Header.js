@@ -652,8 +652,6 @@ const Header = () => {
                     <IoSearch onClick={() => setSearchPage(!searchPage)} style={{ fontSize: "1.5rem" }} />
                     {searchPage && <Search searchPage={searchPage} setSearchPage={setSearchPage} />}
 
-
-
                   </div>
                 </div>
                 {/* <div className="text-white mr-4 bg-transparent mr-2" >
@@ -687,27 +685,28 @@ const Header = () => {
                           display="flex"
                           justifyContent="space-between"
                           alignItems="center"
-                          borderBottom="1px solid rgba(0,0,0,40%)"
+                          borderBottom="1px solid #628a2f"
                         >
                           <h1 className="text-2xl p-2 primary">
                             Notifications
                           </h1>
-                          <div>
-                            <DoneAllIcon style={{ cursor: "pointer" }} />
+                          <div className="flex gap-2" style={{ alignItems: 'center' }}>
+                            <div>
+                              <DoneAllIcon style={{ cursor: "pointer" }} className="primary" />
+                            </div>
+                            <IconButton
+                              onClick={toggleDrawerNotifications(false)}
+                              className="close-button"
+                            >
+                              <CloseIcon className="primary" />
+                            </IconButton>
                           </div>
-                          <IconButton
-                            onClick={toggleDrawerNotifications(false)}
-                            className="close-button"
-                          >
-                            <CloseIcon />
-                          </IconButton>
                         </Box>
                         <List>
-                          <ListItem disablePadding sx={{ paddingX: "10px" }}>
+                          <ListItem disablePadding >
                             <ListItemButton
-                              sx={{ borderBottom: "1px solid rgba(0,0,0,10%)" }}
                             >
-                              <div>
+                              <div >
                                 {/* {notifications.length > 0 ? (
                                   notifications.map(item => (
                                     <ListItem disablePadding key={item.id} sx={{ paddingX: "10px" }}>
@@ -730,15 +729,14 @@ const Header = () => {
                                 )} */}
                                 <ListItem
                                   disablePadding
-                                  sx={{ paddingX: "10px" }}
                                 >
                                   <ListItemButton>
                                     <div>
-                                      <p className="text-gray-700">
+                                      <p className="text-black">
                                         Subscription for package - Capsule
                                         Package has been added.
                                       </p>
-                                      <h6 className="text-sm flex ">
+                                      <h6 className="text-sm flex text-gray-500">
                                         <MdWatchLater className="mt-1 mr-1" />
                                         21 Jun 2024 9:03 AM
                                       </h6>
@@ -747,15 +745,15 @@ const Header = () => {
                                 </ListItem>
                                 <ListItem
                                   disablePadding
-                                  sx={{ paddingX: "10px" }}
+
                                 >
                                   <ListItemButton>
                                     <div>
-                                      <p className="text-gray-700">
+                                      <p className="text-black">
                                         Subscription for package - Capsule
                                         Package has been added.
                                       </p>
-                                      <h6 className="text-sm flex ">
+                                      <h6 className="text-sm flex text-gray-500">
                                         <MdWatchLater className="mt-1 mr-1" />
                                         21 Jun 2024 9:03 AM
                                       </h6>

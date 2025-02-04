@@ -30,14 +30,14 @@ const PurchasePaymentSummary = () => {
     const [isLoading, setIsLoading] = useState(false);
     const csvIcon = process.env.PUBLIC_URL + '/csv.png';
     const GstSaleRegisterColumns = [
-        { id: "bill_no", label: "Bill No", minWidth: 100 },
-        { id: "bill_date", label: "Bill Date", minWidth: 100 },
-        { id: "distributor_name", label: "Distributor Name", minWidth: 100 },
-        { id: 'payment_date', label: "Payment Date ", minWidth: 100 },
-        { id: 'due_amount', label: "Due Amount", minWidth: 100 },
-        { id: 'payment_mode', label: 'Payment Mode', minWidth: 100 },
-        { id: 'status', label: 'Payment Status', minWidth: 100 },
-        { id: 'total', label: 'Amount', minWidth: 100 },
+        { id: "bill_no", label: "Bill No", minWidth: 150 },
+        { id: "bill_date", label: "Bill Date", minWidth: 150 },
+        { id: "distributor_name", label: "Distributor Name", minWidth: 150 },
+        { id: 'payment_date', label: "Payment Date ", minWidth: 150 },
+        { id: 'due_amount', label: "Due Amount", minWidth: 150 },
+        { id: 'payment_mode', label: 'Payment Mode', minWidth: 150 },
+        { id: 'status', label: 'Payment Status', minWidth: 150 },
+        { id: 'total', label: 'Amount', minWidth: 150 },
     ];
     const [purchasePaymentData, setPurchasepaymentData] = useState([])
     // useEffect(() => {
@@ -146,21 +146,24 @@ const PurchasePaymentSummary = () => {
                     {isLoading ? <div className="loader-container ">
                         <Loader />
                     </div> :
-                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '10px 20px 0px' }}>
-                            <div className="flex gap-2 pb-2">
-                                <div style={{ display: 'flex', flexWrap: 'wrap', width: '800px', gap: '7px' }}>
-                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                        <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                            <div className="py-3 flex report_hdr_main">
+                                <div className="report_hdr_ec" style={{ display: 'flex', gap: '7px', alignItems: 'center', whiteSpace: "nowrap" }}>
+
+                                    <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
                                     </span>
-                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)", marginTop: "7px" }} />
-                                    <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px' }}>
+
+                                    <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
+
+                                    <span className="report_hdr_txt_ec gap-2" style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', alignItems: "center" }}>
                                         Purchase Payment Summary
+                                        <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
                                     </span>
-                                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                                 </div>
                                 <div className="headerList">
                                     <Button
                                         variant="contained"
-                                        className="gap-7 downld_btn_csh"
+                                        className="gap-7  report_btn_purch"
                                         style={{
                                             background: "var(--color1)",
                                             color: "white",
@@ -184,56 +187,64 @@ const PurchasePaymentSummary = () => {
                                 <div className="manageExpenseRow" style={{
                                     padding: ' 20px 24px', borderBottom: "2px solid rgb(0 0 0 / 0.1)"
                                 }}>
-                                    <div className="flex gap-5 flex-wrap" >
-                                        <div className="detail">
-                                            <span className="text-gray-500">Start Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={startDate}
-                                                    onChange={(newDate) => setStartDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                    <div className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row lg:flex-row pb-2" style={{ width: "100%", alignItems: 'end' }}>
+
+                                        <div className="flex gap-2 purch_report_hdr">
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+
+                                                <span className="primary">Start Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={startDate}
+                                                        onChange={(newDate) => setStartDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="detail_report detail_report_sss flex flex-col" >
+
+                                                <span className="primary">End Date</span>
+                                                <div style={{ width: "100%" }}>
+                                                    <DatePicker
+                                                        className='custom-datepicker_mn '
+                                                        selected={endDate}
+                                                        onChange={(newDate) => setEndDate(newDate)}
+                                                        dateFormat="dd/MM/yyyy"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="detail">
-                                            <span className="text-gray-500">End Date</span>
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={endDate}
-                                                    onChange={(newDate) => setEndDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                />
+                                        <div className="flex gap-2 purch_report_hdr">
+                                            <div className="detail_report detail_report_sss flex flex-col">
+                                                <FormControl style={{ width: '100% ' }} size="small">
+                                                    <InputLabel id="demo-select-small-label"> Purchase Payment Status</InputLabel>
+                                                    <Select
+                                                        labelId="demo-select-small-label"
+                                                        id="demo-select-small"
+                                                        value={paymentStatus}
+                                                        onChange={(e) => setPaymnetStatus(e.target.value)}
+                                                        label="Purchase Payment Status"
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Purchase Payment Status
+                                                        </MenuItem>
+                                                        <MenuItem value="All">All</MenuItem>
+                                                        <MenuItem value="Partially_Paid">Partially Paid</MenuItem>
+                                                        <MenuItem value="Paid">Paid</MenuItem>
+                                                    </Select>
+                                                </FormControl>
                                             </div>
-                                        </div>
-                                        <div className="mt-6">
-                                            <FormControl sx={{ minWidth: 240 }} size="small">
-                                                <InputLabel id="demo-select-small-label"> Purchase Payment Status</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={paymentStatus}
-                                                    onChange={(e) => setPaymnetStatus(e.target.value)}
-                                                    label="Purchase Payment Status"
-                                                >
-                                                    <MenuItem value="" disabled>
-                                                        Purchase Payment Status
-                                                    </MenuItem>
-                                                    <MenuItem value="All">All</MenuItem>
-                                                    <MenuItem value="Partially_Paid">Partially Paid</MenuItem>
-                                                    <MenuItem value="Paid">Paid</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <div className="mt-6">
-                                            <div className="detail" >
+                                            <div className="detail_report detail_report_sss flex flex-col ">
+                                                {/* <div className="detail" > */}
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-basic"
                                                     value={searchDistributor}
-                                                    sx={{ minWidth: '300px' }}
+                                                    sx={{ width: '100%' }}
                                                     size="small"
                                                     onChange={(e) => setSearchDistributor(e.target.value)}
                                                     variant="outlined"
@@ -247,13 +258,19 @@ const PurchasePaymentSummary = () => {
                                                         type: 'search'
                                                     }}
                                                 />
+                                                {/* </div> */}
                                             </div>
+
                                         </div>
 
-                                        <div className="mt-6">
-                                            <Button style={{
-                                                background: "var(--color1)",
-                                            }} variant="contained" onClick={handleFilterData}>
+                                        <div className="purch_report_hdr detail_report detail_report_sss">
+
+                                            <Button
+                                                // className="go_btn_divv"
+                                                style={{
+                                                    background: "var(--color1)", height: '40px'
+                                                    , width: '100%'
+                                                }} variant="contained" onClick={handleFilterData}>
                                                 Go
                                             </Button>
                                         </div>
@@ -261,9 +278,16 @@ const PurchasePaymentSummary = () => {
                                     </div>
                                 </div>
                                 {purchasePaymentData.length > 0 ?
-                                    <div>
+                                    <div className="firstrow">
                                         <div className="overflow-x-auto mt-4">
-                                            <table className="table-cashManage  w-full border-collapse" >
+                                            <table
+                                                className="w-full border-collapse custom-table"
+                                                style={{
+                                                    whiteSpace: "nowrap",
+                                                    borderCollapse: "separate",
+                                                    borderSpacing: "0 6px",
+                                                }}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         {GstSaleRegisterColumns.map((column) => (
@@ -273,11 +297,19 @@ const PurchasePaymentSummary = () => {
                                                         ))}
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style={{ background: "#3f621217" }}>
                                                     {purchasePaymentData?.map((item, index) => (
                                                         <tr key={index}>
-                                                            {GstSaleRegisterColumns.map((column) => (
-                                                                <td key={column.id}>
+                                                            {GstSaleRegisterColumns.map((column, colIndex) => (
+                                                                <td key={column.id}
+                                                                    style={
+                                                                        colIndex === 0 ? {
+                                                                            borderRadius: "10px 0 0 10px",
+                                                                        } : colIndex === GstSaleRegisterColumns.length - 1 ? {
+                                                                            borderRadius: "0 10px 10px 0",
+                                                                        } : {}
+                                                                    }
+                                                                >
                                                                     {column.id === 'total' ?
                                                                         parseFloat(item[column.id]).toFixed(2) :
                                                                         item[column.id]?.charAt(0).toUpperCase() + item[column.id]?.slice(1)}

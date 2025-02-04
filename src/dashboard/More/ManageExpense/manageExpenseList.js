@@ -954,7 +954,7 @@ const ManageExpense = () => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions style={{ padding: '20px 24px' }}>
-                                <Button autoFocus variant="contained" style={{ background: "var(--COLOR_UI_PHARMACY)" }} onClick={handleAddExpense}>
+                                <Button autoFocus variant="contained" style={{ background: "var(--COLOR_UI_PHARMACY)" ,width:"100%"}} onClick={handleAddExpense}>
                                     Save
                                 </Button>
                             </DialogActions>

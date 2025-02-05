@@ -60,6 +60,23 @@ const Dashboard = () => {
   const [reRender, setreRender] = useState(0);
   const [barChartData, setBarChartData] = useState([]);
 
+  const [tickFontSize, setTickFontSize] = useState('2px');
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) {
+        setTickFontSize("23px");
+      } else if (window.innerWidth < 900) {
+        setTickFontSize("18px");
+      } else {
+        setTickFontSize("14px");
+      }
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const datas = [
     { label: 'Issued', value: 30 },
     { label: 'Redeemed', value: useLoyaltyPoints || 0 },
@@ -424,7 +441,7 @@ const Dashboard = () => {
                     <div className='p-2 flex flex-col'>
                       <div className='flex justify-between'>
                         <div className=''>
-                          <p className='font-bold flex items-center'>Top Customers
+                          <p className='font-bold flex items-center text-lg'>Top Customers
                             <Tooltip title="Latest Customers" arrow>
                               <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                             </Tooltip></p>
@@ -466,28 +483,28 @@ const Dashboard = () => {
                         </>
 
                       ) : ( */}
-                        <div class='pt-5'>
-                          {customer.length > 0 ? (
-                            <>
-                              <LineChart
-                                width={850}
-                                height={300}
-                                data={lineChartData}
-                                cursor="pointer"
-                                >
-                                <XAxis dataKey="name" tick={{ style: { fontSize: '16px' } }} />
-                                <YAxis />
-                                <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
-                                <Legend />
-                                <Line dataKey="balance" stroke="#8884d8" />
-                              </LineChart>
-                            </>
-                          ) : (
-                            <div >
-                              <img src='../no_Data1.png' className='nofound' alt="No Data" />
-                            </div>
-                          )}
-                        </div>
+                      <div class='pt-5 pb-5'>
+                        {customer.length > 0 ? (
+                          <>
+                            <LineChart
+                              width={850}
+                              height={300}
+                              data={lineChartData}
+                              cursor="pointer"
+                            >
+                              <XAxis dataKey="name" tick={{ style: { fontSize: tickFontSize } }} />
+                              <YAxis tick={{ style: { fontSize: tickFontSize } }}/>
+                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
+                              <Legend />
+                              <Line dataKey="balance" stroke="#8884d8" />
+                            </LineChart>
+                          </>
+                        ) : (
+                          <div >
+                            <img src='../no_Data1.png' className='nofound' alt="No Data" />
+                          </div>
+                        )}
+                      </div>
                       {/* )} */}
                       <div className='flex justify-end' style={{ color: 'rgb(0 39 123)' }}>
                         <Link to='/more/customer'>
@@ -500,11 +517,11 @@ const Dashboard = () => {
                     </div>
                   </Card>
                 </div>
-                <div className='flex flex-col gap-5 md:flex-row' style={{ width: '100%' }}>
+                <div className='flex flex-col gap-5 md:flex-row dash_board_chart_crds' style={{ width: '100%' }}>
                   <Card style={{ width: '100%' }}>
                     <div className='p-2 '>
                       <div className=''>
-                        <p className='font-bold '>Loyalty Points</p>
+                        <p className='font-bold text-lg'>Loyalty Points</p>
                         <div class='pt-2'>
 
                           <DonutChart data={datas} />
@@ -548,7 +565,7 @@ const Dashboard = () => {
                     <div className='p-2 flex flex-col '>
                       <div className='flex justify-between '>
                         <div className=''>
-                          <p className='font-bold '>Staff Overview</p>
+                          <p className='font-bold text-lg'>Staff Overview</p>
                         </div>
                         <FormControl >
                           <Select
@@ -611,9 +628,9 @@ const Dashboard = () => {
             {/* <div className='grid grid-cols-1 pt-5'> */}
             <div className='dashbd_crd_bx gap-5 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
               <div className='gap-4'>
-                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>
 
-                  <div className='p-4 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
+                  <div className='p-4 flex justify-between items-center dsh_cdr_hd_ltbill' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className='top_fv_bll'>
                       <p className='font-bold dash_first_crd flex items-center' style={{ fontSize: '1.5625rem' }}>Top Five Bills
                         <Tooltip title="Top Five Bills" arrow>
@@ -725,11 +742,11 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className='gap-4'>
-                <div className="bg-white  flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white  flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>
 
                   <div className='p-5 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className='top_fv_bll'>
-                      <p className='font-bold dash_first_crd flex items-center' style={{ fontSize: '1.5625rem' }}>Expiring Items
+                      <p className='font-bold dash_first_crd1 flex items-center' style={{ fontSize: '1.5625rem' }}>Expiring Items
                         <Tooltip title="Expiring Items" arrow>
                           <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
                         </Tooltip>
@@ -820,7 +837,7 @@ const Dashboard = () => {
 
             <div className='dashbd_crd_bx1 gap-5 grid grid-cols-1 md:grid-cols-2 pt-5 sm:grid-cols-1'>
               {/* <div className='gap-4'>
-                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>
 
                   <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className=''>
@@ -913,7 +930,7 @@ const Dashboard = () => {
               </div> */}
               <div className='gap-4'>
 
-                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "430px" }}>
+                <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>
 
                   <div className='p-4 flex justify-between items-center' style={{ borderBottom: '1px solid var(--color2)' }}>
                     <div className=''>

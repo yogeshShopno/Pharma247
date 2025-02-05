@@ -532,7 +532,6 @@
     align-content: end;
     padding: 0;
     outline: none !important;
-
   }
 }
 
@@ -542,7 +541,6 @@
     align-content: end;
     padding: 0;
     outline: none !important;
-
   }
 }
 
@@ -552,7 +550,6 @@
     align-content: end;
     padding: 0;
     outline: none !important;
-
   }
 }
 
@@ -695,7 +692,6 @@
     align-content: end;
     padding: 0;
     outline: none !important;
-
   }
 }
 
@@ -1244,6 +1240,27 @@
     display: flex;
     justify-content: end !important;
   }
+  .dash_first_crd1 {
+    align-items: center !important;
+    font-size: 1.5625rem !important;
+    display: flex;
+  }
+  .top_fv_bll {
+    width: 100% !important;
+  }
+}
+@media (min-width: 864px) and (max-width: 1303px) {
+  .dsh_cdr_hd_ltbill {
+    flex-direction: column;
+  }
+  .dsh_crd_btn {
+    align-items: center !important;
+    gap: 2rem !important;
+    width: 100% !important;
+    display: flex;
+    justify-content: end !important;
+  }
+
   .dash_first_crd {
     align-items: center !important;
     font-size: 1.5625rem !important;
@@ -1356,10 +1373,10 @@
   .sale_view_btns {
     flex-direction: column;
   }
-  .sale_dnls{
+  .sale_dnls {
     width: 100%;
   }
-  .sale_ve_btnsss{
+  .sale_ve_btnsss {
     margin-top: 2%;
   }
 }
@@ -1367,7 +1384,39 @@
   .sale_ve_btnsss {
     flex-direction: column;
   }
-  .sale_dnls{
+  .sale_dnls {
     width: 100%;
+  }
+}
+
+@media (min-width: 1087px) and (max-width: 1618px) {
+  .dash_board_chart_crds {
+    flex-direction: row;
+  }
+  .dash_card_chartss {
+    align-items: baseline;
+    flex-direction: column;
+    margin: auto;
+    max-width: 1440px;
+  }
+
+  .dashbd_crd_bx {
+    margin: auto;
+    max-width: 1440px;
+  }
+
+  .dashbd_crd_bx1 {
+    margin: auto;
+    max-width: 1440px;
+  }
+  /* .x-axis-tick text {
+    font-size: 14px !important;
+  } */
+}
+
+@media (max-width: 600px) {
+  .dsh_card_chart {
+    flex-direction: column;
+    gap: 15px !important;
   }
 }

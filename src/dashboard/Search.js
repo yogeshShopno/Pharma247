@@ -76,7 +76,6 @@ const Search = ({ searchPage, setSearchPage }) => {
     searchData(newValue);
   };
 
-  /*<================================================================================== call Search API  ==================================================================================> */
 
   const apiEndpoints = {
     1: "item-search",
@@ -148,7 +147,6 @@ const Search = ({ searchPage, setSearchPage }) => {
     setRowsPerPage(+event.target.value);
     setPage(0); // Reset page to 0 when changing rows per page
   };
-  /*<======================================================================================= UI =======================================================================================> */
 
   useEffect(() => {
     if (searchPage) {
@@ -221,7 +219,6 @@ const Search = ({ searchPage, setSearchPage }) => {
               }}
             />
           </div>
-          {/*======================================================================================== table ======================================================================================== */}
 
           <div className="">
             <div className="overflow-x-auto">

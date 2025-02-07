@@ -152,7 +152,6 @@ const Search = ({ searchPage, setSearchPage }) => {
 
   useEffect(() => {
     if (searchPage) {
-      // Disable scrolling
       document.body.style.overflow = "hidden";
     } else {
       // Enable scrolling

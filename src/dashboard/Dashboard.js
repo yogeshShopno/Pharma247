@@ -228,7 +228,6 @@ const Dashboard = () => {
       })
 
     } catch (error) {
-      //   console.error('Error fetching dashboard data:', error);
       setIsLoading(false);
     }
   }
@@ -245,7 +244,6 @@ const Dashboard = () => {
         const permission = response.data.data;
         const encryptedPermission = encryptData(permission);
         localStorage.setItem('Permission', encryptedPermission);
-        // localStorage.setItem('Permission', JSON.stringify(permission));
       })
 
     }

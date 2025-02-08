@@ -174,7 +174,6 @@ const Dashboard = () => {
 
   const dashboardData = async () => {
     let data = new FormData();
-    // setIsLoading(true)
     const params = {
       type: value,
       bill_day: typeValue,

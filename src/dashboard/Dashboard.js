@@ -173,6 +173,7 @@ const Dashboard = () => {
 
 
   const dashboardData = async () => { 
+
     let data = new FormData();
     const params = {
       type: value,

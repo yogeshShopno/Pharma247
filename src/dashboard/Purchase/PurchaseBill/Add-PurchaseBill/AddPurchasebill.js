@@ -47,6 +47,7 @@ const debounce = (func, delay) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), delay);
   };
+
 };
 
 const AddPurchaseBill = () => {
@@ -156,6 +157,8 @@ const AddPurchaseBill = () => {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -196,7 +199,7 @@ const AddPurchaseBill = () => {
       console.log("hi");
       const selectedRow = ItemPurchaseList.item[selectedIndex];
       setSelectedEditItemId(selectedRow.id);
-      console.log( ItemPurchaseList.item[selectedIndex],"hi")
+      console.log(ItemPurchaseList.item[selectedIndex], "hi")
       handleEditClick(ItemPurchaseList.item[selectedIndex])
       // alert(`Selected ID: ${selectedRow.id}`);
     }
@@ -224,7 +227,7 @@ const AddPurchaseBill = () => {
       setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
     }
   }, [selectedIndex, ItemPurchaseList]);
-  
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "s") {
@@ -240,8 +243,8 @@ const AddPurchaseBill = () => {
     };
   }, []);
 
-    const handleKeyDown = (event, index) => {
-      console.log("hiii", index)
+  const handleKeyDown = (event, index) => {
+    console.log("hiii", index)
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -263,7 +266,7 @@ const AddPurchaseBill = () => {
 
     setErrors(newErrors);
   }, [ptr, mrp]);
-  
+
   /*<================================================================= Clear old purchase item if user leave the browswer =========================================================> */
 
   useEffect(() => {
@@ -349,7 +352,7 @@ const AddPurchaseBill = () => {
 
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-  }, [qty, ptr, disc,mrp, gst.name, free, ItemTotalAmount, barcodeBatch]);
+  }, [qty, ptr, disc, mrp, gst.name, free, ItemTotalAmount, barcodeBatch]);
 
   /*<============================================================================== CN calculation realtime ========================================================================> */
 
@@ -910,7 +913,7 @@ const AddPurchaseBill = () => {
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       await handleAddItem();
- setUnsavedItems(true)
+      setUnsavedItems(true)
 
     }
     return isValid;
@@ -1239,7 +1242,7 @@ const AddPurchaseBill = () => {
   /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
-    console.log(ItemPurchaseList,billNo,distributor,"hiiii")
+    console.log(ItemPurchaseList, billNo, distributor, "hiiii")
 
     const newErrors = {};
     if (!distributor) {
@@ -1745,8 +1748,11 @@ const AddPurchaseBill = () => {
                       autoComplete="off"
                       variant="outlined"
                       {...params}
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 0)}
 
                     />
+
                   )}
                 />
                 {error.distributor && (
@@ -1782,6 +1788,8 @@ const AddPurchaseBill = () => {
                   onChange={(e) => {
                     setbillNo(e.target.value.toUpperCase());
                   }}
+                  inputRef={(el) => (inputRefs.current[1] = el)}
+                  onKeyDown={(e) => handleKeyDown(e, 1)}
                 />
                 {error.billNo && (
                   <span style={{ color: "red", fontSize: "12px" }}>
@@ -1800,6 +1808,7 @@ const AddPurchaseBill = () => {
                     onChange={(newDate) => setSelectedDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     filterDate={(date) => !isDateDisabled(date)}
+
                   />
                 </div>
               </div>
@@ -1814,6 +1823,7 @@ const AddPurchaseBill = () => {
                     onChange={(newDate) => setDueDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     minDate={new Date()}
+
                   />
                 </div>
               </div>
@@ -1945,8 +1955,8 @@ const AddPurchaseBill = () => {
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
-                                      inputRef={(el) => (inputRefs.current[0] = el)}
-                                      onKeyDown={(e) => handleKeyDown(e, 0)}
+                                      inputRef={(el) => (inputRefs.current[2] = el)}
+                                      onKeyDown={(e) => handleKeyDown(e, 2)}
 
                                     />
                                   )}
@@ -1954,7 +1964,7 @@ const AddPurchaseBill = () => {
                               )}
                             </td>
                           )}
-                          
+
                           <td>
                             <TextField
                               variant="outlined"
@@ -1965,7 +1975,7 @@ const AddPurchaseBill = () => {
                               error={!!errors.unit}
                               value={unit}
                               sx={{ width: "65px" }}
-                              
+
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
@@ -1981,8 +1991,8 @@ const AddPurchaseBill = () => {
                               //   }
                               // }}
 
-                              inputRef={(el) => (inputRefs.current[1] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 1)}
+                              inputRef={(el) => (inputRefs.current[3] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 3)}
                             />
                             {error.unit && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -2036,8 +2046,8 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
-                              inputRef={(el) => (inputRefs.current[2] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 2)}
+                              inputRef={(el) => (inputRefs.current[4] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 4)}
                             />
                             {error.batch && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -2058,8 +2068,8 @@ const AddPurchaseBill = () => {
                               value={expiryDate}
                               onChange={handleExpiryDate}
                               placeholder="MM/YY"
-                              inputRef={(el) => (inputRefs.current[3] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 3)}
+                              inputRef={(el) => (inputRefs.current[5] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 5)}
                             />
                           </td>
                           <td>
@@ -2089,8 +2099,8 @@ const AddPurchaseBill = () => {
                               //     e.preventDefault();
                               //   }
                               // }}
-                              inputRef={(el) => (inputRefs.current[4] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 4)}
+                              inputRef={(el) => (inputRefs.current[6] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 6)}
                             />
                           </td>
                           <td>
@@ -2113,16 +2123,16 @@ const AddPurchaseBill = () => {
                                 );
                                 setQty(value ? Number(value) : "");
                               }}
-                              inputRef={(el) => (inputRefs.current[5] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 5)}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
-                           
+                              inputRef={(el) => (inputRefs.current[7] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 7)}
+                            // onKeyDown={(e) => {
+                            //   if (
+                            //     ["e", "E", ".", "+", "-", ","].includes(e.key)
+                            //   ) {
+                            //     e.preventDefault();
+                            //   }
+                            // }}
+
                             />
                           </td>
                           <td>
@@ -2148,8 +2158,8 @@ const AddPurchaseBill = () => {
                               //     e.preventDefault();
                               //   }
                               // }}
-                              inputRef={(el) => (inputRefs.current[6] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 6)}
+                              inputRef={(el) => (inputRefs.current[8] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 8)}
                             />
                           </td>
                           <td>
@@ -2177,8 +2187,8 @@ const AddPurchaseBill = () => {
                                 const setptr = e.target.value.replace(/[eE]/g, "");
                                 setPTR(setptr);
                               }}
-                              inputRef={(el) => (inputRefs.current[7] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 7)}
+                              inputRef={(el) => (inputRefs.current[9] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 9)}
                             />
                           </td>
                           <td>
@@ -2208,8 +2218,8 @@ const AddPurchaseBill = () => {
                                 }
                                 handleSchAmt(e);
                               }}
-                              inputRef={(el) => (inputRefs.current[8] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 8)}
+                              inputRef={(el) => (inputRefs.current[10] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 10)}
                             />
                           </td>
                           {/* <td>
@@ -2240,34 +2250,79 @@ const AddPurchaseBill = () => {
                               onChange={(e) => {
                                 setBase(e.target.value);
                               }}
-                            
+
                             />
                           </td>
                           <td>
-                            <Select
+                            {/* <Select
                               labelId="dropdown-label"
                               id="dropdown"
                               variant="outlined"
                               value={gst.name}
                               sx={{ minWidth: "80px" }}
                               onChange={(e) => {
-                                const selectedGST = gstList.find(
-                                  (option) => option.name === e.target.value
-                                );
+                                const selectedGST = gstList.find((option) => option.name === e.target.value);
                                 setGst(selectedGST);
                               }}
                               size="small"
                               displayEmpty
                               error={!!errors.gst}
                               inputRef={(el) => (inputRefs.current[9] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 9)}
+                              open={isOpen}
+                              onOpen={() => setIsOpen(true)}
+                              onClose={() => setIsOpen(false)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  if (!isOpen) {
+                                    e.preventDefault();
+                                  }
+                                } else {
+                                  handleKeyDown(e, 9);
+                                }
+                              }}
                             >
                               {gstList?.map((option) => (
                                 <MenuItem key={option.id} value={option.name}>
                                   {option.name}
                                 </MenuItem>
                               ))}
-                            </Select>
+                            </Select> */}
+                            <Autocomplete
+                              id="gst-autocomplete"
+                              options={gstList}
+                              getOptionLabel={(option) => option.name}
+                              value={gst}
+                              onChange={(event, newValue) => setGst(newValue)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant="outlined"
+                                  size="small"
+                                  error={!!errors.gst}
+                                  inputRef={(el) => (inputRefs.current[11] = el)}
+                                  onKeyDown={(e) => handleKeyDown(e, 11)}
+                                  // onKeyDown={(e) => {
+                                  //   if (e.key === "Enter") {
+                                  //     e.preventDefault(); // Prevents the default dropdown behavior
+                                  //     inputRefs.current[13]?.focus(); // Move to the next input field
+                                  //   }
+                                  // }}
+                                />
+                              )}
+                              // onKeyDown={(e) => {
+                              //   if (e.key === "Enter") {
+                              //     e.preventDefault();
+                              //     inputRefs.current[13]?.focus();
+                              //   }
+                              // }}
+                              onKeyDown={(e) => handleKeyDown(e, 11)}
+
+                              open={isOpen}
+                              onOpen={() => setIsOpen(true)}
+                              onClose={() => setIsOpen(false)}
+                            />
+
+
                           </td>
 
                           <td>
@@ -2283,14 +2338,17 @@ const AddPurchaseBill = () => {
                               sx={{ width: "100px" }}
                               onChange={(e) => {
                                 setLoc(e.target.value);
-                           
+
                               }}
-                              onKeyDown={(e) => {
+                              inputRef={(el) => (inputRefs.current[12] = el)}
+
+                              onKeyDown={async (e) => {
                                 if (e.key === 'Enter') {
-                                  handleAddButtonClick();
+                                  await handleAddButtonClick();
+                                  handleKeyDown(e, 1)
                                 }
                               }}
-                            
+
                             />
                           </td>
                           <td>
@@ -2303,7 +2361,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={netRate === 0 ? "" : netRate}
                               sx={{ width: "100px" }}
-                              
+
                             />
                           </td>
                           <td>
@@ -2325,65 +2383,65 @@ const AddPurchaseBill = () => {
                             <span>{ItemTotalAmount.toFixed(2)}</span>
                           </td>
                         </tr>
-                        </>)}
-                        </tbody>
+                      </>)}
+                  </tbody>
                 </table>
                 < >
- {/*<=============================================================================== added Item  ==============================================================================> */}
-                  
+                  {/*<=============================================================================== added Item  ==============================================================================> */}
+
                   <table
-                  className="p-30  border border-indigo-600 w-full border-collapse custom-table"
+                    className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                    // tabIndex={0}  
+                    // tabIndex={0}
                   > <tbody>
-                    {ItemPurchaseList?.item?.map((item) => (
-                      <tr
-                        key={item.id}
-                        onClick={() => handleEditClick(item)}
-                        className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
-                          ? "highlighted-row"
-                          : ""}`}>
-                        <td
-                          style={{
-                            display: "flex",
-                            gap: "8px",
-                            width: "400px"
-                          }}
-                        >
-                          <BorderColorIcon
-                            style={{ color: "var(--color1)" }}
-                            onClick={() => handleEditClick(item)}
-                          />
-                          <DeleteIcon
-                            style={{ color: "var(--color6)" }}
-                            className="delete-icon bg-none"
-                            
-                            onClick={() => { deleteOpen(item.id) }}
-                          />
-                          {item.iteam_name}
-                        </td>
-                        <td>{item.weightage}</td>
-                        <td>{item.hsn_code}</td>
-                        <td>{item.batch_number}</td>
-                        <td>{item.expiry}</td>
-                        <td>{item.mrp}</td>
-                        <td>{item.qty}</td>
-                        <td>{item.free_qty}</td>
-                        <td>{item.ptr}</td>
-                        <td>{item.discount}</td>
-                        <td>{item.scheme_account}</td>
-                        <td>{item.base_price}</td>
-                        <td>{item.gst}</td>
-                        <td>{item.location}</td>
-                        <td>{item.net_rate}</td>
-                        <td>{item.margin}</td>
-                        <td>{item.total_amount}</td>
-                      </tr>
-                    ))}
-                      </tbody>
+                      {ItemPurchaseList?.item?.map((item) => (
+                        <tr
+                          key={item.id}
+                          onClick={() => handleEditClick(item)}
+                          className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
+                            ? "highlighted-row"
+                            : ""}`}>
+                          <td
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              width: "400px"
+                            }}
+                          >
+                            <BorderColorIcon
+                              style={{ color: "var(--color1)" }}
+                              onClick={() => handleEditClick(item)}
+                            />
+                            <DeleteIcon
+                              style={{ color: "var(--color6)" }}
+                              className="delete-icon bg-none"
+
+                              onClick={() => { deleteOpen(item.id) }}
+                            />
+                            {item.iteam_name}
+                          </td>
+                          <td>{item.weightage}</td>
+                          <td>{item.hsn_code}</td>
+                          <td>{item.batch_number}</td>
+                          <td>{item.expiry}</td>
+                          <td>{item.mrp}</td>
+                          <td>{item.qty}</td>
+                          <td>{item.free_qty}</td>
+                          <td>{item.ptr}</td>
+                          <td>{item.discount}</td>
+                          <td>{item.scheme_account}</td>
+                          <td>{item.base_price}</td>
+                          <td>{item.gst}</td>
+                          <td>{item.location}</td>
+                          <td>{item.net_rate}</td>
+                          <td>{item.margin}</td>
+                          <td>{item.total_amount}</td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </table>
                 </>
-{/*<============================================================================== total and other details  =============================================================================> */}
+                {/*<============================================================================== total and other details  =============================================================================> */}
 
                 <div className="flex gap-10 justify-end mt-4 ">
                   <div
@@ -2805,7 +2863,7 @@ const AddPurchaseBill = () => {
           </DialogContent>
         </Dialog>
 
-{/*<==============================================================================  Delete PopUP   =============================================================================> */}
+        {/*<==============================================================================  Delete PopUP   =============================================================================> */}
 
         <div
           id="modal"
@@ -2994,7 +3052,7 @@ export default AddPurchaseBill;
 
 /*<================================================================================ temp  handle Add button logic =================================================================================> */
 
-  {/* <tr>
+{/* <tr>
                           <td></td>
                           <td></td>
                           <td></td>

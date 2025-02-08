@@ -111,9 +111,6 @@ Advanced Features
 🚀 Automatic Tax Calculation (GST, VAT, etc.)
 🚀 Dark Mode UI
 
-why i feels like i dont want to do a coding anymore this is my passion or not i am not sure 
-when i am feeking like bore ,
-
 Technology Stack
 Layer	Technology Used
 Frontend	React.js, Tailwind CSS

@@ -126,11 +126,3 @@ For any queries, suggestions, or support, feel free to reach out:
 📧 Email: inquiry@pharma247.in
 🌍 Website: Pharma247.in
 🐦 Twitter: @Pharma247
-
-
-
-
-
-
-
-

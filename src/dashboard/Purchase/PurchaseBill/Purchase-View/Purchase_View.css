@@ -1420,3 +1420,13 @@
     gap: 15px !important;
   }
 }
+
+.dark\:bg-gray-800 {
+  --tw-bg-opacity: 1;
+  background-color: white !important;
+}
+
+.dark\:border-gray-700 {
+  --tw-border-opacity: 1;
+  border-color: white !important;
+}

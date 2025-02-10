@@ -171,7 +171,6 @@ const Dashboard = () => {
 
   }, [typeValue, value, expiredValue, staffListValue, pieChartvalue])
 
-
   const dashboardData = async () => { 
 
     let data = new FormData();
@@ -1396,4 +1395,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-

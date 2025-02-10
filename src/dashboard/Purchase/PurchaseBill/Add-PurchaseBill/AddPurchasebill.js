@@ -211,11 +211,10 @@ const AddPurchaseBill = () => {
       setSelectedEditItemId(selectedRow.id);
       console.log(ItemPurchaseList.item[selectedIndex], "hi")
       handleEditClick(ItemPurchaseList.item[selectedIndex])
-      // alert(`Selected ID: ${selectedRow.id}`);
+ 
     }
   };
 
-  // Ensure the table container listens for key events
   useEffect(() => {
     const currentRef = tableRef.current;
     if (currentRef) {
@@ -230,7 +229,7 @@ const AddPurchaseBill = () => {
     };
   }, [selectedIndex, ItemPurchaseList]);
 
-  // Update selectedEditItemId when selectedIndex changes
+
 
   useEffect(() => {
     if (selectedIndex >= 0) {

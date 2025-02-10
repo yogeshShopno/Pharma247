@@ -75,12 +75,12 @@ const SignUp = () => {
   }
 
   const handleRegister = () => {
-    const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5)+formData.mobile_number.slice(-5)+Math.random().toString(36).substring(2, 7);
-    console.log(refferalLink,"refferalLink")
+    const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5) + formData.mobile_number.slice(-5) + Math.random().toString(36).substring(2, 7);
+    console.log(refferalLink, "refferalLink")
     // const newErrors = {};
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-   
+
+
     // if (!formData.pharmacy_name) {
     //   newErrors.pharmacy_name = 'pharmacy Name is required';
     //   toast.error('Pharmacy Name is required');
@@ -106,7 +106,7 @@ const SignUp = () => {
     // const isValid = Object.keys(newErrors).length === 0;
     // if (isValid) {
     //   handleSubmit();
-     
+
     // }
   };
 
@@ -161,7 +161,7 @@ const SignUp = () => {
           toast.success(response.data.message);
           localStorage.setItem('userId', userID)
           setTimeout(() => {
-           
+
             history.push('/', { NewUser: 'NewUser' });
 
           }, 3000);
@@ -175,7 +175,7 @@ const SignUp = () => {
         console.error('API error:', errors);
       }
     } else {
-        console.error('API error:', errors);
+      console.error('API error:', errors);
     }
   };
 
@@ -301,22 +301,22 @@ const SignUp = () => {
                   />
                 </div>
 
-            
-                  <div className="mt-2 flex flex-col justify-between">
-                    <label htmlFor="referral_code" className="block text-gray-700 text-sm font-bold mb-1">Referral Code (Optional)</label>
-                    <OutlinedInput
-                      type="text"
-                      id="referral_code"
-                      name="referral_code"
-                      size="small"
-                      className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
-                      value={formData.referral_code}
-                      onChange={handleChange}
-                    />
-                  </div>
-        
+
+                <div className="mt-2 flex flex-col justify-between">
+                  <label htmlFor="referral_code" className="block text-gray-700 text-sm font-bold mb-1">Referral Code (Optional)</label>
+                  <OutlinedInput
+                    type="text"
+                    id="referral_code"
+                    name="referral_code"
+                    size="small"
+                    className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
+                    value={formData.referral_code}
+                    onChange={handleChange}
+                  />
+                </div>
+
                 <div className="mt-4">
-                  <Button variant="contained"  style={{backgroundColor:"var(--color1)"}} className="text-white font-bold py-2 px-4 w-full rounded "
+                  <Button variant="contained" style={{ backgroundColor: "var(--color1)" }} className="text-white font-bold py-2 px-4 w-full rounded "
                     onClick={handleRegister}
                   >
                     Next
@@ -443,11 +443,8 @@ const SignUp = () => {
                     </Button>
                   </div>
                 </div>
-
               </>
               {/* } */}
-
-
             </div>
           </div>
         }

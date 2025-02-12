@@ -75,11 +75,11 @@ const SignUp = () => {
   }
 
   const handleRegister = () => {
-<<<<<<< HEAD
-    const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5)+formData.mobile_number.slice(-5)+Math.random().toString(36).substring(2, 7);
-    console.log(refferalLink,"refferalLink")
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5)+formData.mobile_number.slice(-5)+Math.random().toString(36).substring(2, 7);
+    // console.log(refferalLink,"refferalLink")
+    // const newErrors = {};
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
    
     if (!formData.pharmacy_name) {
@@ -103,7 +103,6 @@ const SignUp = () => {
       toast.error('Enter a valid email address');
     }
 
-=======
     const refferalLink = formData.pharmacy_name.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 5) + formData.mobile_number.slice(-5) + Math.random().toString(36).substring(2, 7);
     console.log(refferalLink, "refferalLink")
     const newErrors = {};
@@ -131,16 +130,11 @@ const SignUp = () => {
       toast.error('Enter a valid email address');
     }
 
->>>>>>> fe16303b879d036954dc0df419d3d0248f171277
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       handleSubmit();
-<<<<<<< HEAD
-     
-=======
 
->>>>>>> fe16303b879d036954dc0df419d3d0248f171277
     }
   };
 

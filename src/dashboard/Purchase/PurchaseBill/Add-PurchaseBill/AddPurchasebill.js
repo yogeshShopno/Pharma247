@@ -2422,7 +2422,7 @@ const AddPurchaseBill = () => {
                   <table
                     className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                  tabIndex={0}
+                  // tabIndex={0}
                   > <tbody>
                       {ItemPurchaseList?.item?.map((item) => (
                         <tr

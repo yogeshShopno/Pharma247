@@ -6,7 +6,9 @@ import '../../../../App.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DatePicker from "react-datepicker";
+import { addDays, format, subDays } from "date-fns";
 import Autocomplete from '@mui/material/Autocomplete';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
@@ -50,7 +52,7 @@ const Addsale = () => {
     const inputRef9 = useRef(null);
     const inputRef10 = useRef(null);
     const [item, setItem] = useState('')
-    const [selectedDate, setSelectedDate] = useState(dayjs());
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
     const [saleItemId, setSaleItemId] = useState(null);
     const [itemId, setItemId] = useState(null);
@@ -148,6 +150,14 @@ const Addsale = () => {
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+    };
+
+    const isDateDisabled = (date) => {
+        const today = new Date();
+        // Set time to 00:00:00 to compare only date part--------------------------
+        today.setHours(0, 0, 0, 0);
+        // Disable dates that are greater than today-------------------------------------
+        return date > today;
     };
 
     const LastPurchaseListcolumns = [
@@ -1378,7 +1388,7 @@ const Addsale = () => {
             setOrder('')
             setIsEditMode(false);
 
-            toast.success(response.data.message);
+            // toast.success(response.data.message);
 
             // if (quantityDifference === 1) {
             //     bulkOrderData();
@@ -1560,6 +1570,7 @@ const Addsale = () => {
                                     <ControlPointIcon className="mr-2" />
                                     Add New Item
                                 </Button>
+
                                 <Select
                                     labelId="dropdown-label"
                                     id="dropdown"
@@ -1610,66 +1621,6 @@ const Addsale = () => {
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex" >
-                                <div className="detail mt-1 custommedia" >
-                                    <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
-                                            <div className="flex gap-1">
-                                                <div
-                                                    style={{
-                                                        color: 'white',
-                                                        fontWeight: "500",
-                                                        alignItems: "center",
-                                                        marginTop: '8px',
-                                                        marginLeft: "15px",
-                                                        fontWeight: "bold",
-                                                        width: '19%'
-                                                    }}>
-                                                    {localStorage.getItem('BillNo')}
-                                                </div>
-                                                <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', fontWeight: "bold" }}>|</div>
-                                                <DatePicker
-                                                    color="white"
-                                                    width="100%"
-                                                    value={selectedDate}
-                                                    onChange={(newDate) => setSelectedDate(newDate)}
-                                                    format="DD/MM/YYYY"
-                                                    maxDate={dayjs()}
-                                                    sx={{
-                                                        '& .MuiOutlinedInput-root': {
-                                                            '& fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&:hover fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&.Mui-focused fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '& .MuiInputBase-input': {
-                                                                color: 'white',
-                                                                fontWeight: "bold"
-                                                            },
-                                                        },
-                                                        '& .MuiSvgIcon-root': {
-                                                            color: 'white',
-                                                            width: '40px',
-                                                            height: '40px',
-                                                            backgroundColor: "#6aa420",
-                                                            padding: "10px",
-                                                            borderRadius: "50%",
-                                                            alignItems: "center"
-                                                        },
-                                                        '& .MuiAutocomplete-input': {
-                                                            padding: "0.5px 4px 7.5px 5px"
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                        </LocalizationProvider>
-
-                                    </div>
-                                </div>
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
 
@@ -1692,10 +1643,7 @@ const Addsale = () => {
                                             //     md: '500px',
                                             //     lg: '400px',
                                             // },
-                                            '& .MuiInputBase-root': {
-                                                height: 20,
-                                                fontSize: '1.10rem',
-                                            },
+
                                             '& .MuiAutocomplete-inputRoot': {
                                                 padding: '8px 8px',
                                             },
@@ -1721,7 +1669,6 @@ const Addsale = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 55 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -1756,7 +1703,7 @@ const Addsale = () => {
                                             //     lg: '400px',
                                             // },
                                             '& .MuiInputBase-root': {
-                                                height: 20,
+
                                                 fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
@@ -1784,7 +1731,7 @@ const Addsale = () => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 55 },
+
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -1797,172 +1744,38 @@ const Addsale = () => {
                                     />
 
                                 </div>
-                                {/* <div className="flex gap-2 search_fld_divv" style={{ width: '100%' }} >
-                                    <table style={{ maxWidth: '50%', width: '100%' }} >
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                flexWrap: 'wrap',
-                                                gap: 2,
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    flex: '1 1 auto',
-                                                    // minWidth: {
-                                                    //     xs: '350px',
-                                                    //     sm: '500px',
-                                                    //     md: '806px',
-                                                    //     lg: '1000px'
-                                                    // },
-                                                    width: '100%',
-                                                    background: '#ceecfd',
-                                                    borderRadius: '7px',
-                                                }}
-                                            >
-                                                <Autocomplete
-                                                    value={selectedOption}
-                                                    blurOnSelect
-                                                    size="small"
-                                                    sx={{ fontSize: "1.5rem" }}
-                                                    onChange={handleOptionChange}
-                                                    onInputChange={handleInputChange}
-                                                    options={itemList}
-                                                    getOptionLabel={(option) => `${option.iteam_name || ''} `}
-                                                    filterOptions={(option, state) => { return itemList }}
-                                                    renderOption={(props, option) => (
-                                                        <ListItem {...props} key={option.id}>
-                                                            <ListItemText
-                                                                primary={`${option.iteam_name}, (${option.company})`}
-                                                                // secondary={
-                                                                //     <>
-                                                                //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                                                //         ₹: {option.mrp || 0},
-                                                                //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                                                //     </>
-                                                                // }
-                                                                secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                                                                sx={{
-                                                                    '& .MuiTypography-root': { fontSize: '1.1rem' }
-                                                                }}
-                                                            />
-                                                        </ListItem>
-                                                    )}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            variant="outlined"
-                                                            id="searchResults"
-                                                            placeholder="Search Item Name..."
-                                                            InputProps={{
-                                                                ...params.InputProps,
-                                                                style: { height: 45, fontSize: '1.2rem' },
+                                <div className="detail custommedia" >
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Scan Barcode <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
+                                    <TextField
+                                        id="outlined-number"
+                                        type="number"
+                                        size="small"
+                                        value={barcode}
+                                        placeholder="scan barcode"
+                                        // inputRef={inputRef10}
+                                        // onKeyDown={handleKeyDown}
+                                        sx={{ width: "250px" }}
+                                        onChange={(e) => {
+                                            setBarcode(e.target.value)
 
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <SearchIcon sx={{ color: "rgba(9, 161, 246)", cursor: "pointer" }} />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }}
-                                                            sx={{
-                                                                '& .MuiOutlinedInput-root': {
-                                                                    '& fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    '&:hover fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    '&.Mui-focused fieldset': {
-                                                                        border: 'none',
-                                                                    },
-                                                                    borderBottom: '1px solid ',
-                                                                },
-                                                                '& .MuiInputBase-input::placeholder': {
-                                                                    fontSize: '1rem',
-                                                                    color: 'black',
-                                                                },
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
-                                            </Box>
-                                        </Box>
-                                        {isVisible && value && !batch &&
-                                            <Box sx={{
-                                                minWidth: {
-                                                    xs: '200px',
-                                                    sm: '500px',
-                                                    md: '1000px',
-                                                },
-                                                backgroundColor: 'white',
-                                                position: 'absolute',
-                                                zIndex: 1
-                                            }}
-                                                id="tempId"
-                                            >
-                                                <div className="custom-scroll-sale" style={{ width: '100%' }} tabIndex={0} onKeyDown={handleTableKeyDown}
-                                                    ref={tableRef}
-                                                >
-                                                    <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                        <thead>
-                                                            <tr className="customtable">
-                                                                <th>Item Name</th>
-                                                                <th>Batch Number</th>
-                                                                <th>Unit</th>
-                                                                <th>Expiry Date</th>
-                                                                <th>QTY</th>
-                                                                <th>Loc</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {batchListData.length > 0 ?
-                                                                <>
-                                                                    {batchListData.map(item => (
-                                                                        <tr
-                                                                            className={`cursor-pointer saleTable custom-hover ${highlightedRowId === String(item.id) ? "highlighted-row" : ""}`}
-                                                                            key={item.id}
-                                                                            data-id={item.id}
-                                                                            tabIndex={0}
-                                                                            style={{
-                                                                                border: "1px solid rgba(4, 76, 157, 0.1)", padding: '10px', outline: "none"
-                                                                            }}
-                                                                            onClick={() => handlePassData(item)}
-                                                                            onMouseEnter={handleMouseEnter}
-                                                                        >
-                                                                            <td className="text-base font-semibold">{item.iteam_name}</td>
-                                                                            <td className="text-base font-semibold">{item.batch_number}</td>
-                                                                            <td className="text-base font-semibold">{item.unit}</td>
-                                                                            <td className="text-base font-semibold">{item.expiry_date}</td>
-                                                                            <td className="text-base font-semibold">{item.qty}</td>
-                                                                            <td className="text-base font-semibold">{item.location}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </> :
-                                                                <tr>
-                                                                    <td colSpan={6} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </Box>
+                                        }}
 
-                                        }
+                                    />
 
-                                    </table>
+                                </div>
+                                <div className="detail custommedia" >
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Scan Barcode <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
 
-                                    <Button
-                                        variant="contained"
-                                        style={{ backgroundColor: "var(--color1)" }}
+                                    <DatePicker
+                                        className="custom-datepicker "
+                                        selected={selectedDate}
+                                        variant="outlined"
+                                        onChange={(newDate) => setSelectedDate(newDate)}
+                                        dateFormat="dd/MM/yyyy"
+                                        filterDate={(date) => !isDateDisabled(date)}
 
-                                        onClick={handelAddItemOpen}
-                                    >
-                                        <ControlPointIcon className="mr-2" />
-                                        Add New Item
-                                    </Button>
-                                </div> */}
-
+                                    />
+                                </div>
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
@@ -1975,6 +1788,7 @@ const Addsale = () => {
                                                 <th>Base</th>
                                                 <th >GST%</th>
                                                 <th >QTY </th>
+                                                <th >Loc.</ th>
 
                                                 <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
@@ -1983,7 +1797,6 @@ const Addsale = () => {
                                                 </div>
                                                 </th>
 
-                                                <th >Loc.</ th>
                                                 <th >Amount </th>
                                             </tr>
                                         </thead>
@@ -2047,6 +1860,7 @@ const Addsale = () => {
                                                                                 inputRef={searchInputRef}
                                                                                 variant="outlined"
                                                                                 id="searchResults"
+                                                                                autoFocus
                                                                                 placeholder="Search Item Name..."
                                                                                 InputProps={{
                                                                                     ...params.InputProps,
@@ -2059,18 +1873,18 @@ const Addsale = () => {
                                                                                     ),
                                                                                 }}
                                                                                 sx={{
-                                                                                    '& .MuiOutlinedInput-root': {
-                                                                                        '& fieldset': {
-                                                                                            border: 'none',
-                                                                                        },
-                                                                                        '&:hover fieldset': {
-                                                                                            border: 'none',
-                                                                                        },
-                                                                                        '&.Mui-focused fieldset': {
-                                                                                            border: 'none',
-                                                                                        },
-                                                                                        borderBottom: '1px solid ',
-                                                                                    },
+                                                                                    // '& .MuiOutlinedInput-root': {
+                                                                                    //     '& fieldset': {
+                                                                                    //         border: 'none',
+                                                                                    //     },
+                                                                                    //     '&:hover fieldset': {
+                                                                                    //         border: 'none',
+                                                                                    //     },
+                                                                                    //     '&.Mui-focused fieldset': {
+                                                                                    //         border: 'none',
+                                                                                    //     },
+                                                                                    //     borderBottom: '1px solid ',
+                                                                                    // },
                                                                                     '& .MuiInputBase-input::placeholder': {
                                                                                         fontSize: '1rem',
                                                                                         color: 'black',
@@ -2246,6 +2060,20 @@ const Addsale = () => {
                                                         }}
                                                     />
                                                 </td>
+
+
+                                                <td>
+                                                    <TextField
+                                                        id="outlined-number"
+                                                        size="small"
+                                                        inputRef={inputRef9}
+                                                        onKeyDown={handleKeyDown}
+                                                        disabled
+                                                        sx={{ width: '130px' }}
+                                                        value={loc}
+                                                        onChange={(e) => { setLoc(e.target.value) }}
+                                                    />
+                                                </td>
                                                 <td>
                                                     <TextField
                                                         autoComplete="off"
@@ -2270,44 +2098,17 @@ const Addsale = () => {
                                                         }}
                                                     />
                                                 </td>
-
-                                                <td>
-                                                    <TextField
-                                                        id="outlined-number"
-                                                        size="small"
-                                                        inputRef={inputRef9}
-                                                        onKeyDown={handleKeyDown}
-                                                        disabled
-                                                        sx={{ width: '130px' }}
-                                                        value={loc}
-                                                        onChange={(e) => { setLoc(e.target.value) }}
-                                                    />
-                                                </td>
-                                                <td className="total">{itemAmount}</td>
+                                                <td className="total " >{itemAmount}</td>
                                             </tr>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
-                                                    <TextField
-                                                        id="outlined-number"
-                                                        type="number"
-                                                        size="small"
-                                                        value={barcode}
-                                                        placeholder="scan barcode"
-                                                        // inputRef={inputRef10}
-                                                        // onKeyDown={handleKeyDown}
-                                                        sx={{ width: "250px" }}
-                                                        onChange={(e) => {
-                                                            setBarcode(e.target.value)
 
-                                                        }}
-
-                                                    />
                                                 </td>
                                                 <td colSpan={9}></td>
 
-                                                <td >
+                                                {/* <td >
                                                     <Button className="gap-2" variant="contained" color="success" marginRight="20px" onClick={addItemValidation} style={{ backgroundColor: 'var(--color1)' }}><ControlPointIcon />Add</Button>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (
                                                 <tr key={item.id} style={{ whiteSpace: 'nowrap' }} className="item-List border-b border-gray-400 "
@@ -2317,10 +2118,12 @@ const Addsale = () => {
                                                         display: 'flex', gap: '8px',
                                                         whiteSpace: 'nowrap',
                                                     }}>
-                                                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleEditClick(item)
-                                                        }} />
+                                                        <BorderColorIcon
+                                                            style={{ color: "var(--color1)" }}
+                                                            color="primary" className="cursor-pointer" onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEditClick(item)
+                                                            }} />
                                                         <DeleteIcon className="delete-icon" onClick={(e) => {
                                                             e.stopPropagation();
                                                             deleteOpen(item.id)
@@ -2334,8 +2137,8 @@ const Addsale = () => {
                                                     <td>{item.base}</td>
                                                     <td>{item.gst}</td>
                                                     <td>{item.qty}</td>
-                                                    <td>{item.order}</td>
                                                     <td>{item.location}</td>
+                                                    <td>{item.order ? item.order : "------"}</td>
                                                     <td>{item.net_rate}</td>
                                                 </tr>
                                             ))}
@@ -2370,9 +2173,9 @@ const Addsale = () => {
                                     <hr style={{
                                         opacity: 0.5, position: 'sticky', left: '0', width: '100%'
                                     }} />
-                                    <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', padding: '20px', alignItems: 'baseline' ,overflow: 'auto'}}>
+                                    <div className="" style={{ display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap', padding: '20px', alignItems: 'baseline', overflow: 'auto' }}>
 
-                                        <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0'}}>
+                                        <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0' }}>
                                             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                                 <label className="font-bold">Today Points : </label>
                                                 {todayLoyltyPoint || 0}

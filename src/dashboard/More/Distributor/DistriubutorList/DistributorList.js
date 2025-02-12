@@ -401,8 +401,8 @@ const DistributerList = () => {
         >
           <div>
             <div className="py-3 cust_list_main_hdr_bg" style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
-              <div
-                style={{ display: "flex", gap: "7px", alignItems: "center" }}
+            <div
+                style={{ display: "flex", gap: "7px", alignItems: "center",whiteSpace:"nowrap" }}
                 className="mt-2"
               >
                 <span
@@ -413,6 +413,7 @@ const DistributerList = () => {
                     fontWeight: 700,
                     fontSize: "20px",
                     width: "136px",
+                    marginRight:"10px",
                   }}
                 >
                   Distributor List

@@ -68,14 +68,12 @@ const AddPurchaseBill = () => {
   const inputRef12 = useRef();
   const inputRef13 = useRef();
 
-
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
   const [marginNetProfit, setMarginNetProfit] = useState(0);
   const [totalNetRate, setTotalNetRate] = useState(0);
   const [totalBase, setTotalBase] = useState(0);
   const [totalFree, setTotalFRee] = useState(0);
-
   const [totalGst, setTotalGst] = useState(0);
   const [totalQty, setTotalQty] = useState(0);
   const [searchItem, setSearchItem] = useState("");
@@ -103,7 +101,7 @@ const AddPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState({ id: "", name: "" });
+  const [gst, setGst] = useState();
   const [batch, setBatch] = useState("");
   const [HSN, setHSN] = useState("");
 
@@ -195,7 +193,6 @@ const AddPurchaseBill = () => {
   const handleKeyPress = (e) => {
     // setTableFocus(true);
     const key = e.key;
-    console.log(key)
     if (key === "ArrowDown") {
       // Move selection down
       setSelectedIndex((prev) =>
@@ -206,12 +203,12 @@ const AddPurchaseBill = () => {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
     } else if (key === "Enter" && selectedIndex !== -1) {
       // Confirm selection
-      console.log("hi");
+
       const selectedRow = ItemPurchaseList.item[selectedIndex];
       setSelectedEditItemId(selectedRow.id);
-      console.log(ItemPurchaseList.item[selectedIndex], "hi")
+    
       handleEditClick(ItemPurchaseList.item[selectedIndex])
- 
+
     }
   };
 
@@ -241,7 +238,7 @@ const AddPurchaseBill = () => {
     const handleKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault(); // Prevent the browser's save dialog
-        console.log("Ctrl+S pressed!");
+
         handleSubmit(); // Call your function
       }
     };
@@ -253,7 +250,7 @@ const AddPurchaseBill = () => {
   }, []);
 
   const handleKeyDown = (event, index) => {
-    console.log("hiii", index)
+
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -340,7 +337,7 @@ const AddPurchaseBill = () => {
     /*<============================================================================= Calculate totalAmount ==============================================================================> */
 
     const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst.name) / 100).toFixed(2)
+      (totalBase + (totalBase * gst) / 100).toFixed(2)
     );
     if (totalAmount) {
       setItemTotalAmount(totalAmount);
@@ -361,7 +358,7 @@ const AddPurchaseBill = () => {
 
     const Margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(Margin);
-  }, [qty, ptr, disc, mrp, gst.name, free, ItemTotalAmount, barcodeBatch]);
+  }, [qty, ptr, disc, mrp, gst, free, ItemTotalAmount, barcodeBatch]);
 
   /*<============================================================================== CN calculation realtime ========================================================================> */
 
@@ -502,6 +499,8 @@ const AddPurchaseBill = () => {
           },
         }
       ).then((response) => {
+        console.log(response.data.data[0]?.batch_list[0],"response")
+
         setTimeout(() => {
           const handleBarcodeItem = async () => {
             setUnsavedItems(true);
@@ -575,10 +574,10 @@ const AddPurchaseBill = () => {
                 ? Number(response?.data?.data[0]?.batch_list[0]?.base)
                 : 0
             );
-            data.append(
-              "gst",
-              Number(response?.data?.data[0]?.batch_list[0]?.gst)
-            );
+            const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
+            const gstValue = Number(response?.data?.data[0]?.batch_list[0]?.gst);
+            data.append("gst", gstMapping[gstValue] ?? gstValue);
+            
             data.append(
               "location",
               response?.data?.data[0]?.batch_list[0]?.location
@@ -729,6 +728,10 @@ const AddPurchaseBill = () => {
       })
       .then((response) => {
         setGstList(response.data.data);
+        // gstList.filer((gst) =>(
+        //   return age >= 18;
+        // )
+    
       })
       .catch((error) => {
         setUnsavedItems(false);
@@ -832,9 +835,7 @@ const AddPurchaseBill = () => {
             setPTR(batchData[0].ptr);
             setDisc(batchData[0].discount);
             setLoc(batchData[0].location);
-            setGst(
-              gstList.find((option) => option.name === batchData[0].gst) || {}
-            );
+            setGst(batchData[0].gst_name);
             // setUnit()
           } else {
             setUnit("");
@@ -909,7 +910,7 @@ const AddPurchaseBill = () => {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-    if (!gst.name) newErrors.gst = "GST is required";
+    if (!gst) newErrors.gst = "GST is required";
     if (!searchItem) {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
@@ -934,6 +935,13 @@ const AddPurchaseBill = () => {
     setItemAutofoucs(true);
 
     setUnsavedItems(true);
+    const gstMapping = {
+      28: 6,
+      18: 4,
+      12: 3,
+      5: 2,
+      0: 1
+    };
     let data = new FormData();
     data.append("user_id", userId);
     if (isEditMode == true) {
@@ -950,6 +958,8 @@ const AddPurchaseBill = () => {
       }
     }
 
+    
+
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("weightage", unit ? Number(unit) : 1);
     data.append("batch_number", batch ? batch : 0);
@@ -962,7 +972,7 @@ const AddPurchaseBill = () => {
     data.append("discount", disc ? disc : 0);
     data.append("scheme_account", schAmt ? schAmt : 0);
     data.append("base_price", base ? base : 0);
-    data.append("gst", gst.id);
+    data.append("gst", gstMapping[gst] ?? gst); 
     data.append("location", loc ? loc : 0);
     data.append("margin", margin ? margin : 0);
     data.append("net_rate", netRate ? netRate : 0);
@@ -1063,7 +1073,7 @@ const AddPurchaseBill = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success(response.data.message);
+
         setOpenAddItemPopUp(false);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
@@ -1251,7 +1261,6 @@ const AddPurchaseBill = () => {
   /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
-    console.log(ItemPurchaseList, billNo, distributor, "hiiii")
 
     const newErrors = {};
     if (!distributor) {
@@ -1291,9 +1300,7 @@ const AddPurchaseBill = () => {
       setDisc(selectedEditItem.discount);
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
-      setGst(
-        gstList.find((option) => option.name === selectedEditItem.gst) || {}
-      );
+      setGst(selectedEditItem.gst) ;
       setLoc(selectedEditItem.location);
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
@@ -1304,6 +1311,7 @@ const AddPurchaseBill = () => {
   /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleEditClick = (item) => {
+
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id)
@@ -1688,7 +1696,6 @@ const AddPurchaseBill = () => {
                   sx={{
                     textTransform: "none",
                     backgroundColor: "var(--color1)",
-
                     "&:disabled": {
                       backgroundColor: "var(--color3)",
                       color: "var(--color1)",
@@ -1728,49 +1735,50 @@ const AddPurchaseBill = () => {
 
           <div className="bg-white">
             <div className="firstrow flex">
-              <div className="detail">
-                <span className="title mb-2">
-                  Distributor
-                  <FaPlusCircle
-                    className="primary cursor-pointer"
-                    onClick={() => {
-                      history.push("../../more/addDistributer");
-                    }}
-                  />
-                </span>
-                <Autocomplete
-                  value={distributor}
-                  sx={{
-                    width: "100%",
-                    minWidth: "350px",
-                    "@media (max-width:600px)": {
-                      minWidth: "250px",
-                    },
-                  }}
-                  size="small"
-                  onChange={handleDistributorSelect}
-                  options={distributorList}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => (
-                    <TextField
-                      autoFocus={focusedField === "distributor"}
-                      autoComplete="off"
-                      variant="outlined"
-                      {...params}
-                      inputRef={(el) => (inputRefs.current[0] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 0)}
-
+              <div className="flex flex-row gap-4 mx-2">
+                <div >
+                  <span className="title mb-2">
+                    Distributor
+                    <FaPlusCircle
+                      className="primary cursor-pointer"
+                      onClick={() => {
+                        history.push("../../more/addDistributer");
+                      }}
                     />
-
-                  )}
-                />
-                {error.distributor && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {error.distributor}
                   </span>
-                )}
-              </div>
-              {/* <div className="detail">
+                  <Autocomplete
+                    value={distributor}
+                    sx={{
+                      width: "100%",
+                      minWidth: "350px",
+                      "@media (max-width:600px)": {
+                        minWidth: "250px",
+                      },
+                    }}
+                    size="small"
+                    onChange={handleDistributorSelect}
+                    options={distributorList}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        autoFocus={focusedField === "distributor"}
+                        autoComplete="off"
+                        variant="outlined"
+                        {...params}
+                        inputRef={(el) => (inputRefs.current[0] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 0)}
+
+                      />
+
+                    )}
+                  />
+                  {error.distributor && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      {error.distributor}
+                    </span>
+                  )}
+                </div>
+                {/* <div className="detail">
                 <span className="title mb-2">Sr No.</span>
                 <TextField
                   autoComplete="off"
@@ -1785,83 +1793,80 @@ const AddPurchaseBill = () => {
                   }}
                 />
               </div> */}
-              <div className="detail">
-                <span className="title mb-2">Bill No. / Order No.</span>
-                <TextField
-                  autoComplete="off"
-                  id="outlined-number"
-                  size="small"
-                  variant="outlined"
-                  style={{ width: "250px" }}
-                  value={billNo}
-                  onChange={(e) => {
-                    setbillNo(e.target.value.toUpperCase());
-                  }}
-                  inputRef={(el) => (inputRefs.current[1] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 1)}
-                />
-                {error.billNo && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    {error.billNo}
-                  </span>
-                )}
-              </div>
-
-              <div className="detail">
-                <span className="title mb-2">Bill Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={selectedDate}
+                <div className="detail">
+                  <span className="title mb-2">Bill No. / Order No.</span>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    size="small"
                     variant="outlined"
-                    onChange={(newDate) => setSelectedDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    filterDate={(date) => !isDateDisabled(date)}
+                    style={{ width: "250px" }}
+                    value={billNo}
+                    onChange={(e) => {
+                      setbillNo(e.target.value.toUpperCase());
+                    }}
+                    inputRef={(el) => (inputRefs.current[1] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 1)}
+                  />
+                  {error.billNo && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      {error.billNo}
+                    </span>
+                  )}
+                </div>
 
+                <div className="detail">
+                  <span className="title mb-2">Bill Date</span>
+                  <div>
+                    <DatePicker
+                      className="custom-datepicker "
+                      selected={selectedDate}
+                      variant="outlined"
+                      onChange={(newDate) => setSelectedDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      filterDate={(date) => !isDateDisabled(date)}
+
+                    />
+                  </div>
+                </div>
+
+                <div className="detail">
+                  <span className="title mb-2">Due Date</span>
+                  <div>
+                    <DatePicker
+                      className="custom-datepicker "
+                      selected={dueDate}
+                      variant="outlined"
+                      onChange={(newDate) => setDueDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      minDate={new Date()}
+
+                    />
+                  </div>
+                </div>
+                <div className="detail">
+                  <span className="title mb-2">Scan Barcode</span>
+
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    size="small"
+                    variant="outlined"
+                    value={barcode}
+                    placeholder="scan barcode"
+                    // inputRef={inputRef10}
+                    // onKeyDown={handleKeyDown}
+                    sx={{ width: "250px" }}
+                    onChange={(e) => {
+                      setBarcode(e.target.value);
+                    }}
                   />
                 </div>
               </div>
+              {/*<============================================================================ add Item field  ===========================================================================> */}
 
-              <div className="detail">
-                <span className="title mb-2">Due Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={dueDate}
-                    variant="outlined"
-                    onChange={(newDate) => setDueDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    minDate={new Date()}
-
-                  />
-                </div>
-              </div>
-              <div className="detail">
-                <span className="title mb-2">Scan Barcode</span>
-
-                <TextField
-                  autoComplete="off"
-                  id="outlined-number"
-                  type="number"
-                  size="small"
-                  variant="outlined"
-                  value={barcode}
-                  placeholder="scan barcode"
-                  // inputRef={inputRef10}
-                  // onKeyDown={handleKeyDown}
-                  sx={{ width: "250px" }}
-                  onChange={(e) => {
-                    setBarcode(e.target.value);
-                  }}
-                />
-              </div>
-              <div
-                className="overflow-x-auto "
-
-
-
-              >
-                {/*<============================================================================ add Item field  ===========================================================================> */}
+              <div className="overflow-x-auto ">
 
                 <table
 
@@ -1929,13 +1934,13 @@ const AddPurchaseBill = () => {
                               )}
                             </td>
                           ) : (
-                            <td>
+                            <td className="p-0">
                               {isAutocompleteDisabled && (
                                 <Autocomplete
-                                  key={autocompleteKey} // Ensure re-render
+                                  key={autocompleteKey}
                                   value={selectedOption}
                                   // value={searchItem?.iteam_name}
-                                  sx={{ width: 400 }}
+                                  sx={{ width: 400, padding: 0 }}
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
@@ -1954,13 +1959,14 @@ const AddPurchaseBill = () => {
                                           } | MRP: ${option.mrp}  | Location: ${option.location
                                           }  | Current Stock: ${option.stock}`}
                                       />
-                                    </ListItem>
-                                  )}
+                                    </ListItem>)}
                                   renderInput={(params) => (
                                     <TextField
+                                    tabIndex={0}
+
                                       variant="outlined"
                                       autoComplete="off"
-                                      sx={{ width: 400, paddingLeft: "10px" }}
+                                      sx={{ width: 400, padding: 0 }}
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
@@ -1971,8 +1977,7 @@ const AddPurchaseBill = () => {
                                   )}
                                 />
                               )}
-                            </td>
-                          )}
+                            </td>)}
 
                           <td>
                             <TextField
@@ -1992,16 +1997,17 @@ const AddPurchaseBill = () => {
                                 );
                                 setUnit(value ? Number(value) : "");
                               }}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
+                              onKeyDown={(e) => {
+                                if (["e", "E", ".", "+", "-", ","].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 3);
+                              }}
+
+
+
 
                               inputRef={(el) => (inputRefs.current[3] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 3)}
                             />
                             {error.unit && (
                               <span style={{ color: "red", fontSize: "12px" }}>
@@ -2046,12 +2052,11 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
-                              // inputRef={inputRef2}
-                              // onKeyDown={handleKeyDown}
+
                               size="small"
                               value={batch}
                               sx={{ width: "90px" }}
-                              // error={!!errors.batch}
+
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
@@ -2071,8 +2076,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               size="small"
                               sx={{ width: "80px" }}
-                              // inputRef={inputRef3}
-                              // onKeyDown={handleKeyDown}
+
                               error={!!errors.expiryDate}
                               value={expiryDate}
                               onChange={handleExpiryDate}
@@ -2089,9 +2093,9 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "90px" }}
                               size="small"
-                              // inputRef={inputRef4}
+
                               error={!!errors.mrp}
-                              // onKeyDown={handleKeyDown}
+
                               value={mrp}
                               onChange={(e) => {
                                 const value = e.target.value;
@@ -2099,17 +2103,19 @@ const AddPurchaseBill = () => {
                                   setMRP(value ? Number(value) : "");
                                 }
                               }}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
-                              //     (e.key === "." &&
-                              //       e.target.value.includes("."))
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
+                                ) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 6)
+
+                              }}
                               inputRef={(el) => (inputRefs.current[6] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 6)}
+
                             />
                           </td>
                           <td>
@@ -2120,9 +2126,6 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "80px" }}
                               size="small"
-                              // inputRef={inputRef5}
-
-                              // onKeyDown={handleKeyDown}
                               error={!!errors.qty}
                               value={qty}
                               onChange={(e) => {
@@ -2133,14 +2136,15 @@ const AddPurchaseBill = () => {
                                 setQty(value ? Number(value) : "");
                               }}
                               inputRef={(el) => (inputRefs.current[7] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 7)}
-                            // onKeyDown={(e) => {
-                            //   if (
-                            //     ["e", "E", ".", "+", "-", ","].includes(e.key)
-                            //   ) {
-                            //     e.preventDefault();
-                            //   }
-                            // }}
+
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
+                                ) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 7)
+                              }}
 
                             />
                           </td>
@@ -2154,21 +2158,21 @@ const AddPurchaseBill = () => {
                               sx={{ width: "50px" }}
                               value={free}
                               error={!!errors.free}
-                              // inputRef={inputRef6}
-                              // onKeyDown={handleKeyDown}
+
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g);
                                 setFree(value ? Number(value) : "");
                               }}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", ".", "+", "-", ","].includes(e.key)
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
+                                ) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 8)
+                              }}
                               inputRef={(el) => (inputRefs.current[8] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 8)}
+
                             />
                           </td>
                           <td>
@@ -2179,25 +2183,25 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "90px" }}
                               size="small"
-                              // inputRef={inputRef7}
-                              // onKeyDown={handleKeyDown}
+
                               value={ptr}
                               error={!!errors.ptr}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
-                              //     (e.key === "." &&
-                              //       e.target.value.includes("."))
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
+                                ) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 9)
+                              }}
                               onChange={(e) => {
                                 const setptr = e.target.value.replace(/[eE]/g, "");
                                 setPTR(setptr);
                               }}
                               inputRef={(el) => (inputRefs.current[9] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 9)}
+
                             />
                           </td>
                           <td>
@@ -2208,18 +2212,18 @@ const AddPurchaseBill = () => {
                               sx={{ width: "60px" }}
                               size="small"
                               type="number"
-                              // inputRef={inputRef8}
-                              // onKeyDown={handleKeyDown}
+
                               value={disc}
-                              // onKeyDown={(e) => {
-                              //   if (
-                              //     ["e", "E", "+", "-", ","].includes(e.key) ||
-                              //     (e.key === "." &&
-                              //       e.target.value.includes("."))
-                              //   ) {
-                              //     e.preventDefault();
-                              //   }
-                              // }}
+                              onKeyDown={(e) => {
+                                if (
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." &&
+                                    e.target.value.includes("."))
+                                ) {
+                                  e.preventDefault();
+                                }
+                                handleKeyDown(e, 10)
+                              }}
                               onChange={(e) => {
                                 const value = e.target.value;
                                 if (Number(value) > 99) {
@@ -2228,7 +2232,7 @@ const AddPurchaseBill = () => {
                                 handleSchAmt(e);
                               }}
                               inputRef={(el) => (inputRefs.current[10] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 10)}
+
                             />
                           </td>
                           {/* <td>
@@ -2252,17 +2256,34 @@ const AddPurchaseBill = () => {
                               type="number"
                               size="small"
                               value={base === 0 ? "" : base}
-                              // inputRef={inputRef10}
-                              // onKeyDown={handleKeyDown}
+
                               disabled
                               sx={{ width: "100px" }}
                               onChange={(e) => {
                                 setBase(e.target.value);
                               }}
-
                             />
                           </td>
                           <td>
+
+                            <TextField
+
+                              variant="outlined"
+                              size="small"
+                              value={gst}
+                              error={!!errors.gst}
+                              inputRef={(el) => (inputRefs.current[11] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 11)}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^\d*\.?\d*$/.test(value)) {
+                                  setGst(value ? Number(value) : "");
+                                }
+                              }}
+                              open={isOpen}
+                              onOpen={() => setIsOpen(true)}
+                              onClose={() => setIsOpen(false)}
+                            />
                             {/* <Select
                               labelId="dropdown-label"
                               id="dropdown"
@@ -2296,7 +2317,7 @@ const AddPurchaseBill = () => {
                                 </MenuItem>
                               ))}
                             </Select> */}
-                            <Autocomplete
+                            {/* <Autocomplete
                               id="gst-autocomplete"
                               options={gstList}
                               getOptionLabel={(option) => option.name}
@@ -2329,7 +2350,7 @@ const AddPurchaseBill = () => {
                               open={isOpen}
                               onOpen={() => setIsOpen(true)}
                               onClose={() => setIsOpen(false)}
-                            />
+                            /> */}
 
 
                           </td>
@@ -2389,7 +2410,7 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td className="total">
-                            <span>{ItemTotalAmount.toFixed(2)}</span>
+                            <span className="font-bold">{ItemTotalAmount.toFixed(2)}</span>
                           </td>
                         </tr>
                       </>)}
@@ -2401,7 +2422,7 @@ const AddPurchaseBill = () => {
                   <table
                     className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                  // tabIndex={0}
+                  tabIndex={0}
                   > <tbody>
                       {ItemPurchaseList?.item?.map((item) => (
                         <tr
@@ -2450,140 +2471,7 @@ const AddPurchaseBill = () => {
                     </tbody>
                   </table>
                 </>
-                {/*<============================================================================== total and other details  =============================================================================> */}
-
-                <div className="flex gap-10 justify-end mt-4 ">
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "20px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div>
-                      <label className="font-bold">Total GST : </label>
-                    </div>
-
-                    <div>
-                      <label className="font-bold">Total Qty : </label>
-                    </div>
-
-                    <div>
-                      <label className="font-bold">Total Net Profit : </label>
-                    </div>
-
-                    <div>
-                      <label className="font-bold">Total Base : </label>
-                    </div>
-                  </div>
-                  <div class="totals-purchase  text-end ">
-                    <div className="font-bold">{totalGst ? totalGst : 0}</div>
-
-                    <div className="font-bold mt-5">
-                      {totalQty ? totalQty : 0} +{" "}
-                      <span className="primary">
-                        {totalFree ? totalFree : 0} Free{" "}
-                      </span>
-                    </div>
-
-                    <div className="font-bold mt-5">
-                      {totalNetRate ? totalNetRate : 0}
-                    </div>
-
-                    <div className="font-bold mt-5">
-                      {totalBase ? totalBase : 0}
-                    </div>
-                  </div>
-                  <div
-                    className="totals"
-                    style={{
-                      display: "flex",
-                      gap: "22px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div>
-                      <label className="font-bold">Total Amount : </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">CN Amount : </label>
-                    </div>
-                    {/* <div>
-                      <label className="font-bold">Profit : </label>
-                    </div> */}
-                    <div>
-                      <label className="font-bold">Round of : </label>
-                    </div>
-                    <div>
-                      <label className="font-bold">Net Amount : </label>
-                    </div>
-                  </div>
-                  <div className="totals text-end ">
-                    <div>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          gap: "22px",
-                          flexDirection: "column",
-                        }}
-                      >
-                        {finalTotalAmount?.toFixed(2)}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "23px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          paddingTop: "10px",
-                          color: "red",
-                        }}
-                      >
-                        -{finalCnAmount?.toFixed(2)}
-                      </span>
-                    </div>
-                    {/* <div style={{
-                      marginTop: "23px"
-                    }}>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          paddingTop: "10px",
-                        }}
-                      >
-                        ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
-                      </span>
-                    </div> */}
-                    <div style={{ marginTop: "23px" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {roundOffAmount === "0.00"
-                          ? roundOffAmount
-                          : roundOffAmount < 0
-                            ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                            : `${Math.abs(roundOffAmount.toFixed(2))}`}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "15px",
-                        font: "var(-color1)",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          fontSize: "22px",
-                          color: "#3f6212",
-                        }}
-                      >
-                        {netAmount.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -3295,3 +3183,138 @@ export default AddPurchaseBill;
                             </Button>
                           </td>
                         </tr> */}
+
+ {/*<============================================================================== total and other details  =============================================================================> */}
+
+              //   <div className="flex gap-10 justify-end mt-4 ">
+              //   <div
+              //     style={{
+              //       display: "flex",
+              //       gap: "20px",
+              //       flexDirection: "column",
+              //     }}
+              //   >
+              //     <div>
+              //       <label className="font-bold">Total GST : </label>
+              //     </div>
+
+              //     <div>
+              //       <label className="font-bold">Total Qty : </label>
+              //     </div>
+
+              //     <div>
+              //       <label className="font-bold">Total Net Profit : </label>
+              //     </div>
+
+              //     <div>
+              //       <label className="font-bold">Total Base : </label>
+              //     </div>
+              //   </div>
+              //   <div class="totals-purchase  text-end ">
+              //     <div className="font-bold">{totalGst ? totalGst : 0}</div>
+
+              //     <div className="font-bold mt-5">
+              //       {totalQty ? totalQty : 0} +{" "}
+              //       <span className="primary">
+              //         {totalFree ? totalFree : 0} Free{" "}
+              //       </span>
+              //     </div>
+
+              //     <div className="font-bold mt-5">
+              //       {totalNetRate ? totalNetRate : 0}
+              //     </div>
+
+              //     <div className="font-bold mt-5">
+              //       {totalBase ? totalBase : 0}
+              //     </div>
+              //   </div>
+              //   <div
+              //     className="totals"
+              //     style={{
+              //       display: "flex",
+              //       gap: "22px",
+              //       flexDirection: "column",
+              //     }}
+              //   >
+              //     <div>
+              //       <label className="font-bold">Total Amount : </label>
+              //     </div>
+              //     <div>
+              //       <label className="font-bold">CN Amount : </label>
+              //     </div>
+              //     {/* <div>
+              //       <label className="font-bold">Profit : </label>
+              //     </div> */}
+              //     <div>
+              //       <label className="font-bold">Round of : </label>
+              //     </div>
+              //     <div>
+              //       <label className="font-bold">Net Amount : </label>
+              //     </div>
+              //   </div>
+              //   <div className="totals text-end ">
+              //     <div>
+              //       <span
+              //         style={{
+              //           fontWeight: 600,
+              //           gap: "22px",
+              //           flexDirection: "column",
+              //         }}
+              //       >
+              //         {finalTotalAmount?.toFixed(2)}
+              //       </span>
+              //     </div>
+              //     <div
+              //       style={{
+              //         marginTop: "23px",
+              //       }}
+              //     >
+              //       <span
+              //         style={{
+              //           fontWeight: 600,
+              //           paddingTop: "10px",
+              //           color: "red",
+              //         }}
+              //       >
+              //         -{finalCnAmount?.toFixed(2)}
+              //       </span>
+              //     </div>
+              //     {/* <div style={{
+              //       marginTop: "23px"
+              //     }}>
+              //       <span
+              //         style={{
+              //           fontWeight: 600,
+              //           paddingTop: "10px",
+              //         }}
+              //       >
+              //         ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
+              //       </span>
+              //     </div> */}
+              //     <div style={{ marginTop: "23px" }}>
+              //       <span style={{ fontWeight: 600 }}>
+              //         {roundOffAmount === "0.00"
+              //           ? roundOffAmount
+              //           : roundOffAmount < 0
+              //             ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+              //             : `${Math.abs(roundOffAmount.toFixed(2))}`}
+              //       </span>
+              //     </div>
+              //     <div
+              //       style={{
+              //         marginTop: "15px",
+              //         font: "var(-color1)",
+              //       }}
+              //     >
+              //       <span
+              //         style={{
+              //           fontWeight: 600,
+              //           fontSize: "22px",
+              //           color: "#3f6212",
+              //         }}
+              //       >
+              //         {netAmount.toFixed(2)}
+              //       </span>
+              //     </div>
+              //   </div>
+              // </div>

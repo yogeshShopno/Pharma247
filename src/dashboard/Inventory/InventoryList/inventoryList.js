@@ -1960,9 +1960,7 @@ const InventoryList = () => {
               variant="contained"
               style={{
                 background: "var(--color1)",
-
                 color: "white",
-                size: "large",
               }}
               onClick={handleSearch}
             >
@@ -1972,62 +1970,64 @@ const InventoryList = () => {
         </Box>
 
         <Box className="p-5 tbl_content_inv" sx={{ width: "100%" }}>
+        <div className="row gap-3 mt-2 mb-3 flex-wrap">
         <Button
-              variant="contained"
-              style={{
-                background: "red",
-                color: "white",
-                size: "large",
-              }}
-           
-            >
-              Missing HSN :(0) 
-            </Button> 
-            <Button
-              variant="contained"
-              style={{
-                background: "red",
-                color: "white",
-                size: "large",
-              }}
-           
-            >
-              invalid MRP(0) 
-            </Button>
-             <Button
-              variant="contained"
-              style={{
-                background: "red",
-                color: "white",
-                size: "large",
-              }}
-           
-            >
-               Missing Location : (0) 
-            </Button> 
-            <Button
-              variant="contained"
-              style={{
-                background: "red",
-                color: "white",
-                size: "large",
-              }}
-           
-            >
-              Missing Category (0) 
-            </Button>
-            
-             <Button
-              variant="contained"
-              style={{
-                background: "red",
-                color: "white",
-                size: "large",
-              }}
-           
-            >
-              Invalid Price (0) 
-            </Button>
+            variant="contained"
+            style={{
+              background: "#F45156",
+              color: "white",
+              size: "large",
+            }}
+
+          >
+            Missing HSN :(0)
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              background: "#F45156",
+              color: "white",
+              size: "large",
+            }}
+
+          >
+            invalid MRP(0)
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              background: "#F45156",
+              color: "white",
+              size: "large",
+            }}
+
+          >
+            Missing Location : (0)
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              background: "#F45156",
+              color: "white",
+              size: "large",
+            }}
+
+          >
+            Missing Category (0)
+          </Button>
+
+          <Button
+            variant="contained"
+            style={{
+              background: "#F45156",
+              color: "white",
+              size: "large",
+            }}
+
+          >
+            Invalid Price (0)
+          </Button>
+        </div>
 
           <div className="flex flex-wrap  justify-between mb-4 relative inventory_search_main">
             <TextField
@@ -2233,6 +2233,7 @@ const InventoryList = () => {
                                 src={item.front_photo ? item.front_photo : "./Pharma Medicine-01.png"}
                                 alt={item.front_photo ? "Pharma" : "Tablet"}
                                 className="w-10 h-10 ml-2 object-cover cursor-pointer"
+                                style={{width:"50px",height:"50px"}}
                               />
                             </div>
                             <div

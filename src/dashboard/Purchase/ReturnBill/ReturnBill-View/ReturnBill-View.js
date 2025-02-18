@@ -162,30 +162,6 @@ const ReturnView = () => {
         }
     };
 
-    // const handleDeleteItem = async (id) => {
-    //     if (!id) return;
-    //     let data = new FormData();
-    //     data.append("id", id);
-    //     const params = {
-    //         id: id
-    //     };
-    //     try {
-    //         await axios.post("purches-return-destroy?", data, {
-    //             params: params,
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //         }
-    //         ).then((response) => {
-    //             setIsDelete(false);
-    //             history.push('/admindashboard');
-    //         })
-    //     } catch (error) {
-    //         console.error("API error:", error);
-
-    //     }
-    // }
 
     const handleLeavePage = async () => {
         let data = new FormData();

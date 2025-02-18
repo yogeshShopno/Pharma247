@@ -1969,14 +1969,13 @@ const InventoryList = () => {
           </Box>
         </Box>
 
-        <Box className="p-5 tbl_content_inv" sx={{ width: "100%" }}>
+        <Box className="pl-3 pr-3 pt-3 tbl_content_inv" sx={{ width: "100%" }}>
         <div className="row gap-3 mt-2 mb-3 flex-wrap">
         <Button
             variant="contained"
             style={{
               background: "#F45156",
               color: "white",
-              size: "large",
             }}
 
           >
@@ -1987,7 +1986,6 @@ const InventoryList = () => {
             style={{
               background: "#F45156",
               color: "white",
-              size: "large",
             }}
 
           >
@@ -1998,7 +1996,6 @@ const InventoryList = () => {
             style={{
               background: "#F45156",
               color: "white",
-              size: "large",
             }}
 
           >
@@ -2009,7 +2006,6 @@ const InventoryList = () => {
             style={{
               background: "#F45156",
               color: "white",
-              size: "large",
             }}
 
           >
@@ -2233,7 +2229,7 @@ const InventoryList = () => {
                                 src={item.front_photo ? item.front_photo : "./Pharma Medicine-01.png"}
                                 alt={item.front_photo ? "Pharma" : "Tablet"}
                                 className="w-10 h-10 ml-2 object-cover cursor-pointer"
-                                style={{width:"50px",height:"50px"}}
+                                style={{width:"40px",height:"40px"}}
                               />
                             </div>
                             <div

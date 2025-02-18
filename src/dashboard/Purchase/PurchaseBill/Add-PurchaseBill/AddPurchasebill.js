@@ -206,7 +206,7 @@ const AddPurchaseBill = () => {
 
       const selectedRow = ItemPurchaseList.item[selectedIndex];
       setSelectedEditItemId(selectedRow.id);
-    
+
       handleEditClick(ItemPurchaseList.item[selectedIndex])
 
     }
@@ -499,7 +499,7 @@ const AddPurchaseBill = () => {
           },
         }
       ).then((response) => {
-        console.log(response.data.data[0]?.batch_list[0],"response")
+        console.log(response.data.data[0]?.batch_list[0], "response")
 
         setTimeout(() => {
           const handleBarcodeItem = async () => {
@@ -577,7 +577,7 @@ const AddPurchaseBill = () => {
             const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
             const gstValue = Number(response?.data?.data[0]?.batch_list[0]?.gst);
             data.append("gst", gstMapping[gstValue] ?? gstValue);
-            
+
             data.append(
               "location",
               response?.data?.data[0]?.batch_list[0]?.location
@@ -731,7 +731,7 @@ const AddPurchaseBill = () => {
         // gstList.filer((gst) =>(
         //   return age >= 18;
         // )
-    
+
       })
       .catch((error) => {
         setUnsavedItems(false);
@@ -958,7 +958,7 @@ const AddPurchaseBill = () => {
       }
     }
 
-    
+
 
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("weightage", unit ? Number(unit) : 1);
@@ -972,7 +972,7 @@ const AddPurchaseBill = () => {
     data.append("discount", disc ? disc : 0);
     data.append("scheme_account", schAmt ? schAmt : 0);
     data.append("base_price", base ? base : 0);
-    data.append("gst", gstMapping[gst] ?? gst); 
+    data.append("gst", gstMapping[gst] ?? gst);
     data.append("location", loc ? loc : 0);
     data.append("margin", margin ? margin : 0);
     data.append("net_rate", netRate ? netRate : 0);
@@ -1300,7 +1300,7 @@ const AddPurchaseBill = () => {
       setDisc(selectedEditItem.discount);
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
-      setGst(selectedEditItem.gst) ;
+      setGst(selectedEditItem.gst);
       setLoc(selectedEditItem.location);
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
@@ -1910,10 +1910,9 @@ const AddPurchaseBill = () => {
                       </tr>
                     ) : (
                       <>
-
                         <tr>
                           {isEditMode ? (
-                            <td style={{ width: "600px" }}>
+                            <td>
                               <div>
                                 <BorderColorIcon
                                   style={{ color: "var(--color1)" }}
@@ -1940,7 +1939,7 @@ const AddPurchaseBill = () => {
                                   key={autocompleteKey}
                                   value={selectedOption}
                                   // value={searchItem?.iteam_name}
-                                  sx={{ width: 400, padding: 0 }}
+                                  sx={{ width: 200, padding: 0 }}
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
@@ -1962,11 +1961,11 @@ const AddPurchaseBill = () => {
                                     </ListItem>)}
                                   renderInput={(params) => (
                                     <TextField
-                                    tabIndex={0}
+                                      tabIndex={0}
 
                                       variant="outlined"
                                       autoComplete="off"
-                                      sx={{ width: 400, padding: 0 }}
+                                      sx={{ width: 200, padding: 0 }}
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
@@ -1978,7 +1977,6 @@ const AddPurchaseBill = () => {
                                 />
                               )}
                             </td>)}
-
                           <td>
                             <TextField
                               variant="outlined"
@@ -2003,10 +2001,6 @@ const AddPurchaseBill = () => {
                                 }
                                 handleKeyDown(e, 3);
                               }}
-
-
-
-
                               inputRef={(el) => (inputRefs.current[3] = el)}
                             />
                             {error.unit && (
@@ -2015,38 +2009,6 @@ const AddPurchaseBill = () => {
                               </span>
                             )}
                           </td>
-                          {/* <td>
-                            <TextField
-                              variant="outlined"
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="text"
-                              size="small"
-                              error={!!errors.HSN}
-                              value={HSN}
-                              sx={{ width: "65px" }}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(
-                                  /[^0-9]/g,
-                                  ""
-                                );
-                                setHSN(value ? Number(value) : "");
-                              }}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                            {error.unit && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {error.HSN}
-                              </span>
-                            )}
-                          </td> */}
-
                           <td>
                             <TextField
                               variant="outlined"
@@ -2232,22 +2194,8 @@ const AddPurchaseBill = () => {
                                 handleSchAmt(e);
                               }}
                               inputRef={(el) => (inputRefs.current[10] = el)}
-
                             />
                           </td>
-                          {/* <td>
-                            <TextField
-                              variant="outlined"
-                              autoComplete="off"
-                              id="outlined-number"
-                              sx={{ width: "90px" }}
-                              size="small"
-                              // inputRef={inputRef9}
-                              // onKeyDown={handleKeyDown}
-                              value={schAmt}
-                              disabled
-                            />
-                          </td> */}
                           <td>
                             <TextField
                               variant="outlined"
@@ -2265,9 +2213,7 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td>
-
                             <TextField
-
                               variant="outlined"
                               size="small"
                               value={gst}
@@ -2284,77 +2230,7 @@ const AddPurchaseBill = () => {
                               onOpen={() => setIsOpen(true)}
                               onClose={() => setIsOpen(false)}
                             />
-                            {/* <Select
-                              labelId="dropdown-label"
-                              id="dropdown"
-                              variant="outlined"
-                              value={gst.name}
-                              sx={{ minWidth: "80px" }}
-                              onChange={(e) => {
-                                const selectedGST = gstList.find((option) => option.name === e.target.value);
-                                setGst(selectedGST);
-                              }}
-                              size="small"
-                              displayEmpty
-                              error={!!errors.gst}
-                              inputRef={(el) => (inputRefs.current[9] = el)}
-                              open={isOpen}
-                              onOpen={() => setIsOpen(true)}
-                              onClose={() => setIsOpen(false)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  if (!isOpen) {
-                                    e.preventDefault();
-                                  }
-                                } else {
-                                  handleKeyDown(e, 9);
-                                }
-                              }}
-                            >
-                              {gstList?.map((option) => (
-                                <MenuItem key={option.id} value={option.name}>
-                                  {option.name}
-                                </MenuItem>
-                              ))}
-                            </Select> */}
-                            {/* <Autocomplete
-                              id="gst-autocomplete"
-                              options={gstList}
-                              getOptionLabel={(option) => option.name}
-                              value={gst}
-                              onChange={(event, newValue) => setGst(newValue)}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant="outlined"
-                                  size="small"
-                                  error={!!errors.gst}
-                                  inputRef={(el) => (inputRefs.current[11] = el)}
-                                  onKeyDown={(e) => handleKeyDown(e, 11)}
-                                // onKeyDown={(e) => {
-                                //   if (e.key === "Enter") {
-                                //     e.preventDefault(); // Prevents the default dropdown behavior
-                                //     inputRefs.current[13]?.focus(); // Move to the next input field
-                                //   }
-                                // }}
-                                />
-                              )}
-                              // onKeyDown={(e) => {
-                              //   if (e.key === "Enter") {
-                              //     e.preventDefault();
-                              //     inputRefs.current[13]?.focus();
-                              //   }
-                              // }}
-                              onKeyDown={(e) => handleKeyDown(e, 11)}
-
-                              open={isOpen}
-                              onOpen={() => setIsOpen(true)}
-                              onClose={() => setIsOpen(false)}
-                            /> */}
-
-
                           </td>
-
                           <td>
                             <TextField
                               variant="outlined"
@@ -2422,7 +2298,7 @@ const AddPurchaseBill = () => {
                   <table
                     className="p-30  border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                  tabIndex={0}
+                  // tabIndex={0}
                   > <tbody>
                       {ItemPurchaseList?.item?.map((item) => (
                         <tr
@@ -2471,7 +2347,7 @@ const AddPurchaseBill = () => {
                     </tbody>
                   </table>
                 </>
-                
+
               </div>
             </div>
           </div>
@@ -3184,137 +3060,137 @@ export default AddPurchaseBill;
                           </td>
                         </tr> */}
 
- {/*<============================================================================== total and other details  =============================================================================> */}
+{/*<============================================================================== total and other details  =============================================================================> */ }
 
-              //   <div className="flex gap-10 justify-end mt-4 ">
-              //   <div
-              //     style={{
-              //       display: "flex",
-              //       gap: "20px",
-              //       flexDirection: "column",
-              //     }}
-              //   >
-              //     <div>
-              //       <label className="font-bold">Total GST : </label>
-              //     </div>
+//   <div className="flex gap-10 justify-end mt-4 ">
+//   <div
+//     style={{
+//       display: "flex",
+//       gap: "20px",
+//       flexDirection: "column",
+//     }}
+//   >
+//     <div>
+//       <label className="font-bold">Total GST : </label>
+//     </div>
 
-              //     <div>
-              //       <label className="font-bold">Total Qty : </label>
-              //     </div>
+//     <div>
+//       <label className="font-bold">Total Qty : </label>
+//     </div>
 
-              //     <div>
-              //       <label className="font-bold">Total Net Profit : </label>
-              //     </div>
+//     <div>
+//       <label className="font-bold">Total Net Profit : </label>
+//     </div>
 
-              //     <div>
-              //       <label className="font-bold">Total Base : </label>
-              //     </div>
-              //   </div>
-              //   <div class="totals-purchase  text-end ">
-              //     <div className="font-bold">{totalGst ? totalGst : 0}</div>
+//     <div>
+//       <label className="font-bold">Total Base : </label>
+//     </div>
+//   </div>
+//   <div class="totals-purchase  text-end ">
+//     <div className="font-bold">{totalGst ? totalGst : 0}</div>
 
-              //     <div className="font-bold mt-5">
-              //       {totalQty ? totalQty : 0} +{" "}
-              //       <span className="primary">
-              //         {totalFree ? totalFree : 0} Free{" "}
-              //       </span>
-              //     </div>
+//     <div className="font-bold mt-5">
+//       {totalQty ? totalQty : 0} +{" "}
+//       <span className="primary">
+//         {totalFree ? totalFree : 0} Free{" "}
+//       </span>
+//     </div>
 
-              //     <div className="font-bold mt-5">
-              //       {totalNetRate ? totalNetRate : 0}
-              //     </div>
+//     <div className="font-bold mt-5">
+//       {totalNetRate ? totalNetRate : 0}
+//     </div>
 
-              //     <div className="font-bold mt-5">
-              //       {totalBase ? totalBase : 0}
-              //     </div>
-              //   </div>
-              //   <div
-              //     className="totals"
-              //     style={{
-              //       display: "flex",
-              //       gap: "22px",
-              //       flexDirection: "column",
-              //     }}
-              //   >
-              //     <div>
-              //       <label className="font-bold">Total Amount : </label>
-              //     </div>
-              //     <div>
-              //       <label className="font-bold">CN Amount : </label>
-              //     </div>
-              //     {/* <div>
-              //       <label className="font-bold">Profit : </label>
-              //     </div> */}
-              //     <div>
-              //       <label className="font-bold">Round of : </label>
-              //     </div>
-              //     <div>
-              //       <label className="font-bold">Net Amount : </label>
-              //     </div>
-              //   </div>
-              //   <div className="totals text-end ">
-              //     <div>
-              //       <span
-              //         style={{
-              //           fontWeight: 600,
-              //           gap: "22px",
-              //           flexDirection: "column",
-              //         }}
-              //       >
-              //         {finalTotalAmount?.toFixed(2)}
-              //       </span>
-              //     </div>
-              //     <div
-              //       style={{
-              //         marginTop: "23px",
-              //       }}
-              //     >
-              //       <span
-              //         style={{
-              //           fontWeight: 600,
-              //           paddingTop: "10px",
-              //           color: "red",
-              //         }}
-              //       >
-              //         -{finalCnAmount?.toFixed(2)}
-              //       </span>
-              //     </div>
-              //     {/* <div style={{
-              //       marginTop: "23px"
-              //     }}>
-              //       <span
-              //         style={{
-              //           fontWeight: 600,
-              //           paddingTop: "10px",
-              //         }}
-              //       >
-              //         ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
-              //       </span>
-              //     </div> */}
-              //     <div style={{ marginTop: "23px" }}>
-              //       <span style={{ fontWeight: 600 }}>
-              //         {roundOffAmount === "0.00"
-              //           ? roundOffAmount
-              //           : roundOffAmount < 0
-              //             ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-              //             : `${Math.abs(roundOffAmount.toFixed(2))}`}
-              //       </span>
-              //     </div>
-              //     <div
-              //       style={{
-              //         marginTop: "15px",
-              //         font: "var(-color1)",
-              //       }}
-              //     >
-              //       <span
-              //         style={{
-              //           fontWeight: 600,
-              //           fontSize: "22px",
-              //           color: "#3f6212",
-              //         }}
-              //       >
-              //         {netAmount.toFixed(2)}
-              //       </span>
-              //     </div>
-              //   </div>
-              // </div>
+//     <div className="font-bold mt-5">
+//       {totalBase ? totalBase : 0}
+//     </div>
+//   </div>
+//   <div
+//     className="totals"
+//     style={{
+//       display: "flex",
+//       gap: "22px",
+//       flexDirection: "column",
+//     }}
+//   >
+//     <div>
+//       <label className="font-bold">Total Amount : </label>
+//     </div>
+//     <div>
+//       <label className="font-bold">CN Amount : </label>
+//     </div>
+//     {/* <div>
+//       <label className="font-bold">Profit : </label>
+//     </div> */}
+//     <div>
+//       <label className="font-bold">Round of : </label>
+//     </div>
+//     <div>
+//       <label className="font-bold">Net Amount : </label>
+//     </div>
+//   </div>
+//   <div className="totals text-end ">
+//     <div>
+//       <span
+//         style={{
+//           fontWeight: 600,
+//           gap: "22px",
+//           flexDirection: "column",
+//         }}
+//       >
+//         {finalTotalAmount?.toFixed(2)}
+//       </span>
+//     </div>
+//     <div
+//       style={{
+//         marginTop: "23px",
+//       }}
+//     >
+//       <span
+//         style={{
+//           fontWeight: 600,
+//           paddingTop: "10px",
+//           color: "red",
+//         }}
+//       >
+//         -{finalCnAmount?.toFixed(2)}
+//       </span>
+//     </div>
+//     {/* <div style={{
+//       marginTop: "23px"
+//     }}>
+//       <span
+//         style={{
+//           fontWeight: 600,
+//           paddingTop: "10px",
+//         }}
+//       >
+//         ₹{!marginNetProfit ? 0 : marginNetProfit} &nbsp;({!totalMargin ? 0 : totalMargin}) %
+//       </span>
+//     </div> */}
+//     <div style={{ marginTop: "23px" }}>
+//       <span style={{ fontWeight: 600 }}>
+//         {roundOffAmount === "0.00"
+//           ? roundOffAmount
+//           : roundOffAmount < 0
+//             ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+//             : `${Math.abs(roundOffAmount.toFixed(2))}`}
+//       </span>
+//     </div>
+//     <div
+//       style={{
+//         marginTop: "15px",
+//         font: "var(-color1)",
+//       }}
+//     >
+//       <span
+//         style={{
+//           fontWeight: 600,
+//           fontSize: "22px",
+//           color: "#3f6212",
+//         }}
+//       >
+//         {netAmount.toFixed(2)}
+//       </span>
+//     </div>
+//   </div>
+// </div>

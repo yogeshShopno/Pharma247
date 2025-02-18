@@ -19,13 +19,13 @@ import { Link } from "react-router-dom";
 import Loader from '../componets/loader/Loader';
 import { encryptData } from '../componets/cryptoUtils';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import stockByPTR from '../Image/stock by ptr 1.png'
-import stockByMRP from '../Image/stock by mrp 1.png'
+import stockByPTR from '../Image/ptr.jpg'
+import stockByMRP from '../Image/mrp.jpg'
 import { Card } from 'flowbite-react';
 // import { PieChart } from 'react-minimal-pie-chart';
 // import { PieChart } from '@mui/x-charts/PieChart';
 import DonutChart from './Chart/DonutChart';
-import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { PieChart } from '@mui/x-charts'
 import { Tooltip as RechartsTooltip } from 'recharts';
 import { Switch } from '@mui/material';
@@ -87,19 +87,27 @@ const Dashboard = () => {
     name: item.name,
     balance: item.balance,
   }));
+  const generateYAxisTicks = (data) => {
+    if (!data.length) return [];
+
+    const maxBalance = Math.max(...data.map(item => item.balance));
+    const interval = Math.ceil(maxBalance / 5); // Divide max value into 5 equal parts
+
+    return Array.from({ length: 6 }, (_, i) => i * interval);
+  };
 
   const lineHandleChange = (event, newValue) => {
     setLinechartValue(newValue);
     const selectedData = record?.chart.find(e => e.title === newValue);
     if (selectedData) {
       setBarChartData([
-        { name: 'Sales', value: selectedData.sales_total || 0, fill: 'var(--COLOR_UI_PHARMACY)' },
+        { name: 'Sales', value: selectedData.sales_total || 0, fill: '#4A90E2' },
         // { name: 'Sales Count', value: selectedData.sales_count || 0 },
-        { name: 'Sales Return', value: selectedData.sales_return_total || 0, fill: 'var(--color2)' },
+        { name: 'Sales Return', value: selectedData.sales_return_total || 0, fill: '#50E3C2' },
         // { name: 'Sales Return Count', value: selectedData.sales_return_count || 0 },
-        { name: 'Purchases', value: selectedData.purchase_total || 0, fill: '#9fc172' },
+        { name: 'Purchases', value: selectedData.purchase_total || 0, fill: '#F5A623' },
         // { name: 'Purchase Count', value: selectedData.purchase_count || 0 },
-        { name: 'Purchases Return', value: selectedData.purchase_return_total || 0, fill: 'var(--color3)' },
+        { name: 'Purchases Return', value: selectedData.purchase_return_total || 0, fill: '#D0021B' },
         // { name: 'Purchases Return Count', value: selectedData.purchase_return_count || 0 },
       ]);
       setRecord({
@@ -171,7 +179,7 @@ const Dashboard = () => {
 
   }, [typeValue, value, expiredValue, staffListValue, pieChartvalue])
 
-  const dashboardData = async () => { 
+  const dashboardData = async () => {
 
     let data = new FormData();
     const params = {
@@ -257,7 +265,15 @@ const Dashboard = () => {
   // const handleSwitchCustomerChange = (event) => {
   //   setSwitchCustomerValue(event.target.checked);
   // }
-
+  const dataOne = [
+    { value: 40 },
+    { value: 60 },
+    { value: 80 },
+    { value: 100 },
+    { value: 70 },
+    { value: 90 },
+    { value: 110 },
+  ];
   return (
     <div >
       <div>
@@ -266,41 +282,53 @@ const Dashboard = () => {
         {isLoading ? <div className="loaderdash">
           <Loader />
         </div> :
-          <div className='p-5' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
+          <div className='p-2' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
 
             <div className='flex flex-col md:flex-row justify-between gap-5 dash_card_chartss items-end'>
               <div className='flex flex-col w-full md:w-1/2' style={{ width: '100%' }}>
-                <div>
-                  <h1 style={{ color: 'var(--color2)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
+                <div className='p-4'>
+                  <h1 style={{ color: 'var(--color1)', fontSize: '2rem', fontWeight: 600 }}>Pharma Dashboard</h1>
                   <p style={{ color: 'gray' }}>Track sales, inventory, and customer trends in real-time</p>
                 </div>
                 <div>
-                  <div className='dsh_card_chart mb-5 pb-5 bg-white flex p-5 rounded-lg border border-gray-200 dark:border-gray-700' style={{ display: 'flex', justifyContent: 'space-between', gap: '16%', marginTop: "60px" }}>
-                    <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
-                      <img src={stockByPTR} />
-                      <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px', whiteSpace: 'nowrap' }}>Stock By PTR</h3>
-                        <div className={`text-xl font-bold primary`}>Rs.{record?.total_ptr == 0 ? 0 : record?.total_ptr}</div>
+                  <div className='dsh_card_chart mb-3 pb-3 flex py-1 py-3 rounded-lg' style={{ display: 'flex', gap: '2%', marginTop: "10px" }}>
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+                      {/* Content Section */}
+                      <div className="flex flex-col gap-2">
+                        <span className="text-gray-600 dark:text-gray-300 text-lg">Stock By PTR</span>
+                        <div className="text-3xl font-bold text-gray-900 dark:text-white">Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}</div>
+                        <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
                       </div>
-                    </div>
-                    <div className='gap-5' style={{ display: 'flex', alignItems: 'center' }}>
-                      <img src={stockByMRP} />
-                      <div>
-                        <h3 style={{ color: 'var(--color2)', fontWeight: 500, fontSize: '20px', whiteSpace: 'nowrap' }}>Stock By MRP</h3>
-                        <div className={`text-xl font-bold primary`}>Rs.{record?.total_mrp == 0 ? 0 : record?.total_mrp}</div>
+
+                      {/* Image Section */}
+                      <div className="w-24 h-24 flex-shrink-0">
+                        <img src={stockByPTR} className="w-full h-full object-contain" />
                       </div>
                     </div>
 
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+                      {/* Content Section */}
+                      <div className="flex flex-col gap-2">
+                        <span className="text-gray-600 dark:text-gray-300 text-lg">Stock By MRP</span>
+                        <div className="text-3xl font-bold text-gray-900 dark:text-white">Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}</div>
+                        <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
+                      </div>
+
+                      {/* Image Section */}
+                      <div className="w-24 h-24 flex-shrink-0">
+                        <img src={stockByMRP} className="w-full h-full object-contain" />
+                      </div>
+                    </div>
 
                   </div>
 
                   {/* Bar charts */}
-                  <div className="bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between px-2 py-1 py-8 rounded-lg shadow-md">
-                    <Box >
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 flex flex-col justify-between px-2 py-1 py-8">
+                    <Box>
                       <Box>
                         <div className='p-2 flex flex-col'>
 
-                          <div className='flex justify-between items-center'>
+                          <div className='flex justify-between items-center p-3' style={{ borderBottom: "3px solid var(--color1)" }}>
 
                             <Tabs
                               value={linechartValue}
@@ -308,13 +336,16 @@ const Dashboard = () => {
                               variant="scrollable"
                               scrollButtons={false}
                               aria-label="scrollable prevent tabs example"
+
                             >
                               {record?.chart?.map((e) => (
                                 <Tab key={e.id} value={e.title} label={e.title} sx={
                                   {
                                     '&.Mui-selected': {
-                                      color: 'var(--color2)',
-                                      fontWeight: 'bold'
+                                      backgroundColor: 'var(--color1)',
+                                      fontWeight: 'bold',
+                                      color: "white",
+                                      borderRadius: "5px"
                                     },
                                   }
                                 } />
@@ -364,67 +395,51 @@ const Dashboard = () => {
                           <div className='pt-8 m-auto'>
                             {barChartData.every(item => item.value === 0) ? (
                               <div className='flex justify-center' style={{ minHeight: "429px", alignItems: 'center' }}>
-                                <img src='../no_Data1.png' className='nofound' alt="No Data" />
+                                <img src='../no-data.png' className='nofound' alt="No Data" />
                               </div>
                             ) : (
 
                               <BarChart
                                 width={900}
-                                height={429}
+                                height={400}
                                 data={barChartData}
-                                margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                                margin={{ top: 0, right: 30, left: 20, bottom: 0 }}
                               >
 
                                 <XAxis dataKey="name" tick={false} axisLine={{ stroke: "#ccc" }} />
                                 <YAxis />
                                 <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
                                 <Legend />
-                                <Bar dataKey="value" barSize={60} />
+                                <Bar dataKey="value" barSize={30} radius={[10, 10, 0, 0]} />
                               </BarChart>
                             )}
                           </div>
-                          <div className='flex justify-between pl-8 pr-8 pt-8'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid var(--COLOR_UI_PHARMACY)', background: 'var(--COLOR_UI_PHARMACY)', padding: '0px 22px' }}>
+                          <div className="space-y-3 mt-4">
+                            {[
+                              { label: "Sales", count: record?.salesmodel_total_count, color: "#4A90E2" }, // Modern Blue
+                              { label: "Sales Return", count: record?.salesreturn_total_count, color: "#50E3C2" }, // Aqua Green
+                              { label: "Purchase", count: record?.purchesmodel_total_count, color: "#F5A623" }, // Vibrant Orange
+                              { label: "Purchases Return", count: record?.purchesreturn_total_count, color: "#D0021B" }, // Bold Red
+                            ].map((item, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center px-4 py-3 rounded-lg"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span
+                                    className="w-5 h-5 rounded-full"
+                                    style={{ backgroundColor: item.color }}
+                                  ></span>
+                                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{item.label}</h3>
+                                </div>
+                                <p className="text-gray-700 dark:text-gray-300 font-medium">{item.count} Bills</p>
                               </div>
-                              <h3>Sales</h3>
-                            </div>
-                            <p>
-                              {record?.salesmodel_total_count} Bills
-                            </p>
+                            ))}
                           </div>
-                          <div className='flex justify-between pl-8 pr-8 pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid var(--color2)', background: 'var(--color2)', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Sales Return</h3>
-                            </div>
-                            <p>
-                              {record?.salesreturn_total_count} Bills
-                            </p>
-                          </div>
-                          <div className='flex justify-between pl-8 pr-8 pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid #9fc172', background: '#9fc172', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Purchase</h3>
-                            </div>
-                            <p>
-                              {record?.purchesmodel_total_count} Bills
-                            </p>
-                          </div>
-                          <div className='flex justify-between pl-8 pr-8 pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ border: '1px solid var(--color3)', background: 'var(--color3)', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Purchases Return</h3>
-                            </div>
-                            <p>
-                              {record?.purchesreturn_total_count} Bills
-                            </p>
-                          </div>
+
                           {/* </> */}
                           {/* )} */}
+
                         </div>
                       </Box>
                     </Box>
@@ -432,132 +447,114 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className='flex flex-col gap-5 w-full md:w-1/2' style={{ width: '100%' }}>
+              <div className='flex flex-col gap-5 w-full md:w-1/2 ' style={{ width: '100%' }}>
                 <div className='flex gap-5' style={{ width: '100%' }}>
-                  <Card style={{ width: '100%' }}>
-                    <div className='p-2 flex flex-col'>
-                      <div className='flex justify-between'>
-                        <div className=''>
-                          <p className='font-bold flex items-center text-lg'>Top Customers
-                            <Tooltip title="Latest Customers" arrow>
-                              <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
-                            </Tooltip></p>
-                        </div>
+                  <Card className="w-full rounded-2xl shadow-xl bg-white dark:bg-gray-800 p-6">
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
+                        Top Customers
+                        <Tooltip title="Latest Customers" arrow>
+                          <Button className="p-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <GoInfo className="text-primary text-xl" />
+                          </Button>
+                        </Tooltip>
+                      </h2>
+                    </div>
 
-                        {/* <div className='primary'>
-                          Graphical <Switch checked={switchCustomerValue} onChange={handleSwitchCustomerChange}
-                          /> Classical
-                        </div> */}
+                    <div className="mt-6">
+                      <ResponsiveContainer width="100%" height={320}>
+                        <BarChart data={lineChartData}>
+                          {/* X-Axis */}
+                          <XAxis
+                            dataKey="name"
+                            tick={{ fontSize: 12, fill: "#94a3b8" }}
+                            axisLine={{ stroke: "#e2e8f0" }}
+                            tickLine={false}
+                          />
 
-                      </div>
-                      {/* {switchCustomerValue ? (
-                        <>
-                          {
-                            customer.length > 0 ?
-                              <>
-                                <div className='flex justify-between  font-bold  text-gray-400 border-b border-blue-200 mt-3 pb-2'>
-                                  <div>Customer</div>
-                                  <div>Bill Amount</div>
-                                </div>
-                                <div className='' style={{ minHeight: "300px" }}>
-                                  {customer.map((item) =>
-                                    <div className='p-2 border-b border-blue-200 flex justify-between items-center' >
-                                      <div className='flex items-center mt-1 mb-1 gap-3' >
-                                        <div className='bg-blue-900 w-8 h-8 rounded-full flex items-center justify-center'>
-                                          <FaUser className='text-white w-4 h-4' />
-                                        </div>
-                                        <p className='font-bold text-sm'>{item.name} <br />{item.mobile}</p>
-                                      </div>
-                                      <div className='text-lg font-bold' style={{ color: 'green' }}>Rs.{item.balance}</div>
-                                    </div>
-                                  )}
-                                </div>
-                              </> :
-                              <div className='flex justify-center' style={{ minHeight: "300px", alignItems: 'center', }}>
-                                <img src='../no_Data1.png' className='nofound' />
-                              </div>
-                          }
-                        </>
+                          {/* Y-Axis with Auto-Distributed Ticks */}
+                          <YAxis
+                            tickFormatter={(value) => value.toLocaleString()} // Format numbers
+                            ticks={generateYAxisTicks(lineChartData)}
+                            tick={{ fontSize: 12, fill: "#94a3b8" }}
+                            axisLine={{ stroke: "#e2e8f0" }}
+                            tickLine={false}
+                          />
 
-                      ) : ( */}
-                      <div class='pt-5 pb-5'>
-                        {customer.length > 0 ? (
-                          <>
-                            <LineChart
-                              width={850}
-                              height={300}
-                              data={lineChartData}
-                              cursor="pointer"
-                            >
-                              <XAxis dataKey="name" tick={{ style: { fontSize: tickFontSize } }} />
-                              <YAxis tick={{ style: { fontSize: tickFontSize } }}/>
-                              <RechartsTooltip contentStyle={{ borderRadius: '7px' }} />
-                              <Legend />
-                              <Line dataKey="balance" stroke="#8884d8" />
-                            </LineChart>
-                          </>
-                        ) : (
-                          <div >
-                            <img src='../no_Data1.png' className='nofound' alt="No Data" />
-                          </div>
-                        )}
-                      </div>
-                      {/* )} */}
-                      <div className='flex justify-end' style={{ color: 'rgb(0 39 123)' }}>
-                        <Link to='/more/customer'>
-                          <div>
-                            <a href="">View all <ChevronRightIcon /></a>
-                          </div>
-                        </Link>
-                      </div>
+                          {/* Tooltip */}
+                          <RechartsTooltip
+                            contentStyle={{
+                              borderRadius: "10px",
+                              backgroundColor: "white",
+                              color: "black",
+                              border: "none",
+                              padding: "8px"
+                            }}
+                          />
 
+                          {/* Legend */}
+                          <Legend wrapperStyle={{ fontSize: 13, color: "#64748b" }} />
+
+                          {/* Colorful Bars with Rounded Edges */}
+                          <Bar dataKey="balance" barSize={30} radius={[8, 8, 0, 0]}>
+                            {lineChartData.map((entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={["#2563eb", "#9333ea", "#f43f5e", "#f59e0b", "#22c55e"][index % 5]}
+                              />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="mt-6 flex justify-end">
+                      <Link to="/more/customer" className="text-primary flex items-center gap-1 hover:underline">
+                        View all <ChevronRightIcon className="w-4 h-4" />
+                      </Link>
                     </div>
                   </Card>
+
+
                 </div>
                 <div className='flex flex-col gap-5 md:flex-row dash_board_chart_crds' style={{ width: '100%' }}>
-                  <Card style={{ width: '100%' }}>
-                    <div className='p-2 '>
-                      <div className=''>
+                  <Card style={{ width: '100%', background: '#fff', borderRadius: '12px', padding: '16px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
+                    <div className='p-2'>
+                      <div>
                         <p className='font-bold text-lg'>Loyalty Points</p>
-                        <div class='pt-2'>
-
+                        <div className='pt-4 flex flex-col items-center'>
                           <DonutChart data={datas} />
-                          <div className='flex justify-between pt-2'>
-                            <div className='flex gap-2'>
-                              <div style={{ width: '50px', background: 'rgb(121 200 255 / 81%)', padding: '0px 22px' }}>
+                        </div>
 
-                              </div>
-                              <h3>Issued</h3>
+                        <div className='pt-4 space-y-3'>
+                          <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                              <div style={{ width: '12px', height: '12px', background: '#006666', borderRadius: '50%' }}></div>
+                              <h3 className='text-gray-700 text-sm'>Issued</h3>
                             </div>
-                            <p>
-                              30
-                            </p>
+                            <p className='text-gray-800 font-semibold'>30</p>
                           </div>
-                          <div className='flex justify-between pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ width: '50px', background: 'rgb(29 163 255)', padding: '0px 22px' }}>
-                              </div>
-                              <h3>Redeemed</h3>
-                            </div>
-                            <p>
-                              {useLoyaltyPoints}
-                            </p>
-                          </div>
-                          <div className='flex justify-between pt-1'>
-                            <div className='flex gap-2'>
-                              <div style={{ width: '50px', background: 'rgb(42 98 137)', padding: '0px 22px' }}>
 
-                              </div>
-                              <h3>Total Loyalty Points</h3>
+                          <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                              <div style={{ width: '12px', height: '12px', background: '#ffae1a', borderRadius: '50%' }}></div>
+                              <h3 className='text-gray-700 text-sm'>Redeemed</h3>
                             </div>
-                            <p>
-                              {loyaltyPoints}
-                            </p>
+                            <p className='text-gray-800 font-semibold'>{useLoyaltyPoints}</p>
+                          </div>
+
+                          <div className='flex justify-between items-center'>
+                            <div className='flex items-center gap-2'>
+                              <div style={{ width: '12px', height: '12px', background: '#fe6a49', borderRadius: '50%' }}></div>
+                              <h3 className='text-gray-700 text-sm'>Total Loyalty Points</h3>
+                            </div>
+                            <p className='text-gray-800 font-semibold'>{loyaltyPoints}</p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </Card>
+
                   <Card className='' style={{ width: '100%' }}>
                     <div className='p-2 flex flex-col '>
                       <div className='flex justify-between '>
@@ -589,8 +586,10 @@ const Dashboard = () => {
                                   <Tab key={e.id} value={e.id} label={e.value} sx={
                                     {
                                       '&.Mui-selected': {
-                                        color: 'var(--color2)',
-                                        fontWeight: 'bold'
+                                        backgroundColor: 'var(--color1)',
+                                        fontWeight: 'bold',
+                                        color: "white",
+                                        borderRadius: "5px"
                                       },
                                     }
                                   } />
@@ -644,8 +643,10 @@ const Dashboard = () => {
                                 <Tab key={e.id} value={e.id} label={e.value} className='tab_txt_crd' sx={
                                   {
                                     '&.Mui-selected': {
-                                      color: 'var(--color2)',
-                                      fontWeight: 'bold'
+                                      backgroundColor: 'var(--color1)',
+                                      fontWeight: 'bold',
+                                      color: "white",
+                                      borderRadius: "5px"
                                     },
                                   }
                                 } />
@@ -730,7 +731,7 @@ const Dashboard = () => {
                         </>
                       ) : (
                         <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data1.png" className="nofound" />
+                          <img src="../no-data.png" className="nofound" />
                         </div>
                       )}
                     </TabContext>
@@ -822,7 +823,7 @@ const Dashboard = () => {
                         </>
                       ) : (
                         <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no_Data1.png" className="nofound" />
+                          <img src="../no-data.png" className="nofound" width="100%"/>
                         </div>
                       )}
                     </TabContext>
@@ -989,7 +990,7 @@ const Dashboard = () => {
                       </>
                     ) : (
                       <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                        <img src="../no_Data1.png" className="nofound" />
+                        <img src="../no-data.png" className="nofound" />
                       </div>
                     )}
                   </Box>

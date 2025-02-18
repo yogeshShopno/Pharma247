@@ -1,34 +1,25 @@
 import Header from "../../../Header";
-
 import { Button, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import React, { useEffect, useState } from "react";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
-import PrintIcon from "@mui/icons-material/Print";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
 import { toast, ToastContainer } from "react-toastify";
 import { FaFilePdf } from "react-icons/fa6";
 import {
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
@@ -46,7 +37,6 @@ const ReturnList = () => {
     { id: "user_name", label: "Entry By", minWidth: 150 },
     { id: "distributor_name", label: "Distributor", minWidth: 150 },
     { id: "total_amount", label: "Amount", minWidth: 150 },
-    // { id: 'status', label: 'Status', minWidth: 150 },
     { id: "cn_amount", label: "Cn Amount", minWidth: 150 },
   ];
   const initialSearchTerms = columns.map(() => "");
@@ -66,15 +56,11 @@ const ReturnList = () => {
   });
   const [IsDelete, setIsDelete] = useState(false);
   const [returnId, setReturnId] = useState(null);
-  const { id } = useParams();
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
 
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
-  const handlePrint = () => {
-    window.print("/return/add");
-  };
   const goIntoAdd = () => {
     history.push("/return/add");
   };
@@ -127,7 +113,6 @@ const ReturnList = () => {
   };
   const handlePdf = (url) => {
     if (typeof url === "string") {
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } else {
       console.error("Invalid URL for the PDF");
@@ -332,7 +317,7 @@ const ReturnList = () => {
           </div>
 
           <div className="firstrow">
-            <div className="overflow-x-auto mt-4" style={{ overflowX: "auto" }}>
+            <div className="overflow-x-auto mt-4 pt-6 pb-6" style={{ overflowX: "auto" }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -721,17 +706,17 @@ const ReturnList = () => {
           <Dialog
             open={openAddPopUp}
             className="order_list_ml"
-          // sx={{
-          //   "& .MuiDialog-container": {
-          //     "& .MuiPaper-root": {
-          //       width: "50%",
-          //       height: "50%",
-          //       maxWidth: "500px", // Set your width here
-          //       maxHeight: "80vh", // Set your height here
-          //       overflowY: "auto", // Enable vertical scrolling if content overflows
-          //     },
-          //   },
-          // }}
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "50%",
+                height: "50%",
+                maxWidth: "500px",
+                maxHeight: "80vh",
+                overflowY: "auto",
+              },
+            },
+          }}
           >
             <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
               Generate PDF
@@ -764,30 +749,24 @@ const ReturnList = () => {
                         width: "100%",
                       }}
                     >
-                      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-                        <div className="flex flex-col md:flex-row w-full gap-2">
-                          <div style={{ width: "100%" }}>
-                            <span className="primary block">Start Date</span>
-                            <div style={{ width: "100%" }}>
-                              <DatePicker
-                                className="custom-datepicker_mn"
-                                selected={PdfstartDate}
-                                onChange={(newDate) => setPdfStartDate(newDate)}
-                                dateFormat="dd/MM/yyyy"
-                              />
-                            </div>
-                          </div>
-                          <div style={{ width: "100%" }}>
-                            <span className="primary block">End Date</span>
-                            <div style={{ width: "100%" }}>
-                              <DatePicker
-                                className="custom-datepicker_mn"
-                                selected={PdfendDate}
-                                onChange={(newDate) => setPdfEndDate(newDate)}
-                                dateFormat="dd/MM/yyyy"
-                              />
-                            </div>
-                          </div>
+                      <div className="flex flex-col md:flex-row w-full gap-4">
+                        <div className="w-full">
+                          <span className="primary block">Start Date</span>
+                          <DatePicker
+                            className="custom-datepicker_mn w-full"
+                            selected={PdfstartDate}
+                            onChange={(newDate) => setPdfStartDate(newDate)}
+                            dateFormat="dd/MM/yyyy"
+                          />
+                        </div>
+                        <div className="w-full">
+                          <span className="primary block">End Date</span>
+                          <DatePicker
+                            className="custom-datepicker_mn w-full"
+                            selected={PdfendDate}
+                            onChange={(newDate) => setPdfEndDate(newDate)}
+                            dateFormat="dd/MM/yyyy"
+                          />
                         </div>
                       </div>
                     </div>

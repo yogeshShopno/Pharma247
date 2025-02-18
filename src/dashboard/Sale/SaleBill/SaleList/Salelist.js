@@ -14,10 +14,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
-import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
-import { MdDelete } from "react-icons/md";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
 import { FaFilePdf } from "react-icons/fa6";
@@ -52,7 +49,6 @@ const Salelist = () => {
     key: null,
     direction: "ascending",
   });
-  const [IsDelete, setIsDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   // const [startIndex, setStartIndex] = useState(0);
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
@@ -61,7 +57,6 @@ const Salelist = () => {
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
 
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const [saleId, setSaleId] = useState(null);
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
     saleBillList(pageNum);
@@ -165,14 +160,14 @@ const Salelist = () => {
     history.push("/addsale");
   };
 
-  const deleteOpen = (id) => {
-    setIsDelete(true);
-    setSaleId(id);
-  };
+  // const deleteOpen = (id) => {
+  //   setIsDelete(true);
+  //   setSaleId(id);
+  // };
 
-  const deleteClose = () => {
-    setIsDelete(false);
-  };
+  // const deleteClose = () => {
+  //   setIsDelete(false);
+  // };
 
   useEffect(() => {
     // saleBillList();
@@ -209,30 +204,30 @@ const Salelist = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!saleId) return;
-    let data = new FormData();
-    data.append("id", saleId);
-    const params = {
-      id: saleId,
-    };
-    try {
-      await axios
-        .post("delete-sales?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          saleBillList();
-          setIsDelete(false);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
+  // const handleDelete = async () => {
+  //   if (!saleId) return;
+  //   let data = new FormData();
+  //   data.append("id", saleId);
+  //   const params = {
+  //     id: saleId,
+  //   };
+  //   try {
+  //     await axios
+  //       .post("delete-sales?", data, {
+  //         params: params,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         saleBillList();
+  //         setIsDelete(false);
+  //       });
+  //   } catch (error) {
+  //     console.error("API error:", error);
+  //   }
+  // };
 
   const AllPDFGenerate = async () => {
     let data = new FormData();
@@ -318,7 +313,7 @@ const Salelist = () => {
               style={{ display: "flex", gap: "4px" }}
             >
               <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                <div className="flex flex-row gap-2 sale_lt_txt" style={{alignItems: "center"}}>
+                <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
                   <span
                     style={{
                       color: "var(--color2)",
@@ -575,17 +570,17 @@ const Salelist = () => {
             <Dialog
               open={openAddPopUp}
               className="order_list_ml"
-            //   sx={{
-            //     "& .MuiDialog-container": {
-            //       "& .MuiPaper-root": {
-            //         width: "50%",
-            //         height: "50%",
-            //         maxWidth: "500px", // Set your width here
-            //         maxHeight: "80vh", // Set your height here
-            //         overflowY: "auto", // Enable vertical scrolling if content overflows
-            //       },
-            //     },
-            //   }}
+              sx={{
+                "& .MuiDialog-container": {
+                  "& .MuiPaper-root": {
+                    width: "50%",
+                    height: "50%",
+                    maxWidth: "500px",
+                    maxHeight: "80vh",
+                    overflowY: "auto",
+                  },
+                },
+              }}
             >
               <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
                 Generate PDF

@@ -21,9 +21,9 @@ const DonutChart = ({ data }) => {
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
         const colorMap = {
-            'Issued': 'rgb(121 200 255 / 81%)', // Ensure proper RGBA format
-            'Redeemed': 'rgb(29 163 255)',
-            'Total Loyalty Points': 'rgb(42 98 137)',
+            'Issued': '#006666', // Ensure proper RGBA format
+            'Redeemed': '#ffae1a',
+            'Total Loyalty Points': '#fe6a49',
         };
 
         const pie = d3.pie().value(d => d.value);

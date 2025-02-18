@@ -376,39 +376,7 @@ const ReturnList = () => {
                           <td style={{ borderRadius: "10px 0 0 10px" }}>
                             {startIndex + index}
                           </td>
-                          {/* {columns.map((column) => {
-                                                            const value = row[column.id];
-                                                            return (
-                                                                <td key={column.id} align={column.align} onClick={() => { history.push(`/return/view/${row.id}`) }}>
-                                                                    {column.format && typeof value === 'number'
-                                                                        ? column.format(value)
-                                                                        : value}
-                                                                </td>
-                                                            );
-                                                        })} */}
-                          {/* {columns.map((column) => {
-                                                            const value = row[column.id];
-                                                            const isDueAmount = column.id === 'due_amount';
-                                                            const isStatus = column.id === 'status';
-
-                                                            // Determine the class for the due_amount field
-                                                            const dueAmountClass = isDueAmount || value > 0 ? 'text-red-500' : 'text-black';
-
-                                                            // Determine the class for the status field
-                                                            const statusClass = isStatus && value === 'Paid' ? 'orderStatus' : isStatus && value === 'Partially Paid' ? 'pendingStatus' : 'text-black';
-
-                                                            return (
-                                                                <td key={column.id} align={column.align} onClick={() => { history.push(`/return/view/${row.id}`) }}
-                                                                    className={`text-lg `}>
-                                                                    <span className={`text ${isStatus && statusClass} ${isDueAmount ? dueAmountClass : 'text-black'}`}>
-
-                                                                        {column.format && typeof value === 'number'
-                                                                            ? column.format(value)
-                                                                            : value}
-                                                                    </span>
-                                                                </td>
-                                                            );
-                                                        })} */}
+                          
                           {columns.map((column) => {
                             const value = row[column.id];
                             const isDueAmount = column.id === "total_amount";

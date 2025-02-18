@@ -119,36 +119,6 @@ const EditReturnBill = () => {
         setIsModalOpen(!isModalOpen);
     };
 
-    // useEffect(() => {
-    //     if (saveValue === false) {
-    //         unblockRef.current = history.block((location) => {
-    //             if (!isOpenBox) {
-    //                 setPendingNavigation(location);
-    //                 setIsOpenBox(true);
-    //                 setSaveValue(false);
-    //                 return false;
-    //             }
-    //         });
-    //         return () => {
-    //             if (unblockRef.current) {
-    //                 unblockRef.current();
-    //             }
-    //         };
-    //     }
-    // }, [saveValue, history, isOpenBox]);
-    // useEffect(() => {
-
-    //     const initialize = async () => {
-    //         try {
-    //             await handleLeavePage();
-    //         } catch (error) {
-    //             console.error("Error during initialization:", error);
-    //         }
-    //     };
-
-    //     initialize();
-    // }, []);
-
     useEffect(() => {
         const initializeData = async () => {
             setIsLoading(true);

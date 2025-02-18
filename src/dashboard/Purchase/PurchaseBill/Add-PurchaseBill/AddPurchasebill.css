@@ -108,7 +108,7 @@ header {
 .customtable th,
 .customtable td {
     padding: 8px;
-    text-align: left;
+    text-align: center;
     font-size: 14px;
 }
 

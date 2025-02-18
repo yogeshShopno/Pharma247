@@ -1,32 +1,25 @@
 import Header from "../../../Header"
 import React, { useState, useRef, useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import dayjs from 'dayjs';
 import '../../../../App.css';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DatePicker from "react-datepicker";
-import { addDays, format, subDays } from "date-fns";
 import Autocomplete from '@mui/material/Autocomplete';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { FaPlusCircle, FaShippingFast, FaWalking } from "react-icons/fa";
-import { Alert, AlertTitle, Box, CircularProgress, Input, MenuItem, Select, Tooltip } from '@mui/material';
+import {  Box, CircularProgress, Input, MenuItem, Select, Tooltip } from '@mui/material';
 import { BsLightbulbFill } from "react-icons/bs";
-import { FiPrinter } from "react-icons/fi";
-import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, InputAdornment, ListItemText, TextField } from "@mui/material";
 import ListItem from '@mui/material/ListItem';
 import axios from "axios";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
@@ -135,9 +128,7 @@ const Addsale = () => {
     const [ptr, setPtr] = useState();
     const [discount, setDiscount] = useState();
     const [barcodeItemName, setBarcodeItemName] = useState('');
-    const [loyaltyPoints, setLoyaltyPoints] = useState([]);
     const [previousLoyaltyPoints, setPreviousLoyaltyPoints] = useState(0);
-    const [previousLoyaltyPointVal, setPreviousLoyaltyPointVal] = useState(0)
     const [loyaltyVal, setLoyaltyVal] = useState(0);
     const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
     const [addItemName, setAddItemName] = useState("");
@@ -1619,7 +1610,7 @@ const Addsale = () => {
                             </div>
 
                         </div>
-                        <div className="border-b">
+                        <div>
                             <div className="firstrow flex" >
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); setUnsavedItems(true); }} /></span>
@@ -2111,7 +2102,7 @@ const Addsale = () => {
                                                 </td> */}
                                             </tr>
                                             {ItemSaleList?.sales_item?.map(item => (
-                                                <tr key={item.id} style={{ whiteSpace: 'nowrap' }} className="item-List border-b border-gray-400 "
+                                                <tr key={item.id} style={{ whiteSpace: 'nowrap' }} className="item-List border-gray-400 "
                                                     onClick={() => handleEditClick(item)}
                                                 >
                                                     <td style={{
@@ -2843,7 +2834,9 @@ const Addsale = () => {
 
                                             />
                                         </div>
-                                        <div className="fields add_new_item_divv">
+                                    </div>
+                                    <div className="row">
+                                    <div className="fields add_new_item_divv">
                                             <label className="label secondary">Unit</label>
                                             <TextField
                                                 id="outlined-number"
@@ -2871,8 +2864,6 @@ const Addsale = () => {
                                                 value={`1 * ${addUnit} `}
                                             />
                                         </div>
-
-
                                     </div>
                                 </div>
 

@@ -28,10 +28,9 @@ import {
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
 import { BsLightbulbFill } from "react-icons/bs";
-import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
+import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
-import { toast } from "react-toastify";
 
 const PurchaseView = () => {
   const { id } = useParams();
@@ -51,7 +50,7 @@ const PurchaseView = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
+  
   useEffect(() => {
     purchaseBillList();
   }, []);
@@ -88,44 +87,6 @@ const PurchaseView = () => {
       console.error("Error deleting items:", error);
     }
   };
-
-  const pdfGenerator = async (id) => {
-    let data = new FormData();
-    data.append("id", id);
-    setIsLoading(true);
-    try {
-      await axios
-        .post("purches-pdf-downloads", data, {
-          params: { id },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
-
-          setIsLoading(false);
-          handlePdf(PDFURL);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
-
-  const handlePdf = (url) => {
-    if (typeof url === "string") {
-      // Open the PDF in a new tab
-      window.open(url, "_blank");
-    } else {
-      console.error("Invalid URL for the PDF");
-    }
-  };
-
   const purchaseBillList = async (currentPage) => {
     let data = new FormData();
     setIsLoading(true);
@@ -217,7 +178,7 @@ const PurchaseView = () => {
       ) : (
         <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
           <div>
-            <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3 sal-rtn-fff" style={{ display: "flex", gap: "4px" }}>
               <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
                 <span
                   style={{
@@ -274,7 +235,7 @@ const PurchaseView = () => {
 
               {hasPermission(permissions, "purchase bill edit") && (
                 <div
-                  className="flex sale_ve_btnsss"
+                  className="flex"
                   style={{ width: "100%", justifyContent: "end", gap: "10px" }}
                 >
                   {data?.cn_bill_list?.length !== 0 && (
@@ -288,23 +249,10 @@ const PurchaseView = () => {
                       CN View
                     </Button>
                   )}
-
-                  <Button
-                    variant="contained"
-                    className="sale_add_btn sale_dnls gap-2"
-                    style={{ backgroundColor: "var(--color1)" }}
-                    onClick={() => pdfGenerator(tableData.id)}
-                  >
-                    <FaFilePdf
-                      className="w-5 h-5 hover:text-secondary cursor-pointer"
-                    />
-                    Download
-                  </Button>
-
                   <Button
                     style={{ background: "var(--color1)" }}
                     variant="contained"
-                    className="sale_add_btn sale_dnls"
+                    className="sale_add_btn"
                     onClick={() => {
                       history.push(
                         "/purchase/edit/" +
@@ -412,7 +360,92 @@ const PurchaseView = () => {
                   ))}
                 </tbody>
               </table>
-            
+              {/* <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10">
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "25px",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label className="font-bold">Total GST : </label>
+                  <label className="font-bold">Total Qty : </label>
+                  <label className="font-bold">Total Net Rate : </label>
+                  <label className="font-bold">Total Base : </label>
+                </div>
+                <div
+                  class="totals mr-5"
+                  style={{
+                    display: "flex",
+                    gap: "25px",
+                    flexDirection: "column",
+                    alignItems: "end",
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>
+                    {data?.total_gst ? data?.total_gst : 0}{" "}
+                  </span>
+                  <span style={{ fontWeight: 600 }}>
+                    {" "}
+                    {data?.total_qty ? data?.total_qty : 0} {"+"}&nbsp;
+                    <span className="primary">
+                      {data?.total_free_qty ? data?.total_free_qty : 0} Free{" "}
+                    </span>{" "}
+                  </span>
+                  <span style={{ fontWeight: 600 }}>
+                    {data?.total_net_rate}
+                  </span>
+                  <span style={{ fontWeight: 600 }}>{data?.total_base}</span>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "25px",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label className="font-bold">Total Amount : </label>
+                  <label className="font-bold">CN Amount : </label>
+                  <label className="font-bold">Round Off : </label>
+                  <label className="font-bold">Net Amount : </label>
+                </div>
+                <div
+                  className="mr-5"
+                  style={{
+                    display: "flex",
+                    gap: "24px",
+                    flexDirection: "column",
+                    alignItems: "end",
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>
+                    {data?.total_amount ? data?.total_amount : 0}
+                  </span>
+                  <span style={{ fontWeight: 600, color: "red" }}>
+                    {-(parseFloat(data?.cn_amount) || 0).toFixed(2)}
+                  </span>
+
+                  <span style={{ fontWeight: 600 }}>
+                    {roundOffAmount === "0.00"
+                      ? roundOffAmount
+                      : roundOffAmount < 0
+                        ? `-${Math.abs(roundOffAmount)}`
+                        : `+${Math.abs(roundOffAmount)}`}
+                  </span>
+                 
+
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "22px",
+                      color: "var(--color1)",
+                    }}
+                  >
+                    {data?.net_amount ? data?.net_amount : 0}
+                  </span>
+                </div>
+              </div> */}
             </div>
           </div>
 

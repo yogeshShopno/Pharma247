@@ -45,12 +45,12 @@
     "recharts": "^2.15.1",
     "styled-components": "^6.1.9",
     "tw-elements": "^2.0.0",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^2.1.4",                  
     "xlsx": "^0.18.5",
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "react-scripts start --host 127.0.0.1",
+    "start": "react-scripts start ",
     "build": "node --max_old_space_size=8192 node_modules/react-scripts/scripts/build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

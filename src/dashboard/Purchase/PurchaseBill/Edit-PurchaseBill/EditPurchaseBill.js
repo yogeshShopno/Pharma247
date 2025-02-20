@@ -333,20 +333,6 @@ const EditPurchaseBill = () => {
     setDisabledRows(initialDisabledRows);
   }, [purchase]);
 
-  // useEffect(() => {
-  //   // Delete All Purchase Item
-  //   if (localStorage.getItem("RandomNumber") !== null) {
-  //     if (deleteAll == false) {
-  //       handlePopState();
-  //     }
-  //   }
-  //   // delete All purchase item
-
-  //   return () => {
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, []);
-
   useEffect(() => {
     // Call API initially when the component mounts
     // handlePopState();
@@ -567,11 +553,11 @@ const EditPurchaseBill = () => {
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) newErrors.unit = "Unit is required";
-    if (!HSN) {
-      toast.error("HSN is required");
-      newErrors.HSN = "HSN is required";
+    // if (!HSN) {
+    //   toast.error("HSN is required");
+    //   newErrors.HSN = "HSN is required";
 
-    }
+    // }
 
     if (!batch) newErrors.batch = "Batch is required";
     if (!expiryDate) {
@@ -1325,7 +1311,6 @@ const EditPurchaseBill = () => {
                   variant="contained"
                   color="primary"
                   className="cn_fls"
-                  // style={{ }}
                   onClick={handelAddOpen}
                   style={{
                     textTransform: "none",
@@ -1358,11 +1343,11 @@ const EditPurchaseBill = () => {
                     value={distributor}
                     disabled
                     sx={{
-                      width: "100%",
-                      // minWidth: "350px",
-                      // "@media (max-width:600px)": {
-                      //   minWidth: "250px",
-                      // },
+                      width: "350px",
+                      minWidth: "350px",
+                      "@media (max-width:600px)": {
+                        minWidth: "250px",
+                      },
                     }}
                     size="small"
                     onChange={(e, value) => setDistributor(value)}
@@ -1382,32 +1367,20 @@ const EditPurchaseBill = () => {
                     </span>
                   )}
                 </div>
-                <div className="detail custommedia" style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%"
-                }}>
-                  <span className="heading  mb-2">Sr No.</span>
-                  <TextField
-                    variant="outlined"
-                    autoComplete="off"
-                    id="outlined-number"
-                    size="small"
-                    style={{ width: "100%" }}
-                    value={srNo}
-                    disabled
-                    onChange={(e) => {
-                      setSrNo(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="detail custommedia" style={{
+                {/* <div className="detail custommedia" style={{
                   display: "flex",
                   flexDirection: "column",
                   width: "100%"
                 }}>
                   <span className="heading  mb-2">Bill No. / Order No.</span>
                   <TextField
+                    sx={{
+                      width: "100%",
+                      minWidth: "350px",
+                      "@media (max-width:600px)": {
+                        minWidth: "250px",
+                      },
+                    }}
                     variant="outlined"
                     autoComplete="off"
                     id="outlined-number"
@@ -1425,14 +1398,18 @@ const EditPurchaseBill = () => {
                       {error.billNo}
                     </span>
                   )}
-                </div>
+                </div> */}
                 <div className="detail custommedia" style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "100%"
+                  width: "250px"
                 }}>
                   <span className="heading  mb-2">Bill Date</span>
                   <DatePicker
+                   sx={{
+                    width: "250px",
+                   
+                  }}
                     variant="outlined"
                     disabled
                     className="custom-datepicker_mn "
@@ -1443,10 +1420,10 @@ const EditPurchaseBill = () => {
                   />
                 </div>
 
-                <div className="detail custommedia" style={{
+                <div className="detail  custommedia" style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "100%"
+                  width: "250px"
                 }}>
                   <span className="heading  mb-2">Due Date</span>
                   <DatePicker
@@ -1458,12 +1435,12 @@ const EditPurchaseBill = () => {
                     minDate={new Date()}
                   />
                 </div>
-                <div className="detail custommedia" style={{
+                <div className="detail custommedia " style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "100%"
+                  width: "250px"
                 }}>
-                  <span className="heading  mb-2">Scan Barcode</span>
+                  <span className="heading  mb-2" >Scan Barcode</span>
 
                   <TextField
                     variant="outlined"
@@ -1486,7 +1463,7 @@ const EditPurchaseBill = () => {
                       <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                         <th>Item Name</th>
                         <th>Unit</th>
-                        <th>HSN</th>
+                        {/* <th>HSN</th> */}
                         <th>Batch </th>
                         <th>Expiry </th>
                         <th>MRP </th>
@@ -1494,7 +1471,7 @@ const EditPurchaseBill = () => {
                         <th>Free </th>
                         <th>PTR </th>
                         <th>CD%</th>
-                        <th>Sch. Amt</th>
+                        {/* <th>Sch. Amt</th> */}
                         <th>Base</th>
                         <th>GST% </th>
                         <th>Loc.</th>
@@ -1589,7 +1566,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1619,7 +1596,7 @@ const EditPurchaseBill = () => {
                               {error.HSN}
                             </span>
                           )}
-                        </td>
+                        </td> */}
                         <td>
                           <TextField
                             autoComplete="off"
@@ -1785,7 +1762,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1802,7 +1779,7 @@ const EditPurchaseBill = () => {
                             value={schAmt}
                             disabled
                           />
-                        </td>
+                        </td> */}
                         <td>
                           <TextField
                             variant="outlined"
@@ -1867,7 +1844,7 @@ const EditPurchaseBill = () => {
                         </td>
                         <td>
                           <td>
-                            <TextField
+                           <TextField
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
@@ -1907,23 +1884,8 @@ const EditPurchaseBill = () => {
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid lightgray' }} >
-                        <td>
-                          {/* <TextField
-                            variant="outlined"
-
-                            autoComplete="off"
-                            id="outlined-number"
-                            type="number"
-                            size="small"
-                            value={barcode}
-                            placeholder="scan barcode"
-                            sx={{ width: "250px" }}
-                            onChange={(e) => {
-                              setBarcode(e.target.value);
-                            }}
-                          /> */}
-                        </td>
-                        <td colSpan={15}></td>
+                        
+                        <td colSpan={14}></td>
 
                         <td>
                           <Button
@@ -1941,50 +1903,10 @@ const EditPurchaseBill = () => {
                             {isEditMode ? "Edit" : "Add"}
 
                           </Button>
-                          {/* <Button variant="contained" color="success" onClick={addPurchaseValidation}><ControlPointIcon />Edit</Button> */}
+                          
                         </td>
                       </tr>
-                      {/* {purchase?.item_list?.map((item) => (
-                        <tr
-                          key={item.id}
-                          className="item-List border-b border-gray-400"
-                          onClick={() => handleEditClick(item)}
-                        >
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "8px",
-                              width: "300px",
-                            }}
-                          >
-                            <BorderColorIcon
-                              style={{ color: "var(--color1)" }}
-                              onClick={() => handleEditClick(item)}
-                            />
-                            <DeleteIcon
-                              className="delete-icon"
-                              onClick={() => deleteOpen(item.id)}
-                            />
-                            {item.item_name}
-                          </td>
-                          <td>{item.weightage}</td>
-                          <td>{item.hsn_code}</td>
-                          <td>{item.batch_number}</td>
-                          <td>{item.expiry}</td>
-                          <td>{item.mrp}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.fr_qty}</td>
-                          <td>{item.ptr}</td>
-                          <td>{item.disocunt}</td>
-                          <td>{item.scheme_account}</td>
-                          <td>{item.base_price}</td>
-                          <td>{item.gst_name}</td>
-                          <td>{item.location}</td>
-                          <td>{item.net_rate}</td>
-                          <td>{item.margin}</td>
-                          <td>{item.amount}</td>
-                        </tr>
-                      ))} */}
+                     
                     </tbody>
                   </table>
                   <>
@@ -1997,7 +1919,6 @@ const EditPurchaseBill = () => {
                         {purchase?.item_list?.map((item) => (
                           <tr
                             key={item.id}
-                            // className="item-List border-b border-gray-400"
                             onClick={() => handleEditClick(item)}
                             
                         className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
@@ -2023,7 +1944,7 @@ const EditPurchaseBill = () => {
                               {item.item_name}
                             </td>
                             <td>{item.weightage}</td>
-                            <td>{item.hsn_code}</td>
+                            {/* <td>{item.hsn_code}</td> */}
                             <td>{item.batch_number}</td>
                             <td>{item.expiry}</td>
                             <td>{item.mrp}</td>
@@ -2031,7 +1952,7 @@ const EditPurchaseBill = () => {
                             <td>{item.fr_qty}</td>
                             <td>{item.ptr}</td>
                             <td>{item.disocunt}</td>
-                            <td>{item.scheme_account}</td>
+                            {/* <td>{item.scheme_account}</td> */}
                             <td>{item.base_price}</td>
                             <td>{item.gst_name}</td>
                             <td>{item.location}</td>

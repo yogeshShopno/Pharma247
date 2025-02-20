@@ -524,8 +524,7 @@ const PurchaseView = () => {
                 top: 8,
                 color: (theme) => theme.palette.grey[500],
               }}
-            >
-              <CloseIcon />
+            ><CloseIcon />
             </IconButton>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">

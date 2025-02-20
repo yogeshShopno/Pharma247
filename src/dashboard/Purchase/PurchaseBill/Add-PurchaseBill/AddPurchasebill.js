@@ -1866,11 +1866,10 @@ const AddPurchaseBill = () => {
               </div>
  {/*<============================================================================ add Item field  ===========================================================================> */}
 
-              <div className="overflow-x-auto ">
+              <div className="overflow-x-auto w-full">
 
                 <table
-
-                  className="customtable  w-full border-collapse custom-table"
+                  className="customtable  w-full  border-collapse custom-table"
                 >
                   <thead>
                     <tr>
@@ -1912,8 +1911,8 @@ const AddPurchaseBill = () => {
                       <>
                         <tr>
                           {isEditMode ? (
-                            <td>
-                              <div>
+                            <td className="p-0"  >
+                              <div style={{ width: 350, padding: 0 }} >
                                 <BorderColorIcon
                                   style={{ color: "var(--color1)" }}
                                   onClick={() => setIsEditMode(false)}
@@ -1933,13 +1932,13 @@ const AddPurchaseBill = () => {
                               )}
                             </td>
                           ) : (
-                            <td className="p-0">
+                            <td className="p-0" >
                               {isAutocompleteDisabled && (
                                 <Autocomplete
                                   key={autocompleteKey}
                                   value={selectedOption}
                                   // value={searchItem?.iteam_name}
-                                  sx={{ width: 200, padding: 0 }}
+                                  sx={{ width: 350, padding: 0 }}
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
@@ -1965,7 +1964,7 @@ const AddPurchaseBill = () => {
 
                                       variant="outlined"
                                       autoComplete="off"
-                                      sx={{ width: 200, padding: 0 }}
+                                      sx={{ width: 350, padding: 0 }}
                                       autoFocus={focusedField === "item"}
                                       {...params}
                                       value={searchItem?.iteam_name}
@@ -1986,7 +1985,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               error={!!errors.unit}
                               value={unit}
-                              sx={{ width: "65px" }}
+                              sx={{ width: "80px" }}
 
                               onChange={(e) => {
                                 const value = e.target.value.replace(
@@ -2017,7 +2016,7 @@ const AddPurchaseBill = () => {
 
                               size="small"
                               value={batch}
-                              sx={{ width: "90px" }}
+                              sx={{ width: "100px" }}
 
                               onChange={(e) => {
                                 setBatch(e.target.value);
@@ -2037,7 +2036,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
-                              sx={{ width: "80px" }}
+                              sx={{ width: "100px" }}
 
                               error={!!errors.expiryDate}
                               value={expiryDate}
@@ -2117,7 +2116,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               size="small"
                               type="number"
-                              sx={{ width: "50px" }}
+                              sx={{ width: "60px" }}
                               value={free}
                               error={!!errors.free}
 
@@ -2171,7 +2170,7 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
-                              sx={{ width: "60px" }}
+                              sx={{ width: "65px" }}
                               size="small"
                               type="number"
 
@@ -2217,6 +2216,7 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               size="small"
                               value={gst}
+                              sx={{ width: "65px" }}
                               error={!!errors.gst}
                               inputRef={(el) => (inputRefs.current[11] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 11)}
@@ -2304,14 +2304,14 @@ const AddPurchaseBill = () => {
                         <tr
                           key={item.id}
                           onClick={() => handleEditClick(item)}
-                          className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
+                          className={` item-List  flex justify-between  cursor-pointer  ${item.id === selectedEditItemId
                             ? "highlighted-row"
                             : ""}`}>
                           <td
                             style={{
                               display: "flex",
                               gap: "8px",
-                              width: "400px"
+                              width: "350px"
                             }}
                           >
                             <BorderColorIcon
@@ -2327,7 +2327,6 @@ const AddPurchaseBill = () => {
                             {item.iteam_name}
                           </td>
                           <td>{item.weightage}</td>
-                          <td>{item.hsn_code}</td>
                           <td>{item.batch_number}</td>
                           <td>{item.expiry}</td>
                           <td>{item.mrp}</td>

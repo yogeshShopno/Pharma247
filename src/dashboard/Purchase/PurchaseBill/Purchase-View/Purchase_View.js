@@ -28,9 +28,10 @@ import {
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
 import { BsLightbulbFill } from "react-icons/bs";
-import { FaArrowDown, FaArrowUp, FaCaretUp } from "react-icons/fa6";
+import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const PurchaseView = () => {
   const { id } = useParams();
@@ -47,65 +48,12 @@ const PurchaseView = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-  
+{/*<=============================================================================== get initial data  ===============================================================================> */}
+
   useEffect(() => {
-    purchaseBillList();
-  }, []);
-
-  const handleLeavePage = async () => {
-    let data = new FormData();
-    data.append("start_date", localStorage.getItem("StartFilterDate"));
-    data.append("end_date", localStorage.getItem("EndFilterDate"));
-    data.append("distributor_id", localStorage.getItem("DistributorId"));
-    data.append("type", "1");
-    try {
-      const response = await axios.post("purches-histroy", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.status === 200) {
-        // setUnsavedItems(false);
-        // setIsOpenBox(false);
-        history.push(
-          "/purchase/edit/" + data.id + "/" + data?.item_list[0].random_number
-        );
-        // setTimeout(() => {
-        //   if (nextPath) {
-        //     history.push(nextPath)
-        //   }
-
-        // }, 0);
-      }
-      //   setIsOpenBox(false);
-      //   setUnsavedItems(false);
-
-      // history.replace(nextPath);
-    } catch (error) {
-      console.error("Error deleting items:", error);
-    }
-  };
-  const purchaseBillList = async (currentPage) => {
-    let data = new FormData();
-    setIsLoading(true);
-    try {
-      await axios
-        .post("purches-list?", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTableData(response.data.data);
-          setIsLoading(false);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
-
+       purchaseBillList(); 
+     }, []);
+  
   useEffect(() => {
     const index = tableData.findIndex((item) => item.id == parseInt(id));
     if (index !== -1) {
@@ -113,6 +61,10 @@ const PurchaseView = () => {
       purchaseBillGetByID(tableData[index].id);
     }
   }, [id, tableData]);
+
+  useEffect(() => { purchaseBillGetByID() }, []);
+
+{/*<=============================================================================== up down arrow functionality  ===============================================================================> */}
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -137,13 +89,69 @@ const PurchaseView = () => {
     };
   });
 
-  const handelAddOpen = () => {
-    setOpenAddPopUp(true);
-    setHeader("Cn Amount List");
+{/*<=============================================================================== get purchase list data  ===============================================================================> */}
+  
+  const purchaseBillList = async () => {
+
+    let data = new FormData();
+    
+    setIsLoading(true);
+    try {
+      const response = await axios.post("purches-list?", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTableData(response.data.data); 
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const resetAddDialog = () => {
-    setOpenAddPopUp(false);
+
+{/*<========================================================================================= generate PDf  =========================================================================================> */}
+
+  const pdfGenerator = async (id) => {
+    let data = new FormData();
+    data.append("id", id);
+    setIsLoading(true);
+    try {
+      await axios
+        .post("purches-pdf-downloads", data, {
+          params: { id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const PDFURL = response.data.data.pdf_url;
+          toast.success(response.data.meassage);
+
+          setIsLoading(false);
+          handlePdf(PDFURL);
+          if (response.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+          }
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
   };
+
+
+  const handlePdf = (url) => {
+    if (typeof url === "string") {
+
+      window.open(url, "_blank");
+    } else {
+      console.error("Invalid URL for the PDF");
+    }
+  };
+
+{/*<================================================================================ get bill details  ================================================================================> */}
+
   const purchaseBillGetByID = async () => {
     let data = new FormData();
     data.append("id", id);
@@ -168,6 +176,9 @@ const PurchaseView = () => {
       console.error("API error:", error);
     }
   };
+
+{/*<================================================================================ get bill details  ================================================================================> */}
+
   return (
     <>
       <Header />
@@ -178,7 +189,7 @@ const PurchaseView = () => {
       ) : (
         <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
           <div>
-            <div className="py-3 sal-rtn-fff" style={{ display: "flex", gap: "4px" }}>
+            <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
               <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
                 <span
                   style={{
@@ -231,35 +242,44 @@ const PurchaseView = () => {
                 </span>
                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
               </div>
-              {/* {permissions.some(permission => permission["purchase bill edit"]) && ( */}
 
               {hasPermission(permissions, "purchase bill edit") && (
                 <div
-                  className="flex"
+                  className="flex sale_ve_btnsss"
                   style={{ width: "100%", justifyContent: "end", gap: "10px" }}
                 >
                   {data?.cn_bill_list?.length !== 0 && (
                     <Button
                       variant="contained"
                       color="primary"
-                      style={{ textTransform: "none" }}
-                      onClick={handelAddOpen}
+                      style={{ backgroundColor: "var(--color1)" }}
+
+
+                      onClick={()=>setOpenAddPopUp(true)}
                     >
                       <AddIcon className="mr-2" />
                       CN View
                     </Button>
                   )}
+
+                  <Button
+                    variant="contained"
+                    className="sale_add_btn sale_dnls gap-2"
+                    style={{ backgroundColor: "var(--color1)" }}
+                    onClick={() => pdfGenerator(tableData.id)}
+                  >
+                    <FaFilePdf
+                      className="w-5 h-5 hover:text-secondary cursor-pointer"
+                    />
+                    Download
+                  </Button>
+
                   <Button
                     style={{ background: "var(--color1)" }}
                     variant="contained"
-                    className="sale_add_btn"
+                    className="sale_add_btn sale_dnls"
                     onClick={() => {
-                      history.push(
-                        "/purchase/edit/" +
-                        data.id +
-                        "/" +
-                        data?.item_list[0].random_number
-                      );
+                      history.push("/purchase/edit/" + data.id + "/" + data?.item_list[0].random_number);
                     }}
                   >
                     <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />
@@ -269,6 +289,8 @@ const PurchaseView = () => {
               )}
             </div>
           </div>
+
+{/*<================================================================================ top details  ================================================================================> */}
 
           <div>
             <div className="firstrow flex mt-2 " style={{
@@ -311,6 +333,9 @@ const PurchaseView = () => {
                 <span className="data_bg">{localStorage.getItem("UserName")}</span>
               </div>
             </div>
+
+{/*<================================================================================ bill table data  ================================================================================> */}
+           
             <div className="overflow-x-auto mt-5">
               <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                 <thead>
@@ -360,157 +385,10 @@ const PurchaseView = () => {
                   ))}
                 </tbody>
               </table>
-              {/* <div className="flex gap-10 justify-end mt-10 flex-wrap mr-10">
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "column",
-                  }}
-                >
-                  <label className="font-bold">Total GST : </label>
-                  <label className="font-bold">Total Qty : </label>
-                  <label className="font-bold">Total Net Rate : </label>
-                  <label className="font-bold">Total Base : </label>
-                </div>
-                <div
-                  class="totals mr-5"
-                  style={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "column",
-                    alignItems: "end",
-                  }}
-                >
-                  <span style={{ fontWeight: 600 }}>
-                    {data?.total_gst ? data?.total_gst : 0}{" "}
-                  </span>
-                  <span style={{ fontWeight: 600 }}>
-                    {" "}
-                    {data?.total_qty ? data?.total_qty : 0} {"+"}&nbsp;
-                    <span className="primary">
-                      {data?.total_free_qty ? data?.total_free_qty : 0} Free{" "}
-                    </span>{" "}
-                  </span>
-                  <span style={{ fontWeight: 600 }}>
-                    {data?.total_net_rate}
-                  </span>
-                  <span style={{ fontWeight: 600 }}>{data?.total_base}</span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "25px",
-                    flexDirection: "column",
-                  }}
-                >
-                  <label className="font-bold">Total Amount : </label>
-                  <label className="font-bold">CN Amount : </label>
-                  <label className="font-bold">Round Off : </label>
-                  <label className="font-bold">Net Amount : </label>
-                </div>
-                <div
-                  className="mr-5"
-                  style={{
-                    display: "flex",
-                    gap: "24px",
-                    flexDirection: "column",
-                    alignItems: "end",
-                  }}
-                >
-                  <span style={{ fontWeight: 600 }}>
-                    {data?.total_amount ? data?.total_amount : 0}
-                  </span>
-                  <span style={{ fontWeight: 600, color: "red" }}>
-                    {-(parseFloat(data?.cn_amount) || 0).toFixed(2)}
-                  </span>
-
-                  <span style={{ fontWeight: 600 }}>
-                    {roundOffAmount === "0.00"
-                      ? roundOffAmount
-                      : roundOffAmount < 0
-                        ? `-${Math.abs(roundOffAmount)}`
-                        : `+${Math.abs(roundOffAmount)}`}
-                  </span>
-                 
-
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "22px",
-                      color: "var(--color1)",
-                    }}
-                  >
-                    {data?.net_amount ? data?.net_amount : 0}
-                  </span>
-                </div>
-              </div> */}
             </div>
           </div>
 
-          {/* CN List PopUp Box */}
-          <Dialog open={openAddPopUp}>
-            <DialogTitle id="alert-dialog-title" className="secondary">
-              {header}
-            </DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={resetAddDialog}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <div className="bg-white">
-                  <div className="bg-white">
-                    <table className="custom-table">
-                      <thead>
-                        <tr>
-                          <th>Bill No</th>
-                          <th>Bill Date</th>
-                          <th>Amount</th>
-                          <th>Adjust CN Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data?.cn_bill_list?.length === 0 ? (
-                          <tr>
-                            <td>No data found</td>
-                          </tr>
-                        ) : (
-                          data?.cn_bill_list?.map((row, index) => (
-                            <tr key={index}>
-                              <td>{row.bill_no}</td>
-                              <td>{row.bill_date}</td>
-                              <td>{row.total_amount}</td>
-                              <td>{row.cn_amount}</td>
-                            </tr>
-                          ))
-                        )}
-                        {/* <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>Total Bills Amount</td>
-                                                    <td>
-                                                        <span style={{ fontSize: '14px', fontWeight: 800, color: 'black' }}>Rs.{data?.cn_bill_list?.total_amount}</span>
-                                                    </td>
-                                                </tr> */}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions></DialogActions>
-          </Dialog>
+{/*<================================================================================== total details  ==================================================================================> */}
 
           <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
             <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
@@ -569,7 +447,7 @@ const PurchaseView = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>
-                <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
+                <div className="gap-2 " onClick={()=> setIsModalOpen(!isModalOpen)} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
                   <label className="font-bold">Net Amount : </label>
                   <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
                     <FaCaretUp />
@@ -579,15 +457,14 @@ const PurchaseView = () => {
 
                 <Modal
                   show={isModalOpen}
-                  onClose={toggleModal}
+                  onClose={()=> setIsModalOpen(!isModalOpen)}
                   size="lg"
                   position="bottom-center"
                   className="modal_amount"
-                // style={{ width: "50%" }}
                 >
                   <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
                     <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+                    <IoMdClose onClick={ ()=>setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
 
                   </div>
                   <div
@@ -630,6 +507,62 @@ const PurchaseView = () => {
               </div>
             </div>
           </div>
+
+{/*<================================================================================== CN Popup  ==================================================================================> */}
+          {/* CN List PopUp Box */}
+
+          <Dialog open={openAddPopUp}>
+            <DialogTitle id="alert-dialog-title" className="secondary">
+            Cn Amount List
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={()=>setOpenAddPopUp(false)}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="bg-white">
+                  <div className="bg-white">
+                    <table className="custom-table">
+                      <thead>
+                        <tr>
+                          <th>Bill No</th>
+                          <th>Bill Date</th>
+                          <th>Amount</th>
+                          <th>Adjust CN Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data?.cn_bill_list?.length === 0 ? (
+                          <tr>
+                            <td>No data found</td>
+                          </tr>
+                        ) : (
+                          data?.cn_bill_list?.map((row, index) => (
+                            <tr key={index}>
+                              <td>{row.bill_no}</td>
+                              <td>{row.bill_date}</td>
+                              <td>{row.total_amount}</td>
+                              <td>{row.cn_amount}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions></DialogActions>
+          </Dialog>
         </div>
       )}
     </>

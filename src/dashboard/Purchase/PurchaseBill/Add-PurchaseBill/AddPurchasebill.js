@@ -325,6 +325,8 @@ const AddPurchaseBill = () => {
   /*<================================================================== Clear old purchase item if user leave the browswer ==========================================================> */
 
   useEffect(() => {
+    /*<=========================================================================== Calculate discount ================================================================================> */
+  
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
 
@@ -957,8 +959,6 @@ const AddPurchaseBill = () => {
         data.append("unit_id", Number(value.unit_id));
       }
     }
-
-
 
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("weightage", unit ? Number(unit) : 1);
@@ -1961,7 +1961,6 @@ const AddPurchaseBill = () => {
                                   renderInput={(params) => (
                                     <TextField
                                       tabIndex={0}
-
                                       variant="outlined"
                                       autoComplete="off"
                                       sx={{ width: 350, padding: 0 }}
@@ -2311,7 +2310,7 @@ const AddPurchaseBill = () => {
                             style={{
                               display: "flex",
                               gap: "8px",
-                              width: "350px"
+                              width: "320px"
                             }}
                           >
                             <BorderColorIcon
@@ -2334,7 +2333,7 @@ const AddPurchaseBill = () => {
                           <td>{item.free_qty}</td>
                           <td>{item.ptr}</td>
                           <td>{item.discount}</td>
-                          <td>{item.scheme_account}</td>
+                          {/* <td>{item.scheme_account}</td> */}
                           <td>{item.base_price}</td>
                           <td>{item.gst}</td>
                           <td>{item.location}</td>

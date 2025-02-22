@@ -42,19 +42,21 @@ import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 
 const EditPurchaseBill = () => {
-  const inputRef1 = useRef();
-  const inputRef2 = useRef();
-  const inputRef3 = useRef();
-  const inputRef4 = useRef();
-  const inputRef5 = useRef();
-  const inputRef6 = useRef();
-  const inputRef7 = useRef();
-  const inputRef8 = useRef();
-  const inputRef9 = useRef();
-  const inputRef10 = useRef();
-  const inputRef11 = useRef();
-  const inputRef12 = useRef();
-  const inputRef13 = useRef();
+  const inputRefs = useRef([]);
+
+  // const inputRef1 = useRef();
+  // const inputRef2 = useRef();
+  // const inputRef3 = useRef();
+  // const inputRef4 = useRef();
+  // const inputRef5 = useRef();
+  // const inputRef6 = useRef();
+  // const inputRef7 = useRef();
+  // const inputRef8 = useRef();
+  // const inputRef9 = useRef();
+  // const inputRef10 = useRef();
+  // const inputRef11 = useRef();
+  // const inputRef12 = useRef();
+  // const inputRef13 = useRef();
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [searchItem, setSearchItem] = useState("");
   const [itemList, setItemList] = useState([]);
@@ -85,7 +87,7 @@ const EditPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState({ id: "", name: "" });
+  const [gst, setGst] = useState();
   const [batch, setBatch] = useState("");
   const [gstList, setGstList] = useState([]);
   const [historyList, setHistoryList] = useState([]);
@@ -125,62 +127,64 @@ const EditPurchaseBill = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [ purchase, setPurchase] = useState([]);
+  const [purchase, setPurchase] = useState([]);
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
-    const tableRef = useRef(null); // Reference for table container
-  
-    // Handle key presses for navigating rows
-    const handleKeyPress = (e) => {
-      const key = e.key;
-      
-      console.log(key)
-      if (key === "ArrowDown") {
-     
-        setSelectedIndex((prev) => prev < purchase?.item_list?.length - 1 ? prev + 1 : prev);
-        const selectedRow = purchase?.item_list[selectedIndex];
-        setSelectedEditItemId(selectedRow.id);
+  const tableRef = useRef(null); // Reference for table container
 
-      } else if (key === "ArrowUp") {
-       
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-        const selectedRow = purchase?.item_list[selectedIndex];
-        setSelectedEditItemId(selectedRow.id);
-        
-      } else if (key === "Enter" && selectedIndex !== -1) {
-        // Confirm selection
-        console.log("hi");
-        const selectedRow = purchase?.item_list[selectedIndex];
-        setSelectedEditItemId(selectedRow.id);
-        console.log( purchase?.item_list[selectedIndex],"hi")
-        handleEditClick(purchase?.item_list[selectedIndex])
-        // alert(`Selected ID: ${selectedRow.id}`);
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Handle key presses for navigating rows
+  const handleKeyPress = (e) => {
+    const key = e.key;
+
+    console.log(key)
+    if (key === "ArrowDown") {
+
+      setSelectedIndex((prev) => prev < purchase?.item_list?.length - 1 ? prev + 1 : prev);
+      const selectedRow = purchase?.item_list[selectedIndex];
+      setSelectedEditItemId(selectedRow.id);
+
+    } else if (key === "ArrowUp") {
+
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      const selectedRow = purchase?.item_list[selectedIndex];
+      setSelectedEditItemId(selectedRow.id);
+
+    } else if (key === "Enter" && selectedIndex !== -1) {
+      // Confirm selection
+      console.log("hi");
+      const selectedRow = purchase?.item_list[selectedIndex];
+      setSelectedEditItemId(selectedRow.id);
+      console.log(purchase?.item_list[selectedIndex], "hi")
+      handleEditClick(purchase?.item_list[selectedIndex])
+      // alert(`Selected ID: ${selectedRow.id}`);
+    }
+  };
+
+  // Ensure the table container listens for key events
+  useEffect(() => {
+    const currentRef = tableRef.current;
+    if (currentRef) {
+      currentRef.focus();
+      currentRef.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("keydown", handleKeyPress);
       }
     };
-  
-    // Ensure the table container listens for key events
-    useEffect(() => {
-      const currentRef = tableRef.current;
-      if (currentRef) {
-        currentRef.focus(); 
-        currentRef.addEventListener("keydown", handleKeyPress);
-      }
-  
-      return () => {
-        if (currentRef) {
-          currentRef.removeEventListener("keydown", handleKeyPress);
-        }
-      };
-    }, [selectedIndex, purchase]);
-  
-    // Update selectedEditItemId when selectedIndex changes
-  
-    useEffect(() => {
-      if (selectedIndex >= 0) {
-        setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
-      }
-    }, [selectedIndex, purchase]);
-    
+  }, [selectedIndex, purchase]);
+
+  // Update selectedEditItemId when selectedIndex changes
+
+  useEffect(() => {
+    if (selectedIndex >= 0) {
+      setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
+    }
+  }, [selectedIndex, purchase]);
+
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -360,23 +364,36 @@ const EditPurchaseBill = () => {
     listOfGst();
     // listOfHistory()
   }, [id]);
+  /*<================================================================== caculation ==========================================================> */
 
   useEffect(() => {
-    if (!qty || !ptr || !disc || !gst.name || !free) {
+    if (!qty || !ptr || !disc || !gst || !free) {
       console.warn("One or more dependencies are undefined");
       return;
     }
+    /*<=========================================================================== Calculate discount ================================================================================> */
 
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
+
+    /*<=========================================================================== Calculate totalBase ================================================================================> */
+
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
 
-    const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst.name) / 100).toFixed(2)
+    /*<============================================================================= Calculate totalAmount ==============================================================================> */
+const totalAmount = parseFloat(
+      (totalBase + (totalBase * gst) / 100).toFixed(2)
     );
-    setItemTotalAmount(totalAmount);
+    if (totalAmount) {
+      setItemTotalAmount(totalAmount);
+    } else {
+      setItemTotalAmount(0);
+    }
+
+    /*<======================================================================================= Net Rate calculation ====================================================================> */
+
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
     const netRate = parseFloat(
@@ -384,9 +401,11 @@ const EditPurchaseBill = () => {
     );
     setNetRate(netRate);
 
+    /*<================================================================================= Margin calculation =========================================================================> */
+
     const margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(margin);
-  }, [qty, ptr, disc, gst.name, free]);
+  }, [qty, ptr, disc, gst, free,ItemTotalAmount]);
 
   // Call the combined function when you want to initiate the data fetching
   useEffect(() => {
@@ -404,10 +423,7 @@ const EditPurchaseBill = () => {
       setDisc(selectedEditItem.disocunt);
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
-      setGst(
-        gstList.find((option) => option.name === selectedEditItem.gst_name) ||
-        {}
-      );
+      setGst(selectedEditItem.gst_name);
       setLoc(selectedEditItem.location);
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
@@ -552,14 +568,13 @@ const EditPurchaseBill = () => {
       toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
-    if (!unit) newErrors.unit = "Unit is required";
-    // if (!HSN) {
-    //   toast.error("HSN is required");
-    //   newErrors.HSN = "HSN is required";
+    if (!unit) {
+      newErrors.unit = "Unit is required";
+       toast.error(newErrors.unit)}
+    
+    if (!batch) {newErrors.batch = "Batch is required";
+    toast.error(newErrors.batch)}
 
-    // }
-
-    if (!batch) newErrors.batch = "Batch is required";
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.error(newErrors.expiryDate);
@@ -586,7 +601,9 @@ const EditPurchaseBill = () => {
       toast.error("PTR must be less than or equal to MRP");
     }
     // if (!base) newErrors.base = "Base is required";
-    if (!gst.name) newErrors.gst = "GST is required";
+    if (!gst) {newErrors.gst = "GST is required";
+      toast.error(newErrors.gst)
+    }
     if (!searchItem) {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
@@ -678,10 +695,7 @@ const EditPurchaseBill = () => {
           setDisc(response?.data?.data[0]?.batch_list[0]?.discount);
           setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account);
           setBase(response?.data?.data[0]?.batch_list[0]?.base);
-          setGst({
-            id: response?.data?.data[0]?.batch_list[0]?.gst,
-            name: response?.data?.data[0]?.batch_list[0]?.gst_name,
-          });
+          setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
           setLoc(response?.data?.data[0]?.batch_list[0]?.location);
           setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
           setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate);
@@ -704,6 +718,14 @@ const EditPurchaseBill = () => {
 
   const handleEditItem = async () => {
     setUnsavedItems(true);
+
+    const gstMapping = {
+      28: 6,
+      18: 4,
+      12: 3,
+      5: 2,
+      0: 1
+    };
 
     let data = new FormData();
     data.append("user_id", userId);
@@ -732,7 +754,7 @@ const EditPurchaseBill = () => {
     data.append("discount", !disc ? 0 : disc);
     data.append("scheme_account", !schAmt ? 0 : schAmt);
     data.append("base_price", !base ? 0 : base);
-    data.append("gst", !gst.id ? 0 : gst.id);
+    data.append("gst", gstMapping[gst] ?? gst);
     data.append("location", !loc ? 0 : loc);
     data.append("margin", !margin ? 0 : margin);
     data.append("net_amount", !netAmount ? 0 : netAmount);
@@ -913,7 +935,7 @@ const EditPurchaseBill = () => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-  
+
 
     if (selectedEditItem) {
       setSearchItem(selectedEditItem.item_name);
@@ -928,10 +950,7 @@ const EditPurchaseBill = () => {
       setDisc(selectedEditItem.disocunt);
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
-      setGst(
-        gstList.find((option) => option.name === selectedEditItem.gst_name) ||
-        {}
-      );
+      setGst(selectedEditItem.gst_name);
       setLoc(selectedEditItem.location);
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
@@ -950,33 +969,14 @@ const EditPurchaseBill = () => {
     setOpenAddPopUp(false);
     // setCnAmount(0)
   };
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event, index) => {
+
     if (event.key === "Enter") {
-      event.preventDefault();
-      if (event.target === inputRef1.current) {
-        inputRef2.current.focus();
-      } else if (event.target === inputRef2.current) {
-        inputRef3.current.focus();
-      } else if (event.target === inputRef3.current) {
-        inputRef4.current.focus();
-      } else if (event.target === inputRef4.current) {
-        inputRef5.current.focus();
-      } else if (event.target === inputRef5.current) {
-        inputRef6.current.focus();
-      } else if (event.target === inputRef6.current) {
-        inputRef7.current.focus();
-      } else if (event.target === inputRef7.current) {
-        inputRef8.current.focus();
-      } else if (event.target === inputRef8.current) {
-        inputRef9.current.focus();
-      } else if (event.target === inputRef9.current) {
-        inputRef10.current.focus();
-      } else if (event.target === inputRef10.current) {
-        inputRef11.current.focus();
-      } else if (event.target === inputRef11.current) {
-        inputRef12.current.focus();
-      } else if (event.target === inputRef12.current) {
-        inputRef13.current.focus();
+      event.preventDefault(); // Prevent form submission
+
+      const nextInput = inputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus(); // Move to next input
       }
     }
   };
@@ -1336,7 +1336,7 @@ const EditPurchaseBill = () => {
                 <div className="detail custommedia" style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "100%"
+
                 }}>
                   <span className="heading  mb-2">Distributor</span>
                   <Autocomplete
@@ -1358,6 +1358,8 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         {...params}
+                        inputRef={(el) => (inputRefs.current[0] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 0)}
                       />
                     )}
                   />
@@ -1367,38 +1369,7 @@ const EditPurchaseBill = () => {
                     </span>
                   )}
                 </div>
-                {/* <div className="detail custommedia" style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%"
-                }}>
-                  <span className="heading  mb-2">Bill No. / Order No.</span>
-                  <TextField
-                    sx={{
-                      width: "100%",
-                      minWidth: "350px",
-                      "@media (max-width:600px)": {
-                        minWidth: "250px",
-                      },
-                    }}
-                    variant="outlined"
-                    autoComplete="off"
-                    id="outlined-number"
-                    disabled
-                    size="small"
-                    style={{ width: "100%" }}
-                    value={billNo.toUpperCase()}
-                    // onChange={(e) => { setbillNo(e.target.value) }}
-                    onChange={(e) => {
-                      setbillNo(e.target.value.toUpperCase());
-                    }}
-                  />
-                  {error.billNo && (
-                    <span style={{ color: "red", fontSize: "12px" }}>
-                      {error.billNo}
-                    </span>
-                  )}
-                </div> */}
+
                 <div className="detail custommedia" style={{
                   display: "flex",
                   flexDirection: "column",
@@ -1406,10 +1377,10 @@ const EditPurchaseBill = () => {
                 }}>
                   <span className="heading  mb-2">Bill Date</span>
                   <DatePicker
-                   sx={{
-                    width: "250px",
-                   
-                  }}
+                    sx={{
+                      width: "250px",
+
+                    }}
                     variant="outlined"
                     disabled
                     className="custom-datepicker_mn "
@@ -1499,7 +1470,7 @@ const EditPurchaseBill = () => {
                           ) : (
                             <Autocomplete
                               value={searchItem?.iteam_name}
-                              sx={{ width: 370 }}
+                              sx={{ width: 350, padding: 0 }}
                               size="small"
                               onChange={handleOptionChange}
                               onInputChange={handleInputChange}
@@ -1533,6 +1504,8 @@ const EditPurchaseBill = () => {
                                   {...params}
                                   // label="Search Item Name"
                                   autoFocus
+                                  inputRef={(el) => (inputRefs.current[0] = el)}
+                                  onKeyDown={(e) => handleKeyDown(e, 0)}
                                 />
                               )}
                             />
@@ -1545,11 +1518,11 @@ const EditPurchaseBill = () => {
                             variant="outlined"
                             id="outlined-number"
                             type="number"
-                            inputRef={inputRef1}
+                            // inputRef={inputRef1}
                             size="small"
                             error={!!errors.unit}
                             value={unit}
-                            sx={{ width: "100px" }}
+                            sx={{ width: "80px" }}
                             onChange={(e) => {
                               const value = e.target.value.replace(
                                 /[^0-9]/g,
@@ -1558,52 +1531,23 @@ const EditPurchaseBill = () => {
                               setUnit(value ? Number(value) : "");
                             }}
                             onKeyDown={(e) => {
-                              if (
-                                ["e", "E", ".", "+", "-", ","].includes(e.key)
-                              ) {
+                              if (["e", "E", ".", "+", "-", ","].includes(e.key)) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 1);
                             }}
+
+                            inputRef={(el) => (inputRefs.current[1] = el)}
+
                           />
                         </td>
-                        {/* <td>
-                          <TextField
-                            variant="outlined"
-                            autoComplete="off"
-                            id="outlined-number"
-                            type="text"
-                            size="small"
-                            error={!!errors.HSN}
-                            value={HSN}
-                            sx={{ width: "100px" }}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(
-                                /[^0-9]/g,
-                                ""
-                              );
-                              setHSN(value ? Number(value) : "");
-                            }}
-                            onKeyDown={(e) => {
-                              if (
-                                ["e", "E", ".", "+", "-", ","].includes(e.key)
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
-                          {error.unit && (
-                            <span style={{ color: "red", fontSize: "12px" }}>
-                              {error.HSN}
-                            </span>
-                          )}
-                        </td> */}
+
                         <td>
                           <TextField
                             autoComplete="off"
                             variant="outlined"
                             id="outlined-number"
-                            inputRef={inputRef2}
-                            onKeyDown={handleKeyDown}
+                            // inputRef={inputRef2}
                             size="small"
                             value={batch}
                             sx={{ width: "100px" }}
@@ -1611,6 +1555,9 @@ const EditPurchaseBill = () => {
                             onChange={(e) => {
                               setBatch(e.target.value);
                             }}
+                            inputRef={(el) => (inputRefs.current[2] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 2)}
+
                           />
                         </td>
                         <td>
@@ -1620,17 +1567,14 @@ const EditPurchaseBill = () => {
                             variant="outlined"
                             size="small"
                             sx={{ width: "100px" }}
-                            inputRef={inputRef3}
-                            onKeyDown={(e) => {
-                              if (["e", "E"].includes(e.key)) {
-                                e.preventDefault();
-                              }
-                              handleKeyDown(e);
-                            }}
+                            // inputRef={inputRef3}
+
                             error={!!errors.expiryDate}
                             value={expiryDate}
                             onChange={handleExpiryDateChange}
                             placeholder="MM/YY"
+                            inputRef={(el) => (inputRefs.current[3] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 3)}
                           />
                         </td>
                         <td>
@@ -1639,9 +1583,9 @@ const EditPurchaseBill = () => {
                             id="outlined-number"
                             variant="outlined"
                             type="number"
-                            sx={{ width: "100px" }}
+                            sx={{ width: "90px" }}
                             size="small"
-                            inputRef={inputRef4}
+                            // inputRef={inputRef4}
                             error={!!errors.mrp}
                             value={mrp}
                             onChange={(e) => {
@@ -1653,11 +1597,15 @@ const EditPurchaseBill = () => {
                             onKeyDown={(e) => {
                               if (
                                 ["e", "E", "+", "-", ","].includes(e.key) ||
-                                (e.key === "." && e.target.value.includes("."))
+                                (e.key === "." &&
+                                  e.target.value.includes("."))
                               ) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 4)
+
                             }}
+                            inputRef={(el) => (inputRefs.current[4] = el)}
                           />
                         </td>
                         <td>
@@ -1666,9 +1614,9 @@ const EditPurchaseBill = () => {
                             id="outlined-number"
                             variant="outlined"
                             type="number"
-                            sx={{ width: "100px" }}
+                            sx={{ width: "80px" }}
                             size="small"
-                            inputRef={inputRef5}
+                            // inputRef={inputRef5}
                             value={qty}
                             onChange={(e) => {
                               const value = e.target.value.replace(
@@ -1677,12 +1625,15 @@ const EditPurchaseBill = () => {
                               );
                               setQty(value ? Number(value) : "");
                             }}
+                            inputRef={(el) => (inputRefs.current[5] = el)}
+
                             onKeyDown={(e) => {
                               if (
                                 ["e", "E", ".", "+", "-", ","].includes(e.key)
                               ) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 5)
                             }}
                           />
                         </td>
@@ -1693,9 +1644,9 @@ const EditPurchaseBill = () => {
                             variant="outlined"
                             size="small"
                             type="number"
-                            sx={{ width: "100px" }}
+                            sx={{ width: "60px" }}
                             value={free}
-                            inputRef={inputRef6}
+                            // inputRef={inputRef6}
                             error={!!errors.free}
                             onChange={(e) => {
                               const value = e.target.value.replace(
@@ -1710,7 +1661,9 @@ const EditPurchaseBill = () => {
                               ) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 6)
                             }}
+                            inputRef={(el) => (inputRefs.current[6] = el)}
                           />
                         </td>
                         <td>
@@ -1719,18 +1672,22 @@ const EditPurchaseBill = () => {
                             autoComplete="off"
                             id="outlined-number"
                             type="number"
-                            sx={{ width: "100px" }}
+                            sx={{ width: "90px" }}
                             size="small"
-                            inputRef={inputRef7}
+                            // inputRef={inputRef7}
                             value={ptr}
                             onKeyDown={(e) => {
                               if (
                                 ["e", "E", "+", "-", ","].includes(e.key) ||
-                                (e.key === "." && e.target.value.includes("."))
+                                (e.key === "." &&
+                                  e.target.value.includes("."))
                               ) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 7)
                             }}
+
+                            inputRef={(el) => (inputRefs.current[7] = el)}
                             onChange={handlePTR}
                           />
                         </td>
@@ -1739,18 +1696,22 @@ const EditPurchaseBill = () => {
                             variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
-                            sx={{ width: "100px" }}
+                            sx={{ width: "65px" }}
                             size="small"
                             type="number"
-                            inputRef={inputRef8}
+                            // inputRef={inputRef8}
                             onKeyDown={(e) => {
                               if (
                                 ["e", "E", "+", "-", ","].includes(e.key) ||
-                                (e.key === "." && e.target.value.includes("."))
+                                (e.key === "." &&
+                                  e.target.value.includes("."))
                               ) {
                                 e.preventDefault();
                               }
+                              handleKeyDown(e, 8)
                             }}
+                            inputRef={(el) => (inputRefs.current[8] = el)}
+
                             value={disc}
                             error={!!errors.disc}
                             onChange={(e) => {
@@ -1762,24 +1723,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        {/* <td>
-                          <TextField
-                            variant="outlined"
-                            autoComplete="off"
-                            id="outlined-number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            inputRef={inputRef9}
-                            onKeyDown={(e) => {
-                              if (["e", "E"].includes(e.key)) {
-                                e.preventDefault();
-                              }
-                              handleKeyDown(e);
-                            }}
-                            value={schAmt}
-                            disabled
-                          />
-                        </td> */}
+
                         <td>
                           <TextField
                             variant="outlined"
@@ -1788,7 +1732,8 @@ const EditPurchaseBill = () => {
                             type="number"
                             size="small"
                             value={base}
-                            inputRef={inputRef10}
+                            
+                            // inputRef={inputRef10}
                             onKeyDown={(e) => {
                               if (["e", "E"].includes(e.key)) {
                                 e.preventDefault();
@@ -1800,39 +1745,37 @@ const EditPurchaseBill = () => {
                             onChange={(e) => {
                               setBase(e.target.value);
                             }}
+
                           />
                         </td>
                         <td>
-                          <Select
+                          <TextField
                             variant="outlined"
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={gst.name}
-                            sx={{ minWidth: "100px" }}
-                            onChange={(e) => {
-                              const selectedOption = gstList.find(
-                                (option) => option.name === e.target.value
-                              );
-                              setGst(selectedOption);
-                            }}
                             size="small"
-                            displayEmpty
+                            value={gst}
+                            sx={{ width: "65px" }}
                             error={!!errors.gst}
-                          >
-                            {gstList?.map((option) => (
-                              <MenuItem key={option.id} value={option.name}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                            inputRef={(el) => (inputRefs.current[9] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 9)}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setGst(value ? Number(value) : "");
+                              }
+                            }}
+                            open={isOpen}
+                            onOpen={() => setIsOpen(true)}
+                            onClose={() => setIsOpen(false)}
+                          />
+                         
                         </td>
                         <td>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
                             id="outlined-number"
-                            inputRef={inputRef12}
-                            onKeyDown={handleKeyDown}
+                            // inputRef={inputRef12}
+                            inputRef={(el) => (inputRefs.current[10] = el)}
                             size="small"
                             value={loc}
                             error={!!errors.loc}
@@ -1840,11 +1783,17 @@ const EditPurchaseBill = () => {
                             onChange={(e) => {
                               setLoc(e.target.value);
                             }}
+                            onKeyDown={async (e) => {
+                              if (e.key === 'Enter') {
+                                await addPurchaseValidation();
+                                handleKeyDown(e, 1)
+                              }
+                            }}
                           />
                         </td>
                         <td>
                           <td>
-                           <TextField
+                            <TextField
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
@@ -1884,11 +1833,11 @@ const EditPurchaseBill = () => {
                         </td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid lightgray' }} >
-                        
+
                         <td colSpan={14}></td>
 
                         <td>
-                          <Button
+                          {/* <Button
 
                             variant="contained"
                             color="success"
@@ -1897,34 +1846,33 @@ const EditPurchaseBill = () => {
                               gap: "5px",
                               background: "var(--color1)",
                             }}
-                            onClick={addPurchaseValidation}
+                            onClick={addPurchaseValidation }
                           >
                             <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
                             {isEditMode ? "Edit" : "Add"}
 
-                          </Button>
-                          
+                          </Button> */}
+
                         </td>
                       </tr>
-                     
+
                     </tbody>
                   </table>
                   <>
                     <table
-                     className="customtable  w-full border-collapse custom-table"
-                     ref={tableRef}
-                     tabIndex={0} >
-                      <tbody 
+                      className="customtable  w-full  border-collapse custom-table"
+                      ref={tableRef}
+                      tabIndex={0} >
+                      <tbody
                       >
                         {purchase?.item_list?.map((item) => (
                           <tr
                             key={item.id}
                             onClick={() => handleEditClick(item)}
-                            
-                        className={` item-List  cursor-pointer saleTable ${item.id === selectedEditItemId
-                          ? "highlighted-row"
-                          : ""
-                          }`}
+                            className={` item-List  flex justify-between  cursor-pointer  ${item.id === selectedEditItemId
+                              ? "highlighted-row"
+                              : ""}`}
+                           
                           >
                             <td
                               style={{
@@ -1965,153 +1913,6 @@ const EditPurchaseBill = () => {
                     </table>
                   </>
 
-                  {/* <div className="flex gap-10 justify-end mt-5 ">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "20px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Total GST : </label>
-                        <div className="font-bold">{purchase?.total_gst}</div>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Total Qty :</label>
-                        <div className="font-bold">
-                          {purchase?.total_qty} +{" "}
-                          <span className="primary">
-                            {purchase?.total_free_qty
-                              ? purchase?.total_free_qty
-                              : 0}{" "}
-                            Free{" "}
-                          </span>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Total Net Profit :</label>
-                        <div className="font-bold">
-                          {purchase?.total_net_rate}
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Total Base :</label>
-                        <div className="font-bold">{purchase?.total_base}</div>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "22px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Total Amount : </label>
-                        <span
-                          style={{
-                            fontWeight: 600,
-                          }}
-                        >
-                          {(parseFloat(purchase?.total_amount) || 0).toFixed(2)}
-                        </span>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">CN Amount : </label>
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            color: "#F31C1C",
-                          }}
-                        >
-                          {-(parseFloat(finalCnAmount) || 0).toFixed(2)}
-                        </span>
-                      </div>
-
-                                            <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Round off : </label>
-                        <span
-                          style={{
-                            fontWeight: 600,
-                          }}
-                        >
-                          {(parseFloat(roundOffAmount) || 0).toFixed(2)}
-                        </span>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: "25px",
-                        }}
-                      >
-                        <label className="font-bold">Net Amount : </label>
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            fontSize: "22px",
-                            color: "#3f6212",
-                          }}
-                        >
-                          {(parseFloat(netAmount) || 0).toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
               </div>
 

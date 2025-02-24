@@ -1075,6 +1075,10 @@ const AddPurchaseBill = () => {
       if (response.data.status === 200) {
 
         setOpenAddItemPopUp(false);
+        setAddItemName("")
+        setAddBarcode("")
+        setAddUnit("")
+        
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }

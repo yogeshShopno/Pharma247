@@ -600,7 +600,7 @@ const totalAmount = parseFloat(
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-    // if (!base) newErrors.base = "Base is required";
+ 
     if (!gst) {newErrors.gst = "GST is required";
       toast.error(newErrors.gst)
     }

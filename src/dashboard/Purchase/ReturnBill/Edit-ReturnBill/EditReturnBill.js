@@ -108,6 +108,7 @@ const EditReturnBill = () => {
     const [margin, setMargin] = useState(0)
     const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
     const [uniqueId, setUniqueId] = useState([])
+    const [isEditMode, setIsEditMode] = useState(false);
 
     const handleClose = () => {
         setIsDelete(false);
@@ -520,6 +521,7 @@ const EditReturnBill = () => {
     }
 
     const handleEditClick = (item) => {
+
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
 
         if (!existingItem) {
@@ -536,6 +538,8 @@ const EditReturnBill = () => {
         setSelectedEditItemId(item.id);
         setQty(item.qty)
         setInitialTotalStock(item.total_stock);
+        setIsEditMode(true);
+
 
     };
     // const handleQty = (value) => {
@@ -584,6 +588,7 @@ const EditReturnBill = () => {
 
 
     const EditReturnItem = async () => {
+        setIsEditMode(false);
         setUnsavedItems(true)
 
         const newErrors = {};
@@ -882,19 +887,12 @@ const EditReturnBill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
                                 }}>
                                     <span className="heading mb-2">Distributor</span>
                                     <Autocomplete
                                         disabled
                                         value={distributor}
-                                        sx={{
-                                            width: '100%',
-                                            // minWidth: '550px',
-                                            // '@media (max-width:600px)': {
-                                            //     minWidth: '300px',
-                                            // },
-                                        }}
+                                        sx={{ width: '350px' }}
                                         size='small'
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
@@ -907,22 +905,27 @@ const EditReturnBill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+
                                 }}>
                                     <span className="heading mb-2 ">Bill Date</span>
-                                    <div style={{ width: "100%" }}>
+                                    <div >
                                         <DatePicker
                                             className='custom-datepicker_mn '
                                             selected={selectedDate}
                                             onChange={(newDate) => setSelectedDate(newDate)}
                                             dateFormat="dd/MM/yyyy"
                                             disabled
-                                            sx={colors = "#BDBDBD"}
+
+                                            sx={{
+                                                width: '350px', colors: "#BDBDBD"
+
+                                            }}
                                             style={{
                                                 color: '#BDBDBD',
                                                 backgroundColor: '#F0F0F0',
                                                 border: '1px solid #BDBDBD',
                                                 cursor: 'not-allowed',
+                                                width: '350px'
                                             }}
                                         />
                                     </div>
@@ -930,14 +933,14 @@ const EditReturnBill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+
                                 }}>
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-number"
                                         size="small"
-                                        sx={{ width: '100%' }}
+
                                         value={billNo}
                                         disabled
                                         onChange={(e) => { setBillNo(e.target.value) }}
@@ -948,17 +951,15 @@ const EditReturnBill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
                                 }}>
                                     <span className="heading mb-2">Start Date</span>
-                                    <div style={{ width: "100%" }}>
+                                    <div >
                                         <TextField
                                             autoComplete="off"
 
                                             disabled
                                             id="outlined-number"
                                             size="small"
-                                            sx={{ width: '100%' }}
                                             value={startDate}
                                         />
                                         {/* <DatePicker
@@ -981,10 +982,10 @@ const EditReturnBill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+
                                 }}>
                                     <span className="heading mb-2">End Date</span>
-                                    <div style={{ width: "100%" }}>
+                                    <div>
                                         {/* <DatePicker
                                             className='custom-datepicker '
                                             selected={endDate}
@@ -1006,12 +1007,12 @@ const EditReturnBill = () => {
                                             disabled
                                             id="outlined-number"
                                             size="small"
-                                            sx={{ width: '100%' }}
+
                                             value={endDate}
                                         />
                                     </div>
                                 </div>
-                                <div className="detail custommedia" style={{
+                                {/* <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
                                     width: "100%"
@@ -1023,16 +1024,12 @@ const EditReturnBill = () => {
                                         size="small"
                                         sx={{
                                             width: '100%',
-                                            // minWidth: '550px',
-                                            // '@media (max-width:600px)': {
-                                            //     minWidth: '300px',
-                                            // },
                                         }}
 
                                         value={remark}
                                         onChange={(e) => { setRemark(e.target.value) }}
                                     />
-                                </div>
+                                </div> */}
                                 <div>
                                 </div>
                                 <div className='scroll-two'>
@@ -1055,13 +1052,46 @@ const EditReturnBill = () => {
                                         </thead>
                                         <tbody>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
-                                                <td style={{ width: '500px' }}>
-                                                    <div >
-                                                        <DeleteIcon className='delete-icon' onClick={removeItem}
-                                                        />
-                                                        {searchItem}
-                                                    </div>
-                                                </td>
+                                                {!isEditMode ?
+                                                    <td style={{ width: '350px' }}>
+                                                        <div >
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                id="outlined-basic"
+                                                                size="small"
+                                                                autoFocus
+                                                                sx={{ width: "350px" }}
+                                                                value={searchQuery}
+                                                                onChange={handleInputChange}
+                                                                variant="outlined"
+                                                                placeholder="Please search any items.."
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <SearchIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                    type: "search",
+                                                                }}
+                                                            />
+
+
+                                                        </div>
+
+                                                    </td> : <td style={{ width: '350px' }}>
+                                                        <div style={{ width: 350, padding: 0 }} >
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)" }}
+                                                                onClick={() => setIsEditMode(false)}
+                                                            />
+                                                            <DeleteIcon
+                                                                className="delete-icon mr-2"
+                                                                onClick={removeItem}
+                                                            />
+                                                            {searchItem}
+                                                        </div>
+                                                    </td>
+                                                }
                                                 <td>
                                                     <TextField
                                                         autoComplete="off"
@@ -1072,7 +1102,7 @@ const EditReturnBill = () => {
                                                         size="small"
                                                         error={!!errors.unit}
                                                         value={unit}
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         onChange={(e) => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
                                                             setUnit(value ? Number(value) : "");
@@ -1092,7 +1122,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         disabled
 
                                                         // inputRef={inputRef3}
@@ -1109,7 +1139,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         size="small"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         disabled
 
                                                         // inputRef={inputRef3}
@@ -1125,7 +1155,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         size="small"
                                                         disabled
                                                         // inputRef={inputRef4}
@@ -1154,7 +1184,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         size="small"
                                                         // inputRef={inputRef5}
                                                         // onKeyDown={handleKeyDown}
@@ -1185,7 +1215,7 @@ const EditReturnBill = () => {
                                                         id="outlined-number"
                                                         size="small"
                                                         type="number"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         value={free}
                                                         // inputRef={inputRef6}
                                                         // error={!!errors.free}
@@ -1210,7 +1240,7 @@ const EditReturnBill = () => {
                                                         autoComplete="off"
                                                         id="outlined-number"
                                                         type="number"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         size="small"
                                                         // inputRef={inputRef7}
                                                         // onKeyDown={handleKeyDown}
@@ -1236,7 +1266,7 @@ const EditReturnBill = () => {
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         size="small"
                                                         type="number"
                                                         // inputRef={inputRef8}
@@ -1266,7 +1296,7 @@ const EditReturnBill = () => {
                                                         labelId="dropdown-label"
                                                         id="dropdown"
                                                         value={gst.name}
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         onChange={(e) => {
                                                             const selectedOption = gstList.find(option => option.name === e.target.value);
                                                             setGst(selectedOption);
@@ -1290,8 +1320,14 @@ const EditReturnBill = () => {
                                                         size="small"
                                                         value={loc}
                                                         // error={!!errors.loc}
-                                                        sx={{ width: '130px' }}
+                                                        sx={{ width: '100px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
+                                                        onKeyDown={async (e) => {
+                                                            if (e.key === 'Enter') {
+                                                                await EditReturnItem();
+
+                                                            }
+                                                        }}
                                                     />
                                                 </td>
                                                 {/* <td className="total"><span>{ItemTotalAmount}</span></td> */}
@@ -1300,12 +1336,12 @@ const EditReturnBill = () => {
                                             </tr>
                                             <tr style={{ borderBottom: '1px solid lightgray' }} >
                                                 <td>
-                                                    <TextField
+                                                    {/* <TextField
                                                         autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
                                                         autoFocus
-                                                        sx={{ width: "200px", marginTop: "5px" }}
+                                                        sx={{ width: "350px", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
@@ -1318,15 +1354,15 @@ const EditReturnBill = () => {
                                                             ),
                                                             type: "search",
                                                         }}
-                                                    />
+                                                    /> */}
                                                 </td>
 
                                                 <td colSpan={10}></td>
                                                 <td >
-                                                    <Button variant="contained"
+                                                    {/* <Button variant="contained"
                                                         style={{ background: 'var(--color1)' }}
                                                         onClick={EditReturnItem}
-                                                    ><EditIcon sx={{ fontSize: 18 }} />Edit</Button>
+                                                    ><EditIcon sx={{ fontSize: 18 }} />Edit</Button> */}
                                                 </td>
                                             </tr>
 

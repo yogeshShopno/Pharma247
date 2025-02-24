@@ -108,6 +108,19 @@ const AddReturnbill = () => {
     const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const inputRefs = useRef([]);
+  const handleKeyDown = (event, index) => {
+
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission
+
+      const nextInput = inputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus(); // Move to next input
+      }
+    }
+  };
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -865,48 +878,52 @@ const AddReturnbill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+                              
                                 }}>
                                     <span className="heading mb-2">Distributor</span>
                                     <Autocomplete
                                         value={distributor}
-                                        sx={{
-                                            width: '100%',
-                                            // minWidth: '300px',
-                                            // '@media (max-width:600px)': {
-                                            //     minWidth: '250px',
-                                            // },
-                                        }}
+                                        sx={{width: '350px'}}
                                         size='small'
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                                            autoComplete="off" {...params} autoFocus />}
+                                            autoComplete="off" {...params} 
+                                            inputRef={(el) => (inputRefs.current[0] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 0)}
+                                            autoFocus />
+                                        
+                                        }
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                     {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
+                                    
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+                                   
                                 }}>
                                     <span className="heading mb-2">Bill Date</span>
                                     <div>
                                         <DatePicker
+
                                             className='custom-datepicker_mn '
                                             selected={selectedDate}
                                             onChange={(newDate) => setSelectedDate(newDate)}
                                             dateFormat="dd/MM/yyyy"
                                             filterDate={(date) => !isDateDisabled(date)}
+                                          
+                                            inputRef={(el) => (inputRefs.current[1] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 1)}
                                         />
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+                                  
                                 }}>
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
@@ -914,9 +931,10 @@ const AddReturnbill = () => {
                                         id="outlined-number"
                                         type='number'
                                         size="small"
-                                        sx={{ width: '100%' }}
                                         value={billNo}
                                         disabled
+                                        inputRef={(el) => (inputRefs.current[2] = el)}
+                                        onKeyDown={(e) => handleKeyDown(e, 2)}
                                     />
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
 
@@ -925,7 +943,7 @@ const AddReturnbill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+                                    
                                 }}>
                                     <span className="heading mb-2">Start Date</span>
                                     <div >
@@ -936,13 +954,15 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setStartDate(newDate)}
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
+                                            inputRef={(el) => (inputRefs.current[3] = el)}
+                                        onKeyDown={(e) => handleKeyDown(e, 3)}
                                         />
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%"
+                                 
                                 }}>
                                     <span className="heading mb-2">End Date</span>
                                     <div >
@@ -952,11 +972,13 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setEndDate(newDate)}
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
+                                            inputRef={(el) => (inputRefs.current[4] = el)}
+                                        onKeyDown={(e) => handleKeyDown(e, 4)}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="detail custommedia" style={{
+                                {/* <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
                                     width: "100%",
@@ -968,20 +990,16 @@ const AddReturnbill = () => {
                                         size="small"
                                         sx={{
                                             width: '100%',
-                                            // minWidth: '300px',
-                                            // '@media (max-width:600px)': {
-                                            //     minWidth: '250px',
-                                            // },
+                                           
                                         }}
                                         value={remark}
                                         onChange={(e) => { setRemark(e.target.value) }}
                                     />
-                                </div>
+                                </div> */}
 
                                 <div className='detail custommedia' style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: "100%",
                                     justifyContent: 'end'
                                 }}>
                                     <Button
@@ -990,15 +1008,13 @@ const AddReturnbill = () => {
                                         style={{
                                             minHeight: '38px',
                                             alignItems: "center",
-                                            // marginTop: "24px",
+                                            marginBottom: "4px",
                                             background: "var(--color1)"
                                         }}
                                         onClick={() => filterData(searchItem)}
                                     >
                                         <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
                                     </Button>
-
-
                                 </div>
                                 <div>
                                 </div>
@@ -1053,10 +1069,27 @@ const AddReturnbill = () => {
                                             </tr>
                                         ) : (<>
                                             <tr>
-                                                <td style={{ width: '500px' }}>
+                                                <td style={{ width: '350px' }}>
                                                     <div >
-                                                        <DeleteIcon className='delete-icon' onClick={removeItem}
-                                                        />
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-basic"
+                                                        size="small"
+                                                        sx={{ width: "350px"}}
+                                                        value={searchQuery}
+                                                        onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: "search",
+                                                        }}
+                                                    />
+                                                        {/* <DeleteIcon className='delete-icon' onClick={removeItem}/> */}
                                                         {searchItem}
                                                     </div>
                                                 </td>
@@ -1207,8 +1240,6 @@ const AddReturnbill = () => {
                                                             }
                                                         }}
                                                     />
-
-
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -1289,17 +1320,23 @@ const AddReturnbill = () => {
                                                         error={!!errors.loc}
                                                         sx={{ width: '100px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
+                                                        onKeyDown={async (e) => {
+                                                            if (e.key === 'Enter') {
+                                                              await EditReturn();
+                                                            
+                                                            }
+                                                          }}
                                                     />
                                                 </td>
                                                 <td className="total">{ItemTotalAmount}</td>
                                             </tr>
                                             <tr >
                                                 <td>
-                                                    <TextField
+                                                    {/* <TextField
                                                         autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
-                                                        sx={{ width: "100%", marginTop: "5px" }}
+                                                        sx={{ width: "350px", marginTop: "5px" }}
                                                         value={searchQuery}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
@@ -1312,7 +1349,7 @@ const AddReturnbill = () => {
                                                             ),
                                                             type: "search",
                                                         }}
-                                                    />
+                                                    /> */}
                                                 </td>
                                                 <td></td>
                                                 <td></td>
@@ -1324,7 +1361,8 @@ const AddReturnbill = () => {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td><Button style={{ background: "var(--color1)" }} variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button>
+                                                <td>
+                                                    {/* <Button style={{ background: "var(--color1)" }} variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button> */}
                                                 </td>
                                             </tr>
 

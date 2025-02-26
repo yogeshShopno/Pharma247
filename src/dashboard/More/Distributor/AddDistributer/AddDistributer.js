@@ -166,7 +166,6 @@ const AddDistributer = () => {
                 className="text-xl font-bold primary cursor-pointer add_dist_dst_lst"
                 onClick={() => history.push("/more/DistributorList")}
               >
-                {" "}
                 <ReplyAllIcon className="mb-2 mr-2" />
                 Distributor List
               </h1>

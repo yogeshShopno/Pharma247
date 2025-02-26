@@ -176,73 +176,89 @@ const AddPurchaseBill = () => {
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
   /*<================================================================================ Input ref on keydown enter  =======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
 
   const inputRefs = useRef([]);
+  const submitButtonRef = useRef(null);
 
-  // Handle key presses for navigating rows
-  const handleKeyPress = (e) => {
-    // setTableFocus(true);
-    const key = e.key;
-    if (key === "ArrowDown") {
-      // Move selection down
-      setSelectedIndex((prev) =>
-        prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
-      );
-    } else if (key === "ArrowUp") {
-      // Move selection up
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    } else if (key === "Enter" && selectedIndex !== -1) {
-      // Confirm selection
-
-      const selectedRow = ItemPurchaseList.item[selectedIndex];
-      setSelectedEditItemId(selectedRow.id);
-
-      handleEditClick(ItemPurchaseList.item[selectedIndex])
-
-    }
-  };
+  /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
 
   useEffect(() => {
-    const currentRef = tableRef.current;
-    if (currentRef) {
-      currentRef.focus(); // Ensure focus for capturing key events
-      currentRef.addEventListener("keydown", handleKeyPress);
+    const handleTableFocus = () => setAutocompleteDisabled(false);
+    const handleTableBlur = () => setAutocompleteDisabled(true);
+  
+    if (tableRef.current) {
+      tableRef.current.addEventListener("focus", handleTableFocus);
+      tableRef.current.addEventListener("blur", handleTableBlur);
     }
-
+  
     return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("keydown", handleKeyPress);
+      if (tableRef.current) {
+        tableRef.current.removeEventListener("focus", handleTableFocus);
+        tableRef.current.removeEventListener("blur", handleTableBlur);
       }
     };
-  }, [selectedIndex, ItemPurchaseList]);
-
+  }, []);
+  
+  /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
 
 
   useEffect(() => {
-    if (selectedIndex >= 0) {
-      setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
-    }
+    const handleKeyPress = (e) => {
+      if (!ItemPurchaseList?.item?.length) return; // Prevent errors if list is empty
+
+      const key = e.key;
+
+      // Check if any input field inside inputRefs is focused
+      const isInputFocused = inputRefs.current.some(
+        (input) => input && document.activeElement === input
+      );
+
+      if (isInputFocused) return; // Prevent key navigation when an input is focused
+
+      if (key === "ArrowDown") {
+        // Move selection down
+        setSelectedIndex((prev) =>
+          prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
+        );
+      } else if (key === "ArrowUp") {
+        // Move selection up
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      } else if (key === "Enter" && selectedIndex !== -1) {
+        // Prevent Enter action if any input is focused
+        if (!isInputFocused) {
+          const selectedRow = ItemPurchaseList.item[selectedIndex];
+          setSelectedEditItemId(selectedRow.id);
+          handleEditClick(selectedRow);
+          // inputRefs.current[2].focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
   }, [selectedIndex, ItemPurchaseList]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-        event.preventDefault(); // Prevent the browser's save dialog
-
-        handleSubmit(); // Call your function
+      if (event.altKey && event.key.toLowerCase() === "s") {
+        event.preventDefault(); // Prevent default browser behavior
+        submitButtonRef.current?.focus();
+        // handleSubmit(); 
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -250,7 +266,8 @@ const AddPurchaseBill = () => {
   }, []);
 
   const handleKeyDown = (event, index) => {
-
+ 
+   
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -326,7 +343,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     /*<=========================================================================== Calculate discount ================================================================================> */
-  
+
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
 
@@ -460,6 +477,9 @@ const AddPurchaseBill = () => {
             setIsLoading(false);
             setUnsavedItems(true);
             itemPurchaseList();
+
+            inputRefs.current[2].focus();
+
           });
       } catch (error) {
         setIsLoading(false);
@@ -1037,6 +1057,7 @@ const AddPurchaseBill = () => {
 
   const handleAddNewItem = async () => {
     if (!addItemName && !addUnit && !addBarcode) {
+      toast.error("Please fill all the fields");
       return;
     }
 
@@ -1078,7 +1099,9 @@ const AddPurchaseBill = () => {
         setAddItemName("")
         setAddBarcode("")
         setAddUnit("")
-        
+        inputRefs.current[2].focus();
+        toast.success("Item added successfully");
+
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1141,51 +1164,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-  const handleMouseEnter = (e) => {
-    const hoveredRow = e.currentTarget;
-    setHighlightedRowId(hoveredRow.getAttribute("data-id"));
-  };
-
-
-  const handleTableKeyDown = (e) => {
-
-    const rows = Array.from(
-      tableRef.current?.querySelectorAll("tr.cursor-pointer") || []
-    );
-    let currentIndex = rows.findIndex((row) => row === document.activeElement);
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (rows.length > 0) {
-        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
-        rows[nextIndex]?.focus();
-        setHighlightedRowId(rows[nextIndex]?.getAttribute("data-id"));
-      }
-    }
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (rows.length > 0) {
-        const prevIndex =
-          currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
-        rows[prevIndex]?.focus();
-        setHighlightedRowId(rows[prevIndex]?.getAttribute("data-id"));
-      }
-    }
-
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (currentIndex >= 0 && rows[currentIndex]) {
-        const itemId = rows[currentIndex].getAttribute("data-id");
-        const item = ItemPurchaseList.find(
-          (item) => String(item.id) === String(itemId)
-        );
-        if (item) {
-          setHighlightedRowId(itemId);
-          handleEditClick(item);
-        }
-      }
-    }
-  };
 
   /*<================================================================================= delete added item  ============================================================================> */
 
@@ -1262,10 +1240,10 @@ const AddPurchaseBill = () => {
     }
   };
 
-/*<============================================================================== validation  purchase bill  ==========================================================================> */
+  /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleSubmit = () => {
-
+    console.log(distributor, "distributor")
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -1372,6 +1350,9 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== Distributor select  ==========================================================================> */
+  useEffect(() => {
+    console.log(distributor, "distributor")
+  }, [distributor]);
 
   const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
@@ -1395,7 +1376,6 @@ const AddPurchaseBill = () => {
     setSearchItem(itemName);
 
     setId(newValue?.id);
-    setAutocompleteDisabled(true);
     handleSearch(itemName);
   };
 
@@ -1684,8 +1664,7 @@ const AddPurchaseBill = () => {
                 style={{ backgroundColor: "var(--color1)" }}
                 onClick={() => {
                   setOpenFile(true);
-                }}
-              >
+                }}>
                 <CloudUploadIcon className="mr-2" />
                 Import CSV
               </Button>
@@ -1729,13 +1708,14 @@ const AddPurchaseBill = () => {
                 variant="contained"
                 style={{ background: "var(--color1)" }}
                 onClick={handleSubmit}
+                ref={submitButtonRef}
               >
                 Save
               </Button>
 
             </div>
           </div>
-{/*<============================================================================== details at top  =============================================================================> */}
+          {/*<============================================================================== details at top  =============================================================================> */}
 
           <div className="bg-white">
             <div className="firstrow flex">
@@ -1771,11 +1751,8 @@ const AddPurchaseBill = () => {
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
-
                       />
-
-                    )}
-                  />
+                    )} />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       {error.distributor}
@@ -1868,7 +1845,7 @@ const AddPurchaseBill = () => {
                   />
                 </div>
               </div>
- {/*<============================================================================ add Item field  ===========================================================================> */}
+              {/*<============================================================================ add Item field  ===========================================================================> */}
 
               <div className="overflow-x-auto w-full">
 
@@ -1937,8 +1914,8 @@ const AddPurchaseBill = () => {
                             </td>
                           ) : (
                             <td className="p-0" >
-                              {isAutocompleteDisabled && (
-                                <Autocomplete
+                             
+                               {isAutocompleteDisabled && ( <Autocomplete
                                   key={autocompleteKey}
                                   value={selectedOption}
                                   // value={searchItem?.iteam_name}
@@ -1968,16 +1945,25 @@ const AddPurchaseBill = () => {
                                       variant="outlined"
                                       autoComplete="off"
                                       sx={{ width: 350, padding: 0 }}
-                                      autoFocus={focusedField === "item"}
+                                      // autoFocus={focusedField === "item"}
                                       {...params}
+                                      // disabled={isAutocompleteDisabled}
+                                      disableOpenOnFocus 
                                       value={searchItem?.iteam_name}
                                       inputRef={(el) => (inputRefs.current[2] = el)}
-                                      onKeyDown={(e) => handleKeyDown(e, 2)}
-
+                                      onKeyDown={(e) => {if (!searchItem && (e.key === "ArrowDown" || e.key === "ArrowUp")){
+                                        tableRef.current.focus();
+                                        
+                                        setTimeout(() => {
+                                          document.activeElement.blur(); // Removes focus from the input
+                                        }, 0);
+                                      }else{
+                                        handleKeyDown(e, 2)
+                                      } }}
                                     />
                                   )}
-                                />
-                              )}
+                                />)}
+                              
                             </td>)}
                           <td>
                             <TextField
@@ -2293,30 +2279,29 @@ const AddPurchaseBill = () => {
                           </td>
                         </tr>
                       </>)}
+
                   </tbody>
                 </table>
                 < >
                   {/*<=============================================================================== added Item  ==============================================================================> */}
 
                   <table
-                    className="p-30  border border-indigo-600 w-full border-collapse custom-table"
+                    className="p-30 border border-indigo-600 w-full border-collapse custom-table"
                     ref={tableRef}
-                  // tabIndex={0}
-                  > <tbody>
-                      {ItemPurchaseList?.item?.map((item) => (
+                    tabIndex={0}
+                  >
+                    <tbody>
+                      {ItemPurchaseList?.item?.map((item, index) => (
                         <tr
                           key={item.id}
-                          onClick={() => handleEditClick(item)}
-                          className={` item-List  flex justify-between  cursor-pointer  ${item.id === selectedEditItemId
-                            ? "highlighted-row"
-                            : ""}`}>
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "8px",
-                              width: "320px"
-                            }}
-                          >
+                          onClick={() => {
+                            setSelectedIndex(index); // Ensure clicking sets the selected index
+                            handleEditClick(item);
+                          }}
+                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                            }`}
+                        >
+                          <td style={{ display: "flex", gap: "8px", width: "320px" }}>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
                               onClick={() => handleEditClick(item)}
@@ -2324,8 +2309,7 @@ const AddPurchaseBill = () => {
                             <DeleteIcon
                               style={{ color: "var(--color6)" }}
                               className="delete-icon bg-none"
-
-                              onClick={() => { deleteOpen(item.id) }}
+                              onClick={() => deleteOpen(item.id)}
                             />
                             {item.iteam_name}
                           </td>
@@ -2337,7 +2321,6 @@ const AddPurchaseBill = () => {
                           <td>{item.free_qty}</td>
                           <td>{item.ptr}</td>
                           <td>{item.discount}</td>
-                          {/* <td>{item.scheme_account}</td> */}
                           <td>{item.base_price}</td>
                           <td>{item.gst}</td>
                           <td>{item.location}</td>
@@ -2349,13 +2332,11 @@ const AddPurchaseBill = () => {
                     </tbody>
                   </table>
                 </>
-
               </div>
             </div>
           </div>
         </div>
         {/*<============================================================================== total and other details  =============================================================================> */}
-
         <div
           className=""
           style={{
@@ -2955,5 +2936,4 @@ const AddPurchaseBill = () => {
     </>
   );
 };
-
 export default AddPurchaseBill;

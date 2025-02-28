@@ -48,17 +48,7 @@ const AddReturnbill = () => {
     const [returnType, setReturnType] = useState(null);
     const [ItemId, setItemId] = useState('')
     const [IsDelete, setIsDelete] = useState(false);
-    // const inputRef1 = useRef();
-    // const inputRef2 = useRef();
-    // const inputRef3 = useRef();
-    // const inputRef4 = useRef();
-    // const inputRef5 = useRef();
-    // const inputRef6 = useRef();
-    // const inputRef7 = useRef();
-    // const inputRef8 = useRef();
-    // const inputRef9 = useRef();
-    // const inputRef10 = useRef();
-    // const inputRef12 = useRef();
+   
     const [unit, setUnit] = useState('');
     const [schAmt, setSchAmt] = useState('');
     const [disc, setDisc] = useState(0);
@@ -109,8 +99,8 @@ const AddReturnbill = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
   const inputRefs = useRef([]);
+  
   const handleKeyDown = (event, index) => {
-
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -124,46 +114,7 @@ const AddReturnbill = () => {
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
-    // const handleKeyDown = (event) => {
-    //     if (event.key === 'Enter') {
-    //         if (event.target === inputRef1.current) {
-    //         event.preventDefault();
-    //             inputRef2.current.focus();
-    //         } else if (event.target === inputRef2.current) {
-    //             inputRef3.current.focus();
-    //         } else if (event.target === inputRef3.current) {
-    //             inputRef4.current.focus();
-    //         } else if (event.target === inputRef4.current) {
-    //             inputRef5.current.focus();
-    //         } else if (event.target === inputRef5.current) {
-    //             inputRef6.current.focus();
-    //         } else if (event.target === inputRef6.current) {
-    //             inputRef7.current.focus();
-    //         } else if (event.target === inputRef7.current) {
-    //             inputRef8.current.focus();
-    //         } else if (event.target === inputRef8.current) {
-    //             inputRef9.current.focus();
-    //         }
-    //     };
-    // }
-
-    // useEffect(() => {
-    //     if (saveValue === false) {
-    //         unblockRef.current = history.block((location) => {
-    //             if (!isOpenBox) {
-    //                 setPendingNavigation(location);
-    //                 setIsOpenBox(true);
-    //                 setSaveValue(false);
-    //                 return false;
-    //             }
-    //         });
-    //         return () => {
-    //             if (unblockRef.current) {
-    //                 unblockRef.current();
-    //             }
-    //         };
-    //     }
-    // }, [saveValue, history, isOpenBox]);
+    
 
     useEffect(() => {
 
@@ -933,7 +884,7 @@ const AddReturnbill = () => {
                                         size="small"
                                         value={billNo}
                                         disabled
-                                        inputRef={(el) => (inputRefs.current[2] = el)}
+                                        ref={(el) => (inputRefs.current[2] = el)}
                                         onKeyDown={(e) => handleKeyDown(e, 2)}
                                     />
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
@@ -954,7 +905,7 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setStartDate(newDate)}
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
-                                            inputRef={(el) => (inputRefs.current[3] = el)}
+                                            ref={(el) => (inputRefs.current[3] = el)}
                                         onKeyDown={(e) => handleKeyDown(e, 3)}
                                         />
                                     </div>

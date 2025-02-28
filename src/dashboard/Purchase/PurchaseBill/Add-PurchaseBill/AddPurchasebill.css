@@ -22,8 +22,7 @@
 .saleTable {
     width: 100%;
     border-collapse: collapse;
-    /* display: flex;
-    justify-content: space-between; */
+   
 }
 
 .saleTable th,

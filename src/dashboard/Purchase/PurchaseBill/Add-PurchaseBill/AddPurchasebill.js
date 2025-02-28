@@ -508,6 +508,7 @@ const AddPurchaseBill = () => {
         setUnsavedItems(true);
         itemPurchaseList();
         inputRefs.current[2]?.focus();
+        setOpenFile(false);
     } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);

@@ -86,8 +86,6 @@ Track individual transaction history and logs.
 Configure tax rates, invoice format, and pharmacy details.
 Manage email & SMS notifications for orders and alerts.
 
-
-
 ## Features
 
 ### Search Feature

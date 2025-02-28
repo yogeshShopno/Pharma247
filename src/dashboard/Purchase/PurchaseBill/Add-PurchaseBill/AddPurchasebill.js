@@ -15,7 +15,7 @@ import {
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaPlusCircle } from "react-icons/fa";
-import { MenuItem, Select } from "@mui/material";
+import {MenuItem, Select} from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Header from "../../../Header";
@@ -169,10 +169,19 @@ const AddPurchaseBill = () => {
     { id: 7, label: "RTGS/NEFT" },
   ];
 
+  const options = {
+    "Skyway": "purchase-item-import",
+    "Pharma Byte": "pharmabyte-item-import",
+    "Marg ERP": "mahalaxmi-item-import",
+    "Techno Max": "techno-item-import",
+};
+
   const [errors, setErrors] = useState({});
   const [paymentType, setPaymentType] = useState("credit");
   const [bankData, setBankData] = useState([]);
   const [id, setId] = useState(null);
+  const [importConpany, setImportConpany] = useState("");
+
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
 
@@ -189,18 +198,21 @@ const AddPurchaseBill = () => {
 
   const inputRefs = useRef([]);
   const submitButtonRef = useRef(null);
+  const addButtonref = useRef(null);
+
+
 
   /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
 
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
     const handleTableBlur = () => setAutocompleteDisabled(true);
-  
+
     if (tableRef.current) {
       tableRef.current.addEventListener("focus", handleTableFocus);
       tableRef.current.addEventListener("blur", handleTableBlur);
     }
-  
+
     return () => {
       if (tableRef.current) {
         tableRef.current.removeEventListener("focus", handleTableFocus);
@@ -208,7 +220,7 @@ const AddPurchaseBill = () => {
       }
     };
   }, []);
-  
+
   /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
 
 
@@ -237,10 +249,16 @@ const AddPurchaseBill = () => {
         // Prevent Enter action if any input is focused
         if (!isInputFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
+          if (!selectedRow) return;
+
           setSelectedEditItemId(selectedRow.id);
           handleEditClick(selectedRow);
-          // inputRefs.current[2].focus();
+
+          if (inputRefs.current[2]) {
+            inputRefs.current[2].focus();
+          }
         }
+
       }
     };
 
@@ -253,21 +271,26 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.altKey && event.key.toLowerCase() === "s") {
-        event.preventDefault(); // Prevent default browser behavior
-        submitButtonRef.current?.focus();
-        // handleSubmit(); 
+      if (!event.altKey) return; // Exit early if Alt is not pressed
+
+      event.preventDefault(); // Prevent default browser behavior
+
+      if (event.key.toLowerCase() === "s") {
+        handleSubmit();
+      } else if (event.key.toLowerCase() === "m") {
+        inputRefs.current[2]?.focus();
       }
     };
+
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [distributor, billNo, ItemPurchaseList]); // Dependencies only affect Alt+S
+
 
   const handleKeyDown = (event, index) => {
- 
-   
+
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -278,6 +301,15 @@ const AddPurchaseBill = () => {
     }
   };
 
+  useEffect(() => {
+    if (openAddItemPopUp) {
+      setTimeout(() => {
+        if (inputRefs.current[13]) {
+          inputRefs.current[13].focus();
+        }
+      }, 100); // Adjust delay if necessary
+    }
+  }, [openAddItemPopUp]);
   /*<================================================================================ PTR and MRP validation =======================================================================> */
 
   useEffect(() => {
@@ -368,9 +400,7 @@ const AddPurchaseBill = () => {
 
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
-    const netRate = parseFloat(
-      (totalAmount / (numericQty + numericFree)).toFixed(2)
-    );
+    const netRate = parseFloat((totalAmount / (numericQty + numericFree)).toFixed(2));
     setNetRate(netRate);
 
     /*<================================================================================= Margin calculation =========================================================================> */
@@ -450,45 +480,39 @@ const AddPurchaseBill = () => {
   };
 
   /*<=================================================================================== upload selected file =======================================================================> */
-
   const handleFileUpload = async () => {
     generateRandomNumber();
+    if (!file) {
+        toast.error("No file selected");
+        return;
+    }
 
-    if (file) {
-      let data = new FormData();
-      data.append("file", file);
-      data.append("random_number", localStorage.getItem("RandomNumber"));
+    const apiEndpoint = options[importConpany];
+    if (!apiEndpoint) {
+        toast.error("Invalid option selected");
+        return;
+    }
 
-      const params = {
-        random_number: localStorage.getItem("RandomNumber"),
-      };
+    let data = new FormData();
+    data.append("file", file);
+    data.append("random_number", localStorage.getItem("RandomNumber"));
 
-      setIsLoading(true);
-      try {
-        await axios
-          .post("purchase-item-upload", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            toast.success(response.data.message);
-            setOpenFile(false);
-            setIsLoading(false);
-            setUnsavedItems(true);
-            itemPurchaseList();
+    setIsLoading(true);
+    try {
+        const response = await axios.post(apiEndpoint, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
-            inputRefs.current[2].focus();
-
-          });
-      } catch (error) {
+        toast.success(response.data.message);
+        setIsLoading(false);
+        setUnsavedItems(true);
+        itemPurchaseList();
+        inputRefs.current[2]?.focus();
+    } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
-      }
-    } else {
-      toast.error("No file selected");
     }
-  };
+};
 
   /*<================================================================================ download selected file =============================================================================> */
 
@@ -1060,14 +1084,12 @@ const AddPurchaseBill = () => {
       toast.error("Please fill all the fields");
       return;
     }
-
     let formData = new FormData();
     formData.append("item_name", addItemName ? addItemName : "");
     formData.append("unite", addUnit ? addUnit : "");
     formData.append("weightage", addUnit ? addUnit : "");
     formData.append("pack", addUnit ? "1*" + addUnit : "");
     formData.append("barcode", addBarcode ? addBarcode : "");
-
     formData.append("packaging_id", "");
     formData.append("drug_group", "");
     formData.append("gst", "");
@@ -1293,7 +1315,6 @@ const AddPurchaseBill = () => {
   /*<============================================================================== validation  purchase bill  ==========================================================================> */
 
   const handleEditClick = (item) => {
-
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id)
@@ -1327,7 +1348,6 @@ const AddPurchaseBill = () => {
   const handelAddOpen = () => {
     setUnsavedItems(true);
     setOpenAddPopUp(true);
-
     purchaseReturnData();
   };
 
@@ -1336,6 +1356,7 @@ const AddPurchaseBill = () => {
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
     setOpenAddItemPopUp(true);
+    setFocusedField("add item");
   };
 
   /*<============================================================================== close CN Adjust popup  ==========================================================================> */
@@ -1427,8 +1448,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<================================================================================== select all CN Bill ==============================================================================> */
-
-
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1914,56 +1933,57 @@ const AddPurchaseBill = () => {
                             </td>
                           ) : (
                             <td className="p-0" >
-                             
-                               {isAutocompleteDisabled && ( <Autocomplete
-                                  key={autocompleteKey}
-                                  value={selectedOption}
-                                  // value={searchItem?.iteam_name}
-                                  sx={{ width: 350, padding: 0 }}
-                                  size="small"
-                                  onChange={handleOptionChange}
-                                  onInputChange={handleInputChange}
-                                  // inputRef={searchItemField}
-                                  getOptionLabel={(option) =>
-                                    `${option.iteam_name} `
-                                  }
-                                  options={itemList}
-                                  renderOption={(props, option) => (
-                                    <ListItem {...props}>
-                                      <ListItemText
-                                        primary={`${option.iteam_name}`}
-                                        secondary={` ${option.stock === 0
-                                          ? `Unit: ${option.weightage}`
-                                          : `Pack: ${option.pack}`
-                                          } | MRP: ${option.mrp}  | Location: ${option.location
-                                          }  | Current Stock: ${option.stock}`}
-                                      />
-                                    </ListItem>)}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      tabIndex={0}
-                                      variant="outlined"
-                                      autoComplete="off"
-                                      sx={{ width: 350, padding: 0 }}
-                                      // autoFocus={focusedField === "item"}
-                                      {...params}
-                                      // disabled={isAutocompleteDisabled}
-                                      disableOpenOnFocus 
-                                      value={searchItem?.iteam_name}
-                                      inputRef={(el) => (inputRefs.current[2] = el)}
-                                      onKeyDown={(e) => {if (!searchItem && (e.key === "ArrowDown" || e.key === "ArrowUp")){
+
+                              {isAutocompleteDisabled && (<Autocomplete
+                                key={autocompleteKey}
+                                value={selectedOption}
+                                // value={searchItem?.iteam_name}
+                                sx={{ width: 350, padding: 0 }}
+                                size="small"
+                                onChange={handleOptionChange}
+                                onInputChange={handleInputChange}
+                                // inputRef={searchItemField}
+                                getOptionLabel={(option) =>
+                                  `${option.iteam_name} `
+                                }
+                                options={itemList}
+                                renderOption={(props, option) => (
+                                  <ListItem {...props}>
+                                    <ListItemText
+                                      primary={`${option.iteam_name}`}
+                                      secondary={` ${option.stock === 0
+                                        ? `Unit: ${option.weightage}`
+                                        : `Pack: ${option.pack}`
+                                        } | MRP: ${option.mrp}  | Location: ${option.location
+                                        }  | Current Stock: ${option.stock}`}
+                                    />
+                                  </ListItem>)}
+                                renderInput={(params) => (
+                                  <TextField
+                                    tabIndex={0}
+                                    variant="outlined"
+                                    autoComplete="off"
+                                    sx={{ width: 350, padding: 0 }}
+                                    // autoFocus={focusedField === "item"}
+                                    {...params}
+                                    // disabled={isAutocompleteDisabled}
+                                    disableOpenOnFocus
+                                    value={searchItem?.iteam_name}
+                                    inputRef={(el) => (inputRefs.current[2] = el)}
+                                    onKeyDown={(e) => {
+                                      if (!searchItem && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
                                         tableRef.current.focus();
-                                        
+
                                         setTimeout(() => {
                                           document.activeElement.blur(); // Removes focus from the input
                                         }, 0);
-                                      }else{
+                                      } else {
                                         handleKeyDown(e, 2)
-                                      } }}
-                                    />
-                                  )}
-                                />)}
-                              
+                                      }
+                                    }}
+                                  />
+                                )}
+                              />)}
                             </td>)}
                           <td>
                             <TextField
@@ -2683,37 +2703,50 @@ const AddPurchaseBill = () => {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div className="primary">Item File Upload</div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "15px",
-                  flexDirection: "column",
-                }}
-              >
-                <div>
-                  <input
+    <DialogContentText id="alert-dialog-description">
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" , marginBlock: "20px"}}>
+            {/* Software Selection */}
+            <FormControl size="small" sx={{ width: 200 }}>
+                <InputLabel>Select Software</InputLabel>
+                <Select 
+                    value={importConpany} 
+                    onChange={(event) => setImportConpany(event.target.value)} 
+                    label="Select Software"
+                >
+                    {Object.keys(options).map((option) => (
+                        <MenuItem key={option} value={option}>
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+
+            {/* File Upload */}
+            <div>
+            
+                <input
                     className="File-upload"
                     type="file"
                     accept=".csv"
                     id="file-upload"
                     onChange={handleFileSelect}
-                  />
-                  <span className="errorFile">*select only .csv File.</span>
-                </div>
-                <div>
-                  <Button
-                    onClick={handleDownload}
-                    style={{ backgroundColor: "#3f6212", color: "white" }}
-                  >
-                    <CloudDownloadIcon className="mr-2" />
-                    Download Sample File
-                  </Button>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
+                />
+                
+            </div>
+
+            {/* Download Button */}
+            
+        </div>
+        <Button 
+                onClick={handleDownload} 
+                style={{ backgroundColor: "#3f6212", color: "white" }}
+            >
+                <CloudDownloadIcon className="mr-2 " />
+                Download Sample File
+            </Button>
+    </DialogContentText>
+</DialogContent>
+
           <DialogActions>
             <Button
               autoFocus
@@ -2759,9 +2792,14 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={addItemName}
+                        autoFocus
                         onChange={(e) =>
                           setAddItemName(e.target.value.toUpperCase())
                         }
+                        inputRef={(el) => (inputRefs.current[13] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 13)}
+
+
                       />
                     </div>
                     <div className="fields add_new_item_divv">
@@ -2773,6 +2811,8 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={addBarcode}
                         onChange={(e) => setAddBarcode(Number(e.target.value))}
+                        inputRef={(el) => (inputRefs.current[14] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 14)}
                       />
                     </div>
                   </div>
@@ -2786,6 +2826,13 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={addUnit}
                         onChange={(e) => setAddUnit(e.target.value)}
+                        inputRef={(el) => (inputRefs.current[15] = el)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault(); // Prevent form submission
+                            handleAddNewItem();
+                          }
+                        }}
                       />
                     </div>
                     <div className="fields add_new_item_divv">
@@ -2816,6 +2863,7 @@ const AddPurchaseBill = () => {
                         },
                       }}
                       onClick={handleAddNewItem}
+                      ref={addButtonref}
                     >
                       <ControlPointIcon className="mr-2" />
                       Add New Item

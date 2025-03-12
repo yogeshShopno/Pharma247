@@ -122,11 +122,14 @@ const InventoryList = () => {
   const [isAutocompleteFocused, setIsAutocompleteFocused] = useState(false);
   const autocompleteRef = useRef(null);
 
+  const [missingData, setmissingData] = useState(false);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawerFilter = (open) => () => {
     setDrawerOpen(open);
   };
+  /*<=============================================================================== handle key up and down ======================================================================> */
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -153,59 +156,11 @@ const InventoryList = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [data, selectedIndex, history, isAutocompleteFocused]);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleBulkOrder = () => {
-    setBulkOrder(true);
-    handleClose();
-  };
-
-  const handleBulkEdit = () => {
-    setOpenEdit(true);
-    setBarcode();
-    handleClose();
-  };
-  const handleCheckbox = (itemId) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(itemId)
-        ? prevSelected.filter((id) => id !== itemId)
-        : [...prevSelected, itemId]
-    );
-
-    // console.log("id", selectedItems);
-  };
-  let listOfCompany = () => {
-    axios
-      .get("company-list", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log("API Response Pharma:===", response);
-        setCompanyList(response.data.data);
-      })
-      .catch((error) => {
-        // console.log("API Error:", error);
-      });
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  /*<=============================================================================== get intial data ======================================================================> */
 
   useEffect(() => {
+    missingCount();
+
     listItemcatagory();
     listPackgingtype();
     listOfGst();
@@ -223,6 +178,39 @@ const InventoryList = () => {
     handleSearch();
   }, [page, rowsPerPage]);
 
+  let missingCount = () => {
+    axios
+      .get("iteam-search-tags", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data.data);
+
+        setmissingData(response.data.data);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
+  };
+
+  let listOfCompany = () => {
+    axios
+      .get("company-list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        // console.log("API Response Pharma:===", response);
+        setCompanyList(response.data.data);
+      })
+      .catch((error) => {
+        // console.log("API Error:", error);
+      });
+  };
+
   let listItemcatagory = () => {
     axios
       .get("list-itemcategory", {
@@ -238,6 +226,7 @@ const InventoryList = () => {
         // console.log("API Error:", error);
       });
   };
+
   let listDrougGroup = () => {
     axios
       .post("drug-list", {
@@ -301,6 +290,55 @@ const InventoryList = () => {
         // console.log("API Error:", error);
       });
   };
+
+  /*<=============================================================================== handle more button ======================================================================> */
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  /*<=============================================================================== handle bulk order ======================================================================> */
+
+  const handleBulkOrder = () => {
+    setBulkOrder(true);
+    handleClose();
+  };
+  /*<=============================================================================== handle bulk edit ======================================================================> */
+
+  const handleBulkEdit = () => {
+    setOpenEdit(true);
+    setBarcode();
+    handleClose();
+  };
+  /*<=============================================================================== handle Checkbox ======================================================================> */
+
+  const handleCheckbox = (itemId) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(itemId)
+        ? prevSelected.filter((id) => id !== itemId)
+        : [...prevSelected, itemId]
+    );
+
+    // console.log("id", selectedItems);
+  };
+
+
+  /*<==================================================================================== pagination  ===========================================================================> */
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  /*<==================================================================================== checkbox  ===========================================================================> */
+
+
   const handleCheckboxChange = (event, categoryId) => {
     setSelectedCategoryIds((prevSelectedIds) => {
       if (event.target.checked) {
@@ -312,16 +350,6 @@ const InventoryList = () => {
       }
     });
   };
-
-  const handleExpiryChange = (event) => {
-    const { value } = event.target;
-    setSelectedOptionEpiry((prevSelectedOptions) =>
-      prevSelectedOptions.includes(value)
-        ? prevSelectedOptions.filter((option) => option !== value)
-        : [...prevSelectedOptions, value]
-    );
-  };
-
   const handleCheckboxPackging = (event, PackgingId) => {
     setSelectedPackgingIds((prevSelectedIds) => {
       if (event.target.checked) {
@@ -333,7 +361,6 @@ const InventoryList = () => {
       }
     });
   };
-
   const handleCheckboxChangeGst = (event, gstId) => {
     setSelectedGstIds((prevSelectedIds) => {
       if (event.target.checked) {
@@ -345,12 +372,19 @@ const InventoryList = () => {
       }
     });
   };
-  // useEffect(() => {
-  //     // listOfCompany()
-  //     // adjustStockList();
-  //     purchaseItemList()
-  // }, [])
+  /*<==================================================================================== expirydate  ===========================================================================> */
 
+  const handleExpiryChange = (event) => {
+    const { value } = event.target;
+    setSelectedOptionEpiry((prevSelectedOptions) =>
+      prevSelectedOptions.includes(value)
+        ? prevSelectedOptions.filter((option) => option !== value)
+        : [...prevSelectedOptions, value]
+    );
+  };
+  /*<==================================================================================== batch list  ===========================================================================> */
+
+ 
   const ItemvisebatchList = async (itemId) => {
     let data = new FormData();
     data.append("iteam_id", itemId);
@@ -373,8 +407,9 @@ const InventoryList = () => {
       console.error("API error:", error);
     }
   };
+  /*<==================================================================================== handle search  ===========================================================================> */
 
-  const handleSearch = async () => {
+  const handleSearch = async (payload) => {
     let data = new FormData();
     data.append("search", searchItem);
     data.append("item", selectedOption);
@@ -393,6 +428,7 @@ const InventoryList = () => {
     data.append("ptr_start", ptrStart);
     data.append("ptr_end", ptrEnd);
     data.append("expired", selectedOptionExpiry.join(","));
+    data.append(payload,"1")
     // data.append("drug", drugGroup);
     const params = {
       page: page + 1,
@@ -438,6 +474,7 @@ const InventoryList = () => {
       console.error("API error:", error);
     }
   };
+  /*<================================================================================= sort table data  ========================================================================> */
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -474,16 +511,8 @@ const InventoryList = () => {
     setItemId(newValue?.id);
   };
 
-  const handleBatchData = (event, newValue) => {
-    const batch = newValue ? newValue.batch_name : "";
-    setBatch(batch);
-    setUnit(newValue?.unit);
-    setExpiry(newValue?.expiry_date);
-    setMrp(newValue?.mrp);
-    setStock(newValue?.qty);
-    console.log(newValue, "newValue")
-    setSelectedCompany(newValue?.company_name)
-  };
+  
+  /*<====================================================================================== bulk order  =============================================================================> */
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
@@ -498,6 +527,7 @@ const InventoryList = () => {
     setRemainingStock("");
     setAdjustDate(new Date());
   };
+  /*<====================================================================================== bulk order  =============================================================================> */
 
   const resetbulkDialog = () => {
     setOpenEdit(false);
@@ -554,6 +584,8 @@ const InventoryList = () => {
     }
   };
 
+  /*<====================================================================================== bulk edit  =============================================================================> */
+
   const validateBulkForm = async () => {
     const newErrors = {};
     if (selectedItems.length == 0) {
@@ -571,6 +603,7 @@ const InventoryList = () => {
       return Object.keys(newErrors).length === 0;
     }
   };
+
 
   const bulkEdit = async () => {
     let data = new FormData();
@@ -599,7 +632,17 @@ const InventoryList = () => {
       console.error("API error:", error);
     }
   };
-
+  /*<===========================================================================  stock adjustment  ==================================================================> */
+  const handleBatchData = (event, newValue) => {
+    const batch = newValue ? newValue.batch_name : "";
+    setBatch(batch);
+    setUnit(newValue?.unit);
+    setExpiry(newValue?.expiry_date);
+    setMrp(newValue?.mrp);
+    setStock(newValue?.qty);
+    console.log(newValue, "newValue")
+    setSelectedCompany(newValue?.company_name)
+  };
   const validateForm = async () => {
     const newErrors = {};
 
@@ -623,6 +666,7 @@ const InventoryList = () => {
       return Object.keys(newErrors).length === 0;
     }
   };
+
 
   const adjustStockAddData = async () => {
     let data = new FormData();
@@ -668,6 +712,7 @@ const InventoryList = () => {
       console.error("API error:", error);
     }
   };
+  /*<=============================================================================== handle popup open ======================================================================> */
 
   const handelAddOpen = (item) => {
     setOpenAddPopUp(true);
@@ -676,12 +721,14 @@ const InventoryList = () => {
     setSelectedCompany(company);
     ItemvisebatchList(item?.id);
   };
+  /*<================================================================================== handle serch  =========================================================================> */
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
+  /*<======================================================================== handle downoload batchwise data  ===============================================================> */
 
   const handleFilterData = async () => {
     let data = new FormData();
@@ -704,16 +751,7 @@ const InventoryList = () => {
   };
 
   const exportToCSV = (data) => {
-    // Define the CSV headers
-    // const headers = [
-    //     "Item Name", "Batch", "Qty", "Exp Date", "MRP", "PTR",
-    //     "Disc", "Loc", "Margin", "Total By MRP", "Total By PTR"
-    // ];
 
-    // Create a string for the CSV header
-    // const csvHeader = headers.join(',') + '\n';
-
-    // Map over the data and create a string for each row
     const csvRows = data
       .map((row) => {
         return Object.values(row)
@@ -752,6 +790,8 @@ const InventoryList = () => {
     setPTRStart("");
     handleSearch();
   };
+  /*<=============================================================================== ui ======================================================================> */
+
   return (
     <>
       <Header />
@@ -771,6 +811,8 @@ const InventoryList = () => {
           <Loader />
         </div>
       )}
+ { /*<=============================================================================== side filter ======================================================================> */}
+
       <div className="filterDrawer_fld pt-5 pl-5">
         <Button
           variant="contained"
@@ -1386,6 +1428,8 @@ const InventoryList = () => {
         </Drawer>
 
       </div>
+    {/*<======================================================================== main table ========================================================================>*/}
+  
       <Box className="flex flex-wrap md:flex-nowrap "
       // style={{ overflow: "hidden" }}
       >
@@ -1970,60 +2014,64 @@ const InventoryList = () => {
         </Box>
 
         <Box className="pl-3 pr-3 pt-3 tbl_content_inv" sx={{ width: "100%" }}>
-        <div className="row gap-3 mt-2 mb-3 flex-wrap">
-        <Button
-            variant="contained"
-            style={{
-              background: "#F45156",
-              color: "white",
-            }}
+          <div className="row gap-3 mt-2 mb-3 flex-wrap">
+            <Button
+              variant="contained"
+              style={{
+                background: "#F45156",
+                color: "white",
+              }}
+onClick={()=>{handleSearch("items_with_missing_hsn")}}
+            >
+              Missing HSN : {missingData.items_with_missing_hsn}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "#F45156",
+                color: "white",
+              }}
+              onClick={()=>{handleSearch("items_with_invalid_mrp")}}
 
-          >
-            Missing HSN :(0)
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              background: "#F45156",
-              color: "white",
-            }}
+            >
+              invalid MRP : {missingData.items_with_invalid_mrp}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "#F45156",
+                color: "white",
+              }}
+              onClick={()=>{handleSearch("items_with_missing_location")}}
 
-          >
-            invalid MRP(0)
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              background: "#F45156",
-              color: "white",
-            }}
+            >
+              Missing Location : {missingData.items_with_missing_location}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "#F45156",
+                color: "white",
+              }}
+              onClick={()=>{handleSearch("items_with_missing_category")}}
 
-          >
-            Missing Location : (0)
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              background: "#F45156",
-              color: "white",
-            }}
+            >
+              Missing Category :{missingData.items_with_missing_category}
+            </Button>
 
-          >
-            Missing Category (0)
-          </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "#F45156",
+                color: "white",
+                size: "large",
+              }}
+              onClick={()=>{handleSearch("items_with_invalid_price")}}
 
-          <Button
-            variant="contained"
-            style={{
-              background: "#F45156",
-              color: "white",
-              size: "large",
-            }}
-
-          >
-            Invalid Price (0)
-          </Button>
-        </div>
+            >
+              Invalid Price : {missingData.items_with_invalid_price}
+            </Button>
+          </div>
 
           <div className="flex flex-wrap  justify-between mb-4 relative inventory_search_main">
             <TextField
@@ -2229,7 +2277,7 @@ const InventoryList = () => {
                                 src={item.front_photo ? item.front_photo : "./Pharma Medicine-01.png"}
                                 alt={item.front_photo ? "Pharma" : "Tablet"}
                                 className="w-10 h-10 ml-2 object-cover cursor-pointer"
-                                style={{width:"40px",height:"40px"}}
+                                style={{ width: "40px", height: "40px" }}
                               />
                             </div>
                             <div
@@ -2343,6 +2391,8 @@ const InventoryList = () => {
           )}
         </Box >
       </Box >
+  {/*<======================================================================== stock adjustment dialog ========================================================================>*/}
+
       <Dialog open={openAddPopUp}>
         <DialogTitle id="alert-dialog-title" className="primary">
           Stock Adjustment
@@ -2573,7 +2623,8 @@ const InventoryList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Bulk Edit */}
+{/*<=========================================================================== Bulk edit dialog ===========================================================================>*/}
+
       <Dialog open={openEdit}>
         <DialogTitle id="alert-dialog-title" className="primary">
           Bulk Edit
@@ -2663,7 +2714,7 @@ const InventoryList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Bulk Order */}
+      {/*<=========================================================================== Bulk Order dialog===========================================================================>*/}
       <Dialog open={bulkOrder}>
         <DialogTitle>
           <WarningAmberRoundedIcon

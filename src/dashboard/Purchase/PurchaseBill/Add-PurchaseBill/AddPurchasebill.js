@@ -53,20 +53,7 @@ const debounce = (func, delay) => {
 };
 
 const AddPurchaseBill = () => {
-  const searchItemField = useRef(null);
-  const inputRef1 = useRef();
-  const inputRef2 = useRef();
-  const inputRef3 = useRef();
-  const inputRef4 = useRef();
-  const inputRef5 = useRef();
-  const inputRef6 = useRef();
-  const inputRef7 = useRef();
-  const inputRef8 = useRef();
-  const inputRef9 = useRef();
-  const inputRef10 = useRef();
-  const inputRef11 = useRef();
-  const inputRef12 = useRef();
-  const inputRef13 = useRef();
+  
 
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
@@ -191,7 +178,7 @@ const AddPurchaseBill = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  /*<================================================================================ Input ref on keydown enter  =======================================================================> */
+/*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
@@ -202,7 +189,7 @@ const AddPurchaseBill = () => {
 
 
 
-  /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
+/*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
@@ -221,7 +208,7 @@ const AddPurchaseBill = () => {
     };
   }, []);
 
-  /*<================================================================= disable autocomplete to focus when tableref is focused  ========================================================> */
+  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
 
   useEffect(() => {
@@ -268,6 +255,8 @@ const AddPurchaseBill = () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [selectedIndex, ItemPurchaseList]);
+  
+  /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -277,7 +266,10 @@ const AddPurchaseBill = () => {
 
       if (event.key.toLowerCase() === "s") {
         handleSubmit();
-      } else if (event.key.toLowerCase() === "m") {
+      }
+      else if (event.key.toLowerCase() === "g") {
+        handleSubmit();
+      }  else if (event.key.toLowerCase() === "m") {
         inputRefs.current[2]?.focus();
       }
     };
@@ -300,6 +292,7 @@ const AddPurchaseBill = () => {
       }
     }
   };
+  /*<================================================================================ handle popup=======================================================================> */
 
   useEffect(() => {
     if (openAddItemPopUp) {
@@ -374,18 +367,18 @@ const AddPurchaseBill = () => {
   /*<================================================================== Clear old purchase item if user leave the browswer ==========================================================> */
 
   useEffect(() => {
-    /*<=========================================================================== Calculate discount ================================================================================> */
+    /*<========================================================================== Calculate discount ===============================================================================> */
 
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
 
-    /*<=========================================================================== Calculate totalBase ================================================================================> */
+    /*<========================================================================= Calculate totalBase ==============================================================================> */
 
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
 
-    /*<============================================================================= Calculate totalAmount ==============================================================================> */
+    /*<=========================================================================== Calculate totalAmount ============================================================================> */
 
     const totalAmount = parseFloat(
       (totalBase + (totalBase * gst) / 100).toFixed(2)
@@ -396,7 +389,7 @@ const AddPurchaseBill = () => {
       setItemTotalAmount(0);
     }
 
-    /*<======================================================================================= Net Rate calculation ====================================================================> */
+    /*<===================================================================================== Net Rate calculation ==================================================================> */
 
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
@@ -465,7 +458,7 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  /*<================================================================================= select file to upload =========================================================================> */
+  /*<=============================================================================== select file to upload =======================================================================> */
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files[0];
@@ -479,7 +472,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=================================================================================== upload selected file =======================================================================> */
+  /*<================================================================================== upload selected file ======================================================================> */
   const handleFileUpload = async () => {
     generateRandomNumber();
     if (!file) {
@@ -515,7 +508,7 @@ const AddPurchaseBill = () => {
     }
 };
 
-  /*<================================================================================ download selected file =============================================================================> */
+  /*<============================================================================ download selected file =========================================================================> */
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -535,7 +528,7 @@ const AddPurchaseBill = () => {
       return;
     }
 
-    /*<============================================================================ get barcode batch list =========================================================================> */
+    /*<=========================================================================== get barcode batch list ========================================================================> */
 
     try {
       const res = axios.post("barcode-batch-list?", { barcode: barcode },
@@ -546,7 +539,6 @@ const AddPurchaseBill = () => {
           },
         }
       ).then((response) => {
-        console.log(response.data.data[0]?.batch_list[0], "response")
 
         setTimeout(() => {
           const handleBarcodeItem = async () => {
@@ -670,7 +662,7 @@ const AddPurchaseBill = () => {
             const params = {
               id: selectedEditItemId,
             };
-            /*<========================================================================== call add item api to add barcode item  ===================================================================> */
+/*<======================================================================= call add item api to add barcode item  ================================================================> */
 
             try {
               const response = await axios.post("item-purchase", data, {
@@ -752,7 +744,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<================================================================================ Generate random number   ========================================================================> */
+  /*<============================================================================ Generate random number   ====================================================================> */
 
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
@@ -764,7 +756,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<================================================================================ Get GST List   =================================================================================> */
+  /*<============================================================================= Get GST List   ==============================================================================> */
 
   let listOfGst = () => {
     axios
@@ -785,7 +777,7 @@ const AddPurchaseBill = () => {
       });
   };
 
-  /*<================================================================================ Get Distributor List   =================================================================================> */
+  /*<========================================================================== Get Distributor List   ===========================================================================> */
 
   let listDistributor = () => {
     axios
@@ -803,7 +795,7 @@ const AddPurchaseBill = () => {
       });
   };
 
-  /*<================================================================================ Get Item purchase List   =================================================================================> */
+  /*<========================================================================= Get Item purchase List   ==========================================================================> */
 
   const itemPurchaseList = async () => {
     let data = new FormData();
@@ -834,7 +826,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<========================================================================= disable to select date of past  ====================================================================> */
+  /*<======================================================================= disable to select date of past  ==================================================================> */
 
   const isDateDisabled = (date) => {
     const today = new Date();
@@ -844,14 +836,14 @@ const AddPurchaseBill = () => {
     return date > today;
   };
 
-  /*<========================================================================= delete added  item  ====================================================================> */
+  /*<============================================================================= delete added  item  ========================================================================> */
 
   const deleteOpen = (Id) => {
     setIsDelete(true);
     setItemId(Id);
   };
 
-  /*<========================================================================= get batch list to select item while add  ====================================================================> */
+  /*<================================================================= get batch list to select item while add  ============================================================> */
 
   const batchList = async () => {
     let data = new FormData();
@@ -927,6 +919,7 @@ const AddPurchaseBill = () => {
     // }
 
     if (!qty) newErrors.unit = "Qty is required";
+    
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.error(newErrors.expiryDate);
@@ -950,6 +943,8 @@ const AddPurchaseBill = () => {
     }
     if (!mrp) {
       newErrors.mrp = "MRP is required";
+      toast.error(newErrors.expiryDate);
+
     }
     if (!ptr) {
       newErrors.ptr = "PTR is required";
@@ -957,7 +952,13 @@ const AddPurchaseBill = () => {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-    if (!gst) newErrors.gst = "GST is required";
+    if (!gst){
+       newErrors.gst = "GST is required";
+      toast.error("GST is required")};
+    if (gst !=12 && gst !=18 && gst !=5 &&  gst !=28)
+      { newErrors.gst = "Enter valid GST";
+         toast.error("Enter valid GST")};
+
     if (!searchItem) {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
@@ -979,6 +980,7 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add and Edit item function  ====================================================================> */
 
   const handleAddItem = async () => {
+    
     setItemAutofoucs(true);
 
     setUnsavedItems(true);
@@ -1139,7 +1141,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=================================================================================== search item name  ==============================================================================> */
+  /*<=============================================================================== search item name  ==========================================================================> */
 
   const handleSearch = async () => {
     let data = new FormData();
@@ -1165,7 +1167,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=========================================================================== select row using up down arrow  ======================================================================> */
+  /*<======================================================================== select row using up down arrow  ===================================================================> */
 
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
@@ -1188,7 +1190,7 @@ const AddPurchaseBill = () => {
   };
 
 
-  /*<================================================================================= delete added item  ============================================================================> */
+  /*<=============================================================================== delete added item  ==========================================================================> */
 
   const handleDeleteItem = async (ItemId) => {
     if (!ItemId) return;
@@ -1263,10 +1265,9 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================== validation  purchase bill  ==========================================================================> */
+  /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleSubmit = () => {
-    console.log(distributor, "distributor")
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -1313,7 +1314,7 @@ const AddPurchaseBill = () => {
   }, [selectedEditItem]);
 
 
-  /*<============================================================================== validation  purchase bill  ==========================================================================> */
+  /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
@@ -1373,7 +1374,6 @@ const AddPurchaseBill = () => {
 
   /*<============================================================================== Distributor select  ==========================================================================> */
   useEffect(() => {
-    console.log(distributor, "distributor")
   }, [distributor]);
 
   const handleDistributorSelect = (event, newValue) => {
@@ -1448,7 +1448,7 @@ const AddPurchaseBill = () => {
     setLoc("");
   };
 
-  /*<================================================================================== select all CN Bill ==============================================================================> */
+  /*<============================================================================== select all CN Bill ==========================================================================> */
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1471,7 +1471,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<================================================================================== CN Amount Calculation ==============================================================================> */
+  /*<============================================================================= CN Amount Calculation =========================================================================> */
 
   const handleCnAmountChange = (id, value, totalAmount) => {
     const numericValue = parseFloat(value) || 0;
@@ -1735,7 +1735,7 @@ const AddPurchaseBill = () => {
 
             </div>
           </div>
-          {/*<============================================================================== details at top  =============================================================================> */}
+{/*<============================================================================== details at top  =============================================================================> */}
 
           <div className="bg-white">
             <div className="firstrow flex">
@@ -1865,7 +1865,7 @@ const AddPurchaseBill = () => {
                   />
                 </div>
               </div>
-              {/*<============================================================================ add Item field  ===========================================================================> */}
+{/*<============================================================================ add Item field ===========================================================================> */}
 
               <div className="overflow-x-auto w-full">
 

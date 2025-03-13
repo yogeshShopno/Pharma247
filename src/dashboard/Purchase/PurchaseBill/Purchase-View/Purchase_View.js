@@ -102,7 +102,8 @@ const PurchaseView = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setTableData(response.data.data); 
+      setTableData(response.data.data);
+      console.log(tableData,"tableData") 
     } catch (error) {
       console.error("API error:", error);
     } finally {
@@ -266,7 +267,7 @@ const PurchaseView = () => {
                     variant="contained"
                     className="sale_add_btn sale_dnls gap-2"
                     style={{ backgroundColor: "var(--color1)" }}
-                    onClick={() => pdfGenerator(tableData.id)}
+                    onClick={() => pdfGenerator(id)}
                   >
                     <FaFilePdf
                       className="w-5 h-5 hover:text-secondary cursor-pointer"

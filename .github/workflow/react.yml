@@ -1,0 +1,65 @@
+# name: Deploy React App to HostingRaja
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# permissions:
+#   contents: write
+
+# jobs:
+#   build_and_deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # Step 1: Checkout the latest code
+#       - name: Checkout Code
+#         uses: actions/checkout@v4
+
+#       # Step 2: Set up Node.js
+#       - name: Set Up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '20'
+
+#       # Step 3: Install dependencies
+#       - name: Install Dependencies
+#         run: npm install
+
+#       # Step 4: Build React App
+#       - name: Build React App
+#         run: npm run build
+
+#       # Step 5: Create a ZIP file of the build directory
+#       - name: Archive Build
+#         run: |
+#           cd build
+#           zip -r ../react-build.zip *
+
+#       # Step 6: Deploy to HostingRaja via SSH
+#       - name: Deploy to HostingRaja
+#         env:
+#           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+#           SSH_IP: ${{ secrets.SSH_IP }}
+#           DEPLOY_PATH: "/home/$SSH_USERNAME/public_html"  # Adjust based on your directory
+#         run: |
+#           # Set up SSH key
+#           mkdir -p ~/.ssh
+#           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan -H $SSH_IP >> ~/.ssh/known_hosts
+
+#           # Upload the build zip
+#           scp -P 65002 react-build.zip "$SSH_USERNAME@$SSH_IP:$DEPLOY_PATH/"
+
+#           # Extract and deploy on the server
+#           ssh -p 65002 "$SSH_USERNAME@$SSH_IP" <<EOF
+#           cd $DEPLOY_PATH
+#           rm -rf backup
+#           mv build backup
+#           unzip -o react-build.zip -d build
+#           rm react-build.zip
+#           exit
+#           EOF

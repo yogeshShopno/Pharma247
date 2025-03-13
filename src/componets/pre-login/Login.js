@@ -13,7 +13,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
-  const logo = process.env.PUBLIC_URL + "pharmalogo.webp";
+  const logo = process.env.PUBLIC_URL + "/pharmalogo.webp";
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
 
@@ -41,11 +41,25 @@ const Login = () => {
     }
   }, []);
 
+
+
+  useEffect(() => {
+    const inputElements = document.querySelectorAll("input");
+    inputElements.forEach((input) => {
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    document.addEventListener("keydown", handleLogin);
+    return () => {
+      document.removeEventListener("keydown", handleLogin);
+    };
+  }, [mobileNumber, password]);
   const handleLogin = (event) => {
     if (event.key === "Enter") {
       validateAndSubmit();
     }
   };
+{/*<==================================================================================== validation  ===========================================================================> */}
 
   const validateAndSubmit = (event) => {
     const newErrors = {};
@@ -69,6 +83,7 @@ const Login = () => {
       handleSubmit();
     }
   };
+{/*<==================================================================================== handle submit  ===========================================================================> */}
 
   const handleSubmit = async () => {
     let data = new FormData();
@@ -78,7 +93,16 @@ const Login = () => {
       const response = await axios.post("login", data);
 
       if (response.data.status === 200) {
-        const { token, id, name, role, iss_audit, status,phone_number,email } = response.data.data;
+        const {
+          token,
+          id,
+          name,
+          role,
+          iss_audit,
+          status,
+          phone_number,
+          email,
+        } = response.data.data;
         localStorage.setItem("token", token);
         localStorage.setItem("contact", phone_number);
         localStorage.setItem("userId", id);
@@ -86,7 +110,6 @@ const Login = () => {
         localStorage.setItem("role", role);
         localStorage.setItem("email", email);
 
-      
         toast.success(response.data.message);
 
         setRole(role);
@@ -94,7 +117,7 @@ const Login = () => {
         if (role === "Owner") {
           if (NewUser) {
             setTimeout(() => {
-              history.push("/about-info");
+              history.push("/admindashboard");
             }, 3000);
           } else {
             setTimeout(() => {
@@ -108,7 +131,7 @@ const Login = () => {
         ) {
           if (NewUser) {
             setTimeout(() => {
-              history.push("/about-info");
+              history.push("/admindashboard");
             }, 3000);
           } else {
             setTimeout(() => {
@@ -129,17 +152,7 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const inputElements = document.querySelectorAll("input");
-    inputElements.forEach((input) => {
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-
-    document.addEventListener("keydown", handleLogin);
-    return () => {
-      document.removeEventListener("keydown", handleLogin);
-    };
-  }, [mobileNumber, password]);
+{/*<==================================================================================== ui  ===========================================================================> */}
 
   return (
     <>
@@ -166,6 +179,8 @@ const Login = () => {
               <img src={logo}></img>
             </div>
           </div>
+{/*<==================================================================================== form  ===========================================================================> */}
+
           <div className="w-full p-8 lg:w-1/2">
             <p className="text-xl text-gray-600 text-center">Welcome back!</p>
             <div className="mt-4">
@@ -186,10 +201,6 @@ const Login = () => {
                   Password
                 </label>
               </div>
-              {/* <input
-                                className="text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full focus:outline-2 focus:outline-blue-700"
-                                type="password"
-                            /> */}
 
               <FormControl
                 sx={{ width: "600", height: "42px" }}
@@ -231,15 +242,15 @@ const Login = () => {
             </div>
 
             <div className="mt-4 flex items-center w-full text-center">
-              <a
-                href="#"
+              <p
+                onclick={() => history.push("/Register")}
                 className="text-xxl text-gray-500 capitalize text-center w-full"
               >
                 Don&apos;t have any account yet?
                 <Link to="/Register">
                   <span className="secondary"> Sign Up</span>
                 </Link>
-              </a>
+              </p>
             </div>
           </div>
         </div>

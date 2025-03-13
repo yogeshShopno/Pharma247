@@ -42,7 +42,6 @@ import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 
 const EditPurchaseBill = () => {
-  const inputRefs = useRef([]);
 
   // const inputRef1 = useRef();
   // const inputRef2 = useRef();
@@ -76,7 +75,7 @@ const EditPurchaseBill = () => {
   const [mrp, setMRP] = useState(null);
   const [ptr, setPTR] = useState(null);
   const [qty, setQty] = useState("");
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState("");
   const [deleteAll, setDeleteAll] = useState(false);
   const [free, setFree] = useState("");
   const [loc, setLoc] = useState("");
@@ -124,66 +123,127 @@ const EditPurchaseBill = () => {
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [barcode, setBarcode] = useState("");
+  const [batchListData, setBatchListData] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [purchase, setPurchase] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
 
-  const [isOpen, setIsOpen] = useState(false);
-  
-  // Handle key presses for navigating rows
-  const handleKeyPress = (e) => {
-    const key = e.key;
+  const inputRefs = useRef([]);
+  const submitButtonRef = useRef(null);
+  const addButtonref = useRef(null);
 
-    console.log(key)
-    if (key === "ArrowDown") {
 
-      setSelectedIndex((prev) => prev < purchase?.item_list?.length - 1 ? prev + 1 : prev);
-      const selectedRow = purchase?.item_list[selectedIndex];
-      setSelectedEditItemId(selectedRow.id);
 
-    } else if (key === "ArrowUp") {
+  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      const selectedRow = purchase?.item_list[selectedIndex];
-      setSelectedEditItemId(selectedRow.id);
-
-    } else if (key === "Enter" && selectedIndex !== -1) {
-      // Confirm selection
-      console.log("hi");
-      const selectedRow = purchase?.item_list[selectedIndex];
-      setSelectedEditItemId(selectedRow.id);
-      console.log(purchase?.item_list[selectedIndex], "hi")
-      handleEditClick(purchase?.item_list[selectedIndex])
-      // alert(`Selected ID: ${selectedRow.id}`);
-    }
-  };
-
-  // Ensure the table container listens for key events
   useEffect(() => {
-    const currentRef = tableRef.current;
-    if (currentRef) {
-      currentRef.focus();
-      currentRef.addEventListener("keydown", handleKeyPress);
+    const handleTableFocus = () => setAutocompleteDisabled(false);
+    const handleTableBlur = () => setAutocompleteDisabled(true);
+
+    if (tableRef.current) {
+      tableRef.current.addEventListener("focus", handleTableFocus);
+      tableRef.current.addEventListener("blur", handleTableBlur);
     }
 
     return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("keydown", handleKeyPress);
+      if (tableRef.current) {
+        tableRef.current.removeEventListener("focus", handleTableFocus);
+        tableRef.current.removeEventListener("blur", handleTableBlur);
       }
     };
-  }, [selectedIndex, purchase]);
+  }, []);
 
-  // Update selectedEditItemId when selectedIndex changes
+  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
+
 
   useEffect(() => {
-    if (selectedIndex >= 0) {
-      setSelectedEditItemId(ItemPurchaseList.item[selectedIndex]?.id || null);
+    const handleKeyPress = (e) => {
+      if (!ItemPurchaseList?.item?.length) return; // Prevent errors if list is empty
+
+      const key = e.key;
+
+      // Check if any input field inside inputRefs is focused
+      const isInputFocused = inputRefs.current.some(
+        (input) => input && document.activeElement === input
+      );
+
+      if (isInputFocused) return; // Prevent key navigation when an input is focused
+
+      if (key === "ArrowDown") {
+        // Move selection down
+        setSelectedIndex((prev) =>
+          prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
+        );
+      } else if (key === "ArrowUp") {
+        // Move selection up
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      } else if (key === "Enter" && selectedIndex !== -1) {
+        // Prevent Enter action if any input is focused
+        if (!isInputFocused) {
+          const selectedRow = ItemPurchaseList.item[selectedIndex];
+          if (!selectedRow) return;
+
+          setSelectedEditItemId(selectedRow.id);
+          handleEditClick(selectedRow);
+
+          if (inputRefs.current[2]) {
+            inputRefs.current[2].focus();
+          }
+        }
+
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [selectedIndex, ItemPurchaseList]);
+
+  /*<================================================================================== handle shortcut  =========================================================================> */
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!event.altKey) return; // Exit early if Alt is not pressed
+
+      event.preventDefault(); // Prevent default browser behavior
+
+      if (event.key.toLowerCase() === "s") {
+        handleSubmit();
+      }
+      else if (event.key.toLowerCase() === "g") {
+        handleSubmit();
+      } else if (event.key.toLowerCase() === "m") {
+        inputRefs.current[0]?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [distributor, billNo, ItemPurchaseList]); // Dependencies only affect Alt+S
+
+
+  const handleKeyDown = (event, index) => {
+
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission
+
+      const nextInput = inputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus(); // Move to next input
+      }
     }
-  }, [selectedIndex, purchase]);
+  };
 
 
   const toggleModal = () => {
@@ -355,6 +415,7 @@ const EditPurchaseBill = () => {
   /*<================================================================================ get essntial details intially  ======================================================================> */
 
   useEffect(() => {
+
     const initializeData = async () => {
       const distributors = await listDistributor();
       await purchaseBillGetByID(distributors);
@@ -383,7 +444,7 @@ const EditPurchaseBill = () => {
     setBase(totalBase);
 
     /*<============================================================================= Calculate totalAmount ==============================================================================> */
-const totalAmount = parseFloat(
+    const totalAmount = parseFloat(
       (totalBase + (totalBase * gst) / 100).toFixed(2)
     );
     if (totalAmount) {
@@ -405,7 +466,7 @@ const totalAmount = parseFloat(
 
     const margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(margin);
-  }, [qty, ptr, disc, gst, free,ItemTotalAmount]);
+  }, [qty, ptr, disc, gst, free, ItemTotalAmount]);
 
   // Call the combined function when you want to initiate the data fetching
   useEffect(() => {
@@ -559,6 +620,58 @@ const totalAmount = parseFloat(
     setItemId(Id);
     setUnsavedItems(true);
   };
+  /*<================================================================= get batch list to select item while add  ============================================================> */
+
+  const batchList = async (id) => {
+    let data = new FormData();
+    data.append("iteam_id", id);
+    const params = {
+      iteam_id: id,
+    };
+    try {
+      const res = await axios
+        .post("batch-list?", data, {
+          params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const batchData = response.data.data;
+          setBatchListData(response.data.data);
+          if (batchData.length > 0) {
+            setUnit(batchData[0].unit);
+            setBatch(batchData[0].batch_name);
+            setHSN(batchData[0].HSN);
+            setExpiryDate(batchData[0].expiry_date);
+            setMRP(batchData[0].mrp);
+            setQty(batchData[0].purchase_qty);
+            setFree(batchData[0].purchase_free_qty);
+            setPTR(batchData[0].ptr);
+            setDisc(batchData[0].discount);
+            setLoc(batchData[0].location);
+            setGst(batchData[0].gst_name);
+            // setUnit()
+          } else {
+            setUnit("");
+            setBatch("");
+            setHSN("");
+            setExpiryDate("");
+            setMRP("");
+            setQty("");
+            setFree("");
+            setPTR("");
+            setDisc("");
+            setLoc("");
+            setGst("");
+          }
+        });
+    } catch (error) {
+      console.error("API error:", error);
+      setUnsavedItems(false);
+    }
+  };
 
   const addPurchaseValidation = async () => {
     const newErrors = {};
@@ -570,10 +683,13 @@ const totalAmount = parseFloat(
     }
     if (!unit) {
       newErrors.unit = "Unit is required";
-       toast.error(newErrors.unit)}
-    
-    if (!batch) {newErrors.batch = "Batch is required";
-    toast.error(newErrors.batch)}
+      toast.error(newErrors.unit)
+    }
+
+    if (!batch) {
+      newErrors.batch = "Batch is required";
+      toast.error(newErrors.batch)
+    }
 
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -600,8 +716,9 @@ const totalAmount = parseFloat(
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
- 
-    if (!gst) {newErrors.gst = "GST is required";
+
+    if (!gst) {
+      newErrors.gst = "GST is required";
       toast.error(newErrors.gst)
     }
     if (!searchItem) {
@@ -913,7 +1030,7 @@ const totalAmount = parseFloat(
     setSelectedOption(event.target.value);
   };
 
-  const handleUpdateSubmit = () => {
+  const handleSubmit = () => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -931,7 +1048,7 @@ const totalAmount = parseFloat(
     updatePurchaseRecord();
   };
   const handleEditClick = (item) => {
-    console.log(item, "item")
+
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -969,17 +1086,6 @@ const totalAmount = parseFloat(
     setOpenAddPopUp(false);
     // setCnAmount(0)
   };
-  const handleKeyDown = (event, index) => {
-
-    if (event.key === "Enter") {
-      event.preventDefault(); // Prevent form submission
-
-      const nextInput = inputRefs.current[index + 1];
-      if (nextInput) {
-        nextInput.focus(); // Move to next input
-      }
-    }
-  };
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
@@ -990,8 +1096,16 @@ const totalAmount = parseFloat(
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
+
     handleSearch(itemName);
   };
+
+  useEffect(() => {
+    if (value?.id) {
+      batchList(value?.id)
+    }
+
+  }, [value])
 
   const handlePTR = (e) => {
     const setptr = e.target.value;
@@ -1324,7 +1438,7 @@ const totalAmount = parseFloat(
                   variant="contained"
                   className="cn_fls"
                   color="primary"
-                  onClick={handleUpdateSubmit}
+                  onClick={handleSubmit}
                   style={{ background: "var(--color1)" }}
                 >
                   Update
@@ -1505,7 +1619,17 @@ const totalAmount = parseFloat(
                                   // label="Search Item Name"
                                   autoFocus
                                   inputRef={(el) => (inputRefs.current[0] = el)}
-                                  onKeyDown={(e) => handleKeyDown(e, 0)}
+                                  onKeyDown={(e) => {
+                                    if (!searchItem && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+                                      tableRef.current.focus();
+
+                                      setTimeout(() => {
+                                        document.activeElement.blur(); // Removes focus from the input
+                                      }, 0);
+                                    } else {
+                                      handleKeyDown(e, 0)
+                                    }
+                                  }}
                                 />
                               )}
                             />
@@ -1732,7 +1856,7 @@ const totalAmount = parseFloat(
                             type="number"
                             size="small"
                             value={base}
-                            
+
                             // inputRef={inputRef10}
                             onKeyDown={(e) => {
                               if (["e", "E"].includes(e.key)) {
@@ -1767,7 +1891,7 @@ const totalAmount = parseFloat(
                             onOpen={() => setIsOpen(true)}
                             onClose={() => setIsOpen(false)}
                           />
-                         
+
                         </td>
                         <td>
                           <TextField
@@ -1865,14 +1989,17 @@ const totalAmount = parseFloat(
                       tabIndex={0} >
                       <tbody
                       >
-                        {purchase?.item_list?.map((item) => (
+                        {purchase?.item_list?.map((item, index) => (
                           <tr
                             key={item.id}
-                            onClick={() => handleEditClick(item)}
-                            className={` item-List  flex justify-between  cursor-pointer  ${item.id === selectedEditItemId
+                            onClick={() => {
+                              setSelectedIndex(index); // Ensure clicking sets the selected index
+                              handleEditClick(item);
+                            }}
+                            className={` item-List  flex justify-between  cursor-pointer  ${index === selectedIndex
                               ? "highlighted-row"
                               : ""}`}
-                           
+
                           >
                             <td
                               style={{

@@ -171,8 +171,6 @@ const Dashboard = () => {
     }
   };
 
-
-
   useEffect(() => {
     dashboardData();
     userPermission();

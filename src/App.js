@@ -7,14 +7,14 @@ import Adminprotected from './protected/AdminProtect';
 import Package from './dashboard/More/Package/Package';
 import PopUp from './componets/popupBox/PopUpRed';
 import Protected from './protected/Protected';
-import Purchasereturn from './dashboard/Purchase/Purchasereturn';
+// import Purchasereturn from './dashboard/Purchase/Purchasereturn';
 import SaleView from './dashboard/Sale/SaleBill/saleView/SaleView';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
-import AddPurchaseReturn from './dashboard/Purchase/AddPurchaseReturn';
+// import AddPurchaseReturn from './dashboard/Purchase/AddPurchaseReturn';
 import Catagory from './dashboard/More/Catagory/Catagory';
 import Itemmaster from './dashboard/ItemMaster/Itemmaster';
 import PurchaseView from './dashboard/Purchase/PurchaseBill/Purchase-View/Purchase_View';
@@ -194,6 +194,9 @@ function App() {
             <Route exact path='/'>
               <Login />
             </Route>
+            <Route path='/Register/:referralCode'>
+              <SignUp />
+            </Route>
             <Route path='/Register'>
               <SignUp />
             </Route>
@@ -332,14 +335,14 @@ function App() {
                 <AddReturnbill />
               </Protected>
             </Route>
-            <Route path='/purchase/purchasereturn'>
+            {/* <Route path='/purchase/purchasereturn'>
               <Purchasereturn />
-            </Route>
-            <Route path='/purchase/addPurchaseReturn'>
+            </Route> */}
+            {/* <Route path='/purchase/addPurchaseReturn'>
               <Protected>
                 <AddPurchaseReturn />
               </Protected>
-            </Route>
+            </Route> */}
             <Route path='/salelist'>
               <Salelist />
             </Route>

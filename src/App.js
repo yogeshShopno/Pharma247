@@ -194,6 +194,9 @@ function App() {
             <Route exact path='/'>
               <Login />
             </Route>
+            <Route path='/Register/:referralCode'>
+              <SignUp />
+            </Route>
             <Route path='/Register'>
               <SignUp />
             </Route>

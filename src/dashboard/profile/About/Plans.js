@@ -17,7 +17,7 @@ const Plans = () => {
   const [plansDetails, setPlansDetails] = useState([]);
   const [tableData, setTableData] = useState([]);
 
-  /*<================================================================================== Plans column ==================================================================================> */
+  /*<============================================================================== Plans column ==============================================================================> */
 
   const plansColumns = [
     { id: "email", label: "email", minWidth: 150 },
@@ -34,16 +34,14 @@ const Plans = () => {
     }
   },[togglePage]);
 
-  /*<================================================================ get various dynamic plans details  to render table ================================================================> */
+  /*<=========================================================== get various dynamic plans details  to render table ===========================================================> */
 
   const getPlan = async () => {
     setIsLoading(true);
 
     try {
       const response = await axios.post("list-plan?", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      
       });
 
       if (response.status == 200) {
@@ -58,8 +56,7 @@ const Plans = () => {
     }
   };
 
-
-  /*<========================================================================= Call razorpay API to get payment =========================================================================> */
+/*<====================================================================== Call razorpay API to get payment ======================================================================> */
 
   const loadRazorpay = async (plan) => {
     console.log(plan.annual_price, "plan");

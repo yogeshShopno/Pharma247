@@ -87,7 +87,7 @@ const ProfileView = () => {
                                     )}
                                     {hasPermission(permissions, "profile plan view") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between  hover:bg-[var(--color1)] hover:text-white`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/refer&earn' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/refer&earn', 'refer&earn')}
                                         >
                                             Refer & Earn

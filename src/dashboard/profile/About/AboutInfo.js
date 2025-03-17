@@ -51,9 +51,9 @@ const AboutInfo = () => {
     setIsLoading(true);
     try {
       const response = await axios.post("about-get", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       });
       const data = response.data.data;
       if (response.data.status == 200) {

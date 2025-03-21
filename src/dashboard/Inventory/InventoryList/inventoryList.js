@@ -2569,7 +2569,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                     value={stockAdjust}
                     onChange={(e) => {
                       const value = parseFloat(e.target.value);
-                      setStockAdjust(value > 0 ? -value : value);
+                      setStockAdjust(value );
                     }}
                   />
                 </div>

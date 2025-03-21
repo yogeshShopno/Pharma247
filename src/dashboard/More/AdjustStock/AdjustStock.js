@@ -765,7 +765,7 @@ const AdjustStock = () => {
                                                         value={stockAdjust}
                                                         onChange={(e) => {
                                                             const value = parseFloat(e.target.value);
-                                                            setStockAdjust(value > 0 ? -value : value);
+                                                            setStockAdjust(value );
                                                         }}
                                                     />
                                                 </div>

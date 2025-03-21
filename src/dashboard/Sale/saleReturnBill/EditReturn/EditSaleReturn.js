@@ -25,7 +25,8 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
-
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 const EditSaleReturn = () => {
   const token = localStorage.getItem("token");
   const inputRef1 = useRef();
@@ -110,7 +111,9 @@ const EditSaleReturn = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+  const [isOpen, setIsOpen] = useState(false);
 
+  const [billSaveDraft, setBillSaveDraft] = useState('0');
   useEffect(() => {
     const totalAmount = qty / unit;
     const total = parseFloat(base) * totalAmount;
@@ -342,6 +345,7 @@ const EditSaleReturn = () => {
       data.append("margin_net_profit", marginNetProfit);
       data.append("payment_name", paymentType);
       data.append("product_list", JSON.stringify(saleReturnItems?.sales_iteam));
+      data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
 
       const params = {
         id: id,
@@ -756,11 +760,41 @@ const EditSaleReturn = () => {
                     variant="contained"
                     className="payment_btn_divv"
                     style={{ background: "var(--color1)" }}
-                    onClick={handleUpdate}
+                    onClick={() => setIsOpen(!isOpen)}
                   >
                     {" "}
                     Update
                   </Button>
+                  {isOpen && (
+                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                      <ul className="transition-all ">
+
+                        <li
+                          onClick={() => {
+                            setBillSaveDraft(0)
+                            handleUpdate(0)
+                          }}
+                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                        >
+                          <SaveIcon />
+
+
+                          Save
+                        </li>
+                        <li
+                          onClick={() => {
+                            setBillSaveDraft(1)
+                            handleUpdate(1)
+                          }}
+                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                        >
+                          <SaveAsIcon />
+
+                          Draft
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="border-b">

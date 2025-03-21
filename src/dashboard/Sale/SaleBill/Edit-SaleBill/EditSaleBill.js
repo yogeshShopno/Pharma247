@@ -17,7 +17,6 @@ import { Prompt, useHistory, useLocation } from "react-router-dom/cjs/react-rout
 import HistoryIcon from "@mui/icons-material/History";
 import { MenuItem, Select } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
 import SearchIcon from "@mui/icons-material/Search";
 import ListItem from "@mui/material/ListItem";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
@@ -31,6 +30,8 @@ import { FaCaretUp, FaStore } from "react-icons/fa6";
 import { FaShippingFast, FaWalking } from "react-icons/fa";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 const EditSaleBill = () => {
   const token = localStorage.getItem("token");
@@ -121,6 +122,9 @@ const EditSaleBill = () => {
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [billSaveDraft, setBillSaveDraft] = useState('0');
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -815,6 +819,7 @@ const EditSaleBill = () => {
     data.append("net_rate", netRateAmount || 0);
     data.append("margin", margin || 0);
     data.append("roylti_point", loyaltyVal || 0)
+    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
 
     const params = {
       id: id || '',
@@ -1042,11 +1047,42 @@ const EditSaleBill = () => {
                       background: "var(--color1)",
                     }}
                     className="payment_btn_divv"
-                    onClick={handleUpdate}
+                    onClick={() => setIsOpen(!isOpen)}
+
                   >
                     {" "}
                     Update
                   </Button>
+                  {isOpen && (
+                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                    <ul className="transition-all ">
+
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(0)
+                          handleUpdate(0)
+                        }}
+                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveIcon />
+
+
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(1)
+                          handleUpdate(1)
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveAsIcon />
+
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
                 </div>
               </div>
               <div className="border-b">

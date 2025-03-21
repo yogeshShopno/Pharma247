@@ -25,7 +25,8 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
-
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 const Salereturn = () => {
     const token = localStorage.getItem("token")
     const inputRef1 = useRef();
@@ -108,7 +109,9 @@ const Salereturn = () => {
     const [nextPath, setNextPath] = useState("");
     const [errors, setErrors] = useState({});
     const [uniqueId, setUniqueId] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
 
+    const [billSaveDraft, setBillSaveDraft] = useState('0');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = () => {
@@ -512,6 +515,7 @@ const Salereturn = () => {
             data.append('cgst', '0');
             data.append('sgst', '0');
             data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
+            data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
 
             try {
                 await axios.post("sales-return-create", data, {
@@ -703,8 +707,37 @@ const Salereturn = () => {
                                     ))}
                                 </Select>
                                 {/* <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
-                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={handleSubmit}> Submit</Button>
+                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }}    onClick={() => setIsOpen(!isOpen)}> Submit</Button>
+                                {isOpen && (
+                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                    <ul className="transition-all ">
 
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(0)
+                          handleSubmit(0)
+                        }}
+                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveIcon />
+
+
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(1)
+                          handleSubmit(1)
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveAsIcon />
+
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
                             </div>
                         </div>
                         <div className="border-b">

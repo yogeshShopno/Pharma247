@@ -25,7 +25,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { IoMdClose } from 'react-icons/io';
 import { Modal } from 'flowbite-react';
 import { FaCaretUp } from 'react-icons/fa6';
-
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 const EditReturnBill = () => {
     const history = useHistory();
     const unblockRef = useRef(null);
@@ -109,7 +110,9 @@ const EditReturnBill = () => {
     const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
     const [uniqueId, setUniqueId] = useState([])
     const [isEditMode, setIsEditMode] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
+    const [billSaveDraft, setBillSaveDraft] = useState('0');
     const handleClose = () => {
         setIsDelete(false);
     };
@@ -726,6 +729,7 @@ const EditReturnBill = () => {
         data.append("purches_return", JSON.stringify(tableData?.item_list));
         data.append('id', id == null ? "0" : id)
         data.append('round_off', roundOff == null ? "0" : roundOff)
+        data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
 
         const params = {
             id: id,
@@ -876,9 +880,40 @@ const EditReturnBill = () => {
                                     style={{ background: 'var(--color1)' }}
                                     variant="contained"
                                     className='edt_btn_ps'
-                                    onClick={() => handleReturnUpdate(checkedItems)}  >
+                                
+                                    onClick={() => setIsOpen(!isOpen)} >
                                     Update
                                 </Button>
+                                {isOpen && (
+                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                    <ul className="transition-all ">
+
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(0)
+                          handleReturnUpdate(checkedItems)
+                        }}
+                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveIcon />
+
+
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(1)
+                          handleReturnUpdate(checkedItems)
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveAsIcon />
+
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
 
                             </div>
                         </div>

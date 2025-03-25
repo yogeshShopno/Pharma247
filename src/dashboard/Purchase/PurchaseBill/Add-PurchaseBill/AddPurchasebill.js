@@ -13,9 +13,11 @@ import {
   TextField,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaPlusCircle } from "react-icons/fa";
-import {MenuItem, Select} from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Header from "../../../Header";
@@ -25,6 +27,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { FaUserAlt } from "react-icons/fa";
+
 import {
   Dialog,
   DialogActions,
@@ -43,6 +47,8 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import { Modal } from "flowbite-react";
 import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
+import { Link } from "react-router-dom";
+
 const debounce = (func, delay) => {
   let timeout;
   return (...args) => {
@@ -52,8 +58,11 @@ const debounce = (func, delay) => {
 
 };
 
+let debounceTimeout;
+
+
 const AddPurchaseBill = () => {
-  
+
 
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
@@ -145,6 +154,8 @@ const AddPurchaseBill = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [billSaveDraft, setBillSaveDraft] = useState('0');
+
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -161,7 +172,7 @@ const AddPurchaseBill = () => {
     "Pharma Byte": "pharmabyte-item-import",
     "Marg ERP": "mahalaxmi-item-import",
     "Techno Max": "techno-item-import",
-};
+  };
 
   const [errors, setErrors] = useState({});
   const [paymentType, setPaymentType] = useState("credit");
@@ -178,7 +189,7 @@ const AddPurchaseBill = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-/*<=============================================================================== Input ref on keydown enter ======================================================================> */
+  /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
@@ -189,7 +200,7 @@ const AddPurchaseBill = () => {
 
 
 
-/*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
+  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
@@ -255,7 +266,7 @@ const AddPurchaseBill = () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [selectedIndex, ItemPurchaseList]);
-  
+
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
@@ -269,7 +280,7 @@ const AddPurchaseBill = () => {
       }
       else if (event.key.toLowerCase() === "g") {
         handleSubmit();
-      }  else if (event.key.toLowerCase() === "m") {
+      } else if (event.key.toLowerCase() === "m") {
         inputRefs.current[2]?.focus();
       }
     };
@@ -292,7 +303,7 @@ const AddPurchaseBill = () => {
       }
     }
   };
-  /*<================================================================================ handle popup=======================================================================> */
+  /*<================================================================================ handle popup =======================================================================> */
 
   useEffect(() => {
     if (openAddItemPopUp) {
@@ -476,14 +487,14 @@ const AddPurchaseBill = () => {
   const handleFileUpload = async () => {
     generateRandomNumber();
     if (!file) {
-        toast.error("No file selected");
-        return;
+      toast.error("No file selected");
+      return;
     }
 
     const apiEndpoint = options[importConpany];
     if (!apiEndpoint) {
-        toast.error("Invalid option selected");
-        return;
+      toast.error("Invalid option selected");
+      return;
     }
 
     let data = new FormData();
@@ -492,21 +503,21 @@ const AddPurchaseBill = () => {
 
     setIsLoading(true);
     try {
-        const response = await axios.post(apiEndpoint, data, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+      const response = await axios.post(apiEndpoint, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        toast.success(response.data.message);
-        setIsLoading(false);
-        setUnsavedItems(true);
-        itemPurchaseList();
-        inputRefs.current[2]?.focus();
-        setOpenFile(false);
+      toast.success(response.data.message);
+      setIsLoading(false);
+      setUnsavedItems(true);
+      itemPurchaseList();
+      inputRefs.current[2]?.focus();
+      setOpenFile(false);
     } catch (error) {
-        setIsLoading(false);
-        console.error("API error:", error);
+      setIsLoading(false);
+      console.error("API error:", error);
     }
-};
+  };
 
   /*<============================================================================ download selected file =========================================================================> */
 
@@ -662,7 +673,7 @@ const AddPurchaseBill = () => {
             const params = {
               id: selectedEditItemId,
             };
-/*<======================================================================= call add item api to add barcode item  ================================================================> */
+            /*<======================================================================= call add item api to add barcode item  ================================================================> */
 
             try {
               const response = await axios.post("item-purchase", data, {
@@ -919,7 +930,7 @@ const AddPurchaseBill = () => {
     // }
 
     if (!qty) newErrors.unit = "Qty is required";
-    
+
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.error(newErrors.expiryDate);
@@ -952,12 +963,14 @@ const AddPurchaseBill = () => {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
-    if (!gst){
-       newErrors.gst = "GST is required";
-      toast.error("GST is required")};
-    if (gst !=12 && gst !=18 && gst !=5 &&  gst !=28)
-      { newErrors.gst = "Enter valid GST";
-         toast.error("Enter valid GST")};
+    if (!gst) {
+      newErrors.gst = "GST is required";
+      toast.error("GST is required")
+    };
+    if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+      newErrors.gst = "Enter valid GST";
+      toast.error("Enter valid GST")
+    };
 
     if (!searchItem) {
       toast.error("Please Select any Item Name");
@@ -980,7 +993,7 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add and Edit item function  ====================================================================> */
 
   const handleAddItem = async () => {
-    
+
     setItemAutofoucs(true);
 
     setUnsavedItems(true);
@@ -1083,6 +1096,7 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add new item to item master  ====================================================================> */
 
   const handleAddNewItem = async () => {
+
     if (!addItemName && !addUnit && !addBarcode) {
       toast.error("Please fill all the fields");
       return;
@@ -1221,13 +1235,11 @@ const AddPurchaseBill = () => {
   /*<============================================================================== submit purchase bill  ==========================================================================> */
 
   const submitPurchaseData = async () => {
+
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
-    data.append(
-      "bill_date",
-      selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""
-    );
+    data.append("bill_date", selectedDate ? format(selectedDate, "yyyy-MM-dd") : "");
     data.append("due_date", dueDate ? format(dueDate, "yyyy-MM-dd") : "");
     data.append("owner_type", localStorage.getItem("UserName"));
     data.append("user_id", localStorage.getItem("userId"));
@@ -1242,6 +1254,7 @@ const AddPurchaseBill = () => {
     data.append("round_off", roundOffAmount?.toFixed(2));
     data.append("purches_data", JSON.stringify(ItemPurchaseList.item));
     data.append("purches_return_data", JSON.stringify(finalPurchaseReturnList));
+    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
 
     try {
       await axios
@@ -1671,8 +1684,8 @@ const AddPurchaseBill = () => {
                 }}
                 size="small"
               >
-                <MenuItem value="cash">Cash</MenuItem>
-                <MenuItem value="credit">Credit</MenuItem>
+                <MenuItem  className=" hover:bg-[var(--color1)]" value="cash">Cash</MenuItem>
+                <MenuItem className=" hover:bg-[var(--color1)]" value="credit">Credit</MenuItem>
                 {bankData?.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.bank_name}
@@ -1727,15 +1740,45 @@ const AddPurchaseBill = () => {
               <Button
                 variant="contained"
                 style={{ background: "var(--color1)" }}
-                onClick={handleSubmit}
+                onClick={() => setIsOpen(!isOpen)}
                 ref={submitButtonRef}
               >
                 Save
               </Button>
 
             </div>
+            {isOpen && (
+              <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                <ul className="transition-all ">
+
+                  <li
+                    onClick={() => {
+                      setBillSaveDraft(0)
+                      handleSubmit(0)
+                    }}
+                    className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                  >
+                    <SaveIcon  />
+
+
+                    Save
+                  </li>
+                  <li
+                    onClick={() => {
+                      setBillSaveDraft(1)
+                      handleSubmit(1)
+                    }}
+                    className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                  >
+                    <SaveAsIcon  />
+
+                    Draft
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
-{/*<============================================================================== details at top  =============================================================================> */}
+          {/*<============================================================================== details at top  =============================================================================> */}
 
           <div className="bg-white">
             <div className="firstrow flex">
@@ -1865,7 +1908,8 @@ const AddPurchaseBill = () => {
                   />
                 </div>
               </div>
-{/*<============================================================================ add Item field ===========================================================================> */}
+
+              {/*<====================================================================== add Item field =====================================================================> */}
 
               <div className="overflow-x-auto w-full">
 
@@ -2238,7 +2282,7 @@ const AddPurchaseBill = () => {
                               }}
                               open={isOpen}
                               onOpen={() => setIsOpen(true)}
-                              onClose={() => setIsOpen(false)}
+                              onClose={() => (false)}
                             />
                           </td>
                           <td>
@@ -2258,10 +2302,14 @@ const AddPurchaseBill = () => {
                               }}
                               inputRef={(el) => (inputRefs.current[12] = el)}
 
-                              onKeyDown={async (e) => {
-                                if (e.key === 'Enter') {
-                                  await handleAddButtonClick();
-                                  handleKeyDown(e, 1)
+
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  if (debounceTimeout) clearTimeout(debounceTimeout); // Clear previous timeout
+                                  debounceTimeout = setTimeout(async () => {
+                                    await handleAddButtonClick();
+                                    handleKeyDown(e, 1);
+                                  }, 500); // Adjust debounce delay as needed
                                 }
                               }}
 
@@ -2304,7 +2352,7 @@ const AddPurchaseBill = () => {
                   </tbody>
                 </table>
                 < >
-                  {/*<=============================================================================== added Item  ==============================================================================> */}
+                  {/*<========================================================================= added Item  ========================================================================> */}
 
                   <table
                     className="p-30 border border-indigo-600 w-full border-collapse custom-table"
@@ -2319,10 +2367,9 @@ const AddPurchaseBill = () => {
                             setSelectedIndex(index); // Ensure clicking sets the selected index
                             handleEditClick(item);
                           }}
-                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                         >
-                          <td style={{ display: "flex", gap: "8px", width: "320px" }}>
+                          <td style={{ display: "flex", gap: "8px", width: "366px" }}>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
                               onClick={() => handleEditClick(item)}
@@ -2334,20 +2381,20 @@ const AddPurchaseBill = () => {
                             />
                             {item.iteam_name}
                           </td>
-                          <td>{item.weightage}</td>
-                          <td>{item.batch_number}</td>
-                          <td>{item.expiry}</td>
-                          <td>{item.mrp}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.free_qty}</td>
-                          <td>{item.ptr}</td>
-                          <td>{item.discount}</td>
-                          <td>{item.base_price}</td>
-                          <td>{item.gst}</td>
-                          <td>{item.location}</td>
-                          <td>{item.net_rate}</td>
-                          <td>{item.margin}</td>
-                          <td>{item.total_amount}</td>
+                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.weightage}</td>
+                          <td style={{ paddingLeft: "22px", width: "105px" }}>{item.batch_number}</td>
+                          <td style={{ paddingLeft: "22px", width: "105px" }}>{item.expiry}</td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.mrp}</td>
+                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.qty}</td>
+                          <td style={{ paddingLeft: "22px", width: "65px" }}>{item.free_qty}</td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.ptr}</td>
+                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.discount}</td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.base_price}</td>
+                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.gst}</td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.location}</td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.net_rate}</td>
+                          <td style={{ paddingLeft: "22px", width: "108px" }}>{item.margin}</td>
+                          <td style={{ paddingLeft: "22px", width: "107px" }}>{item.total_amount}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2357,7 +2404,7 @@ const AddPurchaseBill = () => {
             </div>
           </div>
         </div>
-        {/*<============================================================================== total and other details  =============================================================================> */}
+        {/*<====================================================================== total and other details  =====================================================================> */}
         <div
           className=""
           style={{
@@ -2565,7 +2612,7 @@ const AddPurchaseBill = () => {
             </Modal>
           </div>
         </div>
-        {/*<============================================================================== CN amount PopUp Box  =============================================================================> */}
+        {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
 
         <Dialog open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -2685,7 +2732,7 @@ const AddPurchaseBill = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        {/*<============================================================================== Bulk Import csv =============================================================================> */}
+        {/*<========================================================================= Bulk Import csv ========================================================================> */}
 
         <Dialog open={openFile} className="custom-dialog">
           <DialogTitle className="primary">Import Item</DialogTitle>
@@ -2704,49 +2751,49 @@ const AddPurchaseBill = () => {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-    <DialogContentText id="alert-dialog-description">
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" , marginBlock: "20px"}}>
-            {/* Software Selection */}
-            <FormControl size="small" sx={{ width: 200 }}>
-                <InputLabel>Select Software</InputLabel>
-                <Select 
-                    value={importConpany} 
-                    onChange={(event) => setImportConpany(event.target.value)} 
+            <DialogContentText id="alert-dialog-description">
+              <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBlock: "20px" }}>
+                {/* Software Selection */}
+                <FormControl size="small" sx={{ width: 200 }}>
+                  <InputLabel>Select Software</InputLabel>
+                  <Select
+                    value={importConpany}
+                    onChange={(event) => setImportConpany(event.target.value)}
                     label="Select Software"
-                >
+                  >
                     {Object.keys(options).map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
-                        </MenuItem>
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
                     ))}
-                </Select>
-            </FormControl>
+                  </Select>
+                </FormControl>
 
-            {/* File Upload */}
-            <div>
-            
-                <input
+                {/* File Upload */}
+                <div>
+
+                  <input
                     className="File-upload"
                     type="file"
                     accept=".csv"
                     id="file-upload"
                     onChange={handleFileSelect}
-                />
-                
-            </div>
+                  />
 
-            {/* Download Button */}
-            
-        </div>
-        <Button 
-                onClick={handleDownload} 
+                </div>
+
+                {/* Download Button */}
+
+              </div>
+              <Button
+                onClick={handleDownload}
                 style={{ backgroundColor: "#3f6212", color: "white" }}
-            >
+              >
                 <CloudDownloadIcon className="mr-2 " />
                 Download Sample File
-            </Button>
-    </DialogContentText>
-</DialogContent>
+              </Button>
+            </DialogContentText>
+          </DialogContent>
 
           <DialogActions>
             <Button
@@ -2760,7 +2807,7 @@ const AddPurchaseBill = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<============================================================================== add item  PopUp Box  =============================================================================> */}
+        {/*<======================================================================== add item  PopUp Box  =======================================================================> */}
 
         <Dialog open={openAddItemPopUp}>
           <DialogTitle id="alert-dialog-title" className="primary">
@@ -2876,7 +2923,7 @@ const AddPurchaseBill = () => {
           </DialogContent>
         </Dialog>
 
-        {/*<==============================================================================  Delete PopUP   =============================================================================> */}
+        {/*<==========================================================================  Delete PopUP   =========================================================================> */}
 
         <div
           id="modal"
@@ -2934,7 +2981,7 @@ const AddPurchaseBill = () => {
           </div>
         </div>
 
-        {/*<============================================================================== Leave page  PopUp Box  =============================================================================> */}
+        {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
 
         <Prompt
           when={unsavedItems}

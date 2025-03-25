@@ -149,6 +149,31 @@ const ProfileView = () => {
                             </AccordionDetails>
                         </Accordion>
                     )}
+                       {hasStaffSessionsPermission && (
+                        <Accordion defaultExpanded >
+                            <AccordionSummary sx={{ color: "var(--color1)" }} >
+                                <SupervisorAccountIcon sx={{ mb: 1 }} />
+                                <Typography className='pb_list_hedrr' sx={{ paddingX: "20px" }}>Setting</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails  >
+                                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
+                                    <ul className='list-text_pb'>
+                                       
+                                        
+                                        {hasPermission(permissions, "staff members view") && (
+                                            <li
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/reconciliation-manage' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                onClick={() => handleItemClick('/settings/online-orders', 'Reconciliation')}
+                                            >
+                                                Online Orders
+                                            </li>
+                                        )}                                        
+                                    </ul>
+                                    {/* {/ ))} /} */}
+                                </FormControl>
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
                     <Divider />
                 </Box>
             </div>

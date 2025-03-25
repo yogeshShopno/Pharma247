@@ -5,6 +5,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import {
   Button,
   InputAdornment,
@@ -130,6 +132,10 @@ const EditPurchaseBill = () => {
   const [purchase, setPurchase] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const [billSaveDraft, setBillSaveDraft] = useState('0');
+
+  let debounceTimeout;
+
   /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -193,8 +199,8 @@ const EditPurchaseBill = () => {
           setSelectedEditItemId(selectedRow.id);
           handleEditClick(selectedRow);
 
-          if (inputRefs.current[2]) {
-            inputRefs.current[2].focus();
+          if (inputRefs.current[0]) {
+            inputRefs.current[0].focus();
           }
         }
 
@@ -324,7 +330,7 @@ const EditPurchaseBill = () => {
       console.error("API error:", error);
     }
   };
-  /*<===================================================================================== get purchase bill by ID ===========================================================================> */
+  /*<============================================================================== get purchase bill by ID ====================================================================> */
 
   const purchaseBillGetByID = async (distributors) => {
     setPurchase("");
@@ -412,7 +418,7 @@ const EditPurchaseBill = () => {
       unlisten();
     };
   }, [history]); // Dependencies: history object
-  /*<================================================================================ get essntial details intially  ======================================================================> */
+  /*<======================================================================== get essntial details intially  ==============================================================> */
 
   useEffect(() => {
 
@@ -425,25 +431,25 @@ const EditPurchaseBill = () => {
     listOfGst();
     // listOfHistory()
   }, [id]);
-  /*<================================================================== caculation ==========================================================> */
+  /*<=============================================================================== caculation =======================================================================> */
 
   useEffect(() => {
     if (!qty || !ptr || !disc || !gst || !free) {
       console.warn("One or more dependencies are undefined");
       return;
     }
-    /*<=========================================================================== Calculate discount ================================================================================> */
+    /*<===================================================================== Calculate discount ==========================================================================> */
 
     const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
     setSchAmt(totalSchAmt);
 
-    /*<=========================================================================== Calculate totalBase ================================================================================> */
+    /*<===================================================================== Calculate totalBase ==========================================================================> */
 
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
 
-    /*<============================================================================= Calculate totalAmount ==============================================================================> */
+    /*<====================================================================== Calculate totalAmount =======================================================================> */
     const totalAmount = parseFloat(
       (totalBase + (totalBase * gst) / 100).toFixed(2)
     );
@@ -453,7 +459,7 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
     }
 
-    /*<======================================================================================= Net Rate calculation ====================================================================> */
+    /*<================================================================================= Net Rate calculation ==============================================================> */
 
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
@@ -462,7 +468,7 @@ const EditPurchaseBill = () => {
     );
     setNetRate(netRate);
 
-    /*<================================================================================= Margin calculation =========================================================================> */
+    /*<============================================================================= Margin calculation =====================================================================> */
 
     const margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
     setMargin(margin);
@@ -508,7 +514,7 @@ const EditPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  /*<================================================================================ get essntial details intially  ======================================================================> */
+  /*<====================================================================== get essntial details intially  ============================================================> */
 
   const handlePopState = () => {
     // Call the delete API
@@ -533,7 +539,7 @@ const EditPurchaseBill = () => {
     }
   };
 
-  /*<================================================================================ get essntial details intially  ======================================================================> */
+  /*<======================================================================== get essntial details intially  ==============================================================> */
 
   const purchaseReturnData = async () => {
     let data = new FormData();
@@ -559,7 +565,7 @@ const EditPurchaseBill = () => {
     }
   };
 
-  /*<================================================================================ get list of gst  ======================================================================> */
+  /*<=============================================================================== get list of gst  =====================================================================> */
 
   let listOfGst = () => {
     axios
@@ -591,7 +597,7 @@ const EditPurchaseBill = () => {
   //     });
   // };
 
-  /*<================================================================================ get list of gst  ======================================================================> */
+  /*<============================================================================== get list of gst  ====================================================================> */
 
   const itemPurchaseList = async () => {
     let data = new FormData();
@@ -1004,6 +1010,8 @@ const EditPurchaseBill = () => {
     data.append("round_off", roundOffAmount);
     data.append("cn_amount", finalCnAmount);
     data.append("purches_data", JSON.stringify(purchase.item_list));
+    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+
     const params = {
       id: id,
     };
@@ -1438,11 +1446,39 @@ const EditPurchaseBill = () => {
                   variant="contained"
                   className="cn_fls"
                   color="primary"
-                  onClick={handleSubmit}
+                  onClick={() => setIsOpen(!isOpen)}
                   style={{ background: "var(--color1)" }}
                 >
                   Update
                 </Button>
+                {isOpen && (
+                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                    <ul className="transition-all ">
+
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(0)
+                          handleSubmit(0)
+                        }}
+                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveIcon />
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft(1)
+                          handleSubmit(1)
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                      >
+                        <SaveAsIcon />
+
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
             <div className="border-b">
@@ -1586,6 +1622,8 @@ const EditPurchaseBill = () => {
                               value={searchItem?.iteam_name}
                               sx={{ width: 350, padding: 0 }}
                               size="small"
+                              key={selectedIndex}
+
                               onChange={handleOptionChange}
                               onInputChange={handleInputChange}
                               disabled={isAutocompleteDisabled}
@@ -1907,12 +1945,16 @@ const EditPurchaseBill = () => {
                             onChange={(e) => {
                               setLoc(e.target.value);
                             }}
-                            onKeyDown={async (e) => {
-                              if (e.key === 'Enter') {
-                                await addPurchaseValidation();
-                                handleKeyDown(e, 1)
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (debounceTimeout) clearTimeout(debounceTimeout); // Clear previous timeout
+                                debounceTimeout = setTimeout(async () => {
+                                  await addPurchaseValidation();
+                                  handleKeyDown(e, -1);
+                                }, 500); // Adjust debounce delay as needed
                               }
                             }}
+
                           />
                         </td>
                         <td>
@@ -2005,7 +2047,7 @@ const EditPurchaseBill = () => {
                               style={{
                                 display: "flex",
                                 gap: "8px",
-                                width: "300px",
+                                width: "335px",
                               }}
                             >
                               <BorderColorIcon
@@ -2018,22 +2060,20 @@ const EditPurchaseBill = () => {
                               />
                               {item.item_name}
                             </td>
-                            <td>{item.weightage}</td>
-                            {/* <td>{item.hsn_code}</td> */}
-                            <td>{item.batch_number}</td>
-                            <td>{item.expiry}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.fr_qty}</td>
-                            <td>{item.ptr}</td>
-                            <td>{item.disocunt}</td>
-                            {/* <td>{item.scheme_account}</td> */}
-                            <td>{item.base_price}</td>
-                            <td>{item.gst_name}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                            <td>{item.margin}</td>
-                            <td>{item.amount}</td>
+                            <td style={{ paddingLeft: "22px", width: "85px" }}>{item.weightage}</td>
+                            <td style={{ paddingLeft: "22px", width: "105px" }}>{item.batch_number}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.expiry}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.mrp}</td>
+                            <td style={{ paddingLeft: "22px", width: "85px" }}>{item.qty}</td>
+                            <td style={{ paddingLeft: "22px", width: "60px" }}>{item.fr_qty}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.ptr}</td>
+                            <td style={{ paddingLeft: "22px", width: "70px" }}>{item.disocunt}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.base_price}</td>
+                            <td style={{ paddingLeft: "22px", width: "70px" }}>{item.gst_name}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.location}</td>
+                            <td style={{ paddingLeft: "22px", width: "95px" }}>{item.net_rate}</td>
+                            <td style={{ paddingLeft: "22px", width: "108px" }}>{item.margin}</td>
+                            <td style={{ paddingLeft: "22px", width: "102px" }}>{item.amount}</td>
                           </tr>
                         ))}
                       </tbody>

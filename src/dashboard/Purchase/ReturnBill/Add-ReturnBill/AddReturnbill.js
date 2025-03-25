@@ -25,6 +25,8 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { Modal } from 'flowbite-react';
 import { IoMdClose } from 'react-icons/io';
 import { FaCaretUp } from 'react-icons/fa6';
+import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 const AddReturnbill = () => {
     const token = localStorage.getItem("token")
@@ -48,7 +50,7 @@ const AddReturnbill = () => {
     const [returnType, setReturnType] = useState(null);
     const [ItemId, setItemId] = useState('')
     const [IsDelete, setIsDelete] = useState(false);
-   
+
     const [unit, setUnit] = useState('');
     const [schAmt, setSchAmt] = useState('');
     const [disc, setDisc] = useState(0);
@@ -78,7 +80,7 @@ const AddReturnbill = () => {
     // const [finalAmount, setFinalAmount] = useState(0)
     const [selectedItem, setSelectedItem] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [saveValue, setSaveValue] = useState(false);
     const [totalAmount, setTotalAmount] = useState(0)
@@ -97,37 +99,110 @@ const AddReturnbill = () => {
     const [clickedItemIds, setClickedItemIds] = useState([]);
     const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isEdit,setIsEdit] = useState(false);
 
-  const inputRefs = useRef([]);
-  
-  const handleKeyDown = (event, index) => {
-    if (event.key === "Enter") {
-      event.preventDefault(); // Prevent form submission
+    const [billSaveDraft, setBillSaveDraft] = useState('0');
 
-      const nextInput = inputRefs.current[index + 1];
-      if (nextInput) {
-        nextInput.focus(); // Move to next input
-      }
-    }
-  };
 
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-    
+    /*<============================================================================ Input ref on keydown enter ===================================================================> */
+
+    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+    const tableRef = useRef(null); // Reference for table container
+    const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
+
+    const inputRefs = useRef([]);
+    const dateRefs = useRef([]);
+
+    const submitButtonRef = useRef(null);
+    const addButtonref = useRef(null);
+
+    /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+
 
     useEffect(() => {
+        const handleTableFocus = () => setAutocompleteDisabled(false);
+        const handleTableBlur = () => setAutocompleteDisabled(true);
 
-        const initialize = async () => {
-            try {
-                await handleLeavePage();
-            } catch (error) {
-                console.error("Error during initialization:", error);
+        if (tableRef.current) {
+            tableRef.current.addEventListener("focus", handleTableFocus);
+            tableRef.current.addEventListener("blur", handleTableBlur);
+        }
+
+        return () => {
+            if (tableRef.current) {
+                tableRef.current.removeEventListener("focus", handleTableFocus);
+                tableRef.current.removeEventListener("blur", handleTableBlur);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (!returnItemList?.item_list?.length) return;
+
+            const isInputFocused = document.activeElement.tagName === "INPUT";
+
+            if (isInputFocused) return;
+
+            if (e.key === "ArrowDown") {
+                setSelectedIndex((prev) => Math.min(prev + 1, returnItemList.item_list.length - 1));
+            } else if (e.key === "ArrowUp") {
+                setSelectedIndex((prev) => Math.max(prev - 1, 0));
+            } else if (e.key === "Enter" && selectedIndex !== -1) {
+                const selectedRow = returnItemList.item_list[selectedIndex];
+                if (!selectedRow) return;
+                handleEditClick(selectedRow);
             }
         };
 
-        initialize();
-    }, []);
+        document.addEventListener("keydown", handleKeyPress);
+        return () => document.removeEventListener("keydown", handleKeyPress);
+    }, [returnItemList, selectedIndex]);
+
+    /*<================================================================================== handle shortcut  =========================================================================> */
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (!event.altKey) return; // Exit early if Alt is not pressed
+
+            event.preventDefault(); // Prevent default browser behavior
+
+            if (event.key.toLowerCase() === "s") {
+                handleSubmit();
+            }
+            else if (event.key.toLowerCase() === "g") {
+                handleSubmit();
+            } else if (event.key.toLowerCase() === "m") {
+                inputRefs.current[2]?.focus();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [distributor, billNo, returnItemList]); // Dependencies only affect Alt+S
+
+
+    const handleKeyDown = (event, index) => {
+
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent form submission
+
+            const nextInput = inputRefs.current[index + 1];
+            if (nextInput) {
+                nextInput.focus(); // Move to next input
+            }
+        }
+    };
+
+
+    /*<================================================================================== handle shortcut  =========================================================================> */
+
+
+
+   
 
     useEffect(() => {
         if (otherAmount !== '') {
@@ -176,64 +251,8 @@ const AddReturnbill = () => {
         setPendingNavigation(null);
     };
 
-    const handleLeavePage = async () => {
-        let data = new FormData();
-        data.append("start_date", localStorage.getItem("StartFilterDate"));
-        data.append("end_date", localStorage.getItem("EndFilterDate"));
-        data.append("distributor_id", localStorage.getItem("DistributorId"));
-        data.append("type", "0");
+    /*<============================================================================ get data intially ===================================================================> */
 
-        try {
-            const response = await axios.post("purches-return-iteam-histroy", data,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            if (response.status === 200) {
-                setUnsavedItems(false);
-                setIsOpenBox(false);
-
-                setTimeout(() => {
-                    if (nextPath) {
-                        history.push(nextPath);
-                    }
-                }, 0);
-
-            }
-            setIsOpenBox(false);
-            setUnsavedItems(false);
-        } catch (error) {
-            console.error("Error deleting items:", error);
-        }
-    };
-
-
-    const handleNavigation = (path) => {
-        setIsOpenBox(true);
-        setNextPath(path);
-    };
-
-    const handleLogout = async () => {
-        await restoreData();
-
-        if (pendingNavigation) {
-            if (unblockRef.current) {
-                unblockRef.current();
-            }
-            history.push(pendingNavigation.pathname);
-        }
-        setIsOpenBox(false);
-        window.location.reload();
-    };
-
-    const paymentOptions = [
-        { id: 1, label: 'Cash' },
-        { id: 2, label: 'Credit' },
-        { id: 3, label: 'UPI' },
-        { id: 4, label: 'Cheque' },
-        { id: 5, label: 'Paytm' },
-        { id: 6, label: 'CC/DC' },
-        { id: 7, label: 'RTGS/NEFT' }]
 
     useEffect(() => {
         listOfGst();
@@ -243,68 +262,7 @@ const AddReturnbill = () => {
         setBillNo(localStorage.getItem('Purchase_Return_BillNo'));
     }, [])
 
-    useEffect(() => {
-        const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
-        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        const totalAmount = parseFloat((totalBase + (totalBase * gst.name / 100)).toFixed(2));
-        if (totalAmount) {
-            setItemTotalAmount(totalAmount.toFixed(2));
-        } else {
-            setItemTotalAmount(0)
-        }
-        if (isDeleteAll == false) {
-            // restoreData();
-        }
-    }, [ptr, qty, disc, gst.name])
-
-    // useEffect(() => {
-    //     const adjustedTotalAmount = finalAmount - otherAmt;
-    //     const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
-
-    //     let netAmountCal;
-    //     let roundOffAmountCal;
-
-    //     if (decimalPart >= 0.50) {
-    //         netAmountCal = Math.ceil(adjustedTotalAmount);
-    //         roundOffAmountCal = netAmountCal - adjustedTotalAmount;
-    //     } else {
-    //         netAmountCal = Math.floor(adjustedTotalAmount);
-    //         roundOffAmountCal = netAmountCal - adjustedTotalAmount;
-    //     }
-    //     setNetAmount(netAmountCal);
-    //     setRoundOff(roundOffAmountCal);
-    //     const x = otherAmt + parseInt(finalAmount)
-    //     setNetAmount(x);
-    // }, [finalAmount, otherAmt]);
-
-    // useEffect(() => {
-    //     let adjustedTotalAmount = finalAmount - otherAmt;
-    //     const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
-
-    //     let netAmountCal;
-    //     let roundOffAmountCal;
-
-    //     if (finalAmount <= 49) {
-    //         netAmountCal = finalAmount;
-    //         roundOffAmountCal = 0;
-    //     }
-    //     else {
-    //         if (decimalPart >= 0.50) {
-    //             // Round up
-    //             netAmountCal = Math.ceil(adjustedTotalAmount);
-    //             roundOffAmountCal = netAmountCal - adjustedTotalAmount;
-    //         } else {
-    //             // Round down
-    //             netAmountCal = Math.floor(adjustedTotalAmount);
-    //             roundOffAmountCal = netAmountCal - adjustedTotalAmount;
-    //         }
-    //     }
-    //     setNetAmount(netAmountCal);
-    //     setRoundOff(roundOffAmountCal);
-    //     const x = otherAmt + parseInt(finalAmount)
-    //     setNetAmount(x);
-    // }, [finalAmount, otherAmt]);
-
+  
 
     const BankList = async () => {
         let data = new FormData()
@@ -364,6 +322,95 @@ const AddReturnbill = () => {
 
         });
     };
+    /*<============================================================================ handle leave page fuction  ===================================================================> */
+
+    useEffect(() => {
+
+        const initialize = async () => {
+            try {
+                await handleLeavePage();
+            } catch (error) {
+                console.error("Error during initialization:", error);
+            }
+        };
+
+        initialize();
+    }, []);
+
+    const handleLeavePage = async () => {
+        let data = new FormData();
+        data.append("start_date", localStorage.getItem("StartFilterDate"));
+        data.append("end_date", localStorage.getItem("EndFilterDate"));
+        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("type", "0");
+
+        try {
+            const response = await axios.post("purches-return-iteam-histroy", data,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
+
+                setTimeout(() => {
+                    if (nextPath) {
+                        history.push(nextPath);
+                    }
+                }, 0);
+
+            }
+            setIsOpenBox(false);
+            setUnsavedItems(false);
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }
+    };
+    /*<============================================================================ calculation  ===================================================================> */
+
+    useEffect(() => {
+        const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
+        const totalAmount = parseFloat((totalBase + (totalBase * gst.name / 100)).toFixed(2));
+        if (totalAmount) {
+            setItemTotalAmount(totalAmount.toFixed(2));
+        } else {
+            setItemTotalAmount(0)
+        }
+        if (isDeleteAll == false) {
+            // restoreData();
+        }
+    }, [ptr, qty, disc, gst.name])
+
+    const handleNavigation = (path) => {
+        setIsOpenBox(true);
+        setNextPath(path);
+    };
+
+    const handleLogout = async () => {
+        await restoreData();
+
+        if (pendingNavigation) {
+            if (unblockRef.current) {
+                unblockRef.current();
+            }
+            history.push(pendingNavigation.pathname);
+        }
+        setIsOpenBox(false);
+        window.location.reload();
+    };
+
+    const paymentOptions = [
+        { id: 1, label: 'Cash' },
+        { id: 2, label: 'Credit' },
+        { id: 3, label: 'UPI' },
+        { id: 4, label: 'Cheque' },
+        { id: 5, label: 'Paytm' },
+        { id: 6, label: 'CC/DC' },
+        { id: 7, label: 'RTGS/NEFT' }]
+
+   
     const isDateDisabled = (date) => {
         const today = new Date();
         // Set time to 00:00:00 to compare only date part
@@ -371,6 +418,8 @@ const AddReturnbill = () => {
         // Disable dates that are greater than today
         return date > today;
     };
+
+    
     const deleteOpen = (Id) => {
         setIsDelete(true);
         setUnsavedItems(true)
@@ -496,6 +545,7 @@ const AddReturnbill = () => {
         setGst('')
         setLoc('')
         setItemTotalAmount(0)
+        setIsEdit(false)
     }
 
     const handleSubmit = () => {
@@ -545,6 +595,8 @@ const AddReturnbill = () => {
             data.append('round_off', roundOff ? roundOff : '');
             data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
             data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
+            data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+
             try {
                 await axios.post("purches-return-store", data, {
                     headers: {
@@ -595,6 +647,7 @@ const AddReturnbill = () => {
 
 
     const handleEditClick = (item, value) => {
+        setIsEdit(true)
         setSelectedEditItem(item);
         setSelectedEditItemId(item.id);
         setItemPurchaseId(item.item_id);
@@ -743,6 +796,7 @@ const AddReturnbill = () => {
             setDisc(0)
             setBatch('')
             setLoc('')
+            setIsEdit(false)
             setUnsavedItems(true);
             if (isNaN(ItemTotalAmount)) {
                 setItemTotalAmount(0);
@@ -769,11 +823,6 @@ const AddReturnbill = () => {
         // Update the state
         setOtherAmount(value);
     };
-
-
-
-
-
 
     return (
         <>
@@ -807,21 +856,39 @@ const AddReturnbill = () => {
                                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
-                                {/* <Select
-                                    labelId="dropdown-label"
-                                    id="dropdown"
-                                    value={paymentType}
-                                    sx={{ minWidth: '200px' }}
-                                    onChange={(e) => { setPaymentType(e.target.value) }}
-                                    size="small"
-                                >
-                                    <MenuItem value="cash">Cash</MenuItem>
-                                    <MenuItem value="credit">Credit</MenuItem>
-                                    {bankData?.map(option => (
-                                        <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
-                                    ))}
-                                </Select> */}
-                                <Button variant="contained" className='edt_btn_ps' style={{ background: "var(--color1)" }} onClick={handleSubmit}>Save</Button>
+
+                                <Button variant="contained" className='edt_btn_ps' style={{ background: "var(--color1)" }} onClick={() => setIsOpen(!isOpen)}
+                                >Save</Button>
+                                {isOpen && (
+                                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                                        <ul className="transition-all ">
+
+                                            <li
+                                                onClick={() => {
+                                                    setBillSaveDraft(0)
+                                                    handleSubmit(0)
+                                                }}
+                                                className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                                            >
+                                                <SaveIcon />
+
+
+                                                Save
+                                            </li>
+                                            <li
+                                                onClick={() => {
+                                                    setBillSaveDraft(1)
+                                                    handleSubmit(1)
+                                                }}
+                                                className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                                            >
+                                                <SaveAsIcon />
+
+                                                Draft
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="bg-white">
@@ -829,32 +896,42 @@ const AddReturnbill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                              
+
                                 }}>
                                     <span className="heading mb-2">Distributor</span>
                                     <Autocomplete
                                         value={distributor}
-                                        sx={{width: '350px'}}
+                                        sx={{ width: '350px' }}
                                         size='small'
                                         onChange={(e, value) => setDistributor(value)}
                                         options={distributorList}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => <TextField
-                                            autoComplete="off" {...params} 
-                                            inputRef={(el) => (inputRefs.current[0] = el)}
-                                            onKeyDown={(e) => handleKeyDown(e, 0)}
+                                            autoComplete="off" {...params}
+                                            ref={(el) => (dateRefs.current[0] = el)}
+                                            onKeyDown={(e) => {
+
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+
+
+
+                                                }
+                                            }}
                                             autoFocus />
-                                        
+
                                         }
+                                        inputRef={(el) => (inputRefs.current[0] = el)}
+                                        onKeyDown={(e) => handleKeyDown(e, 0)}
                                     />
                                     {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
                                     {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
-                                    
+
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                   
+
                                 }}>
                                     <span className="heading mb-2">Bill Date</span>
                                     <div>
@@ -865,16 +942,15 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setSelectedDate(newDate)}
                                             dateFormat="dd/MM/yyyy"
                                             filterDate={(date) => !isDateDisabled(date)}
-                                          
-                                            inputRef={(el) => (inputRefs.current[1] = el)}
-                                            onKeyDown={(e) => handleKeyDown(e, 1)}
+                                            ref={(el) => (dateRefs.current[1] = el)}
+
                                         />
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                  
+
                                 }}>
                                     <span className="heading mb-2">Bill No</span>
                                     <TextField
@@ -894,7 +970,7 @@ const AddReturnbill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    
+
                                 }}>
                                     <span className="heading mb-2">Start Date</span>
                                     <div >
@@ -906,14 +982,14 @@ const AddReturnbill = () => {
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
                                             ref={(el) => (inputRefs.current[3] = el)}
-                                        onKeyDown={(e) => handleKeyDown(e, 3)}
+                                            onKeyDown={(e) => handleKeyDown(e, 3)}
                                         />
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                 
+
                                 }}>
                                     <span className="heading mb-2">End Date</span>
                                     <div >
@@ -924,29 +1000,11 @@ const AddReturnbill = () => {
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
                                             inputRef={(el) => (inputRefs.current[4] = el)}
-                                        onKeyDown={(e) => handleKeyDown(e, 4)}
+                                            onKeyDown={(e) => handleKeyDown(e, 4)}
                                         />
                                     </div>
                                 </div>
 
-                                {/* <div className="detail custommedia" style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    width: "100%",
-                                }}>
-                                    <span className="heading mb-2">Remark</span>
-                                    <TextField
-                                        autoComplete="off"
-                                        id="outlined-number"
-                                        size="small"
-                                        sx={{
-                                            width: '100%',
-                                           
-                                        }}
-                                        value={remark}
-                                        onChange={(e) => { setRemark(e.target.value) }}
-                                    />
-                                </div> */}
 
                                 <div className='detail custommedia' style={{
                                     display: "flex",
@@ -972,29 +1030,7 @@ const AddReturnbill = () => {
                                 <div>
                                 </div>
                             </div>
-                            {/* <div className='firstrow flex mt-3 border-t' style={{ paddingTop: "0" }}> */}
-                            {/* <div className="detail custommedia" style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    width: "100%",
-                                    paddingTop: '1rem'
-                                }}>
-                                    <span className="heading mb-2">Remark</span>
-                                    <TextField
-                                        autoComplete="off"
-                                        id="outlined-number"
-                                        size="small"
-                                        sx={{
-                                            width: '100%',
-                                            // minWidth: '300px',
-                                            // '@media (max-width:600px)': {
-                                            //     minWidth: '250px',
-                                            // },
-                                        }}
-                                        value={remark}
-                                        onChange={(e) => { setRemark(e.target.value) }}
-                                    />
-                                </div> */}
+
                             <div className='overflow-x-auto mt-4 w-full '>
                                 <table className="customtable w-full border-collapse custom-table">
                                     <thead>
@@ -1022,26 +1058,33 @@ const AddReturnbill = () => {
                                             <tr>
                                                 <td style={{ width: '350px' }}>
                                                     <div >
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-basic"
-                                                        size="small"
-                                                        sx={{ width: "350px"}}
-                                                        value={searchQuery}
-                                                        onChange={handleInputChange}
-                                                        variant="outlined"
-                                                        placeholder="Please search any items.."
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: "search",
-                                                        }}
-                                                    />
-                                                        {/* <DeleteIcon className='delete-icon' onClick={removeItem}/> */}
-                                                        {searchItem}
+                                                        {isEdit? <>
+                                                            <DeleteIcon className='delete-icon' onClick={removeItem}/>
+                                                            <span>{searchItem}</span></>
+                                                          : <>
+
+
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                id="outlined-basic"
+                                                                size="small"
+                                                                sx={{ width: "350px" }}
+                                                                value={searchQuery}
+                                                                onChange={handleInputChange}
+                                                                variant="outlined"
+                                                                placeholder="Please search any items.."
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <SearchIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                    type: "search",
+                                                                }}
+                                                            /></>
+                                                        }
+
+
                                                     </div>
                                                 </td>
                                                 <td>
@@ -1153,15 +1196,6 @@ const AddReturnbill = () => {
                                                             }
                                                         }}
 
-                                                    // onChange={(e) => {
-                                                    //     const inputQty = Number(e.target.value); // Convert the input value to a number
-                                                    //     if (inputQty <= editQty) {
-                                                    //         setQty(inputQty);  // Set the value if it's less than or equal to `editQty`
-                                                    //     } else {
-                                                    //         setQty(editQty);   // Limit the value to `editQty`
-                                                    //         toast.error("Quantity exceeds the allowed limit"); // Show the error message
-                                                    //     }
-                                                    // }}
 
 
                                                     />
@@ -1273,34 +1307,16 @@ const AddReturnbill = () => {
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                         onKeyDown={async (e) => {
                                                             if (e.key === 'Enter') {
-                                                              await EditReturn();
-                                                            
+                                                                await EditReturn();
+
                                                             }
-                                                          }}
+                                                        }}
                                                     />
                                                 </td>
                                                 <td className="total">{ItemTotalAmount}</td>
                                             </tr>
                                             <tr >
                                                 <td>
-                                                    {/* <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-basic"
-                                                        size="small"
-                                                        sx={{ width: "350px", marginTop: "5px" }}
-                                                        value={searchQuery}
-                                                        onChange={handleInputChange}
-                                                        variant="outlined"
-                                                        placeholder="Please search any items.."
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                            type: "search",
-                                                        }}
-                                                    /> */}
                                                 </td>
                                                 <td></td>
                                                 <td></td>
@@ -1313,49 +1329,34 @@ const AddReturnbill = () => {
                                                 <td></td>
                                                 <td></td>
                                                 <td>
-                                                    {/* <Button style={{ background: "var(--color1)" }} variant="contained" color="success" onClick={EditReturn}><ControlPointIcon />Update</Button> */}
+
                                                 </td>
                                             </tr>
-
-                                            {/* all select */}
-                                            {/* {returnItemList?.item_list?.length > 0 && (
-                                                <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }}
-                                                    checked={returnItemList?.item_list?.every(item => item.iss_check)}
-                                                    onChange={(event) => handleSelectAll(event.target.checked)}
-                                                />
-                                            )} */}
-                                            {returnItemList?.item_list.map(item => (
-                                                <tr key={item.id} className="item-List" onClick={(event) => handleEditClick(item, event.target)}  >
-                                                    <td style={{
-                                                        display: 'flex', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap'
-                                                    }}>
-                                                        <td >
-                                                            <Checkbox
-                                                                sx={{
-                                                                    color: "var(--color2)", // Color for unchecked checkboxes
-                                                                    '&.Mui-checked': {
-                                                                        color: "var(--color1)", // Color for checked checkboxes
-                                                                    },
-                                                                }}
-                                                                // key={item.id}
-                                                                checked={item?.iss_check}
-                                                                onClick={(event) => {
-                                                                    event.stopPropagation();
-                                                                    setUnsavedItems(true)
-                                                                }}
-                                                                onChange={(event) => handleChecked(item.id, event.target.checked)}
-                                                            />
-                                                        </td>
-                                                        < BorderColorIcon
-                                                            style={{ color: "var(--color1)" }}
+                                        </>
+                                        )}
+                                    </tbody>
+                                </table>
+                                <>
+                                    <table className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                                        ref={tableRef} tabIndex={0}>
+                                        <tbody>
+                                            {returnItemList?.item_list?.map((item, index) => (
+                                                <tr key={item.id}
+                                                    onClick={() => {
+                                                        setSelectedIndex(index);
+                                                        handleEditClick(item);
+                                                    }}
+                                                    className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}>
+                                                    <td style={{ display: "flex", gap: "8px", alignItems: "center", whiteSpace: "nowrap" }}>
+                                                        <Checkbox
+                                                            sx={{ color: "var(--color2)", '&.Mui-checked': { color: "var(--color1)" } }}
+                                                            checked={item?.iss_check}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            onChange={(e) => handleChecked(item.id, e.target.checked)}
                                                         />
-                                                        <DeleteIcon className='delete-icon' onClick={() => deleteOpen(item.id)} />{item.item_name}
+                                                        <BorderColorIcon style={{ color: "var(--color1)" }} />
+                                                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                        {item.item_name}
                                                     </td>
                                                     <td>{item.weightage}</td>
                                                     <td>{item.batch_number}</td>
@@ -1370,11 +1371,9 @@ sx={{
                                                     <td>{item.amount}</td>
                                                 </tr>
                                             ))}
-
-                                        </>
-                                        )}
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </>
                             </div>
 
                             <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
@@ -1415,7 +1414,7 @@ sx={{
                                 >
                                     <div
                                         className="gap-2 "
-                                        onClick={toggleModal}
+                                        onClick={()=>{setIsModalOpen(!isModalOpen)}}
                                         style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -1440,7 +1439,7 @@ sx={{
 
                                     <Modal
                                         show={isModalOpen}
-                                        onClose={toggleModal}
+                                        onClose={()=>{setIsModalOpen(!isModalOpen)}}
                                         size="lg"
                                         position="bottom-center"
                                         className="modal_amount"
@@ -1460,7 +1459,7 @@ sx={{
                                                 invoice total
                                             </h2>
                                             <IoMdClose
-                                                onClick={toggleModal}
+                                                onClick={()=>{setIsModalOpen(!isModalOpen)}}
                                                 cursor={"pointer"}
                                                 size={30}
                                             />

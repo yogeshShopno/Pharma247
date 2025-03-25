@@ -99,6 +99,8 @@ import CssBaseline from '@mui/material/CssBaseline'; // Reset default styles
 import { ThemeProvider } from '@material-tailwind/react';
 import theme from './theme';
 import { useEffect } from 'react';
+import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
+import OnlineDashboard from './dashboard/OnlineDashboard';
 
 function App() {
   useEffect(() => {
@@ -206,6 +208,12 @@ function App() {
             <Route path='/admindashboard'>
               <Protected>
                 <Dashboard />
+              </Protected>
+              <Adminprotected />
+            </Route>
+            <Route path='/onlinedashboard'>
+              <Protected>
+                <OnlineDashboard/>
               </Protected>
               <Adminprotected />
             </Route>
@@ -556,6 +564,11 @@ function App() {
             <Route path='/Staff-sessions/sessions'>
               <Protected>
                 <Sessions />
+              </Protected>
+            </Route>
+            <Route path='/settings/online-orders'>
+              <Protected>
+                <OnlineOrders />
               </Protected>
             </Route>
             <Route path='/add-roles'>

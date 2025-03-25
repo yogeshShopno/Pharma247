@@ -1463,8 +1463,6 @@ const EditPurchaseBill = () => {
                         className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                       >
                         <SaveIcon />
-
-
                         Save
                       </li>
                       <li

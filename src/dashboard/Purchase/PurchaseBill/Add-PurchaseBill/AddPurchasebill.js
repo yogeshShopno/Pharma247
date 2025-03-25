@@ -2367,8 +2367,7 @@ const AddPurchaseBill = () => {
                             setSelectedIndex(index); // Ensure clicking sets the selected index
                             handleEditClick(item);
                           }}
-                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                         >
                           <td style={{ display: "flex", gap: "8px", width: "366px" }}>
                             <BorderColorIcon

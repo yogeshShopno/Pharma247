@@ -19,6 +19,7 @@ import Header from '../../../Header';
 import Loader from '../../../../componets/loader/Loader';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../Add-ReturnBill/AddReturnbill.css';
 import { VscDebugStepBack } from "react-icons/vsc";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -27,6 +28,7 @@ import { Modal } from 'flowbite-react';
 import { FaCaretUp } from 'react-icons/fa6';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
+
 const EditReturnBill = () => {
     const history = useHistory();
     const unblockRef = useRef(null);
@@ -141,6 +143,61 @@ const EditReturnBill = () => {
     }, [id, isDeleteAll]); // Add only necessary dependencies
 
 
+
+    /*<============================================================================ Input ref on keydown enter ===================================================================> */
+
+    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+    const tableRef = useRef(null); // Reference for table container
+    const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
+
+    const inputRefs = useRef([]);
+    const dateRefs = useRef([]);
+
+    const submitButtonRef = useRef(null);
+    const addButtonref = useRef(null);
+
+    /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+
+
+    useEffect(() => {
+        const handleTableFocus = () => setAutocompleteDisabled(false);
+        const handleTableBlur = () => setAutocompleteDisabled(true);
+
+        if (tableRef.current) {
+            tableRef.current.addEventListener("focus", handleTableFocus);
+            tableRef.current.addEventListener("blur", handleTableBlur);
+        }
+
+        return () => {
+            if (tableRef.current) {
+                tableRef.current.removeEventListener("focus", handleTableFocus);
+                tableRef.current.removeEventListener("blur", handleTableBlur);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (!tableData?.item_list?.length) return;
+
+            const isInputFocused = document.activeElement.tagName === "INPUT";
+
+            if (isInputFocused) return;
+
+            if (e.key === "ArrowDown") {
+                setSelectedIndex((prev) => Math.min(prev + 1, tableData.item_list.length - 1));
+            } else if (e.key === "ArrowUp") {
+                setSelectedIndex((prev) => Math.max(prev - 1, 0));
+            } else if (e.key === "Enter" && selectedIndex !== -1) {
+                const selectedRow = tableData.item_list[selectedIndex];
+                if (!selectedRow) return;
+                handleEditClick(selectedRow);
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyPress);
+        return () => document.removeEventListener("keydown", handleKeyPress);
+    }, [tableData, selectedIndex]);
 
 
     useEffect(() => {
@@ -433,63 +490,7 @@ const EditReturnBill = () => {
         }
     };
 
-    // const returnBillEditID = async (distributors, value) => {
-    //     let data = new FormData();
-    //     data.append("purches_return_id", id == null ? id : id);
-    //     data.append("search", value ? value : "");
 
-    //     const params = {
-    //         purches_return_id: id,
-    //     };
-    //     try {
-    //         await axios.post("purches-return-edit-data?", data, {
-    //             // params: params,
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //         }
-    //         ).then((response) => {
-    //             const data = response.data.data;
-    //             setTableData(data);
-    //             setSelectedDate(data?.bill_date)
-    //             setFinalAmount(response.data.data?.final_amount)
-    //             setTotalAmount(response.data.data?.total_amount)
-    //             otherAmount ? setOtherAmount(otherAmount) : setOtherAmount(response.data.data?.other_amount)
-    //             setNetAmount(parseFloat(response.data.data?.total_amount) + parseFloat(response.data.data?.other_amount))
-    //             setTotalGST(response.data.data?.total_gst)
-    //             setTotalQty(response.data.data?.total_qty)
-    //             setTotalNetRate(response.data.data?.total_net_rate)
-    //             setTotalMargin(response.data.data?.total_margin)
-    //             setMargin(response.data.data?.total_margin)
-    //             setStartDate(response.data.data?.start_date);
-    //             setEndDate(response.data.data?.end_date)
-
-    //             if (!distributors || !Array.isArray(distributors)) {
-    //                 console.error("Distributors is not an array or undefined");
-    //                 return;
-    //             }
-    //             const foundDistributor = distributors.find(option => option.id == data.distributor_id);
-
-    //             // const foundDistributor = distributors.find(option => {
-    //             //     return option.id == data.distributor_id;
-    //             // });
-
-    //             setBillNo(data.bill_no || '');
-    //             // const parsedDate = parse(data.start_date , 'MM-yyyy', new Date());
-    //             // const formattedDate = format(parsedDate, 'MM-yyyy');
-
-    //             setRemark(data?.remark)
-
-    //             if (foundDistributor) {
-    //                 setDistributor(foundDistributor);
-    //             }
-    //         })
-    //     } catch (error) {
-    //         console.error("API error:", error);
-
-    //         setIsLoading(false);
-    //     }
-    // }
 
     const handleSchAmt = (e) => {
         // Get the input value as a string
@@ -545,21 +546,7 @@ const EditReturnBill = () => {
 
 
     };
-    // const handleQty = (value) => {
 
-    //     const newQty = Number(value);
-
-    //     if (newQty > tempQty) {
-    //         setQty(tempQty);
-    //         toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
-    //     } else if (newQty < 0) {
-    //         setQty(tempQty);
-    //         toast.error(`Quantity should not be less than 0`);
-    //     } else {
-    //         setQty(newQty)
-    //     }
-
-    // }
     const handleQtyChange = (value) => {
         // const inputQty = Number(e.target.value);
         // setQty(inputQty);
@@ -862,58 +849,45 @@ const EditReturnBill = () => {
                                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList ">
-                                {/* <Select
-                                    labelId="dropdown-label"
-                                    id="dropdown"
-                                    value={paymentType}
-                                    sx={{ minWidth: '200px' }}
-                                    onChange={(e) => { setPaymentType(e.target.value) }}
-                                    size="small"
-                                >
-                                    <MenuItem value="cash">Cash</MenuItem>
-                                    <MenuItem value="credit">Credit</MenuItem>
-                                    {bankData?.map(option => (
-                                        <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
-                                    ))}
-                                </Select> */}
+
                                 <Button
                                     style={{ background: 'var(--color1)' }}
                                     variant="contained"
                                     className='edt_btn_ps'
-                                
+
                                     onClick={() => setIsOpen(!isOpen)} >
                                     Update
                                 </Button>
                                 {isOpen && (
-                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                    <ul className="transition-all ">
+                                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
+                                        <ul className="transition-all ">
 
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft(0)
-                          handleReturnUpdate(checkedItems)
-                        }}
-                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveIcon />
+                                            <li
+                                                onClick={() => {
+                                                    setBillSaveDraft(0)
+                                                    handleReturnUpdate(checkedItems)
+                                                }}
+                                                className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                                            >
+                                                <SaveIcon />
 
 
-                        Save
-                      </li>
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft(1)
-                          handleReturnUpdate(checkedItems)
-                        }}
-                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveAsIcon />
+                                                Save
+                                            </li>
+                                            <li
+                                                onClick={() => {
+                                                    setBillSaveDraft(1)
+                                                    handleReturnUpdate(checkedItems)
+                                                }}
+                                                className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                                            >
+                                                <SaveAsIcon />
 
-                        Draft
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                                                Draft
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
 
                             </div>
                         </div>
@@ -1047,24 +1021,7 @@ const EditReturnBill = () => {
                                         />
                                     </div>
                                 </div>
-                                {/* <div className="detail custommedia" style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    width: "100%"
-                                }}>
-                                    <span className="heading mb-2">Remark</span>
-                                    <TextField
-                                        autoComplete="off"
-                                        id="outlined-number"
-                                        size="small"
-                                        sx={{
-                                            width: '100%',
-                                        }}
-
-                                        value={remark}
-                                        onChange={(e) => { setRemark(e.target.value) }}
-                                    />
-                                </div> */}
+                               
                                 <div>
                                 </div>
                                 <div className='scroll-two'>
@@ -1401,11 +1358,17 @@ const EditReturnBill = () => {
                                                 </td>
                                             </tr>
 
-
-
-                                            {tableData?.item_list?.map((item) => (
-                                                <tr key={item.id} className="item-List border-b border-gray-400" onClick={() => handleEditClick(item)}>
-                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                        </tbody>
+                                    </table>
+                                    <table className="p-30 border border-indigo-600 w-full border-collapse custom-table" ref={tableRef} tabIndex={0}>
+                                        <tbody>
+                                            {tableData?.item_list?.map((item,index) => (
+                                                <tr key={item.id}  onClick={() => 
+                                                    {setSelectedIndex(index)
+                                                handleEditClick(item)}}
+                                                className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                                >
+                                                    <td style={{ whiteSpace: 'nowrap',width :'400px',textAlign:'left'  }}>
                                                         <Checkbox
                                                             sx={{
                                                                 color: "var(--color2)", // Color for unchecked checkboxes
@@ -1435,88 +1398,9 @@ const EditReturnBill = () => {
                                                     <td>{item.amount}</td>
                                                 </tr>
                                             ))}
-
-
-
                                         </tbody>
                                     </table>
-                                    {/* <div className="flex gap-10 justify-end mt-5 flex-wrap "  >
-                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                            <div>
-                                                <label className="font-bold">Total GST : </label>
-                                            </div>
-                                            <div>
-                                                <label className="font-bold">Total Qty : </label>
-                                            </div>
-                                            
-                                        </div>
-                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-
-                                            <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                                <span style={{ fontWeight: 600 }}>{totalGST}</span>
-                                                <span style={{ fontWeight: 600 }}>{totalQty}</span>
-                                               
-
-                                            </div>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                            <div>
-                                                <label className="font-bold">Total Amount : </label>
-                                            </div>
-
-                                            <div>
-                                                <label className="font-bold">Other Amount: </label>
-                                            </div>
-                                            
-
-                                            <div>
-                                                <label className="font-bold">Net Rate : </label>
-                                            </div>
-                                            <div>
-                                                <label className="font-bold">Round Off : </label>
-                                            </div>
-                                            <div>
-                                                <label className="font-bold" >Net Amount : </label>
-                                            </div>
-                                        </div>
-                                        <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
-
-                                            <div>
-                                                <span style={{ fontWeight: 600 }}>{totalAmount ? totalAmount : 0}</span>
-                                            </div>
-                                            
-                                            <div>
-                                                <Input
-                                                    type="number"
-                                                    value={otherAmount}
-                                                    onChange={handleOtherAmount}
-                                                    size="small"
-                                                    style={{
-                                                        width: "70px",
-                                                        background: "none",
-                                                        borderBottom: "1px solid gray",
-                                                        justifyItems: "end",
-                                                        outline: "none",
-                                                    }} sx={{
-                                                        '& .MuiInputBase-root': {
-                                                            height: '35px',
-                                                        },
-                                                        "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                    }} />
-                                            </div>
-                                           
-                                            <div className='mt-2'>
-                                                <span style={{ fontWeight: 600, }}>{totalNetRate}</span>
-                                            </div>
-                                            <div className='mt-1'>
-                                                <span style={{ fontWeight: 600, }} >{roundOff === "0.00" ? roundOff : (roundOff < 0.49 ? `- ${roundOff}` : `${parseFloat(1 - roundOff).toFixed(2)}`)}</span>
-                                            </div>
-                                            <div>
-                                                <span style={{ fontWeight: 600, fontSize: '22px' }} className='primary ' >{!netAmount ? 0 : netAmount}</span>
-                                            </div>
-                                        </div>
-                                    </div> */}
+                                   
                                 </div>
 
 

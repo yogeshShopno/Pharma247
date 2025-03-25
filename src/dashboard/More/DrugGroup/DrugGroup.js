@@ -113,6 +113,7 @@ const DrugGroup = () => {
       .then((response) => {
         setDrugGroupData(response.data.data);
         setIsLoading(false);
+        console.log("drug called")
       })
       .catch((error) => {
         console.error("API error:", error);
@@ -354,7 +355,7 @@ const DrugGroup = () => {
                 >
                   {" "}
                   <AddIcon />
-                  Add Drug Group
+                  Add Drug Group 
                 </Button>
               </div>
             </div>

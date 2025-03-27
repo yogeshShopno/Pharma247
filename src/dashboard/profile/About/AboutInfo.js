@@ -166,7 +166,7 @@ const AboutInfo = () => {
                   >
                     About Pharmacy
                     <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
-                    <a href="/login.html" >s</a>
+                    
                   </h1>
                 </div>
                 <Box className="aboutPharmacy  abt_fld_pf">

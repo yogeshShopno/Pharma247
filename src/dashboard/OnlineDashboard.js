@@ -272,9 +272,9 @@ const OnlineDashboard = () => {
 
     let data = new FormData();
     data.append("order_status", 0)
-    data.append("start_date", 0)
-    data.append("end_date", 0)
-    data.append("patient_name", 0)
+    data.append("start_date", "2025-03-10")
+    data.append("end_date", "2025-03-31")
+    data.append("patient_name", "shailesh")
 
     try {
       await axios.post("chemist-order-list?", data, {

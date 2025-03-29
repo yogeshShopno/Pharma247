@@ -23,9 +23,9 @@ const OnlineOrders = () => {
   const [toggle, setToggle] = useState(false);
 
   const [settings, setSettings] = useState({
-    accept_online_orders: 1,
-    delivery_online_orders: 120,
-    pickup_online_orders: 102,
+    accept_online_orders: 0,
+    delivery_online_orders: 0,
+    pickup_online_orders: 0,
     minimum_order_amount: 100,
     order_shipping_price: 102,
     delivery_estimated_time: dayjs('2022-04-17T15:30'),
@@ -33,7 +33,6 @@ const OnlineOrders = () => {
     google_location_link: 120,
     delivery_start_time: 102,
     delivery_end_time: 120,
-    order_manager: 102,
     delivery_executive: 120,
     pharmacist_number: 9876543210,
     pharmacy_whatsapp: 9876543210,
@@ -44,13 +43,15 @@ const OnlineOrders = () => {
 
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
-  {/*<=============================================================================== get setting data intially ======================================================================> */ }
+  {/*<============================================================================= get setting data intially ====================================================================> */ }
   // Function to update state using an object
+  
   const updateState = (newState) => {
     setSettings((prevState) => ({
       ...prevState,
       ...newState, // Merging the new state
     }));
+    console.log(settings);
   };
 
 
@@ -91,23 +92,24 @@ const OnlineOrders = () => {
 
   const updateSettings = async () => {
     const data = new FormData();
-    data.append("accept_online_orders", settings.accept_online_orders);
-    data.append("delivery_online_orders", settings.accept_online_orders);
-    data.append("pickup_online_orders", settings.accept_online_orders);
-    data.append("minimum_order_amount", settings.accept_online_orders);
-    data.append("order_shipping_price", settings.accept_online_orders);
-    data.append("delivery_estimated_time", settings.accept_online_orders);
-    data.append("order_manager", settings.accept_online_orders);
-    data.append("google_location_link", settings.accept_online_orders);
-    data.append("delivery_start_time", settings.accept_online_orders);
-    data.append("delivery_end_time", settings.accept_online_orders);
-    data.append("order_manager", settings.accept_online_orders);
-    data.append("delivery_executive", settings.accept_online_orders);
-    data.append("pharmacist_number", settings.accept_online_orders);
-    data.append("pharmacy_whatsapp", settings.accept_online_orders);
-    data.append("email", settings.accept_online_orders);
-    data.append("delivery_start_time", settings.accept_online_orders);
-    data.append("delivery_end_time", settings.accept_online_orders);
+    
+    data.append("accept_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pickup_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("minimum_order_amount", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_shipping_price", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_estimated_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_manager", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("google_location_link", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_start_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_end_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_manager", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_executive", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pharmacist_number", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pharmacy_whatsapp", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("email", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_start_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_end_time", settings.accept_online_orders?settings.accept_online_orders:"");
 
     try {
       setIsLoading(true);
@@ -168,7 +170,7 @@ const OnlineOrders = () => {
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Accept Online Orders :</span>
                     <Switch
-                      checked={settings.accept_online_orders}
+                      checked={settings.accept_online_orders == 1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -183,13 +185,14 @@ const OnlineOrders = () => {
                           backgroundColor: "var(--color1)",
                         },
                       }}
+                      onchecked={settings.accept_online_orders == 1}
                       onClick={() => updateState({ accept_online_orders: settings.accept_online_orders })}
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Home Delivery Online Orders :</span>
                     <Switch
-                      checked={settings.delivery_online_orders}
+                      checked={settings.delivery_online_orders == 1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -209,7 +212,7 @@ const OnlineOrders = () => {
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Store Pickup Online Orders :</span>
                     <Switch
-                      checked={settings.pickup_online_orders}
+                      checked={settings.pickup_online_orders ==1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -225,7 +228,6 @@ const OnlineOrders = () => {
                         },
                       }}
                       onClick={() => updateState({ pickup_online_orders: settings.pickup_online_orders })}
-
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
@@ -240,7 +242,6 @@ const OnlineOrders = () => {
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
                       onClick={() => updateState({ minimum_order_amount: settings.minimum_order_amount })}
-
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
@@ -259,15 +260,17 @@ const OnlineOrders = () => {
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">estimated Delivery time:</span>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={['TimePicker', 'TimePicker']}>
-                        <TimePicker
-                          
-                          // value={settings.delivery_estimated_time}
-                          onClick={() => updateState({ delivery_estimated_time: settings.delivery_estimated_time })}
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      placeholder="Item Count"
+                      value={settings.order_shipping_price}
+                      type="number"
+                      style={{ width: "50px", marginInline: "5px" }}
+                      size="small"
+                      className="border border-gray-300 rounded px-2 py-1"
+                      onClick={() => updateState({ delivery_estimated_time: settings.delivery_estimated_time })}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col items-start mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-lg pass_boxx_flds">
@@ -295,7 +298,8 @@ const OnlineOrders = () => {
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
+                      value={settings.pharmacy_email}
+
                       type="number"
                       style={{ width: "300px", marginInline: "5px" }}
                       size="small"
@@ -303,7 +307,7 @@ const OnlineOrders = () => {
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Delivery executive:</span>
+                    <span className="text-gray-700 font-medium">Delivery Person:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"

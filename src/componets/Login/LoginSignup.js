@@ -13,11 +13,13 @@ import {
   InputAdornment,
   OutlinedInput,
 } from "@mui/material";
-const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
+// import loginlogo from './assets/loginlogo.PNG';
 
-const API_BASE_URL = "https://testadmin.pharma247.in/api";
+
 
 const LoginSignup = () => {
+  const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
+
   const history = useHistory();
   const location = useLocation();
   const [showOTP, setShowOTP] = useState(false);

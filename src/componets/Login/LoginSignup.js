@@ -13,12 +13,12 @@ import {
   InputAdornment,
   OutlinedInput,
 } from "@mui/material";
-// import loginlogo from './assets/loginlogo.PNG';
+import loginlogo from './assets/loginlogo.PNG';
 
 
 
 const LoginSignup = () => {
-  const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
+  // const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
 
   const history = useHistory();
   const location = useLocation();

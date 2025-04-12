@@ -551,7 +551,7 @@ const Header = () => {
                               className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >
-                              Reconciliation{" "}
+                              Reconciliation
                             </span>
                           </Link>
                         </li>
@@ -561,7 +561,7 @@ const Header = () => {
                               className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >
-                              Loyalty Point{" "}
+                              Loyalty Point
                             </span>
                           </Link>
                         </li>
@@ -1120,7 +1120,7 @@ const Header = () => {
                           className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                           href=""
                         >
-                          Reconciliation{" "}
+                          Reconciliation
                         </span>
                       </Link>
                     </li>

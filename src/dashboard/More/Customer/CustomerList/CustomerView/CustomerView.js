@@ -218,7 +218,7 @@ const CustomerView = () => {
                   fontSize: "20px",
                 }}
               >
-                View{" "}
+                View
               </span>
               <ArrowForwardIosIcon
                 className="cust_header_txt"
@@ -364,8 +364,8 @@ const CustomerView = () => {
                           whiteSpace: 'noWrap'
                         }}
                       >
-                        {" "}
-                        Total Sale Amount :-{" "}
+                        
+                        Total Sale Amount :-
                         <span style={{ color: "var(--color2)" }}>
                           Rs.
                           {tableData?.sales_amount
@@ -396,8 +396,8 @@ const CustomerView = () => {
                           whiteSpace: 'noWrap'
                         }}
                       >
-                        {" "}
-                        Total Sale Return Amount :-{" "}
+                        
+                        Total Sale Return Amount :-
                         <span style={{ color: "var(--color2)" }}>
                           Rs.
                           {tableData?.sales_return_amount
@@ -420,8 +420,8 @@ const CustomerView = () => {
                         fontWeight: 800,
                       }}
                     >
-                      {" "}
-                      Total Sale Amount :-{" "}
+                      
+                      Total Sale Amount :-
                       <span style={{ color: "var(--color2)" }}>
                         Rs.
                         {tableData?.sales_amount ? tableData?.sales_amount : 0}
@@ -514,8 +514,8 @@ const CustomerView = () => {
                         fontWeight: 800,
                       }}
                     >
-                      {" "}
-                      Total Sale Return Amount :-{" "}
+                      
+                      Total Sale Return Amount :-
                       <span style={{ color: "var(--color2)" }}>
                         Rs.
                         {tableData?.sales_return_amount

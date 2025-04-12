@@ -55,6 +55,7 @@ const SignUp = () => {
       setFormData((prev) => ({ ...prev, referral_code: referralCode }));
     }
   }, [referralCode]);
+  {/*<============================================================================== resend  code  =====================================================================> */}
 
   useEffect(() => {
     if (timer > 0) {
@@ -239,10 +240,11 @@ const SignUp = () => {
 
   return (
     <>
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
-        hideProgressBar={false}
+        hideProgressBar={false} 
         newestOnTop={false}
         closeOnClick
         rtl={false}

@@ -162,8 +162,8 @@ const ProfileView = () => {
                                         
                                         {hasPermission(permissions, "staff members view") && (
                                             <li
-                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/reconciliation-manage' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
-                                                onClick={() => handleItemClick('/settings/online-orders', 'Reconciliation')}
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/settings/online-orders' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                onClick={() => handleItemClick('/settings/online-orders', 'online-orders')}
                                             >
                                                 Online Orders
                                             </li>

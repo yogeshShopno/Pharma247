@@ -126,60 +126,60 @@ const EditSaleBill = () => {
 
   const [billSaveDraft, setBillSaveDraft] = useState('0');
 
-    /*<============================================================================ Input ref on keydown enter ===================================================================> */
+  /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
-    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
-    const tableRef = useRef(null); // Reference for table container
-    const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+  const tableRef = useRef(null); // Reference for table container
+  const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
-    const inputRefs = useRef([]);
-    const dateRefs = useRef([]);
+  const inputRefs = useRef([]);
+  const dateRefs = useRef([]);
 
-    const submitButtonRef = useRef(null);
-    const addButtonref = useRef(null);
+  const submitButtonRef = useRef(null);
+  const addButtonref = useRef(null);
 
-    /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+  /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
 
-    useEffect(() => {
-        const handleTableFocus = () => setAutocompleteDisabled(false);
-        const handleTableBlur = () => setAutocompleteDisabled(true);
+  useEffect(() => {
+    const handleTableFocus = () => setAutocompleteDisabled(false);
+    const handleTableBlur = () => setAutocompleteDisabled(true);
 
-        if (tableRef.current) {
-            tableRef.current.addEventListener("focus", handleTableFocus);
-            tableRef.current.addEventListener("blur", handleTableBlur);
-        }
+    if (tableRef.current) {
+      tableRef.current.addEventListener("focus", handleTableFocus);
+      tableRef.current.addEventListener("blur", handleTableBlur);
+    }
 
-        return () => {
-            if (tableRef.current) {
-                tableRef.current.removeEventListener("focus", handleTableFocus);
-                tableRef.current.removeEventListener("blur", handleTableBlur);
-            }
-        };
-    }, []);
+    return () => {
+      if (tableRef.current) {
+        tableRef.current.removeEventListener("focus", handleTableFocus);
+        tableRef.current.removeEventListener("blur", handleTableBlur);
+      }
+    };
+  }, []);
 
-    useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (!saleAllData?.item_list?.length) return;
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (!saleAllData?.item_list?.length) return;
 
-            const isInputFocused = document.activeElement.tagName === "INPUT";
+      const isInputFocused = document.activeElement.tagName === "INPUT";
 
-            if (isInputFocused) return;
+      if (isInputFocused) return;
 
-            if (e.key === "ArrowDown") {
-                setSelectedIndex((prev) => Math.min(prev + 1, saleAllData.item_list.length - 1));
-            } else if (e.key === "ArrowUp") {
-                setSelectedIndex((prev) => Math.max(prev - 1, 0));
-            } else if (e.key === "Enter" && selectedIndex !== -1) {
-                const selectedRow = saleAllData.item_list[selectedIndex];
-                if (!selectedRow) return;
-                handleEditClick(selectedRow);
-            }
-        };
+      if (e.key === "ArrowDown") {
+        setSelectedIndex((prev) => Math.min(prev + 1, saleAllData.item_list.length - 1));
+      } else if (e.key === "ArrowUp") {
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+      } else if (e.key === "Enter" && selectedIndex !== -1) {
+        const selectedRow = saleAllData.item_list[selectedIndex];
+        if (!selectedRow) return;
+        handleEditClick(selectedRow);
+      }
+    };
 
-        document.addEventListener("keydown", handleKeyPress);
-        return () => document.removeEventListener("keydown", handleKeyPress);
-    }, [saleAllData, selectedIndex]);
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [saleAllData, selectedIndex]);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -213,22 +213,7 @@ const EditSaleBill = () => {
       setOtherAmt(0);
       setTempOtherAmt(0);
     } else {
-      // let calculatedNetAmount = totalAmount - discount + Number(tempOtherAmt);
 
-      // if (calculatedNetAmount < 0) {
-      //   setOtherAmt(-(totalAmount - discount));
-      //   setTempOtherAmt(-(totalAmount - discount));
-      //   calculatedNetAmount = 0;
-      // }
-
-      // let loyaltyPointsDeduction = loyaltyVal; 
-      // let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
-
-      // if (calculatedNetAmount < 0) {
-      //     setOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
-      //     setTempOtherAmt(-(totalAmount - discount - loyaltyPointsDeduction));
-      //     calculatedNetAmount = 0;
-      // }
       let loyaltyPointsDeduction = loyaltyVal;
       let calculatedNetAmount = totalAmount - discount - loyaltyPointsDeduction + Number(otherAmt);
 
@@ -353,10 +338,11 @@ const EditSaleBill = () => {
         },
       });
       const record = response.data.data;
-
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
       // setPreviousLoyaltyPoints(record.roylti_point);
+      console.log(saleAllData)
+
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
       setTotalgst(record.total_gst);
@@ -446,8 +432,6 @@ const EditSaleBill = () => {
         const firstCustomer = customer[0];
         setCustomer(firstCustomer);
         setPreviousLoyaltyPoints(firstCustomer.roylti_point || 0);
-        console.log('PreviousLoyaltyPoints :>> ', firstCustomer);
-        // setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
       }
       return customerData;
 
@@ -831,7 +815,7 @@ const EditSaleBill = () => {
       setItemAmount(0);
     }
   };
-  const handleUpdate = () => {
+  const handleUpdate = (draft) => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -842,11 +826,11 @@ const EditSaleBill = () => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    updateSaleData();
+    updateSaleData(draft);
   };
 
 
-  const updateSaleData = async () => {
+  const updateSaleData = async (draft) => {
     let data = new FormData();
     data.append("bill_no", saleAllData?.bill_no);
     data.append("customer_id", customer?.id);
@@ -874,7 +858,7 @@ const EditSaleBill = () => {
     data.append("net_rate", netRateAmount || 0);
     data.append("margin", margin || 0);
     data.append("roylti_point", loyaltyVal || 0)
-    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+    data.append("draft_save", !draft ? "1" : draft);
 
     const params = {
       id: id || '',
@@ -1013,7 +997,8 @@ const EditSaleBill = () => {
     <>
       <div>
         <Header />
-        <ToastContainer
+          <ToastContainer
+
           position="top-right"
           autoClose={5000}
           hideProgressBar={false}
@@ -1105,7 +1090,7 @@ const EditSaleBill = () => {
                     onClick={() => setIsOpen(!isOpen)}
 
                   >
-                    {" "}
+
                     Update
                   </Button>
                   {isOpen && (
@@ -1114,8 +1099,8 @@ const EditSaleBill = () => {
 
                         <li
                           onClick={() => {
-                            setBillSaveDraft(0)
-                            handleUpdate(0)
+                            setBillSaveDraft("1")
+                            handleUpdate("1")
                           }}
                           className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
@@ -1126,8 +1111,8 @@ const EditSaleBill = () => {
                         </li>
                         <li
                           onClick={() => {
-                            setBillSaveDraft(1)
-                            handleUpdate(1)
+                            setBillSaveDraft("0")
+                            handleUpdate("0")
                           }}
                           className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
@@ -1142,68 +1127,56 @@ const EditSaleBill = () => {
               </div>
               <div className="border-b">
                 <div className="firstrow flex ">
-                  <div className="detail mt-1 custommedia" style={{ whiteSpace: "pre" }}>
-                    <div
-                      className="detail  p-2 rounded-md"
-                      style={{ background: "var(--color1)", width: "100%" }}
+
+                  <div className="detail custommedia" >
+                    <span
+                      className="heading mb-2"
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "17px",
+                        color: "var(--color1)",
+                      }}
                     >
-                      <div
-                        className="heading pr-5 pl-5 flex"
-                        style={{
-                          color: "white",
-                          fontWeight: "500",
-                          alignItems: "center"
-                        }}
-                      >
-                        Bill No{" "}
-                        <span className="pl-8"> Bill Date</span>{" "}
-                      </div>
-                      <div className="flex pr-5 pl-5">
-                        <div
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            fontWeight: "bold",
-                            width: "19%",
-                          }}
-                        >
-                          {saleAllData.bill_no}{" "}
-                        </div>
-                        <div
-                          className="pl-8"
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          |
-                        </div>
-                        <div
-                          className="pl-8"
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            fontWeight: "bold",
-                            // marginLeft: "35px",
-                          }}
-                        >
-                          {saleAllData.bill_date}
-                        </div>
-                      </div>
-                    </div>
+                      Bill No
+
+                    </span>
+                    <TextField
+                      id="outlined-number"
+                      type="number"
+                      size="small"
+                      value={saleAllData.bill_no}
+                      placeholder="Bill No"
+                      sx={{ width: "250px" }}
+                      disabled
+                    />
                   </div>
+                  <div className="detail custommedia">
+                    <span
+                      className="heading mb-2"
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "17px",
+                        color: "var(--color1)",
+                      }}
+                    >
+                      Bill Date
+
+                    </span>
+                    <TextField
+                      id="outlined-number"
+
+                      size="small"
+                      value={saleAllData.bill_date || ""}
+                      placeholder="Bill Date"
+                      sx={{ width: "250px" }}
+                      disabled
+                    />
+                  </div>
+
                   <div
                     className="detail custommedia"
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
+
                       width: "100%"
                     }}
                   >
@@ -1213,6 +1186,7 @@ const EditSaleBill = () => {
                         fontWeight: "500",
                         fontSize: "17px",
                         color: "var(--color1)",
+                        width: "90%"
                       }}
                     >
                       Customer Mobile / Name
@@ -1284,6 +1258,7 @@ const EditSaleBill = () => {
                       isOptionEqualToValue={(option, value) =>
                         option.name === value.name
                       }
+                      disabled
                       sx={{
                         width: "100%",
                         // minWidth: {
@@ -1315,6 +1290,7 @@ const EditSaleBill = () => {
                             ...params.InputProps,
                             style: { height: 40 },
                           }}
+                          disabled
                           sx={{
                             "& .MuiInputBase-input::placeholder": {
                               fontSize: "1rem",
@@ -1325,7 +1301,8 @@ const EditSaleBill = () => {
                       )}
                     />
                   </div>
-                  <div className="detail custommedia" style={{ width: '100%' }}>
+                  <div className="detail custommedia"
+                  >
                     <span
                       className="heading mb-2"
                       style={{
@@ -1367,7 +1344,7 @@ const EditSaleBill = () => {
                           <th>QTY </th>
                           <th>
                             <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                              Order{" "}
+                              Order
                               <Tooltip title="Please Enter only (o)" arrow>
                                 <Button style={{ justifyContent: 'left' }}>
                                   <GoInfo
@@ -1443,7 +1420,7 @@ const EditSaleBill = () => {
                                           placeholder="Search Item Name..."
                                           InputProps={{
                                             ...params.InputProps,
-                                            style: { height: 45 },
+                                            style: { height: 40 },
                                             startAdornment: (
                                               <InputAdornment position="start">
                                                 <SearchIcon
@@ -1456,18 +1433,7 @@ const EditSaleBill = () => {
                                             ),
                                           }}
                                           sx={{
-                                            "& .MuiOutlinedInput-root": {
-                                              "& fieldset": {
-                                                border: "none",
-                                              },
-                                              "&:hover fieldset": {
-                                                border: "none",
-                                              },
-                                              "&.Mui-focused fieldset": {
-                                                border: "none",
-                                              },
-                                              borderBottom: "1px solid ",
-                                            },
+
                                             "& .MuiInputBase-input::placeholder": {
                                               fontSize: "1rem",
                                               color: "black",
@@ -1660,7 +1626,7 @@ const EditSaleBill = () => {
                               sx={{ width: "130px" }}
                               size="small"
                               value={qty}
-                              onKeyPress={(e) => {
+                              onKeyDown={(e) => {
                                 if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
                                   e.preventDefault();
                                 }
@@ -1710,58 +1676,60 @@ const EditSaleBill = () => {
                           <td className="total">{itemAmount}</td>
                         </tr>
 
-                        
+
                       </tbody>
                     </table><>
                       <table className="p-30 border border-indigo-600 w-full border-collapse custom-table"
                         ref={tableRef} tabIndex={0}>
-                          <tbody>
-                          {saleAllData?.sales_item?.map((item,index) => (
-                          <tr
-                            key={item.id}
-                            className={` cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                            onClick={() => {handleEditClick(item) 
-                              setSelectedIndex(index)}}
-                          >
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                                whiteSpace: "nowrap",
+                        <tbody>
+                          {saleAllData?.sales_item?.map((item, index) => (
+                            <tr
+                              key={item.id}
+                              className={` cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                              onClick={() => {
+                                handleEditClick(item)
+                                setSelectedIndex(index)
                               }}
                             >
-
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
-                                className="cursor-pointer"
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Prevents row click
-                                  handleEditClick(item); // Explicitly set value for editing
+                              <td
+                                style={{
+                                  display: "flex",
+                                  gap: "8px",
+                                  whiteSpace: "nowrap",
                                 }}
-                              />
+                              >
 
-                              <DeleteIcon
-                                className="delete-icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteOpen(item.id); // Only triggers delete
-                                }}
-                              />
-                              {item.iteam_name}
-                            </td>
-                            <td>{item.unit}</td>
-                            <td>{item.batch}</td>
-                            <td>{item.exp}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.base}</td>
-                            <td>{item.gst_name}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.order}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                          </tr>
-                        ))}
-                          </tbody>
+                                <BorderColorIcon
+                                  style={{ color: "var(--color1)" }}
+                                  className="cursor-pointer"
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Prevents row click
+                                    handleEditClick(item); // Explicitly set value for editing
+                                  }}
+                                />
+
+                                <DeleteIcon
+                                  className="delete-icon"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteOpen(item.id); // Only triggers delete
+                                  }}
+                                />
+                                {item.iteam_name}
+                              </td>
+                              <td>{item.unit}</td>
+                              <td>{item.batch}</td>
+                              <td>{item.exp}</td>
+                              <td>{item.mrp}</td>
+                              <td>{item.base}</td>
+                              <td>{item.gst_name}</td>
+                              <td>{item.qty}</td>
+                              <td>{item.order}</td>
+                              <td>{item.location}</td>
+                              <td>{item.net_rate}</td>
+                            </tr>
+                          ))}
+                        </tbody>
                       </table>
                     </>
 

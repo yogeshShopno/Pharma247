@@ -89,7 +89,8 @@ const ReferEarn = () => {
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}

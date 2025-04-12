@@ -396,15 +396,15 @@ const PurchaseView = () => {
               <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                 <label className="font-bold">Total GST : </label>
 
-                <span style={{ fontWeight: 600 }}>   {data?.total_gst ? data?.total_gst : 0}{" "}</span>
+                <span style={{ fontWeight: 600 }}>   {data?.total_gst ? data?.total_gst : 0}</span>
               </div>
               <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                 <label className="font-bold">Total Qty : </label>
                 <span style={{ fontWeight: 600 }}> {data?.total_qty ? data?.total_qty : 0} {"+"}&nbsp;
 
                   <span className="">
-                    {data?.total_free_qty ? data?.total_free_qty : 0} Free{" "}
-                  </span>{" "}
+                    {data?.total_free_qty ? data?.total_free_qty : 0} Free
+                  </span>
                 </span>
               </div>
               <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>

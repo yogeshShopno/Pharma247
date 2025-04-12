@@ -118,7 +118,7 @@ const EditPurchaseBill = () => {
   const [purchase, setPurchase] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [billSaveDraft, setBillSaveDraft] = useState("0");
+  const [billSaveDraft, setBillSaveDraft] = useState("1");
 
   let debounceTimeout;
 
@@ -205,8 +205,11 @@ const EditPurchaseBill = () => {
       event.preventDefault(); // Prevent default browser behavior
 
       if (event.key.toLowerCase() === "s") {
+        setBillSaveDraft("1");
         handleSubmit();
       } else if (event.key.toLowerCase() === "g") {
+        setBillSaveDraft("1");
+
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
         inputRefs.current[0]?.focus();
@@ -968,7 +971,7 @@ const EditPurchaseBill = () => {
     }
   };
   /*<================================================================= submit purchase bill   ============================================================> */
-  const handleSubmit = () => {
+  const handleSubmit = (draft) => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -983,9 +986,9 @@ const EditPurchaseBill = () => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    updatePurchaseRecord();
+    updatePurchaseRecord(draft);
   };
-  const updatePurchaseRecord = async () => {
+  const updatePurchaseRecord = async (draft) => {
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1004,7 +1007,7 @@ const EditPurchaseBill = () => {
     data.append("round_off", roundOffAmount);
     data.append("cn_amount", finalCnAmount);
     data.append("purches_data", JSON.stringify(purchase.item_list));
-    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+    data.append("draft_save", !draft ? "1" : draft);
 
     const params = {
       id: id,
@@ -1018,10 +1021,13 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          toast.success(response.data.message);
+
+          console.log("response", response?.data?.message);
+          toast.success(response?.data?.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
           }, 2000);
+
         });
     } catch (error) {
       toast.error(error.data.message);
@@ -1327,7 +1333,8 @@ const EditPurchaseBill = () => {
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -1417,8 +1424,8 @@ const EditPurchaseBill = () => {
                     <ul className="transition-all ">
                       <li
                         onClick={() => {
-                          setBillSaveDraft(0);
-                          handleSubmit(0);
+                          setBillSaveDraft("1");
+                          handleSubmit("1");
                         }}
                         className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                       >
@@ -1427,8 +1434,8 @@ const EditPurchaseBill = () => {
                       </li>
                       <li
                         onClick={() => {
-                          setBillSaveDraft(1);
-                          handleSubmit(1);
+                          setBillSaveDraft("0");
+                          handleSubmit("0");
                         }}
                         className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                       >
@@ -2113,11 +2120,11 @@ const EditPurchaseBill = () => {
               >
                 <label className="font-bold">Total Qty : </label>
                 <span style={{ fontWeight: 600 }}>
-                  {" "}
-                  {purchase?.total_qty} +{" "}
+                  
+                  {purchase?.total_qty} +
                   <span className="">
-                    {purchase?.total_free_qty ? purchase?.total_free_qty : 0}{" "}
-                    Free{" "}
+                    {purchase?.total_free_qty ? purchase?.total_free_qty : 0}
+                    Free
                   </span>
                 </span>
               </div>

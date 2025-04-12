@@ -189,8 +189,8 @@ const DoctorView = () => {
                                                     whiteSpace: 'noWrap'
                                                 }}
                                             >
-                                                {" "}
-                                                Total Sale Amount :-{" "}
+                                                
+                                                Total Sale Amount :-
                                                 <span style={{ color: "var(--color2)" }}>
                                                     Rs.
                                                     {doctorDetails?.sales?.length > 0 ? doctorDetails?.sales[0]?.total_amount : 0}
@@ -219,8 +219,8 @@ const DoctorView = () => {
                                                     whiteSpace: 'noWrap'
                                                 }}
                                             >
-                                                {" "}
-                                                Total Sale Return Amount :-{" "}
+                                                
+                                                Total Sale Return Amount :-
                                                 <span style={{ color: "var(--color2)" }}>
                                                     Rs.
                                                     {doctorDetails?.sales_return?.length > 0 ? doctorDetails?.sales_return[0]?.total_amount : 0}

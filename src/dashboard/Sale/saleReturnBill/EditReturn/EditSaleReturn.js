@@ -102,31 +102,31 @@ const EditSaleReturn = () => {
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [uniqueId, setUniqueId] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
 
-    const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
+  const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
-    
-        
-useEffect(() => {
-  const handleTableFocus = () => setAutocompleteDisabled(false);
-  const handleTableBlur = () => setAutocompleteDisabled(true);
 
-  if (tableRef.current) {
+
+  useEffect(() => {
+    const handleTableFocus = () => setAutocompleteDisabled(false);
+    const handleTableBlur = () => setAutocompleteDisabled(true);
+
+    if (tableRef.current) {
       tableRef.current.addEventListener("focus", handleTableFocus);
       tableRef.current.addEventListener("blur", handleTableBlur);
-  }
+    }
 
-  return () => {
+    return () => {
       if (tableRef.current) {
-          tableRef.current.removeEventListener("focus", handleTableFocus);
-          tableRef.current.removeEventListener("blur", handleTableBlur);
+        tableRef.current.removeEventListener("focus", handleTableFocus);
+        tableRef.current.removeEventListener("blur", handleTableBlur);
       }
-  };
-}, []);
+    };
+  }, []);
 
-useEffect(() => {
-  const handleKeyPress = (e) => {
+  useEffect(() => {
+    const handleKeyPress = (e) => {
       if (!saleReturnItems?.sales_iteam?.length) return;
 
       const isInputFocused = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
@@ -135,19 +135,19 @@ useEffect(() => {
       e.preventDefault(); // Prevent scrolling
 
       if (e.key === "ArrowDown") {
-          setSelectedIndex((prev) => Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1));
+        setSelectedIndex((prev) => Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1));
       } else if (e.key === "ArrowUp") {
-          setSelectedIndex((prev) => Math.max(prev - 1, 0));
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
       } else if (e.key === "Enter" && selectedIndex !== -1) {
-          const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
-          if (!selectedRow) return;
-          handleEditClick(selectedRow);
+        const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
+        if (!selectedRow) return;
+        handleEditClick(selectedRow);
       }
-  };
+    };
 
-  document.addEventListener("keydown", handleKeyPress);
-  return () => document.removeEventListener("keydown", handleKeyPress);
-}, [saleReturnItems, selectedIndex]);
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [saleReturnItems, selectedIndex]);
 
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
@@ -208,7 +208,7 @@ useEffect(() => {
     BankList();
   }, []);
 
- 
+
 
   const BankList = async () => {
     let data = new FormData();
@@ -346,7 +346,7 @@ useEffect(() => {
     }
   };
 
-  const editSaleReturnBill = async () => {
+  const editSaleReturnBill = async (draft) => {
     const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(
       (item) => item.iss_check === false
     );
@@ -375,7 +375,7 @@ useEffect(() => {
       data.append("margin_net_profit", marginNetProfit);
       data.append("payment_name", paymentType);
       data.append("product_list", JSON.stringify(saleReturnItems?.sales_iteam));
-      data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+      data.append("draft_save", !draft ? "1" : draft);
 
       const params = {
         id: id,
@@ -509,7 +509,7 @@ useEffect(() => {
     }
   }, []);
 
-  const handleUpdate = () => {
+  const handleUpdate = (draft) => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -520,7 +520,7 @@ useEffect(() => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    editSaleReturnBill();
+    editSaleReturnBill(draft);
   };
 
   const handleDoctorOption = (event, newValue) => {
@@ -632,7 +632,7 @@ useEffect(() => {
 
     // Pre-fill the form with current item details
     if (item) {
-      setSearchItem(item.item_name);
+      setSearchItem(item.iteam_name);
       setSearchItemID(item.item_id);
       setUnit(item.unit);
       setBatch(item.batch);
@@ -699,7 +699,8 @@ useEffect(() => {
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -757,7 +758,7 @@ useEffect(() => {
                       fontSize: "20px",
                     }}
                   >
-                    Edit{" "}
+                    Edit
                   </span>
                   <ArrowForwardIosIcon
                     style={{ fontSize: "18px", color: "var(--color1)" }}
@@ -792,7 +793,7 @@ useEffect(() => {
                     style={{ background: "var(--color1)" }}
                     onClick={() => setIsOpen(!isOpen)}
                   >
-                    {" "}
+
                     Update
                   </Button>
                   {isOpen && (
@@ -801,8 +802,8 @@ useEffect(() => {
 
                         <li
                           onClick={() => {
-                            setBillSaveDraft(0)
-                            handleUpdate(0)
+                            setBillSaveDraft("1")
+                            handleUpdate("1")
                           }}
                           className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
@@ -813,8 +814,8 @@ useEffect(() => {
                         </li>
                         <li
                           onClick={() => {
-                            setBillSaveDraft(1)
-                            handleUpdate(1)
+                            setBillSaveDraft("0")
+                            handleUpdate("0")
                           }}
                           className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
@@ -829,65 +830,43 @@ useEffect(() => {
               </div>
               <div className="border-b">
                 <div className="firstrow flex">
-                  <div
-                    className="detail mt-1 custommedia"
-                    style={{ width: "250px" }}
-                  >
-                    <div
-                      className="detail  p-2 rounded-md"
-                      style={{ background: "var(--color1)", width: "100%" }}
-                    >
-                      <div
-                        className="heading"
-                        style={{
-                          color: "white",
-                          fontWeight: "500",
-                          alignItems: "center",
-                          marginLeft: "15px",
-                        }}
-                      >
-                        Bill No{" "}
-                        <span style={{ marginLeft: "35px" }}> Bill Date</span>{" "}
-                      </div>
-                      <div className="flex gap-5">
-                        <div
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            marginLeft: "15px",
-                            fontWeight: "bold",
-                            width: "19%",
-                          }}
-                        >
-                          {saleReturnItems.bill_no}{" "}
-                        </div>
-                        <div
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          |
-                        </div>
-                        <div
-                          style={{
-                            color: "white",
-                            fontWeight: "500",
-                            alignItems: "center",
-                            marginTop: "8px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {saleReturnItems.bill_date}
-                        </div>
-                      </div>
-                    </div>
+                 
+                  <div className="detail custommedia" style={{
+                    display: "flex",
+                    flexDirection: "column",
+
+                  }}>
+                    <span className="heading mb-2">Bill No</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      size="small"
+
+                      value={saleReturnItems.bill_no}
+                      disabled
+
+                    />
+                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
+
                   </div>
+                  <div className="detail custommedia" style={{
+                    display: "flex",
+                    flexDirection: "column",
+
+                  }}>
+                    <span className="heading mb-2">Bill Date</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      size="small"
+
+                      value={saleReturnItems.bill_date}
+                      disabled
+                    />
+                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
+
+                  </div>
+
                   <div
                     className="detail custommedia"
                     style={{
@@ -946,7 +925,7 @@ useEffect(() => {
                           placeholder="Search by Mobile, Name"
                           InputProps={{
                             ...params.InputProps,
-                            style: { height: 45 },
+                            style: { height: 40},
                           }}
                           sx={{
                             "& .MuiInputBase-input::placeholder": {
@@ -957,54 +936,14 @@ useEffect(() => {
                         />
                       )}
                     />
-                    {/* <input
-                                            labelId="dropdown-label"
-                                            id="dropdown"
-                                            value={customer}
-                                            sx={{
-                                                width: "100%",
-                                                minWidth: {
-                                                    xs: "320px",
-                                                    sm: "400px",
-                                                },
-                                                "& .MuiInputBase-root": {
-                                                    height: 20,
-                                                    fontSize: "1.10rem",
-                                                },
-                                                "& .MuiAutocomplete-inputRoot": {
-                                                    padding: "10px 14px",
-                                                },
-                                            }}
-                                            disabled
-                                            size="small"
-                                            className="Payment_Value"
-                                            style={{ height: "100%" }}
-                                        >
-                                        </input> */}
+
                     {error.customer && (
                       <span style={{ color: "red", fontSize: "14px" }}>
                         {error.customer}
                       </span>
                     )}
                   </div>
-                  {/* <div className="detail">
-                                        <span className="heading mb-2" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
 
-                                        <TextField
-                 autoComplete="off" id="outlined-basic"
-                                            value={address}
-                                            onChange={(e) => { setAddress(e.target.value) }}
-                                            sx={{
-                                                width: 300,
-                                                '& .MuiInputBase-root': {
-                                                    height: 45,
-                                                    fontSize: '1.25rem',
-                                                },
-                                                '& .MuiAutocomplete-inputRoot': {
-                                                    padding: '10px 14px',
-                                                },
-                                            }} variant="outlined" />
-                                    </div> */}
 
                   <div
                     className="detail custommedia"
@@ -1019,13 +958,13 @@ useEffect(() => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      Doctor{" "}
+                      Doctor
                     </span>
                     <Autocomplete
                       value={doctor || ""}
                       onChange={handleDoctorOption}
                       options={doctorData}
-                      // disabled
+                      disabled
                       getOptionLabel={(option) => option.name || ""}
                       isOptionEqualToValue={(option, value) =>
                         option.name === value.name
@@ -1060,7 +999,7 @@ useEffect(() => {
                           placeholder="Search by DR. Name"
                           InputProps={{
                             ...params.InputProps,
-                            style: { height: 45 },
+                            style: { height: 40 },
                           }}
                           sx={{
                             "& .MuiInputBase-input::placeholder": {
@@ -1072,7 +1011,7 @@ useEffect(() => {
                       )}
                     />
                   </div>
-                  <div></div>
+
 
                   <div className="scroll-two">
                     <table className="saleTable">
@@ -1098,13 +1037,20 @@ useEffect(() => {
                       </thead>
                       <tbody>
                         <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          <td>
-                            <DeleteIcon
-                              className="delete-icon"
-                              onClick={resetValue}
-                            />
-                            {searchItem}
+                          <td style={{ width: '350px' }}>
+                            <div style={{ width: 350, padding: 0 }} >
+
+                              <DeleteIcon
+                                className="delete-icon mr-2"
+                                onClick={resetValue}
+                              />
+                              <span className="font-semibold ">
+                                {searchItem}
+
+                              </span>
+                            </div>
                           </td>
+
                           <td>
                             <TextField
                               autoComplete="off"
@@ -1296,63 +1242,62 @@ useEffect(() => {
                       </tbody>
                     </table>
                     <>
-                    <table
-        className="p-30 border border-indigo-600 w-full border-collapse custom-table"
-        ref={tableRef}
-        tabIndex={0} // Allows table to receive focus
-    >
-        <tbody>
-            {saleReturnItems?.sales_iteam?.map((item, index) => (
-                <tr
-                    key={item.id}
-                    className={`item-List cursor-pointer ${
-                        index === selectedIndex ? "highlighted-row" : ""
-                    }`}
-                    onClick={() => {
-                        handleEditClick(item);
-                        setSelectedIndex(index);
-                    }}
-                >
-                    <td
-                        style={{
-                            display: "flex",
-                            gap: "8px",
-                            alignItems: "center",
-                            whiteSpace: "nowrap",
-                        }}
-                    >
-                        <Checkbox
-                            sx={{
-                                color: "var(--color2)",
-                                "&.Mui-checked": { color: "var(--color1)" },
-                            }}
-                            checked={item?.iss_check}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) => {
-                                handleChecked(item.id, event.target.checked);
-                                setUnsavedItems(true);
-                            }}
-                        />
-                        <BorderColorIcon
-                            color="primary"
-                            className="cursor-pointer"
-                            onClick={() => handleEditClick(item)}
-                        />
-                        {item.iteam_name}
-                    </td>
-                    <td>{item.unit}</td>
-                    <td>{item.batch}</td>
-                    <td>{item.exp}</td>
-                    <td>{item.mrp}</td>
-                    <td>{item.base}</td>
-                    <td>{item.gst}</td>
-                    <td>{item.qty}</td>
-                    <td>{item.location}</td>
-                    <td>{item.net_rate}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
+                      <table
+                        className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                        ref={tableRef}
+                        tabIndex={0} // Allows table to receive focus
+                      >
+                        <tbody>
+                          {saleReturnItems?.sales_iteam?.map((item, index) => (
+                            <tr
+                              key={item.id}
+                              className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                                }`}
+                              onClick={() => {
+                                handleEditClick(item);
+                                setSelectedIndex(index);
+                              }}
+                            >
+                              <td
+                                style={{
+                                  display: "flex",
+                                  gap: "8px",
+                                  alignItems: "center",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                <Checkbox
+                                  sx={{
+                                    color: "var(--color2)",
+                                    "&.Mui-checked": { color: "var(--color1)" },
+                                  }}
+                                  checked={item?.iss_check}
+                                  onClick={(event) => event.stopPropagation()}
+                                  onChange={(event) => {
+                                    handleChecked(item.id, event.target.checked);
+                                    setUnsavedItems(true);
+                                  }}
+                                />
+                                <BorderColorIcon
+                                  color="primary"
+                                  className="cursor-pointer"
+                                  onClick={() => handleEditClick(item)}
+                                />
+                                {item.iteam_name}
+                              </td>
+                              <td>{item.unit}</td>
+                              <td>{item.batch}</td>
+                              <td>{item.exp}</td>
+                              <td>{item.mrp}</td>
+                              <td>{item.base}</td>
+                              <td>{item.gst}</td>
+                              <td>{item.qty}</td>
+                              <td>{item.location}</td>
+                              <td>{item.net_rate}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </>
                   </div>
                 </div>
@@ -1404,8 +1349,8 @@ useEffect(() => {
                       >
                         <label className="font-bold">Profit : </label>
                         <span style={{ fontWeight: 600 }}>
-                          ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)}{" "}
-                          %){" "}
+                          ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)}
+                          %)
                         </span>
                       </div>
                       <div
@@ -1414,7 +1359,7 @@ useEffect(() => {
                       >
                         <label className="font-bold">Total Net Rate : </label>
                         <span style={{ fontWeight: 600 }}>
-                          ₹ {totalNetRate}{" "}
+                          ₹ {totalNetRate}
                         </span>
                       </div>
                     </div>

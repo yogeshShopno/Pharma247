@@ -101,6 +101,7 @@ import theme from './theme';
 import { useEffect } from 'react';
 import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
 import OnlineDashboard from './dashboard/OnlineDashboard';
+import LoginSignup from './componets/Login/LoginSignup';
 
 function App() {
   useEffect(() => {
@@ -194,13 +195,19 @@ function App() {
         <Router>
           <Switch>
             <Route exact path='/'>
-              <Login />
+            <LoginSignup />
             </Route>
             <Route path='/Register/:referralCode'>
-              <SignUp />
+            <LoginSignup />
             </Route>
             <Route path='/Register'>
-              <SignUp />
+            <LoginSignup />
+            </Route>
+            <Route path='/login/:referralCode'>
+              <LoginSignup />
+            </Route>
+            <Route path='/login'>
+              <LoginSignup />
             </Route>
             <Route path='/forgotPassword'>
               <Forgot />

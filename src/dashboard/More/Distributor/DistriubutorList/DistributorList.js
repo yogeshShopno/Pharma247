@@ -376,7 +376,8 @@ const DistributerList = () => {
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -443,7 +444,7 @@ const DistributerList = () => {
                     }}
                     className="gap-2"
                   >
-                    {" "}
+                    
                     <AddIcon className="" />
                     Add Distributor
                   </Button>
@@ -461,7 +462,7 @@ const DistributerList = () => {
                     }}
                     onClick={exportToExcel}
                   >
-                    {" "}
+                    
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <img
                         src="/csv-file.png"
@@ -870,7 +871,7 @@ const DistributerList = () => {
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <span className="label primary">
-                              {" "}
+                              
                               Distributor Drug License No.
                             </span>
                             <OutlinedInput

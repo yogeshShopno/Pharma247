@@ -127,7 +127,8 @@ const AboutInfo = () => {
   return (
     <>
       <Header key={reRender} />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}

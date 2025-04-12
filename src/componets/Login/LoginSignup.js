@@ -13,12 +13,12 @@ import {
   InputAdornment,
   OutlinedInput,
 } from "@mui/material";
-import loginlogo from './assets/loginlogo.PNG';
+// import loginlogo from './assets/loginlogo.PNG';
 
 
 
 const LoginSignup = () => {
-  // const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
+  const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
 
   const history = useHistory();
   const location = useLocation();
@@ -888,7 +888,7 @@ const LoginSignup = () => {
             <div className="toggle-panel toggle-left">
               <div className="header-logo1">
                 <a href='index.html'>
-                <img src="../../../loginlogo.PNG" alt="logo" width="150px" />
+                <img src={loginlogo} alt="logo" width="150px" />
 
                 </a>
               </div>
@@ -899,7 +899,7 @@ const LoginSignup = () => {
             <div className="toggle-panel toggle-right">
               <div className="header-logo1">
                 <a href='index.html'>
-                  <img src="../../../loginlogo.PNG" alt="logo" width="150px" />
+                  <img src={loginlogo} alt="logo" width="150px" />
                 </a>
               </div>
               <p>Already have an account?</p>

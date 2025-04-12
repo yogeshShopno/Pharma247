@@ -291,7 +291,8 @@ const LoyaltyPoint = () => {
   return (
     <div>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -342,7 +343,7 @@ const LoyaltyPoint = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  {" "}
+                  
                   <AddIcon />
                   Add Loyalty point
                 </Button>

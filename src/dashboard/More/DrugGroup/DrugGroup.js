@@ -300,7 +300,8 @@ const DrugGroup = () => {
   return (
     <div>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -353,7 +354,7 @@ const DrugGroup = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  {" "}
+                  
                   <AddIcon />
                   Add Drug Group 
                 </Button>

@@ -161,58 +161,59 @@ const Addsale = () => {
     const addButtonref = useRef(null);
 
     /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
-
-
+    // Handle table focus and blur to enable/disable autocomplete
     useEffect(() => {
         const handleTableFocus = () => setAutocompleteDisabled(false);
         const handleTableBlur = () => setAutocompleteDisabled(true);
 
-        if (tableRef1.current) {
-            tableRef1.current.addEventListener("focus", handleTableFocus);
-            tableRef1.current.addEventListener("blur", handleTableBlur);
+        const tableElement = tableRef1.current;
+        if (tableElement) {
+            tableElement.addEventListener("focus", handleTableFocus);
+            tableElement.addEventListener("blur", handleTableBlur);
         }
 
         return () => {
-            if (tableRef1.current) {
-                tableRef1.current.removeEventListener("focus", handleTableFocus);
-                tableRef1.current.removeEventListener("blur", handleTableBlur);
+            if (tableElement) {
+                tableElement.removeEventListener("focus", handleTableFocus);
+                tableElement.removeEventListener("blur", handleTableBlur);
             }
         };
     }, []);
 
+    // Handle keyboard navigation (ArrowUp, ArrowDown, Enter)
     useEffect(() => {
-    const handleKeyPress = (e) => {
-        if (!ItemSaleList?.item_list?.length) return;
+        const handleKeyPress = (e) => {
+            if (!ItemSaleList?.sales_item?.length) return;
 
-        const isInputFocused = document.activeElement.tagName === "INPUT";
-        if (isInputFocused) return;
+            const isInputFocused = document.activeElement.tagName === "INPUT";
+            if (isInputFocused) return;
 
-        e.preventDefault(); // Prevent default scrolling behavior
+            e.preventDefault(); // Prevent default scrolling behavior
 
-        if (e.key === "ArrowDown") {
-            setSelectedIndex((prev) => {
-                const nextIndex = Math.min(prev + 1, ItemSaleList.item_list.length - 1);
-                return nextIndex;
-            });
-        } else if (e.key === "ArrowUp") {
-            setSelectedIndex((prev) => {
-                const prevIndex = Math.max(prev - 1, 0);
+            setSelectedIndex((prevIndex) => {
+                if (prevIndex === -1) {
+                    // If no row is selected, start selection
+                    return e.key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1;
+                }
+
+                if (e.key === "ArrowDown") {
+                    return Math.min(prevIndex + 1, ItemSaleList.sales_item.length - 1);
+                } else if (e.key === "ArrowUp") {
+                    return Math.max(prevIndex - 1, 0);
+                }
+
                 return prevIndex;
             });
-        } else if (e.key === "Enter" && selectedIndex !== -1) {
-            const selectedRow = ItemSaleList.item_list[selectedIndex];
-            if (selectedRow) {
-                handleEditClick(selectedRow);
+
+            if (e.key === "Enter" && selectedIndex !== -1) {
+                const selectedRow = ItemSaleList.sales_item[selectedIndex];
+                if (selectedRow) handleEditClick(selectedRow);
             }
-        }
-    };
+        };
 
-    document.addEventListener("keydown", handleKeyPress);
-    return () => document.removeEventListener("keydown", handleKeyPress);
-}, [ItemSaleList, selectedIndex]);
-
-
-
+        document.addEventListener("keydown", handleKeyPress);
+        return () => document.removeEventListener("keydown", handleKeyPress);
+    }, [ItemSaleList.sales_item, selectedIndex]);
     /*<================================================================================== handle shortcut  =========================================================================> */
 
     useEffect(() => {
@@ -691,6 +692,7 @@ const Addsale = () => {
     };
 
     const handleOptionChange = (event, newValue) => {
+    
         setUnsavedItems(true);
 
         setSelectedOption(newValue);
@@ -868,6 +870,7 @@ const Addsale = () => {
         // } else {
         //     setMaxQty(existingItem.qty);
         // }
+        console.log(item)
 
         setSelectedEditItem(item);
         setIsEditMode(true);
@@ -876,6 +879,8 @@ const Addsale = () => {
         setSearchItem(item.iteam_name);
         setItemEditID(item.item_id);
         setLoc(item.location);
+        setSelectedOption(item)
+      
 
         if (selectedEditItem) {
             // setSearchItem(selectedEditItem.iteam_name);
@@ -888,6 +893,8 @@ const Addsale = () => {
             setGst(item.gst_name);
             setOrder(item.order);
             setItemAmount(selectedEditItem.net_rate);
+            
+                inputRef7.current.focus();
         }
     };
 
@@ -1134,7 +1141,7 @@ const Addsale = () => {
     //     }
     // }
 
-    const handleSubmit = () => {
+    const handleSubmit = (draft) => {
         setUnsavedItems(false);
         const newErrors = {};
         if (!customer) {
@@ -1156,9 +1163,9 @@ const Addsale = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        submitSaleData();
+        submitSaleData(draft);
     }
-    const submitSaleData = (async () => {
+    const submitSaleData = (async (draft)=> {
         let data = new FormData();
         // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
         const calculatedPreviousLoyaltyPoint = Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0;
@@ -1197,7 +1204,7 @@ const Addsale = () => {
         data.append("roylti_point", loyaltyVal || 0)
         data.append("previous_loylti_point ", calculatedPreviousLoyaltyPoint || 0)
         data.append("today_loylti_point  ", todayLoyltyPoint || 0)
-        data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+        data.append("draft_save", !draft ? "1" : draft);
 
         try {
             const response = await axios.post("create-sales", data, {
@@ -1666,7 +1673,8 @@ const Addsale = () => {
 
             <div>
                 <Header />
-                <ToastContainer
+                  <ToastContainer
+
                     position="top-right"
                     autoClose={5000}
                     hideProgressBar={false}
@@ -1750,8 +1758,8 @@ const Addsale = () => {
 
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(0)
-                                                    handleSubmit(0)
+                                                    setBillSaveDraft("1")
+                                                    handleSubmit("1")
                                                 }}
                                                 className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -1762,8 +1770,8 @@ const Addsale = () => {
                                             </li>
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(1)
-                                                    handleSubmit(1)
+                                                    setBillSaveDraft("0")
+                                                    handleSubmit("0")
                                                 }}
                                                 className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -1902,6 +1910,20 @@ const Addsale = () => {
                                     />
 
                                 </div>
+                              
+                                <div className="detail custommedia" >
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Select Date <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
+
+                                    <DatePicker
+                                        className="custom-datepicker "
+                                        selected={selectedDate}
+                                        variant="outlined"
+                                        onChange={(newDate) => setSelectedDate(newDate)}
+                                        dateFormat="dd/MM/yyyy"
+                                        filterDate={(date) => !isDateDisabled(date)}
+
+                                    />
+                                </div>
                                 <div className="detail custommedia" >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Scan Barcode <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <TextField
@@ -1915,24 +1937,8 @@ const Addsale = () => {
                                         sx={{ width: "250px" }}
                                         onChange={(e) => {
                                             setBarcode(e.target.value)
+                                        }}/>
 
-                                        }}
-
-                                    />
-
-                                </div>
-                                <div className="detail custommedia" >
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Scan Barcode <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
-
-                                    <DatePicker
-                                        className="custom-datepicker "
-                                        selected={selectedDate}
-                                        variant="outlined"
-                                        onChange={(newDate) => setSelectedDate(newDate)}
-                                        dateFormat="dd/MM/yyyy"
-                                        filterDate={(date) => !isDateDisabled(date)}
-
-                                    />
                                 </div>
                                 <div className="scroll-two">
                                     <table className="saleTable">
@@ -1947,7 +1953,6 @@ const Addsale = () => {
                                                 <th >GST%</th>
                                                 <th >QTY </th>
                                                 <th >Loc.</ th>
-
                                                 <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
                                                         <Button style={{ justifyContent: 'left' }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
@@ -2394,94 +2399,7 @@ const Addsale = () => {
                                         </div>
 
                                         <div style={{ display: 'flex', whiteSpace: 'nowrap' }}>
-                                            {/* <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Total Amount : </label>
-                                                <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                                            </div>
-                                            <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Discount(%) : </label>
-                                                <Input type="number"
-                                                    value={finalDiscount}
-                                                    onKeyPress={(e) => {
-                                                        if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
-                                                    onChange={(e) => {
-                                                        let newValue = e.target.value
-
-                                                        if (newValue > 100) {
-
-                                                            setFinalDiscount(100)
-                                                        } else if (newValue >= 0) {
-                                                            setFinalDiscount(newValue)
-
-                                                        }
-
-                                                    }}
-                                                    size="small"
-                                                    style={{
-                                                        width: "70px",
-                                                        background: "none",
-                                                        borderBottom: "1px solid gray",
-                                                        outline: "none",
-                                                        justifyItems: "end",
-                                                        color: 'white',
-
-                                                    }} sx={{
-                                                        '& .MuiInputBase-root': {
-                                                            height: '35px'
-                                                        },
-                                                        "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                    }} />
-
-                                            </div>
-                                            <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Other Amount : </label>
-                                                <Input type="number" value={otherAmt}
-                                                    onKeyPress={(e) => {
-                                                        const value = e.target.value;
-                                                        const isMinusKey = e.key === '-';
-
-                                                        if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                                            e.preventDefault();
-                                                        }
-
-                                                        if (isMinusKey && value.includes('-')) {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
-                                                    onChange={handleOtherAmtChange}
-                                                    size="small"
-                                                    style={{
-                                                        width: "70px",
-                                                        background: "none",
-                                                        borderBottom: "1px solid gray",
-                                                        justifyItems: "end",
-                                                        outline: "none",
-                                                        color: 'white',
-
-                                                    }} sx={{
-                                                        '& .MuiInputBase-root': {
-                                                            height: '35px',
-                                                        },
-                                                        "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                    }} />
-                                            </div>
-                                            <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Loyalty Points Redeem: </label>
-                                                <span>{loyaltyVal || 0}</span>
-                                            </div>
-                                            <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Discount Amount : </label>
-                                                {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
-                                            </div>
-                                            <div className="gap-2" style={{ display: 'flex' }}>
-                                                <label className="font-bold">Round Off : </label>
-                                                <span >{!roundOff ? 0 : roundOff}</span>
-                                            </div> */}
+                                          
                                             <div className="gap-2 " onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                                                 <label className="font-bold">Net Amount : </label>
                                                 <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{netAmount}
@@ -2611,169 +2529,7 @@ const Addsale = () => {
                                     </div>
                                 </div>
                             )}
-                            {/* {ItemSaleList.sales_item.length > 0 && (
-                                <div className="flex gap-10 justify-end mt-4 flex-wrap "  >
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <label className="font-bold">Total GST : </label>
-                                        <label className="font-bold">Total Base : </label>
-                                        <label className="font-bold">Profit : </label>
-                                        <label className="font-bold">Total Net Rate : </label>
-                                    </div>
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
-                                        <span style={{ fontWeight: 600 }}> {totalgst} </span>
-                                        <span style={{ fontWeight: 600 }}>{totalBase} </span>
-                                        <span style={{ fontWeight: 600 }}>₹ {marginNetProfit || 0} ({Number(totalMargin || 0).toFixed(2)}%)</span>
-                                        <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
-                                        <div>
-                                            <label className="font-bold">Total Amount : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Discount (%) : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Other Amount : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Loyalty Points : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Discount Amount : </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold">Round Off: </label>
-                                        </div>
-                                        <div>
-                                            <label className="font-bold" >Net Amount : </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="totals mr-5" style={{ display: 'flex', gap: '20px', flexDirection: 'column', alignItems: "end" }}>
-                                        <div>
-                                            <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                                        </div>
-                                        <div className="">
-                                            <Input type="number"
-                                                value={finalDiscount}
-                                                onKeyPress={(e) => {
-                                                    if (!/[0-9.]/.test(e.key) && e.key !== 'Backspace') {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                                onChange={(e) => {
-                                                    let newValue = e.target.value
-
-                                                    if (newValue > 100) {
-
-                                                        setFinalDiscount(100)
-                                                    } else if (newValue >= 0) {
-                                                        setFinalDiscount(newValue)
-
-                                                    }
-
-                                                }}
-                                                size="small" style={{
-                                                    width: "70px",
-                                                    background: "none",
-                                                    borderBottom: "1px solid gray",
-                                                    outline: "none",
-                                                    justifyItems: "end"
-                                                }} sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px'
-                                                    },
-                                                    "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                }} />
-                                        </div>
-
-                                        <div>
-                                            <Input type="number" value={otherAmt}
-                                                onKeyPress={(e) => {
-                                                    const value = e.target.value;
-                                                    const isMinusKey = e.key === '-';
-
-                                                    if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                                        e.preventDefault();
-                                                    }
-
-                                                    if (isMinusKey && value.includes('-')) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                                onChange={handleOtherAmtChange} size="small" style={{
-                                                    width: "70px",
-                                                    background: "none",
-                                                    borderBottom: "1px solid gray",
-                                                    justifyItems: "end",
-                                                    outline: "none",
-                                                }} sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px',
-                                                    },
-                                                    "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                }} />
-                                        </div>
-
-                                        <div className="">
-                                            <Input type="number"
-                                                value={loyaltyVal || loyaltyPoints}
-                                                // onChange={(e) => { setLoyaltyVal(e.target.value) }}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-
-                                                    const numericValue = Math.floor(Number(value));
-
-                                                    const maxAllowedPoints = Math.min(maxLoyaltyPoints, totalAmount);
-
-                                                    if (numericValue >= 0 && numericValue <= maxAllowedPoints) {
-                                                        setLoyaltyVal(numericValue);
-                                                        setLoyaltyPoints(numericValue);
-                                                    } else if (numericValue < 0) {
-                                                        setLoyaltyVal(0);
-                                                        setLoyaltyPoints(0);
-                                                    }
-                                                }}
-                                                onKeyPress={(e) => {
-                                                    const value = e.target.value;
-                                                    const isMinusKey = e.key === '-';
-
-                                                    if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                                        e.preventDefault();
-                                                    }
-
-                                                    if (isMinusKey && value.includes('-')) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                                size="small" style={{
-                                                    width: "70px",
-                                                    background: "none",
-                                                    borderBottom: "1px solid gray",
-                                                    justifyItems: "end",
-                                                    outline: "none",
-                                                }} sx={{
-                                                    '& .MuiInputBase-root': {
-                                                        height: '35px',
-                                                    },
-                                                    "& .MuiInputBase-input": { textAlign: "end" }
-
-                                                }} />
-                                        </div>
-                                        <div className="mt-1">
-                                            {discountAmount !== 0 && <span>{discountAmount > 0 ? `-${discountAmount}` : discountAmount}</span>}
-                                        </div>
-                                        <div>
-                                            <span >{!roundOff ? 0 : roundOff}</span>
-                                        </div>
-                                        <div>
-                                            <span style={{ fontWeight: 800, fontSize: '22px' }}>{netAmount}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )} */}
+                          
                         </div>
                     </div>
                 </div>

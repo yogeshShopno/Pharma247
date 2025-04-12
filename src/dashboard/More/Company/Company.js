@@ -264,7 +264,8 @@ const Company = () => {
   return (
     <div>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -311,7 +312,7 @@ const Company = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  {" "}
+                  
                   <AddIcon />
                   Add Company
                 </Button>

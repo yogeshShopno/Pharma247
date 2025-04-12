@@ -43,7 +43,7 @@ const AddReturnbill = () => {
     const [mrp, setMRP] = useState()
     const [ptr, setPTR] = useState()
     const [billNo, setBillNo] = useState()
-    const [gst, setGst] = useState({ id: '', name: '' });
+    const [gst, setGst] = useState();
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [open, setOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(1);
@@ -100,7 +100,7 @@ const AddReturnbill = () => {
     const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [isEdit,setIsEdit] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
 
     const [billSaveDraft, setBillSaveDraft] = useState('0');
 
@@ -111,11 +111,27 @@ const AddReturnbill = () => {
     const tableRef = useRef(null); // Reference for table container
     const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
-    const inputRefs = useRef([]);
     const dateRefs = useRef([]);
 
     const submitButtonRef = useRef(null);
     const addButtonref = useRef(null);
+    const inputRefs = useRef([]);
+
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const nextElement = inputRefs.current[index + 1];
+
+            // Handle DatePicker separately (access internal input)
+            if (nextElement?.setFocus) {
+                nextElement.setFocus();
+            } else {
+                nextElement?.focus();
+            }
+        }
+
+    };
 
     /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
@@ -182,27 +198,9 @@ const AddReturnbill = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [distributor, billNo, returnItemList]); // Dependencies only affect Alt+S
-
-
-    const handleKeyDown = (event, index) => {
-
-        if (event.key === "Enter") {
-            event.preventDefault(); // Prevent form submission
-
-            const nextInput = inputRefs.current[index + 1];
-            if (nextInput) {
-                nextInput.focus(); // Move to next input
-            }
-        }
-    };
-
+    }, [distributor, billNo, returnItemList]);
 
     /*<================================================================================== handle shortcut  =========================================================================> */
-
-
-
-   
 
     useEffect(() => {
         if (otherAmount !== '') {
@@ -239,7 +237,7 @@ const AddReturnbill = () => {
             setFree(selectedEditItem.fr_qty);
             setPTR(selectedEditItem.ptr);
             setDisc(selectedEditItem.disocunt);
-            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
+            setGst(selectedEditItem.gst_name);
             setLoc(selectedEditItem.location);
             setItemTotalAmount(selectedEditItem.amount);
         }
@@ -262,7 +260,7 @@ const AddReturnbill = () => {
         setBillNo(localStorage.getItem('Purchase_Return_BillNo'));
     }, [])
 
-  
+
 
     const BankList = async () => {
         let data = new FormData()
@@ -372,7 +370,7 @@ const AddReturnbill = () => {
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        const totalAmount = parseFloat((totalBase + (totalBase * gst.name / 100)).toFixed(2));
+        const totalAmount = parseFloat((totalBase + (totalBase * gst / 100)).toFixed(2));
         if (totalAmount) {
             setItemTotalAmount(totalAmount.toFixed(2));
         } else {
@@ -381,7 +379,7 @@ const AddReturnbill = () => {
         if (isDeleteAll == false) {
             // restoreData();
         }
-    }, [ptr, qty, disc, gst.name])
+    }, [ptr, qty, disc, gst])
 
     const handleNavigation = (path) => {
         setIsOpenBox(true);
@@ -410,7 +408,7 @@ const AddReturnbill = () => {
         { id: 6, label: 'CC/DC' },
         { id: 7, label: 'RTGS/NEFT' }]
 
-   
+
     const isDateDisabled = (date) => {
         const today = new Date();
         // Set time to 00:00:00 to compare only date part
@@ -419,7 +417,7 @@ const AddReturnbill = () => {
         return date > today;
     };
 
-    
+
     const deleteOpen = (Id) => {
         setIsDelete(true);
         setUnsavedItems(true)
@@ -457,17 +455,28 @@ const AddReturnbill = () => {
 
     const filterData = async (searchItem) => {
         const newErrors = {};
-        if (!distributor) newErrors.distributor = 'distributor is required';
-        if (!startDate) newErrors.startDate = 'start date is required';
-        if (!endDate) newErrors.endDate = 'end date is required';
+
+        if (!distributor) {
+            newErrors.distributor = 'Distributor is required';
+            toast.error('Distributor is required');
+        }
+        if (!startDate) {
+            newErrors.startDate = 'Start date is required';
+            toast.error('Start date is required');
+        }
+        if (!endDate) {
+            newErrors.endDate = 'End date is required';
+            toast.error('End date is required');
+        }
 
         setErrors(newErrors);
-        const isValid = Object.keys(newErrors).length === 0;
-        if (isValid) {
-            await purcheseReturnFilter();  // Call handleAddItem if validation passes
+
+        if (Object.keys(newErrors).length === 0) {
+            await purcheseReturnFilter();
+            return true;
         }
-        return isValid;
-    }
+        return false;
+    };
 
 
     const handleInputChange = (e) => {
@@ -548,7 +557,7 @@ const AddReturnbill = () => {
         setIsEdit(false)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (draft) => {
         const newErrors = {};
         if (!distributor) {
             newErrors.distributor = 'Please select Distributor';
@@ -565,12 +574,12 @@ const AddReturnbill = () => {
             return;
         }
 
-        submitPurchaseData();
+        submitPurchaseData(draft);
         setIsOpenBox(false)
         setPendingNavigation(null);
     }
 
-    const submitPurchaseData = async () => {
+    const submitPurchaseData = async (draft) => {
         const hasUncheckedItems = returnItemList?.item_list.every(item => item.iss_check === false)
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
@@ -595,7 +604,7 @@ const AddReturnbill = () => {
             data.append('round_off', roundOff ? roundOff : '');
             data.append('start_date', startDate ? format(startDate, 'MM/yy') : '');
             data.append('end_date', endDate ? format(endDate, 'MM/yy') : '');
-            data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+            data.append("draft_save", !draft ? "1" : draft);
 
             try {
                 await axios.post("purches-return-store", data, {
@@ -678,12 +687,19 @@ const AddReturnbill = () => {
         if (!expiryDate) newErrors.expiryDate = 'Expiry date is required';
         if (!mrp) newErrors.mrp = 'MRP is required';
         if (!qty) newErrors.qty = 'Quantity is required';
-
+        // if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+        //     newErrors.gst = "Enter valid GST";
+        //     toast.error("Enter valid GST")
+        // };
         // if (!free) newErrors.free = 'Free quantity is required';
         if (!ptr) newErrors.ptr = 'PTR is required';
         // if (!disc) newErrors.disc = 'Discount is required';
-        if (!gst.name) newErrors.gst = 'GST is required';
+        if (!gst) newErrors.gst = 'GST is required';
         // if (!loc) newErrors.loc = 'Location is required';
+ if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+      newErrors.gst = "Enter valid GST";
+      toast.error("Enter valid GST")
+    };
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -755,7 +771,13 @@ const AddReturnbill = () => {
     };
 
     const handleEditItem = async () => {
-
+        const gstMapping = {
+            28: 6,
+            18: 4,
+            12: 3,
+            5: 2,
+            0: 1
+          };
         setUnsavedItems(true);
         let data = new FormData();
         data.append('purches_return_id', selectedEditItemId ? selectedEditItemId : '')
@@ -768,7 +790,7 @@ const AddReturnbill = () => {
         data.append("qty", qty ? qty : 0)
         data.append("fr_qty", free ? free : 0)
         data.append("disocunt", disc ? disc : 0)
-        data.append('gst', gst.id ? gst.id : '')
+        data.append("gst", gstMapping[gst] ?? gst);
         data.append('location', loc ? loc : 0)
         data.append('amount', ItemTotalAmount ? ItemTotalAmount : '')
 
@@ -827,7 +849,8 @@ const AddReturnbill = () => {
     return (
         <>
             <Header />
-            <ToastContainer
+              <ToastContainer
+
                 position="top-right"
                 autoClose={5000}
                 hideProgressBar={false}
@@ -866,7 +889,7 @@ const AddReturnbill = () => {
                                             <li
                                                 onClick={() => {
                                                     setBillSaveDraft(0)
-                                                    handleSubmit(0)
+                                                    handleSubmit("1")
                                                 }}
                                                 className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -878,7 +901,7 @@ const AddReturnbill = () => {
                                             <li
                                                 onClick={() => {
                                                     setBillSaveDraft(1)
-                                                    handleSubmit(1)
+                                                    handleSubmit("0")
                                                 }}
                                                 className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -892,61 +915,8 @@ const AddReturnbill = () => {
                             </div>
                         </div>
                         <div className="bg-white">
+
                             <div className="firstrow flex">
-                                <div className="detail custommedia" style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-
-                                }}>
-                                    <span className="heading mb-2">Distributor</span>
-                                    <Autocomplete
-                                        value={distributor}
-                                        sx={{ width: '350px' }}
-                                        size='small'
-                                        onChange={(e, value) => setDistributor(value)}
-                                        options={distributorList}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => <TextField
-                                            autoComplete="off" {...params}
-                                            ref={(el) => (dateRefs.current[0] = el)}
-                                            onKeyDown={(e) => {
-
-                                                if (e.key === "Enter") {
-                                                    e.preventDefault();
-
-
-
-                                                }
-                                            }}
-                                            autoFocus />
-
-                                        }
-                                        inputRef={(el) => (inputRefs.current[0] = el)}
-                                        onKeyDown={(e) => handleKeyDown(e, 0)}
-                                    />
-                                    {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
-                                    {errors.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributor}</span>}
-
-                                </div>
-                                <div className="detail custommedia" style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-
-                                }}>
-                                    <span className="heading mb-2">Bill Date</span>
-                                    <div>
-                                        <DatePicker
-
-                                            className='custom-datepicker_mn '
-                                            selected={selectedDate}
-                                            onChange={(newDate) => setSelectedDate(newDate)}
-                                            dateFormat="dd/MM/yyyy"
-                                            filterDate={(date) => !isDateDisabled(date)}
-                                            ref={(el) => (dateRefs.current[1] = el)}
-
-                                        />
-                                    </div>
-                                </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
@@ -960,8 +930,7 @@ const AddReturnbill = () => {
                                         size="small"
                                         value={billNo}
                                         disabled
-                                        ref={(el) => (inputRefs.current[2] = el)}
-                                        onKeyDown={(e) => handleKeyDown(e, 2)}
+
                                     />
                                     {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
 
@@ -970,7 +939,52 @@ const AddReturnbill = () => {
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
+                                }}>
+                                    <span className="heading mb-2">Distributor</span>
+                                    <Autocomplete
+                                        value={distributor}
+                                        sx={{ width: '350px' }}
+                                        size='small'
+                                        onChange={(e, value) => setDistributor(value)}
+                                        options={distributorList}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => <TextField
+                                            autoComplete="off" {...params}
+                                            inputRef={(el) => (inputRefs.current[0] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 0)}
 
+                                            autoFocus />
+
+                                        }
+                                    />
+                                </div>
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                }}>
+                                    <span className="heading mb-2">Bill Date</span>
+                                    <div>
+                                        <DatePicker
+
+                                            className='custom-datepicker_mn '
+                                            selected={selectedDate}
+                                            dateFormat="dd/MM/yyyy"
+                                            filterDate={(date) => !isDateDisabled(date)}
+                                            onChange={(newDate) => {
+                                                setSelectedDate(newDate);
+
+                                            }}
+                                            ref={(el) => (inputRefs.current[1] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 1)}
+
+
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
                                 }}>
                                     <span className="heading mb-2">Start Date</span>
                                     <div >
@@ -981,15 +995,14 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setStartDate(newDate)}
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
-                                            ref={(el) => (inputRefs.current[3] = el)}
-                                            onKeyDown={(e) => handleKeyDown(e, 3)}
+                                            ref={(el) => (inputRefs.current[2] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 2)}
                                         />
                                     </div>
                                 </div>
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
-
                                 }}>
                                     <span className="heading mb-2">End Date</span>
                                     <div >
@@ -999,8 +1012,8 @@ const AddReturnbill = () => {
                                             onChange={(newDate) => setEndDate(newDate)}
                                             dateFormat="MM/yyyy"
                                             showMonthYearPicker
-                                            inputRef={(el) => (inputRefs.current[4] = el)}
-                                            onKeyDown={(e) => handleKeyDown(e, 4)}
+                                            ref={(el) => (inputRefs.current[3] = el)}
+                                            onKeyDown={(e) => handleKeyDown(e, 3)}
                                         />
                                     </div>
                                 </div>
@@ -1020,14 +1033,15 @@ const AddReturnbill = () => {
                                             marginBottom: "4px",
                                             background: "var(--color1)"
                                         }}
+                                        ref={(el) => (inputRefs.current[4] = el)}
+
                                         onClick={() => filterData(searchItem)}
+                                        onKeyDown={(e) => { if (e.key === "Enter") filterData(searchItem) }}
+
+
                                     >
                                         <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
                                     </Button>
-                                </div>
-                                <div>
-                                </div>
-                                <div>
                                 </div>
                             </div>
 
@@ -1058,34 +1072,31 @@ const AddReturnbill = () => {
                                             <tr>
                                                 <td style={{ width: '350px' }}>
                                                     <div >
-                                                        {isEdit? <>
-                                                            <DeleteIcon className='delete-icon' onClick={removeItem}/>
+                                                        {isEdit ? <>
+                                                            <DeleteIcon className='delete-icon' onClick={removeItem} />
                                                             <span>{searchItem}</span></>
-                                                          : <>
+                                                            : <>
 
 
-                                                            <TextField
-                                                                autoComplete="off"
-                                                                id="outlined-basic"
-                                                                size="small"
-                                                                sx={{ width: "350px" }}
-                                                                value={searchQuery}
-                                                                onChange={handleInputChange}
-                                                                variant="outlined"
-                                                                placeholder="Please search any items.."
-                                                                InputProps={{
-                                                                    endAdornment: (
-                                                                        <InputAdornment position="start">
-                                                                            <SearchIcon />
-                                                                        </InputAdornment>
-                                                                    ),
-                                                                    type: "search",
-                                                                }}
-                                                            /></>
-                                                        }
-
-
-                                                    </div>
+                                                                <TextField
+                                                                    autoComplete="off"
+                                                                    id="outlined-basic"
+                                                                    size="small"
+                                                                    sx={{ width: "350px" }}
+                                                                    value={searchQuery}
+                                                                    onChange={handleInputChange}
+                                                                    variant="outlined"
+                                                                    placeholder="Please search any items.."
+                                                                    InputProps={{
+                                                                        endAdornment: (
+                                                                            <InputAdornment position="start">
+                                                                                <SearchIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                        type: "search",
+                                                                    }}
+                                                                /></>
+                                                        }</div>
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -1276,23 +1287,27 @@ const AddReturnbill = () => {
                                                         }} />
                                                 </td>
                                                 <td>
-                                                    <Select
+                                                    <TextField
                                                         labelId="dropdown-label"
                                                         id="dropdown"
-                                                        value={gst.name}
-                                                        sx={{ minWidth: '100px' }}
-                                                        onChange={(e) => {
-                                                            const selectedOption = gstList.find(option => option.name === e.target.value);
-                                                            setGst(selectedOption);
+                                                        value={gst}
+                                                        sx={{ width: '100px' }}
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
                                                         }}
+                                                        onChange={(e) => setGst(e.target.value)}
+                                                     
                                                         size="small"
                                                         displayEmpty
                                                         error={!!errors.gst}
                                                     >
-                                                        {gstList.map(option => (
-                                                            <MenuItem key={option.id} value={option.name}>{option.name}</MenuItem>
-                                                        ))}
-                                                    </Select>
+                                                      
+                                                    </TextField>
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -1414,7 +1429,7 @@ const AddReturnbill = () => {
                                 >
                                     <div
                                         className="gap-2 "
-                                        onClick={()=>{setIsModalOpen(!isModalOpen)}}
+                                        onClick={() => { setIsModalOpen(!isModalOpen) }}
                                         style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -1439,7 +1454,7 @@ const AddReturnbill = () => {
 
                                     <Modal
                                         show={isModalOpen}
-                                        onClose={()=>{setIsModalOpen(!isModalOpen)}}
+                                        onClose={() => { setIsModalOpen(!isModalOpen) }}
                                         size="lg"
                                         position="bottom-center"
                                         className="modal_amount"
@@ -1459,7 +1474,7 @@ const AddReturnbill = () => {
                                                 invoice total
                                             </h2>
                                             <IoMdClose
-                                                onClick={()=>{setIsModalOpen(!isModalOpen)}}
+                                                onClick={() => { setIsModalOpen(!isModalOpen) }}
                                                 cursor={"pointer"}
                                                 size={30}
                                             />

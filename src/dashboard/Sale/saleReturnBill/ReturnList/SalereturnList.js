@@ -295,7 +295,7 @@ const SalereturnList = () => {
                       onClick={goIntoAdd}
                     >
                       <AddIcon />
-                      New{" "}
+                      New
                     </Button>
                   </>
                 )}

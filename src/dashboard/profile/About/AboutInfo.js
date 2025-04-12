@@ -127,7 +127,8 @@ const AboutInfo = () => {
   return (
     <>
       <Header key={reRender} />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -166,7 +167,7 @@ const AboutInfo = () => {
                   >
                     About Pharmacy
                     <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
-                    
+                  
                   </h1>
                 </div>
                 <Box className="aboutPharmacy  abt_fld_pf">

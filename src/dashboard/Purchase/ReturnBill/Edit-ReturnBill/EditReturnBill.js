@@ -40,7 +40,7 @@ const EditReturnBill = () => {
     const [mrp, setMRP] = useState()
     const [ptr, setPTR] = useState()
     const [billNo, setBillNo] = useState()
-    const [gst, setGst] = useState({ id: '', name: '' });
+    const [gst, setGst] = useState();
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
     const [open, setOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(1);
@@ -109,7 +109,7 @@ const EditReturnBill = () => {
     const [totalNetRate, setTotalNetRate] = useState(0)
     const [totalMargin, setTotalMargin] = useState(0)
     const [margin, setMargin] = useState(0)
-    const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
+    const [initialTotalStock, setInitialTotalStock] = useState(0);
     const [uniqueId, setUniqueId] = useState([])
     const [isEditMode, setIsEditMode] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -231,7 +231,7 @@ const EditReturnBill = () => {
             setFree(selectedEditItem.fr_qty);
             setPTR(selectedEditItem.ptr);
             setDisc(selectedEditItem.disocunt);
-            setGst(gstList.find(option => option.name === selectedEditItem.gst_name) || {});
+            setGst(selectedEditItem.gst_name);
             setLoc(selectedEditItem.location);
             setItemTotalAmount(selectedEditItem.amount)
         }
@@ -240,7 +240,7 @@ const EditReturnBill = () => {
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
         const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        const totalAmount = parseFloat((totalBase + (totalBase * gst.name / 100)).toFixed(2));
+        const totalAmount = parseFloat((totalBase + (totalBase * gst / 100)).toFixed(2));
         if (totalAmount) {
             setItemTotalAmount(totalAmount);
         } else {
@@ -249,7 +249,7 @@ const EditReturnBill = () => {
         if (isDeleteAll == false) {
             // restoreData();
         }
-    }, [ptr, qty, disc, gst.name, tempQty])
+    }, [ptr, qty, disc, gst, tempQty])
 
     const LogoutClose = () => {
         setIsOpenBox(false);
@@ -597,8 +597,12 @@ const EditReturnBill = () => {
 
         if (!disc) newErrors.disc = 'Discount is required';
 
-        if (!gst.name) newErrors.gst = 'GST is required';
+        if (!gst) newErrors.gst = 'GST is required';
         // if (!loc) newErrors.loc = 'Location is required';
+ if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+      newErrors.gst = "Enter valid GST";
+      toast.error("Enter valid GST")
+    };
 
         setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -612,6 +616,13 @@ const EditReturnBill = () => {
     }
 
     const handleEditItem = async () => {
+        const gstMapping = {
+            28: 6,
+            18: 4,
+            12: 3,
+            5: 2,
+            0: 1
+          };
         let data = new FormData();
         data.append('purches_return_id', selectedEditItemId == null ? "0" : selectedEditItemId)
         data.append('iteam_id', itemPurchaseId == null ? "0" : itemPurchaseId)
@@ -622,7 +633,8 @@ const EditReturnBill = () => {
         data.append("fr_qty", free == null ? "0" : free)
         data.append("qty", qty == null ? "0" : qty)
         data.append("disocunt", disc == null ? "0" : disc)
-        data.append('gst', gst.id == null ? "0" : gst.id)
+        data.append("gst", gstMapping[gst] ?? gst);
+
         data.append('location', loc == null ? "0" : loc)
         data.append('amount', ItemTotalAmount == null ? "0" : ItemTotalAmount)
         data.append("weightage", unit == null ? "0" : unit)
@@ -672,7 +684,7 @@ const EditReturnBill = () => {
         setUnsavedItems(true)
         setItemId(Id);
     };
-    const handleReturnUpdate = (checkedItems) => {
+    const handleReturnUpdate = (draft) => {
 
         const newErrors = {};
         if (!distributor) {
@@ -691,13 +703,13 @@ const EditReturnBill = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        updatePurchaseRecord();
+        updatePurchaseRecord(draft);
         setIsOpenBox(false)
         setPendingNavigation(null);
         setUnsavedItems(false)
     }
 
-    const updatePurchaseRecord = async () => {
+    const updatePurchaseRecord = async (draft) => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
         data.append("bill_no", billNo == null ? "0" : billNo);
@@ -716,7 +728,7 @@ const EditReturnBill = () => {
         data.append("purches_return", JSON.stringify(tableData?.item_list));
         data.append('id', id == null ? "0" : id)
         data.append('round_off', roundOff == null ? "0" : roundOff)
-        data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+        data.append("draft_save", !draft ? "1" : draft);
 
         const params = {
             id: id,
@@ -838,7 +850,8 @@ const EditReturnBill = () => {
                     padding: "0px 20px",
                     overflow: "auto",
                 }} >
-                    <ToastContainer />
+                      <ToastContainer
+ />
                     <div>
                         <div className='py-3 edit_purchs_pg' style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', whiteSpace: 'nowrap', gap: '7px', alignItems: "center" }}>
@@ -864,8 +877,8 @@ const EditReturnBill = () => {
 
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(0)
-                                                    handleReturnUpdate(checkedItems)
+                                                    setBillSaveDraft("1")
+                                                    handleReturnUpdate("1")
                                                 }}
                                                 className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -876,8 +889,8 @@ const EditReturnBill = () => {
                                             </li>
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(1)
-                                                    handleReturnUpdate(checkedItems)
+                                                    setBillSaveDraft("0")
+                                                    handleReturnUpdate("0")
                                                 }}
                                                 className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -1021,7 +1034,7 @@ const EditReturnBill = () => {
                                         />
                                     </div>
                                 </div>
-                               
+
                                 <div>
                                 </div>
                                 <div className='scroll-two'>
@@ -1080,7 +1093,10 @@ const EditReturnBill = () => {
                                                                 className="delete-icon mr-2"
                                                                 onClick={removeItem}
                                                             />
-                                                            {searchItem}
+                                                            <span className="font-semibold ">
+                                                                {searchItem}
+
+                                                            </span>
                                                         </div>
                                                     </td>
                                                 }
@@ -1284,24 +1300,27 @@ const EditReturnBill = () => {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <Select
+                                                    <TextField
                                                         labelId="dropdown-label"
                                                         id="dropdown"
-                                                        value={gst.name}
+                                                        value={gst}
                                                         sx={{ width: '100px' }}
-                                                        onChange={(e) => {
-                                                            const selectedOption = gstList.find(option => option.name === e.target.value);
-                                                            setGst(selectedOption);
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                                (e.key === '.' && e.target.value.includes('.'))
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
                                                         }}
+                                                        onChange={(e) => setGst(e.target.value)}
+
                                                         size="small"
                                                         displayEmpty
                                                         error={!!errors.gst}
                                                     >
-                                                        {gstList.map(option => (
-                                                            <MenuItem key={option.id} value={option.name}>{option.name}</MenuItem>
-                                                        ))}
-                                                    </Select>
 
+                                                    </TextField>
                                                 </td>
                                                 <td>
                                                     <TextField
@@ -1362,13 +1381,14 @@ const EditReturnBill = () => {
                                     </table>
                                     <table className="p-30 border border-indigo-600 w-full border-collapse custom-table" ref={tableRef} tabIndex={0}>
                                         <tbody>
-                                            {tableData?.item_list?.map((item,index) => (
-                                                <tr key={item.id}  onClick={() => 
-                                                    {setSelectedIndex(index)
-                                                handleEditClick(item)}}
-                                                className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                            {tableData?.item_list?.map((item, index) => (
+                                                <tr key={item.id} onClick={() => {
+                                                    setSelectedIndex(index)
+                                                    handleEditClick(item)
+                                                }}
+                                                    className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                                                 >
-                                                    <td style={{ whiteSpace: 'nowrap',width :'400px',textAlign:'left'  }}>
+                                                    <td style={{ whiteSpace: 'nowrap', width: '400px', textAlign: 'left' }}>
                                                         <Checkbox
                                                             sx={{
                                                                 color: "var(--color2)", // Color for unchecked checkboxes
@@ -1400,7 +1420,7 @@ const EditReturnBill = () => {
                                             ))}
                                         </tbody>
                                     </table>
-                                   
+
                                 </div>
 
 

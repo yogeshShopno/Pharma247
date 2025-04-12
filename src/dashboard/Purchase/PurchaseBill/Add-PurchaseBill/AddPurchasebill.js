@@ -120,7 +120,7 @@ const AddPurchaseBill = () => {
   const [batchListData, setBatchListData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
-
+  const [openAddDistributorPopUp, setOpenAddDistributorPopUp] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [purchaseReturnPending, setPurchaseReturnPending] = useState([]);
   const [finalPurchaseReturnList, setFinalPurchaseReturnList] = useState([]);
@@ -142,6 +142,12 @@ const AddPurchaseBill = () => {
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
 
+
+  const [addDistributorName, setAddDistributorName] = useState("");
+  const [addDistributorNo, setAddDistributorNo] = useState("");
+  const [addDistributorMobile, setAddDistributorMobile] = useState("");
+  const [addDistributorAddress, setAddDistributorAddress] = useState("");
+
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -154,7 +160,7 @@ const AddPurchaseBill = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [billSaveDraft, setBillSaveDraft] = useState('0');
+  const [billSaveDraft, setBillSaveDraft] = useState('1');
 
 
   const paymentOptions = [
@@ -276,9 +282,11 @@ const AddPurchaseBill = () => {
       event.preventDefault(); // Prevent default browser behavior
 
       if (event.key.toLowerCase() === "s") {
+        setBillSaveDraft("1")
         handleSubmit();
       }
       else if (event.key.toLowerCase() === "g") {
+
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
         inputRefs.current[2]?.focus();
@@ -991,7 +999,7 @@ const AddPurchaseBill = () => {
   };
 
   /*<========================================================================= Add and Edit item function  ====================================================================> */
-
+  let debounce = true;
   const handleAddItem = async () => {
 
     setItemAutofoucs(true);
@@ -1092,6 +1100,50 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     }
   };
+  /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */
+
+  const handleAddNewDistributor = async () => {
+
+    if (!addDistributorAddress && !addDistributorMobile && !addDistributorName && addDistributorNo) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+    let data = new FormData();
+    data.append("gst_number", addDistributorNo);
+    data.append("distributor_name", addDistributorName);
+    data.append("mobile_no", addDistributorMobile);
+    data.append("area", addDistributorAddress);
+
+
+    try {
+      const response = await axios.post("create-distributer", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.status === 200) {
+
+        setAddDistributorAddress("");
+        addDistributorMobile("")
+        addDistributorName("")
+        addDistributorNo("")
+        inputRefs.current[2].focus();
+        toast.success("Item Distributor successfully");
+
+      } else if (response.data.status === 400) {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      setUnsavedItems(false);
+
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Please try again later");
+      }
+    }
+  };
 
   /*<========================================================================= Add new item to item master  ====================================================================> */
 
@@ -1135,6 +1187,7 @@ const AddPurchaseBill = () => {
       if (response.data.status === 200) {
 
         setOpenAddItemPopUp(false);
+        setOpenAddDistributorPopUp(false);
         setAddItemName("")
         setAddBarcode("")
         setAddUnit("")
@@ -1234,7 +1287,7 @@ const AddPurchaseBill = () => {
 
   /*<============================================================================== submit purchase bill  ==========================================================================> */
 
-  const submitPurchaseData = async () => {
+  const submitPurchaseData = async (draft) => {
 
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
@@ -1254,7 +1307,7 @@ const AddPurchaseBill = () => {
     data.append("round_off", roundOffAmount?.toFixed(2));
     data.append("purches_data", JSON.stringify(ItemPurchaseList.item));
     data.append("purches_return_data", JSON.stringify(finalPurchaseReturnList));
-    data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+    data.append("draft_save", !draft ? "1" : draft);
 
     try {
       await axios
@@ -1280,7 +1333,7 @@ const AddPurchaseBill = () => {
 
   /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
-  const handleSubmit = () => {
+  const handleSubmit = (draft) => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -1299,7 +1352,7 @@ const AddPurchaseBill = () => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    submitPurchaseData();
+    submitPurchaseData(draft);
     setUnsavedItems(false);
   };
 
@@ -1620,6 +1673,7 @@ const AddPurchaseBill = () => {
     <>
       <Header />
       <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -1684,7 +1738,7 @@ const AddPurchaseBill = () => {
                 }}
                 size="small"
               >
-                <MenuItem  className=" hover:bg-[var(--color1)]" value="cash">Cash</MenuItem>
+                <MenuItem className=" hover:bg-[var(--color1)]" value="cash">Cash</MenuItem>
                 <MenuItem className=" hover:bg-[var(--color1)]" value="credit">Credit</MenuItem>
                 {bankData?.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
@@ -1753,24 +1807,24 @@ const AddPurchaseBill = () => {
 
                   <li
                     onClick={() => {
-                      setBillSaveDraft(0)
-                      handleSubmit(0)
+                      setBillSaveDraft("1")
+                      handleSubmit("1")
                     }}
                     className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                   >
-                    <SaveIcon  />
+                    <SaveIcon />
 
 
                     Save
                   </li>
                   <li
                     onClick={() => {
-                      setBillSaveDraft(1)
-                      handleSubmit(1)
+                      setBillSaveDraft("0")
+                      handleSubmit("0")
                     }}
                     className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                   >
-                    <SaveAsIcon  />
+                    <SaveAsIcon />
 
                     Draft
                   </li>
@@ -1789,7 +1843,7 @@ const AddPurchaseBill = () => {
                     <FaPlusCircle
                       className="primary cursor-pointer"
                       onClick={() => {
-                        history.push("../../more/addDistributer");
+                        setOpenAddDistributorPopUp(true)
                       }}
                     />
                   </span>
@@ -1847,6 +1901,7 @@ const AddPurchaseBill = () => {
                     style={{ width: "250px" }}
                     value={billNo}
                     onChange={(e) => {
+
                       setbillNo(e.target.value.toUpperCase());
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
@@ -1918,7 +1973,17 @@ const AddPurchaseBill = () => {
                 >
                   <thead>
                     <tr>
-                      <th>Search Item Name</th>
+                      <th >
+                        <div className="flex justify-center items-center gap-2">
+                          Search Item Name
+                          <FaPlusCircle
+                            className="primary cursor-pointer"
+                            onClick={() => {
+                              setOpenAddItemPopUp(true)
+                            }} />
+                        </div>
+
+                      </th>
                       <th>Unit</th>
                       {/* <th>HSN</th> */}
                       <th>Batch </th>
@@ -2030,6 +2095,7 @@ const AddPurchaseBill = () => {
                                 )}
                               />)}
                             </td>)}
+
                           <td>
                             <TextField
                               variant="outlined"
@@ -2442,9 +2508,9 @@ const AddPurchaseBill = () => {
               style={{ display: "flex" }}
             >
               <label className="font-bold">Total Qty : </label>
-              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0} +{" "}
+              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0} +
                 <span className="">
-                  {totalFree ? totalFree : 0} Free{" "}
+                  {totalFree ? totalFree : 0} Free
                 </span></span>
             </div>
             <div
@@ -2807,7 +2873,132 @@ const AddPurchaseBill = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<======================================================================== add item  PopUp Box  =======================================================================> */}
+        {/*<======================================================================== add Distributor PopUp Box  =======================================================================> */}
+
+        <Dialog open={openAddDistributorPopUp}>
+          <DialogTitle id="alert-dialog-title" className="primary">
+            Add Distributor
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenAddDistributorPopUp(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="bg-white">
+                <div
+                  className="mainform bg-white rounded-lg"
+                  style={{ padding: "20px" }}
+                >
+                  <div className="row">
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">Distributor Name</label>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        value={addDistributorName}
+                        autoFocus
+                        onChange={(e) =>
+                          setAddDistributorName(e.target.value.toUpperCase())
+                        }
+                        inputRef={(el) => (inputRefs.current[16] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 16)}
+
+
+                      />
+                    </div>
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">Distributor GSTIN Number</label>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        value={addDistributorNo}
+                        autoFocus
+                        onChange={(e) =>
+                          setAddDistributorNo(e.target.value.toUpperCase())
+                        }
+                        inputRef={(el) => (inputRefs.current[17] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 17)}
+
+
+                      />
+                    </div>
+
+                  </div>
+                  <div className="row">
+                    <div className="fields add_new_item_divv">
+                      <label className="label  secondary">Mobile Number</label>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        value={addDistributorMobile}
+                        onChange={(e) => setAddDistributorMobile(Number(e.target.value))}
+                        inputRef={(el) => (inputRefs.current[18] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 18)}
+                      />
+                    </div>
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">Adress</label>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-number"
+
+                        size="small"
+                        value={addDistributorAddress}
+                        onChange={(e) => setAddDistributorAddress(e.target.value)}
+                        inputRef={(el) => (inputRefs.current[19] = el)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault(); // Prevent form submission
+                            handleAddNewDistributor();
+                          }
+                        }}
+                      />
+                    </div>
+
+                  </div>
+                  <div
+                    className="row"
+                    style={{
+                      justifyContent: "flex-end",
+                      paddingRight: "4px",
+                      paddingTop: "8%",
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#3f6212",
+                        "&:hover": {
+                          backgroundColor: "#3f6212",
+                        },
+                      }}
+                      onClick={() => handleAddNewDistributor}
+                      ref={addButtonref}
+                    >
+                      <ControlPointIcon className="mr-2" />
+                      Add Distributor
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+
+        {/*<======================================================================== add item PopUp Box  =======================================================================> */}
 
         <Dialog open={openAddItemPopUp}>
           <DialogTitle id="alert-dialog-title" className="primary">
@@ -2922,6 +3113,7 @@ const AddPurchaseBill = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
+
 
         {/*<==========================================================================  Delete PopUP   =========================================================================> */}
 

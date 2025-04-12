@@ -8,63 +8,112 @@ import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import dayjs, { Dayjs } from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 const OnlineOrders = () => {
   const token = localStorage.getItem("token");
   const history = useHistory()
-
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [reconciliationData, setReconciliationData] = useState({});
   const [toggle, setToggle] = useState(false);
 
+  const [settings, setSettings] = useState({
+    accept_online_orders: 0,
+    delivery_online_orders: 0,
+    pickup_online_orders: 0,
+    minimum_order_amount: 100,
+    order_shipping_price: 102,
+    delivery_estimated_time: dayjs('2022-04-17T15:30'),
+    order_manager: 120,
+    google_location_link: 120,
+    delivery_start_time: 102,
+    delivery_end_time: 120,
+    delivery_executive: 120,
+    pharmacist_number: 9876543210,
+    pharmacy_whatsapp: 9876543210,
+    email: 9876543210,
+    delivery_start_time: "10 AM",
+    delivery_end_time: "10 PM",
+  });
+
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
+  {/*<============================================================================= get setting data intially ====================================================================> */ }
+  // Function to update state using an object
+  
+  const updateState = (newState) => {
+    setSettings((prevState) => ({
+      ...prevState,
+      ...newState, // Merging the new state
+    }));
+    console.log(settings);
+  };
+
+
   useEffect(() => {
-    // getData()
+    getSettingData()
   }, []);
 
-  useEffect(() => {
-  }, [toggle]);
 
-  const getData = async () => {
+  const getSettingData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("reconciliation-iteam-list", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  
+      const { data } = await axios.post("about-get", {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      const data = response.data.data;
-
-      setReconciliationData(data);
-      setCount(Number(data.iteam_count));
-
-      // Explicitly convert to boolean
-      setToggle(data.iss_audit === true || data.iss_audit === "true" || data.iss_audit === 1);
-      if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
+  
+      const { accept_online_orders, delivery_online_orders, 
+        pickup_online_orders,minimum_order_amount,order_shipping_price,delivery_estimated_time,order_manager,google_location_link,delivery_executive,pharmacist_number,pharmacy_whatsapp,email,delivery_start_time,delivery_end_time} = data?.data || {};
+  
+      setSettings((prev) => {
+        const newState = { ...prev, accept_online_orders, delivery_online_orders, 
+          pickup_online_orders,minimum_order_amount,order_shipping_price,delivery_estimated_time,order_manager,google_location_link,delivery_start_time,delivery_end_time,order_manager,delivery_executive,pharmacist_number,pharmacy_whatsapp,email,delivery_start_time,delivery_end_time };
+        console.log(newState);
+        return newState;
+      });
+  
     } catch (error) {
       console.error("API error:", error);
-
+     
     } finally {
       setIsLoading(false);
     }
   };
+  
 
+  {/*<==================================================================================== UI ===========================================================================> */ }
 
-
-  const updateReconciliation = async () => {
-    const formData = new FormData();
-    formData.append("iss_audit", toggle);
-    formData.append("iteam_count", count);
+  const updateSettings = async () => {
+    const data = new FormData();
+    
+    data.append("accept_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pickup_online_orders", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("minimum_order_amount", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_shipping_price", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_estimated_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_manager", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("google_location_link", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_start_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_end_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("order_manager", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_executive", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pharmacist_number", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("pharmacy_whatsapp", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("email", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_start_time", settings.accept_online_orders?settings.accept_online_orders:"");
+    data.append("delivery_end_time", settings.accept_online_orders?settings.accept_online_orders:"");
 
     try {
       setIsLoading(true);
-      const response = await axios.post("reconciliation-list", formData, {
+      const response = await axios.post("chemist-store-details", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,7 +121,7 @@ const OnlineOrders = () => {
 
       if (response.data.status === 200) {
         toast.success("Updated successfully");
-        getData(); // Refresh data after update
+        getSettingData(); // Refresh data after update
       }
     } catch (error) {
       console.error("API error:", error);
@@ -82,32 +131,13 @@ const OnlineOrders = () => {
     }
   };
 
-
-
-  const handleRestart = async () => {
-    try {
-      const response = await axios.post("reconciliation-restart", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("reconciliation restarted")
-      if (response.data.status === 401) {
-        history.push('/');
-        localStorage.clear();
-      }
-    } catch (error) {
-      console.error("API error while updating:", error);
-    }
-  };
-
-
+  {/*<==================================================================================== UI ===========================================================================> */ }
 
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -132,21 +162,16 @@ const OnlineOrders = () => {
                   <h1 className="text-2xl flex items-center primary font-semibold p-2 mr-4">
                     online order setting
                     <BsLightbulbFill className="ml-4 secondary hover-yellow" />
-
                   </h1>
                 </div>
-
               </div>
-              <div className="flex flex-row justify-around">
+              <div className="flex flex-row justify-between">
                 <div className="flex flex-col items-start mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-lg pass_boxx_flds">
-
-
-
                   {/* Turn On Reconciliation */}
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Accept Online Orders :</span>
                     <Switch
-                      checked={toggle}
+                      checked={settings.accept_online_orders == 1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -161,18 +186,14 @@ const OnlineOrders = () => {
                           backgroundColor: "var(--color1)",
                         },
                       }}
-                      onChange={() => {
-                        setToggle(!toggle);
-                      }}
+                      onchecked={settings.accept_online_orders == 1}
+                      onClick={() => updateState({ accept_online_orders: settings.accept_online_orders })}
                     />
-
-
                   </div>
-
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Home Delivery Online Orders :</span>
                     <Switch
-                      checked={toggle}
+                      checked={settings.delivery_online_orders == 1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -187,17 +208,12 @@ const OnlineOrders = () => {
                           backgroundColor: "var(--color1)",
                         },
                       }}
-                      onChange={() => {
-                        setToggle(!toggle);
-                      }}
                     />
-
-
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Home Pickup Online Orders :</span>
+                    <span className="text-gray-700 font-medium">Store Pickup Online Orders :</span>
                     <Switch
-                      checked={toggle}
+                      checked={settings.pickup_online_orders ==1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -212,12 +228,8 @@ const OnlineOrders = () => {
                           backgroundColor: "var(--color1)",
                         },
                       }}
-                      onChange={() => {
-                        setToggle(!toggle);
-                      }}
+                      onClick={() => updateState({ pickup_online_orders: settings.pickup_online_orders })}
                     />
-
-
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Minimum order amount:</span>
@@ -225,202 +237,78 @@ const OnlineOrders = () => {
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
+                      value={settings.minimum_order_amount}
                       type="number"
-                      style={{ width: "50px", marginInline: "5px" }}
+                      style={{ width: "100px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
+                      onClick={() => updateState({ minimum_order_amount: settings.minimum_order_amount })}
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Order shipping price:</span>
+                    <span className="text-gray-700 font-medium">Delivery charges:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
+                      value={settings.order_shipping_price}
                       type="number"
                       style={{ width: "50px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
+                      onClick={() => updateState({ order_shipping_price: settings.order_shipping_price })}
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Delivery estimated time:</span>
+                    <span className="text-gray-700 font-medium">estimated Delivery time:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
+                      value={settings.order_shipping_price}
                       type="number"
                       style={{ width: "50px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
+                      onClick={() => updateState({ delivery_estimated_time: settings.delivery_estimated_time })}
                     />
-                  </div>
-
-                  <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">order manager:</span>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      placeholder="Item Count"
-                      value={count}
-                      type="number"
-                      style={{ width: "50px", marginInline: "5px" }}
-                      size="small"
-                      className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
-                    />
-                  </div>
-
-                 
-
-                  {/* Submit Button */}
-                  <div className="w-full mt-2">
-                    <Button
-                      variant="contained"
-                      style={{
-                        background: "var(--color1)",
-                        color: "white",
-                      }}
-                      className="w-full py-2 text-sm font-medium rounded-lg shadow hover:opacity-90"
-                      onClick={updateReconciliation}
-                    >
-                      Submit
-                    </Button>
                   </div>
                 </div>
                 <div className="flex flex-col items-start mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-lg pass_boxx_flds">
-
-
-
                   {/* Turn On Reconciliation */}
-                  
-
-                  <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Home Delivery Online Orders :</span>
-                    <Switch
-                      checked={toggle}
-                      sx={{
-                        "& .MuiSwitch-track": {
-                          backgroundColor: "lightgray",
-                        },
-                        "&.Mui-checked .MuiSwitch-track": {
-                          backgroundColor: "var(--color1) !important",
-                        },
-                        "& .MuiSwitch-thumb": {
-                          backgroundColor: "var(--color1)",
-                        },
-                        "&.Mui-checked .MuiSwitch-thumb": {
-                          backgroundColor: "var(--color1)",
-                        },
-                      }}
-                      onChange={() => {
-                        setToggle(!toggle);
-                      }}
-                    />
-
-
-                  </div>
-                
-                 
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Pharmacy whatsapp:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
                       type="number"
                       style={{ width: "300px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
+                      value={settings.pharmacy_whatsapp}
+
+                      onClick={() => updateState({ pharmacy_whatsapp: settings.pharmacy_whatsapp })}
+
                     />
                   </div>
-                  <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Pharmacy Mobile:</span>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      placeholder="Item Count"
-                      value={count}
-                      type="number"
-                      style={{ width: "300px", marginInline: "5px" }}
-                      size="small"
-                      className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
-                    />
-                  </div>
+
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">pharmacy email:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       placeholder="Item Count"
-                      value={count}
+                      value={settings.pharmacy_email}
+
                       type="number"
                       style={{ width: "300px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Delivery executive:</span>
+                    <span className="text-gray-700 font-medium">Delivery Person:</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
@@ -430,17 +318,8 @@ const OnlineOrders = () => {
                       style={{ width: "300px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
                     />
                   </div>
-
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">order manager:</span>
                     <TextField
@@ -452,77 +331,54 @@ const OnlineOrders = () => {
                       style={{ width: "300px", marginInline: "5px" }}
                       size="small"
                       className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
                     />
                   </div>
                   <div className="flex flex-row justify-between items-center w-full mb-4">
-                    <span className="text-gray-700 font-medium">Delivery Hours:</span>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      placeholder="Item Count"
-                      value={count}
-                      type="number"
-                      style={{ width: "300px", marginInline: "5px" }}
-                      size="small"
-                      className="border border-gray-300 rounded px-2 py-1"
-                      onChange={(e) => {
-                        const newCount = Number(e.target.value);
-                        if (newCount > 24) {
-                          toast.error("can not set more than 24")
-                        } else {
-                          setCount(newCount);
-                        }
-                      }}
-                    />
+                    <span className="text-gray-700 font-medium">Delivery Hours From:</span>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['TimePicker', 'TimePicker']}>
+                        <TimePicker
+                          
+                          // value={settings.delivery_estimated_time}
+                          onClick={() => updateState({ delivery_estimated_time: settings.delivery_estimated_time })}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </div>
-
-                  {/* Restart Reconciliation */}
-                  {/* <div className="flex flex-row justify-between items-center w-full mb-4">
-<span className="text-gray-700 font-medium">Restart reconciliation:</span>
-<Button
-variant="contained"
-style={{
-background: "var(--color6)",
-color: "white",
-}}
-className="px-4 py-2 text-sm rounded-lg shadow hover:opacity-90"
-onClick={handleRestart}
->
-Restart
-</Button>
-</div> */}
-
-                  {/* Submit Button */}
-                  <div className="w-full mt-2">
-                    <Button
-                      variant="contained"
-                      style={{
-                        background: "var(--color1)",
-                        color: "white",
-                      }}
-                      className="w-full py-2 text-sm font-medium rounded-lg shadow hover:opacity-90"
-                      onClick={updateReconciliation}
-                    >
-                      Update
-                    </Button>
+                  <div className="flex flex-row justify-between items-center w-full mb-4">
+                    <span className="text-gray-700 font-medium">Delivery Hours To:</span>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['TimePicker', 'TimePicker']}>
+                        <TimePicker
+                          
+                          // value={settings.delivery_estimated_time}
+                          onClick={() => updateState({ delivery_estimated_time: settings.delivery_estimated_time })}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </div>
                 </div>
               </div>
+              <div className="w-full flex">
 
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "var(--color1)",
+                    color: "white",
+                    width: "150px",
+                    marginRight: "50px",
+                    marginTop: "50px"
 
-
+                  }}
+                  className="w-full py-2 text-sm font-medium rounded-lg shadow hover:opacity-90"
+                  onClick={updateSettings}
+                >
+                  Update
+                </Button>
+              </div>
             </div>
-
           </Box>
-
         </div>
       )}
     </>

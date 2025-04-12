@@ -493,7 +493,8 @@ const CustomerList = () => {
   return (
     <>
       <Header />
-      <ToastContainer
+        <ToastContainer
+
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -857,7 +858,7 @@ sx={{
                   }`}
                 disabled={currentPage === 1}
               >
-                Previous{" "}
+                Previous
               </button>
               {currentPage > 2 && (
                 <button
@@ -897,7 +898,7 @@ sx={{
                   }`}
                 disabled={filteredList.length === 0}
               >
-                Next{" "}
+                Next
               </button>
             </div>
           </div>

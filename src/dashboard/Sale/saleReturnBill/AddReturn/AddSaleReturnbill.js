@@ -132,30 +132,30 @@ const Salereturn = () => {
     /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
 
-   
-const handleKeyPress = (e) => {
-    if (!saleItems?.sales_item?.length) return;
 
-    const isInputFocused = document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA";
-    if (isInputFocused) return;
+    const handleKeyPress = (e) => {
+        if (!saleItems?.sales_item?.length) return;
 
-    e.preventDefault(); // Prevent default scrolling behavior
+        const isInputFocused = document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA";
+        if (isInputFocused) return;
 
-    if (e.key === "ArrowDown") {
-        setSelectedIndex((prev) => Math.min(prev + 1, saleItems.sales_item.length - 1));
-    } else if (e.key === "ArrowUp") {
-        setSelectedIndex((prev) => Math.max(prev - 1, 0));
-    } else if (e.key === "Enter" && selectedIndex !== -1) {
-        const selectedRow = saleItems.sales_item[selectedIndex];
-        if (!selectedRow) return;
-        handleEditClick(selectedRow);
-    }
-};
+        e.preventDefault(); // Prevent default scrolling behavior
 
-useEffect(() => {
-    document.addEventListener("keydown", handleKeyPress);
-    return () => document.removeEventListener("keydown", handleKeyPress);
-}, [saleItems, selectedIndex]);
+        if (e.key === "ArrowDown") {
+            setSelectedIndex((prev) => Math.min(prev + 1, saleItems.sales_item.length - 1));
+        } else if (e.key === "ArrowUp") {
+            setSelectedIndex((prev) => Math.max(prev - 1, 0));
+        } else if (e.key === "Enter" && selectedIndex !== -1) {
+            const selectedRow = saleItems.sales_item[selectedIndex];
+            if (!selectedRow) return;
+            handleEditClick(selectedRow);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyPress);
+        return () => document.removeEventListener("keydown", handleKeyPress);
+    }, [saleItems, selectedIndex]);
 
     useEffect(() => {
         if (searchDoctor) {
@@ -509,7 +509,7 @@ useEffect(() => {
         };
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (draft) => {
 
         const newErrors = {};
         if (!customer) {
@@ -523,10 +523,10 @@ useEffect(() => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        submitSaleReturnData();
+        submitSaleReturnData(draft);
     }
 
-    const submitSaleReturnData = async () => {
+    const submitSaleReturnData = async (draft) => {
         const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
@@ -555,7 +555,7 @@ useEffect(() => {
             data.append('cgst', '0');
             data.append('sgst', '0');
             data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
-            data.append("draft_save", !billSaveDraft ? "" : billSaveDraft);
+            data.append("draft_save", !draft ? "1" : draft);
 
             try {
                 await axios.post("sales-return-create", data, {
@@ -710,7 +710,8 @@ useEffect(() => {
         <>
             <div>
                 <Header />
-                <ToastContainer
+                  <ToastContainer
+
                     position="top-right"
                     autoClose={5000}
                     hideProgressBar={false}
@@ -754,8 +755,8 @@ useEffect(() => {
 
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(0)
-                                                    handleSubmit(0)
+                                                    setBillSaveDraft("1")
+                                                    handleSubmit("1")
                                                 }}
                                                 className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -766,8 +767,8 @@ useEffect(() => {
                                             </li>
                                             <li
                                                 onClick={() => {
-                                                    setBillSaveDraft(1)
-                                                    handleSubmit(1)
+                                                    setBillSaveDraft("0")
+                                                    handleSubmit("0")
                                                 }}
                                                 className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                                             >
@@ -782,54 +783,44 @@ useEffect(() => {
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex">
-                                <div className="detail mt-1 custommedia" >
-                                    <div className="detail  p-2 rounded-md" style={{ background: "var(--color1)", width: "100%" }} >
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <div className="heading" style={{ color: 'white', fontWeight: "500", alignItems: "center", marginLeft: "15px" }}>Bill No <span style={{ marginLeft: '35px' }}> Bill Date</span> </div>
-                                            <div className="flex gap-1">
-                                                <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', marginLeft: "15px", fontWeight: "bold", width: '19%' }}>{localStorage.getItem('SaleRetunBillNo')}  </div>
-                                                <div style={{ color: 'white', fontWeight: "500", alignItems: "center", marginTop: '8px', fontWeight: "bold" }}>|</div>
-                                                <DatePicker
-                                                    color="white"
-                                                    width="100%"
-                                                    value={selectedDate}
-                                                    onChange={(newDate) => setSelectedDate(newDate)}
-                                                    format="DD/MM/YYYY"
-                                                    maxDate={dayjs()}
-                                                    sx={{
-                                                        '& .MuiOutlinedInput-root': {
-                                                            '& fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&:hover fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '&.Mui-focused fieldset': {
-                                                                border: 'none',
-                                                            },
-                                                            '& .MuiInputBase-input': {
-                                                                color: 'white',
-                                                                fontWeight: "bold"
-                                                            },
-                                                        },
-                                                        '& .MuiSvgIcon-root': {
-                                                            color: 'white',
-                                                            width: '40px',
-                                                            height: '40px',
-                                                            backgroundColor: "#6aa420",
-                                                            padding: "10px",
-                                                            borderRadius: "50%",
-                                                            alignItems: "center"
-                                                        },
-                                                        '& .MuiAutocomplete-input': {
-                                                            padding: "0.5px 4px 7.5px 5px"
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                        </LocalizationProvider>
+                              
+                                <div className="detail custommedia" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
 
-                                    </div>
+                                }}>
+                                    <span className="heading mb-2">Bill No</span>
+                                    <TextField
+                                        autoComplete="off"
+                                        id="outlined-number"
+                                        type='number'
+                                        size="small"
+                                        value={localStorage.getItem('SaleRetunBillNo')} 
+                                        disabled
+
+                                    />
+                                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
+
+
+                                </div>
+                                <div style={{ padding: "0 5px", }}>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                                        <DatePicker
+                                            value={endDate}
+                                            onChange={(newDate) => {
+                                                setEndDate(newDate);
+                                                setUnsavedItems(true);
+                                            }}
+                                            format="DD/MM/YYYY"
+                                            sx={{
+                                                width: "100%",
+                                                "& .MuiInputBase-root": {
+                                                    height: "40px", 
+                                                },
+                                            }}
+                                        />
+                                    </LocalizationProvider>
                                 </div>
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name</span>
@@ -890,7 +881,7 @@ useEffect(() => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    style: { height: 40 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -903,7 +894,7 @@ useEffect(() => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ display: 'flex', width: '100%' }}>
+                                <div className="detail custommedia" style={{ display: 'flex', width: '40%' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Doctor </span>
                                     <Autocomplete
                                         value={doctor}
@@ -954,7 +945,7 @@ useEffect(() => {
                                                             {params.InputProps.endAdornment}
                                                         </>
                                                     ),
-                                                    style: { height: 53 },
+                                                    style: { height: 40 },
                                                 }}
                                                 sx={{
                                                     '& .MuiInputBase-input::placeholder': {
@@ -982,7 +973,7 @@ useEffect(() => {
                                                     sx={{
                                                         width: "100%",
                                                         "& .MuiInputBase-root": {
-                                                            height: "53px", // Set height here
+                                                            height: "40px",
                                                         },
                                                     }}
                                                 />
@@ -1002,7 +993,7 @@ useEffect(() => {
                                                     sx={{
                                                         width: "100%",
                                                         "& .MuiInputBase-root": {
-                                                            height: "53px", // Set height here
+                                                            height: "40px", // Set height here
                                                         },
                                                     }}
                                                 />
@@ -1017,7 +1008,7 @@ useEffect(() => {
                                             style={{
                                                 // minHeight: '41px',
                                                 alignItems: "center",
-                                                height: '53px',
+                                                height: '40px',
                                                 // marginTop: "7px",
                                                 background: "var(--color1)"
                                             }}
@@ -1027,25 +1018,6 @@ useEffect(() => {
                                         </Button>
                                     </div>
                                 </div>
-
-                                {/* <div className="detail" style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Address</span>
-
-                                    <TextField
-                 autoComplete="off" id="outlined-basic"
-                                        value={address}
-                                        onChange={(e) => { setAddress(e.target.value) }}
-                                        sx={{
-                                            width: 300,
-                                            '& .MuiInputBase-root': {
-                                                // height: 55,
-                                                // fontSize: '1.25rem',
-                                            },
-                                            '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '10px 14px',
-                                            },
-                                        }} variant="outlined" />
-                                </div> */}
 
 
                                 <div className="scroll-two">
@@ -1260,45 +1232,45 @@ useEffect(() => {
                                         </tbody>
                                     </table>
                                     <>
-                                    <table className="p-30 border border-indigo-600 w-full border-collapse custom-table"
-        ref={tableRef} tabIndex={0}>
-        <tbody>
-            {saleItems?.sales_item?.map((item, index) => (
-                <tr key={item.id}
-                    className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                    onClick={(event) => {
-                        handleEditClick(item);
-                        setSelectedIndex(index);
-                    }}
-                    style={{ whiteSpace: 'nowrap' }} >
-                    <td style={{ display: 'flex', gap: '8px', alignItems: "center" }}>
-                        <Checkbox
-                            sx={{
-                                color: "var(--color2)", 
-                                '&.Mui-checked': {
-                                    color: "var(--color1)", 
-                                },
-                            }}
-                            checked={item?.iss_check}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) => handleChecked(item.id, event.target.checked)}
-                        />
-                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
-                        {item.iteam_name}
-                    </td>
-                    <td className="td-bottom">{item.unit}</td>
-                    <td className="td-bottom">{item.batch}</td>
-                    <td className="td-bottom">{item.exp}</td>
-                    <td className="td-bottom">{item.mrp}</td>
-                    <td className="td-bottom">{item.base}</td>
-                    <td className="td-bottom">{item.gst}</td>
-                    <td className="td-bottom">{item.qty}</td>
-                    <td className="td-bottom">{item.location}</td>
-                    <td className="td-bottom">{item.net_rate}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
+                                        <table className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                                            ref={tableRef} tabIndex={0}>
+                                            <tbody>
+                                                {saleItems?.sales_item?.map((item, index) => (
+                                                    <tr key={item.id}
+                                                        className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                                        onClick={(event) => {
+                                                            handleEditClick(item);
+                                                            setSelectedIndex(index);
+                                                        }}
+                                                        style={{ whiteSpace: 'nowrap' }} >
+                                                        <td style={{ display: 'flex', gap: '8px', alignItems: "center" }}>
+                                                            <Checkbox
+                                                                sx={{
+                                                                    color: "var(--color2)",
+                                                                    '&.Mui-checked': {
+                                                                        color: "var(--color1)",
+                                                                    },
+                                                                }}
+                                                                checked={item?.iss_check}
+                                                                onClick={(event) => event.stopPropagation()}
+                                                                onChange={(event) => handleChecked(item.id, event.target.checked)}
+                                                            />
+                                                            <BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
+                                                            {item.iteam_name}
+                                                        </td>
+                                                        <td className="td-bottom">{item.unit}</td>
+                                                        <td className="td-bottom">{item.batch}</td>
+                                                        <td className="td-bottom">{item.exp}</td>
+                                                        <td className="td-bottom">{item.mrp}</td>
+                                                        <td className="td-bottom">{item.base}</td>
+                                                        <td className="td-bottom">{item.gst}</td>
+                                                        <td className="td-bottom">{item.qty}</td>
+                                                        <td className="td-bottom">{item.location}</td>
+                                                        <td className="td-bottom">{item.net_rate}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </>
                                 </div>
                             </div>
@@ -1449,14 +1421,10 @@ useEffect(() => {
                                     <div className="flex gap-5 justify-center">
                                         <button type="submit"
                                             className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                                            onClick={() => handleDeleteItem(saleItemId)}
-                                        >Delete</button>
+                                            onClick={() => handleDeleteItem(saleItemId)}>Delete</button>
                                         <button type="button"
                                             className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                                            onClick={() => setIsDelete(false)}
-                                        >
-                                            Cancel
-                                        </button>
+                                            onClick={() => setIsDelete(false)}>Cancel</button>
                                     </div>
                                 </div>
                             </div>

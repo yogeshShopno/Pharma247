@@ -367,6 +367,40 @@ const OnlineDashboard = () => {
                   }}
                 />
               </div>
+              <div className="flex flex-col gap-5 md:flex-row col-md-6" style={{ width: "100%" }}>
+                <div className="w-full bg-white border border-gray-100 rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-semibold text-gray-900">Loyalty Points</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 text-center">
+                      <div className="bg-gradient-to-br from-green-50 to-white border border-teal-100 p-4 rounded-xl flex flex-row items-center justify-center gap-2">
+                        <p className="text-md font-bold text-green-500">Accepted</p>
+                        <p className="text-md font-bold text-green-500 bg-white rounded-full w-10 h-10 flex items-center justify-center from-green-50 to-white border border-teal-100 ">30</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-100 p-4 rounded-xl">
+                        <p className="text-md text-gray-600">Assigned</p>
+                        <p className="text-3xl font-bold text-amber-500 mt-1">10</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-50 to-white border border-rose-100 p-4 rounded-xl">
+                        <p className="text-md text-gray-600">In process</p>
+                        <p className="text-3xl font-bold text-red-500 mt-1">10</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-green-50 to-white border border-teal-100 p-4 rounded-xl">
+                        <p className="text-md text-gray-600">Delivered</p>
+                        <p className="text-3xl font-bold text-green-700 mt-1">30</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-100 p-4 rounded-xl">
+                        <p className="text-md text-gray-600">Pickedup</p>
+                        <p className="text-3xl font-bold text-amber-500 mt-1">10</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-50 to-white border border-rose-100 p-4 rounded-xl">
+                        <p className="text-md text-gray-600">Rejected</p>
+                        <p className="text-3xl font-bold text-red-500 mt-1">110</p>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className='dashbd_crd_bx gap-5  p-8 grid grid-cols-1 md:grid-cols-1  sm:grid-cols-1'>
                 <div className='gap-4'>
                   <div className="bg-white flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>

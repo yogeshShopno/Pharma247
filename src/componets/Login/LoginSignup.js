@@ -13,9 +13,7 @@ import {
   InputAdornment,
   OutlinedInput,
 } from "@mui/material";
-import loginlogo from './assets/loginlogo.PNG';
-
-
+import loginlogo from '../../assets/loginlogo.png';
 
 const LoginSignup = () => {
   // const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
@@ -603,7 +601,6 @@ const LoginSignup = () => {
                     placeholder="Set Password"
                     required
                     fullWidth
-
                     value={password}
                     inputRef={(el) => (inputRefs.current[6] = el)}
                     onChange={(e) => setPassword(e.target.value)}

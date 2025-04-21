@@ -104,7 +104,19 @@ import OnlineDashboard from './dashboard/OnlineDashboard';
 import LoginSignup from './componets/Login/LoginSignup';
 
 function App() {
+  const goFullScreen = () => {
+    const elem = document.documentElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen(); // Safari
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen(); // IE11
+    }
+  };
   useEffect(() => {
+    
     // Inject CSS to style all MUI TextField components
     const style = document.createElement('style');
     style.innerHTML = `

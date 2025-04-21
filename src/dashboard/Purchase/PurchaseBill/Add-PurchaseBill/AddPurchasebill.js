@@ -63,7 +63,6 @@ let debounceTimeout;
 
 const AddPurchaseBill = () => {
 
-
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
   const [marginNetProfit, setMarginNetProfit] = useState(0);
@@ -174,7 +173,7 @@ const AddPurchaseBill = () => {
   ];
 
   const options = {
-    "Skyway": "purchase-item-import",
+  "Skyway": "purchase-item-import",
     "Pharma Byte": "pharmabyte-item-import",
     "Marg ERP": "mahalaxmi-item-import",
     "Techno Max": "techno-item-import",
@@ -199,11 +198,9 @@ const AddPurchaseBill = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
-
   const inputRefs = useRef([]);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
-
 
 
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
@@ -277,27 +274,37 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!event.altKey) return; // Exit early if Alt is not pressed
-
-      event.preventDefault(); // Prevent default browser behavior
-
-      if (event.key.toLowerCase() === "s") {
-        setBillSaveDraft("1")
-        handleSubmit();
-      }
-      else if (event.key.toLowerCase() === "g") {
-
-        handleSubmit();
-      } else if (event.key.toLowerCase() === "m") {
-        inputRefs.current[2]?.focus();
+      const key = event.key.toLowerCase();
+  
+      // Allow shortcuts only when Alt or AltGr is pressed
+      const isAltCombo = event.altKey || (event.ctrlKey && event.altKey);
+      if (!isAltCombo || event.repeat) return;
+  
+      event.preventDefault();
+  
+      switch (key) {
+        case "s":
+          setBillSaveDraft("1");
+          handleSubmit();
+          break;
+        case "g":
+          handleSubmit();
+          break;
+        case "m":
+          inputRefs.current[2]?.focus();
+          break;
+        default:
+          break;
       }
     };
-
+  
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList]); // Dependencies only affect Alt+S
+  }, [distributor, billNo, ItemPurchaseList]);
+  
+// Dependencies only affect Alt+S
 
 
   const handleKeyDown = (event, index) => {
@@ -311,6 +318,7 @@ const AddPurchaseBill = () => {
       }
     }
   };
+
   /*<================================================================================ handle popup =======================================================================> */
 
   useEffect(() => {
@@ -456,7 +464,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-
   /*<============================================================================ expiry date validation =========================================================================> */
 
   const handleExpiryDate = (event) => {
@@ -530,13 +537,41 @@ const AddPurchaseBill = () => {
   /*<============================================================================ download selected file =========================================================================> */
 
   const handleDownload = () => {
+ 
+    let fileName = "";
+    let filePath = "";
+  
+    switch (importConpany) {
+      case "Skyway":
+        fileName = "Skyway.csv";
+        filePath = "/Skyway.csv";
+        break;
+      case "Pharma Byte":
+        fileName = "Pharma Byte.csv";
+        filePath = "/Pharma Byte.csv";
+        break;
+      case "Marg ERP":
+        fileName = "Marg ERP.csv";
+        filePath = "/Marg ERP.csv";
+        break;
+      case "Techno Max":
+        fileName = "Techno Max.csv";
+        filePath = "/Techno Max.csv";
+        break;
+      default:
+        console.warn("Unknown company selected. Downloading default file.");
+        toast.error("Unknown company selected. Downloading default file.");
+        break;
+    }
+  
     const link = document.createElement("a");
-    link.href = "/purchase_add_sample.csv";
-    link.download = "purchase_add_sample.csv";
+    link.href = filePath;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+  
 
   /*<============================================================================ barcode functionality =========================================================================> */
 
@@ -999,6 +1034,7 @@ const AddPurchaseBill = () => {
   };
 
   /*<========================================================================= Add and Edit item function  ====================================================================> */
+  
   let debounce = true;
   const handleAddItem = async () => {
 
@@ -1145,7 +1181,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<========================================================================= Add new item to item master  ====================================================================> */
+  /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
 
@@ -1387,6 +1423,7 @@ const AddPurchaseBill = () => {
     setIsEditMode(true);
     setSelectedEditItemId(item.id)
     setSelectedEditItemId(item.id);
+    inputRefs.current[3]?.focus();
   };
 
   const purchaseReturnData = async () => {
@@ -1673,7 +1710,6 @@ const AddPurchaseBill = () => {
     <>
       <Header />
       <ToastContainer
-
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -2087,9 +2123,10 @@ const AddPurchaseBill = () => {
                                         setTimeout(() => {
                                           document.activeElement.blur(); // Removes focus from the input
                                         }, 0);
-                                      } else {
+                                      } else if(searchItem && selectedOption){
                                         handleKeyDown(e, 2)
-                                      }
+
+                                      } 
                                     }}
                                   />
                                 )}
@@ -2508,9 +2545,9 @@ const AddPurchaseBill = () => {
               style={{ display: "flex" }}
             >
               <label className="font-bold">Total Qty : </label>
-              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0} +
+              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0 } +&nbsp;
                 <span className="">
-                  {totalFree ? totalFree : 0} Free
+                  { totalFree ? totalFree : 0 } Free
                 </span></span>
             </div>
             <div
@@ -2826,6 +2863,7 @@ const AddPurchaseBill = () => {
                     value={importConpany}
                     onChange={(event) => setImportConpany(event.target.value)}
                     label="Select Software"
+                    autoFocus
                   >
                     {Object.keys(options).map((option) => (
                       <MenuItem key={option} value={option}>
@@ -2856,7 +2894,7 @@ const AddPurchaseBill = () => {
                 style={{ backgroundColor: "#3f6212", color: "white" }}
               >
                 <CloudDownloadIcon className="mr-2 " />
-                Download Sample File
+                Download Sample
               </Button>
             </DialogContentText>
           </DialogContent>
@@ -2985,7 +3023,7 @@ const AddPurchaseBill = () => {
                           backgroundColor: "#3f6212",
                         },
                       }}
-                      onClick={() => handleAddNewDistributor}
+                      onClick={() => handleAddNewDistributor()}
                       ref={addButtonref}
                     >
                       <ControlPointIcon className="mr-2" />

@@ -219,7 +219,7 @@ const Inventory_Reconciliation = () => {
         data.append("item_name", batchListData.item_id);
         data.append("batch", batchListData.batch);
         data.append("company", batchListData.company_id);
-        data.append("unite", batchListData.unit);
+        data.append("unit", batchListData.unit);
         data.append("expiry", batchListData.expiry_date);
         data.append("mrp", batchListData.mrp);
         data.append("stock", batchListData.stock);

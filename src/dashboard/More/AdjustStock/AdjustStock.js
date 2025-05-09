@@ -27,7 +27,7 @@ const AdjustStock = () => {
         { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 150 },
         { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
         { id: 'batch_name', label: 'Batch', minWidth: 150 },
-        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
         { id: 'expriy', label: 'Expiry', minWidth: 150 },
         { id: 'company_name', label: 'Company Name', minWidth: 150 },
         { id: 'mrp', label: 'MRP', minWidth: 150 },
@@ -304,7 +304,7 @@ const AdjustStock = () => {
         data.append('item_name', selectedItem);
         data.append('batch', batch);
         data.append('company', selectedCompany?.id);
-        data.append('unite', unit);
+        data.append('unit', unit);
         data.append('expiry', expiry);
         data.append('mrp', mrp);
         data.append('stock', stock);

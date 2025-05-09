@@ -28,7 +28,7 @@ const ItemWiseMargin = () => {
     const ItemWiseColumns = [
         { id: 'name', label: 'Item Name', minWidth: 150 },
         { id: 'category', label: 'Category', minWidth: 150 },
-        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
         { id: 'company', label: 'Company Name.', minWidth: 150 },
         { id: 'sales_count', label: 'Sale', minWidth: 150 },
         { id: 'stock', label: 'Stock', minWidth: 150 },
@@ -92,10 +92,10 @@ const ItemWiseMargin = () => {
             const total_net_gst = itemMarginData.total_net_gst;
             const net_profit = itemMarginData.total_net_profit;
 
-            const filteredData = itemMarginData?.iteam_margin_report?.map(({ name, company, sales_count, unite, category, stock, mrp, sales_amount, purches_amount, net_gst, net_profit }) => ({
+            const filteredData = itemMarginData?.iteam_margin_report?.map(({ name, company, sales_count, unit, category, stock, mrp, sales_amount, purches_amount, net_gst, net_profit }) => ({
                 ItemName: name,
                 Category: category,
-                Unit: unite,
+                Unit: unit,
                 Company_Name: company,
                 Sale: sales_count,
                 Stock: stock,

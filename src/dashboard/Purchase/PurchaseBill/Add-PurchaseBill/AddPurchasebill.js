@@ -1191,7 +1191,7 @@ const AddPurchaseBill = () => {
     }
     let formData = new FormData();
     formData.append("item_name", addItemName ? addItemName : "");
-    formData.append("unite", addUnit ? addUnit : "");
+    formData.append("unit", addUnit ? addUnit : "");
     formData.append("weightage", addUnit ? addUnit : "");
     formData.append("pack", addUnit ? "1*" + addUnit : "");
     formData.append("barcode", addBarcode ? addBarcode : "");

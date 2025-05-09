@@ -1,4 +1,4 @@
-import Header from "../../../Header"
+import Header from "../../../Header";
 import React, { useState, useRef, useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import '../../../../App.css';
@@ -368,15 +368,13 @@ const Addsale = () => {
                 try {
                     const response = await axios.post(
                         "list-customer",
-                        data,
-                        {
+                        data,{
                             // params: params,
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }
                     );
-                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     if (response.data.status === 401) {
                         history.push('/');
@@ -504,7 +502,6 @@ const Addsale = () => {
             });
 
             if (response.data.status === 200) {
-                //console.log("response===>", response.data);
                 toast.success(response.data.message);
                 setOpenAddItemPopUp(false)
             } else if (response.data.status === 400) {
@@ -522,6 +519,7 @@ const Addsale = () => {
             }
         }
     };
+    
     // const handleSearch = async (searchItem) => {
     //     let data = new FormData();
     //     data.append("search", searchItem);
@@ -562,7 +560,6 @@ const Addsale = () => {
             const allOutOfStock = items.every(item => item.stock === 0);
 
             if (allOutOfStock) {
-                // console.log('Search Item-------');
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -583,11 +580,9 @@ const Addsale = () => {
             });
 
             if (res.data) {
-                // console.log('Item Drug Group Data:', res.data.data.data);
                 if (res.data.data) {
                     const filteredItems = res.data.data.data.filter(item => item.stock > 0);
                     setItemList(filteredItems);
-                    // console.log('Filtered itemList:', filteredItems);
                 }
             }
         } catch (error) {
@@ -870,7 +865,6 @@ const Addsale = () => {
         // } else {
         //     setMaxQty(existingItem.qty);
         // }
-        console.log(item)
 
         setSelectedEditItem(item);
         setIsEditMode(true);
@@ -913,7 +907,6 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
-                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTodayLoyaltyPoint(response.data.data.today_loylti_point)
                 setTotalAmount(response.data.data.sales_amount)
@@ -997,7 +990,6 @@ const Addsale = () => {
                         // setBarcodeItemName(response?.data?.data[0]?.iteam_name);
                         // setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
                         // setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
-                        // console.log(response?.data?.data[0]?.batch_list[0], itemId)
 
                         // setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
 
@@ -1102,8 +1094,6 @@ const Addsale = () => {
     //                 Authorization: `Bearer ${token}`,
     //             },
     //         });
-    //         console.log("response", response);
-
     //         setTotalAmount(0);
     //         setUnit("");
     //         setBatch("");
@@ -1224,7 +1214,6 @@ const Addsale = () => {
                 const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) <= 1);
 
                 if (lowStockItems.length > 0) {
-                    // console.log('Low stock items:', lowStockItems);
                 }
                 if (billSaveDraft == 0 && customer.id !== 1) {
                     handleSendInvoice(customer, totalAmount, selectedDate, billNo)
@@ -1661,7 +1650,6 @@ const Addsale = () => {
 
         try {
             const response = await axios.post(url, payload);
-            console.log("Message sent successfully:", response.data);
         } catch (error) {
             console.error("Error sending message:", error);
         }
@@ -2890,4 +2878,4 @@ const Addsale = () => {
         </>
     )
 }
-export default Addsale
+export default Addsale;

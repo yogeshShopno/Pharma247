@@ -37,7 +37,7 @@ const Package = () => {
 
   const packageColumns = [
     { id: 'packging_name', label: 'Package Name', minWidth: 100 },
-    // { id: 'unite', label: 'Unit', minWidth: 100 },
+    // { id: 'unit', label: 'Unit', minWidth: 100 },
   ];
   const [packageAllData, setPackageAllData] = useState([]);
   const [page, setPage] = useState(0);
@@ -111,7 +111,7 @@ const Package = () => {
     setHeader('Edit Package');
     setButtonLabel('Update')
     setPackageName(row.packging_name);
-    const unitNames = row.unite.map(unit => unit.name);
+    const unitNames = row.unit.map(unit => unit.name);
     setUnitList(unitNames);
   }
 
@@ -151,8 +151,8 @@ const Package = () => {
     }
   };
 
-  const getUnitNames = (unite) => {
-    return unite.map(unit => unit.name).join(', ');
+  const getUnitNames = (unit) => {
+    return unit.map(unit => unit.name).join(', ');
   };
 
   const handelAddOpen = () => {
@@ -342,7 +342,7 @@ const Package = () => {
                           {packageColumns.map((column) => (
                             <td key={column.id}>
                               {item[column.id]}
-                              {/* {column.id === 'unite' ? getUnitNames(item.unite) : item[column.id]} */}
+                              {/* {column.id === 'unit' ? getUnitNames(item.unit) : item[column.id]} */}
                             </td>
                           ))}
 

@@ -91,21 +91,7 @@ const Itemmaster = () => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
-  const [error, setError] = useState({
-    searchItem: "",
-    unit: "",
-    weightage: "",
-    pack: "",
-    packaging: "",
-    selectedCompany: "",
-    selectedSuppliers: "",
-    drugGroup: "",
-    selectedCategory: "",
-    selectedFrontFile: "",
-    selectedMRPFile: "",
-    selectedBackFile: "",
-  });
-
+  const [error, setError] = useState({searchItem: "",unit: "",weightage: "",pack: "",packaging: "",selectedCompany: "",selectedSuppliers: "",drugGroup: "",selectedCategory: "",selectedFrontFile: "",selectedMRPFile: "",selectedBackFile: "",});
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -117,7 +103,7 @@ const Itemmaster = () => {
       }
     }
   };
-
+  
   const handleFileUpload = async () => {
     if (file) {
       let data = new FormData();
@@ -198,7 +184,7 @@ const Itemmaster = () => {
     );
     // Update unit options based on selected packaging
     if (selectedPackaging) {
-      setUnitOptions(selectedPackaging.unite);
+      setUnitOptions(selectedPackaging.unit);
       setUnit("");
     } else {
       setUnitOptions([]);
@@ -439,8 +425,8 @@ const Itemmaster = () => {
     let formData = new FormData();
     formData.append("item_name", searchItem ? searchItem : "");
     formData.append("packaging_id", packaging ? packaging : "");
-    formData.append("unite", unit ? unit : "");
-    formData.append("weightage", weightage ? weightage : "");
+    formData.append("old_unit", unit ? unit : "");
+    formData.append("unit", weightage ? weightage : "");
     formData.append("pack", pack ? pack : "");
     formData.append("drug_group", drugGroup ? drugGroup.id : "");
     formData.append("gst", gst ? gst : "");
@@ -773,40 +759,7 @@ const Itemmaster = () => {
                         },
                       }}
                     />
-                    {/* <TextField
-                  id="outlined-number"
-                  label="Item Name"
-                  style={{ width: '350px' }}
-                  size="small"
-                  value={item}
-                  onChange={(e) => { setItem(e.target.value) }}
-                /> */}
-                    {/* {error.item && <span style={{ color: 'red', fontSize: '14px', fontSize: '14px' }}>{error.item}</span>} */}
                   </div>
-
-
-
-                  {/* <div className="fields">
-                <label className="label">Unit</label>
-                <Select
-                  labelId="unit-dropdown-label"
-                  id="unit-dropdown"
-                  value={unit}
-                  sx={{ minWidth: '250px' }}
-                  onChange={(e) => setUnit(e.target.value)}
-                  size="small"
-                  disabled={unitOptions.length === 0}
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>Select Unit</MenuItem>
-                  {unitOptions.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </div>  */}
-
                 </div>
                 <div className="row item_fld_rw md:pt-2">
                   <div className="fields Unit_divvv itm_divv_wid">
@@ -1220,10 +1173,10 @@ const Itemmaster = () => {
                             borderColor: "rgba(0, 0, 0, 0.38) "
                           },
                           "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
+                            borderColor: "var(--color1)", 
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
+                            borderColor: "var(--color1)", 
                           },
                         },
                       }}
@@ -1234,7 +1187,7 @@ const Itemmaster = () => {
                 <div className="row item_fld_rw md:pt-2">
                   <div className="fields four_divv" style={{ width: "100%" }}>
                     <label className="label">Packaging In</label>
-                    <Select
+                     <Select
                       labelId="dropdown-label"
                       id="dropdown"
                       value={packaging}
@@ -1329,128 +1282,7 @@ const Itemmaster = () => {
 
             <div className="row border-b border-dashed " style={{ borderColor: "var(--color2)" }}></div>
 
-            {/* <div className="bg-white rounded-lg items-center mt-5 p-5" style={{
-              border: '1px solid #628a2f73',
-              boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
-              width: "100%",
-              height: '100%',
-              alignItems: "center"
-            }}>
-              <div className="row">
-                <div className="fields third_divv">
-                  <label className="label">Minimum</label>
-                  <TextField
-                    id="outlined-number"
-                    type="number"
-                    size="small"
-                    value={min}
-                    onChange={(e) => {
-                      setMin(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="fields third_divv">
-                  <label className="label">Maximum</label>
-                  <TextField
-                    id="outlined-number"
-                    type="number"
-                    size="small"
-                    value={max}
-                    onChange={(e) => {
-                      setMax(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="fields third_divv">
-                  <label className="label">Disc.%</label>
-                  <TextField
-                    id="outlined-number"
-                    
-                    size="small"
-                    type="number"
-                    value={disc}
-                    onChange={(e) => {
-                      setDisc(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="fields third_divv">
-                  <label className="label">Margin%</label>
-                  <TextField
-                    id="outlined-number"
-                
-                    size="small"
-                    type="number"
-                    value={margin}
-                    onChange={(e) => {
-                      setMargin(e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="row">
-                <div className="fields four_divv  pt-2" >
-                  <label className="label">HSN code.</label>
-                  <TextField
-                    id="outlined-number"
-                    // label="HSN code"
-                    type="number"
-                    // style={{ width: "232px" }}
-                    size="small"
-                    value={hsn_code}
-                    onChange={(e) => {
-                      sethsnCode(e.target.value);
-                    }}
-                  />
-                </div>
-
-                <div className="fields four_divv pt-2">
-                  <label className="label">Packaging In</label>
-                  <Select
-                    labelId="dropdown-label"
-                    id="dropdown"
-                    value={packaging}
-                    // sx={{ minWidth: "250px" }}
-                    onChange={handlePackagingChange}
-                    size="small"
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      Select Packaging
-                    </MenuItem>
-                    {packList.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.packging_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </div>
-
-                <div className="fields four_divv pt-2">
-                  <div
-                    style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                  >
-                    <label className="label">Category </label>
-                  </div>
-                  <Box >
-                    <FormControl fullWidth>
-                      <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={categoryList}
-                        size="small"
-                        value={selectedCategory}
-                        onChange={(e, value) => setSelectedCategory(value)}
-                        getOptionLabel={(option) => option.category_name}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select Category " />
-                        )}
-                      />
-                    </FormControl>
-                  </Box>
-                </div>
-              </div>
-            </div> */}
+          
             <div >
               <div className="row pb-2"></div>
               <div>

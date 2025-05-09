@@ -33,7 +33,7 @@ const BillItemWiseMargin = () => {
         { id: 'patient_name', label: 'Customer Name', minWidth: 110 },
         { id: 'name', label: 'Item Name', minWidth: 110 },
         { id: 'category', label: 'Category', minWidth: 110 },
-        { id: 'unite', label: 'Unit', minWidth: 110 },
+        { id: 'unit', label: 'Unit', minWidth: 110 },
         { id: 'company', label: 'Manu.', minWidth: 110 },
         { id: 'sales_count', label: 'Sale', minWidth: 110 },
         { id: 'stock', label: 'Stock', minWidth: 110 },
@@ -96,14 +96,14 @@ const BillItemWiseMargin = () => {
             const total_net_gst = billMarginData.total_net_gst;
             const net_profit = billMarginData.total_net_profit;
 
-            const filteredData = billMarginData?.bill_margin_report?.map(({ entry_by, bill_no, bill_date, patient_name, name, company, sales_count, unite, category, stock, mrp, sales_amount, purches_amount, net_gst, net_profit }) => ({
+            const filteredData = billMarginData?.bill_margin_report?.map(({ entry_by, bill_no, bill_date, patient_name, name, company, sales_count, unit, category, stock, mrp, sales_amount, purches_amount, net_gst, net_profit }) => ({
                 EntryBy: entry_by,
                 BillNo: bill_no,
                 BillDate: bill_date,
                 CustomerName: patient_name,
                 ItemName: name,
                 Category: category,
-                Unit: unite,
+                Unit: unit,
                 Company_Name: company,
                 Sale: sales_count,
                 Stock: stock,

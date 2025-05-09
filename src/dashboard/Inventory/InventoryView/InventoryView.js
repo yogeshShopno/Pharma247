@@ -294,7 +294,7 @@ const InventoryView = () => {
         let formData = new FormData();
         formData.append("id", itemAllData?.id);
         formData.append("packaging_id", packaging);
-        // formData.append("unite", unit);
+        // formData.append("unit", unit);
         // formData.append('weightage', weightage)
         // formData.append("pack", pack);
         formData.append("drug_group", drugGroup?.id);

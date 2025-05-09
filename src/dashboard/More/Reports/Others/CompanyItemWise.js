@@ -29,7 +29,7 @@ const CompanyItemWise = () => {
 
     const GstSaleRegisterColumns = [
         { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
-        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
         { id: "bill_no", label: "Bill No", minWidth: 150 },
         { id: "bill_date", label: "Bill Date", minWidth: 150 },
         { id: 'batch', label: "Batch", minWidth: 150 },
@@ -88,9 +88,9 @@ const CompanyItemWise = () => {
 
         } else {
             const total_amount = companyData.total;
-            const filteredData = companyData?.item_list?.map(({ iteam_name, unite, bill_no, bill_date, batch, free_qty, net_rate, qty, exp_dt }) => ({
+            const filteredData = companyData?.item_list?.map(({ iteam_name, unit, bill_no, bill_date, batch, free_qty, net_rate, qty, exp_dt }) => ({
                 ItemName: iteam_name,
-                Unit: unite,
+                Unit: unit,
                 BillNo: bill_no,
                 BillDate: bill_date,
                 Batch: batch,

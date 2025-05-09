@@ -162,7 +162,6 @@ const EditPurchaseBill = () => {
       const isInputFocused = inputRefs.current.some(
         (input) => input && document.activeElement === input
       );
-
       if (isInputFocused) return; // Prevent key navigation when an input is focused
 
       if (key === "ArrowDown") {
@@ -752,7 +751,7 @@ const EditPurchaseBill = () => {
     data.append("unit_id", unit);
     data.append("hsn_code", HSN);
     data.append("random_number", randomNumber);
-    data.append("unite", !unit ? 0 : unit);
+    data.append("unit", !unit ? 0 : unit);
     data.append("batch_number", !batch ? 0 : batch);
     data.append("expiry", !expiryDate ? 0 : expiryDate);
     data.append("mrp", !mrp ? 0 : mrp);

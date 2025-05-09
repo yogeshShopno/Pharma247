@@ -38,7 +38,7 @@ const Stock_AdjustMent_Report = () => {
         { id: 'adjustment_date', label: 'Adjustment Date', minWidth: 10 },
         { id: 'iteam_name', label: 'Item Name', minWidth: 150 },
         { id: 'batch_name', label: 'Batch', minWidth: 150 },
-        { id: 'unite', label: 'Unit', minWidth: 150 },
+        { id: 'unit', label: 'Unit', minWidth: 150 },
         { id: 'expriy', label: 'Expiry', minWidth: 150 },
         { id: 'company_name', label: 'Company Name', minWidth: 150 },
         { id: 'mrp', label: 'MRP', minWidth: 150 },
@@ -103,7 +103,7 @@ const Stock_AdjustMent_Report = () => {
         } else {
             // const total = adjustStockListData?.purches_return_total;
 
-            const filteredData = adjustStockListData?.map(({ adjusted_by, adjustment_date, iteam_name, batch_name, unite, expriy, company_name, mrp, stock, stock_adjust, remaining_stock }) => ({
+            const filteredData = adjustStockListData?.map(({ adjusted_by, adjustment_date, iteam_name, batch_name, unit, expriy, company_name, mrp, stock, stock_adjust, remaining_stock }) => ({
                 AdjustedBy: adjusted_by,
                 AdjustDate: adjustment_date,
                 ItemName: iteam_name,

@@ -678,7 +678,7 @@ const InventoryList = () => {
     data.append("item_name", selectedItem?.id);
     data.append("batch", batch);
     data.append("company", selectedCompany?.id);
-    data.append("unite", unit);
+    data.append("unit", unit);
     data.append("expiry", expiry);
     data.append("mrp", mrp);
     data.append("stock", stock);
@@ -2288,7 +2288,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                               {item?.iteam_name?.toUpperCase()}
                               <div className="text-gray-400 font-normal" style={{ paddingBottom: "3px" }}>
                                 <span style={{ fontSize: "14px" }}>
-                                  Pack | 1*{item.weightage + " " + item.unit}
+                                  Pack | 1*{item.unit + " " + item.old_unit}
                                 </span>
                               </div>
                             </div>

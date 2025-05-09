@@ -100,8 +100,9 @@ import { ThemeProvider } from '@material-tailwind/react';
 import theme from './theme';
 import { useEffect } from 'react';
 import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
-import OnlineDashboard from './dashboard/OnlineDashboard';
+
 import LoginSignup from './componets/Login/LoginSignup';
+import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 
 function App() {
   const goFullScreen = () => {

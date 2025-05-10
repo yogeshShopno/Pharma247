@@ -1,4 +1,4 @@
-import Header from "../../../Header";
+import Header from "../../../Header"
 import React, { useState, useRef, useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import '../../../../App.css';
@@ -368,13 +368,15 @@ const Addsale = () => {
                 try {
                     const response = await axios.post(
                         "list-customer",
-                        data,{
+                        data,
+                        {
                             // params: params,
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }
                     );
+                    // console.log('response.data.data :>> ', response.data.data);
                     setCustomerDetails(response.data.data);
                     if (response.data.status === 401) {
                         history.push('/');
@@ -502,6 +504,7 @@ const Addsale = () => {
             });
 
             if (response.data.status === 200) {
+                //console.log("response===>", response.data);
                 toast.success(response.data.message);
                 setOpenAddItemPopUp(false)
             } else if (response.data.status === 400) {
@@ -519,7 +522,6 @@ const Addsale = () => {
             }
         }
     };
-    
     // const handleSearch = async (searchItem) => {
     //     let data = new FormData();
     //     data.append("search", searchItem);
@@ -560,6 +562,7 @@ const Addsale = () => {
             const allOutOfStock = items.every(item => item.stock === 0);
 
             if (allOutOfStock) {
+                // console.log('Search Item-------');
                 fetchItemDrugGroup(searchItem);
             }
 
@@ -580,9 +583,11 @@ const Addsale = () => {
             });
 
             if (res.data) {
+                // console.log('Item Drug Group Data:', res.data.data.data);
                 if (res.data.data) {
                     const filteredItems = res.data.data.data.filter(item => item.stock > 0);
                     setItemList(filteredItems);
+                    // console.log('Filtered itemList:', filteredItems);
                 }
             }
         } catch (error) {
@@ -865,6 +870,7 @@ const Addsale = () => {
         // } else {
         //     setMaxQty(existingItem.qty);
         // }
+        console.log(item)
 
         setSelectedEditItem(item);
         setIsEditMode(true);
@@ -907,6 +913,7 @@ const Addsale = () => {
                 },
             }
             ).then((response) => {
+                // console.log('response-------- :>> ', response.data.data.sales_item);
                 setItemSaleList(response.data.data);
                 setTodayLoyaltyPoint(response.data.data.today_loylti_point)
                 setTotalAmount(response.data.data.sales_amount)
@@ -990,6 +997,7 @@ const Addsale = () => {
                         // setBarcodeItemName(response?.data?.data[0]?.iteam_name);
                         // setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
                         // setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
+                        // console.log(response?.data?.data[0]?.batch_list[0], itemId)
 
                         // setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
 
@@ -1094,6 +1102,8 @@ const Addsale = () => {
     //                 Authorization: `Bearer ${token}`,
     //             },
     //         });
+    //         console.log("response", response);
+
     //         setTotalAmount(0);
     //         setUnit("");
     //         setBatch("");
@@ -1214,6 +1224,7 @@ const Addsale = () => {
                 const lowStockItems = ItemSaleList.sales_item.filter(item => parseFloat(item.total_stock) <= 1);
 
                 if (lowStockItems.length > 0) {
+                    // console.log('Low stock items:', lowStockItems);
                 }
                 if (billSaveDraft == 0 && customer.id !== 1) {
                     handleSendInvoice(customer, totalAmount, selectedDate, billNo)
@@ -1650,6 +1661,7 @@ const Addsale = () => {
 
         try {
             const response = await axios.post(url, payload);
+            console.log("Message sent successfully:", response.data);
         } catch (error) {
             console.error("Error sending message:", error);
         }
@@ -1675,8 +1687,8 @@ const Addsale = () => {
                 />
                 <div className="" style={{ height: 'calc(100vh - 225px)', padding: "0px 20px 0px", overflow: 'auto' }}>
                     <div>
-                        <div className='py-3 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
-                            <div style={{ display: 'flex', gap: '7px', alignItems: "center" }}>
+                        <div className='py-5 header_sale_divv' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
+                            <div style={{ display: 'flex', gap: '7px', alignItems: "center", padding:"0px 35px" }}>
                                 <span style={{ color: 'var(--color2)', fontWeight: 700, fontSize: '20px', cursor: 'pointer', width: "50px" }} onClick={() => { history.push('/salelist') }} >Sales</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', fontWeight: 700, fontSize: '20px' }}>New</span>
@@ -1684,10 +1696,10 @@ const Addsale = () => {
                                     // onClick={handleSendInvoice}
                                     className="w-6 h-6 secondary hover-yellow" />
                             </div>
-                            <div className="headerList">
+                            <div className="headerList" style={{padding:"0px 35px"}}>
                                 <Button
                                     variant="contained"
-                                    style={{ backgroundColor: "var(--color1)", whiteSpace: "nowrap" }}
+                                    style={{ backgroundColor: "#3466C3", whiteSpace: "nowrap" }}
                                     className="payment_btn_divv"
                                     onClick={handelAddItemOpen}
                                 >
@@ -1739,7 +1751,7 @@ const Addsale = () => {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setIsOpen(!isOpen)}> Submit</Button>
+                                <Button variant="contained" className="payment_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setIsOpen(!isOpen)}> Submit</Button>
                                 {isOpen && (
                                     <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
                                         <ul className="transition-all ">
@@ -1774,8 +1786,9 @@ const Addsale = () => {
 
                         </div>
                         <div>
-                            <div className="firstrow flex" >
-                                <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}                                >
+                            <div className="firstrow">
+                              <div className="row gap-3 justify-content-between mb-5 pb-4">
+                              <div className="detail custommedia col-12 col-md-3" style={{ display: 'flex', flexDirection: 'column', width: '100%',backgroundColor:"#F5F5F5",padding:"30px",borderRadius:"15px" }}                                >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <FaPlusCircle className="icon primary" onClick={() => { setOpenCustomer(true); }} /></span>
 
                                     <Autocomplete
@@ -1835,7 +1848,7 @@ const Addsale = () => {
                                     />
                                     {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
                                 </div>
-                                <div className="detail custommedia" style={{ width: '100%' }}>
+                                <div className="detail custommedia col-12 col-md-3" style={{ width: '100%',backgroundColor:"#F5F5F5",padding:"30px",borderRadius:"15px" }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Doctor <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <Autocomplete
                                         value={doctor}
@@ -1899,20 +1912,19 @@ const Addsale = () => {
 
                                 </div>
                               
-                                <div className="detail custommedia" >
+                                <div className="detail custommedia col-12 col-md-3" style={{width: '100%', backgroundColor:"#F5F5F5",padding:"30px",borderRadius:"15px"}}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Select Date <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
 
                                     <DatePicker
-                                        className="custom-datepicker "
+                                        className="custom-datepicker w-100"
                                         selected={selectedDate}
                                         variant="outlined"
                                         onChange={(newDate) => setSelectedDate(newDate)}
                                         dateFormat="dd/MM/yyyy"
                                         filterDate={(date) => !isDateDisabled(date)}
-
                                     />
                                 </div>
-                                <div className="detail custommedia" >
+                                <div className="detail custommedia col-12 col-md-3" style={{width: '100%', backgroundColor:"#F5F5F5",padding:"30px",borderRadius:"15px"}} >
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Scan Barcode <FaPlusCircle className="icon primary" onClick={() => { setOpenAddPopUp(true); setUnsavedItems(true); }} /></span>
                                     <TextField
                                         id="outlined-number"
@@ -1922,38 +1934,38 @@ const Addsale = () => {
                                         placeholder="scan barcode"
                                         // inputRef={inputRef10}
                                         // onKeyDown={handleKeyDown}
-                                        sx={{ width: "250px" }}
+                                        sx={{ width: "100%",backgroundColor:"white" }}
                                         onChange={(e) => {
                                             setBarcode(e.target.value)
                                         }}/>
 
                                 </div>
+                              </div>
                                 <div className="scroll-two">
                                     <table className="saleTable">
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
-                                                <th className="w-1/4">Item Name</th>
-                                                <th >Unit</th>
-                                                <th >Batch</th>
-                                                <th >Expiry</th>
-                                                <th >MRP</th>
-                                                <th>Base</th>
-                                                <th >GST%</th>
-                                                <th >QTY </th>
-                                                <th >Loc.</ th>
-                                                <th> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
+                                            <tr style={{ background: '#3B6800' }}>
+                                                <th className="w-1/4" style={{color:"white", padding:"10px 15px"}}>Item Name</th>
+                                                <th style={{color:"white", textAlign:"center"}}>Unit</th>
+                                                <th style={{color:"white", textAlign:"center"}}>Batch</th>
+                                                <th style={{color:"white", textAlign:"center"}}>Expiry</th>
+                                                <th style={{color:"white", textAlign:"center"}}>MRP</th>
+                                                <th style={{color:"white", textAlign:"center"}}>Base</th>
+                                                <th style={{color:"white", textAlign:"center"}}>GST%</th>
+                                                <th style={{color:"white", textAlign:"center"}}>QTY </th>
+                                                <th style={{color:"white", textAlign:"center"}}>Loc.</ th>
+                                                <th style={{color:"white", textAlign:"center"}}> <div style={{ display: "flex", flexWrap: "nowrap" }}>Order
                                                     <Tooltip title="Please Enter only (o)" arrow>
-                                                        <Button style={{ justifyContent: 'left' }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
+                                                        <Button style={{ justifyContent: 'left',color:"white" }}><GoInfo className='absolute' style={{ fontSize: "1rem" }} /></Button>
                                                     </Tooltip>
                                                 </div>
                                                 </th>
-
-                                                <th >Amount </th>
+                                                <th style={{color:"white", padding:"10px 15px", textAlign:"center"}}>Amount </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
-                                                <td >
+                                                <td style={{padding:"10px", textAlign:"center"}}>
 
                                                     <div className="flex gap-5 search_fld_divv" style={{ width: '100%' }} >
                                                         <table style={{ maxWidth: '100%', width: '100%' }} >
@@ -2103,7 +2115,7 @@ const Addsale = () => {
 
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
 
                                                     <TextField
                                                         id="outlined-number"
@@ -2117,7 +2129,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setUnit(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         id="outlined-number"
                                                         sx={{ width: '130px' }}
@@ -2127,7 +2139,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setBatch(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         id="outlined-number"
                                                         disabled
@@ -2140,7 +2152,7 @@ const Addsale = () => {
                                                         placeholder="MM/YY"
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         disabled
                                                         id="outlined-number"
@@ -2153,7 +2165,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setMRP(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
@@ -2166,7 +2178,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setBase(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         id="outlined-number"
                                                         type="number"
@@ -2179,7 +2191,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setGst(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
@@ -2201,7 +2213,7 @@ const Addsale = () => {
                                                 </td>
 
 
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         id="outlined-number"
                                                         size="small"
@@ -2213,7 +2225,7 @@ const Addsale = () => {
                                                         onChange={(e) => { setLoc(e.target.value) }}
                                                     />
                                                 </td>
-                                                <td>
+                                                <td style={{padding:"10px", textAlign:"center"}}>
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-number"
@@ -2237,7 +2249,7 @@ const Addsale = () => {
                                                         }}
                                                     />
                                                 </td>
-                                                <td className="total " >{itemAmount}</td>
+                                                <td className="total " style={{padding:"10px", textAlign:"center"}}>{itemAmount}</td>
                                             </tr>
                                             <tr style={{ borderBottom: '1px solid lightgray' }}>
                                                 <td>
@@ -2252,7 +2264,7 @@ const Addsale = () => {
 
                                         </tbody>
                                     </table>
-                                    <table className="p-30 border border-indigo-600 w-full border-collapse custom-table" ref={tableRef1} tabIndex={0}>
+                                    <table className="p-30 w-full border-collapse custom-table" ref={tableRef1} tabIndex={0} style={{background:"#F5F5F5", padding:"10px 15px"}}>
                                         <tbody>
                                             {ItemSaleList?.sales_item?.map((item, index) => (
                                                 <tr key={item.id} style={{ whiteSpace: 'nowrap' }}
@@ -2268,12 +2280,12 @@ const Addsale = () => {
                                                         whiteSpace: 'nowrap',
                                                     }}>
                                                         <BorderColorIcon
-                                                            style={{ color: "var(--color1)" }}
+                                                            style={{ color: "#969100" }}
                                                             color="primary" className="cursor-pointer" onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleEditClick(item)
                                                             }} />
-                                                        <DeleteIcon className="delete-icon" onClick={(e) => {
+                                                        <DeleteIcon className="delete-icon" style={{color:"#F20000"}} onClick={(e) => {
                                                             e.stopPropagation();
                                                             deleteOpen(item.id)
                                                         }} />

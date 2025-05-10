@@ -260,7 +260,7 @@ const Header = () => {
                       <div>
                         <Link to="/itemmaster">
                           <button
-                            className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
+                            className="text-white font-medium letterspace0_5 py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                             data-toggle="dropdown"
                           >
                             <span className="mr-1">Item master</span>
@@ -272,7 +272,7 @@ const Header = () => {
                     <div>
                       <Link to="/inventory">
                         <button
-                          className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md  primhover inline-flex items-center"
+                          className="text-white font-medium letterspace0_5 py-2 px-4 transition-all  primhover hover:rounded-md  primhover inline-flex items-center"
                           data-toggle="dropdown"
                         >
                           <span href="" className="mr-1">
@@ -284,7 +284,7 @@ const Header = () => {
                     </div>
                     <div className="dropdown relative ">
                       <button
-                        className="text-white font-semibold py-2 px-4    primhover hover:rounded-md primhover  inline-flex items-center"
+                        className="text-white font-medium letterspace0_5 py-2 px-4    primhover hover:rounded-md primhover  inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1 ">Purchase</span>
@@ -364,7 +364,7 @@ const Header = () => {
                     </div>
                     <div className="dropdown relative">
                       <button
-                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
+                        className="text-white font-medium letterspace0_5 py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1">Sales</span>
@@ -426,7 +426,7 @@ const Header = () => {
                       <Link to="/OrderList">
                         <span
                           href=""
-                          className="text-white font-semibold py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
+                          className="text-white font-medium letterspace0_5 py-2  primhover  px-4 transition-all  hover:rounded-md inline-flex items-center"
                         >
                           Order List
                         </span>
@@ -437,7 +437,7 @@ const Header = () => {
                     {/* {permissions.some(permission => permission["adjust stock create"]) && */}
                     <div className="dropdown relative">
                       <button
-                        className="text-white font-semibold py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
+                        className="text-white font-medium letterspace0_5 py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                         data-toggle="dropdown"
                       >
                         <span className="mr-1">Mores</span>

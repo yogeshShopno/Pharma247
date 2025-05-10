@@ -1,64 +1,93 @@
-import React, { useEffect, useState } from 'react';
-import Header from './Header';
-import Box from '@mui/material/Box';
-import axios from 'axios';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuItem from '@mui/material/MenuItem';
+import React, { useEffect, useState } from "react";
+import Header from "./Header";
+import Box from "@mui/material/Box";
+import axios from "axios";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import MenuItem from "@mui/material/MenuItem";
 // import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import Tab from "@mui/material/Tab";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import TabContext from "@mui/lab/TabContext";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
 import { GoInfo } from "react-icons/go";
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 // import { FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import Loader from '../componets/loader/Loader';
-import { encryptData } from '../componets/cryptoUtils';
+import Loader from "../componets/loader/Loader";
+import { encryptData } from "../componets/cryptoUtils";
 // import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import stockByPTR from '../Image/ptr.jpg'
 // import stockByPTROne from '../Image/stockbyptr.png'
 // import stockByMRP from '../Image/mrp.jpg'
 // import stockByMRPOne from '../Image/stockbymrp.png'
-import stockBySales from '../Image/sales.png'
-import stockByPurchase from '../Image/purchase.png'
-import stockByDistributor from '../Image/distributor.png'
-import stockByCustomer from '../Image/customer.png'
-import { Card } from 'flowbite-react';
+import stockBySales from "../Image/sales.png";
+import stockByPurchase from "../Image/purchase.png";
+import stockByDistributor from "../Image/distributor.png";
+import stockByCustomer from "../Image/customer.png";
+import { Card } from "flowbite-react";
 // import { PieChart } from 'react-minimal-pie-chart';
 // import { PieChart } from '@mui/x-charts/PieChart';
 // import DonutChart from './Chart/DonutChart';
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 // import { PieChart } from '@mui/x-charts'
 // import { Tooltip as RechartsTooltip } from 'recharts';
-import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 // import BarChartIcon from '@mui/icons-material/BarChart';
 // import ListIcon from '@mui/icons-material/List';
 const Dashboard = () => {
-
   // const history = useHistory()
 
   const token = localStorage.getItem("token");
-  const staffList = [{ id: 'today', value: 'Today' }, { id: 'yesterday', value: 'Yesterday' }, { id: '7_day', value: 'Last 7 Days' }, { id: '30_day', value: 'Last 30 Days' }]
-  const expiryList = [{ id: 'expired', value: 'Expired' }, { id: 'next_month', value: 'Next Month' }, { id: 'next_two_month', value: 'Next 2 Month' }, { id: 'next_three_month', value: 'Next 3 Month' }]
-  const pieChart = [{ id: 1, value: 'sales' }, { id: 0, value: 'purchase' }]
-  const types = [{ id: 1, value: 'sales' }, { id: 0, value: 'purchase' },]
-  const [linechartValue, setLinechartValue] = useState('Today')
-  const [staffListValue, setStaffListValue] = useState('7_day')
-  const [typeValue, settypeValue] = useState('7_day')
-  const [expiredValue, setExpiredValue] = useState('expired')
-  const [record, setRecord] = useState()
-  const [distributor, setDistributor] = useState([])
-  const [billData, setBilldata] = useState([])
-  const [customer, setCustomer] = useState([])
-  const [expiry, setExpiry] = useState([])
+  const staffList = [
+    { id: "today", value: "Today" },
+    { id: "yesterday", value: "Yesterday" },
+    { id: "7_day", value: "Last 7 Days" },
+    { id: "30_day", value: "Last 30 Days" },
+  ];
+  const expiryList = [
+    { id: "expired", value: "Expired" },
+    { id: "next_month", value: "Next Month" },
+    { id: "next_two_month", value: "Next 2 Month" },
+    { id: "next_three_month", value: "Next 3 Month" },
+  ];
+  const pieChart = [
+    { id: 1, value: "sales" },
+    { id: 0, value: "purchase" },
+  ];
+  const types = [
+    { id: 1, value: "sales" },
+    { id: 0, value: "purchase" },
+  ];
+  const [linechartValue, setLinechartValue] = useState("Today");
+  const [staffListValue, setStaffListValue] = useState("7_day");
+  const [typeValue, settypeValue] = useState("7_day");
+  const [expiredValue, setExpiredValue] = useState("expired");
+  const [record, setRecord] = useState();
+  const [distributor, setDistributor] = useState([]);
+  const [billData, setBilldata] = useState([]);
+  const [customer, setCustomer] = useState([]);
+  const [expiry, setExpiry] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pieChartvalue, setpieChartValue] = useState(0)
-  const [value, setValue] = useState(1)
-  const [data, setData] = useState([])
+  const [pieChartvalue, setpieChartValue] = useState(0);
+  const [value, setValue] = useState(1);
+  const [data, setData] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState();
   const [useLoyaltyPoints, setUseLoyaltyPoints] = useState();
   const [switchValue, setSwitchValue] = useState(false);
@@ -66,7 +95,7 @@ const Dashboard = () => {
   const [reRender, setreRender] = useState(0);
   const [barChartData, setBarChartData] = useState([]);
 
-  const [tickFontSize, setTickFontSize] = useState('2px');
+  const [tickFontSize, setTickFontSize] = useState("2px");
 
   useEffect(() => {
     const handleResize = () => {
@@ -84,10 +113,10 @@ const Dashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   const datas = [
-    { label: 'Issued', value: 30 },
-    { label: 'Redeemed', value: 10 },
+    { label: "Issued", value: 30 },
+    { label: "Redeemed", value: 10 },
     // { label: 'Redeemed', value: useLoyaltyPoints || 10 },
-    { label: 'Total Loyalty Points', value: 10 },
+    { label: "Total Loyalty Points", value: 10 },
     // { label: 'Total Loyalty Points', value: loyaltyPoints || 10 },
   ];
 
@@ -99,7 +128,7 @@ const Dashboard = () => {
   const generateYAxisTicks = (data) => {
     if (!data.length) return [];
 
-    const maxBalance = Math.max(...data.map(item => item.balance));
+    const maxBalance = Math.max(...data.map((item) => item.balance));
     const interval = Math.ceil(maxBalance / 5); // Divide max value into 5 equal parts
 
     return Array.from({ length: 6 }, (_, i) => i * interval);
@@ -107,16 +136,32 @@ const Dashboard = () => {
 
   const lineHandleChange = (event, newValue) => {
     setLinechartValue(newValue);
-    const selectedData = record?.chart.find(e => e.title === newValue);
+    const selectedData = record?.chart.find((e) => e.title === newValue);
     if (selectedData) {
       setBarChartData([
-        { name: 'Sales', value: selectedData.sales_total || 0, fill: '#00AEEF' },
+        {
+          name: "Sales",
+          value: selectedData.sales_total || 0,
+          fill: "#00AEEF",
+        },
         // { name: 'Sales Count', value: selectedData.sales_count || 0 },
-        { name: 'Sales Return', value: selectedData.sales_return_total || 0, fill: '#00A651' },
+        {
+          name: "Sales Return",
+          value: selectedData.sales_return_total || 0,
+          fill: "#00A651",
+        },
         // { name: 'Sales Return Count', value: selectedData.sales_return_count || 0 },
-        { name: 'Purchases', value: selectedData.purchase_total || 0, fill: '#FFEB3B' },
+        {
+          name: "Purchases",
+          value: selectedData.purchase_total || 0,
+          fill: "#FFEB3B",
+        },
         // { name: 'Purchase Count', value: selectedData.purchase_count || 0 },
-        { name: 'Purchases Return', value: selectedData.purchase_return_total || 0, fill: '#E53935' },
+        {
+          name: "Purchases Return",
+          value: selectedData.purchase_return_total || 0,
+          fill: "#E53935",
+        },
         // { name: 'Purchases Return Count', value: selectedData.purchase_return_count || 0 },
       ]);
       setRecord({
@@ -135,36 +180,33 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (reRender < 2) {
-
       const timeout = setTimeout(() => {
         setreRender(reRender + 1);
       }, 100);
 
       return () => clearTimeout(timeout);
     }
-
   }, [reRender]);
 
   const handlechange = (event, newValue) => {
     setValue(newValue);
-  }
+  };
 
   const handlestaffTabchange = (event, newValue) => {
     setpieChartValue(newValue);
-  }
+  };
 
   const staffListHandlechange = (event) => {
-    setStaffListValue(event.target.value)
-  }
+    setStaffListValue(event.target.value);
+  };
 
   const typeHandlechange = (event) => {
-    settypeValue(event.target.value)
-
-  }
+    settypeValue(event.target.value);
+  };
 
   const lineHandleChanges = (event, newValue) => {
     setLinechartValue(newValue);
-    const selectedData = record?.chart.find(e => e.title === newValue);
+    const selectedData = record?.chart.find((e) => e.title === newValue);
     if (selectedData) {
       setRecord({
         ...record,
@@ -183,88 +225,82 @@ const Dashboard = () => {
   useEffect(() => {
     dashboardData();
     userPermission();
-
-  }, [typeValue, value, expiredValue, staffListValue, pieChartvalue])
+  }, [typeValue, value, expiredValue, staffListValue, pieChartvalue]);
 
   const dashboardData = async () => {
-
     let data = new FormData();
     const params = {
       type: value,
       bill_day: typeValue,
       expired: expiredValue,
       staff_bill_day: staffListValue,
-      staff_overview_count: pieChartvalue
+      staff_overview_count: pieChartvalue,
     };
     try {
-      await axios.post("dashbord?", data, {
-        params: params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      }
-      ).then((response) => {
-        setIsLoading(false)
-        const initialData = response.data.data;
-        setRecord(initialData);
-        setIsLoading(false);
-        const todayData = initialData.chart.find(e => e.title === 'Today');
-        if (todayData) {
-          setRecord({
-            ...initialData,
-            salesmodel_total: todayData.sales_total,
-            salesmodel_total_count: todayData.sales_count,
-            purchesmodel_total: todayData.purchase_total,
-            purchesmodel_total_count: todayData.purchase_count,
-            salesreturn_total: todayData.sales_return_total,
-            salesreturn_total_count: todayData.sales_return_count,
-            purchesreturn_total: todayData.purchase_return_total,
-            purchesreturn_total_count: todayData.purchase_return_count,
-          });
-        }
-        const billData = value === 0 ? initialData.purches : initialData.sales;
+      await axios
+        .post("dashbord?", data, {
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setIsLoading(false);
+          const initialData = response.data.data;
+          setRecord(initialData);
+          setIsLoading(false);
+          const todayData = initialData.chart.find((e) => e.title === "Today");
+          if (todayData) {
+            setRecord({
+              ...initialData,
+              salesmodel_total: todayData.sales_total,
+              salesmodel_total_count: todayData.sales_count,
+              purchesmodel_total: todayData.purchase_total,
+              purchesmodel_total_count: todayData.purchase_count,
+              salesreturn_total: todayData.sales_return_total,
+              salesreturn_total_count: todayData.sales_return_count,
+              purchesreturn_total: todayData.purchase_return_total,
+              purchesreturn_total_count: todayData.purchase_return_count,
+            });
+          }
+          const billData =
+            value === 0 ? initialData.purches : initialData.sales;
 
-        const formattedData = initialData.staff_overview.map(item => ({
-          label: item.lable,
-          value: item.value
-        }));
+          const formattedData = initialData.staff_overview.map((item) => ({
+            label: item.lable,
+            value: item.value,
+          }));
 
-        setData(formattedData);
+          setData(formattedData);
 
-        setBilldata(billData);
-        setCustomer(initialData?.top_customer)
-        setExpiry(initialData?.expiring_iteam)
-        setDistributor(initialData?.top_distributor)
-        setLoyaltyPoints(initialData?.loyalti_point_all_customer
-        )
-        setUseLoyaltyPoints(initialData?.loyalti_point_use_all_customer)
-
-      })
-
+          setBilldata(billData);
+          setCustomer(initialData?.top_customer);
+          setExpiry(initialData?.expiring_iteam);
+          setDistributor(initialData?.top_distributor);
+          setLoyaltyPoints(initialData?.loyalti_point_all_customer);
+          setUseLoyaltyPoints(initialData?.loyalti_point_use_all_customer);
+        });
     } catch (error) {
       setIsLoading(false);
     }
-  }
+  };
 
   const userPermission = async () => {
     let data = new FormData();
     try {
-      await axios.post("user-permission", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      }
-      ).then((response) => {
-        const permission = response.data.data;
-        const encryptedPermission = encryptData(permission);
-        localStorage.setItem('Permission', encryptedPermission);
-      })
-
-    }
-    catch (error) {
-
-    }
-  }
+      await axios
+        .post("user-permission", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const permission = response.data.data;
+          const encryptedPermission = encryptData(permission);
+          localStorage.setItem("Permission", encryptedPermission);
+        });
+    } catch (error) {}
+  };
 
   // const handleSwitchChange = (event) => {
   //   setSwitchValue(event.target.checked);
@@ -295,152 +331,255 @@ const Dashboard = () => {
     return Array.from({ length: 6 }, (_, i) => i * step);
   };
   const pieChartTabs = [
-    { id: 'sales', value: 'Sales' },
-    { id: 'purchase', value: 'Purchase' },
+    { id: "sales", value: "Sales" },
+    { id: "purchase", value: "Purchase" },
   ];
 
   // Static data for tables
   const staticData = {
     sales: [
-      { name: 'John Doe', amount: 3000 },
-      { name: 'Alice Smith', amount: 2000 },
-      { name: 'David Lee', amount: 1500 },
-      { name: 'Maria Green', amount: 1800 },
-      { name: 'Kevin Hart', amount: 1200 },
+      { name: "John Doe", amount: 3000 },
+      { name: "Alice Smith", amount: 2000 },
+      { name: "David Lee", amount: 1500 },
+      { name: "Maria Green", amount: 1800 },
+      { name: "Kevin Hart", amount: 1200 },
     ],
     purchase: [
-      { name: 'Emma Stone', amount: 2500 },
-      { name: 'Olivia Brown', amount: 2200 },
-      { name: 'Liam Johnson', amount: 1700 },
-      { name: 'Sophia Clark', amount: 1400 },
-      { name: 'Noah Davis', amount: 1900 },
+      { name: "Emma Stone", amount: 2500 },
+      { name: "Olivia Brown", amount: 2200 },
+      { name: "Liam Johnson", amount: 1700 },
+      { name: "Sophia Clark", amount: 1400 },
+      { name: "Noah Davis", amount: 1900 },
     ],
   };
   return (
-    <div >
+    <div>
       <div>
         <Header key={reRender} />
 
-        {isLoading ? <div className="loaderdash">
-          <Loader />
-        </div> :
-          <div className='p-2' style={{ background: 'rgb(231 230 230 / 36%)', height: '100%' }}>
-            <div className='dsh_card_chart mb-3 pb-3 py-1 py-3 rounded-lg row gap-7 p-4'>
-              <div className="col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+        {isLoading ? (
+          <div className="loaderdash">
+            <Loader />
+          </div>
+        ) : (
+          <div
+            className="p-2 paddin12-8"
+            style={{ background: "rgb(231 230 230 / 36%)", height: "100%" }}
+          >
+            <div className="dsh_card_chart grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-3 px-4 py-3 rounded-lg">
+              <div
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                style={{ width: "100%" }}
+              >
                 <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">Total Sales</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
+                  <span className="text-gray-600 dark:text-gray-500 text-lg">
+                    Total Sales
+                  </span>
+                  <div className="text-3xl font-bold text-gray-900">
+                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                  </div>
+                  <span className="text-green-600 text-lg font-medium">
+                    ↑ 60.00% from last month
+                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
-                  <img src={stockBySales} className="w-full h-full object-contain" />
+                  <img
+                    src={stockBySales}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
-              <div className="col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+              <div
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                style={{ width: "100%" }}
+              >
                 <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">Total Purchase</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
+                  <span className="text-gray-600 dark:text-gray-500 text-lg">
+                    Total Purchase
+                  </span>
+                  <div className="text-3xl font-bold text-gray-900">
+                    Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
+                  </div>
+                  <span className="text-green-600 text-lg font-medium">
+                    ↑ 60.00% from last month
+                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
-                  <img src={stockByPurchase} className="w-full h-full object-contain" />
+                  <img
+                    src={stockByPurchase}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
-              <div className="col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+              <div
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                style={{ width: "100%" }}
+              >
                 <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">Total Customer</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
+                  <span className="text-gray-600 dark:text-gray-500 text-lg">
+                    Total Customer
+                  </span>
+                  <div className="text-3xl font-bold text-gray-900">
+                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                  </div>
+                  <span className="text-green-600 text-lg font-medium">
+                    ↑ 60.00% from last month
+                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
-                  <img src={stockByCustomer} className="w-full h-full object-contain" />
+                  <img
+                    src={stockByCustomer}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
-              <div className="col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "100%" }}>
+              <div
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                style={{ width: "100%" }}
+              >
                 <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">Total Distributor</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
+                  <span className="text-gray-600 dark:text-gray-500 text-lg">
+                    Total Distributor
+                  </span>
+                  <div className="text-3xl font-bold text-gray-900">
+                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                  </div>
+                  <span className="text-green-600 text-lg font-medium">
+                    ↑ 60.00% from last month
+                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
-                  <img src={stockByDistributor} className="w-full h-full object-contain" />
+                  <img
+                    src={stockByDistributor}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
             </div>
-            <div className='dsh_card_chart mb-3 pb-3 py-1 py-3 rounded-lg row gap-7 p-4'>
-              <div className=" col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "46%" }}>
-                <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">STOCK BY PTR</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
-                </div>
-                {/* <div className="w-24 h-24 flex-shrink-0">
+            <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-2 gap-6 mb-3 px-4 py-3 rounded-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-3 h-full rounded-lg">
+                <div
+                  className=" bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 h-full"
+                >
+                  <div className="flex flex-col gap-2">
+                    <span className="text-gray-600 dark:text-gray-500 text-lg">
+                      STOCK BY PTR
+                    </span>
+                    <div className="text-3xl font-bold text-gray-900">
+                      Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    </div>
+                    <span className="text-green-600 text-lg font-medium">
+                      ↑ 60.00% from last month
+                    </span>
+                  </div>
+                  {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockBySales} className="w-full h-full object-contain" />
                 </div> */}
-              </div>
-              <div className=" col-md-3 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6" style={{ width: "46%" }}>
-                <div className="flex flex-col gap-2">
-                  <span className="text-gray-600 dark:text-gray-500 text-lg">STOCK BY MRP</span>
-                  <div className="text-3xl font-bold text-gray-900">Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}</div>
-                  <span className="text-green-600 text-lg font-medium">↑ 60.00% from last month</span>
                 </div>
-                {/* <div className="w-24 h-24 flex-shrink-0">
+                <div
+                  className=" bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 h-full"
+                >
+                  <div className="flex flex-col gap-2">
+                    <span className="text-gray-600 dark:text-gray-500 text-lg">
+                      STOCK BY MRP
+                    </span>
+                    <div className="text-3xl font-bold text-gray-900">
+                      Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
+                    </div>
+                    <span className="text-green-600 text-lg font-medium">
+                      ↑ 60.00% from last month
+                    </span>
+                  </div>
+                  {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockByPurchase} className="w-full h-full object-contain" />
                 </div> */}
+                </div>
               </div>
-              <div className="flex flex-col gap-5 md:flex-row col-md-6" style={{ width: "100%" }}>
+              <div
+                className="flex flex-col gap-5 md:flex-row col-md-6"
+                style={{ width: "100%" }}
+              >
                 <div className="w-full bg-white border border-gray-100 rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300">
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-gray-900">Loyalty Points</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Loyalty Points
+                    </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                       <div className="bg-gradient-to-br from-green-50 to-white border border-teal-100 p-4 rounded-xl">
                         <p className="text-sm text-gray-600">Issued</p>
-                        <p className="text-3xl font-bold text-green-700 mt-1">30</p>
+                        <p className="text-3xl font-bold text-green-700 mt-1">
+                          30
+                        </p>
                       </div>
                       <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-100 p-4 rounded-xl">
                         <p className="text-sm text-gray-600">Redeemed</p>
-                        <p className="text-3xl font-bold text-amber-500 mt-1">10</p>
+                        <p className="text-3xl font-bold text-amber-500 mt-1">
+                          10
+                        </p>
                       </div>
                       <div className="bg-gradient-to-br from-red-50 to-white border border-rose-100 p-4 rounded-xl">
-                        <p className="text-sm text-gray-600">Total Loyalty Points</p>
-                        <p className="text-3xl font-bold text-red-500 mt-1">10</p>
+                        <p className="text-sm text-gray-600">
+                          Total Loyalty Points
+                        </p>
+                        <p className="text-3xl font-bold text-red-500 mt-1">
+                          10
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='dsh_card_chart mb-3 pb-3 py-1 py-3 rounded-lg row gap-7 p-4'>
-              <div className='col-md-3' style={{ width: '33%' }}>
-                <div className='flex'>
+            <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6 px-4 py-3">
+              <div className="lg:col-span-1 md:col-span-1">
+                <div className="flex h-full">
                   <div style={{ justifyContent: "flex-start", width: "100%" }}>
-                    <Card className="w-full rounded-2xl shadow-lg bg-white border border-gray-200" style={{ height: "100%" }}>
-                      <div className='flex h-full flex-col justify-center gap-4 p-1' style={{ justifyContent: "flex-start" }}>
-                        <div className="flex justify-between items-center border-b pb-2">
-                          <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
-                            Top Customers
-                            <Tooltip title="Latest Customers">
-                              <Button variant="ghost" size="icon" className="ml-2">
-                                <GoInfo className='text-green-600' style={{ fontSize: "1rem" }} />
-                              </Button>
-                            </Tooltip>
-                          </p>
-                        </div>
-                        <div className="mt-6 space-y-4">
-                          {topCustomers.map((customer, index) => (
-                            <div
-                              key={index}
-                              className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
-                            >
-                              <div>
-                                <p className="font-semibold text-base text-gray-800">{customer.name}</p>
-                                <p className="text-sm text-gray-500">{customer.number}</p>
+                    <Card
+                      className="w-full rounded-2xl shadow-lg bg-white border border-gray-200"
+                      style={{ height: "100%" }}
+                    >
+                      <div
+                        className="flex h-full flex-col justify-center gap-4 p-1"
+                        style={{ justifyContent: "space-between" }}
+                      >
+                        <div className="flex flex-col ">
+                          <div className="flex justify-between items-center border-b pb-2">
+                            <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
+                              Top Customers
+                              <Tooltip title="Latest Customers">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="ml-2"
+                                >
+                                  <GoInfo
+                                    className="text-green-600"
+                                    style={{ fontSize: "1rem" }}
+                                  />
+                                </Button>
+                              </Tooltip>
+                            </p>
+                          </div>
+                          <div className="mt-3 space-y-4">
+                            {topCustomers.map((customer, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
+                              >
+                                <div>
+                                  <p className="font-semibold text-base text-gray-800">
+                                    {customer.name}
+                                  </p>
+                                  <p className="text-sm text-gray-500">
+                                    {customer.number}
+                                  </p>
+                                </div>
+                                <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
+                                  ₹{customer.price.toLocaleString()}
+                                </div>
                               </div>
-                              <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                                ₹{customer.price.toLocaleString()}
-                              </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
                         <div className="mt-4 flex justify-end">
                           <Link
@@ -497,18 +636,19 @@ const Dashboard = () => {
                   </Card>
                 </div>
               </div> */}
-              <div className="col-md-9" style={{ width: "100%" }}>
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 w-full">
+              <div className="lg:col-span-2 md:col-span-1">
+                <div className="bg-white h-full rounded-2xl shadow-lg border border-gray-200 p-6 w-full">
                   {/* Tabs */}
                   <div className="flex flex-wrap gap-3 mb-6">
                     {record?.chart?.map((e) => (
                       <button
                         key={e.id}
                         onClick={() => lineHandleChange(null, e.title)}
-                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${linechartValue === e.title
-                          ? 'bg-[var(--color1)] text-white'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                          }`}
+                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${
+                          linechartValue === e.title
+                            ? "bg-[var(--color1)] text-white"
+                            : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                        }`}
                       >
                         {e.title}
                       </button>
@@ -536,7 +676,9 @@ const Dashboard = () => {
                             tickMargin={10}
                             domain={[
                               0,
-                              Math.max(...barChartData.map((d) => d.value || 0)) + 2000 // ⬅️ Added padding
+                              Math.max(
+                                ...barChartData.map((d) => d.value || 0)
+                              ) + 2000, // ⬅️ Added padding
                             ]}
                             ticks={getNiceTicks(barChartData)}
                           />
@@ -552,20 +694,16 @@ const Dashboard = () => {
                                 fill="#333"
                                 fontSize="13"
                                 textAnchor="middle"
-                                style={{ background: 'rgba(255,0,0,0.2)' }} // testing only
+                                style={{ background: "rgba(255,0,0,0.2)" }} // testing only
                               >
                                 {value}
                               </text>
-
                             )}
                           >
-                            {
-                              barChartData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                              ))
-                            }
+                            {barChartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
                           </Bar>
-
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -579,8 +717,13 @@ const Dashboard = () => {
                         { label: "Purchase Return", color: "#E53935" },
                       ].map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
-                          <span className="w-4 h-4 rounded-full" style={{ backgroundColor: item.color }}></span>
-                          <span className="text-sm font-medium text-gray-800">{item.label}</span>
+                          <span
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          ></span>
+                          <span className="text-sm font-medium text-gray-800">
+                            {item.label}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -596,22 +739,29 @@ const Dashboard = () => {
                     </Link>
                   </div>
                 </div>
-
               </div>
-
             </div>
-            <div className='dsh_card_chart mb-3 pb-3 py-1 py-3 rounded-lg row gap-7 p-4'>
-              <div className="col-md-3 w-full" style={{ width: '33%' }}>
-                <div className="flex"
-                  style={{ minHeight: '500px' }}>
+            <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6 px-4 py-3">
+              <div className="lg:col-span-1 md:col-span-1">
+                <div className="flex" style={{ minHeight: "500px" }}>
                   <Card className="w-full rounded-2xl shadow-lg bg-white border border-gray-200">
-                    <div className='flex h-full flex-col justify-center gap-4 p-1' style={{ justifyContent: "flex-start" }}>
+                    <div
+                      className="flex h-full flex-col justify-center gap-4 p-1"
+                      style={{ justifyContent: "flex-start" }}
+                    >
                       <div className="flex justify-between items-center border-b pb-2">
                         <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
                           Top Distributors
                           <Tooltip title="Latest Distributors">
-                            <Button variant="ghost" size="icon" className="ml-2">
-                              <GoInfo className="text-green-600" style={{ fontSize: "1rem" }} />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="ml-2"
+                            >
+                              <GoInfo
+                                className="text-green-600"
+                                style={{ fontSize: "1rem" }}
+                              />
                             </Button>
                           </Tooltip>
                         </p>
@@ -623,11 +773,18 @@ const Dashboard = () => {
                             className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
                           >
                             <div>
-                              <p className="font-semibold text-base text-gray-800">{item.name}</p>
-                              <p className="text-sm text-gray-500">GST: {item.gst_number}</p>
+                              <p className="font-semibold text-base text-gray-800">
+                                {item.name}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                GST: {item.gst_number}
+                              </p>
                             </div>
                             <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                              ₹{item.due_amount === 0 ? '0' : item.due_amount.toLocaleString()}
+                              ₹
+                              {item.due_amount === 0
+                                ? "0"
+                                : item.due_amount.toLocaleString()}
                             </div>
                           </div>
                         ))}
@@ -644,10 +801,13 @@ const Dashboard = () => {
                   </Card>
                 </div>
               </div>
-              <div className="col-md-12 w-full">
+              <div className="lg:col-span-2 md:col-span-1">
                 <div
                   className="bg-white rounded-2xl shadow-lg p-6 space-y-4"
-                  style={{ boxShadow: '0 6px 24px rgba(0, 0, 0, 0.08)', minHeight: '500px' }}
+                  style={{
+                    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.08)",
+                    minHeight: "500px",
+                  }}
                 >
                   {/* Header */}
                   <div className="flex flex-col md:flex-row justify-between items-center border-b pb-4 border-[var(--color2)]">
@@ -655,7 +815,12 @@ const Dashboard = () => {
                       Top Five Bills
                       <Tooltip title="Top Five Bills" arrow>
                         <Button>
-                          <GoInfo style={{ fontSize: "1.1rem", fill: 'var(--color1)' }} />
+                          <GoInfo
+                            style={{
+                              fontSize: "1.1rem",
+                              fill: "var(--color1)",
+                            }}
+                          />
                         </Button>
                       </Tooltip>
                     </div>
@@ -663,7 +828,11 @@ const Dashboard = () => {
                     {/* Tabs and Staff Select */}
                     <div className="flex items-center gap-4 flex-wrap mt-4 md:mt-0">
                       <TabContext value={value}>
-                        <TabList onChange={handlechange} aria-label="tabs" className="rounded-lg overflow-hidden bg-gray-100">
+                        <TabList
+                          onChange={handlechange}
+                          aria-label="tabs"
+                          className="rounded-lg overflow-hidden bg-gray-100"
+                        >
                           {types.map((e) => (
                             <Tab
                               key={e.id}
@@ -671,12 +840,12 @@ const Dashboard = () => {
                               label={e.value}
                               className="tab_txt_crd"
                               sx={{
-                                '&.Mui-selected': {
-                                  backgroundColor: 'var(--color1)',
-                                  color: '#fff',
+                                "&.Mui-selected": {
+                                  backgroundColor: "var(--color1)",
+                                  color: "#fff",
                                   fontWeight: 600,
                                 },
-                                textTransform: 'none',
+                                textTransform: "none",
                                 paddingX: 2,
                               }}
                             />
@@ -713,19 +882,34 @@ const Dashboard = () => {
                                 <table className="w-full text-left table-auto border-collapse">
                                   <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                                     <tr>
-                                      <th className="px-4 py-3 border-b min-w-[180px]">{
-                                        value === 0 ? "Distributors" : "Customers"
-                                      }</th>
-                                      <th className="px-4 py-3 border-b min-w-[160px]">Contact Number</th>
-                                      <th className="px-4 py-3 border-b min-w-[140px]">Amount</th>
+                                      <th className="px-4 py-3 border-b min-w-[180px]">
+                                        {value === 0
+                                          ? "Distributors"
+                                          : "Customers"}
+                                      </th>
+                                      <th className="px-4 py-3 border-b min-w-[160px]">
+                                        Contact Number
+                                      </th>
+                                      <th className="px-4 py-3 border-b min-w-[140px]">
+                                        Amount
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody className="text-sm text-gray-800">
                                     {billData.map((item, index) => (
-                                      <tr key={index} className="border-b hover:bg-gray-50 transition">
-                                        <td className="px-4 py-3">{item.name}</td>
-                                        <td className="px-4 py-3">{item.phone_number || "--"}</td>
-                                        <td className="px-4 py-3 font-medium">₹ {item.total_amount || 0}</td>
+                                      <tr
+                                        key={index}
+                                        className="border-b hover:bg-gray-50 transition"
+                                      >
+                                        <td className="px-4 py-3">
+                                          {item.name}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                          {item.phone_number || "--"}
+                                        </td>
+                                        <td className="px-4 py-3 font-medium">
+                                          ₹ {item.total_amount || 0}
+                                        </td>
                                       </tr>
                                     ))}
                                   </tbody>
@@ -735,11 +919,17 @@ const Dashboard = () => {
                               {/* View All Link */}
                               <div className="flex justify-end mt-5 text-[var(--color1)] font-medium">
                                 {value === 0 ? (
-                                  <Link to="/purchase/purchasebill" className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium">
+                                  <Link
+                                    to="/purchase/purchasebill"
+                                    className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium"
+                                  >
                                     View all <ChevronRightIcon />
                                   </Link>
                                 ) : (
-                                  <Link to="/salelist" className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium">
+                                  <Link
+                                    to="/salelist"
+                                    className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium"
+                                  >
                                     View all <ChevronRightIcon />
                                   </Link>
                                 )}
@@ -749,7 +939,11 @@ const Dashboard = () => {
                         ))
                       ) : (
                         <div className="flex justify-center items-center min-h-[300px]">
-                          <img src="../no-data.png" alt="No data" className="h-40 opacity-80" />
+                          <img
+                            src="../no-data.png"
+                            alt="No data"
+                            className="h-40 opacity-80"
+                          />
                         </div>
                       )}
                     </TabContext>
@@ -844,16 +1038,19 @@ const Dashboard = () => {
                 </div>
               </div> */}
             </div>
-            <div className='dsh_card_chart mb-3 pb-3 py-1 py-3 rounded-lg row gap-7 p-4'>
-
-              <div className="col-md-6 w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden" style={{ width: '70%' }}>
+            <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-5 md:grid-cols-2 gap-6 px-4 py-3">
+              <div
+                className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden" 
+              >
                 {/* Header with Tabs */}
                 <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center px-6 py-5 border-b border-gray-200 bg-gray-50">
                   <div className="flex items-center gap-2 text-xl font-semibold text-gray-800">
                     Staff Overview
                     <Tooltip title="Staff sales and purchase overview" arrow>
                       <Button size="small">
-                        <GoInfo style={{ fontSize: '1.1rem', fill: 'var(--color1)' }} />
+                        <GoInfo
+                          style={{ fontSize: "1.1rem", fill: "var(--color1)" }}
+                        />
                       </Button>
                     </Tooltip>
                   </div>
@@ -864,23 +1061,23 @@ const Dashboard = () => {
                       <TabList
                         onChange={handlestaffTabchange}
                         aria-label="Sales Purchase Tabs"
-                        TabIndicatorProps={{ style: { display: 'none' } }}
+                        TabIndicatorProps={{ style: { display: "none" } }}
                         sx={{
-                          '& .MuiTab-root': {
-                            textTransform: 'none',
+                          "& .MuiTab-root": {
+                            textTransform: "none",
                             fontWeight: 500,
                             px: 3,
                             py: 1,
-                            borderRadius: '999px',
-                            color: '#374151',
-                            backgroundColor: '#fff',
+                            borderRadius: "999px",
+                            color: "#374151",
+                            backgroundColor: "#fff",
                             mx: 0.5,
-                            transition: '0.3s ease',
-                            fontSize: '0.875rem',
+                            transition: "0.3s ease",
+                            fontSize: "0.875rem",
                           },
-                          '& .Mui-selected': {
-                            backgroundColor: 'var(--color1)',
-                            color: 'white',
+                          "& .Mui-selected": {
+                            backgroundColor: "var(--color1)",
+                            color: "white",
                           },
                         }}
                       >
@@ -897,7 +1094,7 @@ const Dashboard = () => {
                         onChange={staffListHandlechange}
                         displayEmpty
                         className="bg-white rounded-md shadow-sm text-sm"
-                        inputProps={{ 'aria-label': 'Staff Select' }}
+                        inputProps={{ "aria-label": "Staff Select" }}
                       >
                         {staffList.map((e) => (
                           <MenuItem key={e.id} value={e.id}>
@@ -913,12 +1110,19 @@ const Dashboard = () => {
                   <TabContext value={pieChartvalue}>
                     {pieChartTabs.map((tab) => (
                       <TabPanel key={tab.id} value={tab.id} sx={{ px: 0 }}>
-                        <Paper elevation={0} className="overflow-hidden rounded-xl">
+                        <Paper
+                          elevation={0}
+                          className="overflow-hidden rounded-xl"
+                        >
                           <Table>
-                            <TableHead sx={{ backgroundColor: '#f3f4f6' }}>
+                            <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
                               <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Amount (₹)</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>
+                                  Name
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>
+                                  Amount (₹)
+                                </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -938,13 +1142,19 @@ const Dashboard = () => {
                   </TabContext>
                 </div>
               </div>
-              <div className="col-md-6 w-full">
+              <div className="lg:col-span-3 md:col-span-1 w-full">
                 <div className="bg-white rounded-2xl shadow-lg h-[500px] flex flex-col p-4">
                   <div className="flex justify-between items-center border-b border-gray-200 pb-3 mb-3">
                     <div className="flex items-center gap-2">
-                      <h2 className="text-2xl font-semibold text-gray-800">Expiring Items</h2>
+                      <h2 className="text-2xl font-semibold text-gray-800">
+                        Expiring Items
+                      </h2>
                       <Tooltip title="Expiring Items" arrow>
-                        <Button size="small" color="primary" sx={{ minWidth: 0, padding: 0 }}>
+                        <Button
+                          size="small"
+                          color="primary"
+                          sx={{ minWidth: 0, padding: 0 }}
+                        >
                           <GoInfo className="text-base text-gray-600" />
                         </Button>
                       </Tooltip>
@@ -968,23 +1178,42 @@ const Dashboard = () => {
                     <TabContext value={value}>
                       {expiry.length > 0 ? (
                         types.map((e) => (
-                          <TabPanel key={e.id} value={e.id} sx={{ p: 0, height: '100%' }}>
+                          <TabPanel
+                            key={e.id}
+                            value={e.id}
+                            sx={{ p: 0, height: "100%" }}
+                          >
                             <div className="flex flex-col justify-between h-full">
                               <div className="overflow-auto max-h-[320px]">
                                 <table className="w-full text-sm text-center">
                                   <thead className="bg-gray-50 text-gray-700 sticky top-0">
                                     <tr>
-                                      <th className="px-4 py-2 font-semibold">Item Name</th>
-                                      <th className="px-4 py-2 font-semibold">Qty.</th>
-                                      <th className="px-4 py-2 font-semibold">Expiry Date</th>
+                                      <th className="px-4 py-2 font-semibold">
+                                        Item Name
+                                      </th>
+                                      <th className="px-4 py-2 font-semibold">
+                                        Qty.
+                                      </th>
+                                      <th className="px-4 py-2 font-semibold">
+                                        Expiry Date
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {expiry.map((item) => (
-                                      <tr key={item.id} className="border-b hover:bg-gray-50">
-                                        <td className="px-4 py-2">{item.name}</td>
-                                        <td className="px-4 py-2">{item.qty}</td>
-                                        <td className="px-4 py-2">{item.expiry}</td>
+                                      <tr
+                                        key={item.id}
+                                        className="border-b hover:bg-gray-50"
+                                      >
+                                        <td className="px-4 py-2">
+                                          {item.name}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                          {item.qty}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                          {item.expiry}
+                                        </td>
                                       </tr>
                                     ))}
                                   </tbody>
@@ -992,7 +1221,10 @@ const Dashboard = () => {
                               </div>
 
                               <div className="flex justify-end mt-4">
-                                <Link to="/inventory" className="text-green-600 flex items-center gap-1 hover:underline font-medium">
+                                <Link
+                                  to="/inventory"
+                                  className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                                >
                                   View all <ChevronRightIcon fontSize="small" />
                                 </Link>
                               </div>
@@ -1001,15 +1233,17 @@ const Dashboard = () => {
                         ))
                       ) : (
                         <div className="flex justify-center items-center h-[400px]">
-                          <img src="../no_Data1.png" alt="No data" className="w-48 opacity-70" />
+                          <img
+                            src="../no_Data1.png"
+                            alt="No data"
+                            className="w-48 opacity-70"
+                          />
                         </div>
                       )}
                     </TabContext>
                   </Box>
                 </div>
               </div>
-
-
             </div>
             {/* <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-5'>
               <div className='gap-4'>
@@ -1385,12 +1619,10 @@ const Dashboard = () => {
               </div>
             </div> */}
           </div>
-        }
+        )}
       </div>
     </div>
+  );
+};
 
-  )
-
-}
-
-export default Dashboard
+export default Dashboard;

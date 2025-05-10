@@ -777,4 +777,37 @@ body {
 }
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper{
   width: 450px !important;
+}  
+
+.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-w2qu16-MuiAutocomplete-root .MuiOutlinedInput-root {
+  padding-right: 65px;
+  background: white;
 }
+.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-br1yw8-MuiAutocomplete-root .MuiOutlinedInput-root {
+  padding-right: 65px;
+  background: white;
+}
+.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input{
+  background-color: white;
+}
+button{
+  text-transform: capitalize !important;
+}
+.custom-datepicker{
+  width: 100%;
+}
+ 
+
+/* rutikacss */
+.dsh_card_chart {
+    margin: 0;
+}
+
+.paddin12-8{
+  padding: 12px 8px;
+}
+
+.letterspace0_5{
+  letter-spacing: .5px;
+}
+/* rutikacssend */

@@ -562,6 +562,6 @@
   }
   .dsh_card_chart {
     flex-direction: column !important;
-    gap: 35px !important;
+    /* gap: 35px !important; */
 }
 }

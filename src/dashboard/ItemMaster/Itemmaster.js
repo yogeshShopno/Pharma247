@@ -675,8 +675,9 @@ const Itemmaster = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="content item_add_box" style={{ gap: "0px" }}>
-          <div className="flex justify-between header_bx" style={{ padding: "0 20px" }}>
+        <div className="item_add_box paddin12-8" style={{ gap: "0px" }}> 
+        {/* //content class*/}
+          <div className="flex justify-between header_bx px-4 py-3">
             <h1
               style={{
                 color: "var(--color1)",
@@ -693,16 +694,14 @@ const Itemmaster = () => {
               style={{
                 background: "var(--color1)",
                 display: "flex",
-                gap: "10px",
-                borderRadius: "0",
+                gap: "10px", 
               }}
               onClick={openFileUpload}
             >
               <CloudUploadIcon /> Import</Button>
           </div>
           <div
-            className="mainform bg-white rounded-lg"
-            style={{ padding: "20px" }}
+            className="mainform bg-white rounded-lg px-4 pb-3 pt-0" 
           >
             <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
 
@@ -714,7 +713,7 @@ const Itemmaster = () => {
             <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
 
             <div className="row gap-4 item_boxes">
-              <div className="bg-white rounded-lg items-center mt-5 mb-5 p-5 item_inner_box" style={{
+              <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
                 border: '1px solid #628a2f73',
                 boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
                 width: '50%',
@@ -761,7 +760,7 @@ const Itemmaster = () => {
                     />
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields Unit_divvv itm_divv_wid">
                     <label className="label">Unit</label>
                     <TextField
@@ -801,7 +800,7 @@ const Itemmaster = () => {
                     {/* {error.pack && <span style={{ color: 'red', fontSize: '14px' }}>{error.pack}</span>} */}
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields" style={{ width: "100%", flexDirection: "column" }}>
                     <div
                       style={{ display: "flex", gap: "10px", cursor: "pointer" }}
@@ -842,7 +841,7 @@ const Itemmaster = () => {
                     </FormControl>
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
                     <label className="label">Minimum</label>
                     <TextField
@@ -898,7 +897,7 @@ const Itemmaster = () => {
                     />
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
                     <label className="label">Disc.%</label>
                     <TextField
@@ -957,14 +956,14 @@ const Itemmaster = () => {
               </div>
 
 
-              <div className="bg-white rounded-lg items-center mt-5 mb-5 p-5 item_inner_box" style={{
+              <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
                 border: '1px solid #628a2f73',
                 boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
                 width: "50%",
                 height: '100%'
 
               }}>
-                <div className="row item_fld_rw">
+                <div className="row gap-3 item_fld_rw">
                   <div className="fields Unit_divvv itm_divv_wid" style={{ width: "50%" }}>
                     <div
                       style={{ display: "flex", gap: "10px", cursor: "pointer" }}
@@ -1054,7 +1053,7 @@ const Itemmaster = () => {
                     </Box>
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
 
                   <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
                     <label className="label">GST%</label>
@@ -1106,7 +1105,7 @@ const Itemmaster = () => {
                     />
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
 
                   <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
                     <label className="label">Location</label>
@@ -1184,7 +1183,7 @@ const Itemmaster = () => {
                   </div>
                 </div>
 
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv" style={{ width: "100%" }}>
                     <label className="label">Packaging In</label>
                      <Select
@@ -1208,7 +1207,7 @@ const Itemmaster = () => {
                     {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
                   </div>
                 </div>
-                <div className="row item_fld_rw md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
                     <label className="label">HSN code.</label>
                     <TextField
@@ -1292,14 +1291,14 @@ const Itemmaster = () => {
               </div>
               <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
 
-              <div className="row justify-center product_img_divv ">
-                <div className="upload_bx1">
+              <div className="row justify-center product_img_divv mt-4 gap-4 ">
+                <div className="upload_bx1 w-full">
                   <div className="uploadBox">
                     <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
                       Front Photo
                     </h1>
                   </div>
-                  <div className="upload">
+                  <div className="upload w-full">
                     <input
                       accept="image/*"
                       style={{ display: "none" }}
@@ -1308,8 +1307,13 @@ const Itemmaster = () => {
                       onChange={handleFrontPhoto}
                     />
                     {selectedFrontFile == null ? (
-                      <div className="UploadClass" style={{ height: "218px", justifyContent: "center" }}>
-                        <img src="./tablet.png" width="40%" height="40%" />
+                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                          marginTop: "18px",
+                          height: "200px",
+                          width: "250px",
+                          objectFit: "contain",
+                        }} />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1327,7 +1331,7 @@ const Itemmaster = () => {
                     )}
                     <label
                       htmlFor="front-photo-file"
-                      style={{ margin: "10px" }}
+                      style={{ margin: "0px 0 16px" }}
                     >
                       <Button
                         variant="contained"
@@ -1344,13 +1348,13 @@ const Itemmaster = () => {
                     </span>
                   )}
                 </div>
-                <div className="upload_bx2">
+                <div className="upload_bx2 w-full">
                   <div className="uploadBox">
                     <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
                       Backside Photo
                     </h1>
                   </div>
-                  <div className="upload">
+                  <div className="upload w-full">
                     <input
                       accept="image/*"
                       style={{ display: "none" }}
@@ -1359,8 +1363,13 @@ const Itemmaster = () => {
                       onChange={handleBackPhoto}
                     />
                     {selectedBackFile == null ? (
-                      <div className="UploadClass" style={{ height: "218px", justifyContent: "center" }}>
-                        <img src="./tablet.png" width="40%" height="40%" />
+                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                          marginTop: "18px",
+                          height: "200px",
+                          width: "250px",
+                          objectFit: "contain",
+                        }} />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1378,7 +1387,7 @@ const Itemmaster = () => {
                     )}
                     <label
                       htmlFor="back-button-file"
-                      style={{ margin: "10px" }}
+                      style={{ margin: "0px 0 16px" }}
                     >
                       <Button
                         variant="contained"
@@ -1396,13 +1405,13 @@ const Itemmaster = () => {
                   )}
                 </div>
 
-                <div className="upload_bx3">
+                <div className="upload_bx3 w-full">
                   <div className="uploadBox">
                     <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
                       MRP Photo
                     </h1>
                   </div>
-                  <div className="upload">
+                  <div className="upload w-full">
                     <input
                       accept="image/*"
                       style={{ display: "none" }}
@@ -1411,8 +1420,13 @@ const Itemmaster = () => {
                       onChange={handleMRPPhoto}
                     />
                     {selectedMRPFile == null ? (
-                      <div className="UploadClass" style={{ height: "218px", justifyContent: "center" }}>
-                        <img src="./tablet.png" width="40%" height="40%" />
+                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                          marginTop: "18px",
+                          height: "200px",
+                          width: "250px",
+                          objectFit: "contain",
+                        }} />
                         <span>Drop your image here</span>
                       </div>
                     ) : (
@@ -1428,7 +1442,7 @@ const Itemmaster = () => {
                         }}
                       />
                     )}
-                    <label htmlFor="mrp-photo-file" style={{ margin: "10px" }}>
+                    <label htmlFor="mrp-photo-file" style={{ margin: "0px 0 16px" }}>
                       <Button
                         variant="contained"
                         component="span"
@@ -1449,8 +1463,8 @@ const Itemmaster = () => {
             </div>
 
             <div className="row item_add_box_1">
-              <div className="w-full pt-5">
-                <label className="label block text-sm font-medium text-gray-700 my-2">
+              <div className="w-full pt-4">
+                <label className="label block text-sm font-medium text-gray-700 mb-2">
                   Message
                 </label>
                 <TextField
@@ -1484,10 +1498,10 @@ const Itemmaster = () => {
       )
       }
       {/* Category Dialog Box */}
-      <Dialog id="modal" open={open} onClose={handleClose}>
+      <Dialog id="modal" className="custom-dialog" open={open} onClose={handleClose}>
         <DialogTitle>Create Catagory</DialogTitle>
         <DialogContent>
-          <div className="dialog">
+          <div className="dialog pt-4">
             <label className="mb-2">Catagory Name</label>
             <TextField
               id="outlined-number"
@@ -1504,25 +1518,25 @@ const Itemmaster = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            type="submit"
-            onClick={submitCategory}
-            variant="contained"
-            disabled={!categoryName}
-            style={{ background: "var(--color1)" }}
-
-
-          >
-            Submit
-          </Button>
+          <div className="pb-3 flex gap-2">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button
+              type="submit"
+              onClick={submitCategory}
+              variant="contained"
+              disabled={!categoryName}
+              style={{ background: "var(--color1)" }}
+            >
+              Submit
+            </Button>
+          </div>
         </DialogActions>
       </Dialog>
       {/* DrugGroup dialog Box */}
-      <Dialog id="modal" open={openDrugGroup} onClose={handleCloseDrugGroup}>
+      <Dialog id="modal" className="custom-dialog" open={openDrugGroup} onClose={handleCloseDrugGroup}>
         <DialogTitle>Create DrugGroup</DialogTitle>
         <DialogContent>
-          <div className="dialog">
+          <div className="dialog pt-4">
             <label className="mb-2">DrugGroup Name</label>
             <TextField
               id="outlined-number"
@@ -1536,28 +1550,29 @@ const Itemmaster = () => {
               }}
               required
             />
-          </div>
+          </div> 
         </DialogContent>
         <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={submitDrugGroup}
-            disabled={!drugGroupName}
-            style={{ margin: "10px", background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
-
-          >
-            Submit
-          </Button>
-          <Button style={{ background: "#F31C1C", color: "white" }} onClick={handleCloseDrugGroup}>Cancel</Button>
+          <div className="pb-3 flex gap-2 pr-5">
+            <Button
+              type="submit"
+              variant="contained"
+              onClick={submitDrugGroup}
+              disabled={!drugGroupName}
+              style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
+            >
+              Submit
+            </Button>
+            <Button style={{ background: "#F31C1C", color: "white" }} onClick={handleCloseDrugGroup}>Cancel</Button>
+          </div>
 
         </DialogActions>
       </Dialog>
       {/* Company Dialog Box */}
-      <Dialog id="modal" open={openCompany} onClose={handleClose}>
+      <Dialog id="modal" className="custom-dialog" open={openCompany} onClose={handleClose}>
         <DialogTitle>Create Company</DialogTitle>
         <DialogContent>
-          <div className="dialog">
+          <div className="dialog pt-4">
             <label className="mb-2">Company Name</label>
             <TextField
               id="outlined-number"
@@ -1573,21 +1588,21 @@ const Itemmaster = () => {
             />
           </div>
         </DialogContent>
-        <DialogActions>
-
-          <Button
-            type="submit"
-            onClick={submitCompany}
-            variant="contained"
-            disabled={!companyName}
-            style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
-          >
-            Submit
-          </Button>
-          <Button
-            style={{ background: "#F31C1C", color: "white" }}
-
-            onClick={handleCloseCompany}>Cancel</Button>
+        <DialogActions> 
+          <div className="pb-3 flex gap-2 pr-5">
+            <Button
+              type="submit"
+              onClick={submitCompany}
+              variant="contained"
+              disabled={!companyName}
+              style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
+            >
+              Submit
+            </Button>
+            <Button
+              style={{ background: "#F31C1C", color: "white" }}
+              onClick={handleCloseCompany}>Cancel</Button>
+          </div>
         </DialogActions>
       </Dialog>
       {/*Bulk Item Data Added  */}

@@ -131,7 +131,7 @@ input[type="number"] {
   }
 }
 
-#modal {
+#modal, .custom-dialog {
   animation: slideIn 0.5s forwards;
 }
 
@@ -809,5 +809,15 @@ button{
 
 .letterspace0_5{
   letter-spacing: .5px;
+}
+
+.custom-dialog h2 {
+    background: var(--COLOR_UI_PHARMACY);
+    color: #fff;
+    padding: 10px 20px;
+} 
+
+.custom-dialog button {
+    color: #fff;
 }
 /* rutikacssend */

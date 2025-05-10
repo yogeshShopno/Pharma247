@@ -148,7 +148,7 @@ function App() {
 
       /* Change border color when focused for Outlined TextFields */
       .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-        border-color: #3f6212; /* Focused border color */
+        border-color: #3f6212 !important; /* Focused border color */
       }
 
        .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -161,7 +161,7 @@ function App() {
       }
       
       .MuiInputLabel-root.Mui-focused {
-        color: #3f6212; /* Focused label color */
+        color: #3f6212 !important; /* Focused label color */
       }
 
       /* Change underline color for Standard TextFields */

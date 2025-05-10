@@ -35,7 +35,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
-import Switch from '@mui/material/Switch';
+import Switch from "@mui/material/Switch";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 150 },
@@ -376,8 +376,7 @@ const DistributerList = () => {
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -393,18 +392,20 @@ const DistributerList = () => {
           <Loader />
         </div>
       ) : (
-        <div
-          style={{
-            backgroundColor: "rgba(153, 153, 153, 0.1)",
-            height: "calc(100vh - 225px)",
-            padding: "0px 20px 0px",
-          }}
-        >
-          <div>
-            <div className="py-3 cust_list_main_hdr_bg" style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
+        <div className="paddin12-8">
+          <div className="px-4 py-3">
             <div
-                style={{ display: "flex", gap: "7px", alignItems: "center",whiteSpace:"nowrap" }}
-                className="mt-2"
+              className="cust_list_main_hdr_bg"
+              style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "7px",
+                  alignItems: "center",
+                  whiteSpace: "nowrap",
+                }}
+                className=""
               >
                 <span
                   style={{
@@ -414,14 +415,14 @@ const DistributerList = () => {
                     fontWeight: 700,
                     fontSize: "20px",
                     width: "136px",
-                    marginRight:"10px",
+                    marginRight: "10px",
                   }}
                 >
                   Distributor List
                 </span>
                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
               </div>
-              <div className="headerList cust_hdr_mn_bg mt-2">
+              <div className="headerList cust_hdr_mn_bg">
                 {hasPermission(permissions, "distributor import") && (
                   <Button
                     variant="contained"
@@ -438,13 +439,12 @@ const DistributerList = () => {
                 {hasPermission(permissions, "distributor create") && (
                   <Button
                     variant="contained"
-                    style={{ background: "var(--color1)", display: "flex", }}
+                    style={{ background: "var(--color1)", display: "flex" }}
                     onClick={() => {
                       history.push("/more/addDistributer");
                     }}
                     className="gap-2"
                   >
-                    
                     <AddIcon className="" />
                     Add Distributor
                   </Button>
@@ -462,8 +462,7 @@ const DistributerList = () => {
                     }}
                     onClick={exportToExcel}
                   >
-                    
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
                       <img
                         src="/csv-file.png"
                         className="report-icon absolute"
@@ -475,8 +474,13 @@ const DistributerList = () => {
                 )}
               </div>
             </div>
+            <div
+              className="row border-b px-4 border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
           </div>
-          <div className="overflow-x-auto firstrow">
+          <div className=" firstrow px-4 ">
+            <div className="overflow-x-auto">
             <table
               className="w-full border-collapse custom-table"
               style={{
@@ -584,13 +588,15 @@ const DistributerList = () => {
                 )}
               </tbody>
             </table>
+            </div>
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -627,10 +633,11 @@ const DistributerList = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === rowsPerPage
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -847,31 +854,36 @@ const DistributerList = () => {
 
                     <div className="border-1 text-black font-bold secondary flex justify-between items-center mt-5">
                       Add More Details
-                      <Switch checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} sx={{
-                        "& .MuiSwitch-track": {
-                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        },
-                        "&.Mui-checked .MuiSwitch-track": {
-                          backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
-                        },
-                        "& .MuiSwitch-thumb": {
-                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        },
-                        "&.Mui-checked .MuiSwitch-thumb": {
-                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        },
-                        "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track": {
-                          backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
-
-                        }
-                      }} />
+                      <Switch
+                        checked={switchCheck}
+                        onChange={(e) => setSwitchChecked(e.target.checked)}
+                        sx={{
+                          "& .MuiSwitch-track": {
+                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                          },
+                          "&.Mui-checked .MuiSwitch-track": {
+                            backgroundColor:
+                              "var(--COLOR_UI_PHARMACY) !important",
+                          },
+                          "& .MuiSwitch-thumb": {
+                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                          },
+                          "&.Mui-checked .MuiSwitch-thumb": {
+                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                          },
+                          "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track":
+                            {
+                              backgroundColor:
+                                "var(--COLOR_UI_PHARMACY) !important",
+                            },
+                        }}
+                      />
                     </div>
                     {switchCheck && (
                       <div className="mt-5 flex flex-col gap-5">
                         <div className="flex flex-col md:flex-row gap-5">
                           <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                             <span className="label primary">
-                              
                               Distributor Drug License No.
                             </span>
                             <OutlinedInput
@@ -1020,7 +1032,9 @@ const DistributerList = () => {
                       id="file-upload"
                       onChange={handleFileChange}
                     />
-                    <span className="errorFile" style={{ fontSize: "small" }}>*select only .csv File</span>
+                    <span className="errorFile" style={{ fontSize: "small" }}>
+                      *select only .csv File
+                    </span>
                   </div>
                   <div className="mt-2">
                     <Button
@@ -1037,7 +1051,7 @@ const DistributerList = () => {
                 </div>
               </DialogContentText>
             </DialogContent>
-            <DialogActions style={{ padding: '20px 24px' }}>
+            <DialogActions style={{ padding: "20px 24px" }}>
               <Button
                 autoFocus
                 style={{

@@ -144,8 +144,7 @@ const AddDistributer = () => {
   return (
     <div>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -158,8 +157,8 @@ const AddDistributer = () => {
       />
       <div>
         <div>
-          <div className=" rounded-md shadow-md p-6 md:p-12 lg:px-16 h-full">
-            <div className="mb-12 flex justify-between add_dist_pg">
+          <div className=" rounded-md shadow-md paddin12-8 md:p-12 lg:px-16 h-full">
+            <div className="flex justify-between add_dist_pg px-4 py-3 ">
               <h1 className="text-2xl font-bold primary add_dst_hdr_txt">
                 Add New Distributor
               </h1>
@@ -171,17 +170,58 @@ const AddDistributer = () => {
                 Distributor List
               </h1>
             </div>
+            <div className="px-4 mb-4">
+              <div
+                className="row border-b border-dashed "
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+            </div>
+            <div className="px-4">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                <div>
+                  <label
+                    className="block  text-gray-700 font-bold mb-2"
+                    htmlFor="gst_number"
+                  >
+                    Distributor GST/IN Number
+                  </label>
 
-            <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
-              <div>
-                <label
-                  className="block  text-gray-700 font-bold mb-2"
-                  htmlFor="gst_number"
-                >
-                  Distributor GST/IN Number
-                </label>
+                  <div class="relative w-full">
+                    <TextField
+                      variant="outlined"
+                      autoComplete="off"
+                      sx={{
+                        ".MuiInputBase-input": {
+                          padding: "10px 12px",
+                        },
+                      }}
+                      className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                      name="gst_number"
+                      type="text"
+                      value={GSTNumber}
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 0)}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z0-9]/g, "");
+                        setGSTNumber(value);
+                      }}
+                    />
 
-                <div class="relative w-full">
+                    <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg" style={{ borderRadius: "0px 4px 4px 0px" }}>
+                      <span>Change</span>
+                      <span class="sr-only">Search</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="distributor_name"
+                  >
+                    Distributor Name
+                  </label>
                   <TextField
                     variant="outlined"
                     autoComplete="off"
@@ -190,447 +230,421 @@ const AddDistributer = () => {
                         padding: "10px 12px",
                       },
                     }}
-                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
-                    name="gst_number"
+                    inputRef={(el) => (inputRefs.current[1] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 1)}
+                    value={distributorName}
+                    className="appearance-none border rounded-lg px-0 py-0 w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                    name="distributor_name"
                     type="text"
-                    value={GSTNumber}
-                    inputRef={(el) => (inputRefs.current[0] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, 0)}
                     onChange={(e) => {
-                      const value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z0-9]/g, "");
-                      setGSTNumber(value);
+                      setDistributorName(e.target.value.toUpperCase());
                     }}
                   />
-
-                  <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white rounded-e-lg border border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg">
-                    <span>Change</span>
-                    <span class="sr-only">Search</span>
-                  </div>
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="mobile_no"
+                  >
+                    Mobile No.
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    inputRef={(el) => (inputRefs.current[2] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 2)}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="mobile_no"
+                    type="number"
+                    value={mobileno}
+                    onChange={(e) => setMobileno(e.target.value)}
+                  />
                 </div>
               </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="distributor_name">
-                  Distributor Name
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px", 
-                    },
-                  }}
-                  inputRef={(el) => (inputRefs.current[1] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 1)}
-                  value={distributorName}
-                  className="appearance-none border rounded-lg px-0 py-0 w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
-                  name="distributor_name"
-                  type="text"
-                  onChange={(e) => {
-                    setDistributorName(e.target.value.toUpperCase());
-                  }}
-                />
+              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="email"
+                  >
+                    Email ID
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    inputRef={(el) => (inputRefs.current[3] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 3)}
+                    className="appearance-none border rounded-lg lowercase w-full leading-tight focus:outline-none focus:shadow-outline"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="whatsapp"
+                  >
+                    Whatsapp No.
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="whatsapp"
+                    type="number"
+                    value={whatsapp}
+                    inputRef={(el) => (inputRefs.current[4] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 4)}
+                    onChange={(e) => {
+                      setWhatsapp(e.target.value);
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="state"
+                  >
+                    state
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="state"
+                    type="text"
+                    value={state}
+                    inputRef={(el) => (inputRefs.current[5] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 5)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z]/g, "");
+                      const formattedValue =
+                        value.charAt(0).toUpperCase() +
+                        value.slice(1).toLowerCase();
+                      setState(formattedValue);
+                    }}
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="mobile_no">
-                  Mobile No.
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  inputRef={(el) => (inputRefs.current[2] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 2)}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="mobile_no"
-                  type="number"
-                  value={mobileno}
-                  onChange={(e) => setMobileno(e.target.value)}
-                />
+              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="address"
+                  >
+                    Address
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="address"
+                    type="text"
+                    value={address}
+                    inputRef={(el) => (inputRefs.current[6] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 6)}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="area"
+                  >
+                    Area
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    inputRef={(el) => (inputRefs.current[7] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 7)}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="area"
+                    type="text"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="pincode"
+                  >
+                    Pincode
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    inputRef={(el) => (inputRefs.current[8] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 8)}
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="pincode"
+                    type="number"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                  />
+                  <div name="pincode" />
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="email"
-                >
-                  Email ID
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  inputRef={(el) => (inputRefs.current[3] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 3)}
-                  className="appearance-none border rounded-lg lowercase w-full leading-tight focus:outline-none focus:shadow-outline"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="distributor_durg_distributor"
+                  >
+                    Distributor Drug License No.
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    inputRef={(el) => (inputRefs.current[9] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 9)}
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                    name="distributor_durg_distributor"
+                    type="text"
+                    value={durgLicence}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      setDurgLicence(value);
+                    }}
+                  />
+                  <div name="distributor_durg_distributor" />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="food_licence_no"
+                  >
+                    Food Licence No.
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    inputRef={(el) => (inputRefs.current[10] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 10)}
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
+                    name="food_licence_no"
+                    type="text"
+                    value={foodLicence}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      setFoodLicence(value);
+                    }}
+                  />
+                  <div name="food_licence_no" />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 font-bold mb-2"
+                    htmlFor="payment_due_days"
+                  >
+                    Credit Due Days
+                  </label>
+                  <TextField
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      ".MuiInputBase-input": {
+                        padding: "10px 12px",
+                      },
+                    }}
+                    inputRef={(el) => (inputRefs.current[11] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, 11)}
+                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    name="payment_due_days"
+                    type="number"
+                    value={dueDays}
+                    onChange={(e) => setDueDays(Number(e.target.value))}
+                  />
+                  <div name="payment_due_days" />
+                </div>
               </div>
+              <div
+                className="border-b border-dashed mt-8"
+                style={{ borderColor: "var(--color1)" }}
+              ></div>
               <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="whatsapp"
-                >
-                  Whatsapp No.
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="whatsapp"
-                  type="number"
-                  value={whatsapp}
-                  inputRef={(el) => (inputRefs.current[4] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 4)}
-                  onChange={(e) => {
-                    setWhatsapp(e.target.value);
-                  }}
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="state"
-                >
-                  state
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="state"
-                  type="text"
-                  value={state}
-                  inputRef={(el) => (inputRefs.current[5] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 5)}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^a-zA-Z]/g, ""); 
-                    const formattedValue =
-                      value.charAt(0).toUpperCase() +
-                      value.slice(1).toLowerCase();
-                    setState(formattedValue);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="address"
-                >
-                  Address
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px", 
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="address"
-                  type="text"
-                  value={address}
-                  inputRef={(el) => (inputRefs.current[6] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 6)}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="area"
-                >
-                  Area
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px", 
-                    },
-                  }}
-                  inputRef={(el) => (inputRefs.current[7] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 7)}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="area"
-                  type="text"
-                  value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="pincode"
-                >
-                  Pincode
-                </label>
-                <TextField
-                  variant="outlined"
-                  inputRef={(el) => (inputRefs.current[8] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 8)}
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="pincode"
-                  type="number"
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value)}
-                />
-                <div name="pincode" />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="distributor_durg_distributor"
-                >
-                  Distributor Drug License No.
-                </label>
-                <TextField
-                  variant="outlined"
-                  inputRef={(el) => (inputRefs.current[9] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 9)}
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px", 
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
-                  name="distributor_durg_distributor"
-                  type="text"
-                  value={durgLicence}
-                  onChange={(e) => {
-                    const value = e.target.value.toUpperCase();
-                    setDurgLicence(value);
-                  }}
-                />
-                <div name="distributor_durg_distributor" />
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="food_licence_no"
-                >
-                  Food Licence No.
-                </label>
-                <TextField
-                  variant="outlined"
-                  inputRef={(el) => (inputRefs.current[10] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 10)}
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px", 
-                    },
-                  }}
-                  className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
-                  name="food_licence_no"
-                  type="text"
-                  value={foodLicence}
-                  onChange={(e) => {
-                    const value = e.target.value.toUpperCase(); 
-                    setFoodLicence(value);
-                  }}
-                />
-                <div name="food_licence_no" />
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="payment_due_days"
-                >
-                  Credit Due Days
-                </label>
-                <TextField
-                  variant="outlined"
-                  autoComplete="off"
-                  sx={{
-                    ".MuiInputBase-input": {
-                      padding: "10px 12px",
-                    },
-                  }}
-                  inputRef={(el) => (inputRefs.current[11] = el)}
-                  onKeyDown={(e) => handleKeyDown(e, 11)}
-                  className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                  name="payment_due_days"
-                  type="number"
-                  value={dueDays}
-                  onChange={(e) => setDueDays(Number(e.target.value))}
-                />
-                <div name="payment_due_days" />
-              </div>
-            </div>
-            <div
-              className="border-b border-dashed my-8"
-              style={{ borderColor: "var(--color1)" }}
-            ></div>
-            <div>
-              <h1 className="text-2xl font-bold mb-12 primary">
-                Add Bank Details
-              </h1>
-              <div>
-                <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
-                  <div>
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="bank_name"
-                    >
-                      Bank Name
-                    </label>
+                <h1 className="text-2xl font-bold primary py-3">
+                  Add Bank Details
+                </h1>
+                <div className=" mb-4">
+                  <div
+                    className="row border-b border-dashed "
+                    style={{ borderColor: "var(--color2)" }}
+                  ></div>
+                </div>
+                <div>
+                  <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                    <div>
+                      <label
+                        className="block text-gray-700 font-bold mb-2"
+                        htmlFor="bank_name"
+                      >
+                        Bank Name
+                      </label>
 
-                    <div class="relative w-full">
+                      <div class="relative w-full">
+                        <TextField
+                          variant="outlined"
+                          inputRef={(el) => (inputRefs.current[12] = el)}
+                          onKeyDown={(e) => handleKeyDown(e, 12)}
+                          autoComplete="off"
+                          sx={{
+                            ".MuiInputBase-input": {
+                              padding: "10px 12px",
+                            },
+                          }}
+                          className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
+                          name="bank_name"
+                          type="text"
+                          value={bankName}
+                          onChange={(e) => {
+                            const uppercasedValue = e.target.value
+                              .toUpperCase()
+                              .replace(/[^A-Z]/g, "");
+                            setBankName(uppercasedValue);
+                          }}
+                        />
+
+                        <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer" style={{ borderRadius: "0px 4px 4px 0px" }}>
+                          <svg
+                            class="w-4 h-4"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div name="bank_name" />
+                    </div>
+                    <div>
+                      <label
+                        className="block text-gray-700 font-bold mb-2"
+                        htmlFor="account_no"
+                      >
+                        Account No.
+                      </label>
                       <TextField
                         variant="outlined"
-                        inputRef={(el) => (inputRefs.current[12] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 12)}
+                        inputRef={(el) => (inputRefs.current[13] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 13)}
                         autoComplete="off"
                         sx={{
                           ".MuiInputBase-input": {
-                            padding: "10px 12px", 
+                            padding: "10px 12px",
                           },
                         }}
-                        className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
-                        name="bank_name"
+                        className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                        name="account_no"
+                        type="number"
+                        value={accountNo}
+                        onChange={(e) => setAccountNo(e.target.value)}
+                      />
+                      <div name="account_no" />
+                    </div>
+                    <div>
+                      <label
+                        className="block text-gray-700 font-bold mb-2"
+                        htmlFor="ifsc_code"
+                      >
+                        IFSC Code
+                      </label>
+                      <TextField
+                        variant="outlined"
+                        inputRef={(el) => (inputRefs.current[14] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 14)}
+                        autoComplete="off"
+                        sx={{
+                          ".MuiInputBase-input": {
+                            padding: "10px 12px",
+                          },
+                        }}
+                        className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline uppercase"
+                        name="ifsc_code"
                         type="text"
-                        value={bankName}
+                        value={ifsc}
                         onChange={(e) => {
-                          const uppercasedValue = e.target.value
+                          const value = e.target.value
                             .toUpperCase()
-                            .replace(/[^A-Z]/g, "");
-                          setBankName(uppercasedValue);
+                            .replace(/[^A-Z0-9]/g, "");
+                          setIfsc(value);
                         }}
                       />
-
-                      <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white  border-var(--color1)-700  hover:secondary-bg focus:ring-4 primary-bg rounded-e-lg border  cursor-pointer">
-                        <svg
-                          class="w-4 h-4"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                          />
-                        </svg>
-                      </div>
+                      <div name="ifsc_code" />
                     </div>
-                    <div name="bank_name" />
                   </div>
-                  <div>
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="account_no"
-                    >
-                      Account No.
-                    </label>
-                    <TextField
-                      variant="outlined"
-                      inputRef={(el) => (inputRefs.current[13] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 13)}
-                      autoComplete="off"
-                      sx={{
-                        ".MuiInputBase-input": {
-                          padding: "10px 12px",
-                        },
-                      }}
-                      className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
-                      name="account_no"
-                      type="number"
-                      value={accountNo}
-                      onChange={(e) => setAccountNo(e.target.value)}
-                    />
-                    <div name="account_no" />
-                  </div>
-                  <div>
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="ifsc_code"
-                    >
-                      IFSC Code
-                    </label>
-                    <TextField
-                      variant="outlined"
-                      inputRef={(el) => (inputRefs.current[14] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 14)}
-                      autoComplete="off"
-                      sx={{
-                        ".MuiInputBase-input": {
-                          padding: "10px 12px",
-                        },
-                      }}
-                      className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline uppercase"
-                      name="ifsc_code"
-                      type="text"
-                      value={ifsc}
-                      onChange={(e) => {
-                        const value = e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z0-9]/g, "");
-                        setIfsc(value);
-                      }}
-                    />
-                    <div name="ifsc_code" />
-                  </div>
-                </div>
 
-                <div className="text-center my-8">
-                  <button
-                    type="submit"
-                    className="py-2 min-w-16 px-5 h-10  text-white rounded-lg primary-bg ml-2"
-                    onClick={handleSubmit}
-                  >
-                    Add
-                  </button>
-                  <button
-                    type="button"
-                    className="py-2 min-w-16 px-5 h-10 text-white rounded-lg bg-red-600 ml-2"
-                  >
-                    Cancel
-                  </button>
+                  <div className="text-center my-8">
+                    <button
+                      type="submit"
+                      className="py-2 min-w-16 px-5 h-10 text-white rounded-md primary-bg ml-2"
+                      onClick={handleSubmit}
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      className="py-2 min-w-16 px-5 h-10 text-white rounded-md bg-red-600 ml-2"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

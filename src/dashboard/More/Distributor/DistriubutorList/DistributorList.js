@@ -996,11 +996,11 @@ const DistributerList = () => {
             <DialogTitle id="alert-dialog-title " className="primary">
               Import Distributor
             </DialogTitle>
-            <div className="px-6 ">
-              <Alert severity="warning">
+              <Alert severity="warning" className="">
                 <AlertTitle>Warning</AlertTitle>
                 Please Make Sure Repeated Email ID record is not accepted.
               </Alert>
+            <div className="px-6 ">
             </div>
             <IconButton
               aria-label="close"

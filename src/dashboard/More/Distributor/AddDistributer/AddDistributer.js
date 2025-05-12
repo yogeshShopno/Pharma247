@@ -177,7 +177,7 @@ const AddDistributer = () => {
               ></div>
             </div>
             <div className="px-4">
-              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 mb-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
                 <div>
                   <label
                     className="block  text-gray-700 font-bold mb-2"
@@ -209,7 +209,10 @@ const AddDistributer = () => {
                       }}
                     />
 
-                    <div class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg" style={{ borderRadius: "0px 4px 4px 0px" }}>
+                    <div
+                      class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg"
+                      style={{ borderRadius: "0px 4px 4px 0px" }}
+                    >
                       <span>Change</span>
                       <span class="sr-only">Search</span>
                     </div>
@@ -265,8 +268,6 @@ const AddDistributer = () => {
                     onChange={(e) => setMobileno(e.target.value)}
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                 <div>
                   <label
                     className="block text-gray-700 font-bold mb-2"
@@ -347,8 +348,6 @@ const AddDistributer = () => {
                     }}
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                 <div>
                   <label
                     className="block text-gray-700 font-bold mb-2"
@@ -422,8 +421,6 @@ const AddDistributer = () => {
                   />
                   <div name="pincode" />
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
                 <div>
                   <label
                     className="block text-gray-700 font-bold mb-2"
@@ -506,6 +503,9 @@ const AddDistributer = () => {
                   <div name="payment_due_days" />
                 </div>
               </div>
+              {/* <div className="grid grid-cols-1 gap-3 mb-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2"></div> */}
+              {/* <div className="grid grid-cols-1 gap-3 mb-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2"></div> */}
+              {/* <div className="grid grid-cols-1 gap-3 mb-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2"></div> */}
               <div
                 className="border-b border-dashed mt-8"
                 style={{ borderColor: "var(--color1)" }}
@@ -521,7 +521,7 @@ const AddDistributer = () => {
                   ></div>
                 </div>
                 <div>
-                  <div className="grid grid-cols-1 gap-x-8 gap-y-4 mb-6 lg:grid-cols-3 md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 mb-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
                     <div>
                       <label
                         className="block text-gray-700 font-bold mb-2"
@@ -553,7 +553,10 @@ const AddDistributer = () => {
                           }}
                         />
 
-                        <div class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer" style={{ borderRadius: "0px 4px 4px 0px" }}>
+                        <div
+                          class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
+                          style={{ borderRadius: "0px 4px 4px 0px" }}
+                        >
                           <svg
                             class="w-4 h-4"
                             aria-hidden="true"
@@ -628,8 +631,7 @@ const AddDistributer = () => {
                       />
                       <div name="ifsc_code" />
                     </div>
-                  </div>
-
+                  </div> 
                   <div className="text-center my-8">
                     <button
                       type="submit"

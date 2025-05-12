@@ -314,7 +314,7 @@ body {
   width: 300px;
   height: 400px;
   overflow-y: auto;
-  background-color: rgba(153, 153, 153, 0.1);
+  background-color: rgb(63 98 18 / 5%);
   padding: 15px;
 }
 
@@ -818,6 +818,29 @@ button{
 } 
 
 .custom-dialog button {
+    color: #fff;
+}
+
+.invntry-filter{
+          width: 300px;
+        max-height: calc(100vh - 150px);
+        padding: 24px;
+        height: 100%;
+}
+
+.invntry-tab {
+  .css-1tyxg36-MuiButtonBase-root-MuiTab-root.Mui-selected{
+    color: var(--color1) !important;
+  }
+}
+
+.modal_991 .css-1t1j96h-MuiPaper-root-MuiDialog-paper
+ {
+    max-width: 991px !important;
+    width: 100% !important;
+}
+
+.custom-dialog h2 .css-7es8l1-MuiSvgIcon-root {
     color: #fff;
 }
 /* rutikacssend */

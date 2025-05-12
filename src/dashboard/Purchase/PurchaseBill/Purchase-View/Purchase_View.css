@@ -189,7 +189,7 @@
   flex-direction: column;
   width: auto;
   min-width: 250px;
-  min-height: 60px;
+  /* min-height: 60px; */
   gap: 6px;
 }
 
@@ -337,11 +337,13 @@
 
 .custom-table tr {
   border-bottom: 1px solid lightgray;
+      transition: all .5s ease;
 }
 
 .custom-table tbody tr:hover {
-  background-color: #ceecfd;
+  background-color: #3f621240;
   cursor: pointer;
+      transition: all .5s ease;
 }
 
 .data {

@@ -324,7 +324,6 @@ const InventoryList = () => {
     // console.log("id", selectedItems);
   };
 
-
   /*<==================================================================================== pagination  ===========================================================================> */
 
   const handleChangePage = (event, newPage) => {
@@ -337,7 +336,6 @@ const InventoryList = () => {
   };
 
   /*<==================================================================================== checkbox  ===========================================================================> */
-
 
   const handleCheckboxChange = (event, categoryId) => {
     setSelectedCategoryIds((prevSelectedIds) => {
@@ -384,7 +382,6 @@ const InventoryList = () => {
   };
   /*<==================================================================================== batch list  ===========================================================================> */
 
- 
   const ItemvisebatchList = async (itemId) => {
     let data = new FormData();
     data.append("iteam_id", itemId);
@@ -428,7 +425,7 @@ const InventoryList = () => {
     data.append("ptr_start", ptrStart);
     data.append("ptr_end", ptrEnd);
     data.append("expired", selectedOptionExpiry.join(","));
-    data.append(payload,"1")
+    data.append(payload, "1");
     // data.append("drug", drugGroup);
     const params = {
       page: page + 1,
@@ -511,7 +508,6 @@ const InventoryList = () => {
     setItemId(newValue?.id);
   };
 
-  
   /*<====================================================================================== bulk order  =============================================================================> */
 
   const resetAddDialog = () => {
@@ -604,7 +600,6 @@ const InventoryList = () => {
     }
   };
 
-
   const bulkEdit = async () => {
     let data = new FormData();
     setIsLoading(true);
@@ -640,8 +635,8 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
-    console.log(newValue, "newValue")
-    setSelectedCompany(newValue?.company_name)
+    console.log(newValue, "newValue");
+    setSelectedCompany(newValue?.company_name);
   };
   const validateForm = async () => {
     const newErrors = {};
@@ -666,7 +661,6 @@ const InventoryList = () => {
       return Object.keys(newErrors).length === 0;
     }
   };
-
 
   const adjustStockAddData = async () => {
     let data = new FormData();
@@ -751,7 +745,6 @@ const InventoryList = () => {
   };
 
   const exportToCSV = (data) => {
-
     const csvRows = data
       .map((row) => {
         return Object.values(row)
@@ -795,8 +788,7 @@ const InventoryList = () => {
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -812,7 +804,7 @@ const InventoryList = () => {
           <Loader />
         </div>
       )}
- { /*<=============================================================================== side filter ======================================================================> */}
+      {/*<=============================================================================== side filter ======================================================================> */}
 
       <div className="filterDrawer_fld pt-5 pl-5">
         <Button
@@ -838,28 +830,18 @@ const InventoryList = () => {
           <Box>
             <Box
               className="custom-scroll"
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: 300,
-                },
-                height: {
-                  xs: "calc(100vh - 100px)",
-                  sm: '100%',
-                },
-                overflowY: "auto",
-                padding: {
-                  xs: "10px",
-                  sm: "15px",
-                },
-              }}
               role="presentation"
               onClick={() => toggleDrawerFilter(false)}
             >
               <IconButton
                 aria-label="close"
                 onClick={() => setDrawerOpen(false)}
-                sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
               >
                 <CloseIcon />
               </IconButton>
@@ -870,12 +852,14 @@ const InventoryList = () => {
                 >
                   Inventory
                   <BsLightbulbFill className="ml-4 secondary hover-yellow" />
-
                 </h1>
               </Box>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }} sx={{ my: 0 }}>
+                  <Typography
+                    style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                    sx={{ my: 0 }}
+                  >
                     Items
                   </Typography>
                 </AccordionSummary>
@@ -889,10 +873,10 @@ const InventoryList = () => {
                         value={selectedOption}
                         sx={{
                           color: "var(--COLOR_UI_PHARMACY)", // Apply color to labels
-                          '& .MuiRadio-root': {
+                          "& .MuiRadio-root": {
                             color: "var(--color2)", // Unchecked radio button color
                           },
-                          '& .Mui-checked': {
+                          "& .Mui-checked": {
                             color: "var(--COLOR_UI_PHARMACY)", // Checked radio button color
                           },
                         }}
@@ -930,7 +914,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Category</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Category
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -942,12 +928,13 @@ const InventoryList = () => {
                             <Checkbox
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
+                                "&.Mui-checked": {
                                   color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
-
-                              checked={selectedCategoryIds.includes(category.id)}
+                              checked={selectedCategoryIds.includes(
+                                category.id
+                              )}
                               onChange={(event) =>
                                 handleCheckboxChange(event, category.id)
                               }
@@ -977,11 +964,13 @@ const InventoryList = () => {
                             <Checkbox
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
+                                "&.Mui-checked": {
                                   color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
-                              checked={selectedPackgingIds.includes(packging.id)}
+                              checked={selectedPackgingIds.includes(
+                                packging.id
+                              )}
                               onChange={(event) =>
                                 handleCheckboxPackging(event, packging.id)
                               }
@@ -997,7 +986,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Expiry</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Expiry
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1006,20 +997,21 @@ const InventoryList = () => {
                         <FormGroup
                           value={selectedOptionExpiry}
                           onChange={handleExpiryChange}
-                        // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+                          // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
                         >
                           <FormControlLabel
                             control={
                               <Checkbox
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
-                                  '&.Mui-checked': {
+                                  "&.Mui-checked": {
                                     color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
-                                checked={selectedOptionExpiry.includes("expired")}
+                                checked={selectedOptionExpiry.includes(
+                                  "expired"
+                                )}
                                 value="expired"
-
                               />
                             }
                             label="Expired"
@@ -1029,7 +1021,7 @@ const InventoryList = () => {
                               <Checkbox
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
-                                  '&.Mui-checked': {
+                                  "&.Mui-checked": {
                                     color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
@@ -1046,7 +1038,7 @@ const InventoryList = () => {
                               <Checkbox
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
-                                  '&.Mui-checked': {
+                                  "&.Mui-checked": {
                                     color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
@@ -1063,7 +1055,7 @@ const InventoryList = () => {
                               <Checkbox
                                 sx={{
                                   color: "#628a2f", // Color for unchecked checkboxes
-                                  '&.Mui-checked': {
+                                  "&.Mui-checked": {
                                     color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                   },
                                 }}
@@ -1083,7 +1075,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Stock</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Stock
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1094,10 +1088,10 @@ const InventoryList = () => {
                         name="radio-buttons-group"
                         sx={{
                           color: "var(--COLOR_UI_PHARMACY)", // Apply color to labels
-                          '& .MuiRadio-root': {
+                          "& .MuiRadio-root": {
                             color: "#628a2f", // Unchecked radio button color
                           },
-                          '& .Mui-checked': {
+                          "& .Mui-checked": {
                             color: "var(--COLOR_UI_PHARMACY)", // Checked radio button color
                           },
                         }}
@@ -1131,7 +1125,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Company</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Company
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1167,7 +1163,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Drug Group</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Drug Group
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1203,7 +1201,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>GST</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    GST
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1215,7 +1215,7 @@ const InventoryList = () => {
                             <Checkbox
                               sx={{
                                 color: "#628a2f", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
+                                "&.Mui-checked": {
                                   color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
@@ -1235,7 +1235,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Location</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Location
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1272,7 +1274,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>HSN Code</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    HSN Code
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1292,7 +1296,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>Margin%</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    Margin%
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1326,7 +1332,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>MRP</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    MRP
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1360,7 +1368,9 @@ const InventoryList = () => {
               </Accordion>
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>PTR</Typography>
+                  <Typography style={{ color: "var(--COLOR_UI_PHARMACY)" }}>
+                    PTR
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ListItem disablePadding>
@@ -1394,11 +1404,15 @@ const InventoryList = () => {
               </Accordion>
               <Divider className="divider_btm" />
             </Box>
-            <Box className="flex justify-around mt-8" style={{
-              gap: "2%",
-              paddingLeft: '15px', paddingRight: '15px',
-              paddingBottom: '20px'
-            }}>
+            <Box
+              className="flex justify-around mt-8"
+              style={{
+                gap: "2%",
+                paddingLeft: "15px",
+                paddingRight: "15px",
+                paddingBottom: "20px",
+              }}
+            >
               <Button
                 variant="contained"
                 style={{
@@ -1408,7 +1422,10 @@ const InventoryList = () => {
                   width: "50%",
                 }}
                 onFocus={(e) => (e.target.style.boxShadow = "none")}
-                onClick={() => { handleReset(); setDrawerOpen(false) }}
+                onClick={() => {
+                  handleReset();
+                  setDrawerOpen(false);
+                }}
               >
                 Reset
               </Button>
@@ -1420,661 +1437,679 @@ const InventoryList = () => {
                   color: "white",
                   size: "large",
                 }}
-                onClick={() => { handleSearch(); setDrawerOpen(false) }}
+                onClick={() => {
+                  handleSearch();
+                  setDrawerOpen(false);
+                }}
               >
                 Apply Filter
               </Button>
             </Box>
           </Box>
         </Drawer>
-
       </div>
-    {/*<======================================================================== main table ========================================================================>*/}
-  
-      <Box className="flex flex-wrap md:flex-nowrap "
-      // style={{ overflow: "hidden" }}
+      {/*<======================================================================== main table ========================================================================>*/}
+
+      <Box
+        className="flex flex-wrap md:flex-nowrap "
+        // style={{ overflow: "hidden" }}
       >
         <Box className="side_contn">
-          <Box
-            className="custom-scroll"
-            sx={{
-              width: {
-                xs: "100%",
-                sm: 300,
-              },
-              // position: "sticky",
-              // top: 0,
-              // height: "100vh",
-              height: {
-                xs: "calc(100vh - 100px)",
-                sm: 800,
-              },
-              overflowY: "auto",
-              padding: {
-                xs: "10px",
-                sm: "15px",
-              },
-            }}
-            role="presentation"
-            onClick={() => toggleDrawer(false)}
-          >
-            <Box>
-              <h1
-                className="text-2xl flex items-center justify-start p-2"
-                style={{ color: "var(--color1)" }}
-              >
-                Inventory
-                <BsLightbulbFill className="ml-4 secondary hover-yellow" />
-              </h1>
-            </Box>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }} sx={{ my: 0 }}>
-                  Items
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <FormControl>
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      defaultValue="items"
-                      name="radio-buttons-group"
-                      value={selectedOption}
-                      sx={{
-                        color: "var(--color1)", // Apply color to labels
-                        '& .MuiRadio-root': {
-                          color: "var(--color2)", // Unchecked radio button color
-                        },
-                        '& .Mui-checked': {
-                          color: "var(--color1)", // Checked radio button color
-                        },
-                      }}
-                      onChange={(e) => setSelectedOption(e.target.value)}
-                    >
-                      <FormControlLabel
-                        value="all_Items"
-                        control={<Radio />}
-                        label="All Items"
-                      />
-                      <FormControlLabel
-                        value="only_Newly_Added_Items"
-                        control={<Radio />}
-                        label="Only Newly Added Items"
-                      />
-                      <FormControlLabel
-                        value="discontinued_items"
-                        control={<Radio />}
-                        label="Discontinued Items"
-                      />
-                      <FormControlLabel
-                        value="only_Not_Set_HSN_Code"
-                        control={<Radio />}
-                        label="Only Not Set HSN Code"
-                      />
-                      <FormControlLabel
-                        value="only_Not_Set_Categories"
-                        control={<Radio />}
-                        label="Only Not Set Categories"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Category</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <FormGroup>
-                    {categoryList.map((category) => (
-                      <FormControlLabel
-                        key={category.id}
-                        control={
-                          <Checkbox
-                            sx={{
-                              color: "var(--color2)", // Color for unchecked checkboxes
-                              '&.Mui-checked': {
-                                color: "var(--color1)", // Color for checked checkboxes
-                              },
-                            }}
-
-                            checked={selectedCategoryIds.includes(category.id)}
-                            onChange={(event) =>
-                              handleCheckboxChange(event, category.id)
-                            }
-                            name={category.name}
-                          />
-                        }
-                        label={category.category_name}
-                      />
-                    ))}
-                  </FormGroup>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>
-                  Packging Type
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <FormGroup>
-                    {packgingTypeList.map((packging) => (
-                      <FormControlLabel
-                        key={packging.id}
-                        control={
-                          <Checkbox
-                            sx={{
-                              color: "var(--color2)", // Color for unchecked checkboxes
-                              '&.Mui-checked': {
-                                color: "var(--color1)", // Color for checked checkboxes
-                              },
-                            }}
-                            checked={selectedPackgingIds.includes(packging.id)}
-                            onChange={(event) =>
-                              handleCheckboxPackging(event, packging.id)
-                            }
-                            name={packging.name}
-                          />
-                        }
-                        label={packging.packging_name}
-                      />
-                    ))}
-                  </FormGroup>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Expiry</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <AccordionDetails>
-                    <ListItem disablePadding>
-                      <FormGroup
-                        value={selectedOptionExpiry}
-                        onChange={handleExpiryChange}
-                      // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+          <div className="sticky top-0">
+            <Box
+              className="custom-scroll invntry-filter" 
+              role="presentation"
+              onClick={() => toggleDrawer(false)}
+            >
+              <Box>
+                <h1
+                  className="text-2xl flex items-center justify-start px-2 pb-2"
+                  style={{ color: "var(--color1)" }}
+                >
+                  Inventory
+                  <BsLightbulbFill className="ml-4 secondary hover-yellow" />
+                </h1>
+              </Box>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }} sx={{ my: 0 }}>
+                    Items
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <FormControl>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="items"
+                        name="radio-buttons-group"
+                        value={selectedOption}
+                        sx={{
+                          color: "var(--color1)", // Apply color to labels
+                          "& .MuiRadio-root": {
+                            color: "var(--color2)", // Unchecked radio button color
+                          },
+                          "& .Mui-checked": {
+                            color: "var(--color1)", // Checked radio button color
+                          },
+                        }}
+                        onChange={(e) => setSelectedOption(e.target.value)}
                       >
                         <FormControlLabel
-                          control={
-                            <Checkbox
-                              sx={{
-                                color: "var(--color2)", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
-                                  color: "var(--color1)", // Color for checked checkboxes
-                                },
-                              }}
-                              checked={selectedOptionExpiry.includes("expired")}
-                              value="expired"
-
-                            />
-                          }
-                          label="Expired"
+                          value="all_Items"
+                          control={<Radio />}
+                          label="All Items"
                         />
                         <FormControlLabel
-                          control={
-                            <Checkbox
-                              sx={{
-                                color: "var(--color2)", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
-                                  color: "var(--color1)", // Color for checked checkboxes
-                                },
-                              }}
-                              checked={selectedOptionExpiry.includes(
-                                "next_month"
-                              )}
-                              value="next_month"
-                            />
-                          }
-                          label="Next Month"
+                          value="only_Newly_Added_Items"
+                          control={<Radio />}
+                          label="Only Newly Added Items"
                         />
                         <FormControlLabel
-                          control={
-                            <Checkbox
-                              sx={{
-                                color: "var(--color2)", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
-                                  color: "var(--color1)", // Color for checked checkboxes
-                                },
-                              }}
-                              checked={selectedOptionExpiry.includes(
-                                "next_two_month"
-                              )}
-                              value="next_two_month"
-                            />
-                          }
-                          label="Next 2 Month"
+                          value="discontinued_items"
+                          control={<Radio />}
+                          label="Discontinued Items"
                         />
                         <FormControlLabel
+                          value="only_Not_Set_HSN_Code"
+                          control={<Radio />}
+                          label="Only Not Set HSN Code"
+                        />
+                        <FormControlLabel
+                          value="only_Not_Set_Categories"
+                          control={<Radio />}
+                          label="Only Not Set Categories"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Category
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <FormGroup>
+                      {categoryList.map((category) => (
+                        <FormControlLabel
+                          key={category.id}
                           control={
                             <Checkbox
                               sx={{
                                 color: "var(--color2)", // Color for unchecked checkboxes
-                                '&.Mui-checked': {
+                                "&.Mui-checked": {
                                   color: "var(--color1)", // Color for checked checkboxes
                                 },
                               }}
-                              checked={selectedOptionExpiry.includes(
-                                "next_three_month"
+                              checked={selectedCategoryIds.includes(
+                                category.id
                               )}
-                              value="next_three_month"
+                              onChange={(event) =>
+                                handleCheckboxChange(event, category.id)
+                              }
+                              name={category.name}
                             />
                           }
-                          label="Next 3 Month"
+                          label={category.category_name}
                         />
-                      </FormGroup>
-                    </ListItem>
-                  </AccordionDetails>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Stock</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <FormControl>
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      defaultValue="items"
-                      name="radio-buttons-group"
-                      sx={{
-                        color: "var(--color1)", // Apply color to labels
-                        '& .MuiRadio-root': {
-                          color: "var(--color2)", // Unchecked radio button color
-                        },
-                        '& .Mui-checked': {
-                          color: "var(--color1)", // Checked radio button color
-                        },
-                      }}
-                      value={selectedOptionStock}
-                      onChange={(e) => setSelectedOptionStock(e.target.value)}
-                    >
-                      <FormControlLabel
-                        value="0_15"
-                        control={<Radio />}
-                        label="0 to 15"
-                      />
-                      <FormControlLabel
-                        value="15_30"
-                        control={<Radio />}
-                        label="15 to 30"
-                      />
-                      <FormControlLabel
-                        value="above_30"
-                        control={<Radio />}
-                        label="Above 30"
-                      />
-                      <FormControlLabel
-                        value="minus_one"
-                        control={<Radio />}
-                        label="Minus Stock"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Company</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={companyList}
-                    size="small"
-                    value={manufacturer}
-                    onChange={(e, value) => {
-                      setManufacturer(value);
-                      if (e.type === "keydown" && e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                    sx={{ width: 350 }}
-                    getOptionLabel={(option) => option.company_name}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                        label="Select Company"
-                        onFocus={() => setIsAutocompleteFocused(true)}
-                        onBlur={() => setIsAutocompleteFocused(false)}
-                      />
-                    )}
-                    ref={autocompleteRef}
-                  />
-                  {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Drug Group</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={drugGroupList}
-                    size="small"
-                    value={drugGroup}
-                    sx={{ width: 350 }}
-                    onChange={(e, value) => {
-                      setDrugGroup(value);
-                      if (e.type === "keydown" && e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                        label="Select DrugGroup"
-                        onFocus={() => setIsAutocompleteFocused(true)}
-                        onBlur={() => setIsAutocompleteFocused(false)}
-                      />
-                    )}
-                    ref={autocompleteRef}
-                  />
-                  {/* <TextField
-                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>GST</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <FormGroup>
-                    {gstList.map((gst) => (
-                      <FormControlLabel
-                        key={gst.id}
-                        control={
-                          <Checkbox
-                            sx={{
-                              color: "var(--color2)", // Color for unchecked checkboxes
-                              '&.Mui-checked': {
-                                color: "var(--color1)", // Color for checked checkboxes
-                              },
-                            }}
-                            checked={selectedGstIds.includes(gst.id)}
-                            onChange={(event) =>
-                              handleCheckboxChangeGst(event, gst.id)
+                      ))}
+                    </FormGroup>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Packging Type
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <FormGroup>
+                      {packgingTypeList.map((packging) => (
+                        <FormControlLabel
+                          key={packging.id}
+                          control={
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                "&.Mui-checked": {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
+                              checked={selectedPackgingIds.includes(
+                                packging.id
+                              )}
+                              onChange={(event) =>
+                                handleCheckboxPackging(event, packging.id)
+                              }
+                              name={packging.name}
+                            />
+                          }
+                          label={packging.packging_name}
+                        />
+                      ))}
+                    </FormGroup>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Expiry
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <AccordionDetails>
+                      <ListItem disablePadding>
+                        <FormGroup
+                          value={selectedOptionExpiry}
+                          onChange={handleExpiryChange}
+                          // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                sx={{
+                                  color: "var(--color2)", // Color for unchecked checkboxes
+                                  "&.Mui-checked": {
+                                    color: "var(--color1)", // Color for checked checkboxes
+                                  },
+                                }}
+                                checked={selectedOptionExpiry.includes(
+                                  "expired"
+                                )}
+                                value="expired"
+                              />
                             }
-                            name={gst.name}
+                            label="Expired"
                           />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                sx={{
+                                  color: "var(--color2)", // Color for unchecked checkboxes
+                                  "&.Mui-checked": {
+                                    color: "var(--color1)", // Color for checked checkboxes
+                                  },
+                                }}
+                                checked={selectedOptionExpiry.includes(
+                                  "next_month"
+                                )}
+                                value="next_month"
+                              />
+                            }
+                            label="Next Month"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                sx={{
+                                  color: "var(--color2)", // Color for unchecked checkboxes
+                                  "&.Mui-checked": {
+                                    color: "var(--color1)", // Color for checked checkboxes
+                                  },
+                                }}
+                                checked={selectedOptionExpiry.includes(
+                                  "next_two_month"
+                                )}
+                                value="next_two_month"
+                              />
+                            }
+                            label="Next 2 Month"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                sx={{
+                                  color: "var(--color2)", // Color for unchecked checkboxes
+                                  "&.Mui-checked": {
+                                    color: "var(--color1)", // Color for checked checkboxes
+                                  },
+                                }}
+                                checked={selectedOptionExpiry.includes(
+                                  "next_three_month"
+                                )}
+                                value="next_three_month"
+                              />
+                            }
+                            label="Next 3 Month"
+                          />
+                        </FormGroup>
+                      </ListItem>
+                    </AccordionDetails>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Stock
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <FormControl>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="items"
+                        name="radio-buttons-group"
+                        sx={{
+                          color: "var(--color1)", // Apply color to labels
+                          "& .MuiRadio-root": {
+                            color: "var(--color2)", // Unchecked radio button color
+                          },
+                          "& .Mui-checked": {
+                            color: "var(--color1)", // Checked radio button color
+                          },
+                        }}
+                        value={selectedOptionStock}
+                        onChange={(e) => setSelectedOptionStock(e.target.value)}
+                      >
+                        <FormControlLabel
+                          value="0_15"
+                          control={<Radio />}
+                          label="0 to 15"
+                        />
+                        <FormControlLabel
+                          value="15_30"
+                          control={<Radio />}
+                          label="15 to 30"
+                        />
+                        <FormControlLabel
+                          value="above_30"
+                          control={<Radio />}
+                          label="Above 30"
+                        />
+                        <FormControlLabel
+                          value="minus_one"
+                          control={<Radio />}
+                          label="Minus Stock"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Company
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={companyList}
+                      size="small"
+                      value={manufacturer}
+                      onChange={(e, value) => {
+                        setManufacturer(value);
+                        if (e.type === "keydown" && e.key === "Enter") {
+                          handleSearch();
                         }
-                        label={gst.name}
-                      />
-                    ))}
-                  </FormGroup>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Location</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={locationList}
-                    size="small"
-                    value={location}
-                    sx={{ width: 350 }}
-                    onChange={(e, value) => {
-                      setLocation(value);
-                      if (e.type === "keydown" && e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                    getOptionLabel={(option) => option}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                        label="Select Location"
-                        onFocus={() => setIsAutocompleteFocused(true)}
-                        onBlur={() => setIsAutocompleteFocused(false)}
-                      />
-                    )}
-                    ref={autocompleteRef}
-                  />
+                      }}
+                      sx={{ width: 350 }}
+                      getOptionLabel={(option) => option.company_name}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete="off"
+                          {...params}
+                          label="Select Company"
+                          onFocus={() => setIsAutocompleteFocused(true)}
+                          onBlur={() => setIsAutocompleteFocused(false)}
+                        />
+                      )}
+                      ref={autocompleteRef}
+                    />
+                    {/* <TextField
+                 autoComplete="off" id="outlined-basic" label="Type Company" variant="outlined" size="small" value={manufacturer} onChange={(e) => { setManufacturer(e.target.value) }} /> */}
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Drug Group
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={drugGroupList}
+                      size="small"
+                      value={drugGroup}
+                      sx={{ width: 350 }}
+                      onChange={(e, value) => {
+                        setDrugGroup(value);
+                        if (e.type === "keydown" && e.key === "Enter") {
+                          handleSearch();
+                        }
+                      }}
+                      getOptionLabel={(option) => option.name}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete="off"
+                          {...params}
+                          label="Select DrugGroup"
+                          onFocus={() => setIsAutocompleteFocused(true)}
+                          onBlur={() => setIsAutocompleteFocused(false)}
+                        />
+                      )}
+                      ref={autocompleteRef}
+                    />
+                    {/* <TextField
+                 autoComplete="off" id="outlined-basic" label="Type DrugGroup" variant="outlined" size="small" value={drugGroup} onChange={(e) => { setDrugGroup(e.target.value) }} /> */}
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    GST
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <FormGroup>
+                      {gstList.map((gst) => (
+                        <FormControlLabel
+                          key={gst.id}
+                          control={
+                            <Checkbox
+                              sx={{
+                                color: "var(--color2)", // Color for unchecked checkboxes
+                                "&.Mui-checked": {
+                                  color: "var(--color1)", // Color for checked checkboxes
+                                },
+                              }}
+                              checked={selectedGstIds.includes(gst.id)}
+                              onChange={(event) =>
+                                handleCheckboxChangeGst(event, gst.id)
+                              }
+                              name={gst.name}
+                            />
+                          }
+                          label={gst.name}
+                        />
+                      ))}
+                    </FormGroup>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Location
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={locationList}
+                      size="small"
+                      value={location}
+                      sx={{ width: 350 }}
+                      onChange={(e, value) => {
+                        setLocation(value);
+                        if (e.type === "keydown" && e.key === "Enter") {
+                          handleSearch();
+                        }
+                      }}
+                      getOptionLabel={(option) => option}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete="off"
+                          {...params}
+                          label="Select Location"
+                          onFocus={() => setIsAutocompleteFocused(true)}
+                          onBlur={() => setIsAutocompleteFocused(false)}
+                        />
+                      )}
+                      ref={autocompleteRef}
+                    />
 
-                  {/* <TextField
+                    {/* <TextField
                  autoComplete="off" id="outlined-basic" label="Type Location" variant="outlined" size="small" value={location} onChange={((e) => { setLocation(e.target.value) })} /> */}
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>HSN Code</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    label="Type HSN Code"
-                    variant="outlined"
-                    size="small"
-                    value={hsnCode}
-                    onChange={(e) => {
-                      setHsnCode(e.target.value);
-                    }}
-                  />
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>Margin%</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    placeholder="10"
-                    value={marginStart}
-                    onChange={(e) => {
-                      setMarginStart(e.target.value);
-                    }}
-                    sx={{ mx: 1 }}
-                  />
-                  to
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    placeholder="25"
-                    value={marginEnd}
-                    onChange={(e) => {
-                      setMarginEnd(e.target.value);
-                    }}
-                    sx={{ mx: 1 }}
-                  />
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>MRP</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    value={mrpStart}
-                    onChange={(e) => {
-                      setMRPStart(e.target.value);
-                    }}
-                    placeholder="1"
-                    sx={{ mx: 1 }}
-                  />
-                  to
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    value={mrpEnd}
-                    onChange={(e) => {
-                      setMRPEnd(e.target.value);
-                    }}
-                    placeholder="100"
-                    sx={{ mx: 1 }}
-                  />
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography style={{ color: "var(--color1)" }}>PTR</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem disablePadding>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    value={ptrStart}
-                    onChange={(e) => {
-                      setPTRStart(e.target.value);
-                    }}
-                    placeholder="1"
-                    sx={{ mx: 1 }}
-                  />
-                  to
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                    value={ptrEnd}
-                    onChange={(e) => {
-                      setPTREnd(e.target.value);
-                    }}
-                    placeholder="100"
-                    sx={{ mx: 1 }}
-                  />
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-            <Divider className="divider_btm" />
-          </Box>
-          <Box className="flex justify-around mt-8">
-            <Button
-              variant="contained"
-              style={{
-                background: "var(--color6)",
-                outline: "none",
-                boxShadow: "none",
-              }}
-              onFocus={(e) => (e.target.style.boxShadow = "none")}
-              onClick={handleReset}
-            >
-              Reset
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "var(--color1)",
-                color: "white",
-              }}
-              onClick={handleSearch}
-            >
-              Apply Filter
-            </Button>
-          </Box>
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    HSN Code
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      label="Type HSN Code"
+                      variant="outlined"
+                      size="small"
+                      value={hsnCode}
+                      onChange={(e) => {
+                        setHsnCode(e.target.value);
+                      }}
+                    />
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    Margin%
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      placeholder="10"
+                      value={marginStart}
+                      onChange={(e) => {
+                        setMarginStart(e.target.value);
+                      }}
+                      sx={{ mx: 1 }}
+                    />
+                    to
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      placeholder="25"
+                      value={marginEnd}
+                      onChange={(e) => {
+                        setMarginEnd(e.target.value);
+                      }}
+                      sx={{ mx: 1 }}
+                    />
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    MRP
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      value={mrpStart}
+                      onChange={(e) => {
+                        setMRPStart(e.target.value);
+                      }}
+                      placeholder="1"
+                      sx={{ mx: 1 }}
+                    />
+                    to
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      value={mrpEnd}
+                      onChange={(e) => {
+                        setMRPEnd(e.target.value);
+                      }}
+                      placeholder="100"
+                      sx={{ mx: 1 }}
+                    />
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography style={{ color: "var(--color1)" }}>
+                    PTR
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ListItem disablePadding>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      value={ptrStart}
+                      onChange={(e) => {
+                        setPTRStart(e.target.value);
+                      }}
+                      placeholder="1"
+                      sx={{ mx: 1 }}
+                    />
+                    to
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      variant="outlined"
+                      size="small"
+                      value={ptrEnd}
+                      onChange={(e) => {
+                        setPTREnd(e.target.value);
+                      }}
+                      placeholder="100"
+                      sx={{ mx: 1 }}
+                    />
+                  </ListItem>
+                </AccordionDetails>
+              </Accordion>
+              <Divider className="divider_btm" />
+            </Box>
+            <Box className="flex gap-2 mt-6 px-6">
+              <Button className="w-full"
+                variant="contained"
+                style={{
+                  background: "var(--color6)",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                onFocus={(e) => (e.target.style.boxShadow = "none")}
+                onClick={handleReset}
+              >
+                Reset
+              </Button>
+              <Button className="w-full"
+                variant="contained"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                }}
+                onClick={handleSearch}
+              >
+                Apply Filter
+              </Button>
+            </Box>
+          </div>
         </Box>
 
-        <Box className="pl-3 pr-3 pt-3 tbl_content_inv" sx={{ width: "100%" }}>
-          <div className="row gap-3 mt-2 mb-3 flex-wrap">
+        <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
+          <div className="row gap-3 mb-3 flex-wrap">
             <Button
               variant="contained"
               style={{
-                background: "#F45156",
+                background: "rgb(14 86 143)",
                 color: "white",
               }}
-onClick={()=>{handleSearch("items_with_missing_hsn")}}
+              onClick={() => {
+                handleSearch("items_with_missing_hsn");
+              }}
             >
               Missing HSN : {missingData.items_with_missing_hsn}
             </Button>
             <Button
               variant="contained"
               style={{
-                background: "#F45156",
+                background: "rgb(14 86 143)",
                 color: "white",
               }}
-              onClick={()=>{handleSearch("items_with_invalid_mrp")}}
-
+              onClick={() => {
+                handleSearch("items_with_invalid_mrp");
+              }}
             >
               invalid MRP : {missingData.items_with_invalid_mrp}
             </Button>
             <Button
               variant="contained"
               style={{
-                background: "#F45156",
+                background: "rgb(14 86 143)",
                 color: "white",
               }}
-              onClick={()=>{handleSearch("items_with_missing_location")}}
-
+              onClick={() => {
+                handleSearch("items_with_missing_location");
+              }}
             >
               Missing Location : {missingData.items_with_missing_location}
             </Button>
             <Button
               variant="contained"
               style={{
-                background: "#F45156",
+                background: "rgb(14 86 143)",
                 color: "white",
               }}
-              onClick={()=>{handleSearch("items_with_missing_category")}}
-
+              onClick={() => {
+                handleSearch("items_with_missing_category");
+              }}
             >
               Missing Category :{missingData.items_with_missing_category}
-            </Button>
-
+            </Button> 
             <Button
               variant="contained"
               style={{
-                background: "#F45156",
+                background: "rgb(14 86 143)",
                 color: "white",
                 size: "large",
               }}
-              onClick={()=>{handleSearch("items_with_invalid_price")}}
-
+              onClick={() => {
+                handleSearch("items_with_invalid_price");
+              }}
             >
               Invalid Price : {missingData.items_with_invalid_price}
             </Button>
           </div>
 
-          <div className="flex flex-wrap  justify-between mb-4 relative inventory_search_main">
+          <div className="flex flex-wrap  justify-between relative inventory_search_main">
             <TextField
               autoComplete="off"
               className="inventory_search"
@@ -2123,13 +2158,13 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                 }}
                 onClick={handleFilterData}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="/csv-file.png"
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src="/csv-file.png"
                     className="report-icon absolute mr-10"
                     alt="csv Icon"
                   />
                 </div>
-
                 Download
               </Button>
 
@@ -2156,10 +2191,24 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
             </div>
           </div>
           {data.length > 0 ? (
-            <TableContainer component={Paper} style={{ width: "100%", paddingInline: "25px", paddingBlock: "0px" }}>
+            <TableContainer
+              component={Paper}
+              style={{
+                width: "100%",
+                paddingInline: "25px",
+                paddingBlock: "0px",
+              }}
+            >
               <div className="table-responsive">
-                <table className="custom-table custom-table-invantory cusror-pointer" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
-                  <thead >
+                <table
+                  className="custom-table custom-table-invantory cusror-pointer"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
                     <tr>
                       <th>
                         {/* <input
@@ -2179,7 +2228,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                         <Checkbox
                           sx={{
                             color: "#628a2f", // Color for unchecked checkboxes
-                            '&.Mui-checked': {
+                            "&.Mui-checked": {
                               color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                             },
                           }}
@@ -2195,44 +2244,55 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                           }}
                         />
                       </th>
-                      <th className="cursor-pointer" onClick={() => sortByColumn("iteam_name")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("iteam_name")}
+                      >
                         Item Name
                         <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("minimum")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("minimum")}
+                      >
                         Min
                         <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("maximum")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("maximum")}
+                      >
                         Max
-                        <SwapVertIcon
-
-                        />
+                        <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("stock")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("stock")}
+                      >
                         Stock
                         <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("location")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("location")}
+                      >
                         Loc
-                        <SwapVertIcon
-                        />
+                        <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("discount")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("discount")}
+                      >
                         Disc
                         <SwapVertIcon />
                       </th>
-                      <th className="cursor-pointer"
-                        onClick={() => sortByColumn("barcode")}>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("barcode")}
+                      >
                         Barcode No
                         <SwapVertIcon />
                       </th>
-
 
                       {/* <th onClick={() => sortByColumn("totalptr")}>Total PTR <SwapVertIcon /></th> */}
                     </tr>
@@ -2241,15 +2301,13 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                     {data.map((item, index) => (
                       <tr
                         key={index}
-                      // style={{
-                      //   backgroundColor:
-                      //     selectedIndex === index ? "#ceecfd" : "transparent",
-                      //   color: selectedIndex === index ? "black" : "inherit",
-                      // }}
+                        // style={{
+                        //   backgroundColor:
+                        //     selectedIndex === index ? "#ceecfd" : "transparent",
+                        //   color: selectedIndex === index ? "black" : "inherit",
+                        // }}
                       >
-                        <td
-                          style={{ borderRadius: "10px 0 0 10px" }}
-                        >
+                        <td style={{ borderRadius: "10px 0 0 10px" }}>
                           {/* <input
                             type="checkbox"
                             checked={selectedItems.includes(item.id)}
@@ -2258,11 +2316,10 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                           <Checkbox
                             sx={{
                               color: "#628a2f", // Color for unchecked checkboxes
-                              '&.Mui-checked': {
+                              "&.Mui-checked": {
                                 color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                               },
                             }}
-
                             checked={selectedItems.includes(item.id)}
                             onChange={() => handleCheckbox(item.id)}
                           />
@@ -2272,10 +2329,17 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          <div className="itemContainer flex items-center" >
-                            <div className="image-container flex mr-5" style={{ minWidth: "45px" }}>
+                          <div className="itemContainer flex items-center">
+                            <div
+                              className="image-container flex mr-5"
+                              style={{ minWidth: "45px" }}
+                            >
                               <img
-                                src={item.front_photo ? item.front_photo : "./Pharma Medicine-01.png"}
+                                src={
+                                  item.front_photo
+                                    ? item.front_photo
+                                    : "./Pharma Medicine-01.png"
+                                }
                                 alt={item.front_photo ? "Pharma" : "Tablet"}
                                 className="w-10 h-10 ml-2 object-cover cursor-pointer"
                                 style={{ width: "40px", height: "40px" }}
@@ -2283,10 +2347,13 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                             </div>
                             <div
                               className="itemName flex-1"
-                              style={{ fontSize: "15px", paddingTop: "3px" }}
+                              style={{ fontSize: "15px", paddingTop: "3px", }}
                             >
                               {item?.iteam_name?.toUpperCase()}
-                              <div className="text-gray-400 font-normal" style={{ paddingBottom: "3px" }}>
+                              <div
+                                className="text-gray-400 font-normal"
+                                style={{ paddingBottom: "3px" }}
+                              >
                                 <span style={{ fontSize: "14px" }}>
                                   Pack | 1*{item.unit + " " + item.old_unit}
                                 </span>
@@ -2308,10 +2375,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                         >
                           {item.maximum == "null" ? "-" : item.maximum}
                         </td>
-                        <Tooltip
-                          title="Stock Adjusted"
-                          placement="left"
-                          arrow>
+                        <Tooltip title="Stock Adjusted" placement="left" arrow>
                           <td
                           // onClick={() => {
                           //   history.push(`/inventoryView/${item.id}`);
@@ -2330,7 +2394,6 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
 
                               {item.stock == "null" ? "-" : item.stock}
                             </span>
-
                           </td>
                         </Tooltip>
                         {/* <td
@@ -2340,7 +2403,8 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                       >
                         {item.stock == "null" ? "-" : item.stock}
                       </td> */}
-                        <td td
+                        <td
+                          td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
@@ -2362,7 +2426,6 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                         >
                           {item.barcode == "null" ? "-" : item.barcode}
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
@@ -2390,11 +2453,11 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
               </div>
             </div>
           )}
-        </Box >
-      </Box >
-  {/*<======================================================================== stock adjustment dialog ========================================================================>*/}
+        </Box>
+      </Box>
+      {/*<======================================================================== stock adjustment dialog ========================================================================>*/}
 
-      <Dialog open={openAddPopUp}>
+      <Dialog className="custom-dialog modal_991" open={openAddPopUp}>
         <DialogTitle id="alert-dialog-title" className="primary">
           Stock Adjustment
         </DialogTitle>
@@ -2416,7 +2479,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
               className="flex"
               style={{ flexDirection: "column", gap: "19px" }}
             >
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4 justify-">
                 <div>
                   <span className="title primary mb-2">Adjustment Date</span>
                   <DatePicker
@@ -2443,13 +2506,11 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                       <TextField
                         autoComplete="off"
                         {...params}
-                      // label="Select Item"
+                        // label="Select Item"
                       />
                     )}
                   />
                 </div>
-              </div>
-              <div className="flex gap-4">
                 <div>
                   <span className="title mb-2">Batch</span>
                   <Autocomplete
@@ -2463,11 +2524,13 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                     getOptionLabel={(option) => option.batch_number}
                     renderInput={(params) => (
                       <TextField
-                        autoComplete="off" {...params} label="Select Batch" />
+                        autoComplete="off"
+                        {...params}
+                        label="Select Batch"
+                      />
                     )}
                   />
-                </div>
-
+                </div> 
                 <div>
                   <span className="title mb-2">Company</span>
                   <Autocomplete
@@ -2484,13 +2547,11 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                       <TextField
                         autoComplete="off"
                         {...params}
-                      // label="Select Company"
+                        // label="Select Company"
                       />
                     )}
                   />
                 </div>
-              </div>
-              <div className="flex gap-4">
                 <div>
                   <span className="title mb-2">Unit</span>
                   <TextField
@@ -2533,8 +2594,6 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                     }}
                   />
                 </div>
-              </div>
-              <div className="flex gap-4">
                 <div>
                   <span className="title mb-2">Stock </span>
                   <TextField
@@ -2570,7 +2629,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                     value={stockAdjust}
                     onChange={(e) => {
                       const value = parseFloat(e.target.value);
-                      setStockAdjust(value );
+                      setStockAdjust(value);
                     }}
                   />
                 </div>
@@ -2591,7 +2650,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <div className="flex gap-4 mr-4 pb-4">
+          <div className="flex gap-2 mr-4 pb-4">
             <Button
               autoFocus
               variant="contained"
@@ -2624,9 +2683,9 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
         </DialogActions>
       </Dialog>
 
-{/*<=========================================================================== Bulk edit dialog ===========================================================================>*/}
+      {/*<=========================================================================== Bulk edit dialog ===========================================================================>*/}
 
-      <Dialog open={openEdit}>
+      <Dialog className="custom-dialog" open={openEdit}> 
         <DialogTitle id="alert-dialog-title" className="primary">
           Bulk Edit
         </DialogTitle>
@@ -2668,7 +2727,10 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
                   )}
                   renderInput={(params) => (
                     <TextField
-                      autoComplete="off" {...params} label="Select Location" />
+                      autoComplete="off"
+                      {...params}
+                      label="Select Location"
+                    />
                   )}
                   freeSolo
                 />
@@ -2698,7 +2760,10 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
               autoFocus
               variant="contained"
               className="p-5"
-              style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+              }}
               onClick={validateBulkForm}
             >
               Saved
@@ -2716,7 +2781,7 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
       </Dialog>
 
       {/*<=========================================================================== Bulk Order dialog===========================================================================>*/}
-      <Dialog open={bulkOrder}>
+      <Dialog className="custom-dialog" open={bulkOrder}>
         <DialogTitle>
           <WarningAmberRoundedIcon
             sx={{ color: "#F31C1C", marginBottom: "5px", fontSize: "2.5rem" }}
@@ -2724,26 +2789,30 @@ onClick={()=>{handleSearch("items_with_missing_hsn")}}
           Warning
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText className="pt-5">
             Are you sure you want to Place Order?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button className="primary-bg"
-            style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }}
-
-            autoFocus variant="contained" onClick={validateBulkOrder}>
-            Yes
-          </Button>
-          <Button
-            style={{ backgroundColor: "#F31C1C", color: "white" }}
-            autoFocus
-
-            variant="outlined"
-            onClick={() => setBulkOrder(false)}
-          >
-            No
-          </Button>
+          <div className="pb-5 flex gap-2">
+            <Button
+              className="primary-bg"
+              style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)" }}
+              autoFocus
+              variant="contained"
+              onClick={validateBulkOrder}
+            >
+              Yes
+            </Button>
+            <Button
+              style={{ backgroundColor: "#F31C1C", color: "white" }}
+              autoFocus
+              variant="outlined"
+              onClick={() => setBulkOrder(false)}
+            >
+              No
+            </Button>
+          </div>
         </DialogActions>
       </Dialog>
 

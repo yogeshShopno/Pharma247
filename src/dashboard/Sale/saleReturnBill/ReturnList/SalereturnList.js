@@ -556,9 +556,9 @@ const SalereturnList = () => {
                   //         },
                   //     },
                   // }}
-                  className="order_list_ml"
+                  className="order_list_ml custom-dialog"
                 >
-                  <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
+                  <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
                     Generate PDF
                   </DialogTitle>
                   <IconButton

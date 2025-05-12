@@ -36,7 +36,7 @@
     color: var(--color1);
     font-size: 14px;
     border-bottom: 1px solid;
-    border-top: 1px solid;
+    /* border-top: 1px solid; */
 }
 
 .headerList {
@@ -118,7 +118,7 @@ header {
     font-size: 14px;
     letter-spacing: 0.2px;
     border-bottom: 1px solid;
-    border-top: 1px solid;
+    /* border-top: 1px solid; */
 }
 
 

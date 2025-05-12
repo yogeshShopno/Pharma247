@@ -1020,13 +1020,11 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-
           console.log("response", response?.data?.message);
           toast.success(response?.data?.message);
           setTimeout(() => {
             history.push("/purchase/purchasebill");
           }, 2000);
-
         });
     } catch (error) {
       toast.error(error.data.message);
@@ -1332,8 +1330,7 @@ const EditPurchaseBill = () => {
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -1350,15 +1347,15 @@ const EditPurchaseBill = () => {
         </div>
       ) : (
         <div
+          className="p-6"
           style={{
-            height: "calc(100vh - 225px)",
-            padding: "0px 20px",
+            height: "calc(-125px + 100vh)",
             overflow: "auto",
           }}
         >
           <div>
             <div
-              className="py-3 edit_purchs_pg"
+              className=" edit_purchs_pg pb-3"
               style={{ display: "flex", gap: "4px" }}
             >
               <div style={{ display: "flex", gap: "7px" }}>
@@ -1446,7 +1443,11 @@ const EditPurchaseBill = () => {
                 )}
               </div>
             </div>
-            <div className="border-b">
+            <div
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div className="border-b mt-4">
               <div className="firstrow flex">
                 <div
                   className="detail custommedia"
@@ -1558,8 +1559,7 @@ const EditPurchaseBill = () => {
                     <thead>
                       <tr
                         style={{
-                          borderBottom: "1px solid lightgray",
-                          background: "rgba(63, 98, 18, 0.09)",
+                          borderBottom: "1px solid lightgray", 
                         }}
                       >
                         <th>Item Name</th>
@@ -2119,7 +2119,6 @@ const EditPurchaseBill = () => {
               >
                 <label className="font-bold">Total Qty : </label>
                 <span style={{ fontWeight: 600 }}>
-                  
                   {purchase?.total_qty} +
                   <span className="">
                     {purchase?.total_free_qty ? purchase?.total_free_qty : 0}
@@ -2292,7 +2291,7 @@ const EditPurchaseBill = () => {
             </div>
           </div>
           {/* Cn Adjust Edit Revert PopUp Box*/}
-          <Dialog open={openAddPopUp} className="custom-dailog">
+          <Dialog open={openAddPopUp} className="custom-dialog modal_991 ">
             <DialogTitle id="alert-dialog-title" className="secondary">
               {header}
             </DialogTitle>

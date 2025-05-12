@@ -13,8 +13,8 @@ import {
   TextField,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import SaveIcon from '@mui/icons-material/Save';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
+import SaveIcon from "@mui/icons-material/Save";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaPlusCircle } from "react-icons/fa";
 import { MenuItem, Select } from "@mui/material";
@@ -55,14 +55,11 @@ const debounce = (func, delay) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), delay);
   };
-
 };
 
 let debounceTimeout;
 
-
 const AddPurchaseBill = () => {
-
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
   const [marginNetProfit, setMarginNetProfit] = useState(0);
@@ -141,7 +138,6 @@ const AddPurchaseBill = () => {
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
 
-
   const [addDistributorName, setAddDistributorName] = useState("");
   const [addDistributorNo, setAddDistributorNo] = useState("");
   const [addDistributorMobile, setAddDistributorMobile] = useState("");
@@ -159,8 +155,7 @@ const AddPurchaseBill = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [billSaveDraft, setBillSaveDraft] = useState('1');
-
+  const [billSaveDraft, setBillSaveDraft] = useState("1");
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -173,7 +168,7 @@ const AddPurchaseBill = () => {
   ];
 
   const options = {
-  "Skyway": "purchase-item-import",
+    Skyway: "purchase-item-import",
     "Pharma Byte": "pharmabyte-item-import",
     "Marg ERP": "mahalaxmi-item-import",
     "Techno Max": "techno-item-import",
@@ -202,7 +197,6 @@ const AddPurchaseBill = () => {
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
 
-
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
@@ -223,7 +217,6 @@ const AddPurchaseBill = () => {
   }, []);
 
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
-
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -259,7 +252,6 @@ const AddPurchaseBill = () => {
             inputRefs.current[2].focus();
           }
         }
-
       }
     };
 
@@ -275,13 +267,13 @@ const AddPurchaseBill = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
-  
+
       // Allow shortcuts only when Alt or AltGr is pressed
       const isAltCombo = event.altKey || (event.ctrlKey && event.altKey);
       if (!isAltCombo || event.repeat) return;
-  
+
       event.preventDefault();
-  
+
       switch (key) {
         case "s":
           setBillSaveDraft("1");
@@ -297,18 +289,16 @@ const AddPurchaseBill = () => {
           break;
       }
     };
-  
+
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [distributor, billNo, ItemPurchaseList]);
-  
-// Dependencies only affect Alt+S
 
+  // Dependencies only affect Alt+S
 
   const handleKeyDown = (event, index) => {
-
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
@@ -420,7 +410,9 @@ const AddPurchaseBill = () => {
 
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
-    const netRate = parseFloat((totalAmount / (numericQty + numericFree)).toFixed(2));
+    const netRate = parseFloat(
+      (totalAmount / (numericQty + numericFree)).toFixed(2)
+    );
     setNetRate(netRate);
 
     /*<================================================================================= Margin calculation =========================================================================> */
@@ -452,7 +444,7 @@ const AddPurchaseBill = () => {
         .then((response) => {
           setBankData(response.data.data);
           if (response.data.status === 401) {
-            history.push('/');
+            history.push("/");
             localStorage.clear();
           }
         });
@@ -537,10 +529,9 @@ const AddPurchaseBill = () => {
   /*<============================================================================ download selected file =========================================================================> */
 
   const handleDownload = () => {
- 
     let fileName = "";
     let filePath = "";
-  
+
     switch (importConpany) {
       case "Skyway":
         fileName = "Skyway.csv";
@@ -563,7 +554,7 @@ const AddPurchaseBill = () => {
         toast.error("Unknown company selected. Downloading default file.");
         break;
     }
-  
+
     const link = document.createElement("a");
     link.href = filePath;
     link.download = fileName;
@@ -571,12 +562,10 @@ const AddPurchaseBill = () => {
     link.click();
     document.body.removeChild(link);
   };
-  
 
   /*<============================================================================ barcode functionality =========================================================================> */
 
   const handleBarcode = async () => {
-
     setIsEditMode(false);
     if (!barcode) {
       return;
@@ -585,183 +574,188 @@ const AddPurchaseBill = () => {
     /*<=========================================================================== get barcode batch list ========================================================================> */
 
     try {
-      const res = axios.post("barcode-batch-list?", { barcode: barcode },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ).then((response) => {
+      const res = axios
+        .post(
+          "barcode-batch-list?",
+          { barcode: barcode },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          setTimeout(() => {
+            const handleBarcodeItem = async () => {
+              setUnsavedItems(true);
+              let data = new FormData();
 
-        setTimeout(() => {
-          const handleBarcodeItem = async () => {
-            setUnsavedItems(true);
-            let data = new FormData();
-
-            data.append(
-              "random_number",
-              localStorage.getItem("RandomNumber")
-            );
-            data.append(
-              "weightage",
-              Number(response?.data?.data[0]?.batch_list[0]?.unit)
-            );
-            data.append(
-              "batch_number",
-              response?.data?.data[0]?.batch_list[0]?.batch_name
-                ? response?.data?.data[0]?.batch_list[0]?.batch_name
-                : 0
-            );
-            data.append(
-              "expiry",
-              response?.data?.data[0]?.batch_list[0]?.expiry_date
-            );
-            data.append(
-              "mrp",
-              Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                : 0
-            );
-            data.append(
-              "qty",
-              Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                : 0
-            );
-            data.append(
-              "free_qty",
-              Number(
-                response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-              )
-                ? Number(
+              data.append(
+                "random_number",
+                localStorage.getItem("RandomNumber")
+              );
+              data.append(
+                "weightage",
+                Number(response?.data?.data[0]?.batch_list[0]?.unit)
+              );
+              data.append(
+                "batch_number",
+                response?.data?.data[0]?.batch_list[0]?.batch_name
+                  ? response?.data?.data[0]?.batch_list[0]?.batch_name
+                  : 0
+              );
+              data.append(
+                "expiry",
+                response?.data?.data[0]?.batch_list[0]?.expiry_date
+              );
+              data.append(
+                "mrp",
+                Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+                  : 0
+              );
+              data.append(
+                "qty",
+                Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                  : 0
+              );
+              data.append(
+                "free_qty",
+                Number(
                   response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
                 )
-                : 0
-            );
-            data.append(
-              "ptr",
-              Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                : 0
-            );
-            data.append(
-              "discount",
-              Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                ? Number(
-                  response?.data?.data[0]?.batch_list[0]?.scheme_account
-                )
-                : 0
-            );
-            data.append(
-              "scheme_account",
-              Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                ? Number(
-                  response?.data?.data[0]?.batch_list[0]?.scheme_account
-                )
-                : 0
-            );
-            data.append(
-              "base_price",
-              Number(response?.data?.data[0]?.batch_list[0]?.base)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-                : 0
-            );
-            const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
-            const gstValue = Number(response?.data?.data[0]?.batch_list[0]?.gst);
-            data.append("gst", gstMapping[gstValue] ?? gstValue);
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                    )
+                  : 0
+              );
+              data.append(
+                "ptr",
+                Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+                  : 0
+              );
+              data.append(
+                "discount",
+                Number(response?.data?.data[0]?.batch_list[0]?.discount)
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.scheme_account
+                    )
+                  : 0
+              );
+              data.append(
+                "scheme_account",
+                Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+                  ? Number(
+                      response?.data?.data[0]?.batch_list[0]?.scheme_account
+                    )
+                  : 0
+              );
+              data.append(
+                "base_price",
+                Number(response?.data?.data[0]?.batch_list[0]?.base)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+                  : 0
+              );
+              const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
+              const gstValue = Number(
+                response?.data?.data[0]?.batch_list[0]?.gst
+              );
+              data.append("gst", gstMapping[gstValue] ?? gstValue);
 
-            data.append(
-              "location",
-              response?.data?.data[0]?.batch_list[0]?.location
-                ? response?.data?.data[0]?.batch_list[0]?.location
-                : 0
-            );
-            data.append(
-              "margin",
-              Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                : 0
-            );
-            data.append(
-              "net_rate",
-              Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                : 0
-            );
+              data.append(
+                "location",
+                response?.data?.data[0]?.batch_list[0]?.location
+                  ? response?.data?.data[0]?.batch_list[0]?.location
+                  : 0
+              );
+              data.append(
+                "margin",
+                Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+                  : 0
+              );
+              data.append(
+                "net_rate",
+                Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+                  : 0
+              );
 
-            data.append(
-              "item_id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
-            data.append("unit_id", Number(0));
-            data.append("user_id", userId);
+              data.append(
+                "item_id",
+                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  : 0
+              );
+              data.append("unit_id", Number(0));
+              data.append("user_id", userId);
 
-            data.append(
-              "id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
+              data.append(
+                "id",
+                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+                  : 0
+              );
 
-            data.append(
-              "total_amount",
-              Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                : 0
-            );
+              data.append(
+                "total_amount",
+                Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                  ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+                  : 0
+              );
 
-            const params = {
-              id: selectedEditItemId,
-            };
-            /*<======================================================================= call add item api to add barcode item  ================================================================> */
+              const params = {
+                id: selectedEditItemId,
+              };
+              /*<======================================================================= call add item api to add barcode item  ================================================================> */
 
-            try {
-              const response = await axios.post("item-purchase", data, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              setItemTotalAmount(0);
-              setDeleteAll(true);
-              itemPurchaseList();
-              setUnit("");
-              setBatch("");
-              setHSN("");
-              setExpiryDate("");
-              setMRP("");
-              setQty("");
-              setFree("");
-              setPTR("");
-              setGst("");
-              setDisc("");
-              setBase("");
-              setNetRate("");
-              setSchAmt("");
-              setMargin("");
-              setLoc("");
-              setIsEditMode(false);
-              setSelectedEditItemId(null);
-              setBarcode("");
-              setValue("");
-              setValue("");
-              setSearchItem("");
+              try {
+                const response = await axios.post("item-purchase", data, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+                setItemTotalAmount(0);
+                setDeleteAll(true);
+                itemPurchaseList();
+                setUnit("");
+                setBatch("");
+                setHSN("");
+                setExpiryDate("");
+                setMRP("");
+                setQty("");
+                setFree("");
+                setPTR("");
+                setGst("");
+                setDisc("");
+                setBase("");
+                setNetRate("");
+                setSchAmt("");
+                setMargin("");
+                setLoc("");
+                setIsEditMode(false);
+                setSelectedEditItemId(null);
+                setBarcode("");
+                setValue("");
+                setValue("");
+                setSearchItem("");
 
-              if (ItemTotalAmount <= finalCnAmount) {
-                setFinalCnAmount(0);
-                setSelectedRows([]);
-                setCnTotalAmount({});
+                if (ItemTotalAmount <= finalCnAmount) {
+                  setFinalCnAmount(0);
+                  setSelectedRows([]);
+                  setCnTotalAmount({});
+                }
+              } catch (e) {
+                setUnsavedItems(false);
               }
-            } catch (e) {
-              setUnsavedItems(false);
-            }
-          };
+            };
 
-          handleBarcodeItem();
-        }, 100);
-      });
+            handleBarcodeItem();
+          }, 100);
+        });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
@@ -769,7 +763,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<========================================================================== delete purchase item data   ===================================================================> */
-
 
   const handlePopState = () => {
     let data = new FormData();
@@ -824,7 +817,6 @@ const AddPurchaseBill = () => {
         // gstList.filer((gst) =>(
         //   return age >= 18;
         // )
-
       })
       .catch((error) => {
         setUnsavedItems(false);
@@ -953,7 +945,6 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add and Edit validation  ====================================================================> */
 
   const handleAddButtonClick = async () => {
-
     setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
@@ -998,7 +989,6 @@ const AddPurchaseBill = () => {
     if (!mrp) {
       newErrors.mrp = "MRP is required";
       toast.error(newErrors.expiryDate);
-
     }
     if (!ptr) {
       newErrors.ptr = "PTR is required";
@@ -1008,12 +998,12 @@ const AddPurchaseBill = () => {
     }
     if (!gst) {
       newErrors.gst = "GST is required";
-      toast.error("GST is required")
-    };
+      toast.error("GST is required");
+    }
     if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
       newErrors.gst = "Enter valid GST";
-      toast.error("Enter valid GST")
-    };
+      toast.error("Enter valid GST");
+    }
 
     if (!searchItem) {
       toast.error("Please Select any Item Name");
@@ -1027,17 +1017,15 @@ const AddPurchaseBill = () => {
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       await handleAddItem();
-      setUnsavedItems(true)
-
+      setUnsavedItems(true);
     }
     return isValid;
   };
 
   /*<========================================================================= Add and Edit item function  ====================================================================> */
-  
+
   let debounce = true;
   const handleAddItem = async () => {
-
     setItemAutofoucs(true);
 
     setUnsavedItems(true);
@@ -1046,7 +1034,7 @@ const AddPurchaseBill = () => {
       18: 4,
       12: 3,
       5: 2,
-      0: 1
+      0: 1,
     };
     let data = new FormData();
     data.append("user_id", userId);
@@ -1090,16 +1078,16 @@ const AddPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+            params: params,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
         : await axios.post("item-purchase", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
       setSelectedOption(null);
       setSearchItem("");
       setItemTotalAmount(0);
@@ -1139,8 +1127,12 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */
 
   const handleAddNewDistributor = async () => {
-
-    if (!addDistributorAddress && !addDistributorMobile && !addDistributorName && addDistributorNo) {
+    if (
+      !addDistributorAddress &&
+      !addDistributorMobile &&
+      !addDistributorName &&
+      addDistributorNo
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
@@ -1150,7 +1142,6 @@ const AddPurchaseBill = () => {
     data.append("mobile_no", addDistributorMobile);
     data.append("area", addDistributorAddress);
 
-
     try {
       const response = await axios.post("create-distributer", data, {
         headers: {
@@ -1159,14 +1150,12 @@ const AddPurchaseBill = () => {
       });
 
       if (response.data.status === 200) {
-
         setAddDistributorAddress("");
-        addDistributorMobile("")
-        addDistributorName("")
-        addDistributorNo("")
+        addDistributorMobile("");
+        addDistributorName("");
+        addDistributorNo("");
         inputRefs.current[2].focus();
         toast.success("Item Distributor successfully");
-
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1184,7 +1173,6 @@ const AddPurchaseBill = () => {
   /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
-
     if (!addItemName && !addUnit && !addBarcode) {
       toast.error("Please fill all the fields");
       return;
@@ -1221,15 +1209,13 @@ const AddPurchaseBill = () => {
       });
 
       if (response.data.status === 200) {
-
         setOpenAddItemPopUp(false);
         setOpenAddDistributorPopUp(false);
-        setAddItemName("")
-        setAddBarcode("")
-        setAddUnit("")
+        setAddItemName("");
+        setAddBarcode("");
+        setAddUnit("");
         inputRefs.current[2].focus();
         toast.success("Item added successfully");
-
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1292,7 +1278,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-
   /*<=============================================================================== delete added item  ==========================================================================> */
 
   const handleDeleteItem = async (ItemId) => {
@@ -1324,11 +1309,13 @@ const AddPurchaseBill = () => {
   /*<============================================================================== submit purchase bill  ==========================================================================> */
 
   const submitPurchaseData = async (draft) => {
-
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
-    data.append("bill_date", selectedDate ? format(selectedDate, "yyyy-MM-dd") : "");
+    data.append(
+      "bill_date",
+      selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""
+    );
     data.append("due_date", dueDate ? format(dueDate, "yyyy-MM-dd") : "");
     data.append("owner_type", localStorage.getItem("UserName"));
     data.append("user_id", localStorage.getItem("userId"));
@@ -1415,13 +1402,12 @@ const AddPurchaseBill = () => {
     }
   }, [selectedEditItem]);
 
-
   /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
     setIsEditMode(true);
-    setSelectedEditItemId(item.id)
+    setSelectedEditItemId(item.id);
     setSelectedEditItemId(item.id);
     inputRefs.current[3]?.focus();
   };
@@ -1476,8 +1462,7 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== Distributor select  ==========================================================================> */
-  useEffect(() => {
-  }, [distributor]);
+  useEffect(() => {}, [distributor]);
 
   const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
@@ -1505,7 +1490,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== Discount calculation  ==========================================================================> */
-
 
   const handleSchAmt = (e) => {
     const inputDiscount =
@@ -1673,7 +1657,6 @@ const AddPurchaseBill = () => {
 
   /*<============================================================================== CN Amount Calculation ==========================================================================> */
 
-
   const handleLeavePage = async () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
@@ -1720,14 +1703,14 @@ const AddPurchaseBill = () => {
         draggable
         pauseOnHover
       />
-      <div
-        style={{
-          height: "calc(100vh - 225px)",
-          padding: "0px 20px 0px",
-        }}
-      >
-        <div>
-          <div className="py-3" style={{ display: "flex", gap: "4px" }}>
+      <div className="p-6">
+        <div
+         style={{
+            height: "calc(-125px + 100vh)", 
+            overflow: "auto",
+          }}
+          >
+          <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
             <div style={{ display: "flex", gap: "7px" }}>
               <span
                 style={{
@@ -1761,8 +1744,7 @@ const AddPurchaseBill = () => {
                 New
               </span>
               <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-            </div>
-
+            </div> 
             <div className="headerList">
               <Select
                 labelId="dropdown-label"
@@ -1774,8 +1756,12 @@ const AddPurchaseBill = () => {
                 }}
                 size="small"
               >
-                <MenuItem className=" hover:bg-[var(--color1)]" value="cash">Cash</MenuItem>
-                <MenuItem className=" hover:bg-[var(--color1)]" value="credit">Credit</MenuItem>
+                <MenuItem className=" hover:bg-[var(--color1)]" value="cash">
+                  Cash
+                </MenuItem>
+                <MenuItem className=" hover:bg-[var(--color1)]" value="credit">
+                  Credit
+                </MenuItem>
                 {bankData?.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.bank_name}
@@ -1787,7 +1773,8 @@ const AddPurchaseBill = () => {
                 style={{ backgroundColor: "var(--color1)" }}
                 onClick={() => {
                   setOpenFile(true);
-                }}>
+                }}
+              >
                 <CloudUploadIcon className="mr-2" />
                 Import CSV
               </Button>
@@ -1822,7 +1809,8 @@ const AddPurchaseBill = () => {
               <Button
                 variant="contained"
                 style={{ backgroundColor: "var(--color1)" }}
-                onClick={handelAddItemOpen}>
+                onClick={handelAddItemOpen}
+              >
                 <ControlPointIcon className="mr-2" />
                 Add New Item
               </Button>
@@ -1835,51 +1823,50 @@ const AddPurchaseBill = () => {
               >
                 Save
               </Button>
-
             </div>
             {isOpen && (
               <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
                 <ul className="transition-all ">
-
                   <li
                     onClick={() => {
-                      setBillSaveDraft("1")
-                      handleSubmit("1")
+                      setBillSaveDraft("1");
+                      handleSubmit("1");
                     }}
                     className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                   >
                     <SaveIcon />
-
-
                     Save
                   </li>
                   <li
                     onClick={() => {
-                      setBillSaveDraft("0")
-                      handleSubmit("0")
+                      setBillSaveDraft("0");
+                      handleSubmit("0");
                     }}
                     className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                   >
                     <SaveAsIcon />
-
                     Draft
                   </li>
                 </ul>
               </div>
             )}
           </div>
+          <div
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
           {/*<============================================================================== details at top  =============================================================================> */}
 
-          <div className="bg-white">
+          <div className="mt-4 ">
             <div className="firstrow flex">
-              <div className="flex flex-row gap-4 mx-2">
-                <div >
+              <div className="flex flex-row gap-4 overflow-x-auto w-full">
+                <div>
                   <span className="title mb-2">
                     Distributor
                     <FaPlusCircle
                       className="primary cursor-pointer"
                       onClick={() => {
-                        setOpenAddDistributorPopUp(true)
+                        setOpenAddDistributorPopUp(true);
                       }}
                     />
                   </span>
@@ -1905,7 +1892,8 @@ const AddPurchaseBill = () => {
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
                       />
-                    )} />
+                    )}
+                  />
                   {error.distributor && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       {error.distributor}
@@ -1933,11 +1921,9 @@ const AddPurchaseBill = () => {
                     autoComplete="off"
                     id="outlined-number"
                     size="small"
-                    variant="outlined"
-                    style={{ width: "250px" }}
+                    variant="outlined" 
                     value={billNo}
                     onChange={(e) => {
-
                       setbillNo(e.target.value.toUpperCase());
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
@@ -1960,7 +1946,6 @@ const AddPurchaseBill = () => {
                       onChange={(newDate) => setSelectedDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       filterDate={(date) => !isDateDisabled(date)}
-
                     />
                   </div>
                 </div>
@@ -1975,7 +1960,6 @@ const AddPurchaseBill = () => {
                       onChange={(newDate) => setDueDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       minDate={new Date()}
-
                     />
                   </div>
                 </div>
@@ -2003,22 +1987,19 @@ const AddPurchaseBill = () => {
               {/*<====================================================================== add Item field =====================================================================> */}
 
               <div className="overflow-x-auto w-full">
-
-                <table
-                  className="customtable  w-full  border-collapse custom-table"
-                >
+                <table className="customtable  w-full  border-collapse custom-table">
                   <thead>
                     <tr>
-                      <th >
+                      <th>
                         <div className="flex justify-center items-center gap-2">
                           Search Item Name
                           <FaPlusCircle
                             className="primary cursor-pointer"
                             onClick={() => {
-                              setOpenAddItemPopUp(true)
-                            }} />
+                              setOpenAddItemPopUp(true);
+                            }}
+                          />
                         </div>
-
                       </th>
                       <th>Unit</th>
                       {/* <th>HSN</th> */}
@@ -2057,8 +2038,8 @@ const AddPurchaseBill = () => {
                       <>
                         <tr>
                           {isEditMode ? (
-                            <td className="p-0"  >
-                              <div style={{ width: 350, padding: 0 }} >
+                            <td className="p-0">
+                              <div style={{ width: 350, padding: 0 }}>
                                 <BorderColorIcon
                                   style={{ color: "var(--color1)" }}
                                   onClick={() => setIsEditMode(false)}
@@ -2078,60 +2059,73 @@ const AddPurchaseBill = () => {
                               )}
                             </td>
                           ) : (
-                            <td className="p-0" >
-
-                              {isAutocompleteDisabled && (<Autocomplete
-                                key={autocompleteKey}
-                                value={selectedOption}
-                                // value={searchItem?.iteam_name}
-                                sx={{ width: 350, padding: 0 }}
-                                size="small"
-                                onChange={handleOptionChange}
-                                onInputChange={handleInputChange}
-                                // inputRef={searchItemField}
-                                getOptionLabel={(option) =>
-                                  `${option.iteam_name} `
-                                }
-                                options={itemList}
-                                renderOption={(props, option) => (
-                                  <ListItem {...props}>
-                                    <ListItemText
-                                      primary={`${option.iteam_name}`}
-                                      secondary={` ${option.stock === 0
-                                        ? `Unit: ${option.weightage}`
-                                        : `Pack: ${option.pack}`
-                                        } | MRP: ${option.mrp}  | Location: ${option.location
+                            <td className="p-0">
+                              {isAutocompleteDisabled && (
+                                <Autocomplete
+                                  key={autocompleteKey}
+                                  value={selectedOption}
+                                  // value={searchItem?.iteam_name}
+                                  sx={{ width: 350, padding: 0 }}
+                                  size="small"
+                                  onChange={handleOptionChange}
+                                  onInputChange={handleInputChange}
+                                  // inputRef={searchItemField}
+                                  getOptionLabel={(option) =>
+                                    `${option.iteam_name} `
+                                  }
+                                  options={itemList}
+                                  renderOption={(props, option) => (
+                                    <ListItem {...props}>
+                                      <ListItemText
+                                        primary={`${option.iteam_name}`}
+                                        secondary={` ${
+                                          option.stock === 0
+                                            ? `Unit: ${option.weightage}`
+                                            : `Pack: ${option.pack}`
+                                        } | MRP: ${option.mrp}  | Location: ${
+                                          option.location
                                         }  | Current Stock: ${option.stock}`}
+                                      />
+                                    </ListItem>
+                                  )}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      tabIndex={0}
+                                      variant="outlined"
+                                      autoComplete="off"
+                                      sx={{ width: 350, padding: 0 }}
+                                      // autoFocus={focusedField === "item"}
+                                      {...params}
+                                      // disabled={isAutocompleteDisabled}
+                                      disableOpenOnFocus
+                                      value={searchItem?.iteam_name}
+                                      inputRef={(el) =>
+                                        (inputRefs.current[2] = el)
+                                      }
+                                      onKeyDown={(e) => {
+                                        if (
+                                          !searchItem &&
+                                          (e.key === "ArrowDown" ||
+                                            e.key === "ArrowUp")
+                                        ) {
+                                          tableRef.current.focus();
+
+                                          setTimeout(() => {
+                                            document.activeElement.blur(); // Removes focus from the input
+                                          }, 0);
+                                        } else if (
+                                          searchItem &&
+                                          selectedOption
+                                        ) {
+                                          handleKeyDown(e, 2);
+                                        }
+                                      }}
                                     />
-                                  </ListItem>)}
-                                renderInput={(params) => (
-                                  <TextField
-                                    tabIndex={0}
-                                    variant="outlined"
-                                    autoComplete="off"
-                                    sx={{ width: 350, padding: 0 }}
-                                    // autoFocus={focusedField === "item"}
-                                    {...params}
-                                    // disabled={isAutocompleteDisabled}
-                                    disableOpenOnFocus
-                                    value={searchItem?.iteam_name}
-                                    inputRef={(el) => (inputRefs.current[2] = el)}
-                                    onKeyDown={(e) => {
-                                      if (!searchItem && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
-                                        tableRef.current.focus();
-
-                                        setTimeout(() => {
-                                          document.activeElement.blur(); // Removes focus from the input
-                                        }, 0);
-                                      } else if(searchItem && selectedOption){
-                                        handleKeyDown(e, 2)
-
-                                      } 
-                                    }}
-                                  />
-                                )}
-                              />)}
-                            </td>)}
+                                  )}
+                                />
+                              )}
+                            </td>
+                          )}
 
                           <td>
                             <TextField
@@ -2143,7 +2137,6 @@ const AddPurchaseBill = () => {
                               error={!!errors.unit}
                               value={unit}
                               sx={{ width: "80px" }}
-
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
@@ -2152,7 +2145,9 @@ const AddPurchaseBill = () => {
                                 setUnit(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-                                if (["e", "E", ".", "+", "-", ","].includes(e.key)) {
+                                if (
+                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                                 handleKeyDown(e, 3);
@@ -2170,11 +2165,9 @@ const AddPurchaseBill = () => {
                               variant="outlined"
                               autoComplete="off"
                               id="outlined-number"
-
                               size="small"
                               value={batch}
                               sx={{ width: "100px" }}
-
                               onChange={(e) => {
                                 setBatch(e.target.value);
                               }}
@@ -2194,7 +2187,6 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               size="small"
                               sx={{ width: "100px" }}
-
                               error={!!errors.expiryDate}
                               value={expiryDate}
                               onChange={handleExpiryDate}
@@ -2211,9 +2203,7 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "90px" }}
                               size="small"
-
                               error={!!errors.mrp}
-
                               value={mrp}
                               onChange={(e) => {
                                 const value = e.target.value;
@@ -2229,11 +2219,9 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 6)
-
+                                handleKeyDown(e, 6);
                               }}
                               inputRef={(el) => (inputRefs.current[6] = el)}
-
                             />
                           </td>
                           <td>
@@ -2254,16 +2242,14 @@ const AddPurchaseBill = () => {
                                 setQty(value ? Number(value) : "");
                               }}
                               inputRef={(el) => (inputRefs.current[7] = el)}
-
                               onKeyDown={(e) => {
                                 if (
                                   ["e", "E", ".", "+", "-", ","].includes(e.key)
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 7)
+                                handleKeyDown(e, 7);
                               }}
-
                             />
                           </td>
                           <td>
@@ -2276,7 +2262,6 @@ const AddPurchaseBill = () => {
                               sx={{ width: "60px" }}
                               value={free}
                               error={!!errors.free}
-
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g);
                                 setFree(value ? Number(value) : "");
@@ -2287,10 +2272,9 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 8)
+                                handleKeyDown(e, 8);
                               }}
                               inputRef={(el) => (inputRefs.current[8] = el)}
-
                             />
                           </td>
                           <td>
@@ -2301,7 +2285,6 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "90px" }}
                               size="small"
-
                               value={ptr}
                               error={!!errors.ptr}
                               onKeyDown={(e) => {
@@ -2312,14 +2295,16 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 9)
+                                handleKeyDown(e, 9);
                               }}
                               onChange={(e) => {
-                                const setptr = e.target.value.replace(/[eE]/g, "");
+                                const setptr = e.target.value.replace(
+                                  /[eE]/g,
+                                  ""
+                                );
                                 setPTR(setptr);
                               }}
                               inputRef={(el) => (inputRefs.current[9] = el)}
-
                             />
                           </td>
                           <td>
@@ -2330,7 +2315,6 @@ const AddPurchaseBill = () => {
                               sx={{ width: "65px" }}
                               size="small"
                               type="number"
-
                               value={disc}
                               onKeyDown={(e) => {
                                 if (
@@ -2340,7 +2324,7 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 10)
+                                handleKeyDown(e, 10);
                               }}
                               onChange={(e) => {
                                 const value = e.target.value;
@@ -2360,7 +2344,6 @@ const AddPurchaseBill = () => {
                               type="number"
                               size="small"
                               value={base === 0 ? "" : base}
-
                               disabled
                               sx={{ width: "100px" }}
                               onChange={(e) => {
@@ -2385,7 +2368,7 @@ const AddPurchaseBill = () => {
                               }}
                               open={isOpen}
                               onOpen={() => setIsOpen(true)}
-                              onClose={() => (false)}
+                              onClose={() => false}
                             />
                           </td>
                           <td>
@@ -2401,21 +2384,18 @@ const AddPurchaseBill = () => {
                               sx={{ width: "100px" }}
                               onChange={(e) => {
                                 setLoc(e.target.value);
-
                               }}
                               inputRef={(el) => (inputRefs.current[12] = el)}
-
-
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                  if (debounceTimeout) clearTimeout(debounceTimeout); // Clear previous timeout
+                                  if (debounceTimeout)
+                                    clearTimeout(debounceTimeout); // Clear previous timeout
                                   debounceTimeout = setTimeout(async () => {
                                     await handleAddButtonClick();
                                     handleKeyDown(e, 1);
                                   }, 500); // Adjust debounce delay as needed
                                 }
                               }}
-
                             />
                           </td>
                           <td>
@@ -2428,7 +2408,6 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={netRate === 0 ? "" : netRate}
                               sx={{ width: "100px" }}
-
                             />
                           </td>
                           <td>
@@ -2447,14 +2426,16 @@ const AddPurchaseBill = () => {
                             />
                           </td>
                           <td className="total">
-                            <span className="font-bold">{ItemTotalAmount.toFixed(2)}</span>
+                            <span className="font-bold">
+                              {ItemTotalAmount.toFixed(2)}
+                            </span>
                           </td>
                         </tr>
-                      </>)}
-
+                      </>
+                    )}
                   </tbody>
                 </table>
-                < >
+                <>
                   {/*<========================================================================= added Item  ========================================================================> */}
 
                   <table
@@ -2470,9 +2451,17 @@ const AddPurchaseBill = () => {
                             setSelectedIndex(index); // Ensure clicking sets the selected index
                             handleEditClick(item);
                           }}
-                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                          className={`item-List flex justify-between cursor-pointer ${
+                            index === selectedIndex ? "highlighted-row" : ""
+                          }`}
                         >
-                          <td style={{ display: "flex", gap: "8px", width: "366px" }}>
+                          <td
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              width: "366px",
+                            }}
+                          >
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
                               onClick={() => handleEditClick(item)}
@@ -2484,20 +2473,48 @@ const AddPurchaseBill = () => {
                             />
                             {item.iteam_name}
                           </td>
-                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.weightage}</td>
-                          <td style={{ paddingLeft: "22px", width: "105px" }}>{item.batch_number}</td>
-                          <td style={{ paddingLeft: "22px", width: "105px" }}>{item.expiry}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.mrp}</td>
-                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.qty}</td>
-                          <td style={{ paddingLeft: "22px", width: "65px" }}>{item.free_qty}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.ptr}</td>
-                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.discount}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.base_price}</td>
-                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.gst}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.location}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.net_rate}</td>
-                          <td style={{ paddingLeft: "22px", width: "108px" }}>{item.margin}</td>
-                          <td style={{ paddingLeft: "22px", width: "107px" }}>{item.total_amount}</td>
+                          <td style={{ paddingLeft: "22px", width: "85px" }}>
+                            {item.weightage}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "105px" }}>
+                            {item.batch_number}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "105px" }}>
+                            {item.expiry}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>
+                            {item.mrp}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "85px" }}>
+                            {item.qty}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "65px" }}>
+                            {item.free_qty}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>
+                            {item.ptr}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "70px" }}>
+                            {item.discount}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>
+                            {item.base_price}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "70px" }}>
+                            {item.gst}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>
+                            {item.location}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "95px" }}>
+                            {item.net_rate}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "108px" }}>
+                            {item.margin}
+                          </td>
+                          <td style={{ paddingLeft: "22px", width: "107px" }}>
+                            {item.total_amount}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -2538,24 +2555,29 @@ const AddPurchaseBill = () => {
             >
               <label className="font-bold">Total GST : </label>
 
-              <span style={{ fontWeight: 600 }}>{totalGst ? totalGst : 0} </span>
+              <span style={{ fontWeight: 600 }}>
+                {totalGst ? totalGst : 0}{" "}
+              </span>
             </div>
             <div
               className="gap-2 invoice_total_fld"
               style={{ display: "flex" }}
             >
               <label className="font-bold">Total Qty : </label>
-              <span style={{ fontWeight: 600 }}>   {totalQty ? totalQty : 0 } +&nbsp;
-                <span className="">
-                  { totalFree ? totalFree : 0 } Free
-                </span></span>
+              <span style={{ fontWeight: 600 }}>
+                {" "}
+                {totalQty ? totalQty : 0} +&nbsp;
+                <span className="">{totalFree ? totalFree : 0} Free</span>
+              </span>
             </div>
             <div
               className="gap-2 invoice_total_fld"
               style={{ display: "flex" }}
             >
               <label className="font-bold">Total Base : </label>
-              <span style={{ fontWeight: 600 }}> {totalBase ? totalBase : 0}
+              <span style={{ fontWeight: 600 }}>
+                {" "}
+                {totalBase ? totalBase : 0}
               </span>
             </div>
             <div
@@ -2564,7 +2586,7 @@ const AddPurchaseBill = () => {
             >
               <label className="font-bold">Total Net Rate : </label>
               <span style={{ fontWeight: 600 }}>
-                ₹  {totalNetRate ? totalNetRate : 0}
+                ₹ {totalNetRate ? totalNetRate : 0}
               </span>
             </div>
           </div>
@@ -2607,7 +2629,7 @@ const AddPurchaseBill = () => {
               size="lg"
               position="bottom-center"
               className="modal_amount"
-            // style={{ width: "50%" }}
+              // style={{ width: "50%" }}
             >
               <div
                 style={{
@@ -2619,14 +2641,8 @@ const AddPurchaseBill = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <h2 style={{ textTransform: "uppercase" }}>
-                  invoice total
-                </h2>
-                <IoMdClose
-                  onClick={toggleModal}
-                  cursor={"pointer"}
-                  size={30}
-                />
+                <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
               </div>
               <div
                 style={{
@@ -2682,11 +2698,14 @@ const AddPurchaseBill = () => {
                   }}
                 >
                   <label className="font-bold">Round Off : </label>
-                  <span> {roundOffAmount === "0.00"
-                    ? roundOffAmount
-                    : roundOffAmount < 0
+                  <span>
+                    {" "}
+                    {roundOffAmount === "0.00"
+                      ? roundOffAmount
+                      : roundOffAmount < 0
                       ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                      : `${Math.abs(roundOffAmount.toFixed(2))}`}</span>
+                      : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                  </span>
                 </div>
 
                 <div
@@ -2717,7 +2736,7 @@ const AddPurchaseBill = () => {
         </div>
         {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
 
-        <Dialog open={openAddPopUp}>
+        <Dialog open={openAddPopUp} className="custom-dialog max-991">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add Amount
           </DialogTitle>
@@ -2746,7 +2765,7 @@ const AddPurchaseBill = () => {
                             onChange={handleSelectAll}
                             checked={
                               selectedRows.length ===
-                              purchaseReturnPending.length &&
+                                purchaseReturnPending.length &&
                               purchaseReturnPending.length > 0
                             }
                           />
@@ -2855,7 +2874,14 @@ const AddPurchaseBill = () => {
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBlock: "20px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "15px",
+                  marginBlock: "20px",
+                }}
+              >
                 {/* Software Selection */}
                 <FormControl size="small" sx={{ width: 200 }}>
                   <InputLabel>Select Software</InputLabel>
@@ -2875,7 +2901,6 @@ const AddPurchaseBill = () => {
 
                 {/* File Upload */}
                 <div>
-
                   <input
                     className="File-upload"
                     type="file"
@@ -2883,11 +2908,9 @@ const AddPurchaseBill = () => {
                     id="file-upload"
                     onChange={handleFileSelect}
                   />
-
                 </div>
 
                 {/* Download Button */}
-
               </div>
               <Button
                 onClick={handleDownload}
@@ -2938,7 +2961,9 @@ const AddPurchaseBill = () => {
                 >
                   <div className="row">
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor Name</label>
+                      <label className="label secondary">
+                        Distributor Name
+                      </label>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
@@ -2950,12 +2975,12 @@ const AddPurchaseBill = () => {
                         }
                         inputRef={(el) => (inputRefs.current[16] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 16)}
-
-
                       />
                     </div>
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor GSTIN Number</label>
+                      <label className="label secondary">
+                        Distributor GSTIN Number
+                      </label>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
@@ -2967,11 +2992,8 @@ const AddPurchaseBill = () => {
                         }
                         inputRef={(el) => (inputRefs.current[17] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 17)}
-
-
                       />
                     </div>
-
                   </div>
                   <div className="row">
                     <div className="fields add_new_item_divv">
@@ -2982,7 +3004,9 @@ const AddPurchaseBill = () => {
                         type="number"
                         size="small"
                         value={addDistributorMobile}
-                        onChange={(e) => setAddDistributorMobile(Number(e.target.value))}
+                        onChange={(e) =>
+                          setAddDistributorMobile(Number(e.target.value))
+                        }
                         inputRef={(el) => (inputRefs.current[18] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 18)}
                       />
@@ -2992,10 +3016,11 @@ const AddPurchaseBill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-
                         size="small"
                         value={addDistributorAddress}
-                        onChange={(e) => setAddDistributorAddress(e.target.value)}
+                        onChange={(e) =>
+                          setAddDistributorAddress(e.target.value)
+                        }
                         inputRef={(el) => (inputRefs.current[19] = el)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -3005,7 +3030,6 @@ const AddPurchaseBill = () => {
                         }}
                       />
                     </div>
-
                   </div>
                   <div
                     className="row"
@@ -3038,7 +3062,7 @@ const AddPurchaseBill = () => {
 
         {/*<======================================================================== add item PopUp Box  =======================================================================> */}
 
-        <Dialog open={openAddItemPopUp}>
+        <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add New Item
           </DialogTitle>
@@ -3058,10 +3082,9 @@ const AddPurchaseBill = () => {
             <DialogContentText id="alert-dialog-description">
               <div className="bg-white">
                 <div
-                  className="mainform bg-white rounded-lg"
-                  style={{ padding: "20px" }}
+                  className="mainform bg-white rounded-lg" 
                 >
-                  <div className="row">
+                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
                       <label className="label secondary">Item Name</label>
                       <TextField
@@ -3075,8 +3098,6 @@ const AddPurchaseBill = () => {
                         }
                         inputRef={(el) => (inputRefs.current[13] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 13)}
-
-
                       />
                     </div>
                     <div className="fields add_new_item_divv">
@@ -3092,8 +3113,6 @@ const AddPurchaseBill = () => {
                         onKeyDown={(e) => handleKeyDown(e, 14)}
                       />
                     </div>
-                  </div>
-                  <div className="row">
                     <div className="fields add_new_item_divv">
                       <label className="label secondary">Unit</label>
                       <TextField
@@ -3122,13 +3141,12 @@ const AddPurchaseBill = () => {
                         value={`1 * ${addUnit} `}
                       />
                     </div>
-                  </div>
+                  </div> 
                   <div
-                    className="row"
+                    className="row mt-3"
                     style={{
                       justifyContent: "flex-end",
-                      paddingRight: "4px",
-                      paddingTop: "8%",
+                      paddingRight: "4px", 
                     }}
                   >
                     <Button
@@ -3152,14 +3170,14 @@ const AddPurchaseBill = () => {
           </DialogContent>
         </Dialog>
 
-
         {/*<==========================================================================  Delete PopUP   =========================================================================> */}
 
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-            }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+            IsDelete ? "block" : "hidden"
+          }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -3224,8 +3242,9 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
-            }`}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+            isOpenBox ? "block" : "hidden"
+          }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

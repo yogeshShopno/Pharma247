@@ -78,9 +78,10 @@ const Purchasebill = () => {
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
-  
-  {/*<=========================================================================== get required data  ===========================================================================> */}
-  
+  {
+    /*<=========================================================================== get required data  ===========================================================================> */
+  }
+
   useEffect(() => {
     if (tableData.length > 0) {
       localStorage.setItem("Purchase_SrNo", tableData[0].count + 1);
@@ -117,7 +118,9 @@ const Purchasebill = () => {
     setId(id);
   };
 
-  {/*<=============================================================================== table sort  ===============================================================================> */}
+  {
+    /*<=============================================================================== table sort  ===============================================================================> */
+  }
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -133,8 +136,10 @@ const Purchasebill = () => {
     });
     setTableData(sortedData);
   };
-  
-  {/*<=========================================================================== table search  ===========================================================================> */}
+
+  {
+    /*<=========================================================================== table search  ===========================================================================> */
+  }
 
   const handleSearchChange = (index, value) => {
     const newSearchTerms = [...searchTerms];
@@ -175,11 +180,12 @@ const Purchasebill = () => {
     );
   });
 
-  
-  {/*<======================================================================= Purchase bill list  =======================================================================> */}
+  {
+    /*<======================================================================= Purchase bill list  =======================================================================> */
+  }
 
   const purchaseBillList = async (currentPage) => {
-    if(!currentPage ) return;
+    if (!currentPage) return;
 
     let data = new FormData();
 
@@ -213,7 +219,9 @@ const Purchasebill = () => {
     }
   };
 
-  {/*<============================================================================== Delete Bill  ==============================================================================> */}
+  {
+    /*<============================================================================== Delete Bill  ==============================================================================> */
+  }
 
   const handleDeleteItem = async (id) => {
     if (!id) return;
@@ -244,9 +252,11 @@ const Purchasebill = () => {
     }
   };
 
-{/*<============================================================================== Download PDF  ==============================================================================> */}
+  {
+    /*<============================================================================== Download PDF  ==============================================================================> */
+  }
 
-    const pdfGenerator = async (id) => {
+  const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
     setIsLoading(true);
@@ -314,13 +324,14 @@ const Purchasebill = () => {
     }
   };
 
-{/*<=========================================================================== UI ===========================================================================> */}
+  {
+    /*<=========================================================================== UI ===========================================================================> */
+  }
 
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -336,80 +347,89 @@ const Purchasebill = () => {
           <Loader />
         </div>
       ) : (
-
         <div
           style={{
-            backgroundColor: "rgba(153, 153, 153, 0.1)",
-            height: "calc(100vh - 225px)",
-            padding: "0px 20px 0px",
             overflow: "auto",
           }}
-          className="justify-between"
+          className="paddin12-8"
         >
-          <div className="py-3 sales_hdr_mn" style={{ display: "flex", gap: "4px" }}>
-            <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-              <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                  }}
-                  onClick={() => {
-                    history.push("/purchase/purchasebill");
-                  }}
+          <div className="px-4 py-3 ">
+            <div
+              className="sales_hdr_mn"
+              style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
+            >
+              <div
+                className="flex flex-row sale_list_pg"
+                style={{ display: "flex", gap: "4px", alignItems: "center" }}
+              >
+                <div
+                  className="flex flex-row gap-2 sale_lt_txt"
+                  style={{ alignItems: "center" }}
                 >
-                  Purchase
-                </span>
-                <div>
-                  <ArrowForwardIosIcon
+                  <span
                     style={{
+                      color: "var(--color2)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
                       fontSize: "20px",
-                      color: "var(--color1)",
                     }}
-                  />
-                </div>
-              </div>
-              {hasPermission(permissions, "purchase bill create") && (
-                <>
-                  <Button
-                    variant="contained"
-                    className="sale_add_btn gap-2"
-                    size="small"
-                    style={{ background: "var(--color1)", fontSize: "12px" }}
-                    onClick={ () => {
-                      history.push("/purchase/addPurchaseBill");
+                    onClick={() => {
+                      history.push("/purchase/purchasebill");
                     }}
                   >
-                    <AddIcon />
-                    New
-                  </Button>
-                </>
-              )}
+                    Purchase
+                  </span>
+                  <div>
+                    <ArrowForwardIosIcon
+                      style={{
+                        fontSize: "20px",
+                        color: "var(--color1)",
+                      }}
+                    />
+                  </div>
+                </div>
+                {hasPermission(permissions, "purchase bill create") && (
+                  <>
+                    <Button
+                      variant="contained"
+                      className="sale_add_btn gap-2"
+                      size="small"
+                      style={{ background: "var(--color1)", fontSize: "12px" }}
+                      onClick={() => {
+                        history.push("/purchase/addPurchaseBill");
+                      }}
+                    >
+                      <AddIcon />
+                      New
+                    </Button>
+                  </>
+                )}
+              </div>
+              <div className="headerList">
+                <Button
+                  variant="contained"
+                  className="sale_add_pdf"
+                  style={{ background: "var(--color1)" }}
+                  onClick={() => {
+                    setOpenAddPopUp(true);
+                  }}
+                >
+                  Generate PDF
+                </Button>
+              </div>
             </div>
-
-            <div className="headerList">
-              <Button
-                variant="contained"
-                className="sale_add_pdf"
-                style={{ background: "var(--color1)" }}
-                onClick={() => {
-                  setOpenAddPopUp(true);
-                }}
-              >
-                Generate PDF
-              </Button>
-            </div>
+            <div
+                className="row border-b px-4 border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
           </div>
 
-          <div className="firstrow bg-white p-4" >
-
-            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row " >
-              <div className="detail flex flex-col" >
+          <div className="firstrow px-4">
+            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
+              <div className="detail flex flex-col">
                 <span className="text-gray-500 block">Start Date</span>
-                <div className="" style={{ width: '100%' }}>
+                <div className="" style={{ width: "100%" }}>
                   <DatePicker
                     className="custom-datepicker_mn"
                     selected={startDate}
@@ -418,9 +438,9 @@ const Purchasebill = () => {
                   />
                 </div>
               </div>
-              <div className="detail flex flex-col" >
+              <div className="detail flex flex-col">
                 <span className="text-gray-500 block">End Date</span>
-                <div className="" style={{ width: '100%' }}>
+                <div className="" style={{ width: "100%" }}>
                   <DatePicker
                     className="custom-datepicker_mn"
                     selected={endDate}
@@ -429,7 +449,14 @@ const Purchasebill = () => {
                   />
                 </div>
               </div>
-              <div className="" style={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
+              <div
+                className=""
+                style={{
+                  display: "flex",
+                  alignItems: "end",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button
                   variant="contained"
                   className=""
@@ -451,7 +478,7 @@ const Purchasebill = () => {
               </div>
             </div>
 
-{/*<====================================================================================== Table ======================================================================================> */}
+            {/*<====================================================================================== Table ======================================================================================> */}
 
             <div className="overflow-x-auto mt-4" style={{ overflowX: "auto" }}>
               <table
@@ -467,7 +494,11 @@ const Purchasebill = () => {
                     {/* <th>SR. No</th> */}
                     {/* <th></th> */}
                     {columns.map((column, index) => (
-                      <th key={column.id} className="text-left" style={{ minWidth: column.minWidth }}>
+                      <th
+                        key={column.id}
+                        className="text-left"
+                        style={{ minWidth: column.minWidth }}
+                      >
                         <div className="headerStyle gap-2">
                           <span>{column.label}</span>
                           <SwapVertIcon
@@ -518,8 +549,8 @@ const Purchasebill = () => {
                                 colIndex === 0
                                   ? { borderRadius: "10px 0 0 10px" }
                                   : colIndex === columns.length
-                                    ? { borderRadius: "0 10px 10px 0" }
-                                    : {}
+                                  ? { borderRadius: "0 10px 10px 0" }
+                                  : {}
                               }
                               key={column.id}
                               className="capitalize"
@@ -549,12 +580,12 @@ const Purchasebill = () => {
                               permissions,
                               "purchase bill delete"
                             ) && (
-                                <DeleteIcon
-                                  style={{ color: "#F31C1C" }}
-                                  className="cursor-pointer "
-                                  onClick={() => deleteOpen(row.id)}
-                                />
-                              )}
+                              <DeleteIcon
+                                style={{ color: "#F31C1C" }}
+                                className="cursor-pointer "
+                                onClick={() => deleteOpen(row.id)}
+                              />
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -564,15 +595,16 @@ const Purchasebill = () => {
               </table>
             </div>
 
-{/*<================================================================================= pagination =================================================================================> */}
+            {/*<================================================================================= pagination =================================================================================> */}
 
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -609,23 +641,25 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === rowsPerPage
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={filteredList.length === 0}
               >
                 Next
               </button>
             </div>
           </div>
-{/*<=================================================================================== Delete Popup ===================================================================================> */}
+          {/*<=================================================================================== Delete Popup ===================================================================================> */}
 
           <div
             id="modal"
             value={IsDelete}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-              }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+              IsDelete ? "block" : "hidden"
+            }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -674,13 +708,13 @@ const Purchasebill = () => {
               </div>
             </div>
           </div>
-{/*<=================================================================================== Generate PDF ===================================================================================> */}
+          {/*<=================================================================================== Generate PDF ===================================================================================> */}
 
-          <Dialog
-            open={openAddPopUp}
-            className="order_list_ml"
-          >
-            <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}>
+          <Dialog open={openAddPopUp} className="order_list_ml custom-dialog">
+            <DialogTitle
+              id="alert-dialog-title"
+              style={{ fontWeight: 700 }}
+            >
               Generate PDF
             </DialogTitle>
             <IconButton
@@ -713,7 +747,7 @@ const Purchasebill = () => {
                     >
                       <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                         <div className="flex flex-col md:flex-row w-full h-full gap-2">
-                          <div style={{ width: "100%",height:"325px" }}>
+                          <div style={{ width: "100%", height: "325px" }}>
                             <span className="primary block">Start Date</span>
                             <div style={{ width: "100%" }}>
                               <DatePicker
@@ -722,7 +756,6 @@ const Purchasebill = () => {
                                 onChange={(newDate) => setPdfStartDate(newDate)}
                                 dateFormat="dd/MM/yyyy"
                                 autoFocus
-                                
                               />
                             </div>
                           </div>
@@ -775,4 +808,3 @@ const Purchasebill = () => {
 };
 
 export default Purchasebill;
-

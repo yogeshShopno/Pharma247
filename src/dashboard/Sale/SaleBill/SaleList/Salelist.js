@@ -588,7 +588,7 @@ const Salelist = () => {
 
             <Dialog
               open={openAddPopUp}
-              className="order_list_ml"
+              className="order_list_ml custom-dialog"
               sx={{
                 "& .MuiDialog-container": {
                   "& .MuiPaper-root": {
@@ -603,7 +603,7 @@ const Salelist = () => {
             >
               <DialogTitle
                 id="alert-dialog-title"
-                style={{ color: "var(--COLOR_UI_PHARMACY)", fontWeight: 700 }}
+                style={{ fontWeight: 700 }}
               >
                 Generate PDF
               </DialogTitle>

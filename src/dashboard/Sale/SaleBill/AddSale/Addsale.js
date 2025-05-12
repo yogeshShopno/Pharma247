@@ -2710,7 +2710,7 @@ const Addsale = () => {
                     </DialogContent>
                 </Dialog>
 
-                <Dialog open={openAddItemPopUp}
+                <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 "
                 >
                     <DialogTitle id="alert-dialog-title" className="secondary">
                         Add New Item

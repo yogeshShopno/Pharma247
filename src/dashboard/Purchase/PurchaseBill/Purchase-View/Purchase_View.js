@@ -294,10 +294,8 @@ const PurchaseView = () => {
 {/*<================================================================================ top details  ================================================================================> */}
 
           <div>
-            <div className="firstrow flex mt-2 " style={{
-              backgroundColor: 'rgb(63 98 18 / 11%)',
-              borderRadius: '10px',
-              padding: '2rem'
+            <div className="firstrow flex mt-2 rounded-md p-3" style={{
+              backgroundColor: 'rgb(63 98 18 / 11%)', 
             }}>
               <div className="detail_main">
                 <span className="heading mb-2">SR No.</span>

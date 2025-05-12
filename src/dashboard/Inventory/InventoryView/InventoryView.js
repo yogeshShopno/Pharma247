@@ -1932,7 +1932,7 @@ const InventoryView = () => {
             </Box>
           </div>
         </div> 
-        <Dialog className="custom-dialog" open={openAddPopUp}>
+        <Dialog className="custom-dialog modal_991 " open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
             Edit Inventory Details
           </DialogTitle>
@@ -1950,7 +1950,7 @@ const InventoryView = () => {
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="flex flex-col">
                   <span className="label primary">Packaging In</span>
                   <Select

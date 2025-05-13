@@ -789,6 +789,7 @@ body {
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
   /* width: 450px !important; */
+  width: 100%;
 }
 
 .MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-w2qu16-MuiAutocomplete-root .MuiOutlinedInput-root {
@@ -865,4 +866,7 @@ button {
   border-color: var(--color1);
 }
 
+.saleTable td {
+    padding: 16px 8px !important;
+}
 /* rutikacssend */

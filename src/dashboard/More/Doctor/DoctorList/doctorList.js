@@ -40,7 +40,7 @@ import { toast, ToastContainer } from "react-toastify";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 const DoctorList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -159,7 +159,6 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-
     }
   };
 
@@ -239,7 +238,6 @@ const DoctorList = () => {
         toast.error(error.response.data.message);
       }
       // console.error("API error:", error);
-
     }
   };
 
@@ -315,7 +313,7 @@ const DoctorList = () => {
       if (
         fileType === "application/vnd.ms-excel" ||
         fileType ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         fileType === "text/csv"
       ) {
         setFile(selectedFile);
@@ -401,7 +399,6 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-
     }
   };
 
@@ -425,15 +422,13 @@ const DoctorList = () => {
         toast.error("Please Select file");
       }
       console.error("API error:", error);
-
     }
   };
 
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -450,14 +445,11 @@ const DoctorList = () => {
         </div>
       ) : (
         <div>
-          <div
-            style={{
-              backgroundColor: "rgba(153, 153, 153, 0.1)",
-              height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
-            }}
-          >
-            <div className="py-3 cust_list_main_hdr_bg" style={{ display: "flex", gap: "4px", marginBottom: "13px" }}>
+          <div className="p-6">
+            <div
+              className="mb-4 cust_list_main_hdr_bg"
+              style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+            >
               <div
                 style={{ display: "flex", gap: "7px", alignItems: "center" }}
                 className="mt-2"
@@ -480,7 +472,7 @@ const DoctorList = () => {
                   <Button
                     variant="contained"
                     className="gap-2"
-                    style={{ background: 'var(--color1)', display: 'flex' }}
+                    style={{ background: "var(--color1)", display: "flex" }}
                     onClick={openFilePopUP}
                   >
                     <CloudUploadIcon /> Import
@@ -490,7 +482,7 @@ const DoctorList = () => {
                   <Button
                     variant="contained"
                     className="gap-2"
-                    style={{ background: 'var(--color1)', display: "flex" }}
+                    style={{ background: "var(--color1)", display: "flex" }}
                     onClick={handelAddOpen}
                   >
                     <AddIcon /> Add Doctor
@@ -509,9 +501,9 @@ const DoctorList = () => {
                     }}
                     onClick={exportToCSV}
                   >
-
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <img src="/csv-file.png"
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src="/csv-file.png"
                         className="report-icon absolute mr-10"
                         alt="csv Icon"
                       />
@@ -521,14 +513,28 @@ const DoctorList = () => {
                 )}
               </div>
             </div>
-            <div className="bg-white p-4">
+            <div
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div className="mt-4">
               <div className="overflow-x-auto mt-4">
-                <table className="w-full border-collapse custom-table" style={{ whiteSpace: "nowrap", borderCollapse: "separate", borderSpacing: "0 6px" }}>
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
                   <thead className="">
                     <tr>
                       <th>SR. No</th>
                       {columns.map((column, index) => (
-                        <th key={column.id} style={{ minWidth: column.minWidth }}>
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
                           <div className="headerStyle">
                             <span onClick={() => sortByColumn(column.id)}>
                               {column.label}
@@ -556,7 +562,11 @@ const DoctorList = () => {
                       <tr>
                         <td
                           colSpan={columns.length + 2}
-                          style={{ textAlign: "center", color: "gray", borderRadius: "10px 10px 10px 10px" }}
+                          style={{
+                            textAlign: "center",
+                            color: "gray",
+                            borderRadius: "10px 10px 10px 10px",
+                          }}
                         >
                           No data found
                         </td>
@@ -570,7 +580,9 @@ const DoctorList = () => {
                             tabIndex={-1}
                             key={row.code}
                           >
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>{startIndex + index}</td>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {startIndex + index}
+                            </td>
                             {columns.map((column) => {
                               let value = row[column.id];
                               if (column.id === "email") {
@@ -612,7 +624,6 @@ const DoctorList = () => {
                               >
                                 <VisibilityIcon
                                   style={{ color: "var(--color1)" }}
-
                                   onClick={() => {
                                     history.push(`/more/doctor/${row.id}`);
                                   }}
@@ -620,7 +631,6 @@ const DoctorList = () => {
                                 {hasPermission(permissions, "doctor edit") && (
                                   <BorderColorIcon
                                     style={{ color: "var(--color1)" }}
-
                                     onClick={() => handleEditOpen(row)}
                                   />
                                 )}
@@ -643,10 +653,11 @@ const DoctorList = () => {
               >
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
+                  className={`mx-1 px-3 py-1 rounded ${
+                    currentPage === 1
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                  }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -683,10 +694,11 @@ const DoctorList = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
+                  className={`mx-1 px-3 py-1 rounded ${
+                    currentPage === rowsPerPage
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                  }`}
                   disabled={filteredList.length === 0}
                 >
                   Next
@@ -695,11 +707,11 @@ const DoctorList = () => {
             </div>
 
             {/* File Upload Popup */}
-            <Dialog open={openUpload}>
+            <Dialog open={openUpload} className="custom-dialog">
               <DialogTitle id="alert-dialog-title" className="primary">
                 Import Doctor
               </DialogTitle>
-              <div className="px-6 ">
+              <div className="">
                 <Alert severity="warning">
                   <AlertTitle>Warning</AlertTitle>
                   Please Make Sure Repeated Email ID record is not accepted.
@@ -735,28 +747,33 @@ const DoctorList = () => {
                         id="file-upload"
                         onChange={handleFileChange}
                       />
-                      <span className="errorFile" style={{ fontSize: 'small' }}>
+                      <span className="errorFile" style={{ fontSize: "small" }}>
                         *select only .csv, File.
                       </span>
                     </div>
                     <div className="mt-2">
-                      <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }} className="downloadFile">
+                      <Button
+                        onClick={handleDownload}
+                        style={{
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                          color: "white",
+                        }}
+                        className="downloadFile"
+                      >
                         <CloudDownloadIcon className="mr-2" />
-
                         Download Sample File
                       </Button>
                     </div>
                   </div>
                 </DialogContentText>
               </DialogContent>
-              <DialogActions style={{ padding: '20px 24px' }}>
+              <DialogActions style={{ padding: "0 24px 24px" }}>
                 <Button
                   autoFocus
                   variant="contained"
                   style={{
                     backgroundColor: "var(--COLOR_UI_PHARMACY)",
                     color: "white",
-                    width: "100%"
                   }}
                   onClick={uploadDoctorFile}
                 >
@@ -765,194 +782,176 @@ const DoctorList = () => {
               </DialogActions>
             </Dialog>
 
-            <Dialog open={openAddPopUp}>
-              <div className="flex justify-center items-center h-auto">
-                <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
-                  <div className="flex justify-between items-center">
-                    <DialogTitle
-                      id="alert-dialog-title"
-                      className="primary"
-                    >
-                      {header}
-                    </DialogTitle>
-                    <IconButton
-                      aria-label="close"
-                      onClick={resetAddDialog}
-                      className="text-gray-500"
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </div>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      <div className="flex flex-col gap-5">
-                        <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col " style={{ width: "100%" }}>
-                            <div className="mb-1">
-                              <span className="label primary mb-4">
-                                Doctor Name
-                              </span>
-                              <span className="text-red-600 ml-1">*</span>
-                            </div>
-                            <Autocomplete
-                              value={doctor}
-                              // inputValue={searchItem.toUpperCase()}
-                              style={{ width: ' 100%' }}
-                              size="small"
-                              onChange={handleOptionChange}
-                              onInputChange={handleInputChange}
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  Dr.
-                                </InputAdornment>
-                              }
-                              getOptionLabel={(option) =>
-                                typeof option === "string"
-                                  ? option
-                                  : option.name
-                              }
-                              options={tableData}
-                              renderOption={(props, option) => (
-                                <ListItem {...props}>
-                                  <ListItemText primary={option.name} />
-                                </ListItem>
-                              )}
-                              renderInput={(params) => (
-                                <TextField
-                                  autoComplete="off" {...params} />
-                              )}
-                              freeSolo
-                            />
-                            {errors.Doctor && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {errors.Doctor}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex flex-col " style={{ width: "100%" }}>
-                            <div className="mb-1">
-                              <span className="label primary">
-                                Clinic Name
-                              </span>
-                              {/* <span className="text-red-600 ml-1">*</span> */}
-                            </div>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-multiline-static"
-                              size="small"
-                              value={clinic}
-                              onChange={(e) => {
-                                setClinic(e.target.value);
-                              }}
-                              className="w-full"
-                              variant="outlined"
-                            />
-                            {errors.clinic && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {errors.clinic}
-                              </span>
-                            )}
-                          </div>
+            <Dialog open={openAddPopUp} className="custom-dialog modal_991">
+              <DialogTitle id="alert-dialog-title" className="primary">
+                {header}
+              </DialogTitle>
+              <IconButton
+                aria-label="close"
+                onClick={resetAddDialog}
+                className="text-gray-500"
+                sx={{
+                  position: "absolute",
+                  right: 12,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  <div className="flex flex-col gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <div className="mb-1">
+                          <span className="label primary mb-4">
+                            Doctor Name
+                          </span>
+                          <span className="text-red-600 ml-1">*</span>
                         </div>
-                        <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col " style={{ width: "100%" }}>
-                            <span className="label primary">
-                              Email ID
-                            </span>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-multiline-static"
-                              size="small"
-                              value={emailId}
-                              onChange={(e) => {
-                                setEmailId(e.target.value);
-                              }}
-                              className="w-full"
-                              variant="outlined"
-                            />
-                          </div>
-                          <div
-                            className="flex flex-col " style={{ width: "100%" }}
-                          >
-                            <div className="mb-1">
-                              <span className="label primary">
-                                Mobile No
-                              </span>
-                              {/* <span className="text-red-600 ml-1">*</span> */}
-                            </div>
-                            <OutlinedInput
-                              type="number"
-                              value={mobileNo}
-                              onChange={handleChange}
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  +91
-                                </InputAdornment>
-                              }
-                              className="w-full"
-                              size="small"
-                            />
-                            {errors.mobileNo && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {errors.mobileNo}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-5">
-                          <div className="flex flex-col " style={{ width: "100%" }}>
-                            <span className="label primary">
-                              Licence No.
-                            </span>
-                            <OutlinedInput
-                              type="number"
-                              value={licence}
-                              onChange={(e) => {
-                                setLicence(e.target.value);
-                              }}
-                              className="w-full"
-                              size="small"
-                            />
-                          </div>
-                          <div className="flex flex-col " style={{ width: "100%" }}>
-                            <span className="label primary">Address</span>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-multiline-static"
-                              size="small"
-                              value={address}
-                              onChange={(e) => {
-                                setAddress(e.target.value);
-                              }}
-                              className="w-full"
-                              variant="outlined"
-                            />
-                          </div>
-                        </div>
+                        <Autocomplete
+                          value={doctor}
+                          // inputValue={searchItem.toUpperCase()}
+                          style={{ width: " 100%" }}
+                          size="small"
+                          onChange={handleOptionChange}
+                          onInputChange={handleInputChange}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              Dr.
+                            </InputAdornment>
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string" ? option : option.name
+                          }
+                          options={tableData}
+                          renderOption={(props, option) => (
+                            <ListItem {...props}>
+                              <ListItemText primary={option.name} />
+                            </ListItem>
+                          )}
+                          renderInput={(params) => (
+                            <TextField autoComplete="off" {...params} />
+                          )}
+                          freeSolo
+                        />
+                        {errors.Doctor && (
+                          <span style={{ color: "red", fontSize: "12px" }}>
+                            {errors.Doctor}
+                          </span>
+                        )}
                       </div>
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions style={{ padding: '20px 24px' }}>
-                    <Button
-                      autoFocus
-                      variant="contained"
-                      style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" ,width:"100%"}}
-                      onClick={AddDoctor}
-                    >
-                      {buttonLabel}
-                    </Button>
-                    <Button
-                      autoFocus
-
-                      variant="contained"
-                      color="error"
-                      onClick={resetAddDialog}
-                    >
-                      Cancel
-                    </Button>
-                  </DialogActions>
-                </div>
-              </div>
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <div className="mb-1">
+                          <span className="label primary">Clinic Name</span>
+                          {/* <span className="text-red-600 ml-1">*</span> */}
+                        </div>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={clinic}
+                          onChange={(e) => {
+                            setClinic(e.target.value);
+                          }}
+                          className="w-full"
+                          variant="outlined"
+                        />
+                        {errors.clinic && (
+                          <span style={{ color: "red", fontSize: "12px" }}>
+                            {errors.clinic}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <span className="label primary">Email ID</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={emailId}
+                          onChange={(e) => {
+                            setEmailId(e.target.value);
+                          }}
+                          className="w-full"
+                          variant="outlined"
+                        />
+                      </div>
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <div className="mb-1">
+                          <span className="label primary">Mobile No</span>
+                          {/* <span className="text-red-600 ml-1">*</span> */}
+                        </div>
+                        <OutlinedInput
+                          type="number"
+                          value={mobileNo}
+                          onChange={handleChange}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              +91
+                            </InputAdornment>
+                          }
+                          className="w-full"
+                          size="small"
+                        />
+                        {errors.mobileNo && (
+                          <span style={{ color: "red", fontSize: "12px" }}>
+                            {errors.mobileNo}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <span className="label primary">Licence No.</span>
+                        <OutlinedInput
+                          type="number"
+                          value={licence}
+                          onChange={(e) => {
+                            setLicence(e.target.value);
+                          }}
+                          className="w-full"
+                          size="small"
+                        />
+                      </div>
+                      <div className="flex flex-col " style={{ width: "100%" }}>
+                        <span className="label primary">Address</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={address}
+                          onChange={(e) => {
+                            setAddress(e.target.value);
+                          }}
+                          className="w-full"
+                          variant="outlined"
+                        />
+                      </div>
+                    </div> 
+                  </div>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions style={{ padding: "20px 24px" }}>
+                <Button
+                  autoFocus
+                  variant="contained"
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white", 
+                  }}
+                  onClick={AddDoctor}
+                >
+                  {buttonLabel}
+                </Button>
+                <Button
+                  autoFocus
+                  variant="contained"
+                  color="error"
+                  onClick={resetAddDialog}
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
             </Dialog>
           </div>
         </div>

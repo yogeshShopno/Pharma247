@@ -113,7 +113,7 @@ const DrugGroup = () => {
       .then((response) => {
         setDrugGroupData(response.data.data);
         setIsLoading(false);
-        console.log("drug called")
+        console.log("drug called");
       })
       .catch((error) => {
         console.error("API error:", error);
@@ -300,8 +300,7 @@ const DrugGroup = () => {
   return (
     <div>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -316,15 +315,9 @@ const DrugGroup = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div
-            style={{
-              background: "rgba(153, 153, 153, 0.1)",
-             height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
-            }}
-          >
+          <div className="p-6">
             <div
-              className="py-3 add_company_hdr"
+              className="mb-4 add_company_hdr"
               style={{ display: "flex", gap: "4px" }}
             >
               <div
@@ -354,15 +347,18 @@ const DrugGroup = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  
                   <AddIcon />
-                  Add Drug Group 
+                  Add Drug Group
                 </Button>
               </div>
             </div>
-            <div className="firstrow p-4">
+            <div
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
+            <div className="firstrow mt-4">
               {/* <div className="bg-white"> */}
-              <div className="flex flex-col gap-2 lg:flex-row lg:gap-2 pb-2">
+              <div className="flex gap-2 flex-row pb-2">
                 <div className="detail drug_fltr_fld">
                   <Autocomplete
                     value={drugGroupFilter}
@@ -388,9 +384,9 @@ const DrugGroup = () => {
                   />
                   {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
                 </div>
-                <div style={{ justifyContent: "end", display: "flex" }}>
+                <div className="flex ">
                   <Button
-                  className="serch_btn_ad"
+                    className="serch_btn_ad"
                     style={{
                       backgroundColor: "var(--COLOR_UI_PHARMACY)",
                       color: "white",
@@ -407,7 +403,7 @@ const DrugGroup = () => {
                 style={{ overflowX: "auto" }}
               >
                 <table
-                  className="w-full border-collapse custom-table pt-2"
+                  className="w-full border-collapse custom-table"
                   style={{
                     whiteSpace: "nowrap",
                     borderCollapse: "separate",
@@ -483,18 +479,21 @@ const DrugGroup = () => {
           </div>
         )}
         <Dialog
-          className="order_list_ml"
+          className="order_list_ml custom-dialog"
           open={openAddPopUp}
-        //   sx={{
-        //     "& .MuiDialog-container": {
-        //       "& .MuiPaper-root": {
-        //         width: "50%",
-        //         maxWidth: "500px", // Set your width here
-        //       },
-        //     },
-        //   }}
+          //   sx={{
+          //     "& .MuiDialog-container": {
+          //       "& .MuiPaper-root": {
+          //         width: "50%",
+          //         maxWidth: "500px", // Set your width here
+          //       },
+          //     },
+          //   }}
         >
-          <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+          <DialogTitle
+            id="alert-dialog-title"
+            style={{ fontWeight: 700 }}
+          >
             {header}
           </DialogTitle>
           <IconButton

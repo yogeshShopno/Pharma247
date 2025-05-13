@@ -25,8 +25,8 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
-import SaveIcon from '@mui/icons-material/Save';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
+import SaveIcon from "@mui/icons-material/Save";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
 const EditSaleReturn = () => {
   const token = localStorage.getItem("token");
   const inputRef1 = useRef();
@@ -106,8 +106,6 @@ const EditSaleReturn = () => {
 
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
-
-
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
     const handleTableBlur = () => setAutocompleteDisabled(true);
@@ -129,13 +127,17 @@ const EditSaleReturn = () => {
     const handleKeyPress = (e) => {
       if (!saleReturnItems?.sales_iteam?.length) return;
 
-      const isInputFocused = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+      const isInputFocused = ["INPUT", "TEXTAREA"].includes(
+        document.activeElement.tagName
+      );
       if (isInputFocused) return;
 
       e.preventDefault(); // Prevent scrolling
 
       if (e.key === "ArrowDown") {
-        setSelectedIndex((prev) => Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1));
+        setSelectedIndex((prev) =>
+          Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1)
+        );
       } else if (e.key === "ArrowUp") {
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
       } else if (e.key === "Enter" && selectedIndex !== -1) {
@@ -159,7 +161,7 @@ const EditSaleReturn = () => {
   };
   const [isOpen, setIsOpen] = useState(false);
 
-  const [billSaveDraft, setBillSaveDraft] = useState('0');
+  const [billSaveDraft, setBillSaveDraft] = useState("0");
   useEffect(() => {
     const totalAmount = qty / unit;
     const total = parseFloat(base) * totalAmount;
@@ -207,8 +209,6 @@ const EditSaleReturn = () => {
     initializeData();
     BankList();
   }, []);
-
-
 
   const BankList = async () => {
     let data = new FormData();
@@ -474,7 +474,7 @@ const EditSaleReturn = () => {
       setBatch("");
       setLoc("");
       setIsEditMode(false);
-    } catch (e) { }
+    } catch (e) {}
   };
 
   const handleKeyDown = (event) => {
@@ -639,7 +639,7 @@ const EditSaleReturn = () => {
       setExpiryDate(item.exp);
       setMRP(item.mrp);
       setQty(item.qty);
-      setBase(item.base);  // Set the current base value here
+      setBase(item.base); // Set the current base value here
       setOrder(item.order);
       setGst(item.gst);
       setLoc(item.location);
@@ -699,8 +699,7 @@ const EditSaleReturn = () => {
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -718,15 +717,15 @@ const EditSaleReturn = () => {
       ) : (
         <div>
           <div
+            className="p-6"
             style={{
-              height: "calc(100vh - 120px)",
-              padding: "0px 20px 0px",
+              height: "calc(100vh - 130px)",
               overflow: "auto",
             }}
           >
             <div>
               <div
-                className="py-3 header_sale_divv"
+                className="mb-4 header_sale_divv"
                 style={{ display: "flex", gap: "4px", alignItems: "center" }}
               >
                 <div
@@ -793,34 +792,29 @@ const EditSaleReturn = () => {
                     style={{ background: "var(--color1)" }}
                     onClick={() => setIsOpen(!isOpen)}
                   >
-
                     Update
                   </Button>
                   {isOpen && (
                     <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
                       <ul className="transition-all ">
-
                         <li
                           onClick={() => {
-                            setBillSaveDraft("1")
-                            handleUpdate("1")
+                            setBillSaveDraft("1");
+                            handleUpdate("1");
                           }}
                           className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
                           <SaveIcon />
-
-
                           Save
                         </li>
                         <li
                           onClick={() => {
-                            setBillSaveDraft("0")
-                            handleUpdate("0")
+                            setBillSaveDraft("0");
+                            handleUpdate("0");
                           }}
                           className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
                         >
                           <SaveAsIcon />
-
                           Draft
                         </li>
                       </ul>
@@ -828,43 +822,53 @@ const EditSaleReturn = () => {
                   )}
                 </div>
               </div>
-              <div className="border-b">
-                <div className="firstrow flex">
-                 
-                  <div className="detail custommedia" style={{
-                    display: "flex",
-                    flexDirection: "column",
-
-                  }}>
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="border-b mt-4">
+                <div className=" firstrow flex gap-y-4">
+                  <div
+                    className="detail custommedia"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <span className="heading mb-2">Bill No</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       size="small"
-
                       value={saleReturnItems.bill_no}
                       disabled
-
                     />
-                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
-
+                    {error.billNo && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {error.billNo}
+                      </span>
+                    )}
                   </div>
-                  <div className="detail custommedia" style={{
-                    display: "flex",
-                    flexDirection: "column",
-
-                  }}>
+                  <div
+                    className="detail custommedia"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <span className="heading mb-2">Bill Date</span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
                       size="small"
-
                       value={saleReturnItems.bill_date}
                       disabled
                     />
-                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
-
+                    {error.billNo && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {error.billNo}
+                      </span>
+                    )}
                   </div>
 
                   <div
@@ -925,7 +929,7 @@ const EditSaleReturn = () => {
                           placeholder="Search by Mobile, Name"
                           InputProps={{
                             ...params.InputProps,
-                            style: { height: 40},
+                            style: { height: 40 },
                           }}
                           sx={{
                             "& .MuiInputBase-input::placeholder": {
@@ -943,7 +947,6 @@ const EditSaleReturn = () => {
                       </span>
                     )}
                   </div>
-
 
                   <div
                     className="detail custommedia"
@@ -1012,14 +1015,12 @@ const EditSaleReturn = () => {
                     />
                   </div>
 
-
                   <div className="scroll-two">
                     <table className="saleTable">
                       <thead>
                         <tr
                           style={{
-                            borderBottom: "1px solid lightgray",
-                            background: "rgba(63, 98, 18, 0.09)",
+                            borderBottom: "1px solid lightgray", 
                           }}
                         >
                           <th className="w-1/4">Item Name</th>
@@ -1037,16 +1038,14 @@ const EditSaleReturn = () => {
                       </thead>
                       <tbody>
                         <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          <td style={{ width: '350px' }}>
-                            <div style={{ width: 350, padding: 0 }} >
-
+                          <td style={{ width: "350px" }}>
+                            <div style={{ width: 350, padding: 0 }}>
                               <DeleteIcon
                                 className="delete-icon mr-2"
                                 onClick={resetValue}
                               />
                               <span className="font-semibold ">
                                 {searchItem}
-
                               </span>
                             </div>
                           </td>
@@ -1238,12 +1237,11 @@ const EditSaleReturn = () => {
                             </Button>
                           </td>
                         </tr>
-
                       </tbody>
                     </table>
                     <>
                       <table
-                        className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                        className="p-30 border w-full border-collapse custom-table"
                         ref={tableRef}
                         tabIndex={0} // Allows table to receive focus
                       >
@@ -1251,8 +1249,9 @@ const EditSaleReturn = () => {
                           {saleReturnItems?.sales_iteam?.map((item, index) => (
                             <tr
                               key={item.id}
-                              className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                                }`}
+                              className={`item-List cursor-pointer flex justify-between  ${
+                                index === selectedIndex ? "highlighted-row" : ""
+                              }`}
                               onClick={() => {
                                 handleEditClick(item);
                                 setSelectedIndex(index);
@@ -1269,12 +1268,15 @@ const EditSaleReturn = () => {
                                 <Checkbox
                                   sx={{
                                     color: "var(--color2)",
-                                    "&.Mui-checked": { color: "var(--color1)" },
+                                    "&.Mui-checked": { color: "var(--color1)" }, padding:"0px"
                                   }}
                                   checked={item?.iss_check}
                                   onClick={(event) => event.stopPropagation()}
                                   onChange={(event) => {
-                                    handleChecked(item.id, event.target.checked);
+                                    handleChecked(
+                                      item.id,
+                                      event.target.checked
+                                    );
                                     setUnsavedItems(true);
                                   }}
                                 />
@@ -1301,7 +1303,6 @@ const EditSaleReturn = () => {
                     </>
                   </div>
                 </div>
-
 
                 {saleReturnItems?.sales_iteam?.length > 0 && (
                   <div
@@ -1402,7 +1403,7 @@ const EditSaleReturn = () => {
                         size="lg"
                         position="bottom-center"
                         className="modal_amount"
-                      // style={{ width: "50%" }}
+                        // style={{ width: "50%" }}
                       >
                         <div
                           style={{
@@ -1548,8 +1549,9 @@ const EditSaleReturn = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                    }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+                    IsDelete ? "block" : "hidden"
+                  }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1614,8 +1616,9 @@ const EditSaleReturn = () => {
           <div
             id="modal"
             value={openModal}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
-              }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+              openModal ? "block" : "hidden"
+            }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

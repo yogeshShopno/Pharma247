@@ -493,8 +493,7 @@ const CustomerList = () => {
   return (
     <>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -510,14 +509,11 @@ const CustomerList = () => {
           <Loader />
         </div>
       ) : (
-        <div
-          style={{
-            backgroundColor: "rgba(153, 153, 153, 0.1)",
-            height: "calc(100vh - 225px)",
-            padding: "0px 20px 0px",
-          }}
-        >
-          <div className="py-3 cust_list_main_hdr" style={{ display: "flex", gap: "4px" }}>
+        <div className="p-6">
+          <div
+            className="mb-4 cust_list_main_hdr"
+            style={{ display: "flex", gap: "4px" }}
+          >
             <div
               style={{
                 display: "flex",
@@ -579,7 +575,7 @@ const CustomerList = () => {
                   }}
                   onClick={exportToExcel}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
                       className="report-icon absolute"
@@ -591,7 +587,11 @@ const CustomerList = () => {
               )}
             </div>
           </div>
-          <div className="bg-white p-4">
+          <div
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
+          <div className="mt-4">
             <div className="flex flex-wrap gap-6">
               <Chip
                 label="Due Only"
@@ -665,7 +665,7 @@ sx={{
                                 </Button>
                             </div> */}
             </div>
-            <div className="overflow-x-auto mt-4 ">
+            <div className="overflow-x-auto mt-3 ">
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -852,10 +852,11 @@ sx={{
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -892,10 +893,11 @@ sx={{
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === rowsPerPage
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -944,7 +946,9 @@ sx={{
                       id="file-upload"
                       onChange={handleFileChange}
                     />
-                    <span className="errorFile" style={{ fontSize: 'small' }}>*select only .csv File</span>
+                    <span className="errorFile" style={{ fontSize: "small" }}>
+                      *select only .csv File
+                    </span>
                   </div>
                   <div className="mt-2">
                     <Button
@@ -962,7 +966,7 @@ sx={{
                 </div>
               </DialogContentText>
             </DialogContent>
-            <DialogActions style={{ padding: '20px 24px' }}>
+            <DialogActions style={{ padding: "20px 24px" }}>
               <Button
                 autoFocus
                 variant="contained"
@@ -980,14 +984,14 @@ sx={{
 
           <Dialog
             open={openAddPopUp}
-          // sx={{
-          //     "& .MuiDialog-container": {
-          //         "& .MuiPaper-root": {
-          //             width: "36%",
-          //             maxWidth: "600px",  // Set your width here
-          //         },
-          //     },
-          // }}
+            // sx={{
+            //     "& .MuiDialog-container": {
+            //         "& .MuiPaper-root": {
+            //             width: "36%",
+            //             maxWidth: "600px",  // Set your width here
+            //         },
+            //     },
+            // }}
           >
             <div className="flex justify-center items-center h-auto">
               <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
@@ -1005,7 +1009,7 @@ sx={{
                     aria-label="close"
                     onClick={resetAddDialog}
                     className="text-gray-500"
-                  // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                    // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
                   >
                     <CloseIcon />
                   </IconButton>
@@ -1029,7 +1033,7 @@ sx={{
                             onChange={(e) => {
                               setCustomer(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                           {errors.customer && (
@@ -1054,7 +1058,7 @@ sx={{
                                 +91
                               </InputAdornment>
                             }
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             size="small"
                           />
                           {errors.mobileNo && (
@@ -1076,7 +1080,7 @@ sx={{
                             onChange={(e) => {
                               setEmailId(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>
@@ -1091,7 +1095,7 @@ sx={{
                             onChange={(e) => {
                               setAmount(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>
@@ -1108,7 +1112,7 @@ sx={{
                             onChange={(e) => {
                               setArea(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>
@@ -1122,7 +1126,7 @@ sx={{
                             onChange={(e) => {
                               setCity(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>
@@ -1139,7 +1143,7 @@ sx={{
                             onChange={(e) => {
                               setAddress(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>
@@ -1153,7 +1157,7 @@ sx={{
                             onChange={(e) => {
                               setState(e.target.value);
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             variant="outlined"
                           />
                         </div>

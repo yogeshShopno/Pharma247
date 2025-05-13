@@ -177,15 +177,13 @@ const CustomerView = () => {
           <Loader />
         </div>
       ) : (
-        <div
-          style={{
-            backgroundColor: "rgba(153, 153, 153, 0.1)",
-           height: "calc(100vh - 225px)",
-            padding: "0px 20px 0px",
-          }}
+        <div className="p-6"
         >
           <div>
-            <div className="py-3" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+            <div
+              className="mb-4"
+              style={{ display: "flex", gap: "4px", alignItems: "center" }}
+            >
               <span
                 style={{
                   color: "var(--color2)",
@@ -240,14 +238,15 @@ const CustomerView = () => {
                 {tableData.name}
               </span>
             </div>
-          </div>
-          <div style={{
-                        backgroundColor: 'rgb(63 98 18 / 11%)',
-                        borderRadius: '10px',
-                        paddingTop: '0.5%'
-                    }}>
+          </div> 
+          <div className="p-3"
+            style={{
+              backgroundColor: "rgb(63 98 18 / 11%)",
+              borderRadius: "10px", 
+            }}
+          >
             <div
-              className="header_main_txt_CV mt-2 "
+              className="header_main_txt_CV mt-2 gap-3 "
               style={{ background: "none" }}
             >
               <div className="detail_main_bg_CV">
@@ -305,11 +304,9 @@ const CustomerView = () => {
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className=" ">
             <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-              <div
-                className="cust_tab_val"
-              >
+              <div className="cust_tab_val mt-3">
                 <Tabs
                   value={tabValue}
                   TabIndicatorProps={{
@@ -319,12 +316,11 @@ const CustomerView = () => {
                     },
                   }}
                   onChange={handleChange}
-                // style={{ marginBottom: "10px" }}
+                  // style={{ marginBottom: "10px" }}
                 >
                   <Tab
                     label="Sale"
-                    sx={{
-                      mx: 2,
+                    sx={{ 
                       color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
                       "&.Mui-selected": {
                         color: "var(--color1)",
@@ -334,8 +330,7 @@ const CustomerView = () => {
 
                   <Tab
                     label="Sales Return"
-                    sx={{
-                      mx: 2,
+                    sx={{ 
                       color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
                       "&.Mui-selected": {
                         color: "var(--color1)",
@@ -343,13 +338,13 @@ const CustomerView = () => {
                     }}
                   />
                 </Tabs>
-                <div class='total_amount_fld'>
+                <div class="total_amount_fld">
                   {tabValue === 0 && (
                     <div
-                      className="mx-4 my-2 "
+                      className=" "
                       style={{
                         border: "1px solid var(--color2)",
-                        padding: "10px",
+                        padding: "5px",
                         borderRadius: "6px",
                         backgroundColor: "rgba(63, 98, 18, 0.09)",
                         width: "fit-content",
@@ -361,10 +356,9 @@ const CustomerView = () => {
                           color: "var(--color1)",
                           fontSize: "18px",
                           fontWeight: 800,
-                          whiteSpace: 'noWrap'
+                          whiteSpace: "noWrap",
                         }}
                       >
-                        
                         Total Sale Amount :-
                         <span style={{ color: "var(--color2)" }}>
                           Rs.
@@ -388,15 +382,13 @@ const CustomerView = () => {
                     >
                       <Typography
                         className="total_amount_txt"
-
                         style={{
                           color: "var(--color1)",
                           fontSize: "18px",
                           fontWeight: 800,
-                          whiteSpace: 'noWrap'
+                          whiteSpace: "noWrap",
                         }}
                       >
-                        
                         Total Sale Return Amount :-
                         <span style={{ color: "var(--color2)" }}>
                           Rs.
@@ -411,7 +403,7 @@ const CustomerView = () => {
               </div>
 
               {tabValue === 0 && (
-                <div style={{ margin: "25px" }}>
+                <div>
                   {/* <div className="mx-4 my-2 ">
                     <Typography
                       style={{
@@ -435,7 +427,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow: 'auto'
+                        overflow: "auto",
                       }}
                     >
                       <thead>
@@ -461,8 +453,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleColumns.length - 1 // Last column for right-side radius
-                                      ? { borderRadius: "0 10px 10px 0" }
-                                      : {}
+                                    ? { borderRadius: "0 10px 10px 0" }
+                                    : {}
                                 }
                               >
                                 {column.id === "bill_no" ? (
@@ -531,7 +523,7 @@ const CustomerView = () => {
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow: 'auto'
+                        overflow: "auto",
                       }}
                     >
                       <thead>
@@ -556,8 +548,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleReturnColumns.length - 1 // Last column for right-side radius
-                                      ? { borderRadius: "0 10px 10px 0" }
-                                      : {}
+                                    ? { borderRadius: "0 10px 10px 0" }
+                                    : {}
                                 }
                               >
                                 {item[column.id]}

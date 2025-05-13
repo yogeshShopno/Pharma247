@@ -474,7 +474,7 @@
 
 @media (max-width: 767px) {
   .oreder_list_fld {
-    flex-direction: column !important;
+    /* flex-direction: column !important; */
   }
 
   .dst_fld_odr {

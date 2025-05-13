@@ -264,8 +264,7 @@ const Company = () => {
   return (
     <div>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -280,14 +279,11 @@ const Company = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div
-            style={{
-              background: "rgba(153, 153, 153, 0.1)",
-             height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
-            }}
-          >
-            <div className="py-3 add_company_hdr" style={{ display: "flex", gap: "4px" }}>
+          <div className="p-6">
+            <div
+              className="mb-4 add_company_hdr"
+              style={{ display: "flex", gap: "4px" }}
+            >
               <div
                 style={{ display: "flex", gap: "5px", alignItems: "center" }}
               >
@@ -312,15 +308,17 @@ const Company = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  
                   <AddIcon />
                   Add Company
                 </Button>
               </div>
             </div>
             <div
-              className="bg-white overflow-x-auto mt-4"
-              style={{ paddingInline: "25px", paddingBlock: "15px" }}
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div
+              className=" overflow-x-auto mt-4"
             >
               <table
                 className="w-full border-collapse custom-table"
@@ -395,7 +393,7 @@ const Company = () => {
           </div>
         )}
         <Dialog
-          className="order_list_ml"
+          className="order_list_ml custom-dialog"
           open={openAddPopUp}
           //   sx={{
           //     "& .MuiDialog-container": {
@@ -406,7 +404,10 @@ const Company = () => {
           //     },
           //   }}
         >
-          <DialogTitle id="alert-dialog-title" style={{ color: "var(--COLOR_UI_PHARMACY)" ,fontWeight:700}}>
+          <DialogTitle
+            id="alert-dialog-title"
+            style={{ fontWeight: 700 }}
+          >
             {header}
           </DialogTitle>
           <IconButton
@@ -425,7 +426,7 @@ const Company = () => {
             <DialogContentText id="alert-dialog-description">
               <div
                 className="flex flex-col gap-5"
-                style={{ flexDirection: "column",width:'100%' }}
+                style={{ flexDirection: "column", width: "100%" }}
               >
                 <FormControl size="small" style={{ width: "100%" }}>
                   <span className="label primary">Company Name</span>

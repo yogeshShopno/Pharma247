@@ -300,28 +300,32 @@ const Salelist = () => {
       console.error("Invalid mobile number");
       return;
     }
-  
+
     let data = new FormData();
     data.append("id", bill.id);
     setIsLoading(true);
-  
+
     try {
       const response = await axios.post("sales-pdf-downloads", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.data?.data?.pdf_url) {
         const PDFURL = response.data.data.pdf_url;
         setIsLoading(false);
         setPDFURL(PDFURL);
-  
-        const message = `Dear ${bill.name},\n\nYour invoice for ₹${bill.net_amt} is ready.\n\nClick the link below to download:\n${PDFURL}\n\nFor any queries, contact us: ${localStorage.getItem("contact")}\n\nThank you,\n${localStorage.getItem("UserName")}`;
-  
+
+        const message = `Dear ${bill.name},\n\nYour invoice for ₹${
+          bill.net_amt
+        } is ready.\n\nClick the link below to download:\n${PDFURL}\n\nFor any queries, contact us: ${localStorage.getItem(
+          "contact"
+        )}\n\nThank you,\n${localStorage.getItem("UserName")}`;
+
         const encodedMessage = encodeURIComponent(message);
         const whatsappURL = `https://wa.me/91${bill.mobile_numbr}?text=${encodedMessage}`;
-        
+
         window.open(whatsappURL, "_blank");
       } else {
         console.error("PDF URL not found in response");
@@ -332,29 +336,25 @@ const Salelist = () => {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <>
       <div>
         <Header />
         {isLoading ? (
-          <div className="loader-container "> 
+          <div className="loader-container ">
             <Loader />
           </div>
         ) : (
           <div
             style={{
-              backgroundColor: "rgba(153, 153, 153, 0.1)",
-              height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
               alignItems: "center",
             }}
-            className="justify-between"
+            className="p-6"
           >
             <div
-              className="py-3 sales_hdr_mn"
-              style={{ display: "flex", gap: "4px" }}
+              className="sales_hdr_mn "
+              style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
             >
               <div
                 className="flex flex-row sale_list_pg"
@@ -412,9 +412,12 @@ const Salelist = () => {
                 </Button>
               </div>
             </div>
-
+            <div
+              className="row border-b px-4 border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
             <div className="firstrow">
-              <div className="overflow-x-auto mt-4">
+              <div className="overflow-x-auto mt-2">
                 <table
                   className="w-full border-collapse custom-table"
                   style={{
@@ -535,10 +538,11 @@ const Salelist = () => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
+                  className={`mx-1 px-3 py-1 rounded ${
+                    currentPage === 1
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                  }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -575,10 +579,11 @@ const Salelist = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
+                  className={`mx-1 px-3 py-1 rounded ${
+                    currentPage === rowsPerPage
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                  }`}
                   disabled={filteredList.length === 0}
                 >
                   Next
@@ -601,10 +606,7 @@ const Salelist = () => {
                 },
               }}
             >
-              <DialogTitle
-                id="alert-dialog-title"
-                style={{ fontWeight: 700 }}
-              >
+              <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
                 Generate PDF
               </DialogTitle>
               <IconButton

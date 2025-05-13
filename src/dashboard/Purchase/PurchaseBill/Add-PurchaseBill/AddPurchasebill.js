@@ -1858,7 +1858,7 @@ const AddPurchaseBill = () => {
           {/*<============================================================================== details at top  =============================================================================> */}
 
           <div className="mt-4 ">
-            <div className="firstrow flex">
+            <div className="firstrow flex gap-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full">
                 <div>
                   <span className="title mb-2">

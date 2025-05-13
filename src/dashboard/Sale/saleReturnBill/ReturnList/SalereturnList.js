@@ -250,19 +250,24 @@ const SalereturnList = () => {
           </div>
         ) : (
           <div
+            className="p-6"
             style={{
-              backgroundColor: "rgba(153, 153, 153, 0.1)",
               height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
               alignItems: "center",
             }}
           >
             <div
-              className="py-3 sales_RTN_hdr_mn"
+              className=" mb-4 sales_RTN_hdr_mn"
               style={{ display: "flex", gap: "4px" }}
             >
-              <div className="flex flex-row sale_list_pg" style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                <div className="flex flex-row gap-2 sale_lt_txt" style={{ alignItems: "center" }}>
+              <div
+                className="flex flex-row sale_list_pg"
+                style={{ display: "flex", gap: "4px", alignItems: "center" }}
+              >
+                <div
+                  className="flex flex-row gap-2 sale_lt_txt"
+                  style={{ alignItems: "center" }}
+                >
                   <span
                     style={{
                       color: "var(--color2)",
@@ -313,9 +318,12 @@ const SalereturnList = () => {
                 </Button>
               </div>
             </div>
-
+            <div
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
             <div>
-              <div className="firstrow">
+              <div className="firstrow mt-3">
                 <div className="overflow-x-auto">
                   <table
                     className=" w-full border-collapse custom-table"
@@ -441,10 +449,11 @@ const SalereturnList = () => {
                 <div className="flex justify-center mt-4">
                   <button
                     onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                      }`}
+                    className={`mx-1 px-3 py-1 rounded ${
+                      currentPage === 1
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
+                    }`}
                     disabled={currentPage === 1}
                   >
                     Previous
@@ -481,10 +490,11 @@ const SalereturnList = () => {
                   )}
                   <button
                     onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                      }`}
+                    className={`mx-1 px-3 py-1 rounded ${
+                      currentPage === rowsPerPage
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
+                    }`}
                     disabled={filteredList.length === 0}
                   >
                     Next
@@ -493,8 +503,9 @@ const SalereturnList = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                    }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+                    IsDelete ? "block" : "hidden"
+                  }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -558,7 +569,10 @@ const SalereturnList = () => {
                   // }}
                   className="order_list_ml custom-dialog"
                 >
-                  <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
+                  <DialogTitle
+                    id="alert-dialog-title"
+                    style={{ fontWeight: 700 }}
+                  >
                     Generate PDF
                   </DialogTitle>
                   <IconButton

@@ -157,7 +157,7 @@ const Gstr2 = () => {
                 <Loader />
             </div> :
                 <div>
-                    <div style={{ background: "rgb(0 0 0 / 10%)", height: 'calc(99.9vh - 55px)', padding: '10px 20px 0px' }}>
+                    <div className="p-6">
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports

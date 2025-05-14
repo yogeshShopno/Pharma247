@@ -291,8 +291,7 @@ const LoyaltyPoint = () => {
   return (
     <div>
       <Header />
-        <ToastContainer
-
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -307,14 +306,11 @@ const LoyaltyPoint = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div
-            style={{
-              background: "rgba(153, 153, 153, 0.1)",
-              height: "calc(100vh - 225px)",
-              padding: "0px 20px 0px",
-            }}
-          >
-            <div className="py-3 lyl_main_header_txt" style={{ display: "flex", gap: "4px" }}>
+          <div className="p-6">
+            <div
+              className="mb-4 lyl_main_header_txt"
+              style={{ display: "flex", gap: "4px" }}
+            >
               <div
                 style={{ display: "flex", gap: "5px", alignItems: "center" }}
               >
@@ -343,13 +339,16 @@ const LoyaltyPoint = () => {
                   size="small"
                   onClick={handelAddOpen}
                 >
-                  
                   <AddIcon />
                   Add Loyalty point
                 </Button>
               </div>
             </div>
-            <div className="firstrow p-4">
+            <div
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div className="firstrow mt-4">
               {/* <div className="bg-white"> */}
               {/* <div className="flex flex-col gap-2 lg:flex-row lg:gap-2">
                                 <div className="detail" >
@@ -482,15 +481,15 @@ const LoyaltyPoint = () => {
         )}
         <Dialog
           open={openAddPopUp}
-          className="order_list_ml"
-        // sx={{
-        //     "& .MuiDialog-container": {
-        //         "& .MuiPaper-root": {
-        //             width: "50%",
-        //             maxWidth: "500px",  // Set your width here
-        //         },
-        //     },
-        // }}
+          className="order_list_ml custom-dialog"
+          // sx={{
+          //     "& .MuiDialog-container": {
+          //         "& .MuiPaper-root": {
+          //             width: "50%",
+          //             maxWidth: "500px",  // Set your width here
+          //         },
+          //     },
+          // }}
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
             {header}
@@ -649,8 +648,9 @@ const LoyaltyPoint = () => {
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-          }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
+          IsDelete ? "block" : "hidden"
+        }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

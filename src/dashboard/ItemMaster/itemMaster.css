@@ -484,20 +484,20 @@
 
 @media (max-width: 1215px) and (min-width: 768px) {
   .oreder_list_fld_rp {
-    flex-direction: column !important;
-    display: flex;
+    /* flex-direction: column !important; */
+    /* display: flex; */
   }
 
   .purch_report_hdr {
-    width: 100% !important;
+    /* width: 100% !important;
     justify-content: end;
-    display: flex;
+    display: flex; */
   }
 
   .purch_report_hdr1 {
-    width: 100% !important;
+    /* width: 100% !important;
     justify-content: end;
-    display: flex;
+    display: flex; */
   }
 
   .detail_report {
@@ -513,26 +513,26 @@
   }
 
   .ttl_dldld {
-    width: 100% !important;
+    /* width: 100% !important;
     justify-content: end;
-    display: flex;
+    display: flex; */
   }
 }
 
 @media (max-width: 767px) {
   .oreder_list_fld_rp {
-    flex-direction: column !important;
-    align-items: start !important;
+    /* flex-direction: column !important; */
+    /* align-items: start !important; */
   }
 
   .purch_report_hdr {
-    flex-direction: column !important;
-    width: 100% !important;
+    /* flex-direction: column !important;
+    width: 100% !important; */
   }
 
   .purch_report_hdr1 {
-    flex-direction: column !important;
-    width: 100% !important;
+    /* flex-direction: column !important;
+    width: 100% !important; */
   }
 
   .detail_report_totl {
@@ -557,10 +557,10 @@
   }
 
   .ttl_dldld {
-    width: 100% !important;
-    justify-content: end;
-    flex-direction: column;
-    display: flex;
+    /* width: 100% !important; */
+    /* justify-content: end; */
+    /* flex-direction: column; */
+    /* display: flex; */
   }
 
   .day_summ_fldssss {

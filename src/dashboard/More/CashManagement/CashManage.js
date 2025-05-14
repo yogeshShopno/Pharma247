@@ -196,8 +196,7 @@ const CashManage = () => {
               <div
                 style={{
                   display: "flex",
-                  gap: "7px",
-                  marginBottom: "10px",
+                  gap: "7px", 
                   alignItems: "center",
                 }}
               >
@@ -214,7 +213,7 @@ const CashManage = () => {
                 </span>
                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
               </div>
-              <div className="headerList" style={{ marginBottom: "10px" }}>
+              <div className="headerList">
                 <Button
                   className="gap-7 downld_btn_csh"
                   variant="contained"

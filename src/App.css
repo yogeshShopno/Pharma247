@@ -455,11 +455,11 @@ body {
 }
 
 .hover-report:hover {
-  background-color: rgba(12, 161, 246, 0.1);
+  background-color: rgb(63 98 18 / 16%);
 }
 
 .heart-icon {
-  color: white;
+  color: #474747;
 }
 
 .hover-report li:hover .heart-icon svg {
@@ -690,6 +690,10 @@ body {
   width: 100%;
 }
 
+.detailrep_100 {
+  min-width: auto !important;
+}
+
 .react-datepicker-wrapper {
   width: 100% !important;
 }
@@ -867,6 +871,39 @@ button {
 }
 
 .saleTable td {
-    padding: 16px 8px !important;
+  padding: 16px 8px !important;
 }
+
+.customreportasccordion {
+  background-color: transparent !important;
+  box-shadow: none !important;
+
+  &:before {
+    background-color: transparent !important;
+  }
+
+  .css-eqpfi5-MuiAccordionSummary-content.Mui-expanded {
+    margin: 0 !important;
+  }
+
+  .css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root {
+    padding: 0 !important;
+  }
+
+  .css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expandedP
+  {
+    min-height: auto !important;
+  }
+
+  .css-15v22id-MuiAccordionDetails-root{
+    padding: 0 !important;
+  }
+} 
+
+.csrtureddididid{
+  @media (max-width: 1024px) {
+    flex-direction: column-reverse !important;
+  }
+}
+
 /* rutikacssend */

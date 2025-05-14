@@ -12,7 +12,7 @@
   flex-wrap: wrap;
   background-color: white;
   height: auto;
-  padding: 13px 29px;
+  /* padding: 13px 29px; */
   gap: 10px;
   justify-content: space-between;
 }
@@ -1128,7 +1128,7 @@
   }
 
   .purch_report_hdr {
-    width: 49% !important;
+    /* width: 49% !important; */
   }
 
   .pur_itm_vld_fld {
@@ -1139,7 +1139,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-width: 255px !important;
+    /* min-width: 255px !important; */
   }
 }
 
@@ -1201,7 +1201,7 @@
 
 @media (max-width: 1297px) {
   .sale_summery_hdr {
-    flex-direction: column !important;
+    /* flex-direction: column !important; */
   }
 
   .sale_summ_sec {
@@ -1240,7 +1240,7 @@
 
 @media (max-width: 1737px) {
   .detail_report_doc_btn {
-    min-width: 230px !important;
+    /* min-width: 230px !important; */
   }
 
   .doc_type_hd {
@@ -1250,11 +1250,11 @@
 
 @media (max-width: 1680px) {
   .doc_type_hd {
-    flex-direction: column;
+    /* flex-direction: column; */
   }
 
   .detail_report_doc_btn {
-    min-width: 255px !important;
+    /* min-width: 255px !important; */
   }
 
   .doc_summary_ttl {

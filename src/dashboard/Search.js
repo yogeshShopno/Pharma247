@@ -180,12 +180,12 @@ const Search = ({ searchPage, setSearchPage }) => {
           >
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
           </svg>
-          <div className="my-4 flex gap-4 justify-evenly items-center" style={{ position: 'sticky', top: '0' }}>
-            <Box className="my-5" sx={{ width: "40%" }}>
+          <div className="my-4 flex gap-4 justify-evenly items-center" style={{ position: 'sticky', top: '0', alignItems: 'end' }}>
+            <Box className=" " sx={{ width: "40%" }}>
               <FormControl fullWidth>
                 <InputLabel id="Select">Select</InputLabel>
                 <Select
-
+                  style={{ height: "48px" }}
                   labelId="select"
                   id="select"
                   value={searchType}
@@ -205,7 +205,7 @@ const Search = ({ searchPage, setSearchPage }) => {
               disabled={!searchType}
               autoFocus
               value={searchQuery} // Bind the value to searchQuery
-              sx={{ width: "100%", marginTop: "22px" }}
+              sx={{ width: "100%", marginTop: "0px" }}
               onChange={(e) => handleSearchQueryChange(e)}
               variant="standard"
               placeholder="please search ......"

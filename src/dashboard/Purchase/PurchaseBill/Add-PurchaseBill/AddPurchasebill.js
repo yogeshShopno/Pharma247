@@ -138,6 +138,7 @@ const AddPurchaseBill = () => {
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
 
+
   const [addDistributorName, setAddDistributorName] = useState("");
   const [addDistributorNo, setAddDistributorNo] = useState("");
   const [addDistributorMobile, setAddDistributorMobile] = useState("");
@@ -240,7 +241,6 @@ const AddPurchaseBill = () => {
         // Move selection up
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
       } else if (key === "Enter" && selectedIndex !== -1) {
-        // Prevent Enter action if any input is focused
         if (!isInputFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
           if (!selectedRow) return;
@@ -248,11 +248,15 @@ const AddPurchaseBill = () => {
           setSelectedEditItemId(selectedRow.id);
           handleEditClick(selectedRow);
 
-          if (inputRefs.current[2]) {
-            inputRefs.current[2].focus();
-          }
+          // Delay focusing the Unit input to wait for render
+          setTimeout(() => {
+            if (inputRefs.current[3]) {
+              inputRefs.current[3].focus();
+            }
+          }, 100); // 100ms delay ensures re-render completes
         }
       }
+
     };
 
     document.addEventListener("keydown", handleKeyPress);
@@ -324,9 +328,9 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const newErrors = {};
-    if (Number(ptr) > Number(mrp)) {
-      newErrors.ptr = "PTR must be less than or equal to MRP";
-      toast.error("PTR must be less than or equal to MRP");
+    if (Number(ptr) >= Number(mrp) && ptr !== null && mrp !== null) {
+      newErrors.ptr = "PTR must be less than MRP";
+      toast.error(newErrors.ptr);
     }
 
     setErrors(newErrors);
@@ -366,6 +370,35 @@ const AddPurchaseBill = () => {
     listOfGst();
     setSrNo(localStorage.getItem("Purchase_SrNo"));
   }, [id]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (addDistributorName) {
+        listDistributor({ search_name: addDistributorName });
+      }
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [addDistributorName]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (addDistributorNo) {
+        listDistributor({ search_gst: addDistributorNo });
+      }
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [addDistributorNo]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (addDistributorMobile) {
+        listDistributor({ search_phone_number: addDistributorMobile });
+      }
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [addDistributorMobile]);
+
+  // Add one more if email field is used in the future.
 
   /*<============================================================================ Clear old purchase item data ====================================================================> */
 
@@ -627,8 +660,8 @@ const AddPurchaseBill = () => {
                   response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
                 )
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                  )
                   : 0
               );
               data.append(
@@ -641,16 +674,16 @@ const AddPurchaseBill = () => {
                 "discount",
                 Number(response?.data?.data[0]?.batch_list[0]?.discount)
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.scheme_account
+                  )
                   : 0
               );
               data.append(
                 "scheme_account",
                 Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.scheme_account
+                  )
                   : 0
               );
               data.append(
@@ -825,21 +858,37 @@ const AddPurchaseBill = () => {
 
   /*<========================================================================== Get Distributor List   ===========================================================================> */
 
-  let listDistributor = () => {
-    axios
-      .get("list-distributer", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        localStorage.setItem("distributor", response.data.data.distributor);
-        setDistributorList(response.data.data);
-      })
-      .catch((error) => {
-        setUnsavedItems(false);
-      });
+  const listDistributor = (searchPayload = {}) => {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    if (Object.keys(searchPayload).length > 0) {
+      axios
+        .post("list-distributer", searchPayload, { headers })
+        .then((response) => {
+          const list = response.data.data?.distributor || response.data.data || [];
+          setDistributorList(list);
+        })
+        .catch((error) => {
+          console.error("Search failed", error);
+          setUnsavedItems(false);
+        });
+    } else {
+      axios
+        .get("list-distributer", { headers })
+        .then((response) => {
+          const list = response.data.data?.distributor || response.data.data || [];
+          localStorage.setItem("distributor", JSON.stringify(list));
+          setDistributorList(list);
+        })
+        .catch((error) => {
+          console.error("Fetch failed", error);
+          setUnsavedItems(false);
+        });
+    }
   };
+
 
   /*<========================================================================= Get Item purchase List   ==========================================================================> */
 
@@ -856,13 +905,13 @@ const AddPurchaseBill = () => {
         })
         .then((response) => {
           setItemPurchaseList(response.data.data);
-          setFinalTotalAmount(response.data.data.total_price);
+          setFinalTotalAmount(response.data.data.new_total_price);
           setTotalGst(response.data.data.total_gst);
           setTotalQty(response.data.data.total_qty);
           setTotalMargin(response.data.data.total_margin);
           setMarginNetProfit(response.data.data.margin_net_profit);
           setTotalNetRate(response.data.data.total_net_rate);
-          handleCalNetAmount(response.data.data.total_price);
+          handleCalNetAmount(response.data.data.new_total_price);
           setTotalBase(response.data.data.total_base);
           setTotalFRee(response.data.data.total_free);
         });
@@ -1078,16 +1127,16 @@ const AddPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : await axios.post("item-purchase", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       setSelectedOption(null);
       setSearchItem("");
       setItemTotalAmount(0);
@@ -1115,11 +1164,18 @@ const AddPurchaseBill = () => {
       setValue("");
       setSearchItem("");
 
+
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
         setSelectedRows([]);
         setCnTotalAmount({});
       }
+      // Delay focus to wait for rerender
+      setTimeout(() => {
+        if (inputRefs.current[2]) {
+          inputRefs.current[2].focus(); // Item Name input
+        }
+      }, 100);
     } catch (e) {
       setUnsavedItems(false);
     }
@@ -1128,14 +1184,15 @@ const AddPurchaseBill = () => {
 
   const handleAddNewDistributor = async () => {
     if (
-      !addDistributorAddress &&
-      !addDistributorMobile &&
-      !addDistributorName &&
-      addDistributorNo
+      !addDistributorName ||
+      !addDistributorNo ||
+      !addDistributorMobile ||
+      !addDistributorAddress
     ) {
       toast.error("Please fill all the fields");
       return;
     }
+
     let data = new FormData();
     data.append("gst_number", addDistributorNo);
     data.append("distributor_name", addDistributorName);
@@ -1149,57 +1206,47 @@ const AddPurchaseBill = () => {
         },
       });
 
-      if (response.data.status === 200) {
+      if (response?.status === 200) {
         setAddDistributorAddress("");
-        addDistributorMobile("");
-        addDistributorName("");
-        addDistributorNo("");
-        inputRefs.current[2].focus();
+        setAddDistributorMobile("");
+        setAddDistributorName("");
+        setAddDistributorNo("");
         toast.success("Item Distributor successfully");
+        setOpenAddDistributorPopUp(false);
+        inputRefs.current[2].focus();
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
     } catch (error) {
       setUnsavedItems(false);
-
-      if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Please try again later");
-      }
+      console.error("API error:", error);
     }
   };
+
 
   /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
-    if (!addItemName && !addUnit && !addBarcode) {
+    if (!addItemName || !addUnit || !addBarcode) {
       toast.error("Please fill all the fields");
       return;
     }
-    let formData = new FormData();
-    formData.append("item_name", addItemName ? addItemName : "");
-    formData.append("unit", addUnit ? addUnit : "");
-    formData.append("weightage", addUnit ? addUnit : "");
-    formData.append("pack", addUnit ? "1*" + addUnit : "");
-    formData.append("barcode", addBarcode ? addBarcode : "");
-    formData.append("packaging_id", "");
-    formData.append("drug_group", "");
-    formData.append("gst", "");
-    formData.append("location", "");
-    formData.append("mrp", "");
-    formData.append("minimum", "");
-    formData.append("maximum", "");
-    formData.append("discount", "");
-    formData.append("margin", "");
-    formData.append("hsn_code", "");
-    formData.append("message", "");
-    formData.append("item_category_id", "");
-    formData.append("pahrma", "");
-    formData.append("distributer", "");
-    formData.append("front_photo", "");
-    formData.append("back_photo", "");
-    formData.append("mrp_photo", "");
+
+    const formData = new FormData();
+    formData.append("item_name", addItemName);
+    formData.append("unit", addUnit);
+    formData.append("weightage", addUnit);
+    formData.append("pack", `1*${addUnit}`);
+    formData.append("barcode", addBarcode);
+
+    // Append remaining optional fields as empty strings
+    const optionalFields = [
+      "packaging_id", "drug_group", "gst", "location", "mrp", "minimum",
+      "maximum", "discount", "margin", "hsn_code", "message",
+      "item_category_id", "pahrma", "distributer", "front_photo",
+      "back_photo", "mrp_photo"
+    ];
+    optionalFields.forEach(field => formData.append(field, ""));
 
     try {
       const response = await axios.post("create-iteams", formData, {
@@ -1208,27 +1255,25 @@ const AddPurchaseBill = () => {
         },
       });
 
-      if (response.data.status === 200) {
+      if (response?.data?.status === 200) {
         setOpenAddItemPopUp(false);
         setOpenAddDistributorPopUp(false);
         setAddItemName("");
         setAddBarcode("");
         setAddUnit("");
-        inputRefs.current[2].focus();
+        inputRefs.current[2]?.focus();
         toast.success("Item added successfully");
-      } else if (response.data.status === 400) {
-        toast.error(response.data.message);
+      } else {
+        toast.error(response?.data?.message || "Something went wrong");
       }
+
     } catch (error) {
       setUnsavedItems(false);
-
-      if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Please try again later");
-      }
+      const errMsg = error?.response?.data?.message || "Please try again later";
+      toast.error(errMsg);
     }
   };
+
 
   /*<=============================================================================== search item name  ==========================================================================> */
 
@@ -1321,7 +1366,7 @@ const AddPurchaseBill = () => {
     data.append("user_id", localStorage.getItem("userId"));
     data.append("sr_no", srNo);
     data.append("payment_type", paymentType);
-    data.append("total_amount", ItemPurchaseList.total_price);
+    data.append("total_amount", ItemPurchaseList.new_total_price);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
     data.append("total_gst", !totalGst ? 0 : totalGst);
@@ -1462,7 +1507,7 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== Distributor select  ==========================================================================> */
-  useEffect(() => {}, [distributor]);
+  useEffect(() => { }, [distributor]);
 
   const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
@@ -1705,11 +1750,11 @@ const AddPurchaseBill = () => {
       />
       <div className="p-6">
         <div
-         style={{
-            height: "calc(-125px + 100vh)", 
+          style={{
+            height: "calc(-125px + 100vh)",
             overflow: "auto",
           }}
-          >
+        >
           <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
             <div style={{ display: "flex", gap: "7px" }}>
               <span
@@ -1744,7 +1789,7 @@ const AddPurchaseBill = () => {
                 New
               </span>
               <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-            </div> 
+            </div>
             <div className="headerList">
               <Select
                 labelId="dropdown-label"
@@ -1921,7 +1966,7 @@ const AddPurchaseBill = () => {
                     autoComplete="off"
                     id="outlined-number"
                     size="small"
-                    variant="outlined" 
+                    variant="outlined"
                     value={billNo}
                     onChange={(e) => {
                       setbillNo(e.target.value.toUpperCase());
@@ -2078,17 +2123,16 @@ const AddPurchaseBill = () => {
                                     <ListItem {...props}>
                                       <ListItemText
                                         primary={`${option.iteam_name}`}
-                                        secondary={` ${
-                                          option.stock === 0
-                                            ? `Unit: ${option.weightage}`
-                                            : `Pack: ${option.pack}`
-                                        } | MRP: ${option.mrp}  | Location: ${
-                                          option.location
-                                        }  | Current Stock: ${option.stock}`}
+                                        secondary={` ${option.stock === 0
+                                          ? `Unit: ${option.weightage}`
+                                          : `Pack: ${option.pack}`
+                                          } | MRP: ${option.mrp}  | Location: ${option.location
+                                          }  | Current Stock: ${option.stock}`}
                                       />
                                     </ListItem>
                                   )}
                                   renderInput={(params) => (
+
                                     <TextField
                                       tabIndex={0}
                                       variant="outlined"
@@ -2102,6 +2146,10 @@ const AddPurchaseBill = () => {
                                       inputRef={(el) =>
                                         (inputRefs.current[2] = el)
                                       }
+                                      inputProps={{
+                                        ...params.inputProps,
+                                        style: { textTransform: 'uppercase' },
+                                      }}
                                       onKeyDown={(e) => {
                                         if (
                                           !searchItem &&
@@ -2169,7 +2217,7 @@ const AddPurchaseBill = () => {
                               value={batch}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
-                                setBatch(e.target.value);
+                                setBatch((e.target.value).toUpperCase());
                               }}
                               inputRef={(el) => (inputRefs.current[4] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 4)}
@@ -2451,9 +2499,8 @@ const AddPurchaseBill = () => {
                             setSelectedIndex(index); // Ensure clicking sets the selected index
                             handleEditClick(item);
                           }}
-                          className={`item-List flex justify-between cursor-pointer ${
-                            index === selectedIndex ? "highlighted-row" : ""
-                          }`}
+                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                            }`}
                         >
                           <td
                             style={{
@@ -2629,7 +2676,7 @@ const AddPurchaseBill = () => {
               size="lg"
               position="bottom-center"
               className="modal_amount"
-              // style={{ width: "50%" }}
+            // style={{ width: "50%" }}
             >
               <div
                 style={{
@@ -2703,8 +2750,8 @@ const AddPurchaseBill = () => {
                     {roundOffAmount === "0.00"
                       ? roundOffAmount
                       : roundOffAmount < 0
-                      ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                      : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                        ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                        : `${Math.abs(roundOffAmount.toFixed(2))}`}
                   </span>
                 </div>
 
@@ -2765,7 +2812,7 @@ const AddPurchaseBill = () => {
                             onChange={handleSelectAll}
                             checked={
                               selectedRows.length ===
-                                purchaseReturnPending.length &&
+                              purchaseReturnPending.length &&
                               purchaseReturnPending.length > 0
                             }
                           />
@@ -2874,7 +2921,7 @@ const AddPurchaseBill = () => {
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div
+              <div className="bg-white"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -2936,7 +2983,7 @@ const AddPurchaseBill = () => {
 
         {/*<======================================================================== add Distributor PopUp Box  =======================================================================> */}
 
-        <Dialog open={openAddDistributorPopUp}>
+        <Dialog open={openAddDistributorPopUp} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Distributor
           </DialogTitle>
@@ -2952,108 +2999,173 @@ const AddPurchaseBill = () => {
           >
             <CloseIcon />
           </IconButton>
+
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div className="bg-white">
-                <div
-                  className="mainform bg-white rounded-lg"
-                  style={{ padding: "20px" }}
-                >
-                  <div className="row">
+              <div className="bg-white" style={{
+                alignItems: "center",
+                gap: "15px",
+                marginBlock: "20px",
+              }}>
+                <div className="mainform bg-white rounded-lg" style={{ padding: "20px" }}>
+
+                  {/* Row 1: Distributor Name + GST */}
+                  <div className="row gap-5">
+
+                    {/* Distributor Name */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">
-                        Distributor Name
-                      </label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        size="small"
+                      <label className="label secondary">Distributor Name</label>
+                      <Autocomplete
+                        freeSolo
+                        options={distributorList.map(d => d.name)}
                         value={addDistributorName}
-                        autoFocus
-                        onChange={(e) =>
-                          setAddDistributorName(e.target.value.toUpperCase())
-                        }
-                        inputRef={(el) => (inputRefs.current[16] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 16)}
+                        onInputChange={(e, newValue) => {
+                          setAddDistributorName(newValue.toUpperCase());
+                        }}
+                        onChange={(e, selectedValue) => {
+                          const found = distributorList.find(d => d.name === selectedValue);
+                          if (found) {
+                            setAddDistributorName(found.name);
+                            setAddDistributorMobile(found.phone_number);
+                            setAddDistributorNo(found.gst);
+                            setAddDistributorAddress(found.area || "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                           
+                            size="small"
+                            inputRef={(el) => (inputRefs.current[16] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 16)}
+                            inputProps={{
+                              ...params.inputProps,
+                              style: { textTransform: "uppercase" },
+                              autoComplete: "off",
+                            }}
+                          />
+                        )}
                       />
                     </div>
+
+                    {/* GST Number */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">
-                        Distributor GSTIN Number
-                      </label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        size="small"
+                      <label className="label secondary">Distributor GSTIN Number</label>
+                      <Autocomplete
+                        freeSolo
+                        options={distributorList.map(d => d.gst)}
+                        getOptionLabel={(option) => (typeof option === "string" ? option : "")}
                         value={addDistributorNo}
-                        autoFocus
-                        onChange={(e) =>
-                          setAddDistributorNo(e.target.value.toUpperCase())
-                        }
-                        inputRef={(el) => (inputRefs.current[17] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 17)}
+                        onInputChange={(e, newValue) => {
+                          setAddDistributorNo(newValue.toUpperCase());
+                        }}
+                        onChange={(e, selectedValue) => {
+                          const found = distributorList.find(d => d.gst === selectedValue);
+                          if (found) {
+                            setAddDistributorName(found.name);
+                            setAddDistributorMobile(found.phone_number);
+                            setAddDistributorNo(found.gst);
+                            setAddDistributorAddress(found.area || "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                           
+                            size="small"
+                            inputRef={(el) => (inputRefs.current[17] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 17)}
+                            inputProps={{
+                              ...params.inputProps,
+                              style: { textTransform: "uppercase" },
+                              autoComplete: "off",
+                            }}
+                          />
+                        )}
                       />
+
                     </div>
+
                   </div>
-                  <div className="row">
+
+                  {/* Row 2: Mobile + Address */}
+                  <div className="row gap-5">
+
+                    {/* Mobile Number */}
                     <div className="fields add_new_item_divv">
-                      <label className="label  secondary">Mobile Number</label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        type="number"
-                        size="small"
+                      <label className="label secondary">Mobile Number</label>
+                      <Autocomplete
+                        freeSolo
+                        options={distributorList.map(d => d.phone_number)}
                         value={addDistributorMobile}
-                        onChange={(e) =>
-                          setAddDistributorMobile(Number(e.target.value))
-                        }
-                        inputRef={(el) => (inputRefs.current[18] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 18)}
+                        onInputChange={(e, newValue) => {
+                          setAddDistributorMobile(newValue);
+                        }}
+                        onChange={(e, selectedValue) => {
+                          const found = distributorList.find(d => d.phone_number === selectedValue);
+                          if (found) {
+                            setAddDistributorName(found.name);
+                            setAddDistributorMobile(found.phone_number);
+                            setAddDistributorNo(found.gst);
+                            setAddDistributorAddress(found.area || "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+
+                            size="small"
+                            inputRef={(el) => (inputRefs.current[18] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 18)}
+                            inputProps={{
+                              ...params.inputProps,
+                              autoComplete: "off",
+                            }}
+                          />
+                        )}
                       />
                     </div>
+
+                    {/* Address */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Adress</label>
+                      <label className="label secondary">Address</label>
                       <TextField
                         autoComplete="off"
-                        id="outlined-number"
                         size="small"
                         value={addDistributorAddress}
-                        onChange={(e) =>
-                          setAddDistributorAddress(e.target.value)
-                        }
+                        onChange={(e) => setAddDistributorAddress(e.target.value)}
                         inputRef={(el) => (inputRefs.current[19] = el)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            e.preventDefault(); // Prevent form submission
+                            e.preventDefault();
                             handleAddNewDistributor();
                           }
                         }}
                       />
                     </div>
+
                   </div>
-                  <div
-                    className="row"
-                    style={{
-                      justifyContent: "flex-end",
-                      paddingRight: "4px",
-                      paddingTop: "8%",
-                    }}
-                  >
+
+                  {/* Add Button */}
+                  <div className="row" style={{
+                    justifyContent: "flex-end",
+                    paddingRight: "4px",
+                    paddingTop: "8%",
+                  }}>
                     <Button
                       variant="contained"
                       sx={{
                         backgroundColor: "#3f6212",
-                        "&:hover": {
-                          backgroundColor: "#3f6212",
-                        },
+                        "&:hover": { backgroundColor: "#3f6212" },
                       }}
-                      onClick={() => handleAddNewDistributor()}
+                      onClick={handleAddNewDistributor}
                       ref={addButtonref}
                     >
                       <ControlPointIcon className="mr-2" />
                       Add Distributor
                     </Button>
                   </div>
+
                 </div>
               </div>
             </DialogContentText>
@@ -3082,7 +3194,7 @@ const AddPurchaseBill = () => {
             <DialogContentText id="alert-dialog-description">
               <div className="bg-white">
                 <div
-                  className="mainform bg-white rounded-lg" 
+                  className="mainform bg-white rounded-lg"
                 >
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
@@ -3141,12 +3253,12 @@ const AddPurchaseBill = () => {
                         value={`1 * ${addUnit} `}
                       />
                     </div>
-                  </div> 
+                  </div>
                   <div
                     className="row mt-3"
                     style={{
                       justifyContent: "flex-end",
-                      paddingRight: "4px", 
+                      paddingRight: "4px",
                     }}
                   >
                     <Button
@@ -3175,9 +3287,8 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            IsDelete ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -3242,9 +3353,8 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            isOpenBox ? "block" : "hidden"
-          }`}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

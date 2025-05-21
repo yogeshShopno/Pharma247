@@ -328,13 +328,24 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const newErrors = {};
-    if (Number(ptr) >= Number(mrp) && ptr !== null && mrp !== null) {
-      newErrors.ptr = "PTR must be less than MRP";
-      toast.error(newErrors.ptr);
+
+    if (
+      ptr !== null &&
+      mrp !== null &&
+      ptr !== "" &&
+      mrp !== "" &&
+      !isNaN(ptr) &&
+      !isNaN(mrp)
+    ) {
+      if (Number(ptr) >= Number(mrp)) {
+        newErrors.ptr = "PTR must be less than MRP";
+        toast.error(newErrors.ptr);
+      }
     }
 
     setErrors(newErrors);
   }, [ptr, mrp]);
+
 
   /*<================================================================= Clear old purchase item if user leave the browswer =========================================================> */
 
@@ -1012,7 +1023,12 @@ const AddPurchaseBill = () => {
     //   newErrors.HSN = "HSN is required";
     // }
 
-    if (!qty) newErrors.unit = "Qty is required";
+    if (
+      (!numericFree || Number(numericFree) === 0) &&
+      (!numericQty || Number(numericQty) === 0)
+    ) {
+      newErrors.quantity = "Qty is required";
+    }
 
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
@@ -1041,7 +1057,7 @@ const AddPurchaseBill = () => {
     }
     if (!ptr) {
       newErrors.ptr = "PTR is required";
-    } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
+    } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
       newErrors.ptr = "PTR must be less than or equal to MRP";
       toast.error("PTR must be less than or equal to MRP");
     }
@@ -1058,10 +1074,10 @@ const AddPurchaseBill = () => {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
-    if (!ItemTotalAmount) {
-      toast.error("Total amount is not available");
-      newErrors.searchItem = "Total amount is not available";
-    }
+    // if (!ItemTotalAmount) {
+    //   toast.error("Total amount is not available");
+    //   newErrors.searchItem = "Total amount is not available";
+    // }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -1450,6 +1466,7 @@ const AddPurchaseBill = () => {
   /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleEditClick = (item) => {
+    console.log("Editing item:", item);
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -1523,7 +1540,7 @@ const AddPurchaseBill = () => {
 
   const handleOptionChange = (event, newValue) => {
     setIsEditMode(false);
-
+    removeItem()
     setValue(newValue);
     setSelectedOption(newValue);
 
@@ -1561,6 +1578,7 @@ const AddPurchaseBill = () => {
   /*<============================================================================== Remove Item  ==========================================================================> */
 
   const removeItem = () => {
+
     setIsEditMode(false);
     setUnit("");
     setBatch("");
@@ -2091,7 +2109,10 @@ const AddPurchaseBill = () => {
                                 />
                                 <DeleteIcon
                                   className="delete-icon mr-2"
-                                  onClick={removeItem}
+                                  onClick={() => {
+                                    removeItem();
+                                    setIsEditMode(false);
+                                  }}
                                 />
                                 {searchItem}
                               </div>
@@ -3034,7 +3055,7 @@ const AddPurchaseBill = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                           
+
                             size="small"
                             inputRef={(el) => (inputRefs.current[16] = el)}
                             onKeyDown={(e) => handleKeyDown(e, 16)}
@@ -3071,7 +3092,7 @@ const AddPurchaseBill = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                           
+
                             size="small"
                             inputRef={(el) => (inputRefs.current[17] = el)}
                             onKeyDown={(e) => handleKeyDown(e, 17)}

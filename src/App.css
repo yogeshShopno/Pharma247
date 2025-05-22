@@ -705,12 +705,27 @@ body {
 }
 
 .react-datepicker__header {
-  background-color: var(--color3) !important;
+  background-color: var(--color1) !important;
+    opacity: 1 !important;
+
 }
 
 .react-datepicker__day--selected {
   background-color: var(--color2) !important;
   color: #fff !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__navigation {
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+/* Make all MUI TextField input containers have z-index 0 */
+.MuiInputBase-root  .textfield-z0{
+  z-index: 0 !important;
+  position: relative; /* required for z-index to take effect */
 }
 
 .auth-page {
@@ -870,9 +885,9 @@ button {
   border-color: var(--color1);
 }
 
-.saleTable td {
+/* .saleTable td {
   padding: 16px 8px !important;
-}
+} */
 
 .customreportasccordion {
   background-color: transparent !important;

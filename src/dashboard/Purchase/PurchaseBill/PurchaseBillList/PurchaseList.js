@@ -420,9 +420,9 @@ const Purchasebill = () => {
               </div>
             </div>
             <div
-                className="row border-b px-4 border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
+              className="row border-b px-4 border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
           </div>
 
           <div className="firstrow px-4">
@@ -506,10 +506,18 @@ const Purchasebill = () => {
                             onClick={() => sortByColumn(column.id)}
                           />
                           <TextField
+                            className="textfield-z0"
                             autoComplete="off"
                             label={`Type Here`}
                             size="small"
-                            style={{ minWidth: 150 }}
+                            sx={{
+                              minWidth: 150,
+                              '& .MuiInputBase-root': {
+                                zIndex:0,
+                                position: 'relative',
+                              },
+                            }}
+                            style={{ minWidth: 150,zIndex:0 }}
                             value={searchTerms[index]}
                             onChange={(e) =>
                               handleSearchChange(index, e.target.value)
@@ -549,8 +557,8 @@ const Purchasebill = () => {
                                 colIndex === 0
                                   ? { borderRadius: "10px 0 0 10px" }
                                   : colIndex === columns.length
-                                  ? { borderRadius: "0 10px 10px 0" }
-                                  : {}
+                                    ? { borderRadius: "0 10px 10px 0" }
+                                    : {}
                               }
                               key={column.id}
                               className="capitalize"
@@ -580,12 +588,12 @@ const Purchasebill = () => {
                               permissions,
                               "purchase bill delete"
                             ) && (
-                              <DeleteIcon
-                                style={{ color: "#F31C1C" }}
-                                className="cursor-pointer "
-                                onClick={() => deleteOpen(row.id)}
-                              />
-                            )}
+                                <DeleteIcon
+                                  style={{ color: "#F31C1C" }}
+                                  className="cursor-pointer "
+                                  onClick={() => deleteOpen(row.id)}
+                                />
+                              )}
                           </div>
                         </td>
                       </tr>
@@ -600,11 +608,10 @@ const Purchasebill = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -641,11 +648,10 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -657,9 +663,8 @@ const Purchasebill = () => {
           <div
             id="modal"
             value={IsDelete}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              IsDelete ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

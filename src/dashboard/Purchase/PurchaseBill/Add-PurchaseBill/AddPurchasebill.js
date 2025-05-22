@@ -376,6 +376,7 @@ const AddPurchaseBill = () => {
     if (id) {
       batchList(id);
     }
+    console.log(id, "id")
     listDistributor();
     BankList();
     listOfGst();
@@ -879,7 +880,10 @@ const AddPurchaseBill = () => {
         .post("list-distributer", searchPayload, { headers })
         .then((response) => {
           const list = response.data.data?.distributor || response.data.data || [];
+          console.log(list)
           setDistributorList(list);
+          console.log(distributorList)
+
         })
         .catch((error) => {
           console.error("Search failed", error);
@@ -1030,6 +1034,10 @@ const AddPurchaseBill = () => {
       newErrors.quantity = "Qty is required";
     }
 
+    if (!batch) {
+      newErrors.batch = "Batch is required";
+      toast.error(newErrors.batch);
+    }
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.error(newErrors.expiryDate);
@@ -1053,7 +1061,7 @@ const AddPurchaseBill = () => {
     }
     if (!mrp) {
       newErrors.mrp = "MRP is required";
-      toast.error(newErrors.expiryDate);
+      toast.error(newErrors.mrp);
     }
     if (!ptr) {
       newErrors.ptr = "PTR is required";
@@ -1130,7 +1138,7 @@ const AddPurchaseBill = () => {
     data.append("scheme_account", schAmt ? schAmt : 0);
     data.append("base_price", base ? base : 0);
     data.append("gst", gstMapping[gst] ?? gst);
-    data.append("location", loc ? loc : 0);
+    data.append("location", loc ? loc : "");
     data.append("margin", margin ? margin : 0);
     data.append("net_rate", netRate ? netRate : 0);
     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
@@ -1153,6 +1161,7 @@ const AddPurchaseBill = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+      setId(null)
       setSelectedOption(null);
       setSearchItem("");
       setItemTotalAmount(0);
@@ -1227,24 +1236,35 @@ const AddPurchaseBill = () => {
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
-        toast.success("Item Distributor successfully");
+        toast.success("Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
-        inputRefs.current[2].focus();
-      } else if (response.data.status === 400) {
-        toast.error(response.data.message);
+        setTimeout(() => {
+          if (inputRefs.current[0]) {
+            inputRefs.current[0].focus();
+          }
+        }, 100);
+        listDistributor();
       }
     } catch (error) {
-      setUnsavedItems(false);
       console.error("API error:", error);
+      setUnsavedItems(false);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Something went wrong";
+      toast.error(message)
     }
+
   };
 
 
   /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
-    if (!addItemName || !addUnit || !addBarcode) {
-      toast.error("Please fill all the fields");
+    if (!addItemName || !addUnit) {
+      toast.error("Please fill required fields");
       return;
     }
 
@@ -1368,8 +1388,11 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== submit purchase bill  ==========================================================================> */
+  let isSubmitting = false;
 
   const submitPurchaseData = async (draft) => {
+    if (isSubmitting) return;
+    isSubmitting = true;
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1403,15 +1426,21 @@ const AddPurchaseBill = () => {
         .then((response) => {
           localStorage.removeItem("RandomNumber");
           setItemPurchaseList("");
+          setDistributor(null)
+          setbillNo("")
+          setSelectedDate(new Date())
           setUnsavedItems(false);
           toast.success(response.data.message);
           setTimeout(() => {
+            isSubmitting = false; // reset debounce
             history.push("/purchase/purchasebill");
           }, 2000);
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
+      isSubmitting = false; // reset on error too
+
     }
   };
 
@@ -1427,13 +1456,13 @@ const AddPurchaseBill = () => {
       newErrors.billNo = "Bill No is Required";
       toast.error("Bill No is Required");
     }
-    if (ItemPurchaseList.item.length === 0) {
+    if (ItemPurchaseList?.item?.length === 0) {
       toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
     }
 
     setError(newErrors);
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors)?.length > 0) {
       return;
     }
     submitPurchaseData(draft);
@@ -1466,8 +1495,8 @@ const AddPurchaseBill = () => {
   /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleEditClick = (item) => {
-    console.log("Editing item:", item);
     setSelectedEditItem(item);
+
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
     setSelectedEditItemId(item.id);
@@ -1524,7 +1553,6 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== Distributor select  ==========================================================================> */
-  useEffect(() => { }, [distributor]);
 
   const handleDistributorSelect = (event, newValue) => {
     setDistributor(newValue);
@@ -1578,6 +1606,10 @@ const AddPurchaseBill = () => {
   /*<============================================================================== Remove Item  ==========================================================================> */
 
   const removeItem = () => {
+    setSelectedEditItem(null);
+    console.log("Editing item:", selectedEditItem);
+
+    setSelectedEditItemId(0);
 
     setIsEditMode(false);
     setUnit("");
@@ -1875,7 +1907,7 @@ const AddPurchaseBill = () => {
                 onClick={handelAddItemOpen}
               >
                 <ControlPointIcon className="mr-2" />
-                Add New Item
+                Submit
               </Button>
 
               <Button
@@ -1925,16 +1957,17 @@ const AddPurchaseBill = () => {
               <div className="flex flex-row gap-4 overflow-x-auto w-full">
                 <div>
                   <span className="title mb-2">
-                    Distributor
+                    Distributor<span className="text-red-600  ">*</span>
                     <FaPlusCircle
                       className="primary cursor-pointer"
                       onClick={() => {
                         setOpenAddDistributorPopUp(true);
                       }}
+
                     />
                   </span>
                   <Autocomplete
-                    value={distributor}
+                    value={distributor ?? ""}
                     sx={{
                       width: "100%",
                       minWidth: "350px",
@@ -1942,26 +1975,50 @@ const AddPurchaseBill = () => {
                         minWidth: "250px",
                       },
                     }}
+                    freeSolo={true}
                     size="small"
                     onChange={handleDistributorSelect}
                     options={distributorList}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
+                    getOptionLabel={(option) => {
+                      // option can be string or object
+                      if (typeof option === "string") {
+                        return option;
+                      }
+                      if (option && typeof option === "object" && option.name) {
+                        return option.name;
+                      }
+                      return "";
+                    }} renderInput={(params) => (
                       <TextField
                         autoFocus={focusedField === "distributor"}
                         autoComplete="off"
                         variant="outlined"
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 0)}
+                        onKeyDown={(e) => {
+
+                          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+
+                            return;
+                          } else if (e.key === 'Enter' || !distributor?.id) {
+                            toast.error("Distributor is Required")
+                          }
+
+                          if (distributor?.id) {
+                            handleKeyDown(e, 0);
+                          } else if (e.key === 'Tab' || e.key === 'Enter') {
+                            if (!distributor?.id) {
+                              e.preventDefault();
+                              toast.error("Distributor is Required")
+                            }
+                          }
+                        }}
+
                       />
                     )}
+
                   />
-                  {error.distributor && (
-                    <span style={{ color: "red", fontSize: "12px" }}>
-                      {error.distributor}
-                    </span>
-                  )}
+
                 </div>
                 {/* <div className="detail">
                 <span className="title mb-2">Sr No.</span>
@@ -1979,7 +2036,7 @@ const AddPurchaseBill = () => {
                 />
               </div> */}
                 <div className="detail">
-                  <span className="title mb-2">Bill No. / Order No.</span>
+                  <span className="title mb-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
@@ -1990,13 +2047,16 @@ const AddPurchaseBill = () => {
                       setbillNo(e.target.value.toUpperCase());
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, 1)}
+                    onKeyDown={(e) => {
+
+                      if (billNo) {
+                        handleKeyDown(e, 1);
+                      } else if (e.key === 'Tab' || e.key === 'Enter') {
+                        e.preventDefault();
+                        toast.error("Bill NO is Required");
+                      }
+                    }}
                   />
-                  {error.billNo && (
-                    <span style={{ color: "red", fontSize: "12px" }}>
-                      {error.billNo}
-                    </span>
-                  )}
                 </div>
 
                 <div className="detail">
@@ -2055,7 +2115,7 @@ const AddPurchaseBill = () => {
                     <tr>
                       <th>
                         <div className="flex justify-center items-center gap-2">
-                          Search Item Name
+                          Search Item Name <span className="text-red-600 ">*</span>
                           <FaPlusCircle
                             className="primary cursor-pointer"
                             onClick={() => {
@@ -2064,22 +2124,22 @@ const AddPurchaseBill = () => {
                           />
                         </div>
                       </th>
-                      <th>Unit</th>
+                      <th>Unit <span className="text-red-600 ">*</span></th>
                       {/* <th>HSN</th> */}
-                      <th>Batch </th>
-                      <th>Expiry </th>
-                      <th>MRP </th>
+                      <th>Batch <span className="text-red-600 ">*</span> </th>
+                      <th>Expiry <span className="text-red-600 ">*</span></th>
+                      <th>MRP <span className="text-red-600 ">*</span></th>
                       <th>Qty. </th>
-                      <th>Free </th>
-                      <th>PTR </th>
+                      <th>Free</th>
+                      <th>PTR <span className="text-red-600 ">*</span></th>
                       <th>CD%</th>
                       {/* <th>Sch. Amt</th> */}
                       <th>Base</th>
-                      <th>GST% </th>
+                      <th>GST% <span className="text-red-600 ">*</span></th>
                       <th>Loc.</th>
                       <th>Net Rate</th>
                       <th>Margin%</th>
-                      <th>Amount </th>
+                      <th>Amount</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2103,10 +2163,10 @@ const AddPurchaseBill = () => {
                           {isEditMode ? (
                             <td className="p-0">
                               <div style={{ width: 350, padding: 0 }}>
-                                <BorderColorIcon
+                                {/* <BorderColorIcon
                                   style={{ color: "var(--color1)" }}
                                   onClick={() => setIsEditMode(false)}
-                                />
+                                /> */}
                                 <DeleteIcon
                                   className="delete-icon mr-2"
                                   onClick={() => {
@@ -2235,6 +2295,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
+                              error={!!errors.batch}
                               value={batch}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
@@ -2243,11 +2304,7 @@ const AddPurchaseBill = () => {
                               inputRef={(el) => (inputRefs.current[4] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 4)}
                             />
-                            {error.batch && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {error.batch}
-                              </span>
-                            )}
+
                           </td>
                           <td>
                             <TextField
@@ -2532,13 +2589,18 @@ const AddPurchaseBill = () => {
                           >
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
-                              onClick={() => handleEditClick(item)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditClick(item);
+                              }}
                             />
                             <DeleteIcon
                               style={{ color: "var(--color6)" }}
                               className="delete-icon bg-none"
-                              onClick={() => deleteOpen(item.id)}
-                            />
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteOpen(item.id);
+                              }} />
                             {item.iteam_name}
                           </td>
                           <td style={{ paddingLeft: "22px", width: "85px" }}>
@@ -3069,47 +3131,9 @@ const AddPurchaseBill = () => {
                       />
                     </div>
 
-                    {/* GST Number */}
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor GSTIN Number</label>
-                      <Autocomplete
-                        freeSolo
-                        options={distributorList.map(d => d.gst)}
-                        getOptionLabel={(option) => (typeof option === "string" ? option : "")}
-                        value={addDistributorNo}
-                        onInputChange={(e, newValue) => {
-                          setAddDistributorNo(newValue.toUpperCase());
-                        }}
-                        onChange={(e, selectedValue) => {
-                          const found = distributorList.find(d => d.gst === selectedValue);
-                          if (found) {
-                            setAddDistributorName(found.name);
-                            setAddDistributorMobile(found.phone_number);
-                            setAddDistributorNo(found.gst);
-                            setAddDistributorAddress(found.area || "");
-                          }
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
 
-                            size="small"
-                            inputRef={(el) => (inputRefs.current[17] = el)}
-                            onKeyDown={(e) => handleKeyDown(e, 17)}
-                            inputProps={{
-                              ...params.inputProps,
-                              style: { textTransform: "uppercase" },
-                              autoComplete: "off",
-                            }}
-                          />
-                        )}
-                      />
-
-                    </div>
 
                   </div>
-
-                  {/* Row 2: Mobile + Address */}
                   <div className="row gap-5">
 
                     {/* Mobile Number */}
@@ -3136,16 +3160,70 @@ const AddPurchaseBill = () => {
                             {...params}
 
                             size="small"
-                            inputRef={(el) => (inputRefs.current[18] = el)}
-                            onKeyDown={(e) => handleKeyDown(e, 18)}
+                            inputRef={(el) => (inputRefs.current[17] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 17)}
                             inputProps={{
                               ...params.inputProps,
                               autoComplete: "off",
+                              inputMode: "numeric",
+                              maxLength: 10,
+                              pattern: "[0-9]{10}",
+                              onInput: (e) => {
+                                e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
+                              }
                             }}
+
                           />
                         )}
                       />
                     </div>
+                    {/* GST Number */}
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">Distributor GSTIN Number</label>
+                      <Autocomplete
+                        freeSolo
+                        options={distributorList.map(d => d.gst)}
+                        getOptionLabel={(option) => (typeof option === "string" ? option : "")}
+                        value={addDistributorNo}
+                        onInputChange={(e, newValue) => {
+                          setAddDistributorNo(newValue.toUpperCase());
+                        }}
+                        onChange={(e, selectedValue) => {
+                          const found = distributorList.find(d => d.gst === selectedValue);
+                          if (found) {
+                            setAddDistributorName(found.name);
+                            setAddDistributorMobile(found.phone_number);
+                            setAddDistributorNo(found.gst);
+                            setAddDistributorAddress(found.area || "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+
+                            size="small"
+                            inputRef={(el) => (inputRefs.current[18] = el)}
+                            onKeyDown={(e) => handleKeyDown(e, 18)}
+                            inputProps={{
+                              ...params.inputProps,
+                              style: { textTransform: "uppercase" },
+                              autoComplete: "off",
+                              maxLength: 15,
+                              onInput: (e) => {
+                                e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
+                              }
+                            }}
+
+                          />
+                        )}
+                      />
+
+                    </div>
+                  </div>
+
+                  {/* Row 3: Mobile + Address */}
+                  <div className="row gap-5">
+
 
                     {/* Address */}
                     <div className="fields add_new_item_divv">
@@ -3219,7 +3297,7 @@ const AddPurchaseBill = () => {
                 >
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Item Name</label>
+                      <label className="label secondary">Item Name <span className="text-red-600  ">*</span></label>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
@@ -3233,6 +3311,11 @@ const AddPurchaseBill = () => {
                         onKeyDown={(e) => handleKeyDown(e, 13)}
                       />
                     </div>
+
+
+                  </div>
+                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
+
                     <div className="fields add_new_item_divv">
                       <label className="label  secondary">Barcode</label>
                       <TextField
@@ -3247,7 +3330,7 @@ const AddPurchaseBill = () => {
                       />
                     </div>
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Unit</label>
+                      <label className="label secondary">Unit<span className="text-red-600  ">*</span></label>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
@@ -3336,7 +3419,7 @@ const AddPurchaseBill = () => {
                   data-original="#000000"
                 />
               </svg>
-              <h4 className="text-lg font-semibold mt-6 first-letter:uppercase">
+              <h4 className=" font-semibold mt-6 first-letter:uppercase">
                 <span style={{ textTransform: "none" }}>
                   Are you sure you want to delete it?
                 </span>
@@ -3384,7 +3467,7 @@ const AddPurchaseBill = () => {
                 className="h-12 w-14"
                 style={{ color: "#628A2F" }}
               />
-              <h4 className="text-lg font-semibold mt-6 text-center">
+              <h4 className=" font-semibold mt-6 text-center">
                 <span style={{ textTransform: "none" }}>
                   Are you sure you want to leave this page?
                 </span>

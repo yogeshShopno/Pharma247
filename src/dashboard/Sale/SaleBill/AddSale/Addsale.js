@@ -1523,6 +1523,8 @@ const Addsale = () => {
       await addSaleItem();
       if (searchInputRef.current) {
         searchInputRef.current.focus();
+        setSelectedIndex(-1); // Clear any selection
+
       }
     }
     return isValid;
@@ -1551,10 +1553,7 @@ const Addsale = () => {
     data.append("gst", gst ? gst : "");
     data.append("mrp", mrp ? mrp : "");
     data.append("unit", unit ? unit : "");
-    data.append(
-      "random_number",
-      Number(localStorage.getItem("RandomNumber")) || ""
-    );
+    data.append("random_number",Number(localStorage.getItem("RandomNumber")) || "");
     data.append("batch", batch ? batch : "");
     data.append("location", loc ? loc : "");
     data.append("base", base ? base : "");

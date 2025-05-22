@@ -1454,6 +1454,419 @@ const InventoryList = () => {
         className="flex flex-wrap md:flex-nowrap "
         // style={{ overflow: "hidden" }}
       >
+        
+
+        <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
+          <div className="row gap-3 mb-3 flex-wrap">
+            <Button
+              variant="contained"
+              style={{
+                background: "rgb(14 86 143)",
+                color: "white",
+              }}
+              onClick={() => {
+                handleSearch("items_with_missing_hsn");
+              }}
+            >
+              Missing HSN : {missingData.items_with_missing_hsn}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "rgb(14 86 143)",
+                color: "white",
+              }}
+              onClick={() => {
+                handleSearch("items_with_invalid_mrp");
+              }}
+            >
+              invalid MRP : {missingData.items_with_invalid_mrp}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "rgb(14 86 143)",
+                color: "white",
+              }}
+              onClick={() => {
+                handleSearch("items_with_missing_location");
+              }}
+            >
+              Missing Location : {missingData.items_with_missing_location}
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                background: "rgb(14 86 143)",
+                color: "white",
+              }}
+              onClick={() => {
+                handleSearch("items_with_missing_category");
+              }}
+            >
+              Missing Category :{missingData.items_with_missing_category}
+            </Button> 
+            <Button
+              variant="contained"
+              style={{
+                background: "rgb(14 86 143)",
+                color: "white",
+                size: "large",
+              }}
+              onClick={() => {
+                handleSearch("items_with_invalid_price");
+              }}
+            >
+              Invalid Price : {missingData.items_with_invalid_price}
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap  justify-between relative inventory_search_main">
+            <TextField
+              autoComplete="off"
+              className="inventory_search"
+              id="outlined-basic"
+              value={searchItem}
+              size="small"
+              autoFocus
+              sx={{ width: "75%", marginTop: "5px" }}
+              onChange={(e) => setSearchItem(e.target.value)}
+              onKeyPress={handleKeyPress}
+              variant="outlined"
+              placeholder="Please search any items.."
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                type: "search",
+              }}
+            />
+
+            <div className="flex gap-2 inventory_search_btn">
+              <Button
+                variant="contained"
+                className="mt-4 absolute"
+                style={{
+                  backgroundColor: "var(--color1)",
+                  color: "white",
+                  textTransform: "none",
+                  size: "small",
+                }}
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+              <Button
+                variant="contained"
+                className="gap-7 downld_btn_csh"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                  // paddingLeft: "35px",
+                  textTransform: "none",
+                  display: "flex",
+                }}
+                onClick={handleFilterData}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src="/csv-file.png"
+                    className="report-icon absolute mr-10"
+                    alt="csv Icon"
+                  />
+                </div>
+                Download
+              </Button>
+
+              <Button
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+                style={{ background: "var(--color1)", textTransform: "none" }}
+                variant="contained"
+              >
+                More <KeyboardArrowDownIcon />
+              </Button>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleBulkEdit}>Bulk Edit</MenuItem>
+                <MenuItem onClick={handleBulkOrder}>Bulk Order</MenuItem>
+                {/* <MenuItem onClick={handleBulkOrder}>Bulk Print QR</MenuItem> */}
+              </Menu>
+            </div>
+          </div>
+          {data.length > 0 ? (
+            <TableContainer
+              component={Paper}
+              style={{
+                width: "100%",
+                paddingInline: "25px",
+                paddingBlock: "0px",
+              }}
+            >
+              <div className="table-responsive">
+                <table
+                  className="custom-table custom-table-invantory cusror-pointer"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th>
+                        {/* <input
+                          type="checkbox"
+                          onChange={() => {
+                            if (selectedItems.length === data.length) {
+                              setSelectedItems([]);
+                              // console.log("id", selectedItems);
+                            } else {
+                              setSelectedItems(data.map((item) => item.id));
+                              // console.log("id", selectedItems);
+                            }
+                          }}
+                          checked={selectedItems.length === data.length}
+                        /> */}
+
+                        <Checkbox
+                          sx={{
+                            color: "#628a2f", // Color for unchecked checkboxes
+                            "&.Mui-checked": {
+                              color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                            },
+                          }}
+                          checked={selectedItems.length === data.length}
+                          onChange={() => {
+                            if (selectedItems.length === data.length) {
+                              setSelectedItems([]);
+                              // console.log("id", selectedItems);
+                            } else {
+                              setSelectedItems(data.map((item) => item.id));
+                              // console.log("id", selectedItems);
+                            }
+                          }}
+                        />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("iteam_name")}
+                      >
+                        Item Name
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("minimum")}
+                      >
+                        Min
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("maximum")}
+                      >
+                        Max
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("stock")}
+                      >
+                        Stock
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("location")}
+                      >
+                        Loc
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("discount")}
+                      >
+                        Disc
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("barcode")}
+                      >
+                        Barcode No
+                        <SwapVertIcon />
+                      </th>
+
+                      {/* <th onClick={() => sortByColumn("totalptr")}>Total PTR <SwapVertIcon /></th> */}
+                    </tr>
+                  </thead>
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                    {data.map((item, index) => (
+                      <tr
+                        key={index}
+                        // style={{
+                        //   backgroundColor:
+                        //     selectedIndex === index ? "#ceecfd" : "transparent",
+                        //   color: selectedIndex === index ? "black" : "inherit",
+                        // }}
+                      >
+                        <td style={{ borderRadius: "10px 0 0 10px" }}>
+                          {/* <input
+                            type="checkbox"
+                            checked={selectedItems.includes(item.id)}
+                            onChange={() => handleCheckbox(item.id)}
+                          /> */}
+                          <Checkbox
+                            sx={{
+                              color: "#628a2f", // Color for unchecked checkboxes
+                              "&.Mui-checked": {
+                                color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                              },
+                            }}
+                            checked={selectedItems.includes(item.id)}
+                            onChange={() => handleCheckbox(item.id)}
+                          />
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          <div className="itemContainer flex items-center">
+                            <div
+                              className="image-container flex mr-5"
+                              style={{ minWidth: "45px" }}
+                            >
+                              <img
+                                src={
+                                  item.front_photo
+                                    ? item.front_photo
+                                    : "./Pharma Medicine-01.png"
+                                }
+                                alt={item.front_photo ? "Pharma" : "Tablet"}
+                                className="w-10 h-10 ml-2 object-cover cursor-pointer"
+                                style={{ width: "40px", height: "40px" }}
+                              />
+                            </div>
+                            <div
+                              className="itemName flex-1"
+                              style={{ fontSize: "15px", paddingTop: "3px", }}
+                            >
+                              {item?.iteam_name?.toUpperCase()}
+                              <div
+                                className="text-gray-400 font-normal"
+                                style={{ paddingBottom: "3px" }}
+                              >
+                                <span style={{ fontSize: "14px" }}>
+                                  Pack | 1*{item.unit + " " + item.old_unit}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.minimum == "null" ? "-" : item.minimum}
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.maximum == "null" ? "-" : item.maximum}
+                        </td>
+                        <Tooltip title="Stock Adjusted" placement="left" arrow>
+                          <td
+                          // onClick={() => {
+                          //   history.push(`/inventoryView/${item.id}`);
+                          // }}
+                          >
+                            <span>
+                              <img
+                                src="./approve.png"
+                                className="report-icon inline mr-2"
+                                alt="csv Icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handelAddOpen(item);
+                                }}
+                              />
+
+                              {item.stock == "null" ? "-" : item.stock}
+                            </span>
+                          </td>
+                        </Tooltip>
+                        {/* <td
+                        onClick={() => {
+                          history.push(`/inventoryView/${item.id}`);
+                        }}
+                      >
+                        {item.stock == "null" ? "-" : item.stock}
+                      </td> */}
+                        <td
+                          td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.loaction == "null" ? "-" : item.location}
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.discount == "null" ? "-" : item.discount}
+                        </td>
+                        <td
+                          style={{ borderRadius: "0 10px 10px 0" }}
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.barcode == "null" ? "-" : item.barcode}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 15]}
+                component="div"
+                count={data?.[0].count}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableContainer>
+          ) : (
+            <div>
+              <div className="vector-image">
+                <div className="inventory-gif">
+                  <img src="../inventory_screen.png"></img>
+                </div>
+                <span className="text-gray-500 font-medium mt-5">
+                  Apply filters and explore your inventory
+                </span>
+              </div>
+            </div>
+          )}
+        </Box>
+
         <Box className="side_contn">
           <div className="sticky top-0">
             <Box
@@ -2042,417 +2455,6 @@ const InventoryList = () => {
               </Button>
             </Box>
           </div>
-        </Box>
-
-        <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
-          <div className="row gap-3 mb-3 flex-wrap">
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_missing_hsn");
-              }}
-            >
-              Missing HSN : {missingData.items_with_missing_hsn}
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_invalid_mrp");
-              }}
-            >
-              invalid MRP : {missingData.items_with_invalid_mrp}
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_missing_location");
-              }}
-            >
-              Missing Location : {missingData.items_with_missing_location}
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_missing_category");
-              }}
-            >
-              Missing Category :{missingData.items_with_missing_category}
-            </Button> 
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-                size: "large",
-              }}
-              onClick={() => {
-                handleSearch("items_with_invalid_price");
-              }}
-            >
-              Invalid Price : {missingData.items_with_invalid_price}
-            </Button>
-          </div>
-
-          <div className="flex flex-wrap  justify-between relative inventory_search_main">
-            <TextField
-              autoComplete="off"
-              className="inventory_search"
-              id="outlined-basic"
-              value={searchItem}
-              size="small"
-              autoFocus
-              sx={{ width: "75%", marginTop: "5px" }}
-              onChange={(e) => setSearchItem(e.target.value)}
-              onKeyPress={handleKeyPress}
-              variant="outlined"
-              placeholder="Please search any items.."
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-                type: "search",
-              }}
-            />
-
-            <div className="flex gap-2 inventory_search_btn">
-              <Button
-                variant="contained"
-                className="mt-4 absolute"
-                style={{
-                  backgroundColor: "var(--color1)",
-                  color: "white",
-                  textTransform: "none",
-                  size: "small",
-                }}
-                onClick={handleSearch}
-              >
-                Search
-              </Button>
-              <Button
-                variant="contained"
-                className="gap-7 downld_btn_csh"
-                style={{
-                  background: "var(--color1)",
-                  color: "white",
-                  // paddingLeft: "35px",
-                  textTransform: "none",
-                  display: "flex",
-                }}
-                onClick={handleFilterData}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/csv-file.png"
-                    className="report-icon absolute mr-10"
-                    alt="csv Icon"
-                  />
-                </div>
-                Download
-              </Button>
-
-              <Button
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
-                style={{ background: "var(--color1)", textTransform: "none" }}
-                variant="contained"
-              >
-                More <KeyboardArrowDownIcon />
-              </Button>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleBulkEdit}>Bulk Edit</MenuItem>
-                <MenuItem onClick={handleBulkOrder}>Bulk Order</MenuItem>
-                {/* <MenuItem onClick={handleBulkOrder}>Bulk Print QR</MenuItem> */}
-              </Menu>
-            </div>
-          </div>
-          {data.length > 0 ? (
-            <TableContainer
-              component={Paper}
-              style={{
-                width: "100%",
-                paddingInline: "25px",
-                paddingBlock: "0px",
-              }}
-            >
-              <div className="table-responsive">
-                <table
-                  className="custom-table custom-table-invantory cusror-pointer"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                >
-                  <thead>
-                    <tr>
-                      <th>
-                        {/* <input
-                          type="checkbox"
-                          onChange={() => {
-                            if (selectedItems.length === data.length) {
-                              setSelectedItems([]);
-                              // console.log("id", selectedItems);
-                            } else {
-                              setSelectedItems(data.map((item) => item.id));
-                              // console.log("id", selectedItems);
-                            }
-                          }}
-                          checked={selectedItems.length === data.length}
-                        /> */}
-
-                        <Checkbox
-                          sx={{
-                            color: "#628a2f", // Color for unchecked checkboxes
-                            "&.Mui-checked": {
-                              color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
-                            },
-                          }}
-                          checked={selectedItems.length === data.length}
-                          onChange={() => {
-                            if (selectedItems.length === data.length) {
-                              setSelectedItems([]);
-                              // console.log("id", selectedItems);
-                            } else {
-                              setSelectedItems(data.map((item) => item.id));
-                              // console.log("id", selectedItems);
-                            }
-                          }}
-                        />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("iteam_name")}
-                      >
-                        Item Name
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("minimum")}
-                      >
-                        Min
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("maximum")}
-                      >
-                        Max
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("stock")}
-                      >
-                        Stock
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("location")}
-                      >
-                        Loc
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("discount")}
-                      >
-                        Disc
-                        <SwapVertIcon />
-                      </th>
-                      <th
-                        className="cursor-pointer"
-                        onClick={() => sortByColumn("barcode")}
-                      >
-                        Barcode No
-                        <SwapVertIcon />
-                      </th>
-
-                      {/* <th onClick={() => sortByColumn("totalptr")}>Total PTR <SwapVertIcon /></th> */}
-                    </tr>
-                  </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {data.map((item, index) => (
-                      <tr
-                        key={index}
-                        // style={{
-                        //   backgroundColor:
-                        //     selectedIndex === index ? "#ceecfd" : "transparent",
-                        //   color: selectedIndex === index ? "black" : "inherit",
-                        // }}
-                      >
-                        <td style={{ borderRadius: "10px 0 0 10px" }}>
-                          {/* <input
-                            type="checkbox"
-                            checked={selectedItems.includes(item.id)}
-                            onChange={() => handleCheckbox(item.id)}
-                          /> */}
-                          <Checkbox
-                            sx={{
-                              color: "#628a2f", // Color for unchecked checkboxes
-                              "&.Mui-checked": {
-                                color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
-                              },
-                            }}
-                            checked={selectedItems.includes(item.id)}
-                            onChange={() => handleCheckbox(item.id)}
-                          />
-                        </td>
-                        <td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          <div className="itemContainer flex items-center">
-                            <div
-                              className="image-container flex mr-5"
-                              style={{ minWidth: "45px" }}
-                            >
-                              <img
-                                src={
-                                  item.front_photo
-                                    ? item.front_photo
-                                    : "./Pharma Medicine-01.png"
-                                }
-                                alt={item.front_photo ? "Pharma" : "Tablet"}
-                                className="w-10 h-10 ml-2 object-cover cursor-pointer"
-                                style={{ width: "40px", height: "40px" }}
-                              />
-                            </div>
-                            <div
-                              className="itemName flex-1"
-                              style={{ fontSize: "15px", paddingTop: "3px", }}
-                            >
-                              {item?.iteam_name?.toUpperCase()}
-                              <div
-                                className="text-gray-400 font-normal"
-                                style={{ paddingBottom: "3px" }}
-                              >
-                                <span style={{ fontSize: "14px" }}>
-                                  Pack | 1*{item.unit + " " + item.old_unit}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {item.minimum == "null" ? "-" : item.minimum}
-                        </td>
-                        <td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {item.maximum == "null" ? "-" : item.maximum}
-                        </td>
-                        <Tooltip title="Stock Adjusted" placement="left" arrow>
-                          <td
-                          // onClick={() => {
-                          //   history.push(`/inventoryView/${item.id}`);
-                          // }}
-                          >
-                            <span>
-                              <img
-                                src="./approve.png"
-                                className="report-icon inline mr-2"
-                                alt="csv Icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handelAddOpen(item);
-                                }}
-                              />
-
-                              {item.stock == "null" ? "-" : item.stock}
-                            </span>
-                          </td>
-                        </Tooltip>
-                        {/* <td
-                        onClick={() => {
-                          history.push(`/inventoryView/${item.id}`);
-                        }}
-                      >
-                        {item.stock == "null" ? "-" : item.stock}
-                      </td> */}
-                        <td
-                          td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {item.loaction == "null" ? "-" : item.location}
-                        </td>
-                        <td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {item.discount == "null" ? "-" : item.discount}
-                        </td>
-                        <td
-                          style={{ borderRadius: "0 10px 10px 0" }}
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {item.barcode == "null" ? "-" : item.barcode}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 15]}
-                component="div"
-                count={data?.[0].count}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </TableContainer>
-          ) : (
-            <div>
-              <div className="vector-image">
-                <div className="inventory-gif">
-                  <img src="../inventory_screen.png"></img>
-                </div>
-                <span className="text-gray-500 font-medium mt-5">
-                  Apply filters and explore your inventory
-                </span>
-              </div>
-            </div>
-          )}
         </Box>
       </Box>
       {/*<======================================================================== stock adjustment dialog ========================================================================>*/}

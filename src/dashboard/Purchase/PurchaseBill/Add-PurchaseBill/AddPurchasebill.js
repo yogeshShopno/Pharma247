@@ -158,6 +158,9 @@ const AddPurchaseBill = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [billSaveDraft, setBillSaveDraft] = useState("1");
 
+  const debounceRef = useRef(null);
+const [isSubmitting, setIsSubmitting] = useState(false);
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -1395,11 +1398,11 @@ const AddPurchaseBill = () => {
   };
 
   /*<============================================================================== submit purchase bill  ==========================================================================> */
-  let isSubmitting = false;
+ 
 
   const submitPurchaseData = async (draft) => {
     if (isSubmitting) return;
-    isSubmitting = true;
+    setIsSubmitting(true);
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1439,14 +1442,14 @@ const AddPurchaseBill = () => {
           setUnsavedItems(false);
           toast.success(response.data.message);
           setTimeout(() => {
-            isSubmitting = false; // reset debounce
+            setIsSubmitting(false); // reset debounce
             history.push("/purchase/purchasebill");
           }, 2000);
         });
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-      isSubmitting = false; // reset on error too
+      setIsSubmitting(false); // reset on error too
 
     }
   };

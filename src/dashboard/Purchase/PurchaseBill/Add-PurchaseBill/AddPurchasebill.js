@@ -270,11 +270,11 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      const key = event.key.toLowerCase();
+      const isAltCombo = event.altKey || event.getModifierState("AltGraph");
 
-      // Allow shortcuts only when Alt or AltGr is pressed
-      const isAltCombo = event.altKey || (event.ctrlKey && event.altKey);
       if (!isAltCombo || event.repeat) return;
+
+      const key = event.key.toLowerCase();
 
       event.preventDefault();
 
@@ -287,10 +287,13 @@ const AddPurchaseBill = () => {
           handleSubmit();
           break;
         case "m":
-          inputRefs.current[2]?.focus();
+
+          removeItem();
+          setTimeout(() => {
+            inputRefs.current[2]?.focus();
+          }, 10);
           break;
-        default:
-          break;
+
       }
     };
 
@@ -301,13 +304,14 @@ const AddPurchaseBill = () => {
   }, [distributor, billNo, ItemPurchaseList]);
 
 
+
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
 
-      const nextInput = inputRefs.current[index + 1];
+      const nextInput = inputRefs?.current[index + 1];
       if (nextInput) {
-        nextInput.focus(); // Move to next input
+        nextInput?.focus(); // Move to next input
       }
     }
   };
@@ -375,7 +379,6 @@ const AddPurchaseBill = () => {
     if (id) {
       batchList(id);
     }
-    console.log(id, "id")
     listDistributor();
     BankList();
     listOfGst();
@@ -948,6 +951,7 @@ const AddPurchaseBill = () => {
   /*<============================================================================= delete added  item  ========================================================================> */
 
   const deleteOpen = (Id) => {
+    removeItem();
     setIsDelete(true);
     setItemId(Id);
   };
@@ -1201,6 +1205,7 @@ const AddPurchaseBill = () => {
         }
       }, 100);
     } catch (e) {
+      console.log(e);
       setUnsavedItems(false);
     }
   };
@@ -1605,11 +1610,10 @@ const AddPurchaseBill = () => {
   /*<============================================================================== Remove Item  ==========================================================================> */
 
   const removeItem = () => {
+    setSelectedOption(null);
+    setId(null);
     setSelectedEditItem(null);
-    console.log("Editing item:", selectedEditItem);
-
     setSelectedEditItemId(0);
-
     setIsEditMode(false);
     setUnit("");
     setBatch("");
@@ -1873,7 +1877,7 @@ const AddPurchaseBill = () => {
                 Import CSV
               </Button>
 
-              {!distributor || ItemPurchaseList?.item?.length === 0 ? (
+              {!distributor  ? (
                 <></>
               ) : (
                 <Button
@@ -1892,7 +1896,7 @@ const AddPurchaseBill = () => {
                   }}
                   onClick={handelAddOpen}
                   disabled={
-                    !distributor || ItemPurchaseList?.item?.length === 0
+                    !distributor 
                   }
                 >
                   <AddIcon className="mr-2" />
@@ -1982,13 +1986,19 @@ const AddPurchaseBill = () => {
                       let finalValue = null;
 
                       if (typeof newValue === "string") {
-                        finalValue = { name: newValue };
+                        finalValue = { name: newValue.toUpperCase() };
                       } else if (newValue && typeof newValue === "object") {
-                        finalValue = newValue;
+                        finalValue = {
+                          ...newValue,
+                          name: newValue.name?.toUpperCase() || "",
+                        };
                       }
 
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
+                    }}
+                    onInputChange={(event, newInputValue) => {
+                      setDistributor({ name: newInputValue.toUpperCase() });
                     }}
                     getOptionLabel={(option) =>
                       typeof option === "string" ? option : option?.name ?? ""
@@ -1998,8 +2008,13 @@ const AddPurchaseBill = () => {
                         autoFocus={focusedField === "distributor"}
                         autoComplete="off"
                         variant="outlined"
+                        error={!!error.distributor}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { textTransform: 'uppercase' }, // visual uppercase
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === "Tab") {
                             const prevent = !selectedDistributorRef.current?.id;
@@ -2007,19 +2022,18 @@ const AddPurchaseBill = () => {
                             setTimeout(() => {
                               if (selectedDistributorRef.current?.id) {
                                 handleKeyDown(e, 0);
-                              } else if (prevent) {
-                                toast.error("Distributor is Required");
                               }
-                            }, 0); // minimal delay to let onChange fire first
+                            }, 100);
 
                             if (prevent) {
-                              e.preventDefault(); // call it *outside* setTimeout
+                              e.preventDefault();
                             }
                           }
                         }}
                       />
                     )}
                   />
+
 
                 </div>
                 {/* <div className="detail">
@@ -2044,6 +2058,7 @@ const AddPurchaseBill = () => {
                     id="outlined-number"
                     size="small"
                     variant="outlined"
+                    error={!!error.billNo}
                     value={billNo}
                     onChange={(e) => {
                       setbillNo(e.target.value.toUpperCase());
@@ -2236,20 +2251,18 @@ const AddPurchaseBill = () => {
                                       onKeyDown={(e) => {
                                         if (
                                           !searchItem &&
-                                          (e.key === "ArrowDown" || e.key === "ArrowUp")
+                                          (e.key === "ArrowDown" ||
+                                            e.key === "ArrowUp")
                                         ) {
                                           tableRef.current.focus();
+
                                           setTimeout(() => {
-                                            document.activeElement.blur();
+                                            document.activeElement.blur(); // Removes focus from the input
                                           }, 0);
-                                        } else if (e.key === "Tab") {
-                                          if (!searchItem || !selectedOption) {
-                                            e.preventDefault();
-                                            toast.error("Please select an item before continuing");
-                                          } else {
-                                            handleKeyDown(e, 2);
-                                          }
-                                        } else if (searchItem && selectedOption) {
+                                        } else if (
+                                          searchItem &&
+                                          selectedOption
+                                        ) {
                                           handleKeyDown(e, 2);
                                         }
                                       }}
@@ -2277,21 +2290,24 @@ const AddPurchaseBill = () => {
                                 );
                                 setUnit(value ? Number(value) : "");
                               }}
+
                               onKeyDown={(e) => {
                                 if (
                                   ["e", "E", ".", "+", "-", ","].includes(e.key)
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 3);
+                                if (unit) {
+                                  handleKeyDown(e, 3);
+                                } else if (e.key === 'Tab' || e.key === 'Enter') {
+                                  e.preventDefault();
+                                  toast.error("Unit is Required");
+                                }
+
                               }}
                               inputRef={(el) => (inputRefs.current[3] = el)}
                             />
-                            {error.unit && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {error.unit}
-                              </span>
-                            )}
+
                           </td>
                           <td>
                             <TextField
@@ -2306,7 +2322,16 @@ const AddPurchaseBill = () => {
                                 setBatch((e.target.value).toUpperCase());
                               }}
                               inputRef={(el) => (inputRefs.current[4] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 4)}
+                              onKeyDown={(e) => {
+
+                                if (batch) {
+                                  handleKeyDown(e, 4);
+                                } else if (e.key === 'Tab' || e.key === 'Enter') {
+                                  e.preventDefault();
+                                  toast.error("Batch is Required");
+                                }
+
+                              }}
                             />
 
                           </td>
@@ -2322,7 +2347,42 @@ const AddPurchaseBill = () => {
                               onChange={handleExpiryDate}
                               placeholder="MM/YY"
                               inputRef={(el) => (inputRefs.current[5] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 5)}
+                              onKeyDown={(e) => {
+                                const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+                                if (e.key === 'Tab' || e.key === 'Enter') {
+                                  if (!expiryDate) {
+                                    e.preventDefault();
+                                    toast.error("Expiry is required");
+                                    return;
+                                  }
+
+                                  if (!expiryDateRegex.test(expiryDate)) {
+                                    e.preventDefault();
+                                    toast.error("Expiry must be in MM/YY format");
+                                    return;
+                                  }
+
+                                  const [month, year] = expiryDate.split('/').map(Number);
+                                  const expiry = new Date(`20${year}`, month - 1, 1);
+                                  const now = new Date();
+                                  const sixMonthsLater = new Date();
+                                  sixMonthsLater.setMonth(now.getMonth() + 6);
+
+                                  if (expiry < now) {
+                                    e.preventDefault();
+                                    toast.error("Product has expired");
+                                  } else if (expiry < sixMonthsLater) {
+                                    e.preventDefault();
+                                    toast.warning("Product will expire within 6 months");
+                                  } else {
+                                    handleKeyDown(e, 5);
+                                  }
+                                }
+                                // Allow all other keys (Backspace, arrows, etc.)
+                              }}
+
+
                             />
                           </td>
                           <td>
@@ -2344,13 +2404,20 @@ const AddPurchaseBill = () => {
                               onKeyDown={(e) => {
                                 if (
                                   ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
+                                  (e.key === "." && e.target.value.includes("."))
                                 ) {
                                   e.preventDefault();
                                 }
+
+                                if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
+                                  e.preventDefault();
+                                  toast.error("MRP is required and must be greater than 0");
+                                  return;
+                                }
+
                                 handleKeyDown(e, 6);
                               }}
+
                               inputRef={(el) => (inputRefs.current[6] = el)}
                             />
                           </td>
@@ -2378,8 +2445,16 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 7);
+
+                                if ((e.key === "Enter")) {
+                                  e.preventDefault();
+                                  handleKeyDown(e, 7);
+
+                                }
+
                               }}
+
+
                             />
                           </td>
                           <td>
@@ -2402,8 +2477,15 @@ const AddPurchaseBill = () => {
                                 ) {
                                   e.preventDefault();
                                 }
-                                handleKeyDown(e, 8);
+
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  handleKeyDown(e, 8);
+
+                                }
+
                               }}
+
                               inputRef={(el) => (inputRefs.current[8] = el)}
                             />
                           </td>
@@ -2417,22 +2499,36 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={ptr}
                               error={!!error.ptr}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^\d*\.?\d*$/.test(value)) {
+                                  setPTR(value ? Number(value) : "");
+                                }
+                              }}
+
                               onKeyDown={(e) => {
                                 if (
                                   ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
+                                  (e.key === "." && e.target.value.includes("."))
                                 ) {
                                   e.preventDefault();
                                 }
+
+                                if (e.key === "Enter" || e.key === "Tab") {
+                                  if (!ptr || ptr === 0) {
+                                    e.preventDefault();
+                                    toast.error("PTR is required and must be greater than 0");
+                                    return;
+                                  }
+
+                                  if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                                    e.preventDefault();
+                                    toast.error("PTR must be less than MRP");
+                                    return;
+                                  }
+                                }
+
                                 handleKeyDown(e, 9);
-                              }}
-                              onChange={(e) => {
-                                const setptr = e.target.value.replace(
-                                  /[eE]/g,
-                                  ""
-                                );
-                                setPTR(setptr);
                               }}
                               inputRef={(el) => (inputRefs.current[9] = el)}
                             />
@@ -2489,16 +2585,33 @@ const AddPurchaseBill = () => {
                               sx={{ width: "65px" }}
                               error={!!error.gst}
                               inputRef={(el) => (inputRefs.current[11] = el)}
-                              onKeyDown={(e) => handleKeyDown(e, 11)}
                               onChange={(e) => {
                                 const value = e.target.value;
-                                if (/^\d*\.?\d*$/.test(value)) {
+                                if (/^\d*$/.test(value)) {
                                   setGst(value ? Number(value) : "");
                                 }
                               }}
-                              open={isOpen}
-                              onOpen={() => setIsOpen(true)}
-                              onClose={() => false}
+
+                              onKeyDown={(e) => {
+                                if ((e.key === "Enter" || e.key === "Tab")) {
+                                  const allowedGST = [5, 12, 18, 28];
+
+                                  if (!gst && gst !== 0) {
+                                    e.preventDefault();
+                                    toast.error("GST is required");
+                                    return;
+                                  }
+
+                                  if (!allowedGST.includes(Number(gst))) {
+                                    e.preventDefault();
+                                    toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
+                                    return;
+                                  }
+                                }
+
+                                handleKeyDown(e, 11);
+                              }}
+
                             />
                           </td>
                           <td>

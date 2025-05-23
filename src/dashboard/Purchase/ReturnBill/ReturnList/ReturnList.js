@@ -58,8 +58,13 @@ const ReturnList = () => {
   const [returnId, setReturnId] = useState(null);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
 
+  const [openCNPopUp, setOpenCNPopUp] = useState(false);
+
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
+
+  const [cnBillData, setCnBillData] = useState([]); // for current row
+
 
   const goIntoAdd = () => {
     history.push("/return/add");
@@ -403,15 +408,15 @@ const ReturnList = () => {
                               isStatus && value === "Paid"
                                 ? "text-black"
                                 : isStatus && value === "Due"
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             const dueAmountClass =
                               isDueAmount && row.status === "Paid"
                                 ? "text-black"
                                 : isDueAmount && value > 0
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             return (
                               <td
@@ -423,9 +428,8 @@ const ReturnList = () => {
                                 className="text-lg"
                               >
                                 <span
-                                  className={`text ${
-                                    isStatus ? statusClass : ""
-                                  } ${isDueAmount ? dueAmountClass : ""}`}
+                                  className={`text ${isStatus ? statusClass : ""
+                                    } ${isDueAmount ? dueAmountClass : ""}`}
                                 >
                                   {column.format && typeof value === "number"
                                     ? column.format(value)
@@ -437,103 +441,54 @@ const ReturnList = () => {
 
                           <td>
                             {row.cn_amount_bills &&
-                            row.cn_amount_bills.length > 0 ? (
+                              row.cn_amount_bills.length > 0 ? (
                               <ul>
                                 <Button
                                   variant="contained"
-                                  size="Snall"
+                                  size="small"
                                   style={{
-                                    background: "rgb(4, 76, 157",
+                                    background: "rgb(4, 76, 157)",
                                     fontSize: "12px",
-                                    textWrap: "nowrap",
+                                    whiteSpace: "nowrap",
                                   }}
-                                  onClick={() => setOpenAddPopUp(true)}
+                                  onClick={() => {
+                                    setCnBillData(row.cn_amount_bills || []);
+                                    setOpenCNPopUp(true);
+                                  }}
                                 >
                                   View CN
                                 </Button>
-                                <Dialog open={openAddPopUp}>
-                                  <div className="flex justify-center items-center h-auto">
-                                    <div className="bg-white rounded-lg w-full max-w-3xl">
-                                      <div className="flex justify-between items-center">
-                                        <DialogTitle
-                                          id="alert-dialog-title"
-                                          className="secondary"
-                                        >
-                                          CN Bill
-                                        </DialogTitle>
-                                        <IconButton
-                                          aria-label="close"
-                                          // onClick={resetAddDialog}
-                                          className="text-gray-500"
-                                          // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
-                                        >
-                                          <CloseIcon
-                                            onClick={() => {
-                                              setOpenAddPopUp(false);
-                                            }}
-                                          />
-                                        </IconButton>
-                                      </div>
-                                      <DialogContent>
-                                        <DialogContentText id="alert-dialog-description">
-                                          <div className="bg-white">
-                                            <div className="bg-white">
-                                              <table className="w-full border-collapse custom-table">
-                                                <thead>
-                                                  <tr>
-                                                    <th
-                                                      style={{
-                                                        padding: "0.5rem 1rem",
-                                                      }}
-                                                    >
-                                                      Sr No
-                                                    </th>
-                                                    <th
-                                                      style={{
-                                                        padding: "0.5rem 1rem ",
-                                                      }}
-                                                    >
-                                                      Bill Number
-                                                    </th>
-                                                    <th
-                                                      style={{
-                                                        padding: "0.5rem 1rem",
-                                                      }}
-                                                    >
-                                                      Amount
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                {row.cn_amount_bills.map(
-                                                  (cn_bill, cnIndex) => (
-                                                    <tr key={cnIndex}>
-                                                      <td
-                                                        className={`text-lg text-black px-35 py-10`}
-                                                      >
-                                                        {cnIndex + 1}
-                                                      </td>
-                                                      <td
-                                                        className={`text-lg text-black px-35 py-10`}
-                                                      >
-                                                        {cn_bill.bill_number}
-                                                      </td>
-                                                      <td
-                                                        className={`text-lg text-black px-35 py-10`}
-                                                      >
-                                                        {cn_bill.amount}
-                                                      </td>
-                                                    </tr>
-                                                  )
-                                                )}
-                                              </table>
-                                            </div>
-                                          </div>
-                                        </DialogContentText>
-                                      </DialogContent>
-                                      <DialogActions></DialogActions>
-                                    </div>
-                                  </div>
-                                </Dialog>
+
+                                {/* <Dialog open={openCNPopUp} onClose={() => setOpenCNPopUp(false)} maxWidth="sm" fullWidth>
+                                  <DialogTitle className="flex justify-between items-center">
+                                    <span className="text-green-600 font-semibold">CN Bill</span>
+                                    <IconButton onClick={() => setOpenCNPopUp(false)}>
+                                      <CloseIcon />
+                                    </IconButton>
+                                  </DialogTitle>
+
+                                  <DialogContent>
+                                    <table className="w-full border-collapse custom-table">
+                                      <thead>
+                                        <tr>
+                                          <th style={{ padding: "0.5rem 1rem" }}>Sr No</th>
+                                          <th style={{ padding: "0.5rem 1rem" }}>Bill Number</th>
+                                          <th style={{ padding: "0.5rem 1rem" }}>Amount</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {row.cn_amount_bills.map((cn_bill, cnIndex) => (
+                                          <tr key={cnIndex}>
+                                            <td className="text-lg text-black px-4 py-2">{cnIndex + 1}</td>
+                                            <td className="text-lg text-black px-4 py-2">{cn_bill.bill_number}</td>
+                                            <td className="text-lg text-black px-4 py-2">{cn_bill.amount}</td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </DialogContent>
+                                </Dialog> */}
+
                               </ul>
                             ) : (
                               <ul>
@@ -567,12 +522,12 @@ const ReturnList = () => {
                                 permissions,
                                 "purchase return bill delete"
                               ) && (
-                                <DeleteIcon
-                                  style={{ color: "#F31C1C" }}
-                                  className="delete-icon"
-                                  onClick={() => deleteOpen(row.id)}
-                                />
-                              )}
+                                  <DeleteIcon
+                                    style={{ color: "#F31C1C" }}
+                                    className="delete-icon"
+                                    onClick={() => deleteOpen(row.id)}
+                                  />
+                                )}
                             </div>
                           </td>
                         </tr>
@@ -581,15 +536,64 @@ const ReturnList = () => {
                   )}
                 </tbody>
               </table>
+              <Dialog open={openCNPopUp} onClose={() => setOpenCNPopUp(false)} className="order_list_ml custom-dialog"
+                sx={{
+                  "& .MuiDialog-container": {
+                    "& .MuiPaper-root": {
+                      width: "50%",
+                      maxWidth: "500px",
+                    
+                    },
+                  },
+                }}>
+                <DialogTitle className="alert-dialog-title" style={{ fontWeight: 700 }}>
+                  CN Bill
+
+                </DialogTitle>
+                <IconButton aria-label="close"
+                 onClick={() => setOpenCNPopUp(false)} sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}>
+                  <CloseIcon />
+                </IconButton>
+
+                <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+
+                  <table className="w-full border-collapse custom-table">
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "0.5rem 1rem" }}>Sr No</th>
+                        <th style={{ padding: "0.5rem 1rem" }}>Bill Number</th>
+                        <th style={{ padding: "0.5rem 1rem" }}>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cnBillData.map((cn_bill, cnIndex) => (
+                        <tr key={cnIndex}>
+                          <td className="text-lg text-black px-4 py-2">{cnIndex + 1}</td>
+                          <td className="text-lg text-black px-4 py-2">{cn_bill.bill_number}</td>
+                          <td className="text-lg text-black px-4 py-2">{cn_bill.amount}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+              </DialogContentText>
+
+                </DialogContent>
+              </Dialog>
+
             </div>
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -626,11 +630,10 @@ const ReturnList = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={filteredList.length === 0}
               >
                 Next
@@ -640,9 +643,8 @@ const ReturnList = () => {
             <div
               id="modal"
               value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                IsDelete ? "block" : "hidden"
-              }`}
+              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                }`}
             >
               <div />
               <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

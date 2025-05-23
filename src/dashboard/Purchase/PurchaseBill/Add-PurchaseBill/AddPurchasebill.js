@@ -78,7 +78,6 @@ const AddPurchaseBill = () => {
   const [srNo, setSrNo] = useState();
   const history = useHistory();
   const token = localStorage.getItem("token");
-  const [error, setError] = useState({ distributor: "", billNo: "" });
   const [expiryDate, setExpiryDate] = useState("");
   const [mrp, setMRP] = useState(null);
   const [ptr, setPTR] = useState(null);
@@ -138,6 +137,7 @@ const AddPurchaseBill = () => {
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
 
+  const selectedDistributorRef = useRef(null);
 
   const [addDistributorName, setAddDistributorName] = useState("");
   const [addDistributorNo, setAddDistributorNo] = useState("");
@@ -175,7 +175,7 @@ const AddPurchaseBill = () => {
     "Techno Max": "techno-item-import",
   };
 
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState({});
   const [paymentType, setPaymentType] = useState("credit");
   const [bankData, setBankData] = useState([]);
   const [id, setId] = useState(null);
@@ -221,7 +221,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!ItemPurchaseList?.item?.length) return; // Prevent errors if list is empty
+      if (!ItemPurchaseList?.item?.length) return; // Prevent error if list is empty
 
       const key = e.key;
 
@@ -300,7 +300,6 @@ const AddPurchaseBill = () => {
     };
   }, [distributor, billNo, ItemPurchaseList]);
 
-  // Dependencies only affect Alt+S
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -343,7 +342,7 @@ const AddPurchaseBill = () => {
       }
     }
 
-    setErrors(newErrors);
+    setError(newErrors);
   }, [ptr, mrp]);
 
 
@@ -1086,7 +1085,7 @@ const AddPurchaseBill = () => {
     //   toast.error("Total amount is not available");
     //   newErrors.searchItem = "Total amount is not available";
     // }
-    setErrors(newErrors);
+    setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       await handleAddItem();
@@ -1966,6 +1965,7 @@ const AddPurchaseBill = () => {
 
                     />
                   </span>
+
                   <Autocomplete
                     value={distributor ?? ""}
                     sx={{
@@ -1975,20 +1975,25 @@ const AddPurchaseBill = () => {
                         minWidth: "250px",
                       },
                     }}
-                    freeSolo={true}
+                    freeSolo
                     size="small"
-                    onChange={handleDistributorSelect}
                     options={distributorList}
-                    getOptionLabel={(option) => {
-                      // option can be string or object
-                      if (typeof option === "string") {
-                        return option;
+                    onChange={(e, newValue) => {
+                      let finalValue = null;
+
+                      if (typeof newValue === "string") {
+                        finalValue = { name: newValue };
+                      } else if (newValue && typeof newValue === "object") {
+                        finalValue = newValue;
                       }
-                      if (option && typeof option === "object" && option.name) {
-                        return option.name;
-                      }
-                      return "";
-                    }} renderInput={(params) => (
+
+                      selectedDistributorRef.current = finalValue;
+                      setDistributor(finalValue);
+                    }}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option?.name ?? ""
+                    }
+                    renderInput={(params) => (
                       <TextField
                         autoFocus={focusedField === "distributor"}
                         autoComplete="off"
@@ -1996,27 +2001,24 @@ const AddPurchaseBill = () => {
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            const prevent = !selectedDistributorRef.current?.id;
 
-                          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            setTimeout(() => {
+                              if (selectedDistributorRef.current?.id) {
+                                handleKeyDown(e, 0);
+                              } else if (prevent) {
+                                toast.error("Distributor is Required");
+                              }
+                            }, 0); // minimal delay to let onChange fire first
 
-                            return;
-                          } else if (e.key === 'Enter' || !distributor?.id) {
-                            toast.error("Distributor is Required")
-                          }
-
-                          if (distributor?.id) {
-                            handleKeyDown(e, 0);
-                          } else if (e.key === 'Tab' || e.key === 'Enter') {
-                            if (!distributor?.id) {
-                              e.preventDefault();
-                              toast.error("Distributor is Required")
+                            if (prevent) {
+                              e.preventDefault(); // call it *outside* setTimeout
                             }
                           }
                         }}
-
                       />
                     )}
-
                   />
 
                 </div>
@@ -2234,18 +2236,20 @@ const AddPurchaseBill = () => {
                                       onKeyDown={(e) => {
                                         if (
                                           !searchItem &&
-                                          (e.key === "ArrowDown" ||
-                                            e.key === "ArrowUp")
+                                          (e.key === "ArrowDown" || e.key === "ArrowUp")
                                         ) {
                                           tableRef.current.focus();
-
                                           setTimeout(() => {
-                                            document.activeElement.blur(); // Removes focus from the input
+                                            document.activeElement.blur();
                                           }, 0);
-                                        } else if (
-                                          searchItem &&
-                                          selectedOption
-                                        ) {
+                                        } else if (e.key === "Tab") {
+                                          if (!searchItem || !selectedOption) {
+                                            e.preventDefault();
+                                            toast.error("Please select an item before continuing");
+                                          } else {
+                                            handleKeyDown(e, 2);
+                                          }
+                                        } else if (searchItem && selectedOption) {
                                           handleKeyDown(e, 2);
                                         }
                                       }}
@@ -2263,7 +2267,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               type="text"
                               size="small"
-                              error={!!errors.unit}
+                              error={!!error.unit}
                               value={unit}
                               sx={{ width: "80px" }}
                               onChange={(e) => {
@@ -2295,7 +2299,7 @@ const AddPurchaseBill = () => {
                               autoComplete="off"
                               id="outlined-number"
                               size="small"
-                              error={!!errors.batch}
+                              error={!!error.batch}
                               value={batch}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
@@ -2313,7 +2317,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               size="small"
                               sx={{ width: "100px" }}
-                              error={!!errors.expiryDate}
+                              error={!!error.expiryDate}
                               value={expiryDate}
                               onChange={handleExpiryDate}
                               placeholder="MM/YY"
@@ -2329,7 +2333,7 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "90px" }}
                               size="small"
-                              error={!!errors.mrp}
+                              error={!!error.mrp}
                               value={mrp}
                               onChange={(e) => {
                                 const value = e.target.value;
@@ -2358,7 +2362,7 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "80px" }}
                               size="small"
-                              error={!!errors.qty}
+                              error={!!error.qty}
                               value={qty}
                               onChange={(e) => {
                                 const value = e.target.value.replace(
@@ -2387,7 +2391,7 @@ const AddPurchaseBill = () => {
                               type="number"
                               sx={{ width: "60px" }}
                               value={free}
-                              error={!!errors.free}
+                              error={!!error.free}
                               onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9]/g);
                                 setFree(value ? Number(value) : "");
@@ -2412,7 +2416,7 @@ const AddPurchaseBill = () => {
                               sx={{ width: "90px" }}
                               size="small"
                               value={ptr}
-                              error={!!errors.ptr}
+                              error={!!error.ptr}
                               onKeyDown={(e) => {
                                 if (
                                   ["e", "E", "+", "-", ","].includes(e.key) ||
@@ -2483,7 +2487,7 @@ const AddPurchaseBill = () => {
                               size="small"
                               value={gst}
                               sx={{ width: "65px" }}
-                              error={!!errors.gst}
+                              error={!!error.gst}
                               inputRef={(el) => (inputRefs.current[11] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 11)}
                               onChange={(e) => {
@@ -2506,7 +2510,7 @@ const AddPurchaseBill = () => {
                               // onKeyDown={handleKeyDown}
                               size="small"
                               value={loc?.toUpperCase()}
-                              // error={!!errors.loc}
+                              // error={!!error.loc}
                               sx={{ width: "100px" }}
                               onChange={(e) => {
                                 setLoc(e.target.value);

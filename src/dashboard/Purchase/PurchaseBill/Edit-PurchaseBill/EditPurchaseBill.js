@@ -153,47 +153,49 @@ const EditPurchaseBill = () => {
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (!ItemPurchaseList?.item?.length) return; // Prevent errors if list is empty
+  const handleKeyPress = (e) => {
+    const activeList = purchase?.item_list ?? [];
 
-      const key = e.key;
+    if (!activeList.length) return;
 
-      // Check if any input field inside inputRefs is focused
-      const isInputFocused = inputRefs.current.some(
-        (input) => input && document.activeElement === input
+    const key = e.key;
+
+    // Prevent keyboard control if any input is focused
+    const isInputFocused = inputRefs.current.some(
+      (input) => input && document.activeElement === input
+    );
+    if (isInputFocused) return;
+
+    if (key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((prev) =>
+        prev < activeList.length - 1 ? prev + 1 : prev
       );
-      if (isInputFocused) return; // Prevent key navigation when an input is focused
+    } else if (key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    } else if (key === "Enter" && selectedIndex !== -1) {
+      e.preventDefault();
+      const selectedRow = activeList[selectedIndex];
+      if (!selectedRow) return;
 
-      if (key === "ArrowDown") {
-        // Move selection down
-        setSelectedIndex((prev) =>
-          prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
-        );
-      } else if (key === "ArrowUp") {
-        // Move selection up
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      } else if (key === "Enter" && selectedIndex !== -1) {
-        // Prevent Enter action if any input is focused
-        if (!isInputFocused) {
-          const selectedRow = ItemPurchaseList.item[selectedIndex];
-          if (!selectedRow) return;
+      setSelectedEditItemId(selectedRow.id);
+      handleEditClick(selectedRow);
 
-          setSelectedEditItemId(selectedRow.id);
-          handleEditClick(selectedRow);
-
-          if (inputRefs.current[0]) {
-            inputRefs.current[0].focus();
-          }
+      setTimeout(() => {
+        if (inputRefs.current[1]) {
+          inputRefs.current[1].focus(); // Focus item name
         }
-      }
-    };
+      }, 150);
+    }
+  };
 
-    document.addEventListener("keydown", handleKeyPress);
+  document.addEventListener("keydown", handleKeyPress);
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [selectedIndex, ItemPurchaseList]);
+  return () => {
+    document.removeEventListener("keydown", handleKeyPress);
+  };
+}, [selectedIndex, purchase?.item_list]);
 
   /*<================================================================================== handle shortcut  =========================================================================> */
 
@@ -775,17 +777,17 @@ const EditPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : // Add record
-          await axios.post("item-purchase", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+        await axios.post("item-purchase", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
       setDeleteAll(true);
       itemPurchaseList();
@@ -1559,7 +1561,7 @@ const EditPurchaseBill = () => {
                     <thead>
                       <tr
                         style={{
-                          borderBottom: "1px solid lightgray", 
+                          borderBottom: "1px solid lightgray",
                         }}
                       >
                         <th>Item Name</th>
@@ -1618,11 +1620,10 @@ const EditPurchaseBill = () => {
                     /> */}
                                   <ListItemText
                                     primary={`${option.iteam_name}`}
-                                    secondary={` ${
-                                      option.stock === 0
+                                    secondary={` ${option.stock === 0
                                         ? `Unit: ${option.weightage}`
                                         : `Pack: ${option.pack}`
-                                    } | 
+                                      } | 
             MRP: ${option.mrp}  | 
             Location: ${option.location}  | 
             Current Stock: ${option.stock}`}
@@ -2008,9 +2009,8 @@ const EditPurchaseBill = () => {
                               setSelectedIndex(index); // Ensure clicking sets the selected index
                               handleEditClick(item);
                             }}
-                            className={` item-List  flex justify-between  cursor-pointer  ${
-                              index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                            className={` item-List  flex justify-between  cursor-pointer  ${index === selectedIndex ? "highlighted-row" : ""
+                              }`}
                           >
                             <td
                               style={{
@@ -2186,7 +2186,7 @@ const EditPurchaseBill = () => {
                 size="lg"
                 position="bottom-center"
                 className="modal_amount"
-                // style={{ width: "50%" }}
+              // style={{ width: "50%" }}
               >
                 <div
                   style={{
@@ -2310,6 +2310,7 @@ const EditPurchaseBill = () => {
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 <div className="bg-white">
+                  
                   <table className="custom-table">
                     <thead>
                       <tr>
@@ -2320,7 +2321,7 @@ const EditPurchaseBill = () => {
                               onChange={handleSelectAllPending}
                               checked={
                                 selectedRows.length ===
-                                  purchaseReturnPending.length &&
+                                purchaseReturnPending.length &&
                                 purchaseReturnPending.length > 0
                               }
                             />
@@ -2330,7 +2331,7 @@ const EditPurchaseBill = () => {
                               onChange={handleSelectAll}
                               checked={
                                 selectedRows.length ===
-                                  (purchase?.cn_bill_list?.length || 0) &&
+                                (purchase?.cn_bill_list?.length || 0) &&
                                 purchase?.cn_bill_list?.length > 0
                               }
                               disabled={checkboxDisabled}
@@ -2347,106 +2348,106 @@ const EditPurchaseBill = () => {
                     <tbody>
                       {purchase?.cn_bill_list?.length === 0
                         ? purchaseReturnPending.map((row, index) => (
-                            <tr key={index}>
-                              <td>
-                                {purchase?.cn_bill_list?.length === 0 ? (
-                                  <input
-                                    type="checkbox"
-                                    onChange={(e) =>
-                                      handleRowSelectPending(
-                                        row.id,
-                                        row.total_amount || 0
-                                      )
-                                    }
-                                    checked={selectedRows.includes(row.id)}
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                              </td>
-                              <td>{row.bill_no}</td>
-                              <td>{row.bill_date}</td>
-                              <td>{row.total_amount}</td>
-                              <td>
-                                <OutlinedInput
-                                  type="number"
-                                  value={cnTotalAmount[row.id] || ""}
-                                  onChange={(e) =>
-                                    handleCnAmountChange(
-                                      row.id,
-                                      e.target.value,
-                                      row.total_amount
-                                    )
-                                  }
-                                  startAdornment={
-                                    <InputAdornment position="start">
-                                      Rs.
-                                    </InputAdornment>
-                                  }
-                                  sx={{ width: 130, m: 1 }}
-                                  size="small"
-                                  disabled={!selectedRows.includes(row.id)}
-                                />
-                              </td>
-                            </tr>
-                          ))
-                        : purchase?.cn_bill_list?.map((row, index) => (
-                            <tr key={index}>
-                              <td>
+                          <tr key={index}>
+                            <td>
+                              {purchase?.cn_bill_list?.length === 0 ? (
                                 <input
                                   type="checkbox"
-                                  onChange={() =>
-                                    handleRowSelect(
+                                  onChange={(e) =>
+                                    handleRowSelectPending(
                                       row.id,
                                       row.total_amount || 0
                                     )
                                   }
                                   checked={selectedRows.includes(row.id)}
-                                  disabled={checkboxDisabled}
                                 />
-                              </td>
-                              <td>{row?.bill_no}</td>
-                              <td>{row?.bill_date}</td>
-                              <td>{row?.total_amount}</td>
-                              <td>
-                                <OutlinedInput
-                                  type="number"
-                                  value={
-                                    cnTotalAmount[row.id] !== undefined
-                                      ? cnTotalAmount[row.id]
-                                      : row.cn_amount || ""
-                                  }
-                                  onChange={(e) =>
-                                    handleCnAmountChange(
-                                      row.id,
-                                      e.target.value,
-                                      row.total_amount
-                                    )
-                                  }
-                                  startAdornment={
-                                    <InputAdornment position="start">
-                                      Rs.
-                                    </InputAdornment>
-                                  }
-                                  sx={{ width: 130, m: 1 }}
-                                  size="small"
-                                  disabled={
-                                    inputDisabled ||
-                                    !selectedRows.includes(row.id)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <Button
-                                  onClick={() => handleRevert(row.id)}
-                                  variant="contained"
-                                  color="primary"
-                                >
-                                  Revert
-                                </Button>
-                              </td>
-                            </tr>
-                          ))}
+                              ) : (
+                                ""
+                              )}
+                            </td>
+                            <td>{row.bill_no}</td>
+                            <td>{row.bill_date}</td>
+                            <td>{row.total_amount}</td>
+                            <td>
+                              <OutlinedInput
+                                type="number"
+                                value={cnTotalAmount[row.id] || ""}
+                                onChange={(e) =>
+                                  handleCnAmountChange(
+                                    row.id,
+                                    e.target.value,
+                                    row.total_amount
+                                  )
+                                }
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    Rs.
+                                  </InputAdornment>
+                                }
+                                sx={{ width: 130, m: 1 }}
+                                size="small"
+                                disabled={!selectedRows.includes(row.id)}
+                              />
+                            </td>
+                          </tr>
+                        ))
+                        : purchase?.cn_bill_list?.map((row, index) => (
+                          <tr key={index}>
+                            <td>
+                              <input
+                                type="checkbox"
+                                onChange={() =>
+                                  handleRowSelect(
+                                    row.id,
+                                    row.total_amount || 0
+                                  )
+                                }
+                                checked={selectedRows.includes(row.id)}
+                                disabled={checkboxDisabled}
+                              />
+                            </td>
+                            <td>{row?.bill_no}</td>
+                            <td>{row?.bill_date}</td>
+                            <td>{row?.total_amount}</td>
+                            <td>
+                              <OutlinedInput
+                                type="number"
+                                value={
+                                  cnTotalAmount[row.id] !== undefined
+                                    ? cnTotalAmount[row.id]
+                                    : row.cn_amount || ""
+                                }
+                                onChange={(e) =>
+                                  handleCnAmountChange(
+                                    row.id,
+                                    e.target.value,
+                                    row.total_amount
+                                  )
+                                }
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    Rs.
+                                  </InputAdornment>
+                                }
+                                sx={{ width: 130, m: 1 }}
+                                size="small"
+                                disabled={
+                                  inputDisabled ||
+                                  !selectedRows.includes(row.id)
+                                }
+                              />
+                            </td>
+                            <td>
+                              <Button
+                                onClick={() => handleRevert(row.id)}
+                                variant="contained"
+                                color="primary"
+                              >
+                                Revert
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
                       <tr>
                         <td colSpan={3}></td>
                         {purchase?.cn_bill_list?.length === 0 ? "" : <td></td>}
@@ -2483,9 +2484,8 @@ const EditPurchaseBill = () => {
           <div
             id="modal"
             value={IsDelete}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              IsDelete ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -2544,9 +2544,8 @@ const EditPurchaseBill = () => {
           <div
             id="modal"
             value={isOpenBox}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              isOpenBox ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

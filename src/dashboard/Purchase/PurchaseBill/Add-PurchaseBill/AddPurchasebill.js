@@ -287,8 +287,11 @@ const AddPurchaseBill = () => {
           handleSubmit();
           break;
         case "m":
-
           removeItem();
+          setSelectedEditItemId(null);
+          setSelectedIndex(-1);
+          setSearchItem("");
+          setValue("");
           setTimeout(() => {
             inputRefs.current[2]?.focus();
           }, 10);
@@ -1611,6 +1614,9 @@ const AddPurchaseBill = () => {
 
   const removeItem = () => {
     setSelectedOption(null);
+       setSelectedEditItemId(null);
+          setSelectedIndex(null);
+    setSearchItem("");
     setId(null);
     setSelectedEditItem(null);
     setSelectedEditItemId(0);
@@ -2375,6 +2381,7 @@ const AddPurchaseBill = () => {
                                   } else if (expiry < sixMonthsLater) {
                                     e.preventDefault();
                                     toast.warning("Product will expire within 6 months");
+                                    handleKeyDown(e, 5);
                                   } else {
                                     handleKeyDown(e, 5);
                                   }
@@ -2594,7 +2601,7 @@ const AddPurchaseBill = () => {
 
                               onKeyDown={(e) => {
                                 if ((e.key === "Enter" || e.key === "Tab")) {
-                                  const allowedGST = [5, 12, 18, 28];
+                                  const allowedGST = [0,5, 12, 18, 28];
 
                                   if (!gst && gst !== 0) {
                                     e.preventDefault();
@@ -3189,7 +3196,14 @@ const AddPurchaseBill = () => {
           </DialogTitle>
           <IconButton
             aria-label="close"
-            onClick={() => setOpenAddDistributorPopUp(false)}
+          onClick={() => {
+  setOpenAddDistributorPopUp(false);
+  setAddDistributorAddress("");
+  setAddDistributorMobile("");
+  setAddDistributorName("");
+  setAddDistributorNo("");
+}}
+
             sx={{
               position: "absolute",
               right: 8,

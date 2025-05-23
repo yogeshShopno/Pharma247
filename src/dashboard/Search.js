@@ -91,8 +91,6 @@ const Search = ({ searchPage, setSearchPage }) => {
       return; // Avoid calling API with empty input
     }
 
-    console.log(searchQuery, "value");
-
     const api = apiEndpoints[searchType];
     if (!api) {
       console.error("Invalid search type");
@@ -100,7 +98,9 @@ const Search = ({ searchPage, setSearchPage }) => {
     }
 
     const data = new FormData();
-    data.append("search", searchQuery);
+    if (searchType == 3) { 
+    data.append("name_mobile_gst_search", searchQuery);}
+     data.append("search", searchQuery);
 
     try {
       const response = await axios.post(api, data, {

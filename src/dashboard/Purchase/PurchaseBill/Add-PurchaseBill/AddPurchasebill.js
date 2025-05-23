@@ -1614,8 +1614,8 @@ const AddPurchaseBill = () => {
 
   const removeItem = () => {
     setSelectedOption(null);
-       setSelectedEditItemId(null);
-          setSelectedIndex(null);
+    setSelectedEditItemId(null);
+    setSelectedIndex(null);
     setSearchItem("");
     setId(null);
     setSelectedEditItem(null);
@@ -1883,7 +1883,7 @@ const AddPurchaseBill = () => {
                 Import CSV
               </Button>
 
-              {!distributor  ? (
+              {!distributor ? (
                 <></>
               ) : (
                 <Button
@@ -1902,7 +1902,7 @@ const AddPurchaseBill = () => {
                   }}
                   onClick={handelAddOpen}
                   disabled={
-                    !distributor 
+                    !distributor
                   }
                 >
                   <AddIcon className="mr-2" />
@@ -2002,9 +2002,11 @@ const AddPurchaseBill = () => {
 
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
+                      setbillNo(""); // Clear bill number when distributor is changed
                     }}
                     onInputChange={(event, newInputValue) => {
                       setDistributor({ name: newInputValue.toUpperCase() });
+                      setbillNo(""); // Clear bill number when distributor is typed/removed
                     }}
                     getOptionLabel={(option) =>
                       typeof option === "string" ? option : option?.name ?? ""
@@ -2019,7 +2021,7 @@ const AddPurchaseBill = () => {
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         inputProps={{
                           ...params.inputProps,
-                          style: { textTransform: 'uppercase' }, // visual uppercase
+                          style: { textTransform: 'uppercase' },
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === "Tab") {
@@ -2039,6 +2041,7 @@ const AddPurchaseBill = () => {
                       />
                     )}
                   />
+
 
 
                 </div>
@@ -2601,7 +2604,7 @@ const AddPurchaseBill = () => {
 
                               onKeyDown={(e) => {
                                 if ((e.key === "Enter" || e.key === "Tab")) {
-                                  const allowedGST = [0,5, 12, 18, 28];
+                                  const allowedGST = [0, 5, 12, 18, 28];
 
                                   if (!gst && gst !== 0) {
                                     e.preventDefault();
@@ -3196,13 +3199,13 @@ const AddPurchaseBill = () => {
           </DialogTitle>
           <IconButton
             aria-label="close"
-          onClick={() => {
-  setOpenAddDistributorPopUp(false);
-  setAddDistributorAddress("");
-  setAddDistributorMobile("");
-  setAddDistributorName("");
-  setAddDistributorNo("");
-}}
+            onClick={() => {
+              setOpenAddDistributorPopUp(false);
+              setAddDistributorAddress("");
+              setAddDistributorMobile("");
+              setAddDistributorName("");
+              setAddDistributorNo("");
+            }}
 
             sx={{
               position: "absolute",

@@ -155,8 +155,8 @@ const AddPurchaseBill = () => {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isOpen, setIsOpen] = useState(false);
   const [billSaveDraft, setBillSaveDraft] = useState("1");
+  const [isOpen, setIsOpen] = useState(false);
 
   const debounceRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1220,7 +1220,7 @@ const AddPurchaseBill = () => {
     } catch (e) {
       console.log(e);
       setUnsavedItems(false);
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
   /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */
@@ -1411,6 +1411,7 @@ const AddPurchaseBill = () => {
   const submitPurchaseData = async (draft) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1449,11 +1450,14 @@ const AddPurchaseBill = () => {
           setSelectedDate(new Date())
           setUnsavedItems(false);
           toast.success(response.data.message);
+          setIsSubmitting(false); // reset debounce
+
           setTimeout(() => {
             setIsSubmitting(false); // reset debounce
             history.push("/purchase/purchasebill");
           }, 2000);
         });
+
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
@@ -1465,6 +1469,9 @@ const AddPurchaseBill = () => {
   /*<=========================================================================== validation  purchase bill  =======================================================================> */
 
   const handleSubmit = (draft) => {
+    if (isSubmitting) return;
+
+
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -1935,19 +1942,24 @@ const AddPurchaseBill = () => {
                 style={{ background: "var(--color1)" }}
                 onClick={() => setIsOpen(!isOpen)}
                 ref={submitButtonRef}
+                onMouseEnter={() => setIsOpen(true)}
+
               >
                 Save
               </Button>
             </div>
             {isOpen && (
-              <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                <ul className="transition-all ">
+              <div
+                className="absolute right-0 top-36 w-32 bg-white shadow-lg user-icon mr-4"
+                onMouseLeave={() => setIsOpen(false)} // 🔒 Close on mouse exit
+              >
+                <ul className="transition-all">
                   <li
                     onClick={() => {
                       setBillSaveDraft("1");
                       handleSubmit("1");
                     }}
-                    className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                    className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
                   >
                     <SaveIcon />
                     Save
@@ -1957,7 +1969,7 @@ const AddPurchaseBill = () => {
                       setBillSaveDraft("0");
                       handleSubmit("0");
                     }}
-                    className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                    className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
                   >
                     <SaveAsIcon />
                     Draft
@@ -1965,6 +1977,7 @@ const AddPurchaseBill = () => {
                 </ul>
               </div>
             )}
+
           </div>
           <div
             className="row border-b border-dashed"

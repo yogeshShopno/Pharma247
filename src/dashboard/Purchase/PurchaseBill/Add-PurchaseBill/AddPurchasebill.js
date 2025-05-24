@@ -374,6 +374,8 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+       generateRandomNumber();
+
       handleBarcode();
     }, 100);
     return () => clearTimeout(timeoutId);
@@ -1132,11 +1134,11 @@ const AddPurchaseBill = () => {
     } else {
       if (barcode) {
         data.append("item_id", ItemId);
-        data.append("unit_id", Number(0));
+        data.append("unit_id", Number(0)||1);
       } else {
         data.append("item_id", value.id);
 
-        data.append("unit_id", Number(value.unit_id));
+        data.append("unit_id", Number(value.unit_id)||1);
       }
     }
 
@@ -2151,7 +2153,10 @@ const AddPurchaseBill = () => {
                     // onKeyDown={handleKeyDown}
                     sx={{ width: "250px" }}
                     onChange={(e) => {
+                             generateRandomNumber();
+
                       setBarcode(e.target.value);
+
                     }}
                   />
                 </div>

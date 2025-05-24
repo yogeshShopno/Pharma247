@@ -159,7 +159,7 @@ const AddPurchaseBill = () => {
   const [billSaveDraft, setBillSaveDraft] = useState("1");
 
   const debounceRef = useRef(null);
-const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -292,7 +292,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
         case "m":
           removeItem();
           setSelectedEditItemId(null);
-          setSelectedIndex(-1);
+          setSelectedIndex(0);
           setSearchItem("");
           setValue("");
           setTimeout(() => {
@@ -1019,6 +1019,10 @@ const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddButtonClick = async () => {
     setFocusedField("item");
+    if (isSubmitting) return; // ⛔ Block if already submitting
+
+    setFocusedField("item");
+
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
     generateRandomNumber();
@@ -1106,8 +1110,10 @@ const [isSubmitting, setIsSubmitting] = useState(false);
 
   /*<========================================================================= Add and Edit item function  ====================================================================> */
 
-  let debounce = true;
   const handleAddItem = async () => {
+    if (isSubmitting) return false; // Prevent double submissions
+    setIsSubmitting(true); // Lock
+
     setItemAutofoucs(true);
 
     setUnsavedItems(true);
@@ -1210,9 +1216,11 @@ const [isSubmitting, setIsSubmitting] = useState(false);
           inputRefs.current[2].focus(); // Item Name input
         }
       }, 100);
+      setIsSubmitting(false)
     } catch (e) {
       console.log(e);
       setUnsavedItems(false);
+      setIsSubmitting(false); 
     }
   };
   /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */
@@ -1398,7 +1406,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
   };
 
   /*<============================================================================== submit purchase bill  ==========================================================================> */
- 
+
 
   const submitPurchaseData = async (draft) => {
     if (isSubmitting) return;
@@ -1618,7 +1626,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
   const removeItem = () => {
     setSelectedOption(null);
     setSelectedEditItemId(null);
-    setSelectedIndex(null);
+    setSelectedIndex(-1);
     setSearchItem("");
     setId(null);
     setSelectedEditItem(null);
@@ -2642,16 +2650,16 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                                 setLoc(e.target.value);
                               }}
                               inputRef={(el) => (inputRefs.current[12] = el)}
-                              onKeyDown={(e) => {
+                              onKeyDown={async (e) => {
                                 if (e.key === "Enter") {
-                                  if (debounceTimeout)
-                                    clearTimeout(debounceTimeout); // Clear previous timeout
-                                  debounceTimeout = setTimeout(async () => {
-                                    await handleAddButtonClick();
-                                    handleKeyDown(e, 1);
-                                  }, 500); // Adjust debounce delay as needed
+                                  e.preventDefault();
+                                  const isValid = await handleAddButtonClick();
+                                  if (isValid) {
+                                    handleKeyDown(e, 1); // move to next field only after successful add
+                                  }
                                 }
                               }}
+
                             />
                           </td>
                           <td>

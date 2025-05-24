@@ -650,7 +650,7 @@ const AddPurchaseBill = () => {
               );
               data.append(
                 "weightage",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit)
+                Number(response?.data?.data[0]?.batch_list[0]?.unit) || 1 
               );
               data.append(
                 "batch_number",
@@ -743,7 +743,7 @@ const AddPurchaseBill = () => {
                   ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
                   : 0
               );
-              data.append("unit_id", Number(0));
+              data.append("unit", Number(1) || 1);
               data.append("user_id", userId);
 
               data.append(

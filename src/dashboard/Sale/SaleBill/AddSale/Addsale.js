@@ -541,29 +541,6 @@ const Addsale = () => {
       }
     }
   };
-  // const handleSearch = async (searchItem) => {
-  //     let data = new FormData();
-  //     data.append("search", searchItem);
-  //     try {
-  //         const res = await axios.post("item-search", data, {
-  //             headers: {
-  //                 Authorization: `Bearer ${token}`,
-  //             },
-  //         });
-
-  //         setItemList(res.data.data.data);
-
-  //         res.data.data.data.forEach(item => {
-  //             if (item.stock === 0) {
-  //                 fetchItemDrugGroup(searchItem);
-  //             }
-  //         });
-
-  //         return res.data.data.data;
-  //     } catch (error) {
-  //         console.error("API error:", error);
-  //     }
-  // };
 
   const handleSearch = async (searchItem) => {
     let data = new FormData();
@@ -1912,39 +1889,50 @@ const Addsale = () => {
                 </Select>
                 <Button
                   variant="contained"
-                  className="payment_divv"
+                  className=""
                   sx={{ textTransform: "none", background: "var(--color1)" }}
                   onClick={() => setIsOpen(!isOpen)}
+                style={{ background: "var(--color1)" }}
+   
+                ref={submitButtonRef}
+                onMouseEnter={() => setIsOpen(true)}
                 >
                   {" "}
                   Submit
                 </Button>
-                {isOpen && (
-                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                    <ul className="transition-all ">
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("1");
-                          handleSubmit("1");
-                        }}
-                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveIcon />
-                        Save
-                      </li>
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("0");
-                          handleSubmit("0");
-                        }}
-                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveAsIcon />
-                        Draft
-                      </li>
-                    </ul>
-                  </div>
-                )}
+               {isOpen && (
+              <div
+                              style={{ zIndex: 1 }}
+
+                className="absolute right-0 top-36 w-32 bg-white shadow-lg user-icon mr-4 "
+                onMouseLeave={() => setIsOpen(false)} // 🔒 Close on mouse exit
+              >
+                <ul className="transition-all">
+                  <li
+                    onClick={() => {
+                      setBillSaveDraft("1");
+                      handleSubmit("1");
+                    }}
+                    className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                  >
+                    <SaveIcon />
+                    Save
+                  </li>
+                  <li
+                    onClick={() => {
+                      setBillSaveDraft("0");
+                      handleSubmit("0");
+                    }}
+                    className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                  >
+                    <SaveAsIcon />
+                    Draft
+                  </li>
+                </ul>
+              </div>
+            )}
+
+                
               </div>
             </div>
             <div
@@ -2402,9 +2390,9 @@ const Addsale = () => {
                                             {batchListData.map((item) => (
                                               <tr
                                                 className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                                    String(item.id)
-                                                    ? "highlighted-row"
-                                                    : ""
+                                                  String(item.id)
+                                                  ? "highlighted-row"
+                                                  : ""
                                                   }`}
                                                 key={item.id}
                                                 data-id={item.id}
@@ -3180,7 +3168,7 @@ const Addsale = () => {
         </Dialog>
         {/* add Customer */}
         <Dialog open={openCustomer} className="custom-dialog">
-          <DialogTitle id="alert-dialog-title" className="secondary">
+          <DialogTitle id="alert-dialog-title" className="primary">
             Add Customer
           </DialogTitle>
           <IconButton
@@ -3202,54 +3190,55 @@ const Addsale = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div
-                className="flex"
-                style={{ flexDirection: "column", gap: "19px" }}
+                className="bg-white" style={{
+                  alignItems: "center",
+                  gap: "15px",
+                  marginBlock: "20px",
+                }}
               >
                 <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "24px",
-                  }}
+                  className="mainform bg-white rounded-lg gap-2" style={{ padding: "20px" }}
                 >
-                  <div className="">
-                    <div className="mb-2">
-                      <span className="label primary mb-4">Customer Name</span>
-                      <span className="text-red-600 ml-1">*</span>
+                
+
+                    <div className="fields add_new_item_divv">
+
+                      <lable className="label secondary">Customer Name <span className="text-red-600 ">*</span></lable>
+
+                      <TextField
+                        id="outlined-multiline-static"
+                        size="small"
+                        value={customerName}
+                        onChange={(e) => {
+                          setCustomerName(e.target.value);
+                          setUnsavedItems(true);
+                        }}
+                        style={{ minWidth: 300 }}
+
+                      />
                     </div>
-                    <TextField
-                      id="outlined-multiline-static"
-                      size="small"
-                      value={customerName}
-                      onChange={(e) => {
-                        setCustomerName(e.target.value);
-                        setUnsavedItems(true);
-                      }}
-                      style={{ minWidth: 340 }}
-                      variant="standard"
-                    />
-                  </div>
-                  <div className="">
-                    <div className="mb-2">
-                      <span className="label primary">Mobile Number</span>
-                      <span className="text-red-600 ml-1">*</span>
-                    </div>
-                    <TextField
-                      id="outlined-multiline-static"
-                      size="small"
-                      value={mobileNo}
-                      onChange={(e) => {
-                        setMobileNo(e.target.value);
-                        setUnsavedItems(true);
-                      }}
-                      style={{ minWidth: 340 }}
-                      variant="standard"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          AddCustomerRecord();
-                        }
-                      }}
-                    />
+
+                 
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">
+                        Mobile Number <span className="text-red-600">*</span>
+                      </label>
+                      <TextField
+                        id="mobile-number"
+                        size="small"
+                        value={mobileNo}
+                        onChange={(e) => {
+                          setMobileNo(e.target.value);
+                          setUnsavedItems(true);
+                        }}
+                        style={{ minWidth: 300 }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            AddCustomerRecord();
+                          }
+                        }}
+                      />
+                  
                   </div>
                 </div>
               </div>
@@ -3260,7 +3249,7 @@ const Addsale = () => {
               <Button
                 autoFocus
                 variant="contained"
-                disabled={!(customerName && mobileNo)}
+             
                 color="success"
                 onClick={AddCustomerRecord}
               >

@@ -891,10 +891,7 @@ const AddPurchaseBill = () => {
         .post("list-distributer", searchPayload, { headers })
         .then((response) => {
           const list = response.data.data?.distributor || response.data.data || [];
-          console.log(list)
           setDistributorList(list);
-          console.log(distributorList)
-
         })
         .catch((error) => {
           console.error("Search failed", error);
@@ -1937,7 +1934,7 @@ const AddPurchaseBill = () => {
                 onClick={handelAddItemOpen}
               >
                 <ControlPointIcon className="mr-2" />
-                Submit
+                Add Item
               </Button>
 
               <Button
@@ -2356,27 +2353,27 @@ const AddPurchaseBill = () => {
                               }}
 
                               onKeyDown={(e) => {
-  const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
-  const isTab = e.key === "Tab";
-  const isShiftTab = isTab && e.shiftKey;
-  const isEnter = e.key === "Enter";
+                                const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
+                                const isTab = e.key === "Tab";
+                                const isShiftTab = isTab && e.shiftKey;
+                                const isEnter = e.key === "Enter";
 
-  if (isInvalidKey) {
-    e.preventDefault();
-    return;
-  }
+                                if (isInvalidKey) {
+                                  e.preventDefault();
+                                  return;
+                                }
 
-  // Allow Shift+Tab to move backward regardless of unit
-  if (isShiftTab) return;
+                                // Allow Shift+Tab to move backward regardless of unit
+                                if (isShiftTab) return;
 
-  if (unit) {
-    handleKeyDown(e, 3);
-  } else if (isTab || isEnter) {
-    e.preventDefault();
-    toast.error("Unit is Required");
-  }
-}}
-inputRef={(el) => (inputRefs.current[3] = el)}
+                                if (unit) {
+                                  handleKeyDown(e, 3);
+                                } else if (isTab || isEnter) {
+                                  e.preventDefault();
+                                  toast.error("Unit is Required");
+                                }
+                              }}
+                              inputRef={(el) => (inputRefs.current[3] = el)}
 
                             />
 
@@ -2420,45 +2417,45 @@ inputRef={(el) => (inputRefs.current[3] = el)}
                               placeholder="MM/YY"
                               inputRef={(el) => (inputRefs.current[5] = el)}
                               onKeyDown={(e) => {
-  const isTab = e.key === 'Tab';
-  const isEnter = e.key === 'Enter';
-  const isShiftTab = isTab && e.shiftKey;
-  const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                                const isTab = e.key === 'Tab';
+                                const isEnter = e.key === 'Enter';
+                                const isShiftTab = isTab && e.shiftKey;
+                                const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
 
-  // Allow Shift+Tab to move backward
-  if (isShiftTab) return;
+                                // Allow Shift+Tab to move backward
+                                if (isShiftTab) return;
 
-  if (isTab || isEnter) {
-    if (!expiryDate) {
-      e.preventDefault();
-      toast.error("Expiry is required");
-      return;
-    }
+                                if (isTab || isEnter) {
+                                  if (!expiryDate) {
+                                    e.preventDefault();
+                                    toast.error("Expiry is required");
+                                    return;
+                                  }
 
-    if (!expiryDateRegex.test(expiryDate)) {
-      e.preventDefault();
-      toast.error("Expiry must be in MM/YY format");
-      return;
-    }
+                                  if (!expiryDateRegex.test(expiryDate)) {
+                                    e.preventDefault();
+                                    toast.error("Expiry must be in MM/YY format");
+                                    return;
+                                  }
 
-    const [month, year] = expiryDate.split('/').map(Number);
-    const expiry = new Date(`20${year}`, month - 1, 1);
-    const now = new Date();
-    const sixMonthsLater = new Date();
-    sixMonthsLater.setMonth(now.getMonth() + 6);
+                                  const [month, year] = expiryDate.split('/').map(Number);
+                                  const expiry = new Date(`20${year}`, month - 1, 1);
+                                  const now = new Date();
+                                  const sixMonthsLater = new Date();
+                                  sixMonthsLater.setMonth(now.getMonth() + 6);
 
-    if (expiry < now) {
-      e.preventDefault();
-      toast.error("Product has expired");
-    } else if (expiry < sixMonthsLater) {
-      e.preventDefault();
-      toast.warning("Product will expire within 6 months");
-      handleKeyDown(e, 5);
-    } else {
-      handleKeyDown(e, 5);
-    }
-  }
-}}
+                                  if (expiry < now) {
+                                    e.preventDefault();
+                                    toast.error("Product has expired");
+                                  } else if (expiry < sixMonthsLater) {
+                                    e.preventDefault();
+                                    toast.warning("Product will expire within 6 months");
+                                    handleKeyDown(e, 5);
+                                  } else {
+                                    handleKeyDown(e, 5);
+                                  }
+                                }
+                              }}
 
 
 
@@ -2481,31 +2478,31 @@ inputRef={(el) => (inputRefs.current[3] = el)}
                                 }
                               }}
                               onKeyDown={(e) => {
-  const isTab = e.key === "Tab";
-  const isShiftTab = isTab && e.shiftKey;
+                                const isTab = e.key === "Tab";
+                                const isShiftTab = isTab && e.shiftKey;
 
-  // Allow Shift+Tab to navigate backward without validation
-  if (isShiftTab) return;
+                                // Allow Shift+Tab to navigate backward without validation
+                                if (isShiftTab) return;
 
-  // Prevent invalid characters and multiple decimals
-  if (
-    ["e", "E", "+", "-", ","].includes(e.key) ||
-    (e.key === "." && e.target.value.includes("."))
-  ) {
-    e.preventDefault();
-  }
+                                // Prevent invalid characters and multiple decimals
+                                if (
+                                  ["e", "E", "+", "-", ","].includes(e.key) ||
+                                  (e.key === "." && e.target.value.includes("."))
+                                ) {
+                                  e.preventDefault();
+                                }
 
-  // Validate MRP on Enter or Tab if not provided or equals 0
-  if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
-    e.preventDefault();
-    toast.error("MRP is required and must be greater than 0");
-    return;
-  }
+                                // Validate MRP on Enter or Tab if not provided or equals 0
+                                if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
+                                  e.preventDefault();
+                                  toast.error("MRP is required and must be greater than 0");
+                                  return;
+                                }
 
-  // Proceed with further handling
-  handleKeyDown(e, 6);
-}}
-inputRef={(el) => (inputRefs.current[6] = el)}
+                                // Proceed with further handling
+                                handleKeyDown(e, 6);
+                              }}
+                              inputRef={(el) => (inputRefs.current[6] = el)}
 
                             />
                           </td>
@@ -2527,20 +2524,20 @@ inputRef={(el) => (inputRefs.current[6] = el)}
                                 setQty(value ? Number(value) : "");
                               }}
                               inputRef={(el) => (inputRefs.current[7] = el)}
-                         onKeyDown={(e) => {
-  const invalidKeys = ["e", "E", ".", "+", "-", ","];
-  const isEnter = e.key === "Enter";
+                              onKeyDown={(e) => {
+                                const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                                const isEnter = e.key === "Enter";
 
-  if (invalidKeys.includes(e.key)) {
-    e.preventDefault();
-    return;
-  }
+                                if (invalidKeys.includes(e.key)) {
+                                  e.preventDefault();
+                                  return;
+                                }
 
-  if (isEnter) {
-    e.preventDefault();
-    handleKeyDown(e, 7);
-  }
-}}
+                                if (isEnter) {
+                                  e.preventDefault();
+                                  handleKeyDown(e, 7);
+                                }
+                              }}
 
 
 
@@ -2561,17 +2558,17 @@ inputRef={(el) => (inputRefs.current[6] = el)}
                                 setFree(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-  const invalidKeys = ["e", "E", ".", "+", "-", ","];
-  if (invalidKeys.includes(e.key)) {
-    e.preventDefault();
-    return;
-  }
+                                const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                                if (invalidKeys.includes(e.key)) {
+                                  e.preventDefault();
+                                  return;
+                                }
 
-  if (e.key === "Enter") {
-    e.preventDefault();
-    handleKeyDown(e, 8);
-  }
-}}
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  handleKeyDown(e, 8);
+                                }
+                              }}
 
 
                               inputRef={(el) => (inputRefs.current[8] = el)}
@@ -2595,37 +2592,37 @@ inputRef={(el) => (inputRefs.current[6] = el)}
                               }}
 
                               onKeyDown={(e) => {
-  const isTab = e.key === "Tab";
-  const isEnter = e.key === "Enter";
-  const isShiftTab = isTab && e.shiftKey;
-  const invalidKeys = ["e", "E", "+", "-", ","];
+                                const isTab = e.key === "Tab";
+                                const isEnter = e.key === "Enter";
+                                const isShiftTab = isTab && e.shiftKey;
+                                const invalidKeys = ["e", "E", "+", "-", ","];
 
-  // Prevent invalid characters and multiple decimals
-  if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
-    e.preventDefault();
-    return;
-  }
+                                // Prevent invalid characters and multiple decimals
+                                if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
+                                  e.preventDefault();
+                                  return;
+                                }
 
-  // Allow Shift+Tab to move backward
-  if (isShiftTab) return;
+                                // Allow Shift+Tab to move backward
+                                if (isShiftTab) return;
 
-  if (isEnter || isTab) {
-    if (!ptr || ptr === 0) {
-      e.preventDefault();
-      toast.error("PTR is required and must be greater than 0");
-      return;
-    }
+                                if (isEnter || isTab) {
+                                  if (!ptr || ptr === 0) {
+                                    e.preventDefault();
+                                    toast.error("PTR is required and must be greater than 0");
+                                    return;
+                                  }
 
-    if (Number(mrp) && Number(ptr) >= Number(mrp)) {
-      e.preventDefault();
-      toast.error("PTR must be less than MRP");
-      return;
-    }
-  }
+                                  if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                                    e.preventDefault();
+                                    toast.error("PTR must be less than MRP");
+                                    return;
+                                  }
+                                }
 
-  // Proceed with the next field
-  handleKeyDown(e, 9);
-}}
+                                // Proceed with the next field
+                                handleKeyDown(e, 9);
+                              }}
 
                               inputRef={(el) => (inputRefs.current[9] = el)}
                             />
@@ -2640,25 +2637,25 @@ inputRef={(el) => (inputRefs.current[6] = el)}
                               type="number"
                               value={disc}
                               onKeyDown={(e) => {
-  const invalidKeys = ["e", "E", "+", "-", ","];
-  if (
-    invalidKeys.includes(e.key) ||
-    (e.key === "." && e.target.value.includes("."))
-  ) {
-    e.preventDefault();
-  }
+                                const invalidKeys = ["e", "E", "+", "-", ","];
+                                if (
+                                  invalidKeys.includes(e.key) ||
+                                  (e.key === "." && e.target.value.includes("."))
+                                ) {
+                                  e.preventDefault();
+                                }
 
-  handleKeyDown(e, 10);
-}}
+                                handleKeyDown(e, 10);
+                              }}
 
-onChange={(e) => {
-  let value = Number(e.target.value);
-  if (value > 99) {
-    value = 99;
-    e.target.value = 99; // Optional: reflects corrected value immediately
-  }
-  handleSchAmt({ ...e, target: { ...e.target, value } });
-}}
+                              onChange={(e) => {
+                                let value = Number(e.target.value);
+                                if (value > 99) {
+                                  value = 99;
+                                  e.target.value = 99; // Optional: reflects corrected value immediately
+                                }
+                                handleSchAmt({ ...e, target: { ...e.target, value } });
+                              }}
 
                               inputRef={(el) => (inputRefs.current[10] = el)}
                             />
@@ -2694,30 +2691,30 @@ onChange={(e) => {
                               }}
 
                               onKeyDown={(e) => {
-  const isTab = e.key === "Tab";
-  const isEnter = e.key === "Enter";
-  const isShiftTab = isTab && e.shiftKey;
+                                const isTab = e.key === "Tab";
+                                const isEnter = e.key === "Enter";
+                                const isShiftTab = isTab && e.shiftKey;
 
-  if (isShiftTab) return;
+                                if (isShiftTab) return;
 
-  if (isEnter || isTab) {
-    const allowedGST = [0, 5, 12, 18, 28];
+                                if (isEnter || isTab) {
+                                  const allowedGST = [0, 5, 12, 18, 28];
 
-    if (gst === "" || gst === null || gst === undefined) {
-      e.preventDefault();
-      toast.error("GST is required");
-      return;
-    }
+                                  if (gst === "" || gst === null || gst === undefined) {
+                                    e.preventDefault();
+                                    toast.error("GST is required");
+                                    return;
+                                  }
 
-    if (!allowedGST.includes(Number(gst))) {
-      e.preventDefault();
-      toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
-      return;
-    }
-  }
+                                  if (!allowedGST.includes(Number(gst))) {
+                                    e.preventDefault();
+                                    toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
+                                    return;
+                                  }
+                                }
 
-  handleKeyDown(e, 11);
-}}
+                                handleKeyDown(e, 11);
+                              }}
 
 
                             />
@@ -2738,15 +2735,15 @@ onChange={(e) => {
                               }}
                               inputRef={(el) => (inputRefs.current[12] = el)}
                               onKeyDown={async (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    const isValid = await handleAddButtonClick();
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  const isValid = await handleAddButtonClick();
 
-    if (isValid) {
-      handleKeyDown(e, 1); // Move to next field only if add is successful
-    }
-  }
-}}
+                                  if (isValid) {
+                                    handleKeyDown(e, 1); // Move to next field only if add is successful
+                                  }
+                                }
+                              }}
 
 
                             />
@@ -3331,7 +3328,7 @@ onChange={(e) => {
 
                     {/* Distributor Name */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor Name</label>
+                      <label className="label secondary">Distributor Name<span className="text-red-600  ">*</span></label>
                       <Autocomplete
                         freeSolo
                         options={distributorList.map(d => d.name)}
@@ -3372,7 +3369,7 @@ onChange={(e) => {
 
                     {/* Mobile Number */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Mobile Number</label>
+                      <label className="label secondary">Mobile Number<span className="text-red-600  ">*</span></label>
                       <Autocomplete
                         freeSolo
                         options={distributorList.map(d => d.phone_number)}
@@ -3413,7 +3410,7 @@ onChange={(e) => {
                     </div>
                     {/* GST Number */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor GSTIN Number</label>
+                      <label className="label secondary">Distributor GSTIN Number<span className="text-red-600  ">*</span></label>
                       <Autocomplete
                         freeSolo
                         options={distributorList.map(d => d.gst)}
@@ -3461,7 +3458,7 @@ onChange={(e) => {
 
                     {/* Address */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Address</label>
+                      <label className="label secondary">Address<span className="text-red-600  ">*</span></label>
                       <TextField
                         autoComplete="off"
                         size="small"

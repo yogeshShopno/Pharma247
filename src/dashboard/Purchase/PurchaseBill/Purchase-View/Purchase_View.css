@@ -723,9 +723,13 @@
 }
 
 .invoice_total_fld {
-  max-width: 200px;
+  display: inline-block;
   min-width: 200px;
+  width: auto;
+  max-width: none;
+  white-space: nowrap;
 }
+
 
 @media (max-width: 375px) {
   .main_header_txt {

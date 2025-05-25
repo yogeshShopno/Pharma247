@@ -202,7 +202,7 @@ const Addsale = () => {
   // Handle keyboard navigation (ArrowUp, ArrowDown, Enter)
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!ItemSaleList?.sales_item?.length) return;
+      if (!ItemSaleList?.sales_item?.length || isVisible) return;
 
       const isInputFocused = document.activeElement.tagName === "INPUT";
       if (isInputFocused) return;
@@ -732,10 +732,18 @@ const Addsale = () => {
       setUnit("");
       setBatch("");
     }
+    tableRef1.current?.blur(); // <-- explicitly blur it
+
+    setSelectedIndex(0)
+    setSelectedEditItem(null);
+    setIsEditMode(false);
+    setSelectedEditItemId("");
+    setItemEditID(0);
 
     if (isVisible && value && !batch) {
-      const element = tableRef.current;
-      element.focus();
+      tableRef.current.focus();
+      if (!item) return; // Ensure the item is valid.
+
     }
   };
 
@@ -886,14 +894,7 @@ const Addsale = () => {
   const handleEditClick = (item) => {
     if (!item) return; // Ensure the item is valid.
 
-    // const existingItem = uniqueId.find((obj) => obj.id === item.id);
-    // if (!existingItem) {
-    //     setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-    //     setMaxQty(item.qty);
-    // } else {
-    //     setMaxQty(existingItem.qty);
-    // }
-    console.log(item);
+
 
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -1128,7 +1129,7 @@ const Addsale = () => {
                 history.push("/");
                 localStorage.clear();
               }
-            } catch (error) {}
+            } catch (error) { }
           };
         });
 
@@ -1553,7 +1554,7 @@ const Addsale = () => {
     data.append("gst", gst ? gst : "");
     data.append("mrp", mrp ? mrp : "");
     data.append("unit", unit ? unit : "");
-    data.append("random_number",Number(localStorage.getItem("RandomNumber")) || "");
+    data.append("random_number", Number(localStorage.getItem("RandomNumber")) || "");
     data.append("batch", batch ? batch : "");
     data.append("location", loc ? loc : "");
     data.append("base", base ? base : "");
@@ -1575,16 +1576,16 @@ const Addsale = () => {
     try {
       const response = isEditMode
         ? await axios.post("sales-item-edit?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : await axios.post("sales-item-add", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       setTotalAmount(0);
       saleItemList();
       setUnit("");
@@ -1605,7 +1606,7 @@ const Addsale = () => {
       // if (quantityDifference === 1) {
       //     bulkOrderData();
       // }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const bulkOrderData = async () => {
@@ -1970,7 +1971,7 @@ const Addsale = () => {
                         fontSize: "17px",
                         color: "var(--color1)",
                         whiteSpace: "nowrap",
-                        
+
                       }}
                     >
                       Customer Mobile / Name{" "}
@@ -2346,10 +2347,10 @@ const Addsale = () => {
                                         }}
                                         sx={{
                                           "& .MuiInputBase-input::placeholder":
-                                            {
-                                              fontSize: "1rem",
-                                              color: "black",
-                                            },
+                                          {
+                                            fontSize: "1rem",
+                                            color: "black",
+                                          },
                                         }}
                                       />
                                     )}
@@ -2400,12 +2401,11 @@ const Addsale = () => {
                                           <>
                                             {batchListData.map((item) => (
                                               <tr
-                                                className={`cursor-pointer saleTable custom-hover ${
-                                                  highlightedRowId ===
-                                                  String(item.id)
+                                                className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                                    String(item.id)
                                                     ? "highlighted-row"
                                                     : ""
-                                                }`}
+                                                  }`}
                                                 key={item.id}
                                                 data-id={item.id}
                                                 tabIndex={0}
@@ -2644,9 +2644,8 @@ const Addsale = () => {
                             handleEditClick(item);
                             setSelectedIndex(index);
                           }}
-                          className={`item-List  cursor-pointer ${
-                            index === selectedIndex ? "highlighted-row" : ""
-                          }`}
+                          className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                            }`}
                         >
                           <td
                             style={{
@@ -2887,7 +2886,7 @@ const Addsale = () => {
                         size="lg"
                         position="bottom-center"
                         className="modal_amount"
-                        // style={{ width: "50%" }}
+                      // style={{ width: "50%" }}
                       >
                         <div
                           style={{
@@ -3167,15 +3166,15 @@ const Addsale = () => {
           </DialogContent>
           <DialogActions>
             <div className="px-3 pb-3">
-                <Button
-                  autoFocus
-                  variant="contained"
-                  disabled={!(doctorName && clinic)}
-                  color="success"
-                  onClick={AddDoctorRecord}
-                >
-                  Save
-                </Button>
+              <Button
+                autoFocus
+                variant="contained"
+                disabled={!(doctorName && clinic)}
+                color="success"
+                onClick={AddDoctorRecord}
+              >
+                Save
+              </Button>
             </div>
           </DialogActions>
         </Dialog>
@@ -3444,9 +3443,8 @@ const Addsale = () => {
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            IsDelete ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -3508,9 +3506,8 @@ const Addsale = () => {
         id="modal"
         value={openModal}
         style={{ zIndex: 9999 }}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          openModal ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+          }`}
       >
         <div />
 

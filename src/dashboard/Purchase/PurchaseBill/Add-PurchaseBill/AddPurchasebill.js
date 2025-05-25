@@ -103,6 +103,7 @@ const AddPurchaseBill = () => {
   const [IsDelete, setIsDelete] = useState(false);
 
   const [ItemId, setItemId] = useState(0);
+  const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
 
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -374,7 +375,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-       generateRandomNumber();
+      generateRandomNumber();
 
       handleBarcode();
     }, 100);
@@ -652,7 +653,7 @@ const AddPurchaseBill = () => {
               );
               data.append(
                 "weightage",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit) || 1 
+                Number(response?.data?.data[0]?.batch_list[0]?.unit) || 1
               );
               data.append(
                 "batch_number",
@@ -1134,11 +1135,11 @@ const AddPurchaseBill = () => {
     } else {
       if (barcode) {
         data.append("item_id", ItemId);
-        data.append("unit_id", Number(0)||1);
+        data.append("unit_id", Number(0) || 1);
       } else {
         data.append("item_id", value.id);
 
-        data.append("unit_id", Number(value.unit_id)||1);
+        data.append("unit_id", Number(value.unit_id) || 1);
       }
     }
 
@@ -2100,14 +2101,20 @@ const AddPurchaseBill = () => {
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
                     onKeyDown={(e) => {
-
                       if (billNo) {
                         handleKeyDown(e, 1);
-                      } else if (e.key === 'Tab' || e.key === 'Enter') {
-                        e.preventDefault();
-                        toast.error("Bill NO is Required");
+                      } else {
+                        const isTab = e.key === 'Tab' && !e.shiftKey;
+                        const isEnter = e.key === 'Enter';
+
+                        if (isEnter || isTab) {
+                          e.preventDefault();
+                          toast.error("Bill NO is Required");
+                        }
+                        // Shift + Tab is allowed by default; do not prevent it
                       }
                     }}
+
                   />
                 </div>
 
@@ -2153,7 +2160,7 @@ const AddPurchaseBill = () => {
                     // onKeyDown={handleKeyDown}
                     sx={{ width: "250px" }}
                     onChange={(e) => {
-                             generateRandomNumber();
+                      generateRandomNumber();
 
                       setBarcode(e.target.value);
 
@@ -2250,6 +2257,10 @@ const AddPurchaseBill = () => {
                                   size="small"
                                   onChange={handleOptionChange}
                                   onInputChange={handleInputChange}
+
+                                  open={autoCompleteOpen}
+                                  onOpen={() => setAutoCompleteOpen(true)}
+                                  onClose={() => setAutoCompleteOpen(false)}
                                   // inputRef={searchItemField}
                                   getOptionLabel={(option) =>
                                     `${option.iteam_name} `
@@ -2274,37 +2285,52 @@ const AddPurchaseBill = () => {
                                       variant="outlined"
                                       autoComplete="off"
                                       sx={{ width: 350, padding: 0 }}
-                                      // autoFocus={focusedField === "item"}
                                       {...params}
-                                      // disabled={isAutocompleteDisabled}
-                                      disableOpenOnFocus
                                       value={searchItem?.iteam_name}
-                                      inputRef={(el) =>
-                                        (inputRefs.current[2] = el)
-                                      }
+                                      inputRef={(el) => (inputRefs.current[2] = el)}
                                       inputProps={{
                                         ...params.inputProps,
                                         style: { textTransform: 'uppercase' },
                                       }}
                                       onKeyDown={(e) => {
-                                        if (
-                                          !searchItem &&
-                                          (e.key === "ArrowDown" ||
-                                            e.key === "ArrowUp")
-                                        ) {
-                                          tableRef.current.focus();
+                                        const { key, shiftKey } = e;
+                                        const isTab = key === "Tab";
+                                        const isShiftTab = isTab && shiftKey;
+                                        const isEnter = key === "Enter";
+                                        const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                                          setTimeout(() => {
-                                            document.activeElement.blur(); // Removes focus from the input
-                                          }, 0);
-                                        } else if (
-                                          searchItem &&
-                                          selectedOption
-                                        ) {
-                                          handleKeyDown(e, 2);
+                                        if (isShiftTab) return;
+
+                                        if (!searchItem && isArrowKey) {
+                                          tableRef.current.focus();
+                                          setTimeout(() => document.activeElement.blur(), 0);
+                                          return;
+                                        }
+
+                                        // If dropdown is open, allow Enter/Tab without validation (user is selecting)
+                                        if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                        // When dropdown is closed and Enter or Tab pressed, validate
+                                        if (isEnter || isTab) {
+                                          if (!selectedOption) {
+                                            e.preventDefault();
+                                            setTimeout(() => toast.error("Please select an option before continuing"), 100);
+                                          } else {
+                                            setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                          }
+                                          return;
+                                        }
+
+                                        // If already selected and typing, move focus to next input (optional)
+                                        if (searchItem && selectedOption) {
+                                          inputRefs?.current[3].focus();
                                         }
                                       }}
+
+
+
                                     />
+
                                   )}
                                 />
                               )}
@@ -2330,20 +2356,28 @@ const AddPurchaseBill = () => {
                               }}
 
                               onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
-                                if (unit) {
-                                  handleKeyDown(e, 3);
-                                } else if (e.key === 'Tab' || e.key === 'Enter') {
-                                  e.preventDefault();
-                                  toast.error("Unit is Required");
-                                }
+  const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
+  const isTab = e.key === "Tab";
+  const isShiftTab = isTab && e.shiftKey;
+  const isEnter = e.key === "Enter";
 
-                              }}
-                              inputRef={(el) => (inputRefs.current[3] = el)}
+  if (isInvalidKey) {
+    e.preventDefault();
+    return;
+  }
+
+  // Allow Shift+Tab to move backward regardless of unit
+  if (isShiftTab) return;
+
+  if (unit) {
+    handleKeyDown(e, 3);
+  } else if (isTab || isEnter) {
+    e.preventDefault();
+    toast.error("Unit is Required");
+  }
+}}
+inputRef={(el) => (inputRefs.current[3] = el)}
+
                             />
 
                           </td>
@@ -2386,40 +2420,46 @@ const AddPurchaseBill = () => {
                               placeholder="MM/YY"
                               inputRef={(el) => (inputRefs.current[5] = el)}
                               onKeyDown={(e) => {
-                                const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+  const isTab = e.key === 'Tab';
+  const isEnter = e.key === 'Enter';
+  const isShiftTab = isTab && e.shiftKey;
+  const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
 
-                                if (e.key === 'Tab' || e.key === 'Enter') {
-                                  if (!expiryDate) {
-                                    e.preventDefault();
-                                    toast.error("Expiry is required");
-                                    return;
-                                  }
+  // Allow Shift+Tab to move backward
+  if (isShiftTab) return;
 
-                                  if (!expiryDateRegex.test(expiryDate)) {
-                                    e.preventDefault();
-                                    toast.error("Expiry must be in MM/YY format");
-                                    return;
-                                  }
+  if (isTab || isEnter) {
+    if (!expiryDate) {
+      e.preventDefault();
+      toast.error("Expiry is required");
+      return;
+    }
 
-                                  const [month, year] = expiryDate.split('/').map(Number);
-                                  const expiry = new Date(`20${year}`, month - 1, 1);
-                                  const now = new Date();
-                                  const sixMonthsLater = new Date();
-                                  sixMonthsLater.setMonth(now.getMonth() + 6);
+    if (!expiryDateRegex.test(expiryDate)) {
+      e.preventDefault();
+      toast.error("Expiry must be in MM/YY format");
+      return;
+    }
 
-                                  if (expiry < now) {
-                                    e.preventDefault();
-                                    toast.error("Product has expired");
-                                  } else if (expiry < sixMonthsLater) {
-                                    e.preventDefault();
-                                    toast.warning("Product will expire within 6 months");
-                                    handleKeyDown(e, 5);
-                                  } else {
-                                    handleKeyDown(e, 5);
-                                  }
-                                }
-                                // Allow all other keys (Backspace, arrows, etc.)
-                              }}
+    const [month, year] = expiryDate.split('/').map(Number);
+    const expiry = new Date(`20${year}`, month - 1, 1);
+    const now = new Date();
+    const sixMonthsLater = new Date();
+    sixMonthsLater.setMonth(now.getMonth() + 6);
+
+    if (expiry < now) {
+      e.preventDefault();
+      toast.error("Product has expired");
+    } else if (expiry < sixMonthsLater) {
+      e.preventDefault();
+      toast.warning("Product will expire within 6 months");
+      handleKeyDown(e, 5);
+    } else {
+      handleKeyDown(e, 5);
+    }
+  }
+}}
+
 
 
                             />
@@ -2441,23 +2481,32 @@ const AddPurchaseBill = () => {
                                 }
                               }}
                               onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." && e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
+  const isTab = e.key === "Tab";
+  const isShiftTab = isTab && e.shiftKey;
 
-                                if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
-                                  e.preventDefault();
-                                  toast.error("MRP is required and must be greater than 0");
-                                  return;
-                                }
+  // Allow Shift+Tab to navigate backward without validation
+  if (isShiftTab) return;
 
-                                handleKeyDown(e, 6);
-                              }}
+  // Prevent invalid characters and multiple decimals
+  if (
+    ["e", "E", "+", "-", ","].includes(e.key) ||
+    (e.key === "." && e.target.value.includes("."))
+  ) {
+    e.preventDefault();
+  }
 
-                              inputRef={(el) => (inputRefs.current[6] = el)}
+  // Validate MRP on Enter or Tab if not provided or equals 0
+  if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
+    e.preventDefault();
+    toast.error("MRP is required and must be greater than 0");
+    return;
+  }
+
+  // Proceed with further handling
+  handleKeyDown(e, 6);
+}}
+inputRef={(el) => (inputRefs.current[6] = el)}
+
                             />
                           </td>
                           <td>
@@ -2478,20 +2527,21 @@ const AddPurchaseBill = () => {
                                 setQty(value ? Number(value) : "");
                               }}
                               inputRef={(el) => (inputRefs.current[7] = el)}
-                              onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
+                         onKeyDown={(e) => {
+  const invalidKeys = ["e", "E", ".", "+", "-", ","];
+  const isEnter = e.key === "Enter";
 
-                                if ((e.key === "Enter")) {
-                                  e.preventDefault();
-                                  handleKeyDown(e, 7);
+  if (invalidKeys.includes(e.key)) {
+    e.preventDefault();
+    return;
+  }
 
-                                }
+  if (isEnter) {
+    e.preventDefault();
+    handleKeyDown(e, 7);
+  }
+}}
 
-                              }}
 
 
                             />
@@ -2511,19 +2561,18 @@ const AddPurchaseBill = () => {
                                 setFree(value ? Number(value) : "");
                               }}
                               onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", ".", "+", "-", ","].includes(e.key)
-                                ) {
-                                  e.preventDefault();
-                                }
+  const invalidKeys = ["e", "E", ".", "+", "-", ","];
+  if (invalidKeys.includes(e.key)) {
+    e.preventDefault();
+    return;
+  }
 
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  handleKeyDown(e, 8);
+  if (e.key === "Enter") {
+    e.preventDefault();
+    handleKeyDown(e, 8);
+  }
+}}
 
-                                }
-
-                              }}
 
                               inputRef={(el) => (inputRefs.current[8] = el)}
                             />
@@ -2546,29 +2595,38 @@ const AddPurchaseBill = () => {
                               }}
 
                               onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." && e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
+  const isTab = e.key === "Tab";
+  const isEnter = e.key === "Enter";
+  const isShiftTab = isTab && e.shiftKey;
+  const invalidKeys = ["e", "E", "+", "-", ","];
 
-                                if (e.key === "Enter" || e.key === "Tab") {
-                                  if (!ptr || ptr === 0) {
-                                    e.preventDefault();
-                                    toast.error("PTR is required and must be greater than 0");
-                                    return;
-                                  }
+  // Prevent invalid characters and multiple decimals
+  if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
+    e.preventDefault();
+    return;
+  }
 
-                                  if (Number(mrp) && Number(ptr) >= Number(mrp)) {
-                                    e.preventDefault();
-                                    toast.error("PTR must be less than MRP");
-                                    return;
-                                  }
-                                }
+  // Allow Shift+Tab to move backward
+  if (isShiftTab) return;
 
-                                handleKeyDown(e, 9);
-                              }}
+  if (isEnter || isTab) {
+    if (!ptr || ptr === 0) {
+      e.preventDefault();
+      toast.error("PTR is required and must be greater than 0");
+      return;
+    }
+
+    if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+      e.preventDefault();
+      toast.error("PTR must be less than MRP");
+      return;
+    }
+  }
+
+  // Proceed with the next field
+  handleKeyDown(e, 9);
+}}
+
                               inputRef={(el) => (inputRefs.current[9] = el)}
                             />
                           </td>
@@ -2582,22 +2640,26 @@ const AddPurchaseBill = () => {
                               type="number"
                               value={disc}
                               onKeyDown={(e) => {
-                                if (
-                                  ["e", "E", "+", "-", ","].includes(e.key) ||
-                                  (e.key === "." &&
-                                    e.target.value.includes("."))
-                                ) {
-                                  e.preventDefault();
-                                }
-                                handleKeyDown(e, 10);
-                              }}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (Number(value) > 99) {
-                                  e.target.value = 99;
-                                }
-                                handleSchAmt(e);
-                              }}
+  const invalidKeys = ["e", "E", "+", "-", ","];
+  if (
+    invalidKeys.includes(e.key) ||
+    (e.key === "." && e.target.value.includes("."))
+  ) {
+    e.preventDefault();
+  }
+
+  handleKeyDown(e, 10);
+}}
+
+onChange={(e) => {
+  let value = Number(e.target.value);
+  if (value > 99) {
+    value = 99;
+    e.target.value = 99; // Optional: reflects corrected value immediately
+  }
+  handleSchAmt({ ...e, target: { ...e.target, value } });
+}}
+
                               inputRef={(el) => (inputRefs.current[10] = el)}
                             />
                           </td>
@@ -2632,24 +2694,31 @@ const AddPurchaseBill = () => {
                               }}
 
                               onKeyDown={(e) => {
-                                if ((e.key === "Enter" || e.key === "Tab")) {
-                                  const allowedGST = [0, 5, 12, 18, 28];
+  const isTab = e.key === "Tab";
+  const isEnter = e.key === "Enter";
+  const isShiftTab = isTab && e.shiftKey;
 
-                                  if (!gst && gst !== 0) {
-                                    e.preventDefault();
-                                    toast.error("GST is required");
-                                    return;
-                                  }
+  if (isShiftTab) return;
 
-                                  if (!allowedGST.includes(Number(gst))) {
-                                    e.preventDefault();
-                                    toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
-                                    return;
-                                  }
-                                }
+  if (isEnter || isTab) {
+    const allowedGST = [0, 5, 12, 18, 28];
 
-                                handleKeyDown(e, 11);
-                              }}
+    if (gst === "" || gst === null || gst === undefined) {
+      e.preventDefault();
+      toast.error("GST is required");
+      return;
+    }
+
+    if (!allowedGST.includes(Number(gst))) {
+      e.preventDefault();
+      toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
+      return;
+    }
+  }
+
+  handleKeyDown(e, 11);
+}}
+
 
                             />
                           </td>
@@ -2669,14 +2738,16 @@ const AddPurchaseBill = () => {
                               }}
                               inputRef={(el) => (inputRefs.current[12] = el)}
                               onKeyDown={async (e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  const isValid = await handleAddButtonClick();
-                                  if (isValid) {
-                                    handleKeyDown(e, 1); // move to next field only after successful add
-                                  }
-                                }
-                              }}
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const isValid = await handleAddButtonClick();
+
+    if (isValid) {
+      handleKeyDown(e, 1); // Move to next field only if add is successful
+    }
+  }
+}}
+
 
                             />
                           </td>

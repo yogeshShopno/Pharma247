@@ -711,7 +711,7 @@ const Addsale = () => {
     }
     tableRef1.current?.blur(); // <-- explicitly blur it
 
-    setSelectedIndex(0)
+    // setSelectedIndex(0)
     setSelectedEditItem(null);
     setIsEditMode(false);
     setSelectedEditItemId("");

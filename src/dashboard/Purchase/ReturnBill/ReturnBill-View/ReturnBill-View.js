@@ -525,7 +525,7 @@ const ReturnView = () => {
                         alignItems: "center",
                       }}
                     >
-                      {tableData?.net_amount ? tableData?.net_amount : 0}
+                      {tableData?.due_amount ? tableData?.due_amount : 0}
                       <FaCaretUp />
                     </span>
                   </div>

@@ -652,7 +652,7 @@ const ReturnView = () => {
                             color: "var(--COLOR_UI_PHARMACY)",
                           }}
                         >
-                          {tableData?.net_amount ? tableData?.net_amount : 0}
+                          {tableData?.due_amount ? tableData?.due_amount : 0}
                         </span>
                       </div>
                     </div>

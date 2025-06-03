@@ -79,7 +79,7 @@ const DistributerList = () => {
   const [distributerId, setDistributerId] = useState(null);
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
   const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
+    (currentPage) * rowsPerPage,
     currentPage * rowsPerPage
   );
   const [errors, setErrors] = useState({});
@@ -148,14 +148,12 @@ const DistributerList = () => {
     setTableData(sortedData);
   };
 
-const handleSearchChange = (index, value) => {
-  const updatedSearchTerms = [...searchTerms];
-  updatedSearchTerms[index] = value;
-  setSearchTerms(updatedSearchTerms);
-
-  // Call search with corrected args
-  DistributorSearch(updatedSearchTerms);
-};
+  const handleSearchChange = (index, value) => {
+    const updatedSearchTerms = [...searchTerms];
+    updatedSearchTerms[index] = value;
+    setSearchTerms(updatedSearchTerms);
+    DistributorSearch(updatedSearchTerms); 
+  };
 
 
   const filteredList = paginatedData.filter((row) => {
@@ -170,7 +168,7 @@ const handleSearchChange = (index, value) => {
       setMobileNo(value);
     }
   };
-  
+
   useEffect(() => {
     DistList();
   }, []);
@@ -276,62 +274,62 @@ const handleSearchChange = (index, value) => {
   };
 
   const DistributorSearch = async (searchTermsState = searchTerms) => {
-  let data = new FormData();
+    let data = new FormData();
 
-  searchTermsState.forEach((term, index) => {
-    if (term.trim()) {
-      data.append(searchKeys[index], term.trim());
-    }
-  });
-
-  setIsLoading(true);
-  try {
-    const response = await axios.post("list-distributer?", data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    searchTermsState.forEach((term, index) => {
+      if (term.trim()) {
+        data.append(searchKeys[index], term.trim());
+      }
     });
-    setTableData(response.data.data);
-  } catch (error) {
-    console.error("API error:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post("list-distributer?", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTableData(response.data.data);
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   const DistList = async (page = 1, searchTermsState = searchTerms) => {
-  let data = new FormData();
-  data.append("page", page);
+    let data = new FormData();
+    data.append("page", page);
 
-  // Add search params
-  searchTermsState.forEach((term, index) => {
-    if (term.trim()) {
-      data.append(searchKeys[index], term.trim());
-    }
-  });
-
-  const params = { page };
-
-  setIsLoading(true);
-  try {
-    const response = await axios.post("list-distributer?", data, {
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    // Add search params
+    searchTermsState.forEach((term, index) => {
+      if (term.trim()) {
+        data.append(searchKeys[index], term.trim());
+      }
     });
-    setTableData(response.data.data);
-  } catch (error) {
-    console.error("API error:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    const params = { page };
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post("list-distributer?", data, {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTableData(response.data.data);
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
 
-  
+
   const exportToExcel = async () => {
     let data = new FormData();
     setIsLoading(true);
@@ -518,6 +516,11 @@ const handleSearchChange = (index, value) => {
                             onChange={(e) =>
                               handleSearchChange(index, e.target.value)
                             }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault(); // prevent Enter from submitting
+                              }
+                            }}
                           />
                         </div>
                       </th>
@@ -600,8 +603,8 @@ const handleSearchChange = (index, value) => {
               <button
                 onClick={handlePrevious}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage === 1}
               >
@@ -640,8 +643,8 @@ const handleSearchChange = (index, value) => {
               <button
                 onClick={handleNext}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={filteredList.length === 0}
               >

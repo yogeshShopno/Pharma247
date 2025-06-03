@@ -60,6 +60,7 @@ const debounce = (func, delay) => {
 let debounceTimeout;
 
 const AddPurchaseBill = () => {
+  const timeoutRef = useRef(null);
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalMargin, setTotalMargin] = useState(0);
   const [marginNetProfit, setMarginNetProfit] = useState(0);
@@ -205,8 +206,9 @@ const AddPurchaseBill = () => {
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
-    const handleTableFocus = () => {setAutocompleteDisabled(false);
-          setAutoCompleteOpen(false); // ✅ Close dropdown when table is focused
+    const handleTableFocus = () => {
+      setAutocompleteDisabled(false);
+      setAutoCompleteOpen(false); // ✅ Close dropdown when table is focused
 
     }
 
@@ -1940,45 +1942,55 @@ const AddPurchaseBill = () => {
                 Add Item
               </Button>
 
-              <Button
-                variant="contained"
-                style={{ background: "var(--color1)" }}
-                onClick={() => setIsOpen(!isOpen)}
-                ref={submitButtonRef}
-                onMouseEnter={() => setIsOpen(true)}
-              >
-                Save
-              </Button>
-            </div>
-            {isOpen && (
               <div
-                className="absolute right-0 top-32 w-32 bg-white shadow-lg user-icon mr-4"
-                onMouseLeave={() => setIsOpen(false)} // 🔒 Close on mouse exit
+                className="relative inline-block"
+                onMouseEnter={() => {
+                  clearTimeout(timeoutRef.current);
+                  setIsOpen(true);
+                }}
+                onMouseLeave={() => {
+                  timeoutRef.current = setTimeout(() => {
+                    setIsOpen(false);
+                  }, 200); // 200ms delay before closing
+                }}
               >
-                <ul className="transition-all">
-                  <li
-                    onClick={() => {
-                      setBillSaveDraft("1");
-                      handleSubmit("1");
-                    }}
-                    className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
-                  >
-                    <SaveIcon />
-                    Save
-                  </li>
-                  <li
-                    onClick={() => {
-                      setBillSaveDraft("0");
-                      handleSubmit("0");
-                    }}
-                    className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
-                  >
-                    <SaveAsIcon />
-                    Draft
-                  </li>
-                </ul>
+                <Button
+                  variant="contained"
+                  style={{ background: "var(--color1)" ,padding: "10px 24px",}}
+                  onClick={() => setIsOpen(!isOpen)}
+                  ref={submitButtonRef}
+                >
+                  Save
+                </Button>
+
+                {isOpen && (
+                  <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon ">
+                    <ul className="transition-all">
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("1");
+                          handleSubmit("1");
+                        }}
+                        className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                      >
+                        <SaveIcon />
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("0");
+                          handleSubmit("0");
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                      >
+                        <SaveAsIcon />
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
           <div
             className="row border-b border-dashed"
@@ -2165,7 +2177,7 @@ const AddPurchaseBill = () => {
 
               {/*<====================================================================== add Item field =====================================================================> */}
 
-              <div className="overflow-x-auto w-full">
+              <div className="overflow-x-auto w-full scroll-two">
                 <table className="customtable  w-full  border-collapse custom-table">
                   <thead>
                     <tr>

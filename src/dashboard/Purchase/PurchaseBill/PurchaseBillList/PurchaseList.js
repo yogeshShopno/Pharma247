@@ -66,7 +66,7 @@ const Purchasebill = () => {
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const [isLoading, setIsLoading] = useState(false);
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
+  const paginatedData = tableData.slice(  
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );

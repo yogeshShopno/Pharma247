@@ -205,7 +205,11 @@ const AddPurchaseBill = () => {
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
-    const handleTableFocus = () => setAutocompleteDisabled(false);
+    const handleTableFocus = () => {setAutocompleteDisabled(false);
+          setAutoCompleteOpen(false); // ✅ Close dropdown when table is focused
+
+    }
+
     const handleTableBlur = () => setAutocompleteDisabled(true);
 
     if (tableRef.current) {
@@ -1948,7 +1952,7 @@ const AddPurchaseBill = () => {
             </div>
             {isOpen && (
               <div
-                className="absolute right-0 top-36 w-32 bg-white shadow-lg user-icon mr-4"
+                className="absolute right-0 top-32 w-32 bg-white shadow-lg user-icon mr-4"
                 onMouseLeave={() => setIsOpen(false)} // 🔒 Close on mouse exit
               >
                 <ul className="transition-all">
@@ -2311,6 +2315,7 @@ const AddPurchaseBill = () => {
                                         if (isShiftTab) return;
 
                                         if (!searchItem && isArrowKey) {
+
                                           tableRef.current.focus();
                                           setTimeout(
                                             () => document.activeElement.blur(),

@@ -226,7 +226,6 @@ const AddPurchaseBill = () => {
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!ItemPurchaseList?.item?.length) return; // Prevent error if list is empty
-
       const key = e.key;
 
       // Check if any input field inside inputRefs is focused
@@ -241,11 +240,9 @@ const AddPurchaseBill = () => {
         setSelectedIndex((prev) =>
           prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
         );
-        setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
         // Move selection up
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-        setAutoCompleteOpen(false)
 
       } else if (key === "Enter" && selectedIndex !== -1) {
         if (!isInputFocused) {
@@ -262,8 +259,6 @@ const AddPurchaseBill = () => {
             }
           }, 100); // 100ms delay ensures re-render completes
         }
-        setAutoCompleteOpen(false)
-
       }
     };
 
@@ -296,6 +291,7 @@ const AddPurchaseBill = () => {
           break;
         case "m":
           removeItem();
+          setAutoCompleteOpen(false)
           setSelectedEditItemId(null);
           setSelectedIndex(-1);
           setSearchItem("");
@@ -683,8 +679,8 @@ const AddPurchaseBill = () => {
                   response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
                 )
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+                  )
                   : 0
               );
               data.append(
@@ -697,16 +693,16 @@ const AddPurchaseBill = () => {
                 "discount",
                 Number(response?.data?.data[0]?.batch_list[0]?.discount)
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.scheme_account
+                  )
                   : 0
               );
               data.append(
                 "scheme_account",
                 Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
                   ? Number(
-                      response?.data?.data[0]?.batch_list[0]?.scheme_account
-                    )
+                    response?.data?.data[0]?.batch_list[0]?.scheme_account
+                  )
                   : 0
               );
               data.append(
@@ -1167,16 +1163,16 @@ const AddPurchaseBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("item-purchase-update?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : await axios.post("item-purchase", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       setId(null);
       setSelectedOption(null);
       setSearchItem("");
@@ -1636,6 +1632,7 @@ const AddPurchaseBill = () => {
   /*<============================================================================== Remove Item  ==========================================================================> */
 
   const removeItem = () => {
+    setAutoCompleteOpen(false);
     setSelectedOption(null);
     setSelectedEditItemId(null);
     setSelectedIndex(-1);
@@ -2266,6 +2263,10 @@ const AddPurchaseBill = () => {
                                   open={autoCompleteOpen}
                                   onOpen={() => setAutoCompleteOpen(true)}
                                   onClose={() => setAutoCompleteOpen(false)}
+                                  onBlur={() => {
+                                    setAutoCompleteOpen(false);
+                                  }}
+
                                   // inputRef={searchItemField}
                                   getOptionLabel={(option) =>
                                     `${option.iteam_name} `
@@ -2275,13 +2276,11 @@ const AddPurchaseBill = () => {
                                     <ListItem {...props}>
                                       <ListItemText
                                         primary={`${option.iteam_name}`}
-                                        secondary={` ${
-                                          option.stock === 0
-                                            ? `Unit: ${option.weightage}`
-                                            : `Pack: ${option.pack}`
-                                        } | MRP: ${option.mrp}  | Location: ${
-                                          option.location
-                                        }  | Current Stock: ${option.stock}`}
+                                        secondary={` ${option.stock === 0
+                                          ? `Unit: ${option.weightage}`
+                                          : `Pack: ${option.pack}`
+                                          } | MRP: ${option.mrp}  | Location: ${option.location
+                                          }  | Current Stock: ${option.stock}`}
                                       />
                                     </ListItem>
                                   )}
@@ -2876,9 +2875,8 @@ const AddPurchaseBill = () => {
                             setSelectedIndex(index); // Ensure clicking sets the selected index
                             handleEditClick(item);
                           }}
-                          className={`item-List flex justify-between cursor-pointer ${
-                            index === selectedIndex ? "highlighted-row" : ""
-                          }`}
+                          className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                            }`}
                         >
                           <td
                             style={{
@@ -3060,7 +3058,7 @@ const AddPurchaseBill = () => {
               size="lg"
               position="bottom-center"
               className="modal_amount"
-              // style={{ width: "50%" }}
+            // style={{ width: "50%" }}
             >
               <div
                 style={{
@@ -3134,8 +3132,8 @@ const AddPurchaseBill = () => {
                     {roundOffAmount === "0.00"
                       ? roundOffAmount
                       : roundOffAmount < 0
-                      ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                      : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                        ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                        : `${Math.abs(roundOffAmount.toFixed(2))}`}
                   </span>
                 </div>
 
@@ -3196,7 +3194,7 @@ const AddPurchaseBill = () => {
                             onChange={handleSelectAll}
                             checked={
                               selectedRows.length ===
-                                purchaseReturnPending.length &&
+                              purchaseReturnPending.length &&
                               purchaseReturnPending.length > 0
                             }
                           />
@@ -3716,9 +3714,8 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            IsDelete ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -3783,9 +3780,8 @@ const AddPurchaseBill = () => {
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            isOpenBox ? "block" : "hidden"
-          }`}
+          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

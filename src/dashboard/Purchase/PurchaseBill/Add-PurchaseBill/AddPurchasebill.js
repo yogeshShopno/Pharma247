@@ -241,9 +241,12 @@ const AddPurchaseBill = () => {
         setSelectedIndex((prev) =>
           prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
         );
+        setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
         // Move selection up
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        setAutoCompleteOpen(false)
+
       } else if (key === "Enter" && selectedIndex !== -1) {
         if (!isInputFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
@@ -259,6 +262,8 @@ const AddPurchaseBill = () => {
             }
           }, 100); // 100ms delay ensures re-render completes
         }
+        setAutoCompleteOpen(false)
+
       }
     };
 
@@ -292,7 +297,7 @@ const AddPurchaseBill = () => {
         case "m":
           removeItem();
           setSelectedEditItemId(null);
-          setSelectedIndex(0);
+          setSelectedIndex(-1);
           setSearchItem("");
           setValue("");
           setTimeout(() => {
@@ -1637,7 +1642,6 @@ const AddPurchaseBill = () => {
     setSearchItem("");
     setId(null);
     setSelectedEditItem(null);
-    setSelectedEditItemId(0);
     setIsEditMode(false);
     setUnit("");
     setBatch("");
@@ -2345,9 +2349,9 @@ const AddPurchaseBill = () => {
                                         }
 
                                         // If already selected and typing, move focus to next input (optional)
-                                        if (searchItem && selectedOption) {
-                                          inputRefs?.current[3].focus();
-                                        }
+                                        // if (searchItem && selectedOption) {
+                                        //   inputRefs?.current[3].focus();
+                                        // }
                                       }}
                                     />
                                   )}

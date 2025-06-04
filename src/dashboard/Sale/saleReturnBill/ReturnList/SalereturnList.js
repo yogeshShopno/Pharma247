@@ -37,13 +37,14 @@ const columns = [
   { id: "payment_name", label: "Payment Mode", minWidth: 150 },
   { id: "net_amount", label: "Bill Amount", minWidth: 150 },
 ];
+
 const SalereturnList = () => {
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const [tableData, setTableData] = useState([]);
   const permissions = usePermissions();
-  const rowsPerPage = 10;
+  const rowsPerPage = 10; // Changed from 1 to 10 for proper pagination
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [sortConfig, setSortConfig] = useState({
@@ -52,11 +53,10 @@ const SalereturnList = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [IsDelete, setIsDelete] = useState(false);
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const [totalRecords, setTotalRecords] = useState(0); // Added for server-side pagination
+  const totalPages = Math.ceil(totalRecords / rowsPerPage); // Fixed to use totalRecords
+  // Remove client-side pagination slice since API handles pagination
+  const paginatedData = tableData;
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
@@ -66,33 +66,43 @@ const SalereturnList = () => {
   const [saleId, setSaleId] = useState(null);
 
   useEffect(() => {
-    saleReturnBillList();
-    localStorage.setItem("SaleRetunBillNo", tableData.length + 1);
-  }, [tableData.length + 1]);
+    saleReturnBillList(1); // Pass initial page
+  }, []); // Fixed dependency array to prevent infinite loops
 
-  const saleReturnBillList = async (currentPage) => {
+  const saleReturnBillList = async (page = 1) => {
     setIsLoading(true);
     let data = new FormData();
-    data.append("page", currentPage);
+    data.append("page", page);
+    data.append("per_page", rowsPerPage); // Send per_page to API
+
     try {
       await axios
-        .post("sales-return-list?", data, {
+        .post("sales-return-list", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          setTableData(response.data.data);
+          setTableData(response.data.data || []);
+          setTotalRecords(response.data.total || response.data.data?.length || 0); // Set total records
+          setCurrentPage(page);
           setIsLoading(false);
+          // Update localStorage after getting total records
+          localStorage.setItem("SaleRetunBillNo", (response.data.total || response.data.data?.length || 0) + 1);
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
+      setTableData([]);
+      setTotalRecords(0);
     }
   };
 
   const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-    saleReturnBillList(pageNum);
+    if (pageNum >= 1 && pageNum <= totalPages && pageNum !== currentPage) {
+      setCurrentPage(pageNum);
+      saleReturnBillList(pageNum);
+    }
   };
 
   const handlePrevious = () => {
@@ -104,9 +114,11 @@ const SalereturnList = () => {
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    saleReturnBillList(newPage);
+    if (currentPage < totalPages) { // Fixed condition to check totalPages
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      saleReturnBillList(newPage);
+    }
   };
 
   const deleteOpen = (id) => {
@@ -135,21 +147,16 @@ const SalereturnList = () => {
     setSearchTerms(newSearchTerms);
   };
 
-  // const filteredList = paginatedData.filter(row => {
-  //     return searchTerms.every((term, index) => {
-  //         const value = row[columns[index].id];
-  //         return String(value).toLowerCase().includes(term.toLowerCase());
-  //     });
-  // });
+  // Apply filtering to server-paginated data
   const filteredList = tableData.filter((row) => {
     const billNo = row.bill_no ? row.bill_no.toLowerCase() : "";
     const billDate = row.bill_date ? row.bill_date.toLowerCase() : "";
     const customerName = row.customer_name
       ? row.customer_name.toLowerCase()
       : "";
-    const mobileNumber = String(row.phone_number).toLowerCase();
+    const mobileNumber = String(row.phone_number || "").toLowerCase(); // Added null check
     const paymentName = row.payment_name ? row.payment_name.toLowerCase() : "";
-    const netAmt = String(row.net_amount).toLowerCase();
+    const netAmt = String(row.net_amount || "").toLowerCase(); // Added null check
 
     const billNoSearchTerm = searchTerms[0]
       ? String(searchTerms[0]).toLowerCase()
@@ -157,18 +164,19 @@ const SalereturnList = () => {
     const billDateSearchTerm = searchTerms[1]
       ? String(searchTerms[1]).toLowerCase()
       : "";
-    const customerSearchTerm = searchTerms[2].toLowerCase();
+    const customerSearchTerm = searchTerms[2] ? searchTerms[2].toLowerCase() : ""; // Fixed null check
     const paymentSearchTerm = searchTerms[3]
       ? searchTerms[3].toLowerCase()
       : "";
     const netAmtSearchTerm = searchTerms[4]
       ? String(searchTerms[4]).toLowerCase()
       : "";
+
     return (
       (billNo.includes(billNoSearchTerm) || billNoSearchTerm === "") &&
       (billDate.includes(billDateSearchTerm) || billDateSearchTerm === "") &&
-      (customerName.includes(customerSearchTerm) ||
-        mobileNumber.includes(customerSearchTerm)) &&
+      ((customerName.includes(customerSearchTerm) ||
+        mobileNumber.includes(customerSearchTerm)) || customerSearchTerm === "") && // Fixed logic
       (paymentName.includes(paymentSearchTerm) || paymentSearchTerm === "") &&
       (netAmt.includes(netAmtSearchTerm) || netAmtSearchTerm === "")
     );
@@ -198,12 +206,12 @@ const SalereturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.success(response.data.meassage);
           setOpenAddPopUp(false);
-
           setIsLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -222,12 +230,12 @@ const SalereturnList = () => {
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
           toast.success(response.data.meassage);
-
           setIsLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -449,11 +457,10 @@ const SalereturnList = () => {
                 <div className="flex justify-center mt-4">
                   <button
                     onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === 1
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
-                    }`}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                      }`}
                     disabled={currentPage === 1}
                   >
                     Previous
@@ -490,12 +497,11 @@ const SalereturnList = () => {
                   )}
                   <button
                     onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === rowsPerPage
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
-                    }`}
-                    disabled={filteredList.length === 0}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                      ? "bg-gray-200 text-gray-700 "
+                      : "secondary-bg  text-white"
+                      }`}
+                    disabled={currentPage >= totalPages}
                   >
                     Next
                   </button>
@@ -503,9 +509,8 @@ const SalereturnList = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                    IsDelete ? "block" : "hidden"
-                  }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                    }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

@@ -54,7 +54,7 @@ const DoctorList = () => {
   const [city, setCity] = useState("");
   const [emailId, setEmailId] = useState("");
   const history = useHistory();
-  const rowsPerPage = 14;
+  const rowsPerPage = 10;
   const permissions = usePermissions();
   // const [searchDoctor, setSearchDoctor] = useState('')
 
@@ -313,7 +313,7 @@ const DoctorList = () => {
       if (
         fileType === "application/vnd.ms-excel" ||
         fileType ===
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         fileType === "text/csv"
       ) {
         setFile(selectedFile);
@@ -357,10 +357,12 @@ const DoctorList = () => {
     setTableData(sortedData);
   };
 
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
+  const handleSearchChange = (index, event) => {
+    if (event.key === "Enter") {
+      const newSearchTerms = [...searchTerms];
+      newSearchTerms[index] = event.target.value;
+      setSearchTerms(newSearchTerms);
+    }
   };
 
   useEffect(() => {
@@ -546,10 +548,8 @@ const DoctorList = () => {
                               id="filled-basic"
                               size="small"
                               sx={{ minWidth: "150px" }}
-                              value={searchTerms[index]}
-                              onChange={(e) =>
-                                handleSearchChange(index, e.target.value)
-                              }
+                              defaultvalue={searchTerms[index]}
+                              onKeyDown={(e) => handleSearchChange(index, e)}
                             />
                           </div>
                         </th>
@@ -653,11 +653,10 @@ const DoctorList = () => {
               >
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -694,12 +693,11 @@ const DoctorList = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
-                  disabled={filteredList.length === 0}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700 "
+                    : "secondary-bg text-white"
+                    }`}
+                  disabled={currentPage >= totalPages}
                 >
                   Next
                 </button>
@@ -927,7 +925,7 @@ const DoctorList = () => {
                           variant="outlined"
                         />
                       </div>
-                    </div> 
+                    </div>
                   </div>
                 </DialogContentText>
               </DialogContent>
@@ -937,7 +935,7 @@ const DoctorList = () => {
                   variant="contained"
                   style={{
                     backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white", 
+                    color: "white",
                   }}
                   onClick={AddDoctor}
                 >

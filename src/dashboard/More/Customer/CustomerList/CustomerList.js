@@ -50,7 +50,7 @@ const CustomerList = () => {
   const [city, setCity] = useState("");
   const [emailId, setEmailId] = useState("");
   const history = useHistory();
-  const rowsPerPage = 12;
+  const rowsPerPage = 10;
   const token = localStorage.getItem("token");
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
@@ -413,14 +413,19 @@ const CustomerList = () => {
       if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
       return 0;
     });
+
     setTableData(sortedData);
   };
 
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
+
+  const handleSearchChange = (index, event) => {
+    if (event.key === "Enter") {
+      const newSearchTerms = [...searchTerms];
+      newSearchTerms[index] = event.target.value;
+      setSearchTerms(newSearchTerms);
+    }
   };
+
 
   useEffect(() => {
     customerAllData();
@@ -665,7 +670,7 @@ sx={{
                                 </Button>
                             </div> */}
             </div>
-            <div className="overflow-x-auto mt-3 ">
+            <div className="overflow-x-auto mt-3 scroll-two">
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -692,10 +697,8 @@ sx={{
                             id="filled-basic"
                             size="small"
                             sx={{ width: "150px" }}
-                            value={searchTerms[index]}
-                            onChange={(e) =>
-                              handleSearchChange(index, e.target.value)
-                            }
+                            defaultvalue={searchTerms[index]}
+                            onKeyDown={(e) => handleSearchChange(index, e)}
                           />
                         </div>
                       </th>
@@ -852,11 +855,10 @@ sx={{
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -893,12 +895,11 @@ sx={{
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
-                disabled={filteredList.length === 0}
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700 "
+                  : "secondary-bg  text-white"
+                  }`}
+                disabled={currentPage >= totalPages}
               >
                 Next
               </button>
@@ -984,14 +985,14 @@ sx={{
 
           <Dialog
             open={openAddPopUp}
-            // sx={{
-            //     "& .MuiDialog-container": {
-            //         "& .MuiPaper-root": {
-            //             width: "36%",
-            //             maxWidth: "600px",  // Set your width here
-            //         },
-            //     },
-            // }}
+          // sx={{
+          //     "& .MuiDialog-container": {
+          //         "& .MuiPaper-root": {
+          //             width: "36%",
+          //             maxWidth: "600px",  // Set your width here
+          //         },
+          //     },
+          // }}
           >
             <div className="flex justify-center items-center h-auto">
               <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
@@ -1009,7 +1010,7 @@ sx={{
                     aria-label="close"
                     onClick={resetAddDialog}
                     className="text-gray-500"
-                    // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                  // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
                   >
                     <CloseIcon />
                   </IconButton>

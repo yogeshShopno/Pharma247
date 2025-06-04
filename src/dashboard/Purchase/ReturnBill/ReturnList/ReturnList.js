@@ -27,7 +27,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import CloseIcon from "@mui/icons-material/Close";
 const ReturnList = () => {
   const history = useHistory();
-  const rowsPerPage = 10;
+  const rowsPerPage = 1;
   const token = localStorage.getItem("token");
   const permissions = usePermissions();
 
@@ -45,11 +45,21 @@ const ReturnList = () => {
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
+  
+  // Filter data first, then calculate pagination
+  const filteredData = tableData.filter((row) => {
+    return searchTerms.every((term, index) => {
+      const value = row[columns[index].id];
+      return String(value).toLowerCase().includes(term.toLowerCase());
+    });
+  });
+  
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
+  
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
@@ -64,7 +74,7 @@ const ReturnList = () => {
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
   const [cnBillData, setCnBillData] = useState([]); // for current row
-    const [dueAmount, setDueAmount] = useState([]); // for current row
+  const [dueAmount, setDueAmount] = useState([]); // for current row
 
 
   const goIntoAdd = () => {
@@ -73,21 +83,20 @@ const ReturnList = () => {
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
-    ReturnBillList(pageNum);
   };
 
   const handlePrevious = () => {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      ReturnBillList(newPage);
     }
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    ReturnBillList(newPage);
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+    }
   };
 
   const deleteOpen = (Id) => {
@@ -185,6 +194,7 @@ const ReturnList = () => {
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = value;
     setSearchTerms(newSearchTerms);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   useEffect(() => {
@@ -215,6 +225,7 @@ const ReturnList = () => {
       console.error("API error:", error);
     }
   };
+
   const AllPDFGenerate = async () => {
     let data = new FormData();
     data.append(
@@ -337,7 +348,7 @@ const ReturnList = () => {
             style={{ borderColor: "var(--color2)" }}
           ></div>
           <div className="firstrow">
-            <div className="overflow-x-auto" style={{ overflowX: "auto" }}>
+            <div className="scroll-two" style={{ overflowX: "auto" }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -406,15 +417,15 @@ const ReturnList = () => {
                               isStatus && value === "Paid"
                                 ? "text-black"
                                 : isStatus && value === "Due"
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             const dueAmountClass =
                               isDueAmount && row.status === "Paid"
                                 ? "text-black"
                                 : isDueAmount && value > 0
-                                ? "text-red-500"
-                                : "text-black";
+                                  ? "text-red-500"
+                                  : "text-black";
 
                             return (
                               <td
@@ -426,9 +437,8 @@ const ReturnList = () => {
                                 className="text-lg"
                               >
                                 <span
-                                  className={`text ${
-                                    isStatus ? statusClass : ""
-                                  } ${isDueAmount ? dueAmountClass : ""}`}
+                                  className={`text ${isStatus ? statusClass : ""
+                                    } ${isDueAmount ? dueAmountClass : ""}`}
                                 >
                                   {column.format && typeof value === "number"
                                     ? column.format(value)
@@ -440,7 +450,7 @@ const ReturnList = () => {
 
                           <td>
                             {row.cn_amount_bills &&
-                            row.cn_amount_bills.length > 0 ? (
+                              row.cn_amount_bills.length > 0 ? (
                               <ul>
                                 <Button
                                   variant="contained"
@@ -459,7 +469,7 @@ const ReturnList = () => {
                                   View CN
                                 </Button>
 
-                                
+
                               </ul>
                             ) : (
                               <ul>
@@ -493,12 +503,12 @@ const ReturnList = () => {
                                 permissions,
                                 "purchase return bill delete"
                               ) && (
-                                <DeleteIcon
-                                  style={{ color: "#F31C1C" }}
-                                  className="delete-icon"
-                                  onClick={() => deleteOpen(row.id)}
-                                />
-                              )}
+                                  <DeleteIcon
+                                    style={{ color: "#F31C1C" }}
+                                    className="delete-icon"
+                                    onClick={() => deleteOpen(row.id)}
+                                  />
+                                )}
                             </div>
                           </td>
                         </tr>
@@ -540,7 +550,7 @@ const ReturnList = () => {
                 </IconButton>
 
                 <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
+                  <DialogContentText id="alert-dialog-description ">
                     <table className="w-full border-collapse custom-table">
                       <thead>
                         <tr>
@@ -591,11 +601,10 @@ const ReturnList = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -632,12 +641,11 @@ const ReturnList = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
-                disabled={filteredList.length === 0}
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700 "
+                  : "secondary-bg  text-white"
+                  }`}
+                disabled={currentPage >= totalPages}
               >
                 Next
               </button>
@@ -646,9 +654,8 @@ const ReturnList = () => {
             <div
               id="modal"
               value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                IsDelete ? "block" : "hidden"
-              }`}
+              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                }`}
             >
               <div />
               <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

@@ -46,10 +46,9 @@ const columns = [
 
 const Purchasebill = () => {
   const token = localStorage.getItem("token");
-  // const { id } = useParams();
   const permissions = usePermissions();
-
   const history = useHistory();
+  
   const [purchaseData, setPurchaseData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [id, setId] = useState(null);
@@ -63,20 +62,18 @@ const Purchasebill = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(subDays(new Date(), 15));
   const [endDate, setEndDate] = useState(new Date());
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const [isLoading, setIsLoading] = useState(false);
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(  
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const [totalRecords, setTotalRecords] = useState(0);
   const [IsDelete, setIsDelete] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [buttonLabel, setButtonLabel] = useState("");
-
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
+
+  const [isSearchActive, setIsSearchActive] = useState(false);
+
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
   {
     /*<=========================================================================== get required data  ===========================================================================> */
@@ -96,21 +93,18 @@ const Purchasebill = () => {
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
-    purchaseBillList(pageNum);
   };
 
   const handlePrevious = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      purchaseBillList(newPage);
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    purchaseBillList(newPage);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const deleteOpen = (id) => {
@@ -147,75 +141,82 @@ const Purchasebill = () => {
     setSearchTerms(newSearchTerms);
   };
 
-  const filteredList = tableData.filter((row) => {
-    const srNo = row.sr_no ? row.sr_no.toLowerCase() : "";
-    const billNo = row.bill_no ? row.bill_no.toLowerCase() : "";
-    const billDate = row.bill_date ? row.bill_date.toLowerCase() : "";
-    const distributor = row.distributor_name
-      ? row.distributor_name.toLowerCase()
-      : "";
-    const bilAmount = row.total_amount ? row.total_amount.toLowerCase() : "";
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    setIsSearchActive(true);
+    purchaseBillList(1);
+  };
 
-    const srNoSearchTerm = searchTerms[0]
-      ? String(searchTerms[0]).toLowerCase()
-      : "";
-    const billNoSearchTerm = searchTerms[1]
-      ? String(searchTerms[1]).toLowerCase()
-      : "";
-    const billDateSearchTerm = searchTerms[2]
-      ? String(searchTerms[2]).toLowerCase()
-      : "";
-    const distributorSearchTerm = searchTerms[3].toLowerCase();
-    const billAmountSearchTerm = searchTerms[4]
-      ? String(searchTerms[4]).toLowerCase()
-      : "";
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
 
-    return (
-      (srNo.includes(srNoSearchTerm) || srNoSearchTerm === "") &&
-      (billNo.includes(billNoSearchTerm) || billNoSearchTerm === "") &&
-      (billDate.includes(billDateSearchTerm) || billDateSearchTerm === "") &&
-      (distributor.includes(distributorSearchTerm) ||
-        distributorSearchTerm === "") &&
-      (bilAmount.includes(billAmountSearchTerm) || billAmountSearchTerm === "")
-    );
-  });
+  // Clear all search filters
+  const clearSearch = () => {
+    setSearchTerms(initialSearchTerms);
+    setIsSearchActive(false);
+    setCurrentPage(1);
+    // Reload data without search
+    setTimeout(() => {
+      purchaseBillList(1);
+    }, 100);
+  };
+
+  // No frontend filtering needed - all search is handled by backend
+  const paginatedData = tableData;
 
   {
     /*<======================================================================= Purchase bill list  =======================================================================> */
   }
 
-  const purchaseBillList = async (currentPage) => {
-    if (!currentPage) return;
+  const purchaseBillList = async (page) => {
+    if (!page) return;
 
     let data = new FormData();
-
     data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
     data.append("from_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
-    data.append("page", currentPage);
-    const params = {
-      start_date: startDate,
-      from_date: endDate,
-      page: currentPage,
-    };
+    data.append("page", page);
+
+    // Add search parameters only when search is active and has values
+    if (isSearchActive) {
+      if (searchTerms[0]?.trim()) data.append("sr_no", searchTerms[0].trim());
+      if (searchTerms[1]?.trim()) data.append("bill_no", searchTerms[1].trim());
+      if (searchTerms[2]?.trim()) data.append("bill_date", searchTerms[2].trim());
+      if (searchTerms[3]?.trim()) data.append("distributor_name", searchTerms[3].trim());
+      if (searchTerms[4]?.trim()) data.append("total_amount", searchTerms[4].trim());
+    }
+
     setIsLoading(true);
     try {
-      await axios
-        .post("purches-list?", data, {
-          // params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTableData(response.data.data);
-          setIsLoading(false);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
+      const response = await axios.post("purches-list?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const responseData = response.data.data;
+
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+        return;
+      }
+
+      // Set the table data directly from backend (paginated and filtered data)
+      setTableData(responseData || []);
+
+      // Extract and set total count for pagination
+      const totalCount = responseData?.length > 0 ? Number(responseData[0].count) : 0;
+      setTotalRecords(totalCount);
     } catch (error) {
       console.error("API error:", error);
+      setTableData([]);
+      setTotalRecords(0);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -241,7 +242,8 @@ const Purchasebill = () => {
         })
         .then((response) => {
           setIsDelete(false);
-          purchaseBillList();
+          // Refresh current page after deletion
+          purchaseBillList(currentPage);
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -281,6 +283,7 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -321,8 +324,10 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
+
 
   {
     /*<=========================================================================== UI ===========================================================================> */
@@ -491,47 +496,152 @@ const Purchasebill = () => {
               >
                 <thead>
                   <tr>
-                    {/* <th>SR. No</th> */}
-                    {/* <th></th> */}
-                    {columns.map((column, index) => (
-                      <th
-                        key={column.id}
-                        className="text-left"
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        <div className="headerStyle gap-2">
-                          <span>{column.label}</span>
-                          <SwapVertIcon
-                            className="cursor-pointer"
-                            onClick={() => sortByColumn(column.id)}
-                          />
-                          <TextField
-                            className="textfield-z0"
-                            autoComplete="off"
-                            label={`Type Here`}
-                            size="small"
-                            sx={{
-                              minWidth: 150,
-                              '& .MuiInputBase-root': {
-                                zIndex:0,
-                                position: 'relative',
-                              },
-                            }}
-                            style={{ minWidth: 150,zIndex:0 }}
-                            value={searchTerms[index]}
-                            onChange={(e) =>
-                              handleSearchChange(index, e.target.value)
-                            }
-                          />
-                        </div>
-                      </th>
-                    ))}
+                    {/* Sr No. */}
+                    <th className="text-left" style={{ minWidth: 150 }}>
+                      <div className="headerStyle gap-2">
+                        <span>Sr No.</span>
+                        <SwapVertIcon
+                          className="cursor-pointer"
+                          onClick={() => sortByColumn("sr_no")}
+                        />
+                        <TextField
+                          className="textfield-z0"
+                          autoComplete="off"
+                          label="Search Sr No."
+                          size="small"
+                          sx={{
+                            minWidth: 150,
+                            "& .MuiInputBase-root": {
+                              zIndex: 0,
+                              position: "relative",
+                            },
+                          }}
+                          style={{ minWidth: 150, zIndex: 0 }}
+                          value={searchTerms[0] || ""}
+                          onChange={(e) => handleSearchChange(0, e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Bill No. */}
+                    <th className="text-left" style={{ minWidth: 150 }}>
+                      <div className="headerStyle gap-2">
+                        <span>Bill No.</span>
+                        <SwapVertIcon
+                          className="cursor-pointer"
+                          onClick={() => sortByColumn("bill_no")}
+                        />
+                        <TextField
+                          className="textfield-z0"
+                          autoComplete="off"
+                          label="Search Bill No."
+                          size="small"
+                          sx={{
+                            minWidth: 150,
+                            "& .MuiInputBase-root": {
+                              zIndex: 0,
+                              position: "relative",
+                            },
+                          }}
+                          style={{ minWidth: 150, zIndex: 0 }}
+                          value={searchTerms[1] || ""}
+                          onChange={(e) => handleSearchChange(1, e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Bill Date */}
+                    <th className="text-left" style={{ minWidth: 150 }}>
+                      <div className="headerStyle gap-2">
+                        <span>Bill Date</span>
+                        <SwapVertIcon
+                          className="cursor-pointer"
+                          onClick={() => sortByColumn("bill_date")}
+                        />
+                        <TextField
+                          className="textfield-z0"
+                          autoComplete="off"
+                          label="Search Bill Date"
+                          size="small"
+                          sx={{
+                            minWidth: 150,
+                            "& .MuiInputBase-root": {
+                              zIndex: 0,
+                              position: "relative",
+                            },
+                          }}
+                          style={{ minWidth: 150, zIndex: 0 }}
+                          value={searchTerms[2] || ""}
+                          onChange={(e) => handleSearchChange(2, e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Distributor */}
+                    <th className="text-left" style={{ minWidth: 150 }}>
+                      <div className="headerStyle gap-2">
+                        <span>Distributor</span>
+                        <SwapVertIcon
+                          className="cursor-pointer"
+                          onClick={() => sortByColumn("distributor_name")}
+                        />
+                        <TextField
+                          className="textfield-z0"
+                          autoComplete="off"
+                          label="Search Distributor"
+                          size="small"
+                          sx={{
+                            minWidth: 150,
+                            "& .MuiInputBase-root": {
+                              zIndex: 0,
+                              position: "relative",
+                            },
+                          }}
+                          style={{ minWidth: 150, zIndex: 0 }}
+                          value={searchTerms[3] || ""}
+                          onChange={(e) => handleSearchChange(3, e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Bill Amount */}
+                    <th className="text-left" style={{ minWidth: 150 }}>
+                      <div className="headerStyle gap-2">
+                        <span>Bill Amount</span>
+                        <SwapVertIcon
+                          className="cursor-pointer"
+                          onClick={() => sortByColumn("total_amount")}
+                        />
+                        <TextField
+                          className="textfield-z0"
+                          autoComplete="off"
+                          label="Search Bill Amount"
+                          size="small"
+                          sx={{
+                            minWidth: 150,
+                            "& .MuiInputBase-root": {
+                              zIndex: 0,
+                              position: "relative",
+                            },
+                          }}
+                          style={{ minWidth: 150, zIndex: 0 }}
+                          value={searchTerms[4] || ""}
+                          onChange={(e) => handleSearchChange(4, e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
 
                     <th>Action</th>
                   </tr>
                 </thead>
+
                 <tbody style={{ background: "#3f621217" }}>
-                  {filteredList.length === 0 ? (
+                  {paginatedData.length === 0 ? (
                     <tr>
                       <td
                         colSpan={columns.length + 1}
@@ -542,7 +652,7 @@ const Purchasebill = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredList.map((row, index) => (
+                    paginatedData.map((row, index) => (
                       <tr
                         className="cursor-pointer hover:bg-gray-100"
                         key={row.code}
@@ -609,8 +719,8 @@ const Purchasebill = () => {
               <button
                 onClick={handlePrevious}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage === 1}
               >
@@ -648,11 +758,11 @@ const Purchasebill = () => {
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
-                disabled={filteredList.length === 0}
+                disabled={currentPage >= totalPages}
               >
                 Next
               </button>

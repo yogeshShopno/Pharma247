@@ -465,7 +465,7 @@ const OrderList = () => {
                   </Button>
                 </div>
               </div>
-              <div className="overflow-x-auto mt-4 border-t">
+              <div className="overflow-x-auto mt-4 border-t scroll-two">
                 <table
                   className="w-full bg-transparent border-collapse custom-table pt-2"
                   style={{
@@ -538,8 +538,8 @@ const OrderList = () => {
                               isStatus && value === "Order"
                                 ? "orderStatus"
                                 : isStatus && value === "Pending"
-                                ? "pendingStatus"
-                                : "text-black";
+                                  ? "pendingStatus"
+                                  : "text-black";
                             return (
                               <td
                                 key={column.id}
@@ -568,67 +568,66 @@ const OrderList = () => {
                     )}
                   </tbody>
                 </table>
-                <div
-                  className="mt-4 space-x-1"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
+
+              </div>
+              <div
+                className="mt-4 space-x-1"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <button
+                  onClick={handlePrevious}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
+                  disabled={currentPage === 1}
                 >
+                  Previous{" "}
+                </button>
+                {currentPage > 2 && (
                   <button
-                    onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === 1
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
+                    onClick={() => handleClick(currentPage - 2)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage - 2}
+                  </button>
+                )}
+                {currentPage > 1 && (
+                  <button
+                    onClick={() => handleClick(currentPage - 1)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage - 1}
+                  </button>
+                )}
+                <button
+                  onClick={() => handleClick(currentPage)}
+                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                >
+                  {currentPage}
+                </button>
+                {currentPage < totalPages && (
+                  <button
+                    onClick={() => handleClick(currentPage + 1)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage + 1}
+                  </button>
+                )}
+                <button
+                  onClick={handleNext}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700 "
+                    : "secondary-bg  text-white"
                     }`}
-                    disabled={currentPage === 1}
-                  >
-                    Previous{" "}
-                  </button>
-                  {currentPage > 2 && (
-                    <button
-                      onClick={() => handleClick(currentPage - 2)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage - 2}
-                    </button>
-                  )}
-                  {currentPage > 1 && (
-                    <button
-                      onClick={() => handleClick(currentPage - 1)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage - 1}
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleClick(currentPage)}
-                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                  >
-                    {currentPage}
-                  </button>
-                  {currentPage < totalPages && (
-                    <button
-                      onClick={() => handleClick(currentPage + 1)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage + 1}
-                    </button>
-                  )}
-                  <button
-                    onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === rowsPerPage
-                        ? "bg-gray-200 text-gray-700"
-                        : "secondary-bg text-white"
-                    }`}
-                    disabled={filteredList.length === 0}
-                  >
-                    Next{" "}
-                  </button>
-                </div>
+                  disabled={currentPage >= totalPages}
+                >
+                  Next
+                </button>
               </div>
             </div>
 
@@ -717,18 +716,18 @@ const OrderList = () => {
                                       style={
                                         colIndex === 0
                                           ? {
-                                              borderRadius: "10px 0 0 10px",
-                                            }
+                                            borderRadius: "10px 0 0 10px",
+                                          }
                                           : colIndex ===
                                             LastPurchaseListcolumns.length - 1
-                                          ? {
+                                            ? {
                                               borderRadius: "0 10px 10px 0",
                                             }
-                                          : {}
+                                            : {}
                                       }
                                     >
                                       {column.format &&
-                                      typeof value === "number"
+                                        typeof value === "number"
                                         ? column.format(value)
                                         : value}
                                     </td>

@@ -147,12 +147,13 @@ const DistributerList = () => {
     });
     setTableData(sortedData);
   };
+  
 
   const handleSearchChange = (index, value) => {
     const updatedSearchTerms = [...searchTerms];
     updatedSearchTerms[index] = value;
     setSearchTerms(updatedSearchTerms);
-    DistributorSearch(updatedSearchTerms); 
+    DistributorSearch(updatedSearchTerms);
   };
 
 
@@ -497,34 +498,108 @@ const DistributerList = () => {
                 <thead className="">
                   <tr>
                     <th>SR. No</th>
-                    {columns.map((column, index) => (
-                      <th key={column.id} style={{ minWidth: column.minWidth }}>
-                        <div className="headerStyle">
-                          <span>{column.label}</span>
-                          <SwapVertIcon
-                            style={{ cursor: "pointer" }}
-                            onClick={() => sortByColumn(column.id)}
-                          />
-                          <TextField
-                            variant="outlined"
-                            autoComplete="off"
-                            label={`Search ${column.label}`}
-                            id="filled-basic"
-                            size="small"
-                            sx={{ width: "150px" }}
-                            value={searchTerms[index]}
-                            onChange={(e) =>
-                              handleSearchChange(index, e.target.value)
+                    <th style={{ minWidth: 150 }}>
+                      <div className="headerStyle">
+                        <span>Name</span>
+                        <SwapVertIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={() => sortByColumn("name")}
+                        />
+                        <TextField
+                          variant="outlined"
+                          autoComplete="off"
+                          label="Search Name"
+                          size="small"
+                          sx={{ width: "150px" }}
+                          value={searchTerms[0]}
+                          onChange={(e) => handleSearchChange(0, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              DistributorSearch(searchTerms);
                             }
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault(); // prevent Enter from submitting
-                              }
-                            }}
-                          />
-                        </div>
-                      </th>
-                    ))}
+                          }}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Email Column */}
+                    <th style={{ minWidth: 150 }}>
+                      <div className="headerStyle">
+                        <span>Email</span>
+                        <SwapVertIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={() => sortByColumn("email")}
+                        />
+                        <TextField
+                          variant="outlined"
+                          autoComplete="off"
+                          label="Search Email"
+                          size="small"
+                          sx={{ width: "150px" }}
+                          value={searchTerms[1]}
+                          onChange={(e) => handleSearchChange(1, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              DistributorSearch(searchTerms);
+                            }
+                          }}
+                        />
+                      </div>
+                    </th>
+
+                    {/* GST Column */}
+                    <th style={{ minWidth: 150 }}>
+                      <div className="headerStyle">
+                        <span>GST</span>
+                        <SwapVertIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={() => sortByColumn("gst")}
+                        />
+                        <TextField
+                          variant="outlined"
+                          autoComplete="off"
+                          label="Search GST"
+                          size="small"
+                          sx={{ width: "150px" }}
+                          value={searchTerms[2]}
+                          onChange={(e) => handleSearchChange(2, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              DistributorSearch(searchTerms);
+                            }
+                          }}
+                        />
+                      </div>
+                    </th>
+
+                    {/* Phone Number Column */}
+                    <th style={{ minWidth: 150 }}>
+                      <div className="headerStyle">
+                        <span>Phone Number</span>
+                        <SwapVertIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={() => sortByColumn("phone_number")}
+                        />
+                        <TextField
+                          variant="outlined"
+                          autoComplete="off"
+                          label="Search Phone"
+                          size="small"
+                          sx={{ width: "150px" }}
+                          value={searchTerms[3]}
+                          onChange={(e) => handleSearchChange(3, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              DistributorSearch(searchTerms);
+                            }
+                          }}
+                        />
+                      </div>
+                    </th>
                     <th>Action</th>
                   </tr>
                 </thead>

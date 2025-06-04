@@ -25,8 +25,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import dayjs from "dayjs";
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -376,6 +374,8 @@ const AdjustStock = () => {
   const handelAddOpen = () => {
     setOpenAddPopUp(true);
   };
+
+  // ---------------------------------------  UI    ---------------------------------------------------
   return (
     <>
       <Header />
@@ -465,7 +465,7 @@ const AdjustStock = () => {
                 </Button>
               </div>
             </div>
-            <div className="overflow-x-auto mt-4 border-t">
+            <div className="overflow-x-auto mt-4 border-t scroll-two">
               <table
                 className="w-full border-collapse custom-table pt-2"
                 style={{

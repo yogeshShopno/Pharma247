@@ -54,79 +54,13 @@ const Salelist = () => {
     direction: "ascending",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  // const [startIndex, setStartIndex] = useState(0);
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [PDFURL, setPDFURL] = useState("");
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-    saleBillList(pageNum);
-  };
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      saleBillList(newPage);
-    }
-  };
-
-  const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    saleBillList(newPage);
-  };
-
-  const sortByColumn = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-
-    const sortedData = [...tableData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-      return 0;
-    });
-    setTableData(sortedData);
-  };
-
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
-  };
-
-  // const filteredList = tableData.filter(row => {
-  //     return searchTerms.every((term, index) => {
-  //         const value = row[columns[index].id];
-  //         return String(value).toLowerCase().includes(term.toLowerCase());
-  //     });
-  // });
-
-  // const filteredList = tableData.filter(row => {
-  //     const paymentName = row.payment_name.toLowerCase();
-  //     const status = row.status.toLowerCase();
-  //     const netAmt = row.net_amt.toLowerCase();
-
-  //     const customerName = row.name.toLowerCase();
-  //     const mobileNumber = String(row.mobile_numbr).toLowerCase();
-  //     const combinedSearchTerm = searchTerms[2].toLowerCase(); // Assuming `customer_info` is the 3rd column now
-  //     return (
-  //         customerName.includes(combinedSearchTerm) ||
-  //         mobileNumber.includes(combinedSearchTerm)
-
-  //     ) && searchTerms.slice(0, 2).every((term, index) => {
-  //         const value = row[columns[index].id];
-  //         return String(value).toLowerCase().includes(term.toLowerCase());
-  //     });
-
-  // });
-
-  const filteredList = tableData.filter((row) => {
+  
+  // First filter all data, then calculate pagination
+  const filteredData = tableData.filter((row) => {
     const billNo = row.bill_no ? row.bill_no.toLowerCase() : "";
     const billDate = row.bill_date ? row.bill_date.toLowerCase() : "";
     const customerName = row.name ? row.name.toLowerCase() : "";
@@ -160,6 +94,55 @@ const Salelist = () => {
     );
   });
 
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage + 1;
+  
+  // Now paginate the filtered data
+  const filteredList = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handleClick = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+  
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+    }
+  };
+
+  const sortByColumn = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+
+    const sortedData = [...tableData].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+    setTableData(sortedData);
+  };
+
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+    setSearchTerms(newSearchTerms);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
   const goIntoAdd = () => {
     history.push("/addsale");
   };
@@ -187,10 +170,10 @@ const Salelist = () => {
     localStorage.removeItem("RandomNumber");
   }, []);
 
-  const saleBillList = async (currentPage) => {
+  const saleBillList = async () => {
     setIsLoading(true);
     let data = new FormData();
-    data.append("page", currentPage);
+    data.append("page", 1); // Always fetch from page 1 to get all data
     try {
       const response = await axios.post("sales-list?", data, {
         headers: {
@@ -317,11 +300,10 @@ const Salelist = () => {
         setIsLoading(false);
         setPDFURL(PDFURL);
 
-        const message = `Dear ${bill.name},\n\nYour invoice for ₹${
-          bill.net_amt
-        } is ready.\n\nClick the link below to download:\n${PDFURL}\n\nFor any queries, contact us: ${localStorage.getItem(
-          "contact"
-        )}\n\nThank you,\n${localStorage.getItem("UserName")}`;
+        const message = `Dear ${bill.name},\n\nYour invoice for ₹${bill.net_amt
+          } is ready.\n\nClick the link below to download:\n${PDFURL}\n\nFor any queries, contact us: ${localStorage.getItem(
+            "contact"
+          )}\n\nThank you,\n${localStorage.getItem("UserName")}`;
 
         const encodedMessage = encodeURIComponent(message);
         const whatsappURL = `https://wa.me/91${bill.mobile_numbr}?text=${encodedMessage}`;
@@ -417,7 +399,7 @@ const Salelist = () => {
               style={{ borderColor: "var(--color2)" }}
             ></div>
             <div className="firstrow">
-              <div className="overflow-x-auto mt-2">
+              <div className="overflow-x-auto mt-2 scroll-two">
                 <table
                   className="w-full border-collapse custom-table"
                   style={{
@@ -538,11 +520,10 @@ const Salelist = () => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === 1
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                       ? "bg-gray-200 text-gray-700"
                       : "secondary-bg text-white"
-                  }`}
+                    }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -579,12 +560,11 @@ const Salelist = () => {
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                  }`}
-                  disabled={filteredList.length === 0}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700 "
+                    : "secondary-bg  text-white"
+                    }`}
+                  disabled={currentPage >= totalPages}
                 >
                   Next
                 </button>

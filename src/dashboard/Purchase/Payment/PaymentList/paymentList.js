@@ -41,7 +41,7 @@ import usePermissions, {
 } from "../../../../componets/permission";
 const PaymentList = () => {
   const history = useHistory();
-  const rowsPerPage = 11;
+  const rowsPerPage = 10;
   const token = localStorage.getItem("token");
   const permissions = usePermissions();
 
@@ -715,16 +715,15 @@ const PaymentList = () => {
                 </button>
               )}
               <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === rowsPerPage
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                }`}
-                disabled={filteredList.length === 0}
-              >
-                Next
-              </button>
+                  onClick={handleNext}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700 "
+                    : "secondary-bg  text-white"
+                    }`}
+                  disabled={currentPage >= totalPages}
+                >
+                  Next
+                </button>
             </div>
           </div>
 
@@ -816,8 +815,8 @@ const PaymentList = () => {
                       }}
                       size="small"
                     >
-                      {/* <MenuItem value="cash">Cash</MenuItem> */}
-                      {/* <MenuItem value="credit">Credit</MenuItem> */}
+                      <MenuItem value="cash">Cash</MenuItem>
+                      <MenuItem value="credit">Credit</MenuItem>
                       {bankData?.map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.bank_name}

@@ -153,7 +153,7 @@ const DistributerList = () => {
     const updatedSearchTerms = [...searchTerms];
     updatedSearchTerms[index] = value;
     setSearchTerms(updatedSearchTerms);
-    DistributorSearch(updatedSearchTerms);
+    // DistributorSearch(updatedSearchTerms);
   };
 
 

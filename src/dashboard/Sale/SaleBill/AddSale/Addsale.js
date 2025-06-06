@@ -136,7 +136,7 @@ const Addsale = () => {
   const [dueAmount, setDueAmount] = useState(null);
   const [givenAmt, setGivenAmt] = useState(null);
   const [otherAmt, setOtherAmt] = useState(0);
-  const [searchItemID, setSearchItemID] = useState(null);
+  const [searchItemID, setSearchItemID] = useState("");
   const [bankData, setBankData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchDoctor, setSearchDoctor] = useState("");
@@ -239,24 +239,45 @@ const Addsale = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!event.altKey) return; // Exit early if Alt is not pressed
+      if (!event.altKey || event.repeat) return;
 
+      const key = event.key.toLowerCase();
       event.preventDefault(); // Prevent default browser behavior
 
-      if (event.key.toLowerCase() === "s") {
-        handleSubmit();
-      } else if (event.key.toLowerCase() === "g") {
-        handleSubmit();
-      } else if (event.key.toLowerCase() === "m") {
-        inputRefs.current[2]?.focus();
+      switch (key) {
+        case "s":
+          handleSubmit(); // or setBillSaveDraft("1"); handleSubmit(); if needed
+          setBillSaveDraft("1");
+          handleSubmit();
+
+          break;
+
+        case "g":
+          handleSubmit();
+          break;
+
+        case "m":
+          setSelectedEditItemId(null);
+          setSelectedIndex(-1);
+          setSearchItem("");
+          setValue("");
+          setTimeout(() => {
+            inputRefs.current[2]?.focus();
+          }, 10);
+          break;
+
+        default:
+          break;
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [billNo, ItemSaleList]); // Dependencies only affect Alt+S
+  }, [billNo, ItemSaleList]);
+  // Dependencies only affect Alt+S
 
   //   const handleKeyDown = (event, index) => {
 
@@ -749,7 +770,7 @@ const Addsale = () => {
     setUnsavedItems(true);
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault();
       if (event.target === inputRef1.current && inputRef2.current) {
@@ -782,12 +803,34 @@ const Addsale = () => {
         unitInputRef.current.focus();
       }
     }
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const nextInput = inputRefs?.current[index + 1];
+
+      if (nextInput) {
+        setTimeout(() => {
+          nextInput.focus();
+        }, 100);
+      } else {
+        // No next input, focus the Save button if it's in refs
+        const saveButton = inputRefs?.current[index + 1];
+        if (saveButton) {
+          saveButton.focus();
+        }
+      }
+    }
   };
 
   const AddDoctorRecord = async () => {
+    if (!doctorName || !clinic) {
+      toast.error("Please fill all required fields");
+      return; // stop further execution if validation fails
+    }
+
     let data = new FormData();
-    data.append("name", doctorName ? doctorName : "");
-    data.append("clinic", clinic ? clinic : "");
+    data.append("name", doctorName);
+    data.append("clinic", clinic);
+
     try {
       await axios
         .post("doctor-create", data, {
@@ -803,35 +846,45 @@ const Addsale = () => {
         });
     } catch (error) {
       setIsLoading(false);
-      if (error.response.data.status == 400) {
+      if (error.response?.data?.status === 400) {
         toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred");
       }
     }
   };
+
   const AddCustomerRecord = async () => {
+    if (!customerName.trim() || !mobileNo.trim()) {
+      toast.error("Please fill all the fields");
+      return; // Prevent further execution if validation fails
+    }
+
     let data = new FormData();
-    data.append("name", customerName ? customerName : "");
-    data.append("mobile_no", mobileNo ? mobileNo : "");
+    data.append("name", customerName.trim());
+    data.append("mobile_no", mobileNo.trim());
+
     try {
-      await axios
-        .post("create-customer", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setOpenCustomer(false);
-          setCustomerName("");
-          setMobileNo("");
-          toast.success(response.data.message);
-        });
+      const response = await axios.post("create-customer", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setOpenCustomer(false);
+      setCustomerName("");
+      setMobileNo("");
+      toast.success(response.data.message);
     } catch (error) {
       setIsLoading(false);
-      if (error.response.data.status == 400) {
+      if (error.response?.data?.status === 400) {
         toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred");
       }
     }
   };
+
   const lastPurchseHistory = async () => {
     let data = new FormData();
     const params = {
@@ -1610,17 +1663,31 @@ const Addsale = () => {
   };
 
   const handleQtyChange = (e) => {
-    const enteredValue = Number(e.target.value, 10);
+    const val = e.target.value;
+
+    // Prevent leading zeros like "01030"
+    if (/^0\d+/.test(val)) return;
+
+    // Allow empty input to avoid auto "0"
+    if (val === "") {
+      setQty("");
+      setOrder("");
+      return;
+    }
+
+    const enteredValue = Number(val);
+
     if (enteredValue <= maxQty) {
       setQty(enteredValue);
-      // if (enteredValue === 1) {
-      //     setOrder('O');
-      // } else {
-      //     setOrder('');
-      // }
+      if (enteredValue === maxQty) {
+        setOrder("O");
+      } else {
+        setOrder("");
+      }
     } else {
-      toast.error("can't add qty more than stock");
+      toast.error("Can't add qty more than stock");
       setQty(maxQty);
+      setOrder("O");
     }
   };
 
@@ -1907,7 +1974,7 @@ const Addsale = () => {
                   <Button
                     variant="contained"
                     className=""
-                    sx={{ textTransform: "none", background: "var(--color1)" ,padding: "10px 24px",'&:hover': {backgroundColor: "var(--color1)", boxShadow: "none",},}}
+                    sx={{ textTransform: "none", background: "var(--color1)", padding: "10px 24px", '&:hover': { backgroundColor: "var(--color1)", boxShadow: "none", }, }}
                     onClick={() => setIsOpen(!isOpen)}
                     ref={submitButtonRef}
                   >
@@ -2217,21 +2284,40 @@ const Addsale = () => {
                     />
                   </div>
                 </div>
-                <div className="scroll-two">
+                <div className=" overflow-x-auto w-full scroll-two">
                   <table className="saleTable">
                     <thead>
                       <tr>
-                        <th className="flex justify-center items-center" style={{ padding: "10px 15px" }}>
-                          Item Name
+                        <th>
+                          <div className="flex justify-center items-center gap-2">
+                            Search Item Name{" "}
+                            <span className="text-red-600 ">*</span>
+                            <FaPlusCircle
+                              className="primary cursor-pointer"
+                              onClick={() => {
+                                setOpenAddItemPopUp(true);
+                              }}
+                            />
+                          </div>
                         </th>
-                        <th style={{ textAlign: "center" }}>Unit</th>
-                        <th style={{ textAlign: "center" }}>Batch</th>
-                        <th style={{ textAlign: "center" }}>Expiry</th>
-                        <th style={{ textAlign: "center" }}>MRP</th>
-                        <th style={{ textAlign: "center" }}>Base</th>
-                        <th style={{ textAlign: "center" }}>GST%</th>
-                        <th style={{ textAlign: "center" }}>QTY </th>
-                        <th style={{ textAlign: "center" }}>Loc.</th>
+                        <th>
+                          Unit <span className="text-red-600 ">*</span>
+                        </th>
+                        <th>
+                          Batch <span className="text-red-600 ">*</span>{" "}
+                        </th>
+                        <th>
+                          Expiry <span className="text-red-600 ">*</span>
+                        </th>
+                        <th>
+                          MRP <span className="text-red-600 ">*</span>
+                        </th>
+                        <th>Base</th>
+                        <th>
+                          GST% <span className="text-red-600 ">*</span>
+                        </th>
+                        <th>Qty. </th>
+                        <th>Loc.</th>
                         <th style={{ textAlign: "center" }}>
                           {" "}
                           <div style={{ display: "flex", flexWrap: "nowrap" }}>
@@ -2331,7 +2417,7 @@ const Addsale = () => {
                                         InputProps={{
                                           ...params.InputProps,
                                           style: {
-                                            height: 40,width:350,
+                                            height: 40, width: 350,
                                             fontSize: "1.2rem",
                                           },
 
@@ -2572,6 +2658,9 @@ const Addsale = () => {
                             }}
                             onChange={(e) => {
                               handleQtyChange(e);
+                              if ((e.key === "Enter" || e.key === "Tab") && Number(qty) === maxQty) {
+                                setOrder("O");
+                              }
                             }}
                           />
                         </td>
@@ -2692,18 +2781,81 @@ const Addsale = () => {
                 {/* } */}
               </div>
 
-              {ItemSaleList.sales_item.length > 0 && (
+
+              <div
+                className="sale_filtr_add"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "fixed",
+                  width: "100%",
+                  bottom: "0",
+                  left: "0",
+                }}
+              >
                 <div
-                  className="sale_filtr_add"
+                  className=""
                   style={{
-                    background: "var(--color1)",
-                    color: "white",
                     display: "flex",
-                    flexDirection: "column",
-                    position: "fixed",
-                    width: "100%",
-                    bottom: "0",
+                    whiteSpace: "nowrap",
+                    position: "sticky",
                     left: "0",
+                    overflow: "auto",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    className="gap-2 invoice_total_fld"
+                    style={{ display: "flex" }}
+                  >
+                    <label className="font-bold">Total GST : </label>
+
+                    <span style={{ fontWeight: 600 }}> {totalgst} </span>
+                  </div>
+                  <div
+                    className="gap-2 invoice_total_fld"
+                    style={{ display: "flex" }}
+                  >
+                    <label className="font-bold">Total Base : </label>
+                    <span style={{ fontWeight: 600 }}> {totalBase} </span>
+                  </div>
+                  <div
+                    className="gap-2 invoice_total_fld"
+                    style={{ display: "flex" }}
+                  >
+                    <label className="font-bold">Profit : </label>
+                    <span style={{ fontWeight: 600 }}>
+                      ₹ {marginNetProfit || 0} (
+                      {Number(totalMargin || 0).toFixed(2)}%)
+                    </span>
+                  </div>
+                  <div
+                    className="gap-2 invoice_total_fld"
+                    style={{ display: "flex" }}
+                  >
+                    <label className="font-bold">Total Net Rate : </label>
+                    <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
+                  </div>
+                </div>
+                <hr
+                  style={{
+                    opacity: 0.5,
+                    position: "sticky",
+                    left: "0",
+                    width: "100%",
+                  }}
+                />
+                <div
+                  className=""
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    whiteSpace: "nowrap",
+                    padding: "20px",
+                    alignItems: "baseline",
+                    overflow: "auto",
                   }}
                 >
                   <div
@@ -2711,390 +2863,327 @@ const Addsale = () => {
                     style={{
                       display: "flex",
                       whiteSpace: "nowrap",
-                      position: "sticky",
                       left: "0",
-                      overflow: "auto",
-                      padding: "20px",
                     }}
                   >
                     <div
                       className="gap-2 invoice_total_fld"
                       style={{ display: "flex" }}
                     >
-                      <label className="font-bold">Total GST : </label>
+                      <label className="font-bold">Today Points : </label>
+                      {todayLoyltyPoint || 0}
+                    </div>
+                    <div
+                      className="gap-2 invoice_total_fld"
+                      style={{ display: "flex" }}
+                    >
+                      <label className="font-bold">Previous Points : </label>
+                      {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+                    </div>
+                    <div
+                      className="gap-2 invoice_total_fld"
+                      style={{ display: "flex" }}
+                    >
+                      <label className="font-bold">Redeem : </label>
+                      <Input
+                        type="number"
+                        value={loyaltyVal}
+                        // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                        onChange={(e) => {
+                          const value = e.target.value;
 
-                      <span style={{ fontWeight: 600 }}> {totalgst} </span>
-                    </div>
-                    <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
-                    >
-                      <label className="font-bold">Total Base : </label>
-                      <span style={{ fontWeight: 600 }}> {totalBase} </span>
-                    </div>
-                    <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
-                    >
-                      <label className="font-bold">Profit : </label>
-                      <span style={{ fontWeight: 600 }}>
-                        ₹ {marginNetProfit || 0} (
-                        {Number(totalMargin || 0).toFixed(2)}%)
-                      </span>
-                    </div>
-                    <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
-                    >
-                      <label className="font-bold">Total Net Rate : </label>
-                      <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
+                          const numericValue = Math.floor(Number(value));
+
+                          const maxAllowedPoints = Math.min(
+                            maxLoyaltyPoints,
+                            totalAmount
+                          );
+
+                          if (
+                            numericValue >= 0 &&
+                            numericValue <= maxAllowedPoints
+                          ) {
+                            setLoyaltyVal(numericValue);
+                          } else if (numericValue < 0) {
+                            setLoyaltyVal(0);
+                          }
+                          setUnsavedItems(true);
+                        }}
+                        onKeyPress={(e) => {
+                          const value = e.target.value;
+                          const isMinusKey = e.key === "-";
+
+                          if (
+                            !/[0-9.-]/.test(e.key) &&
+                            e.key !== "Backspace"
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          if (isMinusKey && value.includes("-")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        size="small"
+                        style={{
+                          width: "70px",
+                          background: "none",
+                          borderBottom: "1px solid gray",
+                          justifyItems: "end",
+                          outline: "none",
+                          color: "white",
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            height: "35px",
+                          },
+                          "& .MuiInputBase-input": { textAlign: "end" },
+                        }}
+                      />
+                      {/* {previousLoyaltyPoints} */}
                     </div>
                   </div>
-                  <hr
-                    style={{
-                      opacity: 0.5,
-                      position: "sticky",
-                      left: "0",
-                      width: "100%",
-                    }}
-                  />
-                  <div
-                    className=""
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      whiteSpace: "nowrap",
-                      padding: "20px",
-                      alignItems: "baseline",
-                      overflow: "auto",
-                    }}
-                  >
+
+                  <div style={{ display: "flex", whiteSpace: "nowrap" }}>
                     <div
-                      className=""
+                      className="gap-2 "
+                      onClick={toggleModal}
                       style={{
                         display: "flex",
-                        whiteSpace: "nowrap",
-                        left: "0",
+                        alignItems: "center",
+                        cursor: "pointer",
                       }}
                     >
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
-                        <label className="font-bold">Today Points : </label>
-                        {todayLoyltyPoint || 0}
-                      </div>
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
-                        <label className="font-bold">Previous Points : </label>
-                        {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
-                      </div>
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
-                        <label className="font-bold">Redeem : </label>
-                        <Input
-                          type="number"
-                          value={loyaltyVal}
-                          // onChange={(e) => { setLoyaltyVal(e.target.value) }}
-                          onChange={(e) => {
-                            const value = e.target.value;
-
-                            const numericValue = Math.floor(Number(value));
-
-                            const maxAllowedPoints = Math.min(
-                              maxLoyaltyPoints,
-                              totalAmount
-                            );
-
-                            if (
-                              numericValue >= 0 &&
-                              numericValue <= maxAllowedPoints
-                            ) {
-                              setLoyaltyVal(numericValue);
-                            } else if (numericValue < 0) {
-                              setLoyaltyVal(0);
-                            }
-                            setUnsavedItems(true);
-                          }}
-                          onKeyPress={(e) => {
-                            const value = e.target.value;
-                            const isMinusKey = e.key === "-";
-
-                            if (
-                              !/[0-9.-]/.test(e.key) &&
-                              e.key !== "Backspace"
-                            ) {
-                              e.preventDefault();
-                            }
-
-                            if (isMinusKey && value.includes("-")) {
-                              e.preventDefault();
-                            }
-                          }}
-                          size="small"
-                          style={{
-                            width: "70px",
-                            background: "none",
-                            borderBottom: "1px solid gray",
-                            justifyItems: "end",
-                            outline: "none",
-                            color: "white",
-                          }}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              height: "35px",
-                            },
-                            "& .MuiInputBase-input": { textAlign: "end" },
-                          }}
-                        />
-                        {/* {previousLoyaltyPoints} */}
-                      </div>
-                    </div>
-
-                    <div style={{ display: "flex", whiteSpace: "nowrap" }}>
-                      <div
-                        className="gap-2 "
-                        onClick={toggleModal}
+                      <label className="font-bold">Net Amount : </label>
+                      <span
+                        className="gap-1"
                         style={{
+                          fontWeight: 800,
+                          fontSize: "22px",
+                          whiteSpace: "nowrap",
                           display: "flex",
                           alignItems: "center",
-                          cursor: "pointer",
                         }}
                       >
-                        <label className="font-bold">Net Amount : </label>
-                        <span
-                          className="gap-1"
-                          style={{
-                            fontWeight: 800,
-                            fontSize: "22px",
-                            whiteSpace: "nowrap",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          {netAmount}
-                          <FaCaretUp />
-                        </span>
-                      </div>
+                        {netAmount}
+                        <FaCaretUp />
+                      </span>
+                    </div>
 
-                      <Modal
-                        show={isModalOpen}
-                        onClose={toggleModal}
-                        size="lg"
-                        position="bottom-center"
-                        className="modal_amount"
-                      // style={{ width: "50%" }}
+                    <Modal
+                      show={isModalOpen}
+                      onClose={toggleModal}
+                      size="lg"
+                      position="bottom-center"
+                      className="modal_amount"
+                    // style={{ width: "50%" }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                          color: "white",
+                          padding: "20px",
+                          fontSize: "larger",
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <h2 style={{ textTransform: "uppercase" }}>
+                          invoice total
+                        </h2>
+                        <IoMdClose
+                          onClick={toggleModal}
+                          cursor={"pointer"}
+                          size={30}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          background: "white",
+                          padding: "20px",
+                          width: "100%",
+                          maxWidth: "600px",
+                          margin: "0 auto",
+                          lineHeight: "2.5rem",
+                        }}
                       >
                         <div
+                          className=""
                           style={{
-                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                            color: "white",
-                            padding: "20px",
-                            fontSize: "larger",
                             display: "flex",
                             justifyContent: "space-between",
                           }}
                         >
-                          <h2 style={{ textTransform: "uppercase" }}>
-                            invoice total
-                          </h2>
-                          <IoMdClose
-                            onClick={toggleModal}
-                            cursor={"pointer"}
-                            size={30}
+                          <label className="font-bold">Total Amount : </label>
+                          <span style={{ fontWeight: 600 }}>
+                            {totalAmount}
+                          </span>
+                        </div>
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <label className="font-bold">Discount(%) : </label>
+                          <Input
+                            type="number"
+                            value={finalDiscount}
+                            onKeyPress={(e) => {
+                              if (
+                                !/[0-9.]/.test(e.key) &&
+                                e.key !== "Backspace"
+                              ) {
+                                e.preventDefault();
+                              }
+                            }}
+                            onChange={(e) => {
+                              let newValue = e.target.value;
+
+                              if (newValue > 100) {
+                                setFinalDiscount(100);
+                              } else if (newValue >= 0) {
+                                setFinalDiscount(newValue);
+                              }
+                            }}
+                            size="small"
+                            style={{
+                              width: "70px",
+                              background: "none",
+                              // borderBottom: "1px solid gray",
+                              outline: "none",
+                              justifyItems: "end",
+                            }}
+                            sx={{
+                              "& .MuiInputBase-root": {
+                                height: "35px",
+                              },
+                              "& .MuiInputBase-input": { textAlign: "end" },
+                            }}
                           />
                         </div>
                         <div
+                          className=""
                           style={{
-                            background: "white",
-                            padding: "20px",
-                            width: "100%",
-                            maxWidth: "600px",
-                            margin: "0 auto",
-                            lineHeight: "2.5rem",
+                            display: "flex",
+                            justifyContent: "space-between",
                           }}
                         >
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <label className="font-bold">Total Amount : </label>
-                            <span style={{ fontWeight: 600 }}>
-                              {totalAmount}
-                            </span>
-                          </div>
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <label className="font-bold">Discount(%) : </label>
-                            <Input
-                              type="number"
-                              value={finalDiscount}
-                              onKeyPress={(e) => {
-                                if (
-                                  !/[0-9.]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onChange={(e) => {
-                                let newValue = e.target.value;
+                          <label className="font-bold">Other Amount : </label>
+                          <Input
+                            type="number"
+                            value={otherAmt}
+                            onKeyPress={(e) => {
+                              const value = e.target.value;
+                              const isMinusKey = e.key === "-";
 
-                                if (newValue > 100) {
-                                  setFinalDiscount(100);
-                                } else if (newValue >= 0) {
-                                  setFinalDiscount(newValue);
-                                }
-                              }}
-                              size="small"
-                              style={{
-                                width: "70px",
-                                background: "none",
-                                // borderBottom: "1px solid gray",
-                                outline: "none",
-                                justifyItems: "end",
-                              }}
-                              sx={{
-                                "& .MuiInputBase-root": {
-                                  height: "35px",
-                                },
-                                "& .MuiInputBase-input": { textAlign: "end" },
-                              }}
-                            />
-                          </div>
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <label className="font-bold">Other Amount : </label>
-                            <Input
-                              type="number"
-                              value={otherAmt}
-                              onKeyPress={(e) => {
-                                const value = e.target.value;
-                                const isMinusKey = e.key === "-";
+                              if (
+                                !/[0-9.-]/.test(e.key) &&
+                                e.key !== "Backspace"
+                              ) {
+                                e.preventDefault();
+                              }
 
-                                if (
-                                  !/[0-9.-]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
-                                  e.preventDefault();
-                                }
-
-                                if (isMinusKey && value.includes("-")) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onChange={handleOtherAmtChange}
-                              size="small"
-                              style={{
-                                width: "70px",
-                                background: "none",
-                                // borderBottom: "1px solid gray",
-                                justifyItems: "end",
-                                outline: "none",
-                              }}
-                              sx={{
-                                "& .MuiInputBase-root": {
-                                  height: "35px",
-                                },
-                                "& .MuiInputBase-input": { textAlign: "end" },
-                              }}
-                            />
-                          </div>
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
+                              if (isMinusKey && value.includes("-")) {
+                                e.preventDefault();
+                              }
                             }}
-                          >
-                            <label className="font-bold">
-                              Loyalty Points Redeem:{" "}
-                            </label>
-                            <span>{loyaltyVal || 0}</span>
-                          </div>
-                          <div
-                            className=""
+                            onChange={handleOtherAmtChange}
+                            size="small"
                             style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              paddingBottom: "5px",
+                              width: "70px",
+                              background: "none",
+                              // borderBottom: "1px solid gray",
+                              justifyItems: "end",
+                              outline: "none",
                             }}
-                          >
-                            <label className="font-bold">
-                              Discount Amount :{" "}
-                            </label>
-                            {discountAmount !== 0 && (
-                              <span>
-                                {discountAmount > 0
-                                  ? `-${discountAmount}`
-                                  : discountAmount}
-                              </span>
-                            )}
-                          </div>
-
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              paddingBottom: "5px",
-                              borderTop:
-                                "1px solid var(--toastify-spinner-color-empty-area)",
-                              paddingTop: "5px",
+                            sx={{
+                              "& .MuiInputBase-root": {
+                                height: "35px",
+                              },
+                              "& .MuiInputBase-input": { textAlign: "end" },
                             }}
-                          >
-                            <label className="font-bold">Round Off : </label>
-                            <span>{!roundOff ? 0 : roundOff}</span>
-                          </div>
-
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                              justifyContent: "space-between",
-                              borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                              paddingTop: "5px",
-                            }}
-                          >
-                            <label className="font-bold">Net Amount: </label>
-                            <span
-                              style={{
-                                fontWeight: 800,
-                                fontSize: "22px",
-                                color: "var(--COLOR_UI_PHARMACY)",
-                              }}
-                            >
-                              {netAmount}
-                            </span>
-                          </div>
+                          />
                         </div>
-                      </Modal>
-                    </div>
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <label className="font-bold">
+                            Loyalty Points Redeem:{" "}
+                          </label>
+                          <span>{loyaltyVal || 0}</span>
+                        </div>
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            paddingBottom: "5px",
+                          }}
+                        >
+                          <label className="font-bold">
+                            Discount Amount :{" "}
+                          </label>
+                          {discountAmount !== 0 && (
+                            <span>
+                              {discountAmount > 0
+                                ? `-${discountAmount}`
+                                : discountAmount}
+                            </span>
+                          )}
+                        </div>
+
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            paddingBottom: "5px",
+                            borderTop:
+                              "1px solid var(--toastify-spinner-color-empty-area)",
+                            paddingTop: "5px",
+                          }}
+                        >
+                          <label className="font-bold">Round Off : </label>
+                          <span>{!roundOff ? 0 : roundOff}</span>
+                        </div>
+
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                            justifyContent: "space-between",
+                            borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                            paddingTop: "5px",
+                          }}
+                        >
+                          <label className="font-bold">Net Amount: </label>
+                          <span
+                            style={{
+                              fontWeight: 800,
+                              fontSize: "22px",
+                              color: "var(--COLOR_UI_PHARMACY)",
+                            }}
+                          >
+                            {netAmount}
+                          </span>
+                        </div>
+                      </div>
+                    </Modal>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
+
         <Dialog open={openAddPopUp} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add Doctor
@@ -3118,15 +3207,22 @@ const Addsale = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div
-                className="flex"
-                style={{ flexDirection: "column", gap: "19px" }}
+                className="bg-white"
+                style={{
+                  alignItems: "center",
+                  gap: "15px",
+                  marginBlock: "20px",
+                }}
               >
-                <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                  <div className="">
-                    <div className="mb-2">
-                      <span className="label primary mb-4">Doctor Name</span>
-                      <span className="text-red-600 ml-1">*</span>
-                    </div>
+                <div
+                  className="mainform bg-white rounded-lg gap-2"
+                  style={{ padding: "20px" }}
+                >
+                  {/* Doctor Name */}
+                  <div className="fields add_new_item_divv">
+                    <label className="label secondary">
+                      Doctor Name <span className="text-red-600">*</span>
+                    </label>
                     <TextField
                       id="outlined-multiline-static"
                       size="small"
@@ -3135,15 +3231,21 @@ const Addsale = () => {
                         setDoctorName(e.target.value);
                         setUnsavedItems(true);
                       }}
-                      style={{ minWidth: 340 }}
-                      variant="standard"
+                      style={{ minWidth: 300 }}
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 0)}
+                      inputProps={{
+                        style: { textTransform: "uppercase" },
+                        autoComplete: "off",
+                      }}
                     />
                   </div>
-                  <div className="">
-                    <div className="mb-2">
-                      <span className="label primary">Clinic Name</span>
-                      <span className="text-red-600 ml-1">*</span>
-                    </div>
+
+                  {/* Clinic Name */}
+                  <div className="fields add_new_item_divv">
+                    <label className="label secondary">
+                      Clinic Name <span className="text-red-600">*</span>
+                    </label>
                     <TextField
                       id="outlined-multiline-static"
                       size="small"
@@ -3152,12 +3254,11 @@ const Addsale = () => {
                         setClinic(e.target.value);
                         setUnsavedItems(true);
                       }}
-                      style={{ minWidth: 340 }}
-                      variant="standard"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          AddDoctorRecord();
-                        }
+                      style={{ minWidth: 300 }}
+                      inputRef={(el) => (inputRefs.current[1] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 1)}
+                      inputProps={{
+                        autoComplete: "off",
                       }}
                     />
                   </div>
@@ -3170,15 +3271,16 @@ const Addsale = () => {
               <Button
                 autoFocus
                 variant="contained"
-                disabled={!(doctorName && clinic)}
                 color="success"
                 onClick={AddDoctorRecord}
+                ref={(el) => (inputRefs.current[2] = el)}
               >
                 Save
               </Button>
             </div>
           </DialogActions>
         </Dialog>
+
         {/* add Customer */}
         <Dialog open={openCustomer} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
@@ -3203,35 +3305,41 @@ const Addsale = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div
-                className="bg-white" style={{
+                className="bg-white"
+                style={{
                   alignItems: "center",
                   gap: "15px",
                   marginBlock: "20px",
                 }}
               >
                 <div
-                  className="mainform bg-white rounded-lg gap-2" style={{ padding: "20px" }}
+                  className="mainform bg-white rounded-lg gap-2"
+                  style={{ padding: "20px" }}
                 >
-
-
+                  {/* Customer Name */}
                   <div className="fields add_new_item_divv">
-
-                    <lable className="label secondary">Customer Name <span className="text-red-600 ">*</span></lable>
-
+                    <label className="label secondary">
+                      Customer Name <span className="text-red-600">*</span>
+                    </label>
                     <TextField
                       id="outlined-multiline-static"
                       size="small"
                       value={customerName}
                       onChange={(e) => {
-                        setCustomerName(e.target.value);
+                        setCustomerName(e.target.value.toUpperCase());
                         setUnsavedItems(true);
                       }}
                       style={{ minWidth: 300 }}
-
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 0)}
+                      inputProps={{
+                        style: { textTransform: "uppercase" },
+                        autoComplete: "off",
+                      }}
                     />
                   </div>
 
-
+                  {/* Mobile Number */}
                   <div className="fields add_new_item_divv">
                     <label className="label secondary">
                       Mobile Number <span className="text-red-600">*</span>
@@ -3245,13 +3353,9 @@ const Addsale = () => {
                         setUnsavedItems(true);
                       }}
                       style={{ minWidth: 300 }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          AddCustomerRecord();
-                        }
-                      }}
+                      inputRef={(el) => (inputRefs.current[1] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 1)} // Moves to next or submit manually
                     />
-
                   </div>
                 </div>
               </div>
@@ -3262,9 +3366,9 @@ const Addsale = () => {
               <Button
                 autoFocus
                 variant="contained"
-
                 color="success"
                 onClick={AddCustomerRecord}
+                ref={(el) => (inputRefs.current[2] = el)}
               >
                 Save
               </Button>

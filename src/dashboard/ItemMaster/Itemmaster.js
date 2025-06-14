@@ -1243,7 +1243,7 @@ const Itemmaster = () => {
                       <label className="label">Category </label>
                       {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
                     </div>
-                    <Box >
+                    <Box>
                       <FormControl fullWidth>
                         <Autocomplete
                           disablePortal
@@ -1278,10 +1278,7 @@ const Itemmaster = () => {
 
               </div>
             </div>
-
             <div className="row border-b border-dashed " style={{ borderColor: "var(--color2)" }}></div>
-
-          
             <div >
               <div className="row pb-2"></div>
               <div>
@@ -1290,7 +1287,6 @@ const Itemmaster = () => {
                 </h1>
               </div>
               <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
-
               <div className="row justify-center product_img_divv mt-4 gap-4 ">
                 <div className="upload_bx1 w-full">
                   <div className="uploadBox">
@@ -1404,7 +1400,6 @@ const Itemmaster = () => {
                     </span>
                   )}
                 </div>
-
                 <div className="upload_bx3 w-full">
                   <div className="uploadBox">
                     <h1 className="text-gray-600 font-semibold text-lg md:text-xl">

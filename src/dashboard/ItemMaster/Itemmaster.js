@@ -91,7 +91,7 @@ const Itemmaster = () => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
-  const [error, setError] = useState({searchItem: "",unit: "",weightage: "",pack: "",packaging: "",selectedCompany: "",selectedSuppliers: "",drugGroup: "",selectedCategory: "",selectedFrontFile: "",selectedMRPFile: "",selectedBackFile: "",});
+  const [error, setError] = useState({ searchItem: "", unit: "", weightage: "", pack: "", packaging: "", selectedCompany: "", selectedSuppliers: "", drugGroup: "", selectedCategory: "", selectedFrontFile: "", selectedMRPFile: "", selectedBackFile: "", });
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -103,7 +103,7 @@ const Itemmaster = () => {
       }
     }
   };
-  
+
   const handleFileUpload = async () => {
     if (file) {
       let data = new FormData();
@@ -220,7 +220,7 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-          
+
         console.error("API error:", error);
 
       });
@@ -234,7 +234,7 @@ const Itemmaster = () => {
         },
       })
       .then((response) => {
-      
+
         setGstList(response.data.data);
         setIsLoading(false);
       })
@@ -275,7 +275,7 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-      
+
         console.error("API error:", error);
 
 
@@ -294,7 +294,7 @@ const Itemmaster = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-     
+
         console.error("API error:", error);
 
 
@@ -459,7 +459,7 @@ const Itemmaster = () => {
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
-      } 
+      }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
@@ -488,7 +488,7 @@ const Itemmaster = () => {
         })
         .then((response) => {
           setItemList(response.data.data.data);
-       
+
         });
     } catch (error) {
       console.error("API error:", error);
@@ -544,7 +544,7 @@ const Itemmaster = () => {
           setSelectedSuppliers(supplier);
 
           const locationItem = locationList.find((x) => x === data?.loaction);
-          
+
           setLocationValue(locationItem);
 
           if (locationItem) {
@@ -592,7 +592,7 @@ const Itemmaster = () => {
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
-   
+
   };
 
   const handlePack = (e) => {
@@ -617,7 +617,7 @@ const Itemmaster = () => {
   };
 
   const handleDownload = () => {
-    
+
     const link = document.createElement("a");
     link.href = "/ItemSample_Data.csv";
     link.download = "ItemSample_Data.csv";
@@ -660,7 +660,7 @@ const Itemmaster = () => {
   return (
     <div>
       <Header />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -675,8 +675,8 @@ const Itemmaster = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="item_add_box paddin12-8" style={{ gap: "0px" }}> 
-        {/* //content class*/}
+        <div className="item_add_box paddin12-8" style={{ gap: "0px" }}>
+          {/* //content class*/}
           <div className="flex justify-between header_bx px-4 py-3">
             <h1
               style={{
@@ -694,14 +694,14 @@ const Itemmaster = () => {
               style={{
                 background: "var(--color1)",
                 display: "flex",
-                gap: "10px", 
+                gap: "10px",
               }}
               onClick={openFileUpload}
             >
               <CloudUploadIcon /> Import</Button>
           </div>
           <div
-            className="mainform bg-white rounded-lg px-4 pb-3 pt-0" 
+            className="mainform bg-white rounded-lg px-4 pb-3 pt-0"
           >
             <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
 
@@ -1172,10 +1172,10 @@ const Itemmaster = () => {
                             borderColor: "rgba(0, 0, 0, 0.38) "
                           },
                           "&:hover fieldset": {
-                            borderColor: "var(--color1)", 
+                            borderColor: "var(--color1)",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", 
+                            borderColor: "var(--color1)",
                           },
                         },
                       }}
@@ -1186,7 +1186,7 @@ const Itemmaster = () => {
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv" style={{ width: "100%" }}>
                     <label className="label">Packaging In</label>
-                     <Select
+                    <Select
                       labelId="dropdown-label"
                       id="dropdown"
                       value={packaging}
@@ -1304,7 +1304,7 @@ const Itemmaster = () => {
                     />
                     {selectedFrontFile == null ? (
                       <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                        <img src="./tablet_2.png" width="40%" height="40%" style={{
                           marginTop: "18px",
                           height: "200px",
                           width: "250px",
@@ -1360,7 +1360,7 @@ const Itemmaster = () => {
                     />
                     {selectedBackFile == null ? (
                       <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                        <img src="./tablet_2.png" width="40%" height="40%" style={{
                           marginTop: "18px",
                           height: "200px",
                           width: "250px",
@@ -1416,7 +1416,7 @@ const Itemmaster = () => {
                     />
                     {selectedMRPFile == null ? (
                       <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%"  style={{
+                        <img src="./tablet_2.png" width="40%" height="40%" style={{
                           marginTop: "18px",
                           height: "200px",
                           width: "250px",
@@ -1541,11 +1541,14 @@ const Itemmaster = () => {
               style={{ width: "400px" }}
               value={drugGroupName}
               onChange={(e) => {
-                setDrugGroupName(e.target.value);
+                const value = e.target.value;
+                const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                setDrugGroupName(capitalized);
               }}
+
               required
             />
-          </div> 
+          </div>
         </DialogContent>
         <DialogActions>
           <div className="pb-3 flex gap-2 pr-5">
@@ -1576,14 +1579,16 @@ const Itemmaster = () => {
               size="small"
               style={{ width: "400px" }}
               value={companyName}
-              onChange={(e) => {
-                setCompanyName(e.target.value);
+                 onChange={(e) => {
+                const value = e.target.value;
+                const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                setCompanyName(capitalized);
               }}
               required
             />
           </div>
         </DialogContent>
-        <DialogActions> 
+        <DialogActions>
           <div className="pb-3 flex gap-2 pr-5">
             <Button
               type="submit"

@@ -212,9 +212,10 @@ const Company = () => {
     //(newValue, "145214");
   };
 
-  const handleInputChange = (event, newInputValue) => {
-    setCompanyName(newInputValue);
-  };
+const handleInputChange = (event, newInputValue) => {
+  setCompanyName(newInputValue.toUpperCase());
+};
+
   const [deleteCompanyId, setDeleteCompanyId] = useState(null);
   const [IsDelete, setIsDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -395,14 +396,14 @@ const Company = () => {
         <Dialog
           className="order_list_ml custom-dialog"
           open={openAddPopUp}
-          //   sx={{
-          //     "& .MuiDialog-container": {
-          //       "& .MuiPaper-root": {
-          //         width: "50%",
-          //         maxWidth: "500px", // Set your width here
-          //       },
-          //     },
-          //   }}
+        //   sx={{
+        //     "& .MuiDialog-container": {
+        //       "& .MuiPaper-root": {
+        //         width: "50%",
+        //         maxWidth: "500px", // Set your width here
+        //       },
+        //     },
+        //   }}
         >
           <DialogTitle
             id="alert-dialog-title"
@@ -493,9 +494,8 @@ const Company = () => {
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsDelete ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

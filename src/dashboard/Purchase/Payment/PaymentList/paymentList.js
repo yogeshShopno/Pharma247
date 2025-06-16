@@ -288,54 +288,54 @@ const PaymentList = () => {
     try {
       isEditMode == false
         ? await axios
-            .post("purches-payment-store", data, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => {
-              setPaymentList(response?.data?.data);
-              listDistributor();
-              setIsLoading(false);
-              setConfirm(false);
-              setOpen(false);
-              paymentBillList();
-              setDistributor(null);
-              setPaymentType("");
-              setErrors({});
-              setNote("");
-              setAmounts(0);
-              toast.success(response.data.meassage);
-              setPurchaseBill([]);
-              if (response.data.status === 401) {
-                history.push("/");
-                localStorage.clear();
-              }
-            })
+          .post("purches-payment-store", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setPaymentList(response?.data?.data);
+            listDistributor();
+            setIsLoading(false);
+            setConfirm(false);
+            setOpen(false);
+            paymentBillList();
+            setDistributor(null);
+            setPaymentType("");
+            setErrors({});
+            setNote("");
+            setAmounts(0);
+            toast.success(response.data.meassage);
+            setPurchaseBill([]);
+            if (response.data.status === 401) {
+              history.push("/");
+              localStorage.clear();
+            }
+          })
         : await axios
-            .post("purches-payment-edit", data, {
-              params: params,
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => {
-              setPaymentList(response?.data?.data);
-              setIsLoading(false);
-              setConfirm(false);
-              setOpen(false);
-              paymentBillList();
-              setDistributor(null);
-              setPaymentType("");
-              setErrors({});
-              setNote("");
-              setAmounts(0);
-              setPurchaseBill([]);
-              if (response.data.status === 401) {
-                history.push("/");
-                localStorage.clear();
-              }
-            });
+          .post("purches-payment-edit", data, {
+            params: params,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setPaymentList(response?.data?.data);
+            setIsLoading(false);
+            setConfirm(false);
+            setOpen(false);
+            paymentBillList();
+            setDistributor(null);
+            setPaymentType("");
+            setErrors({});
+            setNote("");
+            setAmounts(0);
+            setPurchaseBill([]);
+            if (response.data.status === 401) {
+              history.push("/");
+              localStorage.clear();
+            }
+          });
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
@@ -626,8 +626,8 @@ const PaymentList = () => {
                               isStatus && value === "Paid"
                                 ? "orderStatus"
                                 : isStatus && value === "Partially Paid"
-                                ? "pendingStatus"
-                                : "text-black";
+                                  ? "pendingStatus"
+                                  : "text-black";
 
                             return (
                               <td
@@ -636,9 +636,8 @@ const PaymentList = () => {
                                 className={`text-lg `}
                               >
                                 <span
-                                  className={`text ${isStatus && statusClass} ${
-                                    isDueAmount ? dueAmountClass : "text-black"
-                                  }`}
+                                  className={`text ${isStatus && statusClass} ${isDueAmount ? dueAmountClass : "text-black"
+                                    }`}
                                 >
                                   {column.format && typeof value === "number"
                                     ? column.format(value)
@@ -651,13 +650,13 @@ const PaymentList = () => {
                             permissions,
                             "purchase payment edit"
                           ) && (
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
-                                onClick={() => handleEditOpen(row)}
-                              />
-                            </td>
-                          )}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <BorderColorIcon
+                                  style={{ color: "var(--color1)" }}
+                                  onClick={() => handleEditOpen(row)}
+                                />
+                              </td>
+                            )}
                         </tr>
                       );
                     })
@@ -675,11 +674,10 @@ const PaymentList = () => {
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -715,15 +713,15 @@ const PaymentList = () => {
                 </button>
               )}
               <button
-                  onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700 "
-                    : "secondary-bg  text-white"
-                    }`}
-                  disabled={currentPage >= totalPages}
-                >
-                  Next
-                </button>
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700 "
+                  : "secondary-bg  text-white"
+                  }`}
+                disabled={currentPage >= totalPages}
+              >
+                Next
+              </button>
             </div>
           </div>
 
@@ -784,7 +782,11 @@ const PaymentList = () => {
                       </>
                     )}
                   </div>
-                  <div style={{ width: "100%" }}>
+                
+                </div>
+                <div className="flex sm:flex-nowrap flex-wrap gap-4"> 
+
+                    <div style={{ width: "100%" }}>
                     <span className="label primary">Payment Date</span>
                     {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
@@ -815,7 +817,7 @@ const PaymentList = () => {
                       }}
                       size="small"
                     >
-                      <MenuItem value="cash">Cash</MenuItem>
+                      <MenuItem selected value="cash">Cash</MenuItem>
                       <MenuItem value="credit">Credit</MenuItem>
                       {bankData?.map((option) => (
                         <MenuItem key={option.id} value={option.id}>
@@ -830,6 +832,7 @@ const PaymentList = () => {
                     )}
                   </div>
                 </div>
+
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="label primary">Note</span>
                   <TextField
@@ -953,7 +956,7 @@ const PaymentList = () => {
               <Button
                 autoFocus
                 style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)", 
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
                 }}
                 variant="contained"
                 onClick={handlePermission}

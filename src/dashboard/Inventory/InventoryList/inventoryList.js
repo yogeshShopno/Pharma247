@@ -997,7 +997,7 @@ const InventoryList = () => {
                         <FormGroup
                           value={selectedOptionExpiry}
                           onChange={handleExpiryChange}
-                          // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+                        // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
                         >
                           <FormControlLabel
                             control={
@@ -1452,9 +1452,9 @@ const InventoryList = () => {
 
       <Box
         className="flex flex-wrap md:flex-nowrap "
-        // style={{ overflow: "hidden" }}
+      // style={{ overflow: "hidden" }}
       >
-        
+
 
         <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
           <div className="row gap-3 mb-3 flex-wrap">
@@ -1480,7 +1480,7 @@ const InventoryList = () => {
                 handleSearch("items_with_invalid_mrp");
               }}
             >
-              invalid MRP : {missingData.items_with_invalid_mrp}
+              Missing MRP : {missingData.items_with_invalid_mrp}
             </Button>
             <Button
               variant="contained"
@@ -1505,7 +1505,7 @@ const InventoryList = () => {
               }}
             >
               Missing Category :{missingData.items_with_missing_category}
-            </Button> 
+            </Button>
             <Button
               variant="contained"
               style={{
@@ -1713,11 +1713,11 @@ const InventoryList = () => {
                     {data.map((item, index) => (
                       <tr
                         key={index}
-                        // style={{
-                        //   backgroundColor:
-                        //     selectedIndex === index ? "#ceecfd" : "transparent",
-                        //   color: selectedIndex === index ? "black" : "inherit",
-                        // }}
+                      // style={{
+                      //   backgroundColor:
+                      //     selectedIndex === index ? "#ceecfd" : "transparent",
+                      //   color: selectedIndex === index ? "black" : "inherit",
+                      // }}
                       >
                         <td style={{ borderRadius: "10px 0 0 10px" }}>
                           {/* <input
@@ -1870,7 +1870,7 @@ const InventoryList = () => {
         <Box className="side_contn">
           <div className="sticky top-0">
             <Box
-              className="custom-scroll invntry-filter" 
+              className="custom-scroll invntry-filter"
               role="presentation"
               onClick={() => toggleDrawer(false)}
             >
@@ -2023,7 +2023,7 @@ const InventoryList = () => {
                         <FormGroup
                           value={selectedOptionExpiry}
                           onChange={handleExpiryChange}
-                          // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
+                        // onChange={(e) => setSelectedOptionEpiry(e.target.value)}
                         >
                           <FormControlLabel
                             control={
@@ -2508,7 +2508,7 @@ const InventoryList = () => {
                       <TextField
                         autoComplete="off"
                         {...params}
-                        // label="Select Item"
+                      // label="Select Item"
                       />
                     )}
                   />
@@ -2532,7 +2532,7 @@ const InventoryList = () => {
                       />
                     )}
                   />
-                </div> 
+                </div>
                 <div>
                   <span className="title mb-2">Company</span>
                   <Autocomplete
@@ -2549,7 +2549,7 @@ const InventoryList = () => {
                       <TextField
                         autoComplete="off"
                         {...params}
-                        // label="Select Company"
+                      // label="Select Company"
                       />
                     )}
                   />
@@ -2687,7 +2687,7 @@ const InventoryList = () => {
 
       {/*<=========================================================================== Bulk edit dialog ===========================================================================>*/}
 
-      <Dialog className="custom-dialog" open={openEdit}> 
+      <Dialog className="custom-dialog" open={openEdit}>
         <DialogTitle id="alert-dialog-title" className="primary">
           Bulk Edit
         </DialogTitle>
@@ -2711,13 +2711,15 @@ const InventoryList = () => {
                 <span className="title mb-2">Location</span>
 
                 <Autocomplete
-                  value={locationBulk}
-                  inputValue={locationBulk}
+                  value={locationBulk ?? ""}
+
+                  inputValue={typeof locationBulk === "string" ? locationBulk : ""}
+
                   // sx={{ width: 200 }}
                   className="w-full"
                   size="small"
-                  onChange={handleOptionChange}
-                  onInputChange={handleInputChange}
+                  onChange={(event, newValue) => setLocationBulk(newValue)}
+                  onInputChange={(event, newInputValue) => setLocationBulk(newInputValue)}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option
                   }

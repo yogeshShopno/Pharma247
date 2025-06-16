@@ -801,25 +801,18 @@ const DoctorList = () => {
                 <DialogContentText id="alert-dialog-description">
                   <div className="flex flex-col gap-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Doctor Name - full width */}
+                      <div className="flex flex-col col-span-4 w-full">
                         <div className="mb-1">
-                          <span className="label primary mb-4">
-                            Doctor Name
-                          </span>
+                          <span className="label primary mb-4">Doctor Name</span>
                           <span className="text-red-600 ml-1">*</span>
                         </div>
                         <Autocomplete
                           value={doctor}
-                          // inputValue={searchItem.toUpperCase()}
-                          style={{ width: " 100%" }}
                           size="small"
                           onChange={handleOptionChange}
-                          onInputChange={handleInputChange}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              Dr.
-                            </InputAdornment>
-                          }
+                          onInputChange={(e, value) => handleInputChange(e, value.toUpperCase())}
                           getOptionLabel={(option) =>
                             typeof option === "string" ? option : option.name
                           }
@@ -833,6 +826,7 @@ const DoctorList = () => {
                             <TextField autoComplete="off" {...params} />
                           )}
                           freeSolo
+                          className="w-full"
                         />
                         {errors.Doctor && (
                           <span style={{ color: "red", fontSize: "12px" }}>
@@ -840,19 +834,17 @@ const DoctorList = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Clinic Name - full width */}
+                      <div className="flex flex-col col-span-4 w-full">
                         <div className="mb-1">
                           <span className="label primary">Clinic Name</span>
-                          {/* <span className="text-red-600 ml-1">*</span> */}
                         </div>
                         <TextField
                           autoComplete="off"
-                          id="outlined-multiline-static"
                           size="small"
                           value={clinic}
-                          onChange={(e) => {
-                            setClinic(e.target.value);
-                          }}
+                          onChange={(e) => setClinic(e.target.value.toUpperCase())}
                           className="w-full"
                           variant="outlined"
                         />
@@ -862,34 +854,30 @@ const DoctorList = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Email ID - regular width and lowercase */}
+                      <div className="flex flex-col w-full">
                         <span className="label primary">Email ID</span>
                         <TextField
                           autoComplete="off"
-                          id="outlined-multiline-static"
                           size="small"
                           value={emailId}
-                          onChange={(e) => {
-                            setEmailId(e.target.value);
-                          }}
+                          onChange={(e) => setEmailId(e.target.value)} // No uppercase here
                           className="w-full"
                           variant="outlined"
                         />
                       </div>
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Mobile No */}
+                      <div className="flex flex-col w-full">
                         <div className="mb-1">
                           <span className="label primary">Mobile No</span>
-                          {/* <span className="text-red-600 ml-1">*</span> */}
                         </div>
                         <OutlinedInput
                           type="number"
                           value={mobileNo}
                           onChange={handleChange}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              +91
-                            </InputAdornment>
-                          }
+                          startAdornment={<InputAdornment position="start">+91</InputAdornment>}
                           className="w-full"
                           size="small"
                         />
@@ -899,35 +887,36 @@ const DoctorList = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Licence No */}
+                      <div className="flex flex-col w-full">
                         <span className="label primary">Licence No.</span>
                         <OutlinedInput
-                          type="number"
+                          type="text"
                           value={licence}
-                          onChange={(e) => {
-                            setLicence(e.target.value);
-                          }}
+                          onChange={(e) => setLicence(e.target.value.toUpperCase())}
                           className="w-full"
                           size="small"
                         />
                       </div>
-                      <div className="flex flex-col " style={{ width: "100%" }}>
+
+                      {/* Address - full width */}
+                      <div className="flex flex-col col-span-4 w-full">
                         <span className="label primary">Address</span>
                         <TextField
                           autoComplete="off"
-                          id="outlined-multiline-static"
                           size="small"
                           value={address}
-                          onChange={(e) => {
-                            setAddress(e.target.value);
-                          }}
+                          onChange={(e) => setAddress(e.target.value.toUpperCase())}
                           className="w-full"
                           variant="outlined"
                         />
                       </div>
+
                     </div>
                   </div>
                 </DialogContentText>
+
               </DialogContent>
               <DialogActions style={{ padding: "20px 24px" }}>
                 <Button

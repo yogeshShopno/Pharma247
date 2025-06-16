@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { TextField } from "@mui/material";
+import { TextField ,Autocomplete} from "@mui/material";
 
 import axios from "axios";
 
@@ -29,6 +29,7 @@ const AddDistributer = () => {
   const [foodLicence, setFoodLicence] = useState("");
   const [durgLicence, setDurgLicence] = useState("");
   const [dueDays, setDueDays] = useState("");
+  const [distributorList, setDistributorList] = useState([]);
 
   // const [isEditMode, setIsEditMode] = useState('');
   /*<================================================================================ Input ref on keydown enter  =======================================================================> */
@@ -57,6 +58,39 @@ const AddDistributer = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  /*<================================================================================ Search distributor  =======================================================================> */
+
+
+  const listDistributor = (searchPayload = {}) => {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    if (Object.keys(searchPayload).length > 0) {
+      axios
+        .post("list-distributer", searchPayload, { headers })
+        .then((response) => {
+          const list = response.data.data?.distributor || response.data.data || [];
+          setDistributorList(list);
+        })
+        .catch((error) => {
+          console.error("Search failed", error);
+        });
+    } else {
+      axios
+        .get("list-distributer", { headers })
+        .then((response) => {
+          const list = response.data.data?.distributor || response.data.data || [];
+          localStorage.setItem("distributor", JSON.stringify(list));
+          setDistributorList(list);
+        })
+        .catch((error) => {
+          console.error("Fetch failed", error);
+        });
+    }
+  };
   /*<================================================================================ form submit  =======================================================================> */
 
   const handleSubmit = () => {
@@ -183,7 +217,7 @@ const AddDistributer = () => {
                     className="block  text-gray-700 font-bold mb-2"
                     htmlFor="gst_number"
                   >
-                    Distributor GST/IN Number
+                    Distributor GST/IN Number <span className="text-red-600 ">*</span>
                   </label>
 
                   <div class="relative w-full">
@@ -198,15 +232,20 @@ const AddDistributer = () => {
                       className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                       name="gst_number"
                       type="text"
+                      autoFocus
                       value={GSTNumber}
                       inputRef={(el) => (inputRefs.current[0] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 0)}
                       onChange={(e) => {
-                        const value = e.target.value
+                        const raw = e.target.value
                           .toUpperCase()
-                          .replace(/[^A-Z0-9]/g, "");
-                        setGSTNumber(value);
+                          .replace(/[^A-Z0-9]/g, "")
+                          .slice(0, 15); // max 15 characters
+
+                        setGSTNumber(raw);
                       }}
+
+
                     />
 
                     <div
@@ -223,33 +262,42 @@ const AddDistributer = () => {
                     className="block text-gray-700 font-bold mb-2"
                     htmlFor="distributor_name"
                   >
-                    Distributor Name
+                    Distributor Name <span className="text-red-600 ">*</span>
                   </label>
-                  <TextField
-                    variant="outlined"
-                    autoComplete="off"
-                    sx={{
-                      ".MuiInputBase-input": {
-                        padding: "10px 12px",
-                      },
+                  <Autocomplete
+                    freeSolo
+                    options={distributorList.map((option) => option.distributor_name || option.name || "")}
+                    inputValue={distributorName}
+                    onInputChange={(event, newInputValue) => {
+                      setDistributorName(newInputValue.toUpperCase());
+                      listDistributor({ search: newInputValue }); // call API with search
                     }}
-                    inputRef={(el) => (inputRefs.current[1] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, 1)}
-                    value={distributorName}
-                    className="appearance-none border rounded-lg px-0 py-0 w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
-                    name="distributor_name"
-                    type="text"
-                    onChange={(e) => {
-                      setDistributorName(e.target.value.toUpperCase());
-                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        autoComplete="off"
+                        inputRef={(el) => (inputRefs.current[1] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 1)}
+                        sx={{
+                          ".MuiInputBase-input": {
+                            padding: "10px 12px",
+                            height: "10px",
+                          },
+                        }}
+                        className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                        // label="Distributor Name *"
+                      />
+                    )}
                   />
+
                 </div>
                 <div>
                   <label
                     className="block text-gray-700 font-bold mb-2"
                     htmlFor="mobile_no"
                   >
-                    Mobile No.
+                    Mobile No. <span className="text-red-600 ">*</span>
                   </label>
                   <TextField
                     variant="outlined"
@@ -265,7 +313,10 @@ const AddDistributer = () => {
                     name="mobile_no"
                     type="number"
                     value={mobileno}
-                    onChange={(e) => setMobileno(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
+                      setMobileno(value);
+                    }}
                   />
                 </div>
                 <div>
@@ -314,7 +365,8 @@ const AddDistributer = () => {
                     inputRef={(el) => (inputRefs.current[4] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 4)}
                     onChange={(e) => {
-                      setWhatsapp(e.target.value);
+                      const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
+                      setWhatsapp(value);
                     }}
                   />
                 </div>
@@ -369,7 +421,13 @@ const AddDistributer = () => {
                     value={address}
                     inputRef={(el) => (inputRefs.current[6] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 6)}
-                    onChange={(e) => setAddress(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const formattedValue =
+                        value.charAt(0).toUpperCase() +
+                        value.slice(1).toLowerCase();
+                      setAddress(formattedValue);
+                    }}
                   />
                 </div>
                 <div>
@@ -393,7 +451,13 @@ const AddDistributer = () => {
                     name="area"
                     type="text"
                     value={area}
-                    onChange={(e) => setArea(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const formattedValue =
+                        value.charAt(0).toUpperCase() +
+                        value.slice(1).toLowerCase();
+                      setArea(formattedValue);
+                    }}
                   />
                 </div>
                 <div>
@@ -417,7 +481,10 @@ const AddDistributer = () => {
                     name="pincode"
                     type="number"
                     value={pincode}
-                    onChange={(e) => setPincode(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "").slice(0, 6); // only digits, max 10
+                      setPincode(value);
+                    }}
                   />
                   <div name="pincode" />
                 </div>
@@ -498,7 +565,7 @@ const AddDistributer = () => {
                     name="payment_due_days"
                     type="number"
                     value={dueDays}
-                    onChange={(e) => setDueDays(Number(e.target.value))}
+                    onChange={(e) => setDueDays(e.target.value)}
                   />
                   <div name="payment_due_days" />
                 </div>
@@ -631,7 +698,7 @@ const AddDistributer = () => {
                       />
                       <div name="ifsc_code" />
                     </div>
-                  </div> 
+                  </div>
                   <div className="text-center my-8">
                     <button
                       type="submit"

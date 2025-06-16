@@ -363,7 +363,7 @@ const OrderList = () => {
                   }}
                   onClick={handelAddOpen}
                 >
-                  <AddIcon className="" /> Place Order
+                  <AddIcon className="" /> Pending Orders
                 </Button>
               </div>
             </div>
@@ -749,7 +749,7 @@ const OrderList = () => {
                 id="alert-dialog-title"
                 style={{ fontWeight: 700 }}
               >
-                Place Order
+                Pending Orders
               </DialogTitle>
               <IconButton
                 aria-label="close"
@@ -855,7 +855,7 @@ const OrderList = () => {
                   }}
                   onClick={PlaceOrder}
                 >
-                  Place Order
+                  Pending Orders
                 </Button>
                 <Button
                   autoFocus

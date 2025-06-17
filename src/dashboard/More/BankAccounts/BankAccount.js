@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import Header from "../../Header";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,6 +8,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Autocomplete from '@mui/material/Autocomplete';
 import DatePicker from "react-datepicker";
 import { addDays, format, subDays } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
@@ -101,6 +102,9 @@ const BankAccount = () => {
   const [bankDetails, setBankDetails] = useState([]);
   const [details, setDetails] = useState({});
   const pdfIcon = process.env.PUBLIC_URL + "/pdf.png";
+    const inputRefs = useRef([]);
+  
+
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -109,31 +113,31 @@ const BankAccount = () => {
   const [reduceclicked, setReduceClicked] = useState(false);
   const Reducebutton = reduceclicked
     ? {
-        color: "white",
-        background: "#F31C1C",
-        textTransform: "none",
-        borderRadius: 50,
-      }
+      color: "white",
+      background: "#F31C1C",
+      textTransform: "none",
+      borderRadius: 50,
+    }
     : {
-        color: "#F31C1C",
-        border: "1px solid #F31C1C",
-        textTransform: "none",
-        borderRadius: 50,
-      };
+      color: "#F31C1C",
+      border: "1px solid #F31C1C",
+      textTransform: "none",
+      borderRadius: 50,
+    };
 
   const Addbutton = clicked
     ? {
-        color: "white",
-        background: "#628A2F",
-        textTransform: "none",
-        borderRadius: 50,
-      }
+      color: "white",
+      background: "#628A2F",
+      textTransform: "none",
+      borderRadius: 50,
+    }
     : {
-        color: "#628A2F",
-        border: "1px solid #628A2F",
-        textTransform: "none",
-        borderRadius: 50,
-      };
+      color: "#628A2F",
+      border: "1px solid #628A2F",
+      textTransform: "none",
+      borderRadius: 50,
+    };
 
   const handleAddBtn = () => {
     setClicked((prevState) => !prevState);
@@ -422,7 +426,7 @@ const BankAccount = () => {
     );
     if (selectedPaymentType == "cash") {
       const selectedBankData = bankData[0];
-      setCurrentBalance(selectedBankData.cash_amount);
+      setCurrentBalance(selectedBankData.total_amount);
     } else {
       setCurrentBalance(selectedBankData.total_amount);
     }
@@ -728,7 +732,7 @@ const BankAccount = () => {
               //     md: 'calc(100vh - 56px)',
               //     lg: 'calc(100vh - 56px)',
               // },
-              overflowY: "auto", 
+              overflowY: "auto",
             }}
             role="presentation"
             onClick={() => toggleDrawer(false)}
@@ -745,9 +749,8 @@ const BankAccount = () => {
               {bankData.map((account, index) => (
                 <ListItem
                   key={account.id}
-                  className={`list-bank ${
-                    highlightedIndex === index ? "highlighted" : ""
-                  }`}
+                  className={`list-bank ${highlightedIndex === index ? "highlighted" : ""
+                    }`}
                   disablePadding
                 >
                   <ListItemButton
@@ -990,21 +993,21 @@ const BankAccount = () => {
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           PassbookColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                     className={
                                       column.id === "withdraw"
                                         ? "debit-cell"
                                         : column.id === "deposit"
-                                        ? "credit-cell"
-                                        : ""
+                                          ? "credit-cell"
+                                          : ""
                                     }
                                   >
                                     {item[column.id]}
@@ -1023,233 +1026,7 @@ const BankAccount = () => {
           </Box>
         </Box>
 
-        {/* <Dialog open={openAddPopUp}
-                    sx={{
-                        "& .MuiDialog-container": {
-                            "& .MuiPaper-root": {
-                                width: "30%",
-                                minWidth: "300px",
-                            },
-                        },
-                    }}
-                >
-                    <DialogTitle id="alert-dialog-title" className="secondary">
-                        Add Bank Account
-                    </DialogTitle>
-                    <IconButton
-                        aria-label="close"
-                        onClick={handleCloseDialog}
-                        sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            <div className="flex my-4" style={{ flexDirection: 'column', gap: '19px' }}>
-                                <div className="flex gap-5 ">
-                                    <div  >
-                                        <div className="mb-2" >
-                                            <span className="label primary mb-4" >Bank Name</span>
-                                            <span className="text-red-600 ml-1">*</span>
-                                        </div>
-                                        <TextField
-                 autoComplete="off"
-                                            id="outlined-multiline-static"
-                                            size="small"
-                                            value={bankName}
-                                            onChange={(e) => { setBankName(e.target.value) }}
-                                           style={{width:"100%"}}
-                                            variant="outlined"
-
-                                        />
-                                        {errors.bankName && <span className="error">{errors.bankName}</span>}
-                                    </div>
-                                    <div>
-                                        <div className="mb-2" >
-                                            <span className="label primary" >Account Type</span>
-                                            <span className="text-red-600 ml-1">*</span>
-                                        </div>
-                                        <TextField
-                 autoComplete="off"
-                                            id="outlined-multiline-static"
-                                            size="small"
-                                            value={accountType}
-                                            onChange={(e) => { setAccountType(e.target.value) }}
-                                           style={{width:"100%"}}
-                                            variant="outlined"
-
-                                        />
-                                        {errors.accountType && <span className="error">{errors.accountType}</span>}
-                                    </div>
-                                </div>
-                                <div className="flex gap-5">
-                                    <div >
-                                        <div className="mb-2" >
-                                            <span className="label primary mb-4" >Opening Balance</span>
-                                        </div>
-                                        <TextField
-                 autoComplete="off"
-                                            id="outlined-multiline-static"
-                                            size="small"
-                                            value={openingBalance}
-                                            onChange={(e) => { setOpeningBalance(e.target.value) }}
-                                           style={{width:"100%"}}
-                                            variant="outlined"
-                                        />
-                                    </div>
-                                    <div>
-                                        <div className="mb-2" >
-                                            <span className="label primary" >As of Date</span>
-                                        </div>
-                                        <div className="detail">
-                                            <div style={{ width: "215px" }}>
-                                                <DatePicker
-                                                    className='custom-datepicker '
-                                                    selected={asOfDate}
-                                                    onChange={(newDate) => setAsOfDate(newDate)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    minDate={new Date()}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="border-1 text-black font-bold flex justify-between items-center" >
-                                Add Bank Details
-                                <Switch {...label} checked={switchCheck} onChange={(e) => setSwitchChecked(e.target.checked)} />
-                            </div>
-                            {switchCheck == true &&
-
-                                <>
-                                    <div className="flex gap-5 my-4">
-                                        <div >
-                                            <div className="mb-2" >
-                                                <span className="label primary mb-4" >Bank Account Number</span>
-                                                <span className="text-red-600 ml-1">*</span>
-                                            </div>
-                                            <TextField
-                 autoComplete="off"
-                                                id="outlined-multiline-static"
-                                                size="small"
-                                                value={accountNumber}
-                                                onChange={(e) => { setAccountNumber(e.target.value) }}
-                                               style={{width:"100%"}}
-                                                variant="outlined"
-
-                                            />
-                                            {errors.accountNumber && <span className="error">{errors.accountNumber}</span>}
-                                        </div>
-                                        <div>
-                                            <div className="mb-2" >
-                                                <span className="label primary" >Re-Enter Account Number</span>
-                                                <span className="text-red-600 ml-1">*</span>
-                                            </div>
-                                            <TextField
-                 autoComplete="off"
-                                                id="outlined-multiline-static"
-                                                size="small"
-                                                value={reEnterAccountNumber}
-                                                onChange={(e) => { setReEnterAccountNumber(e.target.value) }}
-                                               style={{width:"100%"}}
-                                                variant="outlined"
-
-                                            />
-                                            {errors.reEnterAccountNumber && <span className="error">{errors.reEnterAccountNumber}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-5 my-4">
-                                        <div >
-                                            <div className="mb-2" >
-                                                <span className="label primary mb-4" >IFSC Code</span>
-                                                <span className="text-red-600 ml-1">*</span>
-
-                                            </div>
-                                            <TextField
-                 autoComplete="off"
-                                                id="outlined-multiline-static"
-                                                size="small"
-                                                value={ifscCode}
-                                                onChange={(e) => { setIfscCode(e.target.value) }}
-                                               style={{width:"100%"}}
-                                                variant="outlined"
-
-                                            />
-                                            {errors.ifscCode && <span className="error">{errors.ifscCode}</span>}
-                                        </div>
-                                        <div>
-                                            <div className="mb-2" >
-                                                <span className="label primary" >Branch Name</span>
-                                                <span className="text-red-600 ml-1">*</span>
-                                            </div>
-                                            <div className="detail">
-                                                <TextField
-                 autoComplete="off"
-                                                    id="outlined-multiline-static"
-                                                    size="small"
-                                                    value={branchName}
-                                                    onChange={(e) => { setBranchName(e.target.value) }}
-                                                   style={{width:"100%"}}
-                                                    variant="outlined"
-
-                                                />
-                                                {errors.branchName && <span className="error">{errors.branchName}</span>}
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div className="flex gap-5">
-                                        <div >
-                                            <div className="mb-2" >
-                                                <span className="label primary mb-4" >Account Holder Name</span>
-                                                <span className="text-red-600 ml-1">*</span>
-
-                                            </div>
-                                            <TextField
-                 autoComplete="off"
-                                                id="outlined-multiline-static"
-                                                size="small"
-                                                value={accountHolderName}
-                                                onChange={(e) => { setAccountHolderName(e.target.value) }}
-                                               style={{width:"100%"}}
-                                                variant="outlined"
-                                            />
-                                            {errors.accountHolderName && <span className="error">{errors.accountHolderName}</span>}
-                                        </div>
-                                        <div>
-                                            <div className="mb-2" >
-                                                <span className="label primary" >UPI ID</span>
-                                            </div>
-                                            <div className="detail">
-                                                <TextField
-                 autoComplete="off"
-                                                    id="outlined-multiline-static"
-                                                    size="small"
-                                                    value={upiId}
-                                                    onChange={(e) => { setUpiId(e.target.value) }}
-                                                   style={{width:"100%"}}
-                                                    variant="outlined"
-
-                                                />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </>
-                            }
-                        </DialogContentText>
-
-                    </DialogContent>
-
-                    <DialogActions>
-                        <Button autoFocus variant="contained" onClick={handleAddBank} >
-                            Save
-                        </Button>
-
-                    </DialogActions>
-                </Dialog> */}
+        
         <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog}>
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Bank Account
@@ -1283,6 +1060,7 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={bankName}
+                      
                       onChange={(e) => {
                         // Transform to uppercase
                         const uppercasedValue = e.target.value.toUpperCase();
@@ -1298,25 +1076,24 @@ const BankAccount = () => {
                   </div>
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
-                      <span className="label primary">Account Type</span>
-                      <span className="text-red-600 ml-1">*</span>
+                      <span className="label primary">Account Type <span className="text-red-600">*</span></span>
+
+                      <Autocomplete
+                        disablePortal
+                        options={[
+                          { label: 'Savings', value: 'Savings' },
+                          { label: 'Current', value: 'Current' },
+                          { label: 'Other', value: 'Other' },
+                        ]}
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            required
+                          />
+                        )}
+                      />
                     </div>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-multiline-static"
-                      size="small"
-                      type="text"
-                      value={accountType}
-                      onChange={(e) => {
-                        const capitalizedValue = e.target.value
-                          .toLowerCase()
-                          .replace(/\b\w/g, (char) => char.toUpperCase());
-                        setAccountType(capitalizedValue);
-                      }}
-                      style={{ width: "100%" }}
-                      variant="outlined"
-                      fullWidth={fullScreen}
-                    />
                     {errors.accountType && (
                       <span className="error">{errors.accountType}</span>
                     )}
@@ -1379,9 +1156,9 @@ const BankAccount = () => {
                       backgroundColor: "var(--COLOR_UI_PHARMACY)",
                     },
                     "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track":
-                      {
-                        backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
-                      },
+                    {
+                      backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
+                    },
                   }}
                 />
               </div>
@@ -1435,6 +1212,13 @@ const BankAccount = () => {
                             ""
                           ); // Remove non-numeric characters
                           setReEnterAccountNumber(numericValue);
+                          if (!accountNumber) {
+                            toast.error("Account Number is required");
+                          } else if (!reEnterAccountNumber) {
+                            toast.error("Re Enter Account Number is required");
+                          } else if (accountNumber !== reEnterAccountNumber) {
+                            toast.error("Account Numbers do not match");
+                          }
                         }}
                         style={{ width: "100%" }}
                         variant="outlined"
@@ -1481,8 +1265,12 @@ const BankAccount = () => {
                           id="outlined-multiline-static"
                           size="small"
                           value={branchName}
+
                           onChange={(e) => {
-                            setBranchName(e.target.value);
+                            const capitalizedValue = e.target.value
+                              .toLowerCase()
+                              .replace(/\b\w/g, (char) => char.toUpperCase());
+                            setBranchName(capitalizedValue);
                           }}
                           style={{ width: "100%" }}
                           variant="outlined"
@@ -1547,7 +1335,7 @@ const BankAccount = () => {
               )}
             </DialogContentText>
           </DialogContent>
-          <DialogActions style={{ padding: "0px 24px 24px"  }}>
+          <DialogActions style={{ padding: "0px 24px 24px" }}>
             <Button
               style={{ background: "var(--COLOR_UI_PHARMACY)", }}
               autoFocus
@@ -1658,7 +1446,7 @@ const BankAccount = () => {
                           selected={adjustDate}
                           onChange={(newDate) => setAdjustDate(newDate)}
                           dateFormat="dd/MM/yyyy"
-                          // minDate={new Date()}
+                        // minDate={new Date()}
                         />
                       </div>
                     </div>
@@ -1723,7 +1511,7 @@ const BankAccount = () => {
             <Button
               style={{
                 backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                color: "white", 
+                color: "white",
               }}
               autoFocus
               variant="contained"

@@ -40,7 +40,6 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { IoCaretDown } from "react-icons/io5";
 
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
@@ -1610,16 +1609,19 @@ const AddPurchaseBill = () => {
   /*<============================================================================== Discount calculation  ==========================================================================> */
 
   const handleSchAmt = (e) => {
+    const valueStr = String(e.target.value); // ensure string
     const inputDiscount =
-      e.target.value.replace(/[eE]/g, "") === ""
+      valueStr.replace(/[eE]/g, "") === ""
         ? ""
-        : parseFloat(e.target.value.replace(/[eE]/g, ""));
+        : parseFloat(valueStr.replace(/[eE]/g, ""));
+
     if (isNaN(inputDiscount)) {
       setDisc(0);
       setSchAmt(0);
       setBase(ptr * qty);
       return;
     }
+
     setDisc(inputDiscount);
 
     const totalSchAmt = parseFloat(
@@ -1942,32 +1944,50 @@ const AddPurchaseBill = () => {
 
               <div
                 className="relative inline-block"
-                onMouseEnter={() => {
-                  clearTimeout(timeoutRef.current);
-                  setIsOpen(true);
-                }}
+
                 onMouseLeave={() => {
                   timeoutRef.current = setTimeout(() => {
                     setIsOpen(false);
                   }, 200); // 200ms delay before closing
                 }}
               >
+                {/* Save button (left) */}
                 <Button
                   variant="contained"
-                  style={{ background: "var(--color1)", padding: "10px 24px", }}
-                  onClick={() => setIsOpen(!isOpen)}
-                  ref={submitButtonRef}
-                >
+                  style={{
+                    background: "var(--color1)",
+                    padding: "10px 24px",
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    height: "40px",
+                  }}
+                  onClick={() => {
+                      setBillSaveDraft("1");
+                      handleSubmit("1");
+                    }
+                  }>
                   Save
                 </Button>
+
+                {/* Dropdown button (right) */}
                 <Button
                   variant="contained"
-                  style={{ background: "var(--color1)", padding: "10px 24px", }}
+                  style={{
+                    background: "var(--color1)",
+                    padding: "10px",
+                    minWidth: "40px",
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    height: "40px",
+                  }}
+                  onMouseEnter={() => {
+                    clearTimeout(timeoutRef.current);
+                    setIsOpen(true);
+                  }}
                   onClick={() => setIsOpen(!isOpen)}
                   ref={submitButtonRef}
                 >
-                  <IoCaretDown className="text-white ml-1 mt-1" />
-
+                  <IoCaretDown className="text-white" />
                 </Button>
 
                 {isOpen && (
@@ -2654,7 +2674,7 @@ const AddPurchaseBill = () => {
                               id="outlined-number"
                               sx={{ width: "65px" }}
                               size="small"
-                              type="number"
+                              type="text"
                               value={disc}
                               onKeyDown={(e) => {
                                 const invalidKeys = ["e", "E", "+", "-", ","];
@@ -2728,7 +2748,7 @@ const AddPurchaseBill = () => {
 
                                   if (!allowedGST.includes(Number(gst))) {
                                     e.preventDefault();
-                                    toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
+                                    toast.error("Only 0%, 5%, 12%, 18%, or 28% GST is allowed");
                                     return;
                                   }
                                 }
@@ -3121,7 +3141,7 @@ const AddPurchaseBill = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />
@@ -3241,7 +3261,7 @@ const AddPurchaseBill = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />
@@ -3328,7 +3348,7 @@ const AddPurchaseBill = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />
@@ -3535,7 +3555,7 @@ const AddPurchaseBill = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />

@@ -1039,7 +1039,7 @@ const BankAccount = () => {
                     <IconButton
                         aria-label="close"
                         onClick={handleCloseDialog}
-                        sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                        sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
                     >
                         <CloseIcon />
                     </IconButton>
@@ -1261,7 +1261,7 @@ const BankAccount = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />
@@ -1572,7 +1572,7 @@ const BankAccount = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />

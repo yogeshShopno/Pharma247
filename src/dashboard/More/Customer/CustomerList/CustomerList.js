@@ -924,7 +924,7 @@ sx={{
                 position: "absolute",
                 right: 8,
                 top: 8,
-                color: (theme) => theme.palette.grey[500],
+                color: "#ffffff",
               }}
             >
               <CloseIcon />
@@ -1010,7 +1010,7 @@ sx={{
                     aria-label="close"
                     onClick={resetAddDialog}
                     className="text-gray-500"
-                  // sx={{ position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500] }}
+                  // sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
                   >
                     <CloseIcon />
                   </IconButton>

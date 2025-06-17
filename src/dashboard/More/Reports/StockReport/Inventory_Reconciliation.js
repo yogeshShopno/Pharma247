@@ -702,7 +702,7 @@ const Inventory_Reconciliation = () => {
               position: "absolute",
               right: 12,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: "#ffffff",
             }}
           >
             <CloseIcon />

@@ -1670,7 +1670,64 @@ const EditPurchaseBill = () => {
                               </td>
                             ) : (
 
-                              <td>add here list</td>
+                              <td>
+                                <Autocomplete
+                                  value={searchItem?.iteam_name}
+                                  sx={{ width: 350, padding: 0 }}
+                                  size="small"
+                                  key={selectedIndex}
+                                  onChange={handleOptionChange}
+                                  onInputChange={handleInputChange}
+                                  disabled={isAutocompleteDisabled}
+                                  getOptionLabel={(option) =>
+                                    `${option.iteam_name} `
+                                  }
+                                  options={itemList}
+                                  renderOption={(props, option) => (
+                                    <ListItem {...props}>
+                                      {/* <ListItemText
+                      primary={`${option.iteam_name}`}
+                      secondary={`Pack : ${option.pack} | MRP: ${option.mrp}  | Location: ${option.location}  | Current Stock : ${option.stock} `}
+                    /> */}
+                                      <ListItemText
+                                        primary={`${option.iteam_name}`}
+                                        secondary={` ${option.stock === 0
+                                          ? `Unit: ${option.weightage}`
+                                          : `Pack: ${option.pack}`
+                                          } | 
+            MRP: ${option.mrp}  | 
+            Location: ${option.location}  | 
+            Current Stock: ${option.stock}`}
+                                      />
+                                    </ListItem>
+                                  )}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      variant="outlined"
+                                      autoComplete="off"
+                                      {...params}
+                                      // label="Search Item Name"
+                                      autoFocus
+                                      inputRef={(el) => (inputRefs.current[0] = el)}
+                                      onKeyDown={(e) => {
+                                        if (
+                                          !searchItem &&
+                                          (e.key === "ArrowDown" ||
+                                            e.key === "ArrowUp")
+                                        ) {
+                                          tableRef.current.focus();
+
+                                          setTimeout(() => {
+                                            document.activeElement.blur(); // Removes focus from the input
+                                          }, 0);
+                                        } else {
+                                          handleKeyDown(e, 0);
+                                        }
+                                      }}
+                                    />
+                                  )}
+                                />
+                              </td>
                             )}
 
                             <td>
@@ -2127,6 +2184,7 @@ const EditPurchaseBill = () => {
                                 onKeyDown={async (e) => {
                                   if (e.key === "Enter") {
                                     e.preventDefault();
+                                    addPurchaseValidation()
 
                                   }
                                 }}
@@ -2161,7 +2219,7 @@ const EditPurchaseBill = () => {
                             </td>
                             <td className="total">
                               <span className="font-bold">
-                                {/* {ItemTotalAmount.toFixed(2)} */}
+                                {ItemTotalAmount.toFixed(2)}
                               </span>
                             </td>
                           </tr>

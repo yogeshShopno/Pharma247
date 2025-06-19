@@ -216,7 +216,14 @@ const EditPurchaseBill = () => {
 
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
-        inputRefs.current[0]?.focus();
+        removeItem();
+        setIsEditMode(false);
+        setSelectedIndex(-1);
+        setSearchItem("");
+        setValue("");
+        setTimeout(() => {
+          inputRefs.current[0]?.focus();
+        }, 10);
       }
     };
 
@@ -1103,12 +1110,15 @@ const EditPurchaseBill = () => {
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
+    console.log(newInputValue, newInputValue, "itemName");
+
   };
 
   const handleOptionChange = (event, newValue) => {
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
+
 
     handleSearch(itemName);
   };
@@ -1694,10 +1704,9 @@ const EditPurchaseBill = () => {
                                         secondary={` ${option.stock === 0
                                           ? `Unit: ${option.weightage}`
                                           : `Pack: ${option.pack}`
-                                          } | 
-            MRP: ${option.mrp}  | 
-            Location: ${option.location}  | 
-            Current Stock: ${option.stock}`}
+                                          } | MRP: ${option.mrp} 
+                                            | Location: ${option.location}
+                                            | Current Stock: ${option.stock}`}
                                       />
                                     </ListItem>
                                   )}
@@ -1710,20 +1719,27 @@ const EditPurchaseBill = () => {
                                       autoFocus
                                       inputRef={(el) => (inputRefs.current[0] = el)}
                                       onKeyDown={(e) => {
-                                        if (
-                                          !searchItem &&
-                                          (e.key === "ArrowDown" ||
-                                            e.key === "ArrowUp")
-                                        ) {
-                                          tableRef.current.focus();
+                                        const { key } = e;
+                                        const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
+                                   
+                                        if (!searchItem) {
+                                          if (isNavKey) {
+                                            e.preventDefault();
+                                            
 
-                                          setTimeout(() => {
-                                            document.activeElement.blur(); // Removes focus from the input
-                                          }, 0);
-                                        } else {
-                                          handleKeyDown(e, 0);
+                                            if (key === "ArrowDown" || key === "ArrowUp") {
+                                              tableRef.current.focus();
+                                              setTimeout(() => document.activeElement.blur(), 0);
+                                            }
+                                          }
+                                        } else  {
+                                          if (key === "Enter" || key === "Tab") {
+                                            console.log(searchItem,"Enter or Tab pressed");
+                                            handleKeyDown(e, 2);
+                                          }
                                         }
                                       }}
+
                                     />
                                   )}
                                 />
@@ -2219,7 +2235,7 @@ const EditPurchaseBill = () => {
                             </td>
                             <td className="total">
                               <span className="font-bold">
-                                {ItemTotalAmount.toFixed(2)}
+                                {ItemTotalAmount}
                               </span>
                             </td>
                           </tr>
@@ -2405,7 +2421,7 @@ const EditPurchaseBill = () => {
                     alignItems: "center",
                   }}
                 >
-                  {(parseFloat(netAmount) || 0).toFixed(2)}
+                  {parseFloat(netAmount)}
                   <FaCaretUp />
                 </span>
               </div>

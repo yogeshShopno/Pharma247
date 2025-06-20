@@ -50,8 +50,6 @@ const EditPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
   const [autocompleteKey, setAutocompleteKey] = useState(0);
-
-
   const [distributor, setDistributor] = useState(null);
   const [billNo, setbillNo] = useState("");
   // const [dueDate, setDueDate] = useState(dayjs().add(15, 'day'));
@@ -174,6 +172,7 @@ const EditPurchaseBill = () => {
         setSelectedIndex((prev) =>
           prev < activeList.length - 1 ? prev + 1 : prev
         );
+
       } else if (key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
@@ -216,14 +215,19 @@ const EditPurchaseBill = () => {
 
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
+
         removeItem();
         setIsEditMode(false);
         setSelectedIndex(-1);
         setSearchItem("");
-        setValue("");
+        setValue(null);
+        setSelectedOption(null);
+        // clear Autocomplete selected option
+        setAutocompleteKey(prevKey => prevKey + 1);
+
         setTimeout(() => {
           inputRefs.current[0]?.focus();
-        }, 10);
+        }, 50);
       }
     };
 
@@ -1070,6 +1074,7 @@ const EditPurchaseBill = () => {
   /*<================================================================= update state    ============================================================> */
 
   const handleEditClick = (item) => {
+    setAutocompleteKey((prevKey) => prevKey + 1);
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
@@ -1162,7 +1167,8 @@ const EditPurchaseBill = () => {
   };
 
   const removeItem = () => {
-    setAutocompleteDisabled(false);
+    // setAutocompleteDisabled(false);
+    setValue("");
     setUnit("");
     setSearchItem("");
     setBatch("");
@@ -1685,8 +1691,11 @@ const EditPurchaseBill = () => {
                                   value={searchItem?.iteam_name}
                                   sx={{ width: 350, padding: 0 }}
                                   size="small"
-                                  key={selectedIndex}
+                                  key={autocompleteKey}
                                   onChange={handleOptionChange}
+                                  open={autoCompleteOpen}
+                                  onOpen={() => setAutoCompleteOpen(true)}
+                                  onClose={() => setAutoCompleteOpen(false)}
                                   onInputChange={handleInputChange}
                                   disabled={isAutocompleteDisabled}
                                   getOptionLabel={(option) =>
@@ -1721,20 +1730,22 @@ const EditPurchaseBill = () => {
                                       onKeyDown={(e) => {
                                         const { key } = e;
                                         const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
-                                   
+
                                         if (!searchItem) {
                                           if (isNavKey) {
                                             e.preventDefault();
-                                            
+
 
                                             if (key === "ArrowDown" || key === "ArrowUp") {
-                                              tableRef.current.focus();
-                                              setTimeout(() => document.activeElement.blur(), 0);
+                                              if (!searchItem) {
+                                                tableRef.current.focus();
+                                                setTimeout(() => document.activeElement.blur(), 0);
+                                              }
                                             }
                                           }
-                                        } else  {
+                                        } else {
                                           if (key === "Enter" || key === "Tab") {
-                                            console.log(searchItem,"Enter or Tab pressed");
+                                            console.log(searchItem, "Enter or Tab pressed");
                                             handleKeyDown(e, 2);
                                           }
                                         }

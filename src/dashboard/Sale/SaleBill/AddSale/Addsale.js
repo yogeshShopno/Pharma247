@@ -246,24 +246,29 @@ const Addsale = () => {
 
       switch (key) {
         case "s":
-          handleSubmit(); // or setBillSaveDraft("1"); handleSubmit(); if needed
           setBillSaveDraft("1");
-          handleSubmit();
+          handleSubmit("1");
 
           break;
 
         case "g":
-          handleSubmit();
+          setBillSaveDraft("0");
+
+          handleSubmit("0");
           break;
 
         case "m":
           setSelectedEditItemId(null);
-          setSelectedIndex(-1);
           setSearchItem("");
           setValue("");
-          setTimeout(() => {
-            inputRefs.current[2]?.focus();
-          }, 10);
+          setItem("");
+          setItemId(null)
+          resetValue()
+          setSelectedOption(null)
+          if (searchInputRef.current) {
+            searchInputRef.current.focus();
+            setSelectedIndex(-1); // Clear any selection
+          }
           break;
 
         default:
@@ -739,6 +744,9 @@ const Addsale = () => {
     setIsEditMode(false);
     setSelectedEditItemId("");
     setItemEditID(0);
+    resetValue()
+    searchInputRef.current?.focus();
+
 
     if (isVisible && value && !batch) {
       tableRef.current.focus();
@@ -1109,28 +1117,6 @@ const Addsale = () => {
             data.append("user_id", userId);
             data.append("unit_id", Number(0));
 
-            // setBarcodeBatch(response?.data?.data[0])
-            // setUnit(Number(response?.data?.data[0]?.unit))
-            // setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name)
-            // setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date)
-            // setMRP(Number(response?.data?.data[0]?.batch_list[0]?.mrp))
-            // setQty(Number(response?.data?.data[0]?.batch_list[0]?.qty))
-            // setMaxQty(Number(response?.data?.data[0]?.batch_list[0]?.stock))
-            // setPtr(Number(response?.data?.data[0]?.batch_list[0]?.ptr))
-            // setDiscount(Number(response?.data?.data[0]?.batch_list[0]?.discount))
-            // setBase(Number(response?.data?.data[0]?.batch_list[0]?.base))
-            // setGst(Number(response?.data?.data[0]?.batch_list[0]?.gst_name));
-            // setLoc(response?.data?.data[0]?.batch_list[0]?.location);
-            // setTotalMargin(Number(response?.data?.data[0]?.batch_list[0]?.margin))
-            // setTotalNetRate(Number(response?.data?.data[0]?.batch_list[0]?.net_rate))
-            // setBarcodeItemName(response?.data?.data[0]?.iteam_name);
-            // setId(Number(response?.data?.data[0]?.batch_list[0]?.id))
-            // setItemId(Number(response?.data?.data[0]?.batch_list[0]?.item_id))
-            // console.log(response?.data?.data[0]?.batch_list[0], itemId)
-
-            // setSelectedEditItemId(Number(response?.data?.data[0]?.batch_list[0]?.id))
-
-            // setItemEditID(Number(response.data.data[0]?.id))
 
             try {
               const response = axios.post("sales-item-add", data, {
@@ -1165,103 +1151,13 @@ const Addsale = () => {
           };
         });
 
-      // const batch = response?.data?.data[0]?.batch_list[0];
-      // if (batch) {
-      //     setUnit(batch.unit);
-      //     setBatch(batch.batch_name);
-      //     setExpiryDate(batch.expiry_date);
-      //     setMRP(batch.mrp);
-      //     setQty(batch.purchase_qty);
-      //     setPtr(batch.ptr);
-      //     setDiscount(batch.discount);
-      //     setBase(batch.base);
-      //     setGst(batch.gst_name);
-      //     setLoc(batch.location);
-      //     setTotalMargin(batch.margin);
-      //     setTotalNetRate(batch.net_rate);
-      //     setSearchItem(batch.iteam_name);
-      //     setItemId(batch.item_id);
-      //     setSelectedEditItemId(batch.id);
-      // }
-      // setIsEditMode(true)
+
     } catch (error) {
       console.error("API error:", error);
     }
   };
 
-  // const handleBarcodeItem = async () => {
-  //     setUnsavedItems(true)
-  //     let data = new FormData();
 
-  //     data.append("random_number", localStorage.getItem("RandomNumber"));
-  //     data.append("weightage", unit ? Number(unit) : 1);
-  //     data.append("batch_number", batch ? batch : 0);
-  //     data.append("expiry", expiryDate);
-  //     data.append("mrp", mrp ? mrp : 0);
-  //     data.append("qty", qty ? qty : 0);
-  //     data.append("free_qty", maxQty ? maxQty : 0);
-  //     data.append("ptr", ptr ? ptr : 0);
-  //     data.append("discount", discount ? discount : 0);
-  //     data.append("base_price", base ? base : 0);
-  //     data.append("gst", gst.id);
-  //     data.append("location", loc ? loc : 0);
-  //     data.append("margin", totalMargin ? totalMargin : 0);
-  //     data.append("net_rate", totalNetRate ? totalNetRate : 0);
-  //     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
-
-  //     data.append("item_id", itemId);
-  //     data.append("unit_id", Number(0));
-  //     data.append("user_id", userId);
-  //     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
-  //     data.append("total_amount", totalAmount ? totalAmount : 0);
-
-  //     const params = {
-  //         id: selectedEditItemId,
-  //     };
-  //     try {
-  //         const response = await axios.post("item-purchase", data, {
-  //             headers: {
-  //                 Authorization: `Bearer ${token}`,
-  //             },
-  //         });
-  //         console.log("response", response);
-
-  //         setTotalAmount(0);
-  //         setUnit("");
-  //         setBatch("");
-  //         setExpiryDate("");
-  //         setMRP("");
-  //         setQty("");
-  //         setMaxQty("");
-  //         setPtr("");
-  //         setGst("");
-  //         setDiscount("");
-  //         setTotalBase("");
-  //         setTotalNetRate("");
-  //         setBatch("");
-  //         setTotalMargin("");
-  //         setLoc("");
-  //         setBarcodeItemName("")
-
-  //         //   if (totalAmount) {
-  //         //     setSelectedRows([]);
-  //         //   }
-  //         // setNetAmount(totalAmount)
-  //         // handleCalNetAmount()
-  //         setIsEditMode(false);
-  //         setSelectedEditItemId(null);
-
-  //         setBarcode("")
-  //         setValue("")
-  //         // Reset Autocomplete field
-  //         setValue("");
-  //         setSearchItem("");
-
-  //         // setAutocompleteDisabled(false);
-  //     } catch (e) {
-  //         //console.log(e);
-  //     }
-  // }
 
   const handleSubmit = (draft) => {
     setUnsavedItems(false);
@@ -2042,7 +1938,9 @@ const Addsale = () => {
 
                       }}
                     >
-                      Customer Mobile / Name{" "}
+                      Customer Mobile / Name
+                      <span className="text-red-600 "> *</span>
+
                       <FaPlusCircle
                         className="icon primary"
                         onClick={() => {
@@ -2070,12 +1968,12 @@ const Addsale = () => {
                       loading={isLoading}
                       sx={{
                         width: "100%",
-                        // minWidth: {
-                        //     xs: '350px',
-                        //     sm: '500px',
-                        //     md: '500px',
-                        //     lg: '400px',
-                        // },
+                        minWidth: {
+                          xs: '350px',
+                          sm: '400px',
+                          md: '400px',
+                          lg: '400px',
+                        },
 
                         "& .MuiAutocomplete-inputRoot": {
                           padding: "8px 8px",
@@ -2417,7 +2315,7 @@ const Addsale = () => {
                                         InputProps={{
                                           ...params.InputProps,
                                           style: {
-                                            height: 40, width: 350,
+                                            height: 40, width: 450,
                                             fontSize: "1.2rem",
                                           },
 

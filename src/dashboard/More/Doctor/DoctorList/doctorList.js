@@ -173,13 +173,13 @@ const DoctorList = () => {
       //  Add Doctor
       const newErrors = {};
       if (!doctor) newErrors.Doctor = "Doctor is required";
-      // if (!mobileNo) {
-      //     newErrors.mobileNo = 'Mobile No is required';
-      // } else
-      // if (!/^\d{10}$/.test(mobileNo)) {
-      //     newErrors.mobileNo = 'Mobile number must be 10 digits';
-      // }
-      // if (!clinic) newErrors.clinic = 'Clinic is required';
+      if (!mobileNo) {
+        newErrors.mobileNo = 'Mobile No is required';
+      } else
+        if (!/^\d{10}$/.test(mobileNo)) {
+          newErrors.mobileNo = 'Mobile number must be 10 digits';
+        }
+      if (!clinic) newErrors.clinic = 'Clinic is required';
 
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -784,6 +784,7 @@ const DoctorList = () => {
               <DialogTitle id="alert-dialog-title" className="primary">
                 {header}
               </DialogTitle>
+
               <IconButton
                 aria-label="close"
                 onClick={resetAddDialog}
@@ -797,13 +798,14 @@ const DoctorList = () => {
               >
                 <CloseIcon />
               </IconButton>
+
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   <div className="flex flex-col gap-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
                       {/* Doctor Name - full width */}
-                      <div className="flex flex-col col-span-4 w-full">
+                      <div className="flex flex-col col-span-12 w-full">
                         <div className="mb-1">
                           <span className="label primary mb-4">Doctor Name</span>
                           <span className="text-red-600 ml-1">*</span>
@@ -836,7 +838,7 @@ const DoctorList = () => {
                       </div>
 
                       {/* Clinic Name - full width */}
-                      <div className="flex flex-col col-span-4 w-full">
+                      <div className="flex flex-col col-span-12 w-full">
                         <div className="mb-1">
                           <span className="label primary">Clinic Name</span>
                         </div>
@@ -855,21 +857,21 @@ const DoctorList = () => {
                         )}
                       </div>
 
-                      {/* Email ID - regular width and lowercase */}
-                      <div className="flex flex-col w-full">
+                      {/* Email ID */}
+                      <div className="flex flex-col col-span-4">
                         <span className="label primary">Email ID</span>
                         <TextField
                           autoComplete="off"
                           size="small"
                           value={emailId}
-                          onChange={(e) => setEmailId(e.target.value)} // No uppercase here
+                          onChange={(e) => setEmailId(e.target.value)}
                           className="w-full"
                           variant="outlined"
                         />
                       </div>
 
                       {/* Mobile No */}
-                      <div className="flex flex-col w-full">
+                      <div className="flex flex-col col-span-4">
                         <div className="mb-1">
                           <span className="label primary">Mobile No</span>
                         </div>
@@ -889,7 +891,7 @@ const DoctorList = () => {
                       </div>
 
                       {/* Licence No */}
-                      <div className="flex flex-col w-full">
+                      <div className="flex flex-col col-span-4">
                         <span className="label primary">Licence No.</span>
                         <OutlinedInput
                           type="text"
@@ -901,7 +903,7 @@ const DoctorList = () => {
                       </div>
 
                       {/* Address - full width */}
-                      <div className="flex flex-col col-span-4 w-full">
+                      <div className="flex flex-col col-span-12 w-full">
                         <span className="label primary">Address</span>
                         <TextField
                           autoComplete="off"
@@ -912,12 +914,11 @@ const DoctorList = () => {
                           variant="outlined"
                         />
                       </div>
-
                     </div>
                   </div>
                 </DialogContentText>
-
               </DialogContent>
+
               <DialogActions style={{ padding: "20px 24px" }}>
                 <Button
                   autoFocus
@@ -940,6 +941,7 @@ const DoctorList = () => {
                 </Button>
               </DialogActions>
             </Dialog>
+
           </div>
         </div>
       )}

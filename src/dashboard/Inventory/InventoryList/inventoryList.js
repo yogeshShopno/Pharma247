@@ -466,11 +466,73 @@ const InventoryList = () => {
           setIsLoading(false);
           // console.log(data);
           // console.log(searchItem);
+          setSearchItem("");
+          setSelectedOption("");
+          setHsnCode("");
+          setSelectedCategoryIds([]);
+          setSelectedPackgingIds([]);
+          setSelectedOptionStock([]);
+          setSelectedOptionEpiry([]);
+          setManufacturer(null);
+          setDrugGroup(null);
+          setSelectedGstIds([]);
+          setLocation("");
+          setMarginStart("");
+          setMarginEnd("");
+          setMRPStart("");
+          setMRPEnd("");
+          setPTREnd("");
+          setPTRStart("");
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
+  /*<==================================================================================== handle search  ===========================================================================> */
+  const handleReset = async () => {
+    // Reset all states
+    setSearchItem("");
+    setSelectedOption("");
+    setHsnCode("");
+    setSelectedCategoryIds([]);
+    setSelectedPackgingIds([]);
+    setSelectedOptionStock([]);
+    setSelectedOptionEpiry([]);
+    setManufacturer(null);
+    setDrugGroup(null);
+    setSelectedGstIds([]);
+    setLocation("");
+    setMarginStart("");
+    setMarginEnd("");
+    setMRPStart("");
+    setMRPEnd("");
+    setPTREnd("");
+    setPTRStart("");
+
+    // Prepare API call
+    let data = new FormData();
+    const params = {};
+
+    setIsLoading(true);
+    try {
+      const res = await axios.post("item-search?", data, {
+        params: params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(res.data.data.data);
+      if (res.data.data.data.length == 0) {
+        toast.error("No Record Found");
+      }
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   /*<================================================================================= sort table data  ========================================================================> */
 
   const sortByColumn = (key) => {
@@ -763,26 +825,7 @@ const InventoryList = () => {
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "item_batch_data.csv");
   };
-  const handleReset = () => {
-    setSearchItem("");
-    setSelectedOption("");
-    setHsnCode("");
-    setSelectedCategoryIds([]);
-    setSelectedPackgingIds([]);
-    setSelectedOptionStock([]);
-    setSelectedOptionEpiry([]);
-    setManufacturer(null);
-    setDrugGroup(null);
-    setSelectedGstIds([]);
-    setLocation("");
-    setMarginStart("");
-    setMarginEnd("");
-    setMRPStart("");
-    setMRPEnd("");
-    setPTREnd("");
-    setPTRStart("");
-    handleSearch();
-  };
+
   /*<=============================================================================== ui ======================================================================> */
 
   return (
@@ -1598,6 +1641,8 @@ const InventoryList = () => {
               >
                 <MenuItem onClick={handleBulkEdit}>Bulk Edit</MenuItem>
                 <MenuItem onClick={handleBulkOrder}>Bulk Order</MenuItem>
+                <MenuItem onClick={handleBulkOrder}>Bulk QR</MenuItem>
+
                 {/* <MenuItem onClick={handleBulkOrder}>Bulk Print QR</MenuItem> */}
               </Menu>
             </div>
@@ -2770,7 +2815,7 @@ const InventoryList = () => {
               }}
               onClick={validateBulkForm}
             >
-              Saved
+              Save
             </Button>
             <Button
               autoFocus

@@ -119,7 +119,7 @@ const EditPurchaseBill = () => {
   const [purchase, setPurchase] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [billSaveDraft, setBillSaveDraft] = useState("1");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   let debounceTimeout;
 
@@ -208,12 +208,10 @@ const EditPurchaseBill = () => {
       event.preventDefault(); // Prevent default browser behavior
 
       if (event.key.toLowerCase() === "s") {
-        setBillSaveDraft("1");
-        handleSubmit();
+        handleSubmit("1");
       } else if (event.key.toLowerCase() === "g") {
-        setBillSaveDraft("1");
 
-        handleSubmit();
+        handleSubmit("0");
       } else if (event.key.toLowerCase() === "m") {
 
         removeItem();
@@ -732,7 +730,11 @@ const EditPurchaseBill = () => {
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
+    if (isSubmitting) return; // ⛔ Block if already submitting
+      else{
       await handleEditItem(); // Call handleEditItem if validation passes
+
+      }
     }
     return isValid;
   };
@@ -742,6 +744,9 @@ const EditPurchaseBill = () => {
     setNextPath(path);
   };
   const handleEditItem = async () => {
+    if (isSubmitting) return false; // Prevent double submissions
+    setIsSubmitting(true); // Lock
+
     setUnsavedItems(true);
 
     const gstMapping = {
@@ -836,9 +841,13 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
+      setIsSubmitting(false);
+
     } catch (e) {
       console.error("API error:", error);
       setUnsavedItems(false);
+      setIsSubmitting(false);
+
     }
   };
 
@@ -1452,37 +1461,13 @@ const EditPurchaseBill = () => {
                   variant="contained"
                   className="cn_fls"
                   color="primary"
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={() => handleSubmit("1")}
                   style={{ background: "var(--color1)" }}
                 >
                   Update
                 </Button>
-                {isOpen && (
-                  <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                    <ul className="transition-all ">
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("1");
-                          handleSubmit("1");
-                        }}
-                        className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveIcon />
-                        Save
-                      </li>
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("0");
-                          handleSubmit("0");
-                        }}
-                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                      >
-                        <SaveAsIcon />
-                        Draft
-                      </li>
-                    </ul>
-                  </div>
-                )}
+             
+                
               </div>
             </div>
             <div

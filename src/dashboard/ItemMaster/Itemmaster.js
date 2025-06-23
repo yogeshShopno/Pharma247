@@ -639,7 +639,7 @@ const Itemmaster = () => {
     setPack(`1 * 0`);
     setLocation("");
     setError("");
-    setDrugGroup("");
+    setDrugGroup(null);
     setMRP(0);
     setBarcode("");
     setPackaging("");
@@ -724,7 +724,7 @@ const Itemmaster = () => {
                     <label className="label">Item Name</label>
                     <Autocomplete
                       value={value}
-                      inputValue={searchItem.toUpperCase()}
+                      inputValue={(searchItem || "").toUpperCase()}
                       // sx={{ width: 350 }}
                       size="small"
 
@@ -1529,16 +1529,16 @@ const Itemmaster = () => {
       </Dialog>
       {/* DrugGroup dialog Box */}
       <Dialog id="modal" className="custom-dialog" open={openDrugGroup} onClose={handleCloseDrugGroup}>
-        <DialogTitle>Create DrugGroup</DialogTitle>
+        <DialogTitle>Add Drug Group</DialogTitle>
         <DialogContent>
           <div className="dialog pt-4">
-            <label className="mb-2">DrugGroup Name</label>
+            <label className="mb-2">Drug Group Name</label>
             <TextField
               id="outlined-number"
               label="Enter DrugGroup Name"
               type="text"
               size="small"
-              style={{ width: "400px" }}
+              style={{ width: "100%" }}
               value={drugGroupName}
               onChange={(e) => {
                 const value = e.target.value;
@@ -1568,7 +1568,7 @@ const Itemmaster = () => {
       </Dialog>
       {/* Company Dialog Box */}
       <Dialog id="modal" className="custom-dialog" open={openCompany} onClose={handleClose}>
-        <DialogTitle>Create Company</DialogTitle>
+        <DialogTitle>Add Company</DialogTitle>
         <DialogContent>
           <div className="dialog pt-4">
             <label className="mb-2">Company Name</label>
@@ -1577,9 +1577,9 @@ const Itemmaster = () => {
               label="Enter Company Name"
               type="text"
               size="small"
-              style={{ width: "400px" }}
+              style={{ width: "100%" }}
               value={companyName}
-                 onChange={(e) => {
+              onChange={(e) => {
                 const value = e.target.value;
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
                 setCompanyName(capitalized);
@@ -1645,8 +1645,7 @@ const Itemmaster = () => {
             </div>
           </DialogContentText>
         </DialogContent>
-      </Dialog>
-      <DialogActions>
+          <DialogActions>
         <Button
           autoFocus
           style={{ backgroundColor: "var(--color1)", color: "white" }}
@@ -1657,6 +1656,8 @@ const Itemmaster = () => {
           Save
         </Button>
       </DialogActions>
+      </Dialog>
+    
     </div >
   );
 };

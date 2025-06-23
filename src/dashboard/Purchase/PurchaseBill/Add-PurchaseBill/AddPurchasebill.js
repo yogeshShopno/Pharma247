@@ -243,9 +243,12 @@ const AddPurchaseBill = () => {
         setSelectedIndex((prev) =>
           prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
         );
+        setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
         // Move selection up
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        setAutoCompleteOpen(false)
+
       } else if (key === "Enter" && selectedIndex !== -1) {
         if (!isInputFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
@@ -1962,9 +1965,9 @@ const AddPurchaseBill = () => {
                     height: "40px",
                   }}
                   onClick={() => {
-                      setBillSaveDraft("1");
-                      handleSubmit("1");
-                    }
+                    setBillSaveDraft("1");
+                    handleSubmit("1");
+                  }
                   }>
                   Save
                 </Button>
@@ -2336,6 +2339,7 @@ const AddPurchaseBill = () => {
                                         const isEnter = key === "Enter";
                                         const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
+                                        // allow Shift+Tab
                                         if (isShiftTab) return;
 
                                         if (!searchItem && isArrowKey) {
@@ -2349,9 +2353,12 @@ const AddPurchaseBill = () => {
 
                                         // When dropdown is closed and Enter or Tab pressed, validate
                                         if (isEnter || isTab) {
+                                          e.preventDefault();
+
                                           if (!selectedOption) {
                                             e.preventDefault();
-                                            setTimeout(() => toast.error("Please select an option before continuing"), 100);
+                                            
+                                            setTimeout(() => toast.error("Please select an Item"), 100);
                                           } else {
                                             setTimeout(() => inputRefs?.current[3].focus(), 100);
                                           }
@@ -2359,9 +2366,9 @@ const AddPurchaseBill = () => {
                                         }
 
                                         // If already selected and typing, move focus to next input (optional)
-                                        if (searchItem && selectedOption) {
-                                          inputRefs?.current[3].focus();
-                                        }
+                                        // if (searchItem && selectedOption) {
+                                        //   inputRefs?.current[3].focus();
+                                        // }
                                       }}
 
 

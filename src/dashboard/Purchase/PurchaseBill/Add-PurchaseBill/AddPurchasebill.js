@@ -1945,81 +1945,81 @@ const AddPurchaseBill = () => {
                 Add Item
               </Button>
 
-             <div
-  className="relative inline-block"
-  onMouseEnter={() => {
-    clearTimeout(timeoutRef.current);
-    setIsOpen(true);
-  }}
-  onMouseLeave={() => {
-    timeoutRef.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 200);
-  }}
->
-  {/* Save button */}
-  <Button
-    variant="contained"
-    style={{
-      background: "var(--color1)",
-      padding: "10px 24px",
-      borderTopRightRadius: 0,
-      borderBottomRightRadius: 0,
-      height: "40px",
-    }}
-    onClick={() => {
-      setBillSaveDraft("1");
-      handleSubmit("1");
-    }}
-  >
-    Save
-  </Button>
+              <div
+                className="relative inline-block"
+                onMouseEnter={() => {
+                  clearTimeout(timeoutRef.current);
+                  setIsOpen(true);
+                }}
+                onMouseLeave={() => {
+                  timeoutRef.current = setTimeout(() => {
+                    setIsOpen(false);
+                  }, 200);
+                }}
+              >
+                {/* Save button */}
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "var(--color1)",
+                    padding: "10px 24px",
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    height: "40px",
+                  }}
+                  onClick={() => {
+                    setBillSaveDraft("1");
+                    handleSubmit("1");
+                  }}
+                >
+                  Save
+                </Button>
 
-  {/* Dropdown toggle button */}
-  <Button
-    variant="contained"
-    style={{
-      background: "var(--color1)",
-      padding: "10px",
-      minWidth: "40px",
-      borderTopLeftRadius: 0,
-      borderBottomLeftRadius: 0,
-      height: "40px",
-    }}
-    onClick={() => setIsOpen(!isOpen)}
-    ref={submitButtonRef}
-  >
-    <IoCaretDown className="text-white" />
-  </Button>
+                {/* Dropdown toggle button */}
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "var(--color1)",
+                    padding: "10px",
+                    minWidth: "40px",
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    height: "40px",
+                  }}
+                  onClick={() => setIsOpen(!isOpen)}
+                  ref={submitButtonRef}
+                >
+                  <IoCaretDown className="text-white" />
+                </Button>
 
-  {/* Dropdown menu */}
-  {isOpen && (
-    <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
-      <ul className="transition-all">
-        <li
-          onClick={() => {
-            setBillSaveDraft("1");
-            handleSubmit("1");
-          }}
-          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
-        >
-          <SaveIcon />
-          Save
-        </li>
-        <li
-          onClick={() => {
-            setBillSaveDraft("0");
-            handleSubmit("0");
-          }}
-          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
-        >
-          <SaveAsIcon />
-          Draft
-        </li>
-      </ul>
-    </div>
-  )}
-</div>
+                {/* Dropdown menu */}
+                {isOpen && (
+                  <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
+                    <ul className="transition-all">
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("1");
+                          handleSubmit("1");
+                        }}
+                        className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                      >
+                        <SaveIcon />
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("0");
+                          handleSubmit("0");
+                        }}
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                      >
+                        <SaveAsIcon />
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
 
             </div>
           </div>
@@ -2358,7 +2358,7 @@ const AddPurchaseBill = () => {
 
                                           if (!selectedOption) {
                                             e.preventDefault();
-                                            
+
                                             setTimeout(() => toast.error("Please select an Item"), 100);
                                           } else {
                                             setTimeout(() => inputRefs?.current[3].focus(), 100);

@@ -42,6 +42,8 @@ import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';  
+import { IoCaretDown } from "react-icons/io5";
 
 const Addsale = () => {
   const token = localStorage.getItem("token");
@@ -1402,6 +1404,7 @@ const Addsale = () => {
         })
         .then((response) => {
           setBatchListData(response.data.data);
+
           if (Array.isArray(response.data.data)) {
             response.data.data.forEach((item) => {
               setMRP(item.mrp);
@@ -1701,7 +1704,7 @@ const Addsale = () => {
     const payload = {
       "app-key": "db8ce965-029b-4f74-aade-04d137663b12",
       "auth-key": "039d46d11eab7e7863eb651db09f8eac63198154bf41302430",
-      destination_number: "919909097033",
+      destination_number: customer.phone_number, // change this 
       template_id: "1291715845234841",
       device_id: "6747f73e1bcbc646dbdc8c5f",
       variables: [
@@ -1852,8 +1855,6 @@ const Addsale = () => {
                     </MenuItem>
                   ))}
                 </Select>
-
-
                 <div
                   className="relative inline-block"
                   onMouseEnter={() => {
@@ -1863,24 +1864,49 @@ const Addsale = () => {
                   onMouseLeave={() => {
                     timeoutRef.current = setTimeout(() => {
                       setIsOpen(false);
-                    }, 200); // small delay for smooth closing
+                    }, 200);
                   }}
                   style={{ zIndex: 1 }} // keep dropdown above other elements
+
                 >
+                  {/* Save button */}
                   <Button
                     variant="contained"
-                    className=""
-                    sx={{ textTransform: "none", background: "var(--color1)", padding: "10px 24px", '&:hover': { backgroundColor: "var(--color1)", boxShadow: "none", }, }}
+                    style={{
+                      background: "var(--color1)",
+                      padding: "10px 24px",
+                      borderTopRightRadius: 0,
+                      borderBottomRightRadius: 0,
+                      height: "40px",
+                    }}
+                    onClick={() => {
+                      setBillSaveDraft("1");
+                      handleSubmit("1");
+                    }}
+                  >
+                    Save
+                  </Button>
+
+                  {/* Dropdown toggle button */}
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color1)",
+                      padding: "10px",
+                      minWidth: "40px",
+                      borderTopLeftRadius: 0,
+                      borderBottomLeftRadius: 0,
+                      height: "40px",
+                    }}
                     onClick={() => setIsOpen(!isOpen)}
                     ref={submitButtonRef}
                   >
-                    Submit
+                    <IoCaretDown className="text-white" />
                   </Button>
 
+                  {/* Dropdown menu */}
                   {isOpen && (
-                    <div
-                      className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon"
-                    >
+                    <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
                       <ul className="transition-all">
                         <li
                           onClick={() => {
@@ -1892,6 +1918,17 @@ const Addsale = () => {
                           <SaveIcon />
                           Save
                         </li>
+                        {/* <li
+                          onClick={() => {
+                            setBillSaveDraft("1");
+                            handleSubmit("2");
+                          }}
+                          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                        >
+                          <WhatsAppIcon /> WhatsApp
+
+                        </li> */}
+
                         <li
                           onClick={() => {
                             setBillSaveDraft("0");
@@ -1906,8 +1943,6 @@ const Addsale = () => {
                     </div>
                   )}
                 </div>
-
-
 
               </div>
             </div>
@@ -2284,7 +2319,7 @@ const Addsale = () => {
                                     onInputChange={handleInputChange}
                                     options={itemList}
                                     getOptionLabel={(option) =>
-                                      `${option.iteam_name || ""} `
+                                      `${option.iteam_name || ""} Qty:(${option.stock || 0})`
                                     }
                                     filterOptions={(option, state) => {
                                       return itemList;
@@ -2340,6 +2375,7 @@ const Addsale = () => {
                                       />
                                     )}
                                   />
+
                                 </Box>
                               </Box>
                               {isVisible && value && !batch && (
@@ -2352,6 +2388,7 @@ const Addsale = () => {
                                     },
                                     backgroundColor: "white",
                                     position: "absolute",
+                                    marginTop: "10px",
                                     zIndex: 1,
                                   }}
                                   id="tempId"
@@ -2371,6 +2408,14 @@ const Addsale = () => {
                                       }}
                                     >
                                       <thead>
+                                        {batchListData?.[0]?.id !== itemId && (
+                                          <tr className="customtable">
+                                            <th className="saleTable highlighted-row" colSpan={8}>Alternate Medicine</th>
+                                          </tr>
+                                        )}
+
+                                        {console.log("itemId:", itemId, "batchListData:",)}
+
                                         <tr className="customtable">
                                           <th>Item Name</th>
                                           <th>Batch Number</th>
@@ -2381,10 +2426,12 @@ const Addsale = () => {
                                           <th>Loc</th>
                                         </tr>
                                       </thead>
+
                                       <tbody>
                                         {batchListData.length > 0 ? (
                                           <>
                                             {batchListData.map((item) => (
+
                                               <tr
                                                 className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
                                                   String(item.id)

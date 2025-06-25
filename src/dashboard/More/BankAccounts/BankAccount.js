@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../Header";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -102,8 +102,8 @@ const BankAccount = () => {
   const [bankDetails, setBankDetails] = useState([]);
   const [details, setDetails] = useState({});
   const pdfIcon = process.env.PUBLIC_URL + "/pdf.png";
-    const inputRefs = useRef([]);
-  
+  const inputRefs = useRef([]);
+
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -147,6 +147,17 @@ const BankAccount = () => {
   const handleReduceBtn = () => {
     setReduceClicked((prevState) => !prevState);
     setClicked(false);
+  };
+
+  const handleKeyDown = (event, index) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission
+
+      const nextInput = inputRefs?.current[index + 1];
+      if (nextInput) {
+        nextInput?.focus(); // Move to next input
+      }
+    }
   };
 
   useEffect(() => {
@@ -224,7 +235,7 @@ const BankAccount = () => {
       let data = new FormData();
       data.append("payment_type", paymentType);
       data.append("add_or_reduce", finalValue);
-      // data.append("opening_balance", openingBalance);
+      data.append("opening_balance", openingBalance);
       data.append("date", adjustDate ? format(adjustDate, "yyyy-MM-dd") : "");
       data.append("amount", enterAmt);
       data.append("total_amount", latestAmt);
@@ -339,6 +350,7 @@ const BankAccount = () => {
   };
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleAddBank = async () => {
     if (validateForm()) {
       let data = new FormData();
@@ -716,6 +728,7 @@ const BankAccount = () => {
                     </Box>
                 </Box> */}
         <Box className="flex flex-col sm:flex-row">
+
           <Box
             className="custom-scrolll p-6 fst_mdl_bnk" style={{ backgroundColor: "rgb(63 98 18 / 5%)" }}
             sx={{
@@ -737,43 +750,83 @@ const BankAccount = () => {
             role="presentation"
             onClick={() => toggleDrawer(false)}
           >
-            <Box>
-              <h1
-                className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2"
-                style={{ color: "var(--color1)" }}
-              >
-                Bank Accounts
-              </h1>
-            </Box>
-            <List>
-              {bankData.map((account, index) => (
-                <ListItem
-                  key={account.id}
-                  className={`list-bank ${highlightedIndex === index ? "highlighted" : ""
-                    }`}
-                  disablePadding
+
+            {/* 💰 Savings Accounts */}
+            {bankData.filter(account => account.bank_account_name === "Savings").length > 0 && (
+              <List>
+                <h1
+                  className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2"
+                  style={{ color: "var(--color1)" }}
                 >
-                  <ListItemButton
-                    style={{ width: "100%", borderRadius: "10px" }}
-                  >
-                    <div
-                      onClick={() => handleAccountClick(account.id, index)}
-                      className="w-44"
+                  Savings Accounts
+                </h1>                {bankData
+                  .filter(account => account.bank_account_name === "Savings")
+                  .map((account, index) => (
+                    <ListItem
+                      key={account.id}
+                      className={`list-bank ${highlightedIndex === index ? "highlighted" : ""}`}
+                      disablePadding
                     >
-                      <p className="text-gray-700">
-                        {account.bank_account_number
-                          ? account.bank_account_number
-                          : "Empty"}
-                      </p>
-                      <h6 className="font-semibold">{account.bank_name}</h6>
-                    </div>
-                    {/* <MdOutlineDoDisturb color="red" size={20} /> */}
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-            <Divider style={{ borderColor: "var(--color2) !important" }} />
+                      <ListItemButton style={{ width: "100%", borderRadius: "10px" }}>
+                        <div
+                          onClick={() => handleAccountClick(account.id, index)}
+                          className="w-44"
+                        >
+                          <p className="text-gray-700">
+                            {account.bank_account_number || "Empty"}
+                          </p>
+                          <h6 className="font-semibold">{account.bank_name}</h6>
+                        </div>
+                      </ListItemButton>
+
+                    </ListItem>
+
+                  ))}
+                <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
+
+              </List>
+
+            )}
+
+            {/* 🏢 Current Accounts */}
+            {bankData.filter(account => account.bank_account_name === "Current").length > 0 && (
+              <List>
+                <h1
+                  className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2"
+                  style={{ color: "var(--color1)" }}
+                >
+                  Current Accounts
+                </h1>
+                {bankData
+                  .filter(account => account.bank_account_name === "Current")
+                  .map((account, index) => (
+                    <ListItem
+                      key={account.id}
+                      className={`list-bank ${highlightedIndex === index ? "highlighted" : ""}`}
+                      disablePadding
+                    >
+                      <ListItemButton style={{ width: "100%", borderRadius: "10px" }}>
+                        <div
+                          onClick={() => handleAccountClick(account.id, index)}
+                          className="w-44"
+                        >
+                          <p className="text-gray-700">
+                            {account.bank_account_number || "Empty"}
+                          </p>
+                          <h6 className="font-semibold">{account.bank_name}</h6>
+                        </div>
+                      </ListItemButton>
+
+                    </ListItem>
+
+                  ))}
+                <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
+
+              </List>
+            )}
+
           </Box>
+
           <Box className="flex-grow bnk_acc_mdl" style={{ width: "71%" }}>
             <Box
               sx={{
@@ -1026,7 +1079,7 @@ const BankAccount = () => {
           </Box>
         </Box>
 
-        
+
         <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog}>
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Bank Account
@@ -1060,7 +1113,8 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={bankName}
-                      
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+
                       onChange={(e) => {
                         // Transform to uppercase
                         const uppercasedValue = e.target.value.toUpperCase();
@@ -1079,13 +1133,17 @@ const BankAccount = () => {
                       <span className="label primary">Account Type <span className="text-red-600">*</span></span>
 
                       <Autocomplete
-                        disablePortal
+
                         options={[
                           { label: 'Savings', value: 'Savings' },
                           { label: 'Current', value: 'Current' },
                           { label: 'Other', value: 'Other' },
                         ]}
+
                         getOptionLabel={(option) => option.label}
+                        onChange={(event, newValue) => {
+                          setAccountType(newValue ? newValue.value : "");
+                        }}
                         renderInput={(params) => (
                           <TextField
                             {...params}

@@ -700,6 +700,7 @@ const Addsale = () => {
     setUnsavedItems(true);
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
+    
   };
 
   const handleCustomerOption = (event, newValue) => {

@@ -1950,7 +1950,7 @@ const InventoryView = () => {
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="flex flex-col">
                   <span className="label primary">Packaging In</span>
                   <Select
@@ -2043,7 +2043,7 @@ const InventoryView = () => {
                     size="small"
                     value={loc}
                     onChange={(e) => {
-                      setLoc(e.target.value);
+                      setLoc((e.target.value).toUpperCase());
                     }}
                     className="w-full"
                     variant="outlined"

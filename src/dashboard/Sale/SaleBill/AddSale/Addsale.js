@@ -42,7 +42,7 @@ import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';  
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { IoCaretDown } from "react-icons/io5";
 
 const Addsale = () => {
@@ -257,6 +257,11 @@ const Addsale = () => {
           setBillSaveDraft("0");
 
           handleSubmit("0");
+          break;
+        case "p":
+          setBillSaveDraft("2");
+
+          handleSubmit("1");
           break;
 
         case "m":
@@ -700,7 +705,7 @@ const Addsale = () => {
     setUnsavedItems(true);
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
-    
+
   };
 
   const handleCustomerOption = (event, newValue) => {
@@ -1252,9 +1257,7 @@ const Addsale = () => {
         setBillNo(billNo + 1);
         toast.success(response.data.message);
         localStorage.removeItem("RandomNumber");
-        setTimeout(() => {
-          history.push("/salelist");
-        }, 2000);
+
 
         const lowStockItems = ItemSaleList.sales_item.filter(
           (item) => parseFloat(item.total_stock) <= 1
@@ -1263,9 +1266,44 @@ const Addsale = () => {
         if (lowStockItems.length > 0) {
           // console.log('Low stock items:', lowStockItems);
         }
-        if (billSaveDraft == 0 && customer.id !== 1) {
+
+
+        if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
+          setTimeout(() => {
+            history.push("/salelist");
+          }, 2000);
         }
+
+
+        if (billSaveDraft == 0 && customer.id !== 1) {
+          setTimeout(() => {
+            history.push("/salelist");
+          }, 2000);
+        }
+
+        if (billSaveDraft == 2) {
+          const saleId = response?.data?.data?.id;
+          setSelectedEditItemId(null);
+          setSearchItem("");
+          setValue("");
+          setItem("");
+          setItemId(null)
+          resetValue()
+          setSelectedOption(null)
+          setSelectedEditItem(null)
+          if (searchInputRef.current) {
+            searchInputRef.current.focus();
+            setSelectedIndex(-1); 
+          }
+          pdfGenerator(saleId);
+
+          setTimeout(() => {
+            history.push("/salelist");
+          }, 2000);
+
+        }
+
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1723,9 +1761,41 @@ const Addsale = () => {
 
     try {
       const response = await axios.post(url, payload);
-      console.log("Message sent successfully:", response.data);
     } catch (error) {
       console.error("Error sending message:", error);
+    }
+  };
+  const pdfGenerator = async (id) => {
+    console.log(id)
+    let data = new FormData();
+    data.append("id", id);
+    setIsLoading(true);
+    try {
+      await axios
+        .post("sales-pdf-downloads", data, {
+          params: { id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const PDFURL = response.data.data.pdf_url;
+          toast.success(response.data.meassage);
+          handlePdf(PDFURL);
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+
+    }
+  };
+  const handlePdf = (url) => {
+    if (typeof url === "string") {
+      // Open the PDF in a new tab
+      window.open(url, "_blank");
+    } else {
+      console.error("Invalid URL for the PDF");
     }
   };
 

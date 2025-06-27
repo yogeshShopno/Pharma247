@@ -43,7 +43,7 @@ const CustomerList = () => {
   const [paymentMode, setPaymentMode] = useState([]);
   const [customer, setCustomer] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
   const [state, setState] = useState("");
@@ -1030,10 +1030,15 @@ sx={{
                             autoComplete="off"
                             id="outlined-multiline-static"
                             size="small"
+                            type="name"
                             value={customer}
                             onChange={(e) => {
-                              setCustomer(e.target.value);
+                              const cst =
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1).toLowerCase();
+                              setCustomer(cst);
                             }}
+
                             style={{ width: "100%" }}
                             variant="outlined"
                           />
@@ -1110,8 +1115,12 @@ sx={{
                             id="outlined-multiline-static"
                             size="small"
                             value={area}
+
                             onChange={(e) => {
-                              setArea(e.target.value);
+                              const amt =
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1).toLowerCase();
+                              setArea(amt);
                             }}
                             style={{ width: "100%" }}
                             variant="outlined"
@@ -1125,7 +1134,10 @@ sx={{
                             size="small"
                             value={city}
                             onChange={(e) => {
-                              setCity(e.target.value);
+                              const city =
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1).toLowerCase();
+                              setCity(city);
                             }}
                             style={{ width: "100%" }}
                             variant="outlined"
@@ -1142,8 +1154,11 @@ sx={{
                             size="small"
                             value={address}
                             onChange={(e) => {
-                              setAddress(e.target.value);
-                            }}
+                              const add =
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1).toLowerCase();
+                              setAddress(add);
+                            }}                       
                             style={{ width: "100%" }}
                             variant="outlined"
                           />
@@ -1156,7 +1171,10 @@ sx={{
                             size="small"
                             value={state}
                             onChange={(e) => {
-                              setState(e.target.value);
+                              const state =
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1).toLowerCase();
+                              setState(state);
                             }}
                             style={{ width: "100%" }}
                             variant="outlined"

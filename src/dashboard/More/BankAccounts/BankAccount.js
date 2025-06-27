@@ -50,7 +50,7 @@ const BankAccount = () => {
 
   const PassbookColumns = [
     { id: "date", label: "Date", minWidth: 150 },
-    { id: "party_name", label: "Party Name", minWidth: 150 },
+    { id: "party_name", label: "Name", minWidth: 150 },
     { id: "deposit", label: "Credit", minWidth: 150 },
     { id: "withdraw", label: "Debit", minWidth: 150 },
     { id: "balance", label: "Balance", minWidth: 150 },
@@ -427,21 +427,30 @@ const BankAccount = () => {
     setLatestAmt("");
     setErrors({});
     setRemarks("");
+    setAccountHolderName("")
   };
 
   const handlePaymentTypeChange = async (e) => {
     const selectedPaymentType = e.target.value;
-
+    console.log(selectedPaymentType)
     setPaymentType(selectedPaymentType);
     const selectedBankData = bankData.find(
-      (bank) => bank.id === selectedPaymentType
-    );
+      (bank) => bank.id === selectedPaymentType);
+
     if (selectedPaymentType == "cash") {
       const selectedBankData = bankData[0];
       setCurrentBalance(selectedBankData.total_amount);
+      
+      setAccountHolderName(selectedBankData.account_holder_name);
+      console.log(selectedBankData)
+
     } else {
       setCurrentBalance(selectedBankData.total_amount);
+      setAccountHolderName(selectedBankData.account_holder_name);
+      console.log(selectedBankData)
     }
+
+
   };
 
   const handleAccountClick = (id, index) => {
@@ -511,222 +520,7 @@ const BankAccount = () => {
           draggable
           pauseOnHover
         />
-        {/* <Box className='flex'>
-                    <Box
-                        className="custom-scroll"
-                        sx={{
-                            width: {
-                                xs: 270,
-                                sm: 270,
-                            },
-                            height: {
-                                xs: 'calc(100vh - 100px)',
-                                sm: 800,
-                            },
-                            overflowY: 'auto',
-                            padding: {
-                                xs: '10px',
-                                sm: '15px',
-                            },
-                        }}
-                        role="presentation"
-                        onClick={() => toggleDrawer(false)}
-                    >
-                        <Box>
-                            <h1 className="text-2xl flex justify-center p-2" style={{ color: "black" }}>Bank Accounts</h1>
-                        </Box>
-                        <List>
-                            {bankData.map((account, index) => (
-                                <ListItem key={account.id} className={`list-bank  ${highlightedIndex === index ? 'highlighted' : ''}`} disablePadding>
-                                    <ListItemButton style={{ width: '100%' }} >
-                                        <div onClick={() => handleAccountClick(account.id, index)} className="w-44">
-                                            <p className="text-gray-700">{account.bank_account_number ? account.bank_account_number : 'Empty'}</p>
-                                            <h6 className="font-semibold">{account.bank_name}</h6>
-                                        </div>
-                                        <MdOutlineDoDisturb color="red" size={20} />
 
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                        </List>
-                        <Divider />
-                    </Box>
-                    <Box className='flex-grow'>
-                        <Box sx={{ width: "100%", bgcolor: 'background.paper', padding: "0px 20px 0px" }}>
-                            <div className="flex justify-end py-3 flex-wrap gap-2" >
-                                <div className="mr-4">
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            textTransform: "none",
-                                        }}
-                                        className="mr-auto" 
-                                        onClick={() => { setOpenAddPopUpAdjust(true) }}
-                                    >
-                                        <AddIcon />Add/Reduce Money
-                                    </Button>
-                                </div>
-                                <div className="mr-4">
-                                    <Button
-                                        variant="contained"
-                                        style={{ textTransform: 'none' }}
-                                        onClick={() => { setOpenAddPopUp(true) }}
-                                    >
-                                        <AddIcon />Add New Bank
-                                    </Button>
-                                </div>
-                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>
-                            </div>
-                            {isLoading ? <div className="loader-container ">
-                                <Loader />
-                            </div> :
-                                <>
-                                    <Box sx={{ marginTop: "20px" }}>
-                                        <div>
-                                            <div className="firstrow flex" style={{ background: "none" }} >
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold ">Bank Name</span>
-                                                    <span className="font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">Bank Account Number</span>
-                                                    <span className="font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">Account Type</span>
-                                                    <span className="font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">IFSC Code</span>
-                                                    <span className="font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">Branch Name</span>
-                                                    <span className="font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
-
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">Account Holder Name</span>
-                                                    <span className="font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
-                                                </div>
-                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
-                                                    <span className="primary font-bold">Current Balance</span>
-                                                    <span className="font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Box>
-
-                                    {tabValue === 0 && (
-                                        <div>
-                                            <div className="flex gap-6 ml-12 mt-6 flex-wrap">
-                                                <div className="detail mt-6" >
-                                                    <TextField
-                 autoComplete="off"
-                                                        id="outlined-basic"
-                                                        value={search}
-                                                        size="small"
-                                                        onChange={(e) => setSearch(e.target.value)}
-                                                        variant="outlined"
-                                                        placeholder="Type Here..."
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="detail">
-                                                    <span className="text-gray-500">Start Date</span>
-                                                    <div style={{ width: "215px" }}>
-                                                        <DatePicker
-                                                            label="Start Date"
-                                                            className='custom-datepicker '
-                                                            selected={startDate}
-                                                            onChange={handleStartDate}
-                                                            dateFormat="dd/MM/yyyy"
-                                                            filterDate={(date) => !isDateDisabled(date)}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="detail">
-                                                    <span className="text-gray-500">End Date</span>
-                                                    <div style={{ width: "215px" }}>
-                                                        <DatePicker
-                                                            label="End Date"
-                                                            className='custom-datepicker '
-                                                            selected={endDate}
-                                                            onChange={handleEndDate}
-                                                            dateFormat="dd/MM/yyyy"
-                                                            filterDate={(date) => !isDateDisabled(date)}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="overflow-x-auto mt-4">
-                                                <table className="table-cashManage w-full border-collapse">
-                                                    <thead>
-                                                        <tr>
-                                                            {PassbookColumns.map((column) => (
-                                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                                    {column.label}
-                                                                </th>
-                                                            ))}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {bankDetails?.map((item, index) => (
-                                                            <tr key={index}>
-                                                                {PassbookColumns.map((column) => (
-                                                                    <td key={column.id}
-                                                                        className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}>
-                                                                        {item[column.id]}
-                                                                    </td>
-                                                                ))}
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                    )}
-                                </>
-                            }
-                            {tabValue === 1 && (
-                                <div>
-                                    <div className="firstrow">
-                                        <table className="table-cashManage">
-                                            <thead>
-                                                <tr>
-                                                    {PaymentInitiatedColumns.map((column) => (
-                                                        <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                            {column.label}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {passbookDetails?.sales_return?.map((item, index) => (
-                                                    <tr key={index}>
-                                                        {PaymentInitiatedColumns.map((column) => (
-                                                            <td key={column.id}>
-                                                                {item[column.id]}
-                                                            </td>
-                                                        ))}
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            )}
-                        </Box>
-                    </Box>
-                </Box> */}
         <Box className="flex flex-col sm:flex-row">
 
           <Box
@@ -960,9 +754,9 @@ const BankAccount = () => {
                       >
                         <span className="primary">Current Balance</span>
                         <span className="primary font-bold">
-                          {!details?.current_balance
+                          {!details?.total_amount
                             ? "-"
-                            : details?.current_balance}
+                            : details?.total_amount}
                         </span>
                       </div>
                     </div>
@@ -1426,7 +1220,7 @@ const BankAccount = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div className="detail mb-4">
-                <span className="label  primary ">Payment Mode</span>
+                <span className="label  primary ">Select account</span>
                 <Select
                   labelId="dropdown-label"
                   id="dropdown"
@@ -1447,6 +1241,16 @@ const BankAccount = () => {
                   <div className="error">{errors.paymentType}</div>
                 )}
               </div>
+              {/* <div className="detail mb-4">
+                <span className="label  primary ">Account Holder Name</span>
+                <OutlinedInput
+                  value={accountHolderName}
+                  disabled
+                  sx={{ width: "100%" }}
+                  size="small"
+                />
+
+              </div> */}
               <div className="detail mb-4">
                 <span className="label primary mb-2">Add or Reduce</span>
                 <div className="flex flex-col sm:flex-row gap-5 mb-4">
@@ -1469,6 +1273,7 @@ const BankAccount = () => {
                   <div className="error">{errors.reduceclicked}</div>
                 )}
               </div>
+
               <div className="detail mb-4 ">
                 <div className="flex flex-col md:flex-row justify-between gap-5">
                   <div className="mb-2" style={{ width: "100%" }}>
@@ -1615,6 +1420,222 @@ const BankAccount = () => {
             </span>
           </Alert>
         </Dialog>
+        {/* <Box className='flex'>
+                    <Box
+                        className="custom-scroll"
+                        sx={{
+                            width: {
+                                xs: 270,
+                                sm: 270,
+                            },
+                            height: {
+                                xs: 'calc(100vh - 100px)',
+                                sm: 800,
+                            },
+                            overflowY: 'auto',
+                            padding: {
+                                xs: '10px',
+                                sm: '15px',
+                            },
+                        }}
+                        role="presentation"
+                        onClick={() => toggleDrawer(false)}
+                    >
+                        <Box>
+                            <h1 className="text-2xl flex justify-center p-2" style={{ color: "black" }}>Bank Accounts</h1>
+                        </Box>
+                        <List>
+                            {bankData.map((account, index) => (
+                                <ListItem key={account.id} className={`list-bank  ${highlightedIndex === index ? 'highlighted' : ''}`} disablePadding>
+                                    <ListItemButton style={{ width: '100%' }} >
+                                        <div onClick={() => handleAccountClick(account.id, index)} className="w-44">
+                                            <p className="text-gray-700">{account.bank_account_number ? account.bank_account_number : 'Empty'}</p>
+                                            <h6 className="font-semibold">{account.bank_name}</h6>
+                                        </div>
+                                        <MdOutlineDoDisturb color="red" size={20} />
+
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                        <Divider />
+                    </Box>
+                    <Box className='flex-grow'>
+                        <Box sx={{ width: "100%", bgcolor: 'background.paper', padding: "0px 20px 0px" }}>
+                            <div className="flex justify-end py-3 flex-wrap gap-2" >
+                                <div className="mr-4">
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            textTransform: "none",
+                                        }}
+                                        className="mr-auto" 
+                                        onClick={() => { setOpenAddPopUpAdjust(true) }}
+                                    >
+                                        <AddIcon />Add/Reduce Money
+                                    </Button>
+                                </div>
+                                <div className="mr-4">
+                                    <Button
+                                        variant="contained"
+                                        style={{ textTransform: 'none' }}
+                                        onClick={() => { setOpenAddPopUp(true) }}
+                                    >
+                                        <AddIcon />Add New Bank
+                                    </Button>
+                                </div>
+                                <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={handlePdf} > <img src={pdfIcon} className="report-icon absolute mr-10" alt="excel Icon" />Download</Button>
+                            </div>
+                            {isLoading ? <div className="loader-container ">
+                                <Loader />
+                            </div> :
+                                <>
+                                    <Box sx={{ marginTop: "20px" }}>
+                                        <div>
+                                            <div className="firstrow flex" style={{ background: "none" }} >
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold ">Bank Name</span>
+                                                    <span className="font-bold">{!details?.bank_name ? '-' : details?.bank_name}</span>
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">Bank Account Number</span>
+                                                    <span className="font-bold">{!details?.bank_account_number ? '-' : details?.bank_account_number}</span>
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">Account Type</span>
+                                                    <span className="font-bold" style={{ textTransform: 'lowercase' }}>{!details?.bank_account_name ? '-' : details?.bank_account_name}</span>
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">IFSC Code</span>
+                                                    <span className="font-bold">{!details?.ifsc_code ? '-' : details?.ifsc_code}</span>
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">Branch Name</span>
+                                                    <span className="font-bold">{!details?.bank_branch_name ? '-' : details?.bank_branch_name}</span>
+
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">Account Holder Name</span>
+                                                    <span className="font-bold">{!details?.account_holder_name ? '-' : details?.account_holder_name}</span>
+                                                </div>
+                                                <div className="distributor-detail" style={{ minWidth: "190px" }}>
+                                                    <span className="primary font-bold">Current Balance</span>
+                                                    <span className="font-bold">{!details?.current_balance ? '-' : details?.current_balance}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Box>
+
+                                    {tabValue === 0 && (
+                                        <div>
+                                            <div className="flex gap-6 ml-12 mt-6 flex-wrap">
+                                                <div className="detail mt-6" >
+                                                    <TextField
+                 autoComplete="off"
+                                                        id="outlined-basic"
+                                                        value={search}
+                                                        size="small"
+                                                        onChange={(e) => setSearch(e.target.value)}
+                                                        variant="outlined"
+                                                        placeholder="Type Here..."
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="detail">
+                                                    <span className="text-gray-500">Start Date</span>
+                                                    <div style={{ width: "215px" }}>
+                                                        <DatePicker
+                                                            label="Start Date"
+                                                            className='custom-datepicker '
+                                                            selected={startDate}
+                                                            onChange={handleStartDate}
+                                                            dateFormat="dd/MM/yyyy"
+                                                            filterDate={(date) => !isDateDisabled(date)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="detail">
+                                                    <span className="text-gray-500">End Date</span>
+                                                    <div style={{ width: "215px" }}>
+                                                        <DatePicker
+                                                            label="End Date"
+                                                            className='custom-datepicker '
+                                                            selected={endDate}
+                                                            onChange={handleEndDate}
+                                                            dateFormat="dd/MM/yyyy"
+                                                            filterDate={(date) => !isDateDisabled(date)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="overflow-x-auto mt-4">
+                                                <table className="table-cashManage w-full border-collapse">
+                                                    <thead>
+                                                        <tr>
+                                                            {PassbookColumns.map((column) => (
+                                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                                    {column.label}
+                                                                </th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {bankDetails?.map((item, index) => (
+                                                            <tr key={index}>
+                                                                {PassbookColumns.map((column) => (
+                                                                    <td key={column.id}
+                                                                        className={column.id === 'withdraw' ? 'debit-cell' : column.id === 'deposit' ? 'credit-cell' : ''}>
+                                                                        {item[column.id]}
+                                                                    </td>
+                                                                ))}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    )}
+                                </>
+                            }
+                            {tabValue === 1 && (
+                                <div>
+                                    <div className="firstrow">
+                                        <table className="table-cashManage">
+                                            <thead>
+                                                <tr>
+                                                    {PaymentInitiatedColumns.map((column) => (
+                                                        <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                            {column.label}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {passbookDetails?.sales_return?.map((item, index) => (
+                                                    <tr key={index}>
+                                                        {PaymentInitiatedColumns.map((column) => (
+                                                            <td key={column.id}>
+                                                                {item[column.id]}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+                        </Box>
+                    </Box>
+                </Box> */}
       </div>
     </>
   );

@@ -353,9 +353,9 @@ const DrugGroup = () => {
               </div>
             </div>
             <div
-            className="row border-b border-dashed"
-            style={{ borderColor: "var(--color2)" }}
-          ></div>
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
             <div className="firstrow mt-4">
               {/* <div className="bg-white"> */}
               <div className="flex gap-2 flex-row pb-2">
@@ -481,14 +481,14 @@ const DrugGroup = () => {
         <Dialog
           className="order_list_ml custom-dialog"
           open={openAddPopUp}
-          //   sx={{
-          //     "& .MuiDialog-container": {
-          //       "& .MuiPaper-root": {
-          //         width: "50%",
-          //         maxWidth: "500px", // Set your width here
-          //       },
-          //     },
-          //   }}
+        //   sx={{
+        //     "& .MuiDialog-container": {
+        //       "& .MuiPaper-root": {
+        //         width: "50%",
+        //         maxWidth: "500px", // Set your width here
+        //       },
+        //     },
+        //   }}
         >
           <DialogTitle
             id="alert-dialog-title"
@@ -577,14 +577,8 @@ const DrugGroup = () => {
 
         <Dialog
           open={openItem}
-          sx={{
-            "& .MuiDialog-container": {
-              "& .MuiPaper-root": {
-                width: "50%",
-                maxWidth: "1500px", // Set your width here
-              },
-            },
-          }}
+          className="order_list_ml custom-dialog"
+
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
             DrugGroup Related Items
@@ -649,7 +643,7 @@ const DrugGroup = () => {
                   </table>
                 </div>
               ) : (
-                <div>
+                <div  className="self-center">
                   <span>No record Found.</span>
                 </div>
               )}
@@ -661,9 +655,8 @@ const DrugGroup = () => {
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsDelete ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

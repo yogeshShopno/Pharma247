@@ -130,7 +130,6 @@ const Search = ({ searchPage, setSearchPage }) => {
         minWidth: "100"
       }));
 
-      console.log(response.data.data, "response")
       // setPlansColumns(columns); 
 
     } catch (error) {

@@ -184,7 +184,6 @@ const LoginSignup = () => {
         setUserID(response.data.data.id);
         setStep("otp");
         setPassword("");
-        console.log("hi")
 
       } else {
         toast.error(response.data.message);

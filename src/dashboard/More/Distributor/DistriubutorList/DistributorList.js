@@ -147,7 +147,7 @@ const DistributerList = () => {
     });
     setTableData(sortedData);
   };
-  
+
 
   const handleSearchChange = (index, value) => {
     const updatedSearchTerms = [...searchTerms];
@@ -852,7 +852,13 @@ const DistributerList = () => {
                             size="small"
                             type="number"
                             value={whatsapp}
-                            onChange={(e) => setWhatsApp(e.target.value)}
+
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value.length <= 10) {
+                                setWhatsApp(value);
+                              }
+                            }}
                             className="w-full"
                             variant="outlined"
                           />

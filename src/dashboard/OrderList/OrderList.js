@@ -428,7 +428,7 @@ const OrderList = () => {
                     id="outlined-basic"
                     className="dst_fld_odr"
                     value={company}
-                    onChange={(e) => setCompany(e.target.value)}
+                    onChange={(e) => setCompany(e.target.value.toUpperCase())}
                     sx={{
                       width: "full",
                       "& .MuiInputBase-root": {

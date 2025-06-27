@@ -28,7 +28,7 @@ const AddDistributer = () => {
   const [ifsc, setIfsc] = useState("");
   const [foodLicence, setFoodLicence] = useState("");
   const [durgLicence, setDurgLicence] = useState("");
-  const [dueDays, setDueDays] = useState("");
+  const [dueDays, setDueDays] = useState("15");
   const [distributorList, setDistributorList] = useState([]);
 
   // const [isEditMode, setIsEditMode] = useState('');

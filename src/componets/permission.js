@@ -15,7 +15,6 @@ const usePermissions = () => {
 
       try {
         const storedPermissions = decryptData(encryptedPermissions);
-        // console.log('yogi',storedPermissions);
         
         // Filter permissions to get only those with a value of true
         const filteredPermissions = storedPermissions.filter(permission => {

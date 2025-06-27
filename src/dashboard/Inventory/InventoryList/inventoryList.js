@@ -186,7 +186,6 @@ const InventoryList = () => {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
 
         setmissingData(response.data.data);
       })
@@ -203,11 +202,9 @@ const InventoryList = () => {
         },
       })
       .then((response) => {
-        // console.log("API Response Pharma:===", response);
         setCompanyList(response.data.data);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
       });
   };
 
@@ -697,7 +694,6 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
-    console.log(newValue, "newValue");
     setSelectedCompany(newValue?.company_name);
   };
   const validateForm = async () => {

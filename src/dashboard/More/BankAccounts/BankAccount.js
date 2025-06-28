@@ -572,6 +572,8 @@ const BankAccount = () => {
                             {account.bank_account_number || "Empty"}
                           </p>
                           <h6 className="font-semibold">{account.bank_name}</h6>
+                          <h6 className="font-semibold">{account.bank_user_name}</h6>
+
                         </div>
                       </ListItemButton>
 
@@ -606,10 +608,13 @@ const BankAccount = () => {
                           onClick={() => handleAccountClick(account.id, index)}
                           className="w-44"
                         >
-                          <p className="text-gray-700">
+                          <p >
                             {account.bank_account_number || "Empty"}
                           </p>
+                          
                           <h6 className="font-semibold">{account.bank_name}</h6>
+                          <h6 className="font-semibold">{account.bank_user_name}</h6>
+
                         </div>
                       </ListItemButton>
 

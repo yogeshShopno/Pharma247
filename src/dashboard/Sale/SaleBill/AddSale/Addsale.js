@@ -37,12 +37,12 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 import { VscDebugStepBack } from "react-icons/vsc";
-import { FaCaretUp, FaStore } from "react-icons/fa6";
+import { FaCaretUp, FaCropSimple, FaStore } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { IoCaretDown } from "react-icons/io5";
 
 const Addsale = () => {
@@ -89,6 +89,7 @@ const Addsale = () => {
   const [base, setBase] = useState("");
   const [barcode, setBarcode] = useState("");
   const [batchListData, setBatchListData] = useState([]);
+  const [isAlternative, setIsAlternative] = useState(false);
   const [doctorName, setDoctorName] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [mobileNo, setMobileNo] = useState("");
@@ -98,6 +99,8 @@ const Addsale = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [qty, setQty] = useState("");
   const [maxQty, setMaxQty] = useState("");
+  const [tempQty, setTempQty] = useState("");
+
   const [order, setOrder] = useState("");
   const [roundOff, setRoundOff] = useState(0);
   const [uniqueId, setUniqueId] = useState([]);
@@ -269,9 +272,9 @@ const Addsale = () => {
           setSearchItem("");
           setValue("");
           setItem("");
-          setItemId(null)
-          resetValue()
-          setSelectedOption(null)
+          setItemId(null);
+          resetValue();
+          setSelectedOption(null);
           if (searchInputRef.current) {
             searchInputRef.current.focus();
             setSelectedIndex(-1); // Clear any selection
@@ -705,7 +708,6 @@ const Addsale = () => {
     setUnsavedItems(true);
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
-
   };
 
   const handleCustomerOption = (event, newValue) => {
@@ -752,14 +754,12 @@ const Addsale = () => {
     setIsEditMode(false);
     setSelectedEditItemId("");
     setItemEditID(0);
-    resetValue()
+    resetValue();
     searchInputRef.current?.focus();
-
 
     if (isVisible && value && !batch) {
       tableRef.current.focus();
       if (!item) return; // Ensure the item is valid.
-
     }
   };
 
@@ -775,12 +775,14 @@ const Addsale = () => {
     setGst(event.gst_name);
     // setQty(event.qty);
     setLoc(event.location);
+    setTempQty(event.qty);
 
     if (inputRef5.current) {
       inputRef5.current.focus();
     }
   };
 
+  useEffect(() => { }, [searchItem, itemList]);
   const handleDoctorOption = (event, newValue) => {
     setDoctor(newValue);
     setUnsavedItems(true);
@@ -941,8 +943,6 @@ const Addsale = () => {
 
   const handleEditClick = (item) => {
     if (!item) return; // Ensure the item is valid.
-
-
 
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -1125,7 +1125,6 @@ const Addsale = () => {
             data.append("user_id", userId);
             data.append("unit_id", Number(0));
 
-
             try {
               const response = axios.post("sales-item-add", data, {
                 headers: {
@@ -1158,14 +1157,10 @@ const Addsale = () => {
             } catch (error) { }
           };
         });
-
-
     } catch (error) {
       console.error("API error:", error);
     }
   };
-
-
 
   const handleSubmit = (draft) => {
     setUnsavedItems(false);
@@ -1258,7 +1253,6 @@ const Addsale = () => {
         toast.success(response.data.message);
         localStorage.removeItem("RandomNumber");
 
-
         const lowStockItems = ItemSaleList.sales_item.filter(
           (item) => parseFloat(item.total_stock) <= 1
         );
@@ -1267,14 +1261,12 @@ const Addsale = () => {
           // console.log('Low stock items:', lowStockItems);
         }
 
-
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
           setTimeout(() => {
             history.push("/salelist");
           }, 2000);
         }
-
 
         if (billSaveDraft == 0 && customer.id !== 1) {
           setTimeout(() => {
@@ -1288,22 +1280,20 @@ const Addsale = () => {
           setSearchItem("");
           setValue("");
           setItem("");
-          setItemId(null)
-          resetValue()
-          setSelectedOption(null)
-          setSelectedEditItem(null)
+          setItemId(null);
+          resetValue();
+          setSelectedOption(null);
+          setSelectedEditItem(null);
           if (searchInputRef.current) {
             searchInputRef.current.focus();
-            setSelectedIndex(-1); 
+            setSelectedIndex(-1);
           }
           pdfGenerator(saleId);
 
           setTimeout(() => {
             history.push("/salelist");
           }, 2000);
-
         }
-
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1443,6 +1433,7 @@ const Addsale = () => {
         })
         .then((response) => {
           setBatchListData(response.data.data);
+          setIsAlternative(response.data.alternative_item_check);
 
           if (Array.isArray(response.data.data)) {
             response.data.data.forEach((item) => {
@@ -1488,14 +1479,15 @@ const Addsale = () => {
       setSearchItem("");
       setBarcodeItemName("");
       setSelectedOption(null);
+
     }
+
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       await addSaleItem();
       if (searchInputRef.current) {
         searchInputRef.current.focus();
         setSelectedIndex(-1); // Clear any selection
-
       }
     }
     return isValid;
@@ -1524,7 +1516,10 @@ const Addsale = () => {
     data.append("gst", gst ? gst : "");
     data.append("mrp", mrp ? mrp : "");
     data.append("unit", unit ? unit : "");
-    data.append("random_number", Number(localStorage.getItem("RandomNumber")) || "");
+    data.append(
+      "random_number",
+      Number(localStorage.getItem("RandomNumber")) || ""
+    );
     data.append("batch", batch ? batch : "");
     data.append("location", loc ? loc : "");
     data.append("base", base ? base : "");
@@ -1532,7 +1527,11 @@ const Addsale = () => {
     data.append("net_rate", itemAmount ? itemAmount : "");
     data.append("total_amount", totalAmount);
     data.append("ptr", ptr ? ptr : "");
-    data.append("order", order ? order : "");
+    if (tempQty - qty <= 2) {
+      data.append("order", "O");
+    } else {
+      data.append("order", order ? order : "");
+    }
     data.append("discount", discount ? discount : "");
     data.append("total_gst", totalgst || "");
     data.append("today_loylti_point ", todayLoyltyPoint || "");
@@ -1556,6 +1555,7 @@ const Addsale = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+
       setTotalAmount(0);
       saleItemList();
       setUnit("");
@@ -1743,7 +1743,7 @@ const Addsale = () => {
     const payload = {
       "app-key": "db8ce965-029b-4f74-aade-04d137663b12",
       "auth-key": "039d46d11eab7e7863eb651db09f8eac63198154bf41302430",
-      destination_number: customer.phone_number, // change this 
+      destination_number: customer.phone_number, // change this
       template_id: "1291715845234841",
       device_id: "6747f73e1bcbc646dbdc8c5f",
       variables: [
@@ -1766,7 +1766,7 @@ const Addsale = () => {
     }
   };
   const pdfGenerator = async (id) => {
-    console.log(id)
+    console.log(id);
     let data = new FormData();
     data.append("id", id);
     setIsLoading(true);
@@ -1787,12 +1787,10 @@ const Addsale = () => {
       console.error("API error:", error);
     } finally {
       setIsLoading(false);
-
     }
   };
   const handlePdf = (url) => {
     if (typeof url === "string") {
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } else {
       console.error("Invalid URL for the PDF");
@@ -1938,7 +1936,6 @@ const Addsale = () => {
                     }, 200);
                   }}
                   style={{ zIndex: 1 }} // keep dropdown above other elements
-
                 >
                   {/* Save button */}
                   <Button
@@ -2014,7 +2011,6 @@ const Addsale = () => {
                     </div>
                   )}
                 </div>
-
               </div>
             </div>
             <div
@@ -2031,7 +2027,7 @@ const Addsale = () => {
                       flexDirection: "column",
                       width: "100%",
                       borderRadius: "15px",
-                      minWidth: "320px"
+                      minWidth: "320px",
                     }}
                   >
                     <span
@@ -2041,12 +2037,10 @@ const Addsale = () => {
                         fontSize: "17px",
                         color: "var(--color1)",
                         whiteSpace: "nowrap",
-
                       }}
                     >
                       Customer Mobile / Name
                       <span className="text-red-600 "> *</span>
-
                       <FaPlusCircle
                         className="icon primary"
                         onClick={() => {
@@ -2075,10 +2069,10 @@ const Addsale = () => {
                       sx={{
                         width: "100%",
                         minWidth: {
-                          xs: '350px',
-                          sm: '400px',
-                          md: '400px',
-                          lg: '400px',
+                          xs: "350px",
+                          sm: "400px",
+                          md: "400px",
+                          lg: "400px",
                         },
 
                         "& .MuiAutocomplete-inputRoot": {
@@ -2390,7 +2384,7 @@ const Addsale = () => {
                                     onInputChange={handleInputChange}
                                     options={itemList}
                                     getOptionLabel={(option) =>
-                                      `${option.iteam_name || ""} Qty:(${option.stock || 0})`
+                                      `${option.iteam_name || ""}`
                                     }
                                     filterOptions={(option, state) => {
                                       return itemList;
@@ -2421,7 +2415,8 @@ const Addsale = () => {
                                         InputProps={{
                                           ...params.InputProps,
                                           style: {
-                                            height: 40, width: 450,
+                                            height: 40,
+                                            width: 450,
                                             fontSize: "1.2rem",
                                           },
 
@@ -2446,7 +2441,6 @@ const Addsale = () => {
                                       />
                                     )}
                                   />
-
                                 </Box>
                               </Box>
                               {isVisible && value && !batch && (
@@ -2479,13 +2473,16 @@ const Addsale = () => {
                                       }}
                                     >
                                       <thead>
-                                        {batchListData?.[0]?.id !== itemId && (
+                                        {isAlternative && (
                                           <tr className="customtable">
-                                            <th className="saleTable highlighted-row" colSpan={8}>Alternate Medicine</th>
+                                            <th
+                                              className="saleTable highlighted-row"
+                                              colSpan={8}
+                                            >
+                                              Alternate Medicine
+                                            </th>
                                           </tr>
                                         )}
-
-                                        {console.log("itemId:", itemId, "batchListData:",)}
 
                                         <tr className="customtable">
                                           <th>Item Name</th>
@@ -2502,7 +2499,6 @@ const Addsale = () => {
                                         {batchListData.length > 0 ? (
                                           <>
                                             {batchListData.map((item) => (
-
                                               <tr
                                                 className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
                                                   String(item.id)
@@ -2674,7 +2670,10 @@ const Addsale = () => {
                             }}
                             onChange={(e) => {
                               handleQtyChange(e);
-                              if ((e.key === "Enter" || e.key === "Tab") && Number(qty) === maxQty) {
+                              if (
+                                (e.key === "Enter" || e.key === "Tab") &&
+                                Number(qty) === maxQty
+                              ) {
                                 setOrder("O");
                               }
                             }}
@@ -2797,6 +2796,7 @@ const Addsale = () => {
                 {/* } */}
               </div>
 
+              {/* bottom details */}
 
               <div
                 className="sale_filtr_add"
@@ -2929,10 +2929,7 @@ const Addsale = () => {
                           const value = e.target.value;
                           const isMinusKey = e.key === "-";
 
-                          if (
-                            !/[0-9.-]/.test(e.key) &&
-                            e.key !== "Backspace"
-                          ) {
+                          if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
                             e.preventDefault();
                           }
 
@@ -3031,9 +3028,7 @@ const Addsale = () => {
                           }}
                         >
                           <label className="font-bold">Total Amount : </label>
-                          <span style={{ fontWeight: 600 }}>
-                            {totalAmount}
-                          </span>
+                          <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                         </div>
                         <div
                           className=""
@@ -3199,6 +3194,8 @@ const Addsale = () => {
             </div>
           </div>
         </div>
+
+        {/* add doctor */}
 
         <Dialog open={openAddPopUp} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="secondary">

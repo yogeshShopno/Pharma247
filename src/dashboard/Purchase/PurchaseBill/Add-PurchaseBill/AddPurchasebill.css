@@ -222,6 +222,7 @@ header {
 
 .list-bank {
     cursor: pointer;
+    margin-block: 10px;
 }
 
 .list-bank.highlighted {

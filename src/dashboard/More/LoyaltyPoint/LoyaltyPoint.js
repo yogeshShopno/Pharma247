@@ -144,11 +144,16 @@ const LoyaltyPoint = () => {
         newErrors.minimumAmount = "Minimum amount is required";
         toast.error(newErrors.minimumAmount);
       }
+      
 
       if (Number(maximumAmount) <= Number(minimumAmount)) {
-        newErrors.amountMismatch =
-          "Maximum amount must be greater than minimum amount";
+        newErrors.amountMismatch ="Maximum amount must be greater than minimum amount";
         toast.error(newErrors.amountMismatch);
+      }
+
+       if (!percentage) {
+        newErrors.percentage ="Percentage is required";
+        toast.error(newErrors.percentage);
       }
 
       setErrors(newErrors);

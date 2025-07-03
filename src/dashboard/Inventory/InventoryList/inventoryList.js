@@ -169,6 +169,8 @@ const InventoryList = () => {
     listLocation();
   }, []);
 
+
+
   useEffect(() => {
     const x = parseFloat(stock) + parseFloat(stockAdjust);
     setRemainingStock(x);
@@ -309,6 +311,72 @@ const InventoryList = () => {
     setBarcode();
     handleClose();
   };
+
+  /*<=============================================================================== handle bulk order ======================================================================> */
+  const handleBulkQR = () => {
+    batchList();
+  };
+
+  const batchList = async () => {
+    let data = new FormData();
+    data.append("item_bulk_id", selectedItems);
+
+    try {
+      const res = await axios.post("item-bulk-batch-list?", data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const batchData = res.data.data;
+
+      function extractBatchListData(batchData) {
+        return batchData.map(item => ({
+          item_id: Number(item.item_id),
+          batch_id: Number(item.id), // use `id` if that's your batch id
+          qty: Number(item.qty)
+        }));
+      }
+
+      const batchListData = extractBatchListData(batchData);
+      setBatchListData(batchListData);
+
+      if (res.data.status === 200) {
+
+        // Call QR code API with 'data' key in body
+        // await callBulkQRCode(batchListData);
+      }
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
+  // Separate function, outside or inside as you want
+  const callBulkQRCode = async (batchListData) => {
+    try {
+      const response = await axios.post(
+        "item-bulk-qr-code?",
+        { data: batchListData }, // <-- This matches Postman screenshot
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.status === 200) {
+        // Success logic here
+        console.log("QR code API response:", response.data);
+        // e.g., show PDF link: response.data.pdf_url
+      }
+    } catch (error) {
+      console.error("QR code API error:", error);
+    }
+  };
+
+
   /*<=============================================================================== handle Checkbox ======================================================================> */
 
   const handleCheckbox = (itemId) => {
@@ -463,7 +531,7 @@ const InventoryList = () => {
           setIsLoading(false);
           // console.log(data);
           // console.log(searchItem);
-          setSearchItem("");
+          // setSearchItem("");
           setSelectedOption("");
           setHsnCode("");
           setSelectedCategoryIds([]);
@@ -1570,7 +1638,7 @@ const InventoryList = () => {
               autoFocus
               sx={{ width: "75%", marginTop: "5px" }}
               onChange={(e) => setSearchItem(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
               variant="outlined"
               placeholder="Please search any items.."
               InputProps={{
@@ -1637,7 +1705,7 @@ const InventoryList = () => {
               >
                 <MenuItem onClick={handleBulkEdit}>Bulk Edit</MenuItem>
                 <MenuItem onClick={handleBulkOrder}>Bulk Order</MenuItem>
-                <MenuItem onClick={handleBulkOrder}>Bulk QR</MenuItem>
+                <MenuItem onClick={handleBulkQR}>Bulk QR</MenuItem>
 
                 {/* <MenuItem onClick={handleBulkOrder}>Bulk Print QR</MenuItem> */}
               </Menu>

@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { Accordion, AccordionDetails, AccordionSummary, Divider, FormControl, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Divider, FormControl, Typography, Switch } from "@mui/material";
 import { useState } from "react";
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
@@ -149,7 +149,7 @@ const ProfileView = () => {
                             </AccordionDetails>
                         </Accordion>
                     )}
-                       {hasStaffSessionsPermission && (
+                    {hasStaffSessionsPermission && (
                         <Accordion defaultExpanded >
                             <AccordionSummary sx={{ color: "var(--color1)" }} >
                                 <SupervisorAccountIcon sx={{ mb: 1 }} />
@@ -158,8 +158,7 @@ const ProfileView = () => {
                             <AccordionDetails  >
                                 <FormControl sx={{ width: "100%", paddingX: "20px" }}>
                                     <ul className='list-text_pb'>
-                                       
-                                        
+
                                         {hasPermission(permissions, "staff members view") && (
                                             <li
                                                 className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/settings/online-orders' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
@@ -167,7 +166,37 @@ const ProfileView = () => {
                                             >
                                                 Online Orders
                                             </li>
-                                        )}                                        
+                                        )}
+                                        {hasPermission(permissions, "staff members view") && (
+                                            <li
+                                                className={'font-semibold items-center p-2 cursor-pointer flex justify-between rounded-lg '}
+                                                onClick={() => handleItemClick('/settings/online-orders', 'online-orders')}
+                                            >
+                                                Whatsapp Bill <Switch
+                                                    // checked={settings.accept_online_orders == 1}
+                                                    sx={{
+                                                        "& .MuiSwitch-track": {
+                                                            backgroundColor: "lightgray",
+                                                        },
+                                                        "&.Mui-checked .MuiSwitch-track": {
+                                                            backgroundColor: "var(--color1) !important",
+                                                        },
+                                                        "& .MuiSwitch-thumb": {
+                                                            backgroundColor: "var(--color1)",
+                                                        },
+                                                        "&.Mui-checked .MuiSwitch-thumb": {
+                                                            backgroundColor: "var(--color1)",
+                                                        },
+                                                    }}
+                                                    // onchecked={settings.accept_online_orders == 1}
+                                                    onClick={() => {
+                                                        if (localStorage.getItem('whatsapp_bill') === 'true') {
+                                                            localStorage.setItem('whatsapp_bill', false)
+                                                        }
+                                                    }}
+                                                />
+                                            </li>
+                                        )}
                                     </ul>
                                     {/* {/ ))} /} */}
                                 </FormControl>

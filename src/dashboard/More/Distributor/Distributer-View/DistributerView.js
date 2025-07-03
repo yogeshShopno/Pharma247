@@ -308,6 +308,30 @@ const DistributerView = () => {
                       : "____"}
                   </span>
                 </div>
+                  <div className="distributor-detail">
+                  <span className="heading_othr ">Total Bill Amount</span>
+                  <span className="data_bg">
+                    {tableData.total_bill_amount
+                      ? tableData.total_bill_amount
+                      : "____"}
+                  </span>
+                </div>
+                   <div className="distributor-detail">
+                  <span className="heading_othr ">Total Paid Amount</span>
+                  <span className="data_bg">
+                    {tableData.total_paid_amount
+                      ? tableData.total_paid_amount
+                      : "____"}
+                  </span>
+                </div>
+                <div className="distributor-detail">
+                  <span className="heading_othr ">Total due Amount</span>
+                  <span className="data_bg">
+                    {tableData.total_due_amount
+                      ? tableData.total_due_amount
+                      : "____"}
+                  </span>
+                </div>
               </div>
             </div>
             <div className=" bg-white mt-5">

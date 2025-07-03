@@ -299,7 +299,7 @@ const Dashboard = () => {
           const encryptedPermission = encryptData(permission);
           localStorage.setItem("Permission", encryptedPermission);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   // const handleSwitchChange = (event) => {
@@ -352,6 +352,7 @@ const Dashboard = () => {
       { name: "Noah Davis", amount: 1900 },
     ],
   };
+
   return (
     <div>
       <div>
@@ -644,11 +645,10 @@ const Dashboard = () => {
                       <button
                         key={e.id}
                         onClick={() => lineHandleChange(null, e.title)}
-                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${
-                          linechartValue === e.title
-                            ? "bg-[var(--color1)] text-white"
-                            : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                        }`}
+                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${linechartValue === e.title
+                          ? "bg-[var(--color1)] text-white"
+                          : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                          }`}
                       >
                         {e.title}
                       </button>
@@ -741,32 +741,25 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+            {/*  First Component - Top Distributors & Top Five Bills */}
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6 px-4 py-3">
+              {/* Top Distributors Card */}
               <div className="lg:col-span-1 md:col-span-1">
-                <div className="flex" style={{ minHeight: "500px" }}>
-                  <Card className="w-full rounded-2xl shadow-lg bg-white border border-gray-200">
-                    <div
-                      className="flex h-full flex-col justify-center gap-4 p-1"
-                      style={{ justifyContent: "flex-start" }}
-                    >
+                <div className="flex" style={{ minHeight: "626px" }}>
+                  <Card className="w-full rounded-2xl p-6 space-y-4 shadow-lg bg-white border border-gray-200">
+                    <div className="flex h-full flex-col justify-between gap-4 p-1">
                       <div className="flex justify-between items-center border-b pb-2">
                         <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
                           Top Distributors
                           <Tooltip title="Latest Distributors">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="ml-2"
-                            >
-                              <GoInfo
-                                className="text-green-600"
-                                style={{ fontSize: "1rem" }}
-                              />
+                            <Button variant="ghost" size="icon" className="ml-2">
+                              <GoInfo className="text-green-600" style={{ fontSize: "1rem" }} />
                             </Button>
                           </Tooltip>
                         </p>
                       </div>
-                      <div className="mt-6 space-y-4">
+
+                      <div className="mt-6 space-y-4 overflow-auto max-h-[350px] flex-1">
                         {distributor.map((item, index) => (
                           <div
                             key={index}
@@ -781,15 +774,14 @@ const Dashboard = () => {
                               </p>
                             </div>
                             <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                              ₹
-                              {item.due_amount === 0
-                                ? "0"
-                                : item.due_amount.toLocaleString()}
+                              ₹{item.due_amount === 0 ? "0" : item.due_amount.toLocaleString()}
                             </div>
                           </div>
                         ))}
                       </div>
-                      <div className="mt-6 flex justify-end">
+
+                      {/* View All - Consistent Position */}
+                      <div className="flex justify-end mt-4">
                         <Link
                           to="/more/DistributorList"
                           className="text-green-600 flex items-center gap-1 hover:underline font-medium"
@@ -801,12 +793,14 @@ const Dashboard = () => {
                   </Card>
                 </div>
               </div>
+
+              {/* Top Five Bills Card */}
               <div className="lg:col-span-2 md:col-span-1">
                 <div
                   className="bg-white rounded-2xl shadow-lg p-6 space-y-4"
                   style={{
                     boxShadow: "0 6px 24px rgba(0, 0, 0, 0.08)",
-                    minHeight: "500px",
+                    minHeight: "577px",
                   }}
                 >
                   {/* Header */}
@@ -872,20 +866,23 @@ const Dashboard = () => {
                   </div>
 
                   {/* Table & Content */}
-                  <Box className="w-full">
+                  <Box className="w-full flex-1">
                     <TabContext value={value}>
                       {billData.length > 0 ? (
                         types.map((e) => (
-                          <TabPanel key={e.id} value={e.id} className="p-0">
-                            <div className="flex flex-col justify-between h-full">
-                              <div className="overflow-x-auto rounded-xl">
+                          <TabPanel
+                            key={e.id}
+                            value={e.id}
+                            className="p-0"
+                            sx={{ height: "100%" }}
+                          >
+                            <div className="flex flex-col justify-between h-full min-h-[450px]">
+                              <div className="overflow-auto max-h-[350px] rounded-xl">
                                 <table className="w-full text-left table-auto border-collapse">
                                   <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                                     <tr>
                                       <th className="px-4 py-3 border-b min-w-[180px]">
-                                        {value === 0
-                                          ? "Distributors"
-                                          : "Customers"}
+                                        {value === 0 ? "Distributors" : "Customers"}
                                       </th>
                                       <th className="px-4 py-3 border-b min-w-[160px]">
                                         Contact Number
@@ -901,12 +898,8 @@ const Dashboard = () => {
                                         key={index}
                                         className="border-b hover:bg-gray-50 transition"
                                       >
-                                        <td className="px-4 py-3">
-                                          {item.name}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                          {item.phone_number || "--"}
-                                        </td>
+                                        <td className="px-4 py-3">{item.name}</td>
+                                        <td className="px-4 py-3">{item.phone_number || "--"}</td>
                                         <td className="px-4 py-3 font-medium">
                                           ₹ {item.total_amount || 0}
                                         </td>
@@ -916,21 +909,21 @@ const Dashboard = () => {
                                 </table>
                               </div>
 
-                              {/* View All Link */}
-                              <div className="flex justify-end mt-5 text-[var(--color1)] font-medium">
+                              {/* View All Link - Consistent Position */}
+                              <div className="flex justify-end mt-4">
                                 {value === 0 ? (
                                   <Link
                                     to="/purchase/purchasebill"
-                                    className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium"
+                                    className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                                   >
-                                    View all <ChevronRightIcon />
+                                    View all <ChevronRightIcon className="w-4 h-4" />
                                   </Link>
                                 ) : (
                                   <Link
                                     to="/salelist"
-                                    className="flex items-center gap-1 hover:underline text-green-600 flex items-center gap-1 hover:underline font-medium"
+                                    className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                                   >
-                                    View all <ChevronRightIcon />
+                                    View all <ChevronRightIcon className="w-4 h-4" />
                                   </Link>
                                 )}
                               </div>
@@ -950,100 +943,14 @@ const Dashboard = () => {
                   </Box>
                 </div>
               </div>
-
-              {/* <div className='gap-4'>
-                <div className="bg-white  flex flex-col px-2 py-1 rounded-lg " style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)', height: "470px" }}>
-                  <div className='p-5 flex justify-between items-center dsh_cdr_hd' style={{ borderBottom: '1px solid var(--color2)' }}>
-                    <div className='top_fv_bll'>
-                      <p className='font-bold dash_first_crd1 flex items-center' style={{ fontSize: '1.5625rem' }}>Expiring Items
-                        <Tooltip title="Expiring Items" arrow>
-                          <Button ><GoInfo className='absolute' style={{ fontSize: "1rem", fill: 'var(--color1)' }} /></Button>
-                        </Tooltip>
-                      </p>
-                    </div>
-                    <div className=' dsh_crd_btn1'>
-                      <FormControl sx={{ minWidth: 100 }}>
-                        <Select
-                          labelId="demo-simple-select-helper-label"
-                          id="demo-simple-select-helper"
-                          size='small'
-                          value={expiredValue}
-                          onChange={(e) => { setExpiredValue(e.target.value) }}
-                        >
-                          {expiryList.map((e) => (
-                            <MenuItem key={e.id} value={e.id}>{e.value}</MenuItem>))}
-                        </Select>
-                      </FormControl>
-                      <div>
-                      </div>
-                    </div>
-                  </div>
-                  <Box sx={{ height: '100%' }}>
-                    <TabContext value={value}>
-                      {expiry.length > 0 ? (
-                        <>
-                          {types.map((e) => (
-                            <TabPanel key={e.id} value={e.id} sx={{ height: '100%' }}>
-                              <div className='flex flex-col justify-between' style={{ height: '100%' }}>
-                                <div className='overflow-x-auto'>
-                                  <table className="w-full custom-table" style={{ whiteSpace: 'nowrap' }}>
-                                    <thead className="primary">
-                                      <tr>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                          Item Name
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                          Qty.
-                                        </th>
-                                        <th className="border-b border-gray-200 font-bold px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                          Expiry Date
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {expiry.map((item) => (
-                                        <tr key={item.id} className="border-b border-gray-200" style={{ textAlign: 'center' }}>
-                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                            {item.name}
-                                          </td>
-                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                            {item.qty}
-                                          </td>
-                                          <td className=" px-4 py-2" style={{ minWidth: 150, fontSize: '16px' }}>
-                                            {item.expiry}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="flex justify-end mt-5" style={{ color: 'rgb(0 39 123)' }}>
-                                  <Link to='/inventory'>
-                                    <div>
-                                      <a href="" >View all <ChevronRightIcon /></a>
-                                    </div>
-                                  </Link>
-                                </div>
-                              </div>
-                            </TabPanel>
-                          ))}
-                        </>
-                      ) : (
-                        <div className="flex justify-center items-center" style={{ minHeight: "400px" }}>
-                          <img src="../no-data.png" className="nofound" width="100%" />
-                        </div>
-                      )}
-                    </TabContext>
-                  </Box>
-                </div>
-              </div> */}
             </div>
+
+            {/*  Second Component - Staff Overview & Expiring Items */}
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-5 md:grid-cols-2 gap-6 px-4 py-3">
-              <div
-                className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden" 
-              >
+              {/* Staff Overview Card */}
+              <div className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
                 {/* Header with Tabs */}
-                <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center px-6 py-5 border-b border-gray-200 bg-gray-50">
+                <div className="flex flex-col gap-4 px-6 py-5 border-b border-gray-200 bg-gray-50">
                   <div className="flex items-center gap-2 text-xl font-semibold text-gray-800">
                     Staff Overview
                     <Tooltip title="Staff sales and purchase overview" arrow>
@@ -1055,95 +962,163 @@ const Dashboard = () => {
                     </Tooltip>
                   </div>
 
-                  <div className="flex flex-wrap gap-3 items-center justify-between md:justify-end w-full md:w-auto">
-                    {/* Tabs in Header */}
-                    <TabContext value={pieChartvalue}>
-                      <TabList
-                        onChange={handlestaffTabchange}
-                        aria-label="Sales Purchase Tabs"
-                        TabIndicatorProps={{ style: { display: "none" } }}
+                  <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between w-full">
+                    {/* Tabs - Responsive */}
+                    <div className="w-full sm:w-auto order-2 sm:order-1">
+                      <TabContext value={pieChartvalue}>
+                        <TabList
+                          onChange={handlestaffTabchange}
+                          aria-label="Sales Purchase Tabs"
+                          TabIndicatorProps={{ style: { display: "none" } }}
+                          variant="scrollable"
+                          scrollButtons="auto"
+                          sx={{
+                            "& .MuiTab-root": {
+                              textTransform: "none",
+                              fontWeight: 500,
+                              px: { xs: 2, sm: 3 },
+                              py: 1,
+                              borderRadius: "999px",
+                              color: "#374151",
+                              backgroundColor: "#fff",
+                              mx: 0.5,
+                              transition: "0.3s ease",
+                              fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                              minWidth: { xs: "auto", sm: "64px" },
+                              minHeight: { xs: "32px", sm: "40px" },
+                            },
+                            "& .Mui-selected": {
+                              backgroundColor: "var(--color1)",
+                              color: "white",
+                            },
+                            "& .MuiTabs-scrollButtons": {
+                              display: { xs: "flex", sm: "none" },
+                            },
+                          }}
+                        >
+                          {pieChartTabs.map((tab) => (
+                            <Tab
+                              key={tab.id}
+                              value={tab.id}
+                              label={tab.value}
+                              className="whitespace-nowrap"
+                            />
+                          ))}
+                        </TabList>
+                      </TabContext>
+                    </div>
+
+                    {/* Staff Dropdown - Responsive */}
+                    <div className="w-full sm:w-auto order-1 sm:order-2">
+                      <FormControl
+                        size="small"
                         sx={{
-                          "& .MuiTab-root": {
-                            textTransform: "none",
-                            fontWeight: 500,
-                            px: 3,
-                            py: 1,
-                            borderRadius: "999px",
-                            color: "#374151",
-                            backgroundColor: "#fff",
-                            mx: 0.5,
-                            transition: "0.3s ease",
-                            fontSize: "0.875rem",
-                          },
-                          "& .Mui-selected": {
-                            backgroundColor: "var(--color1)",
-                            color: "white",
-                          },
+                          minWidth: { xs: "100%", sm: 120 },
+                          maxWidth: { xs: "100%", sm: 200 }
                         }}
                       >
-                        {pieChartTabs.map((tab) => (
-                          <Tab key={tab.id} value={tab.id} label={tab.value} />
-                        ))}
-                      </TabList>
-                    </TabContext>
-
-                    {/* Staff Dropdown */}
-                    <FormControl size="small" sx={{ minWidth: 100 }}>
-                      <Select
-                        value={staffListValue}
-                        onChange={staffListHandlechange}
-                        displayEmpty
-                        className="bg-white rounded-md shadow-sm text-sm"
-                        inputProps={{ "aria-label": "Staff Select" }}
-                      >
-                        {staffList.map((e) => (
-                          <MenuItem key={e.id} value={e.id}>
-                            {e.value}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                        <Select
+                          value={staffListValue}
+                          onChange={staffListHandlechange}
+                          displayEmpty
+                          className="bg-white rounded-md shadow-sm text-sm"
+                          inputProps={{ "aria-label": "Staff Select" }}
+                          sx={{
+                            "& .MuiSelect-select": {
+                              py: { xs: 1, sm: 1.5 },
+                              fontSize: { xs: "0.875rem", sm: "0.9375rem" },
+                            },
+                          }}
+                        >
+                          {staffList.map((e) => (
+                            <MenuItem key={e.id} value={e.id}>
+                              {e.value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
                   </div>
                 </div>
+
                 {/* Table Section */}
-                <div className="p-2">
+                <div className="p-2 flex-1">
                   <TabContext value={pieChartvalue}>
                     {pieChartTabs.map((tab) => (
-                      <TabPanel key={tab.id} value={tab.id} sx={{ px: 0 }}>
-                        <Paper
-                          elevation={0}
-                          className="overflow-hidden rounded-xl"
-                        >
-                          <Table>
-                            <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
-                              <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
-                                  Name
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>
-                                  Amount (₹)
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {staticData[tab.id].map((item, index) => (
-                                <TableRow key={index} hover>
-                                  <TableCell>{item.name}</TableCell>
-                                  <TableCell className="text-green-700 font-medium">
-                                    ₹ {item.amount.toLocaleString()}
+                      <TabPanel key={tab.id} value={tab.id} sx={{ px: 0, height: "100%" }}>
+                        <div className="flex flex-col justify-between h-full min-h-[400px]">
+                          <Paper elevation={0} className="overflow-hidden rounded-xl">
+                            <Table>
+                              <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
+                                <TableRow>
+                                  <TableCell
+                                    sx={{
+                                      fontWeight: 600,
+                                      fontSize: { xs: "0.875rem", sm: "0.9375rem" },
+                                      py: { xs: 1, sm: 1.5 }
+                                    }}
+                                  >
+                                    Name
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      fontWeight: 600,
+                                      fontSize: { xs: "0.875rem", sm: "0.9375rem" },
+                                      py: { xs: 1, sm: 1.5 }
+                                    }}
+                                  >
+                                    Amount (₹)
                                   </TableCell>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </Paper>
+                              </TableHead>
+                              <TableBody>
+                                {staticData[tab.id].map((item, index) => (
+                                  <TableRow key={index} hover>
+                                    <TableCell
+                                      sx={{
+                                        fontSize: { xs: "0.8125rem", sm: "0.875rem" },
+                                        py: { xs: 1, sm: 1.5 }
+                                      }}
+                                    >
+                                      {item.name}
+                                    </TableCell>
+                                    <TableCell
+                                      className="text-green-700 font-medium"
+                                      sx={{
+                                        fontSize: { xs: "0.8125rem", sm: "0.875rem" },
+                                        py: { xs: 1, sm: 1.5 }
+                                      }}
+                                    >
+                                      ₹ {item.amount.toLocaleString()}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </Paper>
+
+                          {/* View All Link - Responsive */}
+                          <div className="flex justify-end mt-4 px-2">
+                            <Link
+                              to="/staff/overview"
+                              className="text-green-600 flex items-center gap-1 hover:underline font-medium text-sm sm:text-base transition-colors duration-200"
+                            >
+                              <span className="hidden xs:inline">View all</span>
+                              <span className="xs:hidden">View</span>
+                              <ChevronRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </Link>
+                          </div>
+                        </div>
                       </TabPanel>
                     ))}
                   </TabContext>
                 </div>
               </div>
+
+              {/* Expiring Items Card */}
               <div className="lg:col-span-3 md:col-span-1 w-full">
                 <div className="bg-white rounded-2xl shadow-lg h-[500px] flex flex-col p-4">
+                  {/* Header Section */}
                   <div className="flex justify-between items-center border-b border-gray-200 pb-3 mb-3">
                     <div className="flex items-center gap-2">
                       <h2 className="text-2xl font-semibold text-gray-800">
@@ -1174,6 +1149,7 @@ const Dashboard = () => {
                     </FormControl>
                   </div>
 
+                  {/* Content Section */}
                   <Box sx={{ flexGrow: 1 }}>
                     <TabContext value={value}>
                       {expiry.length > 0 ? (
@@ -1183,20 +1159,15 @@ const Dashboard = () => {
                             value={e.id}
                             sx={{ p: 0, height: "100%" }}
                           >
-                            <div className="flex flex-col justify-between h-full">
+                            <div className="flex flex-col justify-between h-full min-h-[400px]">
+                              {/* Scrollable Table */}
                               <div className="overflow-auto max-h-[320px]">
                                 <table className="w-full text-sm text-center">
                                   <thead className="bg-gray-50 text-gray-700 sticky top-0">
                                     <tr>
-                                      <th className="px-4 py-2 font-semibold">
-                                        Item Name
-                                      </th>
-                                      <th className="px-4 py-2 font-semibold">
-                                        Qty.
-                                      </th>
-                                      <th className="px-4 py-2 font-semibold">
-                                        Expiry Date
-                                      </th>
+                                      <th className="px-4 py-2 font-semibold">Item Name</th>
+                                      <th className="px-4 py-2 font-semibold">Qty.</th>
+                                      <th className="px-4 py-2 font-semibold">Expiry Date</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -1205,27 +1176,22 @@ const Dashboard = () => {
                                         key={item.id}
                                         className="border-b hover:bg-gray-50"
                                       >
-                                        <td className="px-4 py-2">
-                                          {item.name}
-                                        </td>
-                                        <td className="px-4 py-2">
-                                          {item.qty}
-                                        </td>
-                                        <td className="px-4 py-2">
-                                          {item.expiry}
-                                        </td>
+                                        <td className="px-4 py-2">{item.name}</td>
+                                        <td className="px-4 py-2">{item.qty}</td>
+                                        <td className="px-4 py-2">{item.expiry}</td>
                                       </tr>
                                     ))}
                                   </tbody>
                                 </table>
                               </div>
 
+                              {/* View All Link - Consistent Position */}
                               <div className="flex justify-end mt-4">
                                 <Link
                                   to="/inventory"
                                   className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                                 >
-                                  View all <ChevronRightIcon fontSize="small" />
+                                  View all <ChevronRightIcon className="w-4 h-4" />
                                 </Link>
                               </div>
                             </div>

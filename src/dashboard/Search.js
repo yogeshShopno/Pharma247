@@ -139,8 +139,7 @@ const Search = ({ searchPage, setSearchPage }) => {
       history.push(`/inventoryView/${row.id}`)
     } else if (searchType == 2) {
       // Add navigation for drug group if needed
-      // history.push(`/drugGroupView/${row.id}`)
-      console.log("Drug group navigation not implemented yet");
+      history.push(`/more/drugGroupView/${row.id}`)
     } else if (searchType == 3) {
       history.push(`/DistributerView/${row.id}`)
     } else if (searchType == 4) {

@@ -43,13 +43,12 @@ const DrugGroup = () => {
     { id: "name", label: "Drug Group Name", minWidth: 100 },
   ];
   const [drugGroupData, setDrugGroupData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [header, setHeader] = useState("");
   const [buttonLabel, setButtonLabel] = useState("");
   const [drugGroupName, setDrugGroupName] = useState("");
-  const [drugGroupFilter, setDrugGroupFilter] = useState(null);
-  const [openItem, setopenItem] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [drugGroupID, setDrugGroupID] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -60,12 +59,6 @@ const DrugGroup = () => {
   const [IsDelete, setIsDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-
-  const DrugGroupWiseFilter = [
-    { id: "Item_name", label: "Item Name", minWidth: 170, height: 100 },
-    { id: "company_name", label: "Company Name", minWidth: 100 },
-    { id: "stock", label: "stock", minWidth: 100 },
-  ];
 
   const handelAddOpen = () => {
     setOpenAddPopUp(true);
@@ -80,8 +73,8 @@ const DrugGroup = () => {
     setIsEditMode(true);
     setHeader("Edit Drug Group");
     setButtonLabel("Update");
-    // setDrugGroupName(row.category_name);
   };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -95,11 +88,34 @@ const DrugGroup = () => {
     setDrugGroupName("");
     setErrors({});
     setOpenAddPopUp(false);
+    setIsEditMode(false);
+  };
+
+  const handleRowClick = (drugGroupId) => {
+    history.push(`/more/drugGroupView/${drugGroupId}`);
+  };
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value.trim() === "") {
+      setFilteredData(drugGroupData);
+    } else {
+      const filtered = drugGroupData.filter(item =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
   };
 
   useEffect(() => {
     DrugGroupList();
   }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    setFilteredData(drugGroupData);
+  }, [drugGroupData]);
 
   const DrugGroupList = () => {
     const params = {
@@ -112,12 +128,12 @@ const DrugGroup = () => {
       })
       .then((response) => {
         setDrugGroupData(response.data.data);
+        setFilteredData(response.data.data);
         setIsLoading(false);
         console.log("drug called");
       })
       .catch((error) => {
         console.error("API error:", error);
-
         setIsLoading(false);
       });
   };
@@ -221,7 +237,6 @@ const DrugGroup = () => {
           toast.success(response.data.message);
         });
     } catch (error) {
-      // alert("404 error");
       console.error("Error deleting item:", error);
     }
   };
@@ -241,9 +256,6 @@ const DrugGroup = () => {
     setIsDelete(false);
   };
 
-  // const handleOptionChange = (event, newValue) => {
-  //     setDrugGroupName(newValue);
-  // };
   const handleOptionChange = (event, newValue) => {
     if (newValue && typeof newValue === "object") {
       setDrugGroupName(newValue.name);
@@ -254,47 +266,6 @@ const DrugGroup = () => {
 
   const handleInputChange = (event, newInputValue) => {
     setDrugGroupName(newInputValue);
-  };
-
-  const handleDrugGroupList = (e, value) => {
-    setDrugGroupFilter(value);
-    if (value) {
-      droupGroupFilter(value.id);
-    }
-  };
-
-  const openBillDetails = () => {
-    const newErrors = {};
-    if (!drugGroupFilter)
-      newErrors.distributorValue = "Distributor is required";
-    setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
-      setopenItem(true);
-      droupGroupFilter();
-    }
-    return isValid;
-  };
-
-  const droupGroupFilter = async () => {
-    let data = new FormData();
-    const params = {
-      id: drugGroupFilter?.id,
-    };
-    try {
-      await axios
-        .post("drug-item?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setFilterData(response.data.data);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
   };
 
   return (
@@ -357,45 +328,17 @@ const DrugGroup = () => {
               style={{ borderColor: "var(--color2)" }}
             ></div>
             <div className="firstrow mt-4">
-              {/* <div className="bg-white"> */}
               <div className="flex gap-2 flex-row pb-2">
                 <div className="detail drug_fltr_fld">
-                  <Autocomplete
-                    value={drugGroupFilter}
-                    sx={{
-                      width: "100%",
-                      // minWidth: '400px',
-                      // '@media (max-width:600px)': {
-                      //     minWidth: '300px',
-                      // },
-                    }}
+                  <TextField
+                    variant="outlined"
                     size="small"
-                    onChange={handleDrugGroupList}
-                    options={drugGroupData}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        variant="outlined"
-                        autoComplete="off"
-                        {...params}
-                        label="Search Drug Name"
-                      />
-                    )}
+                    label="Search Drug Group"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    autoComplete="off"
+                    sx={{ width: "100%" }}
                   />
-                  {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
-                </div>
-                <div className="flex ">
-                  <Button
-                    className="serch_btn_ad"
-                    style={{
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                      color: "white",
-                    }}
-                    variant="contained"
-                    onClick={openBillDetails}
-                  >
-                    Search
-                  </Button>
                 </div>
               </div>
               <div
@@ -425,7 +368,7 @@ const DrugGroup = () => {
                     </tr>
                   </thead>
                   <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {drugGroupData.length === 0 ? (
+                    {filteredData.length === 0 ? (
                       <tr>
                         <td
                           colSpan={drugGroupColumns.length + 2}
@@ -435,27 +378,34 @@ const DrugGroup = () => {
                             borderRadius: "10px 10px 10px 10px",
                           }}
                         >
-                          No data found
+                          {searchTerm ? "No matching results found" : "No data found"}
                         </td>
                       </tr>
                     ) : (
-                      drugGroupData?.map((item, index) => (
+                      filteredData?.map((item, index) => (
                         <tr key={index}>
                           <td style={{ borderRadius: "10px 0 0 10px" }}>
                             {startIndex + index}
                           </td>
                           {drugGroupColumns.map((column) => (
-                            <td key={column.id}>{item[column.id]}</td>
+                            <td
+                              key={column.id}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleRowClick(item.id)}
+                            >
+                              {item[column.id]}
+                            </td>
                           ))}
 
                           <td style={{ borderRadius: "0 10px 10px 0" }}>
                             <div className="px-2 flex gap-1 justify-center">
                               <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
+                                style={{ color: "var(--color1)", cursor: "pointer" }}
                                 onClick={() => handleEditOpen(item)}
                               />
                               <DeleteIcon
                                 className="delete-icon"
+                                style={{ cursor: "pointer" }}
                                 onClick={() => deleteOpen(item.id)}
                               />
                             </div>
@@ -469,7 +419,7 @@ const DrugGroup = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 12]}
                 component="div"
-                count={drugGroupData?.[0]?.count}
+                count={drugGroupData?.[0]?.count || 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -481,14 +431,6 @@ const DrugGroup = () => {
         <Dialog
           className="order_list_ml custom-dialog"
           open={openAddPopUp}
-        //   sx={{
-        //     "& .MuiDialog-container": {
-        //       "& .MuiPaper-root": {
-        //         width: "50%",
-        //         maxWidth: "500px", // Set your width here
-        //       },
-        //     },
-        //   }}
         >
           <DialogTitle
             id="alert-dialog-title"
@@ -516,19 +458,8 @@ const DrugGroup = () => {
               >
                 <FormControl size="small" style={{ width: "100%" }}>
                   <span className="label primary">Drug Group Name</span>
-                  {/* <TextField
-                 autoComplete="off"
-                                            id="outlined-multiline-static"
-                                            size="small"
-                                            placeholder="Drug Group Name"
-                                            value={drugGroupName}
-                                            onChange={(e) => { setDrugGroupName(e.target.value) }}
-                                            style={{ minWidth: 450 }}
-                                            variant="outlined"
-                                        /> */}
                   <Autocomplete
                     value={drugGroupName}
-                    // inputValue={searchItem.toUpperCase()}
                     sx={{ width: "100%" }}
                     size="small"
                     onChange={handleOptionChange}
@@ -573,82 +504,6 @@ const DrugGroup = () => {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
-
-        <Dialog
-          open={openItem}
-          className="order_list_ml custom-dialog"
-
-        >
-          <DialogTitle id="alert-dialog-title" className="secondary">
-            DrugGroup Related Items
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={() => {
-              setopenItem(false);
-              setDrugGroupFilter(null);
-            }}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {filterData.length > 0 ? (
-                <div
-                  className="flex"
-                  style={{ flexDirection: "column", gap: "19px" }}
-                >
-                  <table
-                    className="custom-table"
-                    style={{ background: "none" }}
-                  >
-                    <thead>
-                      <tr>
-                        <th>Sr No</th>
-                        {DrugGroupWiseFilter.map((column, index) => (
-                          <th key={column.id}>
-                            <div className="headerStyle">
-                              <span>{column.label}</span>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filterData.map((row, index) => {
-                        return (
-                          <tr hover tabIndex={-1} key={row.code}>
-                            <td>{index + 1}</td>
-                            {DrugGroupWiseFilter.map((column) => {
-                              const value = row[column.id];
-                              return (
-                                <td key={column.id} align={column.align}>
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div  className="self-center">
-                  <span>No record Found.</span>
-                </div>
-              )}
-            </DialogContentText>
-          </DialogContent>
         </Dialog>
       </div>
       {/* Delete PopUp */}

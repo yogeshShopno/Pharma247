@@ -103,6 +103,7 @@ import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
 
 import LoginSignup from './componets/Login/LoginSignup';
 import OnlineDashboard from './OnlineOrders/OnlineDashboard';
+import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
 
 function App() {
   const goFullScreen = () => {
@@ -117,7 +118,7 @@ function App() {
     }
   };
   useEffect(() => {
-    
+
     // Inject CSS to style all MUI TextField components
     const style = document.createElement('style');
     style.innerHTML = `
@@ -208,13 +209,13 @@ function App() {
         <Router>
           <Switch>
             <Route exact path='/'>
-            <LoginSignup />
+              <LoginSignup />
             </Route>
             <Route path='/Register/:referralCode'>
-            <LoginSignup />
+              <LoginSignup />
             </Route>
             <Route path='/Register'>
-            <LoginSignup />
+              <LoginSignup />
             </Route>
             <Route path='/login/:referralCode'>
               <LoginSignup />
@@ -233,7 +234,7 @@ function App() {
             </Route>
             <Route path='/onlinedashboard'>
               <Protected>
-                <OnlineDashboard/>
+                <OnlineDashboard />
               </Protected>
               <Adminprotected />
             </Route>
@@ -551,7 +552,7 @@ function App() {
                 <Documents />
               </Protected>
             </Route>
-                        <Route path='/plans'>
+            <Route path='/plans'>
               <Protected>
                 <Plans />
               </Protected>
@@ -609,6 +610,9 @@ function App() {
             </Route>
             <Route path='/more/drug-group'>
               <DrugGroup />
+            </Route>
+            <Route path='/more/drugGroupView/:id'>
+              <DrugGroupView />
             </Route>
             <Route path='/more/adjust-stock'>
               <Protected>

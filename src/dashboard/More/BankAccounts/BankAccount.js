@@ -97,7 +97,6 @@ const BankAccount = () => {
   const [upiId, setUpiId] = useState("");
   const [finalValue, setFinalValue] = useState("");
   const [selectedAccountId, setSelectedAccountId] = useState(null);
-  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [paymentType, setPaymentType] = useState("");
   const [bankDetails, setBankDetails] = useState([]);
   const [details, setDetails] = useState({});
@@ -151,11 +150,14 @@ const BankAccount = () => {
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // Prevent form submission
+      event.preventDefault(); // Prevent default form submit
 
       const nextInput = inputRefs?.current[index + 1];
+
       if (nextInput) {
-        nextInput?.focus(); // Move to next input
+        nextInput?.focus();
+      } else {
+        handleAddBank();
       }
     }
   };
@@ -171,10 +173,10 @@ const BankAccount = () => {
 
     return () => clearTimeout(delayDebounce);
   }, [debouncedSearch, selectedAccountId, startDate, endDate]);
- 
+
   useEffect(() => {
     BankList();
-    if (highlightedIndex == 0) {
+    if (selectedAccountId == 0) {
       BankDetailgetByID(selectedAccountId);
     }
   }, []);
@@ -182,7 +184,6 @@ const BankAccount = () => {
   useEffect(() => {
     if (bankData.length > 0 && selectedAccountId === null) {
       setSelectedAccountId(bankData[0].id);
-      setHighlightedIndex(0);
       BankDetailgetByID(selectedAccountId);
       const selectedDetails = bankData.find((x) => x.id === selectedAccountId);
       setDetails(selectedDetails);
@@ -308,10 +309,11 @@ const BankAccount = () => {
             history.push("/");
             localStorage.clear();
           }
-          setIsLoading(false);
         });
     } catch (error) {
       console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -338,10 +340,11 @@ const BankAccount = () => {
             history.push("/");
             localStorage.clear();
           }
-          setIsLoading(false);
         });
     } catch (error) {
       console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const theme = useTheme();
@@ -450,7 +453,6 @@ const BankAccount = () => {
   };
 
   const handleAccountClick = (id, index) => {
-    setHighlightedIndex(index);
     setSelectedAccountId(id);
     BankDetailgetByID(id);
     const selectedDetails = bankData.find((x) => x.id === id);
@@ -526,7 +528,8 @@ const BankAccount = () => {
         <Box className="flex flex-col sm:flex-row">
 
           <Box
-            className="custom-scrolll p-6 fst_mdl_bnk" style={{ backgroundColor: "rgb(63 98 18 / 5%)" }}
+            className="custom-scrolll p-6 fst_mdl_bnk"
+            style={{ backgroundColor: "rgb(63 98 18 / 5%)" }}
             sx={{
               width: {
                 xs: "100%",
@@ -535,62 +538,79 @@ const BankAccount = () => {
                 lg: "18%",
                 xl: "15%",
               },
-              // height: {
-              //     xs: 'calc(100vh - 56px)',
-              //     sm: 'calc(100vh - 56px)',
-              //     md: 'calc(100vh - 56px)',
-              //     lg: 'calc(100vh - 56px)',
-              // },
               overflowY: "auto",
             }}
             role="presentation"
             onClick={() => toggleDrawer(false)}
           >
-
             {/* 💰 Savings Accounts */}
             {bankData.filter(account => account.bank_account_name === "Savings").length > 0 && (
               <List>
                 <h1
-                  className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2"
+                  className="text-lg sm:text-base md:text-lg flex justify-start p-2"
                   style={{ color: "var(--color1)" }}
                 >
                   Savings Accounts
-                </h1>                {bankData
+                </h1>
+                {bankData
                   .filter(account => account.bank_account_name === "Savings")
                   .map((account, index) => (
                     <ListItem
                       key={account.id}
-                      className={`list-bank ${highlightedIndex === index  ? "highlighted" : ""}`}
+                      className={`list-bank ${selectedAccountId === account.id ? "highlighted" : ""}`}
                       disablePadding
                     >
-                      <ListItemButton style={{ width: "100%", borderRadius: "10px" }}>
-                        <div
-                          onClick={() => handleAccountClick(account.id, index)}
-                          className="w-44"
-                        >
-                          <p className="text-gray-700">
+                      <ListItemButton
+                        style={{ width: "100%", borderRadius: "10px" }}
+                        onClick={() => handleAccountClick(account.id, index)}
+                      >
+                        <div className="w-full min-w-0 flex-1">
+                          <p
+                            className="text-xs text-gray-600 mb-1 font-mono tracking-wide"
+                            style={{
+                              wordBreak: "break-all",
+                              lineHeight: "1.2"
+                            }}
+                          >
                             {account.bank_account_number || "Empty"}
                           </p>
-                          <h6 className="font-semibold">{account.bank_name}</h6>
-                          <h6 className="font-semibold">{account.bank_user_name}</h6>
-
+                          <h6
+                            className="font-semibold text-sm mb-1"
+                            style={{
+                              wordWrap: "break-word",
+                              lineHeight: "1.3",
+                              hyphens: "auto"
+                            }}
+                          >
+                            {account.bank_name}
+                          </h6>
+                          <h6
+                            className="text-xs text-black font-semibold"
+                            style={{
+                              wordWrap: "break-word",
+                              lineHeight: "1.4",
+                              hyphens: "auto",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden"
+                            }}
+                          >
+                            {account.account_holder_name}
+                          </h6>
                         </div>
                       </ListItemButton>
-
                     </ListItem>
-
                   ))}
                 <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
-
               </List>
-
             )}
 
-            {/* 🏢 Current Accounts */}
+            {/* Current Accounts */}
             {bankData.filter(account => account.bank_account_name === "Current").length > 0 && (
               <List>
                 <h1
-                  className="text-2xl sm:text-xl md:text-2xl flex justify-start p-2"
+                  className="text-lg sm:text-base md:text-lg flex justify-start p-2"
                   style={{ color: "var(--color1)" }}
                 >
                   Current Accounts
@@ -600,32 +620,54 @@ const BankAccount = () => {
                   .map((account, index) => (
                     <ListItem
                       key={account.id}
-                      className={`list-bank  ${highlightedIndex === index ? "highlighted" : ""} `}
+                      className={`list-bank ${selectedAccountId === account.id ? "highlighted" : ""}`}
                       disablePadding
                     >
-                      <ListItemButton style={{ width: "100%", borderRadius: "10px" }}>
-                        <div
-                          onClick={() => handleAccountClick(account.id, index)}
-                          className="w-44"
-                        >
-                          <p >
+                      <ListItemButton
+                        style={{ width: "100%", borderRadius: "10px" }}
+                        onClick={() => handleAccountClick(account.id, index)}
+                      >
+                        <div className="w-full min-w-0 flex-1">
+                          <p
+                            className="text-xs text-gray-600 mb-1 font-mono tracking-wide"
+                            style={{
+                              wordBreak: "break-all",
+                              lineHeight: "1.2"
+                            }}
+                          >
                             {account.bank_account_number || "Empty"}
                           </p>
-                          
-                          <h6 className="font-semibold">{account.bank_name}</h6>
-                          <h6 className="font-semibold">{account.bank_user_name}</h6>
-
+                          <h6
+                            className="font-semibold text-sm mb-1"
+                            style={{
+                              wordWrap: "break-word",
+                              lineHeight: "1.3",
+                              hyphens: "auto"
+                            }}
+                          >
+                            {account.bank_name}
+                          </h6>
+                          <h6
+                            className="font-medium text-xs text-gray-700"
+                            style={{
+                              wordWrap: "break-word",
+                              lineHeight: "1.4",
+                              hyphens: "auto",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden"
+                            }}
+                          >
+                            {account.account_holder_name}
+                          </h6>
                         </div>
                       </ListItemButton>
-
                     </ListItem>
-
                   ))}
                 <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
-
               </List>
             )}
-
           </Box>
 
           <Box className="flex-grow bnk_acc_mdl" style={{ width: "71%" }}>
@@ -680,139 +722,139 @@ const BankAccount = () => {
                   Download
                 </Button>
               </div>
-            
-                  <Box
-                    sx={{
-                      marginTop: "20px",
-                      backgroundColor: "rgba(63, 98, 18, 0.09)",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <div
-                      className="firstrow p-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
-                      style={{ background: "none" }}
-                    >
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">Bank Name</span>
-                        <span className="primary font-bold">
-                          {!details?.bank_name ? "-" : details?.bank_name}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">Bank Account Number</span>
-                        <span className="primary font-bold">
-                          {!details?.bank_account_number
-                            ? "-"
-                            : details?.bank_account_number}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">Account Type</span>
-                        <span
-                          className="primary font-bold"
-                          style={{ textTransform: "lowercase" }}
-                        >
-                          {!details?.bank_account_name
-                            ? "-"
-                            : details?.bank_account_name}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">IFSC Code</span>
-                        <span className="primary font-bold">
-                          {!details?.ifsc_code ? "-" : details?.ifsc_code}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">Branch Name</span>
-                        <span className="primary font-bold">
-                          {!details?.bank_branch_name
-                            ? "-"
-                            : details?.bank_branch_name}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary ">Account Holder Name</span>
-                        <span className="primary font-bold">
-                          {!details?.account_holder_name
-                            ? "-"
-                            : details?.account_holder_name}
-                        </span>
-                      </div>
-                      <div
-                        className="distributor-detail"
-                      >
-                        <span className="primary">Current Balance</span>
-                        <span className="primary font-bold">
-                          {!details?.total_amount
-                            ? "-"
-                            : details?.total_amount}
-                        </span>
-                      </div>
-                    </div>
-                  </Box>
 
+              <Box
+                sx={{
+                  marginTop: "20px",
+                  backgroundColor: "rgba(63, 98, 18, 0.09)",
+                  borderRadius: "10px",
+                }}
+              >
+                <div
+                  className="firstrow p-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+                  style={{ background: "none" }}
+                >
                   <div
-                    className="flex  flex-row detail_st_ed_dt gap-6 mt-5"
-                    style={{ alignItems: "end" }}
+                    className="distributor-detail"
                   >
-                    <div className="detail" style={{ width: "100%" }}>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-basic"
-                        value={search}
-                        size="small"
-                        onChange={(e) => {
-                          setSearch(e.target.value);
-                          setDebouncedSearch(e.target.value);
-                        }}
-                        variant="outlined"
-                        placeholder="Type Here..."
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </div>
-                    <div className="detail" style={{ width: "100%" }}>
-                      <span className="primary">Start Date</span>
-                      <DatePicker
-                        label="Start Date"
-                        className="custom-datepicker_mn"
-                        selected={startDate}
-                        onChange={handleStartDate}
-                        dateFormat="dd/MM/yyyy"
-                        filterDate={(date) => !isDateDisabled(date)}
-                      />
-                    </div>
-                    <div className="detail" style={{ width: "100%" }}>
-                      <span className="primary">End Date</span>
-                      <DatePicker
-                        label="End Date"
-                        className="custom-datepicker_mn"
-                        selected={endDate}
-                        onChange={handleEndDate}
-                        dateFormat="dd/MM/yyyy"
-                        filterDate={(date) => !isDateDisabled(date)}
-                      />
-                    </div>
+                    <span className="primary ">Bank Name</span>
+                    <span className="primary font-bold">
+                      {!details?.bank_name ? "-" : details?.bank_name}
+                    </span>
                   </div>
-                    {isLoading ? (
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary ">Bank Account Number</span>
+                    <span className="primary font-bold">
+                      {!details?.bank_account_number
+                        ? "-"
+                        : details?.bank_account_number}
+                    </span>
+                  </div>
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary ">Account Type</span>
+                    <span
+                      className="primary font-bold"
+                      style={{ textTransform: "lowercase" }}
+                    >
+                      {!details?.bank_account_name
+                        ? "-"
+                        : details?.bank_account_name}
+                    </span>
+                  </div>
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary ">IFSC Code</span>
+                    <span className="primary font-bold">
+                      {!details?.ifsc_code ? "-" : details?.ifsc_code}
+                    </span>
+                  </div>
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary ">Branch Name</span>
+                    <span className="primary font-bold">
+                      {!details?.bank_branch_name
+                        ? "-"
+                        : details?.bank_branch_name}
+                    </span>
+                  </div>
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary ">Account Holder Name</span>
+                    <span className="primary font-bold">
+                      {!details?.account_holder_name
+                        ? "-"
+                        : details?.account_holder_name}
+                    </span>
+                  </div>
+                  <div
+                    className="distributor-detail"
+                  >
+                    <span className="primary">Current Balance</span>
+                    <span className="primary font-bold">
+                      {!details?.total_amount
+                        ? "-"
+                        : details?.total_amount}
+                    </span>
+                  </div>
+                </div>
+              </Box>
+
+              <div
+                className="flex  flex-row detail_st_ed_dt gap-6 mt-5"
+                style={{ alignItems: "end" }}
+              >
+                <div className="detail" style={{ width: "100%" }}>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-basic"
+                    value={search}
+                    size="small"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setDebouncedSearch(e.target.value);
+                    }}
+                    variant="outlined"
+                    placeholder="Type Here..."
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div className="detail" style={{ width: "100%" }}>
+                  <span className="primary">Start Date</span>
+                  <DatePicker
+                    label="Start Date"
+                    className="custom-datepicker_mn"
+                    selected={startDate}
+                    onChange={handleStartDate}
+                    dateFormat="dd/MM/yyyy"
+                    filterDate={(date) => !isDateDisabled(date)}
+                  />
+                </div>
+                <div className="detail" style={{ width: "100%" }}>
+                  <span className="primary">End Date</span>
+                  <DatePicker
+                    label="End Date"
+                    className="custom-datepicker_mn"
+                    selected={endDate}
+                    onChange={handleEndDate}
+                    dateFormat="dd/MM/yyyy"
+                    filterDate={(date) => !isDateDisabled(date)}
+                  />
+                </div>
+              </div>
+              {isLoading ? (
                 <div className="loader-container">
                   <Loader />
                 </div>
@@ -896,7 +938,7 @@ const BankAccount = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: "#ffffff",
+              color: (theme) => theme.palette.grey[500],
             }}
           >
             <CloseIcon />
@@ -918,12 +960,24 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={bankName}
-                      inputRef={(el) => (inputRefs.current[0] = el)}
-
                       onChange={(e) => {
                         // Transform to uppercase
                         const uppercasedValue = e.target.value.toUpperCase();
                         setBankName(uppercasedValue);
+                      }}
+                      inputRef={(el) => (inputRefs.current[0] = el)}
+                      onKeyDown={(e) => {
+                        if (bankName) {
+                          handleKeyDown(e, 0);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Bank Name is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
@@ -935,27 +989,39 @@ const BankAccount = () => {
                   </div>
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
-                      <span className="label primary">Account Type <span className="text-red-600">*</span></span>
-
-                      <Autocomplete
-
-                        options={[
-                          { label: 'Savings', value: 'Savings' },
-                          { label: 'Current', value: 'Current' },
-                        ]}
-
-                        getOptionLabel={(option) => option.label}
-                        onChange={(event, newValue) => {
-                          setAccountType(newValue ? newValue.value : "");
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            required
-                          />
-                        )}
-                      />
+                      <span className="label primary">Account Type</span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      type="text"
+                      value={accountType}
+                      inputRef={(el) => (inputRefs.current[1] = el)}
+                      onKeyDown={(e) => {
+                        if (accountType) {
+                          handleKeyDown(e, 1);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Account Type is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
+                      onChange={(e) => {
+                        const capitalizedValue = e.target.value
+                          .toLowerCase()
+                          .replace(/\b\w/g, (char) => char.toUpperCase());
+                        setAccountType(capitalizedValue);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      fullWidth={fullScreen}
+                    />
                     {errors.accountType && (
                       <span className="error">{errors.accountType}</span>
                     )}
@@ -973,6 +1039,20 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={openingBalance}
+                      inputRef={(el) => (inputRefs.current[2] = el)}
+                      onKeyDown={(e) => {
+                        if (openingBalance) {
+                          handleKeyDown(e, 2);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Opening Balance is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
                       onChange={(e) => {
                         setOpeningBalance(e.target.value);
                       }}
@@ -993,6 +1073,7 @@ const BankAccount = () => {
                           onChange={(newDate) => setAsOfDate(newDate)}
                           dateFormat="dd/MM/yyyy"
                           minDate={new Date()}
+                          disabled
                         />
                       </div>
                     </div>
@@ -1001,200 +1082,240 @@ const BankAccount = () => {
               </div>
               <div className="border-1 text-black font-bold secondary flex justify-between items-center">
                 Add Bank Details
-                <Switch
-                  checked={switchCheck}
-                  onChange={(e) => setSwitchChecked(e.target.checked)}
-                  sx={{
-                    "& .MuiSwitch-track": {
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    },
-                    "&.Mui-checked .MuiSwitch-track": {
-                      backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
-                    },
-                    "& .MuiSwitch-thumb": {
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    },
-                    "&.Mui-checked .MuiSwitch-thumb": {
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    },
-                    "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track":
-                    {
-                      backgroundColor: "var(--COLOR_UI_PHARMACY) !important",
-                    },
-                  }}
-                />
               </div>
-              {switchCheck && (
-                <>
-                  <div className="flex flex-col md:flex-row gap-5 my-4">
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary mb-4">
-                          Bank Account Number
-                        </span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-multiline-static"
-                        size="small"
-                        value={accountNumber}
-                        onChange={(e) => {
-                          const numericValue = e.target.value.replace(
-                            /[^0-9]/g,
-                            ""
-                          ); // Remove non-numeric characters
-
-                          setAccountNumber(numericValue);
-                        }}
-                        style={{ width: "100%" }}
-                        variant="outlined"
-                        fullWidth={fullScreen}
-                      />
-                      {errors.accountNumber && (
-                        <span className="error">{errors.accountNumber}</span>
-                      )}
+              <>
+                <div className="flex flex-col md:flex-row gap-5 my-4">
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary mb-4">
+                        Bank Account Number
+                      </span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary">
-                          Re-Enter Account Number
-                        </span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={accountNumber}
+                      onChange={(e) => {
+                        const numericValue = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        ); // Remove non-numeric characters
+
+                        setAccountNumber(numericValue);
+                      }}
+                      inputRef={(el) => (inputRefs.current[3] = el)}
+                      onKeyDown={(e) => {
+                        if (accountNumber) {
+                          handleKeyDown(e, 3);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Bank Account Number is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      fullWidth={fullScreen}
+                    />
+                    {errors.accountNumber && (
+                      <span className="error">{errors.accountNumber}</span>
+                    )}
+                  </div>
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary">
+                        Re-Enter Account Number
+                      </span>
+                      <span className="text-red-600 ml-1">*</span>
+                    </div>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={reEnterAccountNumber}
+                      onChange={(e) => {
+                        // Allow only numeric input
+                        const numericValue = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        ); // Remove non-numeric characters
+                        setReEnterAccountNumber(numericValue);
+                      }}
+                      inputRef={(el) => (inputRefs.current[4] = el)}
+                      onKeyDown={(e) => {
+                        if (reEnterAccountNumber) {
+                          handleKeyDown(e, 4);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Re-Enter Account Number is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      fullWidth={fullScreen}
+                    />
+                    {errors.reEnterAccountNumber && (
+                      <span className="error">
+                        {errors.reEnterAccountNumber}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row gap-5 my-4">
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary mb-4">IFSC Code</span>
+                      <span className="text-red-600 ml-1">*</span>
+                    </div>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={ifscCode}
+                      onChange={(e) => {
+                        const uppercasedValue = e.target.value.toUpperCase();
+                        setIfscCode(uppercasedValue);
+                      }}
+                      inputRef={(el) => (inputRefs.current[5] = el)}
+                      onKeyDown={(e) => {
+                        if (ifscCode) {
+                          handleKeyDown(e, 5);
+                        } else {
+                          const isEnter = e.key === "Enter";
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("IFSC Code is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      fullWidth={fullScreen}
+                    />
+                    {errors.ifscCode && (
+                      <span className="error">{errors.ifscCode}</span>
+                    )}
+                  </div>
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary">Branch Name</span>
+                      <span className="text-red-600 ml-1">*</span>
+                    </div>
+                    <div className="detail">
                       <TextField
                         autoComplete="off"
                         id="outlined-multiline-static"
                         size="small"
-                        value={reEnterAccountNumber}
+                        value={branchName}
                         onChange={(e) => {
-                          // Allow only numeric input
-                          const numericValue = e.target.value.replace(
-                            /[^0-9]/g,
-                            ""
-                          ); // Remove non-numeric characters
-                          setReEnterAccountNumber(numericValue);
-                          if (!accountNumber) {
-                            toast.error("Account Number is required");
-                          } else if (!reEnterAccountNumber) {
-                            toast.error("Re Enter Account Number is required");
-                          } else if (accountNumber !== reEnterAccountNumber) {
-                            toast.error("Account Numbers do not match");
+                          setBranchName(e.target.value);
+                        }}
+                        inputRef={(el) => (inputRefs.current[6] = el)}
+                        onKeyDown={(e) => {
+                          if (branchName) {
+                            handleKeyDown(e, 6);
+                          } else {
+                            const isEnter = e.key === "Enter";
+
+                            if (isEnter) {
+                              e.preventDefault();
+                              toast.error("Branch Name is Required");
+                            }
+                            // Shift + Tab is allowed by default; do not prevent it
                           }
                         }}
                         style={{ width: "100%" }}
                         variant="outlined"
                         fullWidth={fullScreen}
                       />
-                      {errors.reEnterAccountNumber && (
-                        <span className="error">
-                          {errors.reEnterAccountNumber}
-                        </span>
+                      {errors.branchName && (
+                        <span className="error">{errors.branchName}</span>
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col md:flex-row gap-5 my-4">
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary mb-4">IFSC Code</span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-multiline-static"
-                        size="small"
-                        value={ifscCode}
-                        onChange={(e) => {
-                          const uppercasedValue = e.target.value.toUpperCase();
-                          setIfscCode(uppercasedValue);
-                        }}
-                        style={{ width: "100%" }}
-                        variant="outlined"
-                        fullWidth={fullScreen}
-                      />
-                      {errors.ifscCode && (
-                        <span className="error">{errors.ifscCode}</span>
-                      )}
+                </div>
+                <div className="flex flex-col md:flex-row gap-5">
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary mb-4">
+                        Account Holder Name
+                      </span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary">Branch Name</span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <div className="detail">
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={branchName}
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={accountHolderName}
+                      onChange={(e) => {
+                        const capitalizedValue = e.target.value
+                          .toLowerCase()
+                          .replace(/\b\w/g, (char) => char.toUpperCase());
+                        setAccountHolderName(capitalizedValue);
+                      }}
+                      inputRef={(el) => (inputRefs.current[7] = el)}
+                      onKeyDown={(e) => {
+                        if (accountHolderName) {
+                          handleKeyDown(e, 7);
+                        } else {
+                          const isEnter = e.key === "Enter";
 
-                          onChange={(e) => {
-                            const capitalizedValue = e.target.value
-                              .toLowerCase()
-                              .replace(/\b\w/g, (char) => char.toUpperCase());
-                            setBranchName(capitalizedValue);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                          fullWidth={fullScreen}
-                        />
-                        {errors.branchName && (
-                          <span className="error">{errors.branchName}</span>
-                        )}
-                      </div>
-                    </div>
+                          if (isEnter) {
+                            e.preventDefault();
+                            toast.error("Account Holder Name is Required");
+                          }
+                          // Shift + Tab is allowed by default; do not prevent it
+                        }
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      fullWidth={fullScreen}
+                    />
+                    {errors.accountHolderName && (
+                      <span className="error">
+                        {errors.accountHolderName}
+                      </span>
+                    )}
                   </div>
-                  <div className="flex flex-col md:flex-row gap-5">
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary mb-4">
-                          Account Holder Name
-                        </span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
+                  <div style={{ width: "100%" }}>
+                    <div className="mb-2">
+                      <span className="label primary">UPI ID</span>
+                    </div>
+                    <div className="detail">
                       <TextField
                         autoComplete="off"
                         id="outlined-multiline-static"
                         size="small"
-                        value={accountHolderName}
+                        value={upiId}
                         onChange={(e) => {
-                          const capitalizedValue = e.target.value
-                            .toLowerCase()
-                            .replace(/\b\w/g, (char) => char.toUpperCase());
-                          setAccountHolderName(capitalizedValue);
+                          setUpiId(e.target.value);
+                        }}
+                        inputRef={(el) => (inputRefs.current[8] = el)}
+                        onKeyDown={(e) => {
+                          handleKeyDown(e, 8);
                         }}
                         style={{ width: "100%" }}
                         variant="outlined"
                         fullWidth={fullScreen}
                       />
-                      {errors.accountHolderName && (
-                        <span className="error">
-                          {errors.accountHolderName}
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ width: "100%" }}>
-                      <div className="mb-2">
-                        <span className="label primary">UPI ID</span>
-                      </div>
-                      <div className="detail">
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={upiId}
-                          onChange={(e) => {
-                            setUpiId(e.target.value);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                          fullWidth={fullScreen}
-                        />
-                      </div>
+
                     </div>
                   </div>
-                </>
-              )}
+                </div>
+              </>
             </DialogContentText>
           </DialogContent>
           <DialogActions style={{ padding: "0px 24px 24px" }}>
@@ -1244,7 +1365,7 @@ const BankAccount = () => {
                   <MenuItem value="cash">Cash</MenuItem>
                   {bankData?.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
-                      {option.bank_name}
+                      {option.bank_user_name} ({option.bank_account_name})
                     </MenuItem>
                   ))}
                 </Select>

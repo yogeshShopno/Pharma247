@@ -21,7 +21,6 @@ const Search = ({ searchPage, setSearchPage }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-
   const [medicineTableData, setMedicineTableData] = useState([])
   const [drugsTableData, setDrugsTableData] = useState([])
   const [distributorTableData, setDistributorTableData] = useState([])
@@ -54,28 +53,33 @@ const Search = ({ searchPage, setSearchPage }) => {
     { id: "total_amount", label: "Total Amount", minWidth: 100 },
   ])
 
-  /*<================================================================================== seaech fn ==================================================================================> */
+  /*<================================================================================== search fn ==================================================================================> */
 
   const SearchType = (value) => {
     setSearchType(value)
     setSearchQuery("")
-    // setMedicineColumns([])
-    // setDrugsColumns([])
-    // setDistributorColumns([])
-    // setCustomerColumns([])
+    setPage(0) // Reset page when changing search type
 
-    // setMedicineTableData([])
-    // setDrugsTableData([])
-    // setDistributorTableData([])
-    // setCustomerTableData([])
+    // Clear previous search results
+    setMedicineTableData([])
+    setDrugsTableData([])
+    setDistributorTableData([])
+    setCustomerTableData([])
   }
 
   const handleSearchQueryChange = (e) => {
     const newValue = e.target.value;
     setSearchQuery(newValue);
-    searchData(newValue);
+    if (newValue.trim()) {
+      searchData(newValue);
+    } else {
+      // Clear results if search query is empty
+      setMedicineTableData([])
+      setDrugsTableData([])
+      setDistributorTableData([])
+      setCustomerTableData([])
+    }
   };
-
 
   const apiEndpoints = {
     1: "item-search",
@@ -84,11 +88,12 @@ const Search = ({ searchPage, setSearchPage }) => {
     4: "list-customer",
   };
 
-  const searchData = async () => {
-    if (!searchQuery && !searchType) {
-
-      toast.error("select ")
-      return; // Avoid calling API with empty input
+  const searchData = async (query = searchQuery) => {
+    if (!query.trim() || !searchType) {
+      if (!searchType) {
+        toast.error("Please select a search type");
+      }
+      return;
     }
 
     const api = apiEndpoints[searchType];
@@ -98,9 +103,10 @@ const Search = ({ searchPage, setSearchPage }) => {
     }
 
     const data = new FormData();
-    if (searchType == 3) { 
-    data.append("name_mobile_gst_search", searchQuery);}
-     data.append("search", searchQuery);
+    if (searchType == 3) {
+      data.append("name_mobile_gst_search", query);
+    }
+    data.append("search", query);
 
     try {
       const response = await axios.post(api, data, {
@@ -109,31 +115,36 @@ const Search = ({ searchPage, setSearchPage }) => {
         },
       });
 
-
       if (response?.data?.data) {
-        if (searchType == "1") {
-          setMedicineTableData(response.data.data.data)
-        } else if (searchType == "2") {
+        if (searchType == 1) {
+          setMedicineTableData(response.data.data.data || response.data.data)
+        } else if (searchType == 2) {
           setDrugsTableData(response.data.data)
-        } else if (searchType == "3") {
+        } else if (searchType == 3) {
           setDistributorTableData(response.data.data)
-        } else if (searchType == "4") {
+        } else if (searchType == 4) {
           setCustomerTableData(response.data.data)
         }
       }
 
-      const object = response.data.data[0];
-      const keys = Object.keys(object);
-      const columns = keys.map((key) => ({
-        key: key,
-        label: key,
-        minWidth: "100"
-      }));
-
-      // setPlansColumns(columns); 
-
     } catch (error) {
       console.error("API error:", error);
+      toast.error("Search failed. Please try again.");
+    }
+  };
+
+  // Navigation handler
+  const handleNavigation = (row) => {
+    if (searchType == 1) {
+      history.push(`/inventoryView/${row.id}`)
+    } else if (searchType == 2) {
+      // Add navigation for drug group if needed
+      // history.push(`/drugGroupView/${row.id}`)
+      console.log("Drug group navigation not implemented yet");
+    } else if (searchType == 3) {
+      history.push(`/DistributerView/${row.id}`)
+    } else if (searchType == 4) {
+      history.push(`/more/customerView/${row.id}`)
     }
   };
 
@@ -141,25 +152,47 @@ const Search = ({ searchPage, setSearchPage }) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
-    setPage(0); // Reset page to 0 when changing rows per page
+    setPage(0);
+  };
+
+  // Get current table data based on search type
+  const getCurrentTableData = () => {
+    switch (searchType) {
+      case 1: return medicineTableData;
+      case 2: return drugsTableData;
+      case 3: return distributorTableData;
+      case 4: return customerTableData;
+      default: return [];
+    }
+  };
+
+  // Get current columns based on search type
+  const getCurrentColumns = () => {
+    switch (searchType) {
+      case 1: return medicineColumns;
+      case 2: return drugsColumns;
+      case 3: return distributorColumns;
+      case 4: return customerColumns;
+      default: return [];
+    }
   };
 
   useEffect(() => {
     if (searchPage) {
       document.body.style.overflow = "hidden";
     } else {
-      // Enable scrolling
       document.body.style.overflow = "auto";
     }
 
-    // Cleanup function to restore scroll when component unmounts
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [searchPage]);
+
+  const currentTableData = getCurrentTableData();
+  const currentColumns = getCurrentColumns();
 
   return (
     <>
@@ -173,12 +206,13 @@ const Search = ({ searchPage, setSearchPage }) => {
         <div className="bg-white shadow-lg rounded-md p-4 relative" style={{ width: "51%" }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6  absolute top-4 right-4 fill-current  primary"
+            className="w-6 h-6 absolute top-4 right-4 fill-current primary cursor-pointer"
             viewBox="0 0 24 24"
             onClick={() => setSearchPage(false)}
           >
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
           </svg>
+
           <div className="my-4 flex gap-4 justify-evenly items-center" style={{ position: 'sticky', top: '0', alignItems: 'end' }}>
             <Box className=" " sx={{ width: "40%" }}>
               <FormControl fullWidth>
@@ -190,7 +224,8 @@ const Search = ({ searchPage, setSearchPage }) => {
                   value={searchType}
                   label="Select"
                   onChange={(event) => SearchType(event.target.value)}
-                ><MenuItem value={1}>Medicine</MenuItem>
+                >
+                  <MenuItem value={1}>Medicine</MenuItem>
                   <MenuItem value={2}>Drug Group</MenuItem>
                   <MenuItem value={3}>Distributor</MenuItem>
                   <MenuItem value={4}>Customer</MenuItem>
@@ -203,11 +238,11 @@ const Search = ({ searchPage, setSearchPage }) => {
               size="small"
               disabled={!searchType}
               autoFocus
-              value={searchQuery} // Bind the value to searchQuery
+              value={searchQuery}
               sx={{ width: "100%", marginTop: "0px" }}
-              onChange={(e) => handleSearchQueryChange(e)}
+              onChange={handleSearchQueryChange}
               variant="standard"
-              placeholder="please search ......"
+              placeholder="Please search......"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -221,14 +256,6 @@ const Search = ({ searchPage, setSearchPage }) => {
 
           <div className="">
             <div className="overflow-x-auto">
-              {/* <table
-                  className="w-full border-collapse custom-table"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                > */}
               <table className="w-full border-collapse custom-table" style={{
                 whiteSpace: "nowrap",
                 borderCollapse: "separate",
@@ -237,107 +264,57 @@ const Search = ({ searchPage, setSearchPage }) => {
                 <thead>
                   <tr style={{ whiteSpace: 'nowrap' }}>
                     <th>Sr No.</th>
-                    {(() => {
-                      let columns;
-                      switch (searchType) {
-                        case 1:
-                          columns = medicineColumns;
-                          break;
-                        case 2:
-                          columns = drugsColumns;
-                          break;
-                        case 3:
-                          columns = distributorColumns;
-                          break;
-                        case 4:
-                          columns = customerColumns;
-                          break;
-                        default:
-                          columns = [];
-                      }
-                      return columns.map((column) => (
-                        <th key={column.id} style={{ minWidth: 50 }}>
-                          {column.label}
-                        </th>
-                      ));
-                    })()}
+                    {currentColumns.map((column) => (
+                      <th key={column.id} style={{ minWidth: 50 }}>
+                        {column.label}
+                      </th>
+                    ))}
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody style={{ background: "#3f621217", overflow: 'auto' }}>
-                  {(() => {
-                    let columns, tableData;
-
-                    // Match columns and table data based on searchType
-                    switch (searchType) {
-                      case 1:
-                        columns = medicineColumns;
-                        tableData = medicineTableData;
-                        break;
-                      case 2:
-                        columns = drugsColumns;
-                        tableData = drugsTableData;
-                        break;
-                      case 3:
-                        columns = distributorColumns;
-                        tableData = distributorTableData;
-                        break;
-                      case 4:
-                        columns = customerColumns;
-                        tableData = customerTableData;
-                        break;
-                      default:
-                        columns = [];
-                        tableData = [];
-                    }
-
-                    return tableData && tableData.length > 0 ? (
-
-                      tableData
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row, index) => (
-                          <tr className="primary" key={index}>
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>{page * rowsPerPage + index + 1}</td>
-                            {columns.map((column) => (
-                              <td
-                                onClick={() => {
-                                  if (searchType == 1) {
-                                    history.push(`/inventoryView/${row.id}`)
-                                  } else if (searchType == 2) {
-                                    // history.push(`/DistributerView/${row.id}`)
-                                  } else if (searchType == 3) {
-                                    history.push(`/DistributerView/${row.id}`)
-                                  } else if (searchType == 4) {
-                                    history.push(`/more/customerView/${row.id}`)
-                                  }
-
-                                }} className="" key={column.id}>
-                                {row[column.id] || "-"} {/* Render data or fallback */}
-                              </td>
-
-                            ))}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <ReplyAllIcon className="primary transform -scale-x-100" />
+                  {currentTableData && currentTableData.length > 0 ? (
+                    currentTableData
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => (
+                        <tr className="primary" key={index}>
+                          <td
+                            style={{ borderRadius: "10px 0 0 10px", cursor: "pointer" }}
+                            onClick={() => handleNavigation(row)}
+                          >
+                            {page * rowsPerPage + index + 1}
+                          </td>
+                          {currentColumns.map((column) => (
+                            <td
+                              onClick={() => handleNavigation(row)}
+                              className="cursor-pointer"
+                              key={column.id}
+                            >
+                              {row[column.id] || "-"}
                             </td>
-                          </tr>
-                        ))
-                    ) : (
-                      <tr>
-                        <td colSpan={columns.length + 2} className="text-center primary" style={{ borderRadius: '10px 10px 10px 10px' }}>
-                          No data found
-                        </td>
-                      </tr>
-                    );
-
-                  })()}
+                          ))}
+                          <td style={{ borderRadius: "0 10px 10px 0" }}>
+                            <ReplyAllIcon
+                              className="primary transform -scale-x-100 cursor-pointer"
+                              onClick={() => handleNavigation(row)}
+                            />
+                          </td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan={currentColumns.length + 2} className="text-center primary" style={{ borderRadius: '10px 10px 10px 10px' }}>
+                        {searchQuery && searchType ? "No data found" : "Please select a search type and enter search query"}
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
-
               </table>
             </div>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={medicineTableData.length}
+              count={currentTableData.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -349,4 +326,5 @@ const Search = ({ searchPage, setSearchPage }) => {
     </>
   );
 };
+
 export default Search;

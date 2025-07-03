@@ -73,6 +73,7 @@ const OrderList = () => {
   const [company, setCompany] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(null); // Track which row is being updated
   const totalPages = Math.ceil(
     onlineOrder.length === 0 ? 0 : onlineOrder.length / rowsPerPage
   );
@@ -90,20 +91,44 @@ const OrderList = () => {
   const [openAddPopUpPlaceOrder, setOpenAddPopUpPlaceOrder] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [orderId, setOrderId] = useState(null);
-  // const pendingStatusData = onlineOrder.filter(x => x?.y_n == 'Pending');
 
   const handelAddOpen = () => {
     setOpenAddPopUpPlaceOrder(true);
   };
 
-  // const handelEditOpen = (row) => {
-  //     const x = row;
-  //     setStatusName({
-  //         // id:,
-  //         name: row?.y_n
-  //     })
-  //     setOpenAddPopUpPlaceOrder(true);
-  // }
+  // New function to update individual order status
+  const updateOrderStatus = async (itemId, newStatusId) => {
+    setUpdatingStatus(itemId);
+    let data = new FormData();
+    const params = {
+      id: itemId,
+      status: newStatusId,
+    };
+
+    try {
+      await axios
+        .post("online-sales-status-changes?", data, {
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          toast.success(response.data.meassage || "Status updated successfully");
+          OnlineOrderList(currentPage); // Refresh the current page data
+          setUpdatingStatus(null);
+        });
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error("Failed to update status");
+      setUpdatingStatus(null);
+    }
+  };
+
+  const handleStatusChange = (itemId, newStatusId) => {
+    updateOrderStatus(itemId, newStatusId);
+  };
+
   useEffect(() => {
     OnlineOrderList();
     listDistributor();
@@ -312,6 +337,12 @@ const OrderList = () => {
       .join(", ");
   };
 
+  // Helper function to get current status ID from status name
+  const getStatusIdFromName = (statusName) => {
+    const status = statusOption.find(option => option.name === statusName);
+    return status ? status.id : null;
+  };
+
   return (
     <>
       <div>
@@ -375,30 +406,11 @@ const OrderList = () => {
               <div className="oreder_list_fld flex flex-col gap-2 sm:flex-row lg:flex-row pb-2">
                 <div className="detail flex flex-col">
                   <span className="text-gray-500">Distributor</span>
-                  {/* <TextField
-                 autoComplete="off"
-                                        id="outlined-basic"
-                                        value={distributor}
-                                        onChange={(e) => setDistributor(e.target.value)}
-                                        sx={{
-                                            width: 'full',
-                                            '& .MuiInputBase-root': {
-                                                height: 45,
-                                                fontSize: '1.10rem',
-                                            },
-                                            '& .MuiAutocomplete-inputRoot': {
-                                                padding: '10px 14px',
-                                            },
-                                        }}
-                                        variant="outlined"
-                                        fullWidth
-                                    /> */}
                   <Autocomplete
                     value={distributor}
                     sx={{
                       width: "full",
                       "& .MuiInputBase-root": {
-                        // width: 300,
                         height: 45,
                         fontSize: "1.10rem",
                       },
@@ -432,7 +444,6 @@ const OrderList = () => {
                     sx={{
                       width: "full",
                       "& .MuiInputBase-root": {
-                        // width: 300,
                         height: 45,
                         fontSize: "1.10rem",
                       },
@@ -493,7 +504,6 @@ const OrderList = () => {
                               autoComplete="off"
                               label={`Search ${column.label}`}
                               id="filled-basic"
-                              // className="w-[150px]"
                               sx={{ minWidth: 155 }}
                               size="small"
                               value={searchTerms[index]}
@@ -512,7 +522,7 @@ const OrderList = () => {
                     {filteredList.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={OnlineOrdercolumns.length + 1}
+                          colSpan={OnlineOrdercolumns.length + 2}
                           className="text-center py-4 text-gray-500"
                           style={{
                             textAlign: "center",
@@ -534,27 +544,74 @@ const OrderList = () => {
                           {OnlineOrdercolumns.map((column) => {
                             const value = row[column.id] || "-";
                             const isStatus = column.id === "y_n";
-                            const statuscolor =
-                              isStatus && value === "Order"
-                                ? "orderStatus"
-                                : isStatus && value === "Pending"
-                                  ? "pendingStatus"
-                                  : "text-black";
-                            return (
-                              <td
-                                key={column.id}
-                                className="py-2 px-4"
-                                align={column.align}
-                              >
-                                <span
-                                  className={`text ${isStatus && statuscolor}`}
+
+                            if (isStatus) {
+                              return (
+                                <td
+                                  key={column.id}
+                                  className="py-2 px-4"
+                                  align={column.align}
                                 >
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </span>
-                              </td>
-                            );
+                                  <FormControl size="small" sx={{ minWidth: 120 }}>
+                                    <Select
+                                      value={getStatusIdFromName(value) || ""}
+                                      onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
+                                      disabled={updatingStatus === row.item_id}
+                                      variant="standard"
+                                      disableUnderline
+                                      sx={{
+                                        "& .MuiSelect-select": {
+                                          padding: "4px 8px",
+                                          fontSize: "0.875rem",
+                                          color: value === "Order" ? "#3f6212" : "#f6a609",
+                                          backgroundColor: value === "Order" ? "#f0f9e8" : "#fef3e2",
+                                          fontWeight: 700,
+                                          borderRadius: "10px",
+                                          border: "none",
+                                          outline: "none",
+                                        },
+                                        "& .MuiSelect-icon": {
+                                          color: value === "Order" ? "#3f6212" : "#f6a609",
+                                        },
+                                        "& .MuiInput-root": {
+                                          "&:before": {
+                                            display: "none",
+                                          },
+                                          "&:after": {
+                                            display: "none",
+                                          },
+                                        },
+                                      }}
+                                    >
+                                      {statusOption.map((option) => (
+                                        <MenuItem key={option.id} value={option.id}>
+                                          {option.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                  {updatingStatus === row.item_id && (
+                                    <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
+                                      Updating...
+                                    </div>
+                                  )}
+                                </td>
+                              );
+                            } else {
+                              return (
+                                <td
+                                  key={column.id}
+                                  className="py-2 px-4"
+                                  align={column.align}
+                                >
+                                  <span className="text">
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </span>
+                                </td>
+                              );
+                            }
                           })}
                           <td style={{ borderRadius: "0 10px 10px 0" }}>
                             <VisibilityIcon
@@ -568,7 +625,6 @@ const OrderList = () => {
                     )}
                   </tbody>
                 </table>
-
               </div>
               <div
                 className="mt-4 space-x-1"
@@ -637,7 +693,7 @@ const OrderList = () => {
                 "& .MuiDialog-container": {
                   "& .MuiPaper-root": {
                     width: "100%",
-                    maxWidth: "991px", // Set your width here
+                    maxWidth: "991px",
                   },
                 },
               }}
@@ -782,7 +838,7 @@ const OrderList = () => {
                         MenuProps={{
                           PaperProps: {
                             style: {
-                              maxHeight: 200, // Adjust the max height as needed
+                              maxHeight: 200,
                               overflowY: "auto",
                             },
                           },
@@ -791,9 +847,9 @@ const OrderList = () => {
                         <MenuItem key="select-all" value="select-all">
                           <Checkbox
                             sx={{
-                              color: "var(--color2)", // Color for unchecked checkboxes
+                              color: "var(--color2)",
                               "&.Mui-checked": {
-                                color: "var(--color1)", // Color for checked checkboxes
+                                color: "var(--color1)",
                               },
                             }}
                             checked={items.length === onlineOrder.length}
@@ -808,9 +864,9 @@ const OrderList = () => {
                           <MenuItem key={option.item_id} value={option.item_id}>
                             <Checkbox
                               sx={{
-                                color: "var(--color2)", // Color for unchecked checkboxes
+                                color: "var(--color2)",
                                 "&.Mui-checked": {
-                                  color: "var(--color1)", // Color for checked checkboxes
+                                  color: "var(--color1)",
                                 },
                               }}
                               checked={items.indexOf(option.item_id) > -1}
@@ -822,7 +878,6 @@ const OrderList = () => {
                     </FormControl>
 
                     <FormControl size="small" style={{ width: "100%" }}>
-                      {/* <InputLabel id="demo-select-small-label">Status</InputLabel> */}
                       <Select
                         labelId="demo-select-small-label"
                         id="demo-select-small-label"
@@ -830,10 +885,8 @@ const OrderList = () => {
                         sx={{ width: "100%" }}
                         onChange={(e) => setStatusName(e.target.value)}
                         size="small"
-                        // label="Status"
                         displayEmpty
                       >
-                        {/* <MenuItem value="" disabled>Select All</MenuItem> */}
                         {statusOption.map((option) => (
                           <MenuItem key={option.id} value={option.id}>
                             {option.name}

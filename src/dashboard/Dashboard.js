@@ -85,7 +85,7 @@ const Dashboard = () => {
   const [customer, setCustomer] = useState([]);
   const [expiry, setExpiry] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pieChartvalue, setpieChartValue] = useState(0);
+  const [pieChartvalue, setpieChartValue] = useState('sales');
   const [value, setValue] = useState(1);
   const [data, setData] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState();
@@ -251,6 +251,28 @@ const Dashboard = () => {
           setIsLoading(false);
           const todayData = initialData.chart.find((e) => e.title === "Today");
           if (todayData) {
+            setBarChartData([
+              {
+                name: "Sales",
+                value: todayData.sales_total || 0,
+                fill: "#00AEEF",
+              },
+              {
+                name: "Sales Return",
+                value: todayData.sales_return_total || 0,
+                fill: "#00A651",
+              },
+              {
+                name: "Purchases",
+                value: todayData.purchase_total || 0,
+                fill: "#FFEB3B",
+              },
+              {
+                name: "Purchases Return",
+                value: todayData.purchase_return_total || 0,
+                fill: "#E53935",
+              },
+            ]);
             setRecord({
               ...initialData,
               salesmodel_total: todayData.sales_total,

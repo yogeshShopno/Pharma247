@@ -14,7 +14,7 @@ const DrugGroupView = () => {
 
     const [drugGroupItems, setDrugGroupItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [drugGroupData, setDrugGroupData] = useState({});
+    const [drugGroupData, setDrugGroupData] = useState("");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -46,13 +46,9 @@ const DrugGroupView = () => {
 
             if (response.data.status === 200) {
                 setDrugGroupItems(response.data.data);
+
                 // Set drug group data - you might need to adjust this based on your API response
-                setDrugGroupData({
-                    name: `Drug Group ${id}`,
-                    // Add other drug group details from your API response if available
-                    // category: response.data.category || "",
-                    // description: response.data.description || "",
-                });
+                setDrugGroupData(response?.data?.drug_group_name);
             }
         } catch (error) {
             console.error("API error:", error);
@@ -146,7 +142,7 @@ const DrugGroupView = () => {
                                 fontSize: "20px",
                             }}
                         >
-                            {drugGroupData.name}
+                            {drugGroupData}
                         </span>
                     </div>
 
@@ -164,7 +160,7 @@ const DrugGroupView = () => {
                             <div className="detail_main_bg_CV">
                                 <span className="heading_othr">Drug Group Name</span>
                                 <span className="data_bg">
-                                    {drugGroupData.name ? drugGroupData.name : "____"}
+                                    {drugGroupData ? drugGroupData : "____"}
                                 </span>
                             </div>
                             <div className="detail_main_bg_CV">

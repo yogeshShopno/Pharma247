@@ -16,7 +16,7 @@ const Search = ({ searchPage, setSearchPage }) => {
   const history = useHistory();
 
   const token = localStorage.getItem("token");
-  const [searchType, setSearchType] = useState("1");
+  const [searchType, setSearchType] = useState("2");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -68,18 +68,19 @@ const Search = ({ searchPage, setSearchPage }) => {
   }
 
   const handleSearchQueryChange = (e) => {
-    const newValue = e.target.value;
-    setSearchQuery(newValue);
-    if (newValue.trim()) {
-      searchData(newValue);
-    } else {
-      // Clear results if search query is empty
-      setMedicineTableData([])
-      setDrugsTableData([])
-      setDistributorTableData([])
-      setCustomerTableData([])
-    }
-  };
+  const newValue = e.target.value;
+  setSearchQuery(newValue);
+  
+  if (newValue.trim()) {
+    searchData(newValue);
+  } else {
+    // Clear results if search query is empty
+    setMedicineTableData([])
+    setDrugsTableData([])
+    setDistributorTableData([])
+    setCustomerTableData([])
+  }
+};
 
   const apiEndpoints = {
     1: "item-search",
@@ -89,63 +90,62 @@ const Search = ({ searchPage, setSearchPage }) => {
   };
 
   const searchData = async (query = searchQuery) => {
-    if (!query.trim() || !searchType) {
-      if (!searchType) {
-        toast.error("Please select a search type");
+  if (!query.trim() || !searchType) {
+    if (!searchType) {
+      toast.error("Please select a search type");
+    }
+    return;
+  }
+
+  const api = apiEndpoints[searchType];
+  if (!api) {
+    console.error("Invalid search type");
+    return;
+  }
+
+  const data = new FormData();
+  if (searchType === "3") { // Use strict equality
+    data.append("name_mobile_gst_search", query);
+  }
+  data.append("search", query);
+
+  try {
+    const response = await axios.post(api, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response?.data?.data) {
+      if (searchType === "1") { // Use strict equality
+        setMedicineTableData(response.data.data.data || response.data.data)
+      } else if (searchType === "2") {
+        setDrugsTableData(response.data.data)
+      } else if (searchType === "3") {
+        setDistributorTableData(response.data.data)
+      } else if (searchType === "4") {
+        setCustomerTableData(response.data.data)
       }
-      return;
     }
 
-    const api = apiEndpoints[searchType];
-    if (!api) {
-      console.error("Invalid search type");
-      return;
-    }
-
-    const data = new FormData();
-    if (searchType == 3) {
-      data.append("name_mobile_gst_search", query);
-    }
-    data.append("search", query);
-
-    try {
-      const response = await axios.post(api, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response?.data?.data) {
-        if (searchType == 1) {
-          setMedicineTableData(response.data.data.data || response.data.data)
-        } else if (searchType == 2) {
-          setDrugsTableData(response.data.data)
-        } else if (searchType == 3) {
-          setDistributorTableData(response.data.data)
-        } else if (searchType == 4) {
-          setCustomerTableData(response.data.data)
-        }
-      }
-
-    } catch (error) {
-      console.error("API error:", error);
-      toast.error("Search failed. Please try again.");
-    }
-  };
+  } catch (error) {
+    console.error("API error:", error);
+    toast.error("Search failed. Please try again.");
+  }
+};
 
   // Navigation handler
   const handleNavigation = (row) => {
-    if (searchType == 1) {
-      history.push(`/inventoryView/${row.id}`)
-    } else if (searchType == 2) {
-      // Add navigation for drug group if needed
-      history.push(`/more/drugGroupView/${row.id}`)
-    } else if (searchType == 3) {
-      history.push(`/DistributerView/${row.id}`)
-    } else if (searchType == 4) {
-      history.push(`/more/customerView/${row.id}`)
-    }
-  };
+  if (searchType === "1") {
+    history.push(`/inventoryView/${row.id}`)
+  } else if (searchType === "2") {
+    history.push(`/more/drugGroupView/${row.id}`)
+  } else if (searchType === "3") {
+    history.push(`/DistributerView/${row.id}`)
+  } else if (searchType === "4") {
+    history.push(`/more/customerView/${row.id}`)
+  }
+};
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -157,26 +157,26 @@ const Search = ({ searchPage, setSearchPage }) => {
   };
 
   // Get current table data based on search type
-  const getCurrentTableData = () => {
-    switch (searchType) {
-      case 1: return medicineTableData;
-      case 2: return drugsTableData;
-      case 3: return distributorTableData;
-      case 4: return customerTableData;
-      default: return [];
-    }
-  };
+const getCurrentTableData = () => {
+  switch (searchType) {
+    case "1": return medicineTableData;
+    case "2": return drugsTableData;
+    case "3": return distributorTableData;
+    case "4": return customerTableData;
+    default: return [];
+  }
+};
 
   // Get current columns based on search type
-  const getCurrentColumns = () => {
-    switch (searchType) {
-      case 1: return medicineColumns;
-      case 2: return drugsColumns;
-      case 3: return distributorColumns;
-      case 4: return customerColumns;
-      default: return [];
-    }
-  };
+const getCurrentColumns = () => {
+  switch (searchType) {
+    case "1": return medicineColumns;
+    case "2": return drugsColumns;
+    case "3": return distributorColumns;
+    case "4": return customerColumns;
+    default: return [];
+  }
+};
 
   useEffect(() => {
     if (searchPage) {
@@ -190,17 +190,7 @@ const Search = ({ searchPage, setSearchPage }) => {
     };
   }, [searchPage]);
 
-  
-useEffect(() => {
-  // Whenever searchType changes, fetch initial data for the new type
-  searchData(""); // or pass searchQuery if you want to use what's typed
-  // eslint-disable-next-line
-}, [searchType]);
 
-useEffect(() => {
-  searchData(""); // or pass any default search term if required
-  // eslint-disable-next-line
-}, []);
 
   const currentTableData = getCurrentTableData();
   const currentColumns = getCurrentColumns();

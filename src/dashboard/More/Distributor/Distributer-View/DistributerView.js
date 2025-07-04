@@ -54,6 +54,7 @@ const DistributerView = () => {
         })
         .then((response) => {
           setTableData(response.data.data);
+          console.log(response.data.data)
           setIsLoading(false);
         });
     } catch (error) {
@@ -355,6 +356,14 @@ const DistributerView = () => {
                   <span className="data_bg">
                     {tableData.total_due_amount
                       ? tableData.total_due_amount
+                      : "____"}
+                  </span>
+                </div>
+                <div className="distributor-detail">
+                  <span className="heading_othr ">CN Amount</span>
+                  <span className="data_bg">
+                    {tableData.total_cn_amount
+                      ? tableData.total_cn_amount
                       : "____"}
                   </span>
                 </div>

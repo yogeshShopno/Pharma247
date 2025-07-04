@@ -3249,7 +3249,7 @@ const AddPurchaseBill = () => {
             <Button
               autoFocus
               variant="contained"
-              color="success"
+              style={{ backgroundColor: "#3f6212", color: "white" }}
               onClick={handleCnAmount}
             >
               Save

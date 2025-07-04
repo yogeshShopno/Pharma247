@@ -24,6 +24,8 @@ import {
   Autocomplete,
   Menu,
   Drawer,
+  OutlinedInput,
+
 } from "@mui/material";
 import {
   Dialog,
@@ -95,12 +97,12 @@ const InventoryList = () => {
   const [itemBatchData, setItemBatchData] = useState();
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openPrintQR, setOpenPrintQR] = useState(false);
   const [stock, setStock] = useState("");
   const [adjustStockListData, setAdjustStockListData] = useState([]);
   const [unit, setUnit] = useState("");
   const [remainingStock, setRemainingStock] = useState("");
   const [batchListData, setBatchListData] = useState([]);
+  const [QRBatch, setQRBatch] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [expiry, setExpiry] = useState("");
   const [mrp, setMrp] = useState("");
@@ -117,6 +119,7 @@ const InventoryList = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [bulkOrder, setBulkOrder] = useState(false);
+  const [openQR, setOpenQR] = useState(false);
   const [barcode, setBarcode] = useState();
   const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no row is selected
   const [isAutocompleteFocused, setIsAutocompleteFocused] = useState(false);
@@ -314,10 +317,11 @@ const InventoryList = () => {
 
   /*<=============================================================================== handle bulk order ======================================================================> */
   const handleBulkQR = () => {
-    batchList();
+    batchID();
+
   };
 
-  const batchList = async () => {
+  const batchID = async () => {
     let data = new FormData();
     data.append("item_bulk_id", selectedItems);
 
@@ -333,14 +337,16 @@ const InventoryList = () => {
 
       function extractBatchListData(batchData) {
         return batchData.map(item => ({
-          item_id: Number(item.item_id),
-          batch_id: Number(item.id), // use `id` if that's your batch id
-          qty: Number(item.qty)
+          item_name: item.iteam_name,
+          item_id: item.item_id,
+          batch_id: item.id,
+          qty: item.qty
         }));
       }
 
-      const batchListData = extractBatchListData(batchData);
-      setBatchListData(batchListData);
+      const extractBatch = extractBatchListData(batchData);
+      setQRBatch(extractBatch);
+      setOpenQR(true);
 
       if (res.data.status === 200) {
 
@@ -353,11 +359,14 @@ const InventoryList = () => {
   };
 
   // Separate function, outside or inside as you want
-  const callBulkQRCode = async (batchListData) => {
+  const callBulkQRCode = async () => {
+    const cleanQRBatch = QRBatch.map(({ item_name, ...rest }) => rest);
+
+    console.log("QRBatch", cleanQRBatch);
     try {
       const response = await axios.post(
         "item-bulk-qr-code?",
-        { data: batchListData }, // <-- This matches Postman screenshot
+        { data: cleanQRBatch },
         {
           headers: {
             "Content-Type": "application/json",
@@ -367,9 +376,17 @@ const InventoryList = () => {
       );
 
       if (response.data.status === 200) {
-        // Success logic here
-        console.log("QR code API response:", response.data);
-        // e.g., show PDF link: response.data.pdf_url
+        toast.success("QR code Print will be available soon");
+
+        const url = response.data.pdf_url;
+
+        if (typeof url === "string") {
+
+          window.open(url, "_blank");
+        } else {
+          console.error("Invalid URL for the PDF");
+        }
+
       }
     } catch (error) {
       console.error("QR code API error:", error);
@@ -2793,6 +2810,84 @@ const InventoryList = () => {
           </div>
         </DialogActions>
       </Dialog>
+
+      {/*<=========================================================================== Bulk QR dialog ===========================================================================>*/}
+
+      <Dialog open={openQR} className="custom-dialog max-991">
+        <DialogTitle id="alert-dialog-title" className="secondary">
+          Batch List
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={() => setOpenQR(false)}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <div className="bg-white">
+              <table className="custom-table">
+                <thead>
+                  <tr>
+                    <th>Sr NO.</th>
+                    <th>Item ID</th>
+                    <th>Item Name</th>
+                    <th>Batch ID</th>
+                    <th>Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {QRBatch && QRBatch.length === 0 ? (
+                    <tr>
+                      <td colSpan={3}>No data found</td>
+                    </tr>
+                  ) : (
+                    QRBatch.map((row, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{row.item_id}</td>
+                        <td>{row.item_name}</td>
+                        <td>{row.batch_id}</td>
+                        <td>
+                          <OutlinedInput
+                            type="number"
+                            value={row.qty}
+                            onChange={e => {
+                              // Update only qty in batchListData, keep logic as your current implementation
+                              const newData = [...QRBatch];
+                              newData[index].qty = e.target.value;
+                              setQRBatch(newData);
+                            }}
+                            sx={{ width: 80, m: 1 }}
+                            size="small"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            variant="contained"
+            style={{ backgroundColor: "#3f6212", color: "white" }}
+            onClick={callBulkQRCode}
+          >
+            Print QR
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
       {/*<=========================================================================== Bulk edit dialog ===========================================================================>*/}
 

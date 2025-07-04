@@ -510,7 +510,7 @@ const PurchaseView = () => {
 {/*<================================================================================== CN Popup  ==================================================================================> */}
           {/* CN List PopUp Box */}
 
-          <Dialog open={openAddPopUp}>
+          <Dialog className="custom-dialog max-991" open={openAddPopUp}>
             <DialogTitle id="alert-dialog-title" className="secondary">
             Cn Amount List
             </DialogTitle>

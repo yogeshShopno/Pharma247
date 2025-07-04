@@ -16,7 +16,7 @@ const Search = ({ searchPage, setSearchPage }) => {
   const history = useHistory();
 
   const token = localStorage.getItem("token");
-  const [searchType, setSearchType] = useState("");
+  const [searchType, setSearchType] = useState("1");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -190,6 +190,18 @@ const Search = ({ searchPage, setSearchPage }) => {
     };
   }, [searchPage]);
 
+  
+useEffect(() => {
+  // Whenever searchType changes, fetch initial data for the new type
+  searchData(""); // or pass searchQuery if you want to use what's typed
+  // eslint-disable-next-line
+}, [searchType]);
+
+useEffect(() => {
+  searchData(""); // or pass any default search term if required
+  // eslint-disable-next-line
+}, []);
+
   const currentTableData = getCurrentTableData();
   const currentColumns = getCurrentColumns();
 
@@ -253,7 +265,7 @@ const Search = ({ searchPage, setSearchPage }) => {
             />
           </div>
 
-          <div className="">
+          <div  className="">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse custom-table" style={{
                 whiteSpace: "nowrap",
@@ -276,7 +288,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                     currentTableData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row, index) => (
-                        <tr className="primary" key={index}>
+                        <tr className="primary" key={searchQuery}>
                           <td
                             style={{ borderRadius: "10px 0 0 10px", cursor: "pointer" }}
                             onClick={() => handleNavigation(row)}

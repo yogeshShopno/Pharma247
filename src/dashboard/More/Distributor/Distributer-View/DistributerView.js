@@ -7,6 +7,7 @@ import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
 import { TablePagination, Button } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 const DistributerView = () => {
   const { id } = useParams();
@@ -16,6 +17,8 @@ const DistributerView = () => {
   const token = localStorage.getItem("token");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [CNAmount, setCNAmount] = useState("");
+
 
   const PaymentHistory = [
     { id: "bill_no", label: "Bill No", minWidth: 150 },
@@ -29,6 +32,7 @@ const DistributerView = () => {
 
   useEffect(() => {
     distributerDetail(id);
+    purchaseReturnData(id);
   }, [page, rowsPerPage]);
 
   const distributerDetail = (id) => {
@@ -93,7 +97,29 @@ const DistributerView = () => {
       console.error("Error fetching distributor data:", error);
     }
   };
+  /*<========================================================================== get list of company  ==========================================================================> */
 
+   const purchaseReturnData = async (id) => {
+    if (!id) { return; }
+      let data = new FormData();
+      data.append("distributor_id", id);
+      try {
+        await axios
+          .post("purchase-return-pending-bills", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setCNAmount(response.data);
+          });
+      } catch (error) {
+        if (error.response.data.status == 400) {
+          toast.error(error.response.data.message);
+        } else {
+        }
+      }
+    };
   /*<============================================================================ download pdf  ============================================================================> */
 
   const downloadPDF = (distributorData) => {

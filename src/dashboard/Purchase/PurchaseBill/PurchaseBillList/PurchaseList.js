@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import Header from "../../../Header";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
-import "./PurchaseList";
-import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import TextField from "@mui/material/TextField";
-import DatePicker from "react-datepicker";
-import { format, subDays } from "date-fns";
-import "react-datepicker/dist/react-datepicker.css";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import axios from "axios";
-import Loader from "../../../../componets/loader/Loader";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ClearIcon from "@mui/icons-material/Clear";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { FaFilePdf } from "react-icons/fa6";
-import { PDFDocument, rgb } from "pdf-lib";
-import usePermissions, {
-  hasPermission,
-} from "../../../../componets/permission";
-import { toast, ToastContainer } from "react-toastify";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
-  Dialog,
+  Button, Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
+  DialogTitle
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import TextField from "@mui/material/TextField";
+import axios from "axios";
+import { format, subDays } from "date-fns";
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaFilePdf } from "react-icons/fa6";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import Loader from "../../../../componets/loader/Loader";
+import usePermissions, {
+  hasPermission,
+} from "../../../../componets/permission";
+import Header from "../../../Header";
+import "./PurchaseList";
 
 const columns = [
   { id: "sr_no", label: "Sr No.", minWidth: 150 },
@@ -49,11 +43,10 @@ const Purchasebill = () => {
   const permissions = usePermissions();
   const history = useHistory();
   
-  const [purchaseData, setPurchaseData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [id, setId] = useState(null);
   const rowsPerPage = 10;
-  const initialSearchTerms = columns.map(() => "");
+  const initialSearchTerms = columns.map(() => ""); 
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -63,21 +56,22 @@ const Purchasebill = () => {
   const [startDate, setStartDate] = useState(subDays(new Date(), 15));
   const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
   const [IsDelete, setIsDelete] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState("");
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
-  const [buttonLabel, setButtonLabel] = useState("");
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = React.useRef(null);
+  const currentSearchTerms = React.useRef(searchTerms);
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
-  {
-    /*<=========================================================================== get required data  ===========================================================================> */
-  }
+
 
   useEffect(() => {
     if (tableData.length > 0) {
@@ -89,7 +83,44 @@ const Purchasebill = () => {
 
   useEffect(() => {
     purchaseBillList(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, startDate, endDate]);
+
+  // Effect for handling search with debouncing
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout.current);
+      
+      // Check if any search term has a value
+      const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
+      
+      if (!hasSearchTerms) {
+        // If no search terms, clear the search immediately
+        setIsSearching(false);
+        purchaseBillList(1, true);
+      } else {
+        // Show searching state immediately
+        setIsSearching(true);
+        
+        // Debounce the search to avoid too many API calls
+        searchTimeout.current = setTimeout(() => {
+          purchaseBillList(1, true);
+        }, 150);
+      }
+    }
+  }, [searchTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+
+
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
@@ -112,9 +143,7 @@ const Purchasebill = () => {
     setId(id);
   };
 
-  {
-    /*<=============================================================================== table sort  ===============================================================================> */
-  }
+
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -131,20 +160,32 @@ const Purchasebill = () => {
     setTableData(sortedData);
   };
 
-  {
-    /*<=========================================================================== table search  ===========================================================================> */
-  }
+
 
   const handleSearchChange = (index, value) => {
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = value;
+    
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+    
+    // Update state immediately for UI responsiveness
     setSearchTerms(newSearchTerms);
+    
+    // Check if any search term has a value
+    const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
+    setIsSearchActive(hasSearchTerms);
+    
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+    
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
   };
 
   // Handle search on Enter key press
   const handleSearchSubmit = () => {
     setCurrentPage(1);
-    setIsSearchActive(true);
     purchaseBillList(1);
   };
 
@@ -158,23 +199,27 @@ const Purchasebill = () => {
 
   // Clear all search filters
   const clearSearch = () => {
+    // Clear timeout immediately
+    clearTimeout(searchTimeout.current);
+    
+    // Update ref immediately
+    currentSearchTerms.current = initialSearchTerms;
+    
+    // Update state immediately
     setSearchTerms(initialSearchTerms);
     setIsSearchActive(false);
     setCurrentPage(1);
-    // Reload data without search
-    setTimeout(() => {
-      purchaseBillList(1);
-    }, 100);
+    
+    // Trigger search effect to reload data
+    setSearchTrigger(prev => prev + 1);
   };
 
   // No frontend filtering needed - all search is handled by backend
   const paginatedData = tableData;
 
-  {
-    /*<======================================================================= Purchase bill list  =======================================================================> */
-  }
 
-  const purchaseBillList = async (page) => {
+
+  const purchaseBillList = async (page, isSearch = false) => {
     if (!page) return;
 
     let data = new FormData();
@@ -182,16 +227,27 @@ const Purchasebill = () => {
     data.append("from_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
     data.append("page", page);
 
-    // Add search parameters only when search is active and has values
-    if (isSearchActive) {
-      if (searchTerms[0]?.trim()) data.append("sr_no", searchTerms[0].trim());
-      if (searchTerms[1]?.trim()) data.append("bill_no", searchTerms[1].trim());
-      if (searchTerms[2]?.trim()) data.append("bill_date", searchTerms[2].trim());
-      if (searchTerms[3]?.trim()) data.append("distributor_name", searchTerms[3].trim());
-      if (searchTerms[4]?.trim()) data.append("total_amount", searchTerms[4].trim());
+    // Add search parameters when any search term has a value
+    currentSearchTerms.current.forEach((term, index) => {
+      if (term && term.trim()) {
+        const fieldMap = {
+          0: "sr_no",
+          1: "bill_no", 
+          2: "bill_date",
+          3: "distributor_name",
+          4: "total_amount"
+        };
+        data.append(fieldMap[index], term.trim());
+      }
+    });
+
+    // Use different loading states for search vs regular operations
+    if (isSearch) {
+      setIsSearchLoading(true);
+    } else {
+      setIsLoading(true);
     }
 
-    setIsLoading(true);
     try {
       const response = await axios.post("purches-list?", data, {
         headers: { Authorization: `Bearer ${token}` },
@@ -216,13 +272,16 @@ const Purchasebill = () => {
       setTableData([]);
       setTotalRecords(0);
     } finally {
-      setIsLoading(false);
+      if (isSearch) {
+        setIsSearchLoading(false);
+        setIsSearching(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
 
-  {
-    /*<============================================================================== Delete Bill  ==============================================================================> */
-  }
+
 
   const handleDeleteItem = async (id) => {
     if (!id) return;
@@ -254,9 +313,7 @@ const Purchasebill = () => {
     }
   };
 
-  {
-    /*<============================================================================== Download PDF  ==============================================================================> */
-  }
+
 
   const pdfGenerator = async (id) => {
     let data = new FormData();
@@ -329,9 +386,7 @@ const Purchasebill = () => {
   };
 
 
-  {
-    /*<=========================================================================== UI ===========================================================================> */
-  }
+
 
   return (
     <>
@@ -469,7 +524,6 @@ const Purchasebill = () => {
                   style={{
                     minHeight: "38px",
                     alignItems: "center",
-                    // marginTop: "24px",
                     background: "var(--color1)",
                   }}
                   onClick={() => purchaseBillList(currentPage)}
@@ -496,147 +550,31 @@ const Purchasebill = () => {
               >
                 <thead>
                   <tr>
-                    {/* Sr No. */}
-                    <th className="text-left" style={{ minWidth: 150 }}>
-                      <div className="headerStyle gap-2">
-                        <span>Sr No.</span>
-                        <SwapVertIcon
-                          className="cursor-pointer"
-                          onClick={() => sortByColumn("sr_no")}
-                        />
-                        <TextField
-                          className="textfield-z0"
-                          autoComplete="off"
-                          label="Search Sr No."
-                          size="small"
-                          sx={{
-                            minWidth: 150,
-                            "& .MuiInputBase-root": {
-                              zIndex: 0,
-                              position: "relative",
-                            },
-                          }}
-                          style={{ minWidth: 150, zIndex: 0 }}
-                          value={searchTerms[0] || ""}
-                          onChange={(e) => handleSearchChange(0, e.target.value)}
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Bill No. */}
-                    <th className="text-left" style={{ minWidth: 150 }}>
-                      <div className="headerStyle gap-2">
-                        <span>Bill No.</span>
-                        <SwapVertIcon
-                          className="cursor-pointer"
-                          onClick={() => sortByColumn("bill_no")}
-                        />
-                        <TextField
-                          className="textfield-z0"
-                          autoComplete="off"
-                          label="Search Bill No."
-                          size="small"
-                          sx={{
-                            minWidth: 150,
-                            "& .MuiInputBase-root": {
-                              zIndex: 0,
-                              position: "relative",
-                            },
-                          }}
-                          style={{ minWidth: 150, zIndex: 0 }}
-                          value={searchTerms[1] || ""}
-                          onChange={(e) => handleSearchChange(1, e.target.value)}
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Bill Date */}
-                    <th className="text-left" style={{ minWidth: 150 }}>
-                      <div className="headerStyle gap-2">
-                        <span>Bill Date</span>
-                        <SwapVertIcon
-                          className="cursor-pointer"
-                          onClick={() => sortByColumn("bill_date")}
-                        />
-                        <TextField
-                          className="textfield-z0"
-                          autoComplete="off"
-                          label="Search Bill Date"
-                          size="small"
-                          sx={{
-                            minWidth: 150,
-                            "& .MuiInputBase-root": {
-                              zIndex: 0,
-                              position: "relative",
-                            },
-                          }}
-                          style={{ minWidth: 150, zIndex: 0 }}
-                          value={searchTerms[2] || ""}
-                          onChange={(e) => handleSearchChange(2, e.target.value)}
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Distributor */}
-                    <th className="text-left" style={{ minWidth: 150 }}>
-                      <div className="headerStyle gap-2">
-                        <span>Distributor</span>
-                        <SwapVertIcon
-                          className="cursor-pointer"
-                          onClick={() => sortByColumn("distributor_name")}
-                        />
-                        <TextField
-                          className="textfield-z0"
-                          autoComplete="off"
-                          label="Search Distributor"
-                          size="small"
-                          sx={{
-                            minWidth: 150,
-                            "& .MuiInputBase-root": {
-                              zIndex: 0,
-                              position: "relative",
-                            },
-                          }}
-                          style={{ minWidth: 150, zIndex: 0 }}
-                          value={searchTerms[3] || ""}
-                          onChange={(e) => handleSearchChange(3, e.target.value)}
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Bill Amount */}
-                    <th className="text-left" style={{ minWidth: 150 }}>
-                      <div className="headerStyle gap-2">
-                        <span>Bill Amount</span>
-                        <SwapVertIcon
-                          className="cursor-pointer"
-                          onClick={() => sortByColumn("total_amount")}
-                        />
-                        <TextField
-                          className="textfield-z0"
-                          autoComplete="off"
-                          label="Search Bill Amount"
-                          size="small"
-                          sx={{
-                            minWidth: 150,
-                            "& .MuiInputBase-root": {
-                              zIndex: 0,
-                              position: "relative",
-                            },
-                          }}
-                          style={{ minWidth: 150, zIndex: 0 }}
-                          value={searchTerms[4] || ""}
-                          onChange={(e) => handleSearchChange(4, e.target.value)}
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
-                    </th>
-
-                    <th>Action</th>
+                    <th style={{ minWidth: 150, padding: '8px' }}>Sr. No</th>
+                    {columns.slice(1).map((column, index) => (
+                      <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                        <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                          <span>{column.label}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <SwapVertIcon
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => sortByColumn(column.id)}
+                            />
+                            <TextField
+                              autoComplete="off"
+                              label="Type Here"
+                              id="filled-basic"
+                              size="small"
+                              sx={{ width: '150px', marginLeft: '4px' }}
+                              value={searchTerms[index + 1]}
+                              onChange={(e) => handleSearchChange(index + 1, e.target.value)}
+                              onKeyDown={handleKeyDown}
+                            />
+                          </div>
+                        </div>
+                      </th>
+                    ))}
+                    <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                   </tr>
                 </thead>
 
@@ -652,7 +590,7 @@ const Purchasebill = () => {
                       </td>
                     </tr>
                   ) : (
-                    paginatedData.map((row, index) => (
+                    paginatedData.map((row) => (
                       <tr
                         className="cursor-pointer hover:bg-gray-100"
                         key={row.code}

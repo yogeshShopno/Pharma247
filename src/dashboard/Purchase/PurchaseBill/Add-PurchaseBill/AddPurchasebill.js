@@ -2855,13 +2855,7 @@ const AddPurchaseBill = () => {
                           className={`item-List flex justify-between cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
                             }`}
                         >
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "8px",
-                              width: "366px",
-                            }}
-                          >
+                          <td style={{ display: "flex", gap: "8px", width: "366px" }}>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
                               onClick={(e) => {

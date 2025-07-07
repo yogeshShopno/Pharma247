@@ -633,6 +633,9 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
+          if (response?.data?.alternative_item_check ) {
+            return;
+          }
           const batchData = response.data.data;
           setBatchListData(response.data.data);
           if (batchData.length > 0) {
@@ -2715,13 +2718,13 @@ const EditPurchaseBill = () => {
             </DialogContent>
             <DialogActions>
               <Button
-                autoFocus
-                variant="contained"
-                color="success"
+                 className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+               
                 onClick={handleCnAmount}
               >
                 Save
               </Button>
+              
             </DialogActions>
           </Dialog>
           {/* Delete PopUP */}

@@ -517,12 +517,21 @@ const Salelist = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-4" style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 50,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '1rem',
+                background: '#fff'
+              }}>
                 <button
                   onClick={handlePrevious}
                   className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
                     }`}
                   disabled={currentPage === 1}
                 >
@@ -561,8 +570,8 @@ const Salelist = () => {
                 <button
                   onClick={handleNext}
                   className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700 "
-                    : "secondary-bg  text-white"
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
                     }`}
                   disabled={currentPage >= totalPages}
                 >

@@ -14,7 +14,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  TablePagination,
   TextField,
 } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -555,15 +554,41 @@ const ManageExpense = () => {
                   </tbody>
                 </table>
               </div>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 12]}
-                component="div"
-                count={expenseData?.expense_list?.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+              <div className="flex justify-center mt-4" style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 50,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '1rem',
+                background: '#fff'
+              }}>
+                <button
+                  onClick={() => setPage(page - 1)}
+                  className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+                  disabled={page === 0}
+                >
+                  Previous
+                </button>
+                {page > 1 && (
+                  <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+                )}
+                {page > 0 && (
+                  <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
+                )}
+                <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
+                {page + 1 < Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage) && (
+                  <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+                )}
+                <button
+                  onClick={() => setPage(page + 1)}
+                  className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+                  disabled={(page + 1) >= Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage)}
+                >
+                  Next
+                </button>
+              </div>
             </div>
 
             <Dialog className="custom-dialog"
@@ -604,236 +629,6 @@ const ManageExpense = () => {
                 </span>
               </Alert>
             </Dialog>
-
-            {/* <Dialog open={openAddPopUp}
-                        sx={{
-                            "& .MuiDialog-container": {
-                                "& .MuiPaper-root": {
-                                    width: "40%",
-                                    maxWidth: "1500px",  // Set your width here
-                                },
-                            },
-                        }}
-                        >
-                            <DialogTitle id="alert-dialog-title" className="secondary">
-                                Add Expense
-                            </DialogTitle>
-                            <IconButton
-                                aria-label="close"
-                                onClick={handleCloseDialog}
-                                sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    <div className="flex gap-8 mb-3">
-                                        <div style={{ width: '30%', borderRight: "1px solid #1565c0" }}>
-                                            <span className="ExpenseBoxTitle">Category</span>
-                                            <div className="pl-5">
-                                                <FormControl>
-                                                    <RadioGroup
-                                                        aria-labelledby="demo-radio-buttons-group-label"
-                                                        defaultValue="items"
-                                                        name="radio-buttons-group"
-                                                        value={selectedOption}
-                                                        onChange={(e) => setSelectedOption(e.target.value)}
-                                                        sx={{ color: 'black' }}
-                                                    >
-                                                        {catagoryList.map((category) => (
-                                                            <FormControlLabel
-                                                                key={category.id}
-                                                                value={category.id}
-                                                                control={<Radio />}
-                                                                label={capitalizeFirstLetter(category.name)}
-                                                            />
-                                                        ))}
-                                                    </RadioGroup>
-                                                </FormControl>
-                                                {errors.selectedOption && <div className="error">{errors.selectedOption}</div>}
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-5 flex-col">
-                                            <div className="flex gap-5">
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Expense Date</span>
-                                                    <DatePicker
-                                                        className='custom-datepicker '
-                                                        selected={expenseDate}
-                                                        onChange={(newDate) => setExpenseDate(newDate)}
-                                                        dateFormat="dd/MM/yyyy"
-                                                    />
-                                                    {errors.expenseDate && <div className="error">{errors.expenseDate}</div>}
-                                                </div>
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Payment Date</span>
-                                                    <DatePicker
-                                                        className='custom-datepicker '
-                                                        selected={paymentdate}
-                                                        onChange={(newDate) => setPaymentDate(newDate)}
-                                                        dateFormat="dd/MM/yyyy"
-                                                    />
-                                                    {errors.paymentdate && <div className="error">{errors.paymentdate}</div>}
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <FormControl>
-                                                    <RadioGroup
-                                                        aria-labelledby="demo-radio-buttons-group-label"
-                                                        defaultValue="items"
-                                                        name="radio-buttons-group"
-                                                        value={selectedGSTOption}
-                                                        onChange={handleGSTOption}
-                                                        style={{ flexDirection: "row", gap: 20 }}
-                                                        className="ExpenseBoxTitle"
-                                                    >
-                                                        <FormControlLabel value="with_GST" control={<Radio />} label="With GST" />
-                                                        <FormControlLabel value="withOut_GST" control={<Radio />} label="Without GST" />
-                                                    </RadioGroup>
-                                                </FormControl>
-                                            </div>
-
-                                            {selectedGSTOption === 'with_GST' &&
-                                                <>
-                                                    <div className="flex gap-5">
-                                                        <div className="detail">
-                                                            <span className="ExpenseBoxSubTitle">GST(%)</span>
-                                                            <TextField
-                 autoComplete="off"
-                                                                required
-                                                                id="outlined-number"
-                                                                type="number"
-                                                                style={{ width: '150px' }}
-                                                                size="small"
-                                                                value={gst}
-                                                                onChange={handleGSTChange}
-                                                                inputProps={{ min: 0, max: 100 }}
-                                                            />
-                                                            {errors.gst && <div className="error">{errors.gst}</div>}
-                                                        </div>
-                                                        <div className="detail">
-                                                            <span className="ExpenseBoxSubTitle">GSTN Number</span>
-                                                            <TextField
-                 autoComplete="off"
-                                                                required
-                                                                id="outlined-number"
-                                                                // type="number"
-                                                                style={{ width: '250px', textTransform: "uppercase" }}
-                                                                size="small"
-                                                                value={gstIN}
-                                                                onChange={(e) => setGstIN(e.target.value.toUpperCase())}
-                                                            />
-                                                            {errors.gstIN && <div className="error">{errors.gstIN}</div>}
-                                                        </div>
-                                                    </div>
-                                                    <div className="detail">
-                                                        <span className="ExpenseBoxSubTitle">Party Name</span>
-                                                        <TextField
-                 autoComplete="off"
-                                                            required
-                                                            id="outlined-number"
-                                                            style={{ width: '420px' }}
-                                                            size="small"
-                                                            value={party}
-                                                            onChange={(e) => setParty(e.target.value)}
-                                                        />
-                                                        {errors.party && <div className="error">{errors.party}</div>}
-                                                    </div>
-                                                </>
-                                            }
-
-
-
-                                            <div className="flex gap-5">
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Amount (Excluding GST)</span>
-                                                    <TextField
-                 autoComplete="off"
-                                                        required
-                                                        id="outlined-number"
-                                                        type="number"
-                                                        style={{ width: '200px' }}
-                                                        size="small"
-                                                        value={amount}
-                                                        onChange={(e) => setAmount(e.target.value)}
-                                                    />
-                                                    {errors.amount && <div className="error">{errors.amount}</div>}
-                                                </div>
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Total</span>
-                                                    <TextField
-                 autoComplete="off"
-                                                        required
-                                                        id="outlined-number"
-                                                        type="number"
-                                                        style={{ width: '200px' }}
-                                                        size="small"
-                                                        value={total}
-                                                        onChange={(e) => setTotal(e.target.value)}
-                                                    />
-                                                    {errors.total && <div className="error">{errors.total}</div>}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex gap-5">
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Payment Mode</span>
-                                                    <Select
-                                                        labelId="dropdown-label"
-                                                        id="dropdown"
-                                                        value={paymentType}
-                                                        sx={{ minWidth: '200px' }}
-                                                        onChange={(e) => setPaymentType(e.target.value)}
-                                                        size="small"
-                                                    >
-                                                        <MenuItem value="cash">Cash</MenuItem>
-                                                        {bankData?.map(option => (
-                                                            <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                    {errors.paymentType && <div className="error">{errors.paymentType}</div>}
-                                                </div>
-                                                <div className="detail">
-                                                    <span className="ExpenseBoxSubTitle">Reference No.</span>
-                                                    <TextField
-                 autoComplete="off"
-                                                        required
-                                                        id="outlined-number"
-                                                        type="number"
-                                                        style={{ width: '200px' }}
-                                                        size="small"
-                                                        value={refNo}
-                                                        onChange={(e) => setRefNo(e.target.value)}
-                                                    />
-                                                    {errors.refNo && <div className="error">{errors.refNo}</div>}
-                                                </div>
-
-
-                                            </div>
-                                            <div className="detail">
-                                                <span className="ExpenseBoxSubTitle">Remark</span>
-                                                <TextField
-                 autoComplete="off"
-                                                    required
-                                                    id="outlined-number"
-                                                    style={{ width: '200px' }}
-                                                    size="small"
-                                                    value={remark}
-                                                    onChange={(e) => setRemark(e.target.value)}
-                                                />
-                                                {errors.remark && <div className="error">{errors.remark}</div>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button autoFocus variant="contained" color="success" onClick={handleAddExpense}>
-                                    Save
-                                </Button>
-                            </DialogActions>
-                        </Dialog> */}
 
             <Dialog open={openAddPopUp} className="custom-dialog modal_991">
               <DialogTitle id="alert-dialog-title" className="primary">

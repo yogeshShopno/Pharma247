@@ -31,22 +31,22 @@ import Header from "../../../Header";
 import "./PurchaseList";
 
 const columns = [
-  { id: "sr_no", label: "Sr No.", minWidth: 150 },
-  { id: "bill_no", label: "Bill No.", minWidth: 150 },
-  { id: "bill_date", label: "Bill Date", minWidth: 150 },
+  { id: "sr_no", label: "Sr.", minWidth: 150 },
+  { id: "bill_no", label: "Bill.", minWidth: 150 },
+  { id: "bill_date", label: "Date", minWidth: 150 },
   { id: "distributor_name", label: "Distributor", minWidth: 150 },
-  { id: "total_amount", label: "Bill Amount", minWidth: 150 },
+  { id: "total_amount", label: "Amount", minWidth: 150 },
 ];
 
 const Purchasebill = () => {
   const token = localStorage.getItem("token");
   const permissions = usePermissions();
   const history = useHistory();
-  
+
   const [tableData, setTableData] = useState([]);
   const [id, setId] = useState(null);
   const rowsPerPage = 10;
-  const initialSearchTerms = columns.map(() => ""); 
+  const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -91,10 +91,10 @@ const Purchasebill = () => {
     if (searchTrigger > 0) {
       // Clear previous timeout
       clearTimeout(searchTimeout.current);
-      
+
       // Check if any search term has a value
       const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
-      
+
       if (!hasSearchTerms) {
         // If no search terms, clear the search immediately
         setIsSearching(false);
@@ -102,7 +102,7 @@ const Purchasebill = () => {
       } else {
         // Show searching state immediately
         setIsSearching(true);
-        
+
         // Debounce the search to avoid too many API calls
         searchTimeout.current = setTimeout(() => {
           purchaseBillList(1, true);
@@ -165,20 +165,20 @@ const Purchasebill = () => {
   const handleSearchChange = (index, value) => {
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = value;
-    
+
     // Update ref immediately for API calls
     currentSearchTerms.current = newSearchTerms;
-    
+
     // Update state immediately for UI responsiveness
     setSearchTerms(newSearchTerms);
-    
+
     // Check if any search term has a value
     const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
     setIsSearchActive(hasSearchTerms);
-    
+
     // Reset to page 1 when searching
     setCurrentPage(1);
-    
+
     // Trigger search effect immediately
     setSearchTrigger(prev => prev + 1);
   };
@@ -201,15 +201,15 @@ const Purchasebill = () => {
   const clearSearch = () => {
     // Clear timeout immediately
     clearTimeout(searchTimeout.current);
-    
+
     // Update ref immediately
     currentSearchTerms.current = initialSearchTerms;
-    
+
     // Update state immediately
     setSearchTerms(initialSearchTerms);
     setIsSearchActive(false);
     setCurrentPage(1);
-    
+
     // Trigger search effect to reload data
     setSearchTrigger(prev => prev + 1);
   };
@@ -232,7 +232,7 @@ const Purchasebill = () => {
       if (term && term.trim()) {
         const fieldMap = {
           0: "sr_no",
-          1: "bill_no", 
+          1: "bill_no",
           2: "bill_date",
           3: "distributor_name",
           4: "total_amount"
@@ -555,7 +555,7 @@ const Purchasebill = () => {
                       <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
                         <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                           <span>{column.label}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
                             <SwapVertIcon
                               style={{ cursor: 'pointer' }}
                               onClick={() => sortByColumn(column.id)}
@@ -565,13 +565,14 @@ const Purchasebill = () => {
                               label="Type Here"
                               id="filled-basic"
                               size="small"
-                              sx={{ width: '150px', marginLeft: '4px' }}
+                              sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
                               value={searchTerms[index + 1]}
                               onChange={(e) => handleSearchChange(index + 1, e.target.value)}
                               onKeyDown={handleKeyDown}
                             />
                           </div>
                         </div>
+
                       </th>
                     ))}
                     <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
@@ -649,62 +650,72 @@ const Purchasebill = () => {
                   )}
                 </tbody>
               </table>
+              {/*<================================================================================= pagination =================================================================================> */}
+
+              <div className="flex justify-center mt-4" style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 50,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '1rem',
+                background: '#fff'
+              }}>
+                <button
+                  onClick={handlePrevious}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                {currentPage > 2 && (
+                  <button
+                    onClick={() => handleClick(currentPage - 2)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage - 2}
+                  </button>
+                )}
+                {currentPage > 1 && (
+                  <button
+                    onClick={() => handleClick(currentPage - 1)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage - 1}
+                  </button>
+                )}
+                <button
+                  onClick={() => handleClick(currentPage)}
+                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                >
+                  {currentPage}
+                </button>
+                {currentPage < totalPages && (
+                  <button
+                    onClick={() => handleClick(currentPage + 1)}
+                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                  >
+                    {currentPage + 1}
+                  </button>
+                )}
+                <button
+                  onClick={handleNext}
+                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                    }`}
+                  disabled={currentPage >= totalPages}
+                >
+                  Next
+                </button>
+              </div>
             </div>
 
-            {/*<================================================================================= pagination =================================================================================> */}
 
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
-            </div>
           </div>
           {/*<=================================================================================== Delete Popup ===================================================================================> */}
 

@@ -390,15 +390,41 @@ const CashManage = () => {
                 </tbody>
               </table>
             </div>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 12]}
-              component="div"
-              count={cashManageDetails?.count}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            <div className="flex justify-center mt-4" style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 50,
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '1rem',
+              background: '#fff'
+            }}>
+              <button
+                onClick={() => setPage(page - 1)}
+                className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+                disabled={page === 0}
+              >
+                Previous
+              </button>
+              {page > 1 && (
+                <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+              )}
+              {page > 0 && (
+                <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
+              )}
+              <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
+              {page + 1 < Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) && (
+                <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+              )}
+              <button
+                onClick={() => setPage(page + 1)}
+                className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+                disabled={(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage)}
+              >
+                Next
+              </button>
+            </div>
 
             <Dialog
               open={openAddPopUpDownload}

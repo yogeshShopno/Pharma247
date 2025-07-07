@@ -848,9 +848,14 @@ sx={{
             <div
               className="mt-4 space-x-1"
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 50,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '1rem',
+                background: '#fff'
               }}
             >
               <button

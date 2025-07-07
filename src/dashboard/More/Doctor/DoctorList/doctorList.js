@@ -643,14 +643,16 @@ const DoctorList = () => {
                   </tbody>
                 </table>
               </div>
-              <div
-                className="mt-4 space-x-1"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
-                }}
-              >
+              <div className="mt-4 space-x-1" style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 50,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '1rem',
+                background: '#fff'
+              }}>
                 <button
                   onClick={handlePrevious}
                   className={`mx-1 px-3 py-1 rounded ${currentPage === 1
@@ -694,7 +696,7 @@ const DoctorList = () => {
                 <button
                   onClick={handleNext}
                   className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700 "
+                    ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
                     }`}
                   disabled={currentPage >= totalPages}

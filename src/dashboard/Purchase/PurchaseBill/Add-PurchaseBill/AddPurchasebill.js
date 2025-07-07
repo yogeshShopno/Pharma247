@@ -985,6 +985,9 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
+          if (response?.data?.alternative_item_check ) {
+            return;
+          }
           const batchData = response.data.data;
           setBatchListData(response.data.data);
           if (batchData.length > 0) {
@@ -1091,7 +1094,7 @@ const AddPurchaseBill = () => {
       newErrors.gst = "GST is required";
       toast.error("GST is required");
     }
-    if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+    if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
       newErrors.gst = "Enter valid GST";
       toast.error("Enter valid GST");
     }
@@ -2027,7 +2030,7 @@ const AddPurchaseBill = () => {
             className="row border-b border-dashed"
             style={{ borderColor: "var(--color2)" }}
           ></div>
-{/*<============================================================================ details at top  ===========================================================================> */}
+          {/*<============================================================================ details at top  ===========================================================================> */}
 
           <div className="mt-4 ">
             <div className="firstrow flex gap-4">
@@ -2834,7 +2837,7 @@ const AddPurchaseBill = () => {
                   </tbody>
                 </table>
                 <>
-{/*<========================================================================= added Item  ========================================================================> */}
+                  {/*<========================================================================= added Item  ========================================================================> */}
 
                   <table
                     className="p-30 border border-indigo-600 w-full border-collapse custom-table"

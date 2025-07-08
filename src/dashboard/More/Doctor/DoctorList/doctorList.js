@@ -446,263 +446,273 @@ const DoctorList = () => {
           <Loader />
         </div>
       ) : (
-        <div>
-          <div className="p-6">
-            <div
-              className="mb-4 cust_list_main_hdr_bg"
-              style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
-            >
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="p-6">
               <div
-                style={{ display: "flex", gap: "7px", alignItems: "center" }}
-                className="mt-2"
+                className="mb-4 cust_list_main_hdr_bg"
+                style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
               >
-                <span
-                  style={{
-                    color: "var(--color1)",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                  }}
+                <div
+                  style={{ display: "flex", gap: "7px", alignItems: "center" }}
+                  className="mt-2"
                 >
-                  Doctors
-                </span>
-                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-              </div>
-              <div className="headerList cust_hdr_mn_bg mt-2">
-                {hasPermission(permissions, "doctor import") && (
-                  <Button
-                    variant="contained"
-                    className="gap-2"
-                    style={{ background: "var(--color1)", display: "flex" }}
-                    onClick={openFilePopUP}
-                  >
-                    <CloudUploadIcon /> Import
-                  </Button>
-                )}
-                {hasPermission(permissions, "doctor create") && (
-                  <Button
-                    variant="contained"
-                    className="gap-2"
-                    style={{ background: "var(--color1)", display: "flex" }}
-                    onClick={handelAddOpen}
-                  >
-                    <AddIcon /> Add Doctor
-                  </Button>
-                )}
-                {hasPermission(permissions, "doctor download") && (
-                  <Button
-                    variant="contained"
-                    className="gap-7"
+                  <span
                     style={{
-                      background: "var(--color1)",
-                      color: "white",
-                      // paddingLeft: "35px",
-                      textTransform: "none",
+                      color: "var(--color1)",
                       display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
                     }}
-                    onClick={exportToCSV}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <img
-                        src="/csv-file.png"
-                        className="report-icon absolute mr-10"
-                        alt="csv Icon"
-                      />
-                    </div>
-                    Download
-                  </Button>
-                )}
+                    Doctors
+                  </span>
+                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+                </div>
+                <div className="headerList cust_hdr_mn_bg mt-2">
+                  {hasPermission(permissions, "doctor import") && (
+                    <Button
+                      variant="contained"
+                      className="gap-2"
+                      style={{ background: "var(--color1)", display: "flex" }}
+                      onClick={openFilePopUP}
+                    >
+                      <CloudUploadIcon /> Import
+                    </Button>
+                  )}
+                  {hasPermission(permissions, "doctor create") && (
+                    <Button
+                      variant="contained"
+                      className="gap-2"
+                      style={{ background: "var(--color1)", display: "flex" }}
+                      onClick={handelAddOpen}
+                    >
+                      <AddIcon /> Add Doctor
+                    </Button>
+                  )}
+                  {hasPermission(permissions, "doctor download") && (
+                    <Button
+                      variant="contained"
+                      className="gap-7"
+                      style={{
+                        background: "var(--color1)",
+                        color: "white",
+                        // paddingLeft: "35px",
+                        textTransform: "none",
+                        display: "flex",
+                      }}
+                      onClick={exportToCSV}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv Icon"
+                        />
+                      </div>
+                      Download
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="mt-4">
-              <div className="overflow-x-auto mt-4">
-                <table
-                  className="w-full border-collapse custom-table"
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="mt-4">
+                <div className="overflow-x-auto mt-4">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead className="">
+                      <tr>
+                        <th>SR. No</th>
+                        {columns.map((column, index) => (
+                          <th
+                            key={column.id}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            <div className="headerStyle">
+                              <span onClick={() => sortByColumn(column.id)}>
+                                {column.label}
+                              </span>
+                              <SwapVertIcon />
+                              <TextField
+                                autoComplete="off"
+                                label={`Search ${column.label}`}
+                                id="filled-basic"
+                                size="small"
+                                sx={{ minWidth: "150px" }}
+                                defaultvalue={searchTerms[index]}
+                                onKeyDown={(e) => handleSearchChange(index, e)}
+                              />
+                            </div>
+                          </th>
+                        ))}
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                      {filteredList.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length + 2}
+                            style={{
+                              textAlign: "center",
+                              color: "gray",
+                              borderRadius: "10px 10px 10px 10px",
+                            }}
+                          >
+                            No data found
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredList.map((row, index) => {
+                          return (
+                            <tr
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.code}
+                            >
+                              <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                {startIndex + index}
+                              </td>
+                              {columns.map((column) => {
+                                let value = row[column.id];
+                                if (column.id === "email") {
+                                  if (
+                                    value &&
+                                    value[0] !== value[0].toLowerCase()
+                                  ) {
+                                    value = value.toLowerCase();
+                                  }
+                                }
+                                return (
+                                  <td
+                                    key={column.id}
+                                    align={column.align}
+                                    onClick={() => {
+                                      history.push(`/more/doctor/${row.id}`);
+                                    }}
+                                    style={
+                                      column.id === "email"
+                                        ? { textTransform: "none" }
+                                        : {}
+                                    }
+                                  >
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </td>
+                                );
+                              })}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <div
+                                  style={{
+                                    fontSize: "15px",
+                                    display: "flex",
+                                    gap: "5px",
+                                    color: "gray",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <VisibilityIcon
+                                    style={{ color: "var(--color1)" }}
+                                    onClick={() => {
+                                      history.push(`/more/doctor/${row.id}`);
+                                    }}
+                                  />
+                                  {hasPermission(permissions, "doctor edit") && (
+                                    <BorderColorIcon
+                                      style={{ color: "var(--color1)" }}
+                                      onClick={() => handleEditOpen(row)}
+                                    />
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <div
+                  className="flex justify-center mt-4"
                   style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
+                    marginTop: 'auto',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '1rem',
                   }}
                 >
-                  <thead className="">
-                    <tr>
-                      <th>SR. No</th>
-                      {columns.map((column, index) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          <div className="headerStyle">
-                            <span onClick={() => sortByColumn(column.id)}>
-                              {column.label}
-                            </span>
-                            <SwapVertIcon />
-                            <TextField
-                              autoComplete="off"
-                              label={`Search ${column.label}`}
-                              id="filled-basic"
-                              size="small"
-                              sx={{ minWidth: "150px" }}
-                              defaultvalue={searchTerms[index]}
-                              onKeyDown={(e) => handleSearchChange(index, e)}
-                            />
-                          </div>
-                        </th>
-                      ))}
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {filteredList.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={columns.length + 2}
-                          style={{
-                            textAlign: "center",
-                            color: "gray",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          No data found
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredList.map((row, index) => {
-                        return (
-                          <tr
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.code}
-                          >
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {startIndex + index}
-                            </td>
-                            {columns.map((column) => {
-                              let value = row[column.id];
-                              if (column.id === "email") {
-                                if (
-                                  value &&
-                                  value[0] !== value[0].toLowerCase()
-                                ) {
-                                  value = value.toLowerCase();
-                                }
-                              }
-                              return (
-                                <td
-                                  key={column.id}
-                                  align={column.align}
-                                  onClick={() => {
-                                    history.push(`/more/doctor/${row.id}`);
-                                  }}
-                                  style={
-                                    column.id === "email"
-                                      ? { textTransform: "none" }
-                                      : {}
-                                  }
-                                >
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <div
-                                style={{
-                                  fontSize: "15px",
-                                  display: "flex",
-                                  gap: "5px",
-                                  color: "gray",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                <VisibilityIcon
-                                  style={{ color: "var(--color1)" }}
-                                  onClick={() => {
-                                    history.push(`/more/doctor/${row.id}`);
-                                  }}
-                                />
-                                {hasPermission(permissions, "doctor edit") && (
-                                  <BorderColorIcon
-                                    style={{ color: "var(--color1)" }}
-                                    onClick={() => handleEditOpen(row)}
-                                  />
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="mt-4 space-x-1" style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '1rem',
-                background: '#fff'
-              }}>
-                <button
-                  onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                {currentPage > 2 && (
                   <button
-                    onClick={() => handleClick(currentPage - 2)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    onClick={handlePrevious}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                      }`}
+                    disabled={currentPage === 1}
                   >
-                    {currentPage - 2}
+                    Previous
                   </button>
-                )}
-                {currentPage > 1 && (
+                  {currentPage > 2 && (
+                    <button
+                      onClick={() => handleClick(currentPage - 2)}
+                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    >
+                      {currentPage - 2}
+                    </button>
+                  )}
+                  {currentPage > 1 && (
+                    <button
+                      onClick={() => handleClick(currentPage - 1)}
+                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    >
+                      {currentPage - 1}
+                    </button>
+                  )}
                   <button
-                    onClick={() => handleClick(currentPage - 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    onClick={() => handleClick(currentPage)}
+                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
                   >
-                    {currentPage - 1}
+                    {currentPage}
                   </button>
-                )}
-                <button
-                  onClick={() => handleClick(currentPage)}
-                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                >
-                  {currentPage}
-                </button>
-                {currentPage < totalPages && (
+                  {currentPage < totalPages && (
+                    <button
+                      onClick={() => handleClick(currentPage + 1)}
+                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    >
+                      {currentPage + 1}
+                    </button>
+                  )}
                   <button
-                    onClick={() => handleClick(currentPage + 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                    onClick={handleNext}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                      ? "bg-gray-200 text-gray-700"
+                      : "secondary-bg text-white"
+                      }`}
+                    disabled={currentPage >= totalPages}
                   >
-                    {currentPage + 1}
+                    Next
                   </button>
-                )}
-                <button
-                  onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage >= totalPages}
-                >
-                  Next
-                </button>
+                </div>
               </div>
             </div>
 
@@ -943,11 +953,9 @@ const DoctorList = () => {
                 </Button>
               </DialogActions>
             </Dialog>
-
           </div>
         </div>
       )}
-      {/* } */}
     </>
   );
 };

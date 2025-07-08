@@ -363,333 +363,342 @@ const OrderList = () => {
             <Loader />
           </div>
         ) : (
-          <div className="p-6">
-            <div
-              className="mb-4 main_header_txt"
-              style={{ display: "flex", gap: "4px" }}
-            >
-              <div style={{ display: "flex", gap: "7px" }}>
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    whiteSpace: "nowrap",
-                  }}
+          <div
+            style={{
+              minHeight: 'calc(100vh - 64px)',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+              <div className="p-6">
+                <div
+                  className="mb-4 main_header_txt"
+                  style={{ display: "flex", gap: "4px" }}
                 >
-                  Order List
-                </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-              </div>
-              <div className="headerList ">
-                <Button
-                  variant="contained"
-                  className="order_list_btn"
-                  style={{
-                    display: "flex",
-                    gap: "4px",
-                    background: "var(--color1)",
-                  }}
-                  onClick={handelAddOpen}
-                >
-                  <AddIcon className="" /> Pending Orders
-                </Button>
+                  <div style={{ display: "flex", gap: "7px" }}>
+                    <span
+                      style={{
+                        color: "var(--color2)",
+                        display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Order List
+                    </span>
+                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                  </div>
+                  <div className="headerList ">
+                    <Button
+                      variant="contained"
+                      className="order_list_btn"
+                      style={{
+                        display: "flex",
+                        gap: "4px",
+                        background: "var(--color1)",
+                      }}
+                      onClick={handelAddOpen}
+                    >
+                      <AddIcon className="" /> Pending Orders
+                    </Button>
+                  </div>
+                </div>
+                <div
+                  className="row border-b border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
+                <div className="firstrow mt-4">
+                  <div className="oreder_list_fld flex flex-col gap-2 sm:flex-row lg:flex-row pb-2">
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">Distributor</span>
+                      <Autocomplete
+                        value={distributor}
+                        sx={{
+                          width: "full",
+                          "& .MuiInputBase-root": {
+                            height: 45,
+                            fontSize: "1.10rem",
+                          },
+                          "& .MuiAutocomplete-inputRoot": {
+                            padding: "10px 14px",
+                          },
+                        }}
+                        className="dst_fld_odr"
+                        fullWidth
+                        onChange={(e, value) => setDistributor(value)}
+                        options={distributorList}
+                        getOptionLabel={(option) => option.name}
+                        renderInput={(params) => (
+                          <TextField
+                            variant="outlined"
+                            autoComplete="off"
+                            {...params}
+                            name={distributor?.name || ""}
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">Company Name</span>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-basic"
+                        className="dst_fld_odr"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value.toUpperCase())}
+                        sx={{
+                          width: "full",
+                          "& .MuiInputBase-root": {
+                            height: 45,
+                            fontSize: "1.10rem",
+                          },
+                          "& .MuiAutocomplete-inputRoot": {
+                            padding: "10px 14px",
+                          },
+                        }}
+                        variant="outlined"
+                        fullWidth
+                      />
+                    </div>
+                    <div className="flex flex-col  space-x-1">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={OnlineOrderList}
+                        style={{
+                          minHeight: "45px",
+                          alignItems: "center",
+                          marginTop: "23px",
+                          background: "var(--color1)",
+                          width: "100%",
+                        }}
+                      >
+                        <FilterAltIcon
+                          size="large"
+                          className="text-white text-lg"
+                        />{" "}
+                        Filter
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto mt-4 border-t scroll-two">
+                    <table
+                      className="w-full bg-transparent border-collapse custom-table pt-2"
+                      style={{
+                        whiteSpace: "nowrap",
+                        borderCollapse: "separate",
+                        borderSpacing: "0 6px",
+                      }}
+                    >
+                      <thead className="">
+                        <tr>
+                          <th className="py-2 px-4 text-left">SR. No</th>
+                          {OnlineOrdercolumns.map((column, index) => (
+                            <th
+                              key={column.id}
+                              onClick={() => sortByColumn(column.id)}
+                              className="py-2 px-4 text-left cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span>{column.label}</span>
+                                <SwapVertIcon
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => sortByColumn(column.id)}
+                                />
+                                <TextField
+                                  autoComplete="off"
+                                  label={`Search ${column.label}`}
+                                  id="filled-basic"
+                                  sx={{ minWidth: 155 }}
+                                  size="small"
+                                  value={searchTerms[index]}
+                                  onChange={(e) =>
+                                    handleSearchChange(index, e.target.value)
+                                  }
+                                  className="ml-2"
+                                />
+                              </div>
+                            </th>
+                          ))}
+                          <th className="py-2 px-4 text-left">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody style={{ background: "#3f621217" }}>
+                        {filteredList.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={OnlineOrdercolumns.length + 2}
+                              className="text-center py-4 text-gray-500"
+                              style={{
+                                textAlign: "center",
+                                borderRadius: "10px 10px 10px 10px",
+                              }}
+                            >
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredList.map((row, index) => (
+                            <tr key={row.code} className="hover:bg-gray-100">
+                              <td
+                                className="py-2 px-4"
+                                style={{ borderRadius: "10px 0 0 10px" }}
+                              >
+                                {startIndex + index}
+                              </td>
+                              {OnlineOrdercolumns.map((column) => {
+                                const value = row[column.id] || "-";
+                                const isStatus = column.id === "y_n";
+
+                                if (isStatus) {
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      className="py-2 px-4"
+                                      align={column.align}
+                                    >
+                                      <FormControl size="small" sx={{ minWidth: 120 }}>
+                                        <Select
+                                          value={getStatusIdFromName(value) || ""}
+                                          onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
+                                          disabled={updatingStatus === row.item_id}
+                                          variant="standard"
+                                          disableUnderline
+                                          sx={{
+                                            "& .MuiSelect-select": {
+                                              padding: "4px 8px",
+                                              fontSize: "0.875rem",
+                                              color: value === "Order" ? "#3f6212" : "#f6a609",
+                                              backgroundColor: value === "Order" ? "#f0f9e8" : "#fef3e2",
+                                              fontWeight: 700,
+                                              borderRadius: "10px",
+                                              border: "none",
+                                              outline: "none",
+                                            },
+                                            "& .MuiSelect-icon": {
+                                              color: value === "Order" ? "#3f6212" : "#f6a609",
+                                            },
+                                            "& .MuiInput-root": {
+                                              "&:before": {
+                                                display: "none",
+                                              },
+                                              "&:after": {
+                                                display: "none",
+                                              },
+                                            },
+                                          }}
+                                        >
+                                          {statusOption.map((option) => (
+                                            <MenuItem key={option.id} value={option.id}>
+                                              {option.name}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                      {updatingStatus === row.item_id && (
+                                        <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
+                                          Updating...
+                                        </div>
+                                      )}
+                                    </td>
+                                  );
+                                } else {
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      className="py-2 px-4"
+                                      align={column.align}
+                                    >
+                                      <span className="text">
+                                        {column.format && typeof value === "number"
+                                          ? column.format(value)
+                                          : value}
+                                      </span>
+                                    </td>
+                                  );
+                                }
+                              })}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <VisibilityIcon
+                                  className="cursor-pointer"
+                                  onClick={() => handleOpenDialog(row.item_id)}
+                                  style={{ color: "var(--color1)" }}
+                                />
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
             <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="firstrow mt-4">
-              <div className="oreder_list_fld flex flex-col gap-2 sm:flex-row lg:flex-row pb-2">
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500">Distributor</span>
-                  <Autocomplete
-                    value={distributor}
-                    sx={{
-                      width: "full",
-                      "& .MuiInputBase-root": {
-                        height: 45,
-                        fontSize: "1.10rem",
-                      },
-                      "& .MuiAutocomplete-inputRoot": {
-                        padding: "10px 14px",
-                      },
-                    }}
-                    className="dst_fld_odr"
-                    fullWidth
-                    onChange={(e, value) => setDistributor(value)}
-                    options={distributorList}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        variant="outlined"
-                        autoComplete="off"
-                        {...params}
-                        name={distributor?.name || ""}
-                      />
-                    )}
-                  />
-                </div>
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500">Company Name</span>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-basic"
-                    className="dst_fld_odr"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value.toUpperCase())}
-                    sx={{
-                      width: "full",
-                      "& .MuiInputBase-root": {
-                        height: 45,
-                        fontSize: "1.10rem",
-                      },
-                      "& .MuiAutocomplete-inputRoot": {
-                        padding: "10px 14px",
-                      },
-                    }}
-                    variant="outlined"
-                    fullWidth
-                  />
-                </div>
-                <div className="flex flex-col  space-x-1">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={OnlineOrderList}
-                    style={{
-                      minHeight: "45px",
-                      alignItems: "center",
-                      marginTop: "23px",
-                      background: "var(--color1)",
-                      width: "100%",
-                    }}
-                  >
-                    <FilterAltIcon
-                      size="large"
-                      className="text-white text-lg"
-                    />{" "}
-                    Filter
-                  </Button>
-                </div>
-              </div>
-              <div className="overflow-x-auto mt-4 border-t scroll-two">
-                <table
-                  className="w-full bg-transparent border-collapse custom-table pt-2"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                >
-                  <thead className="">
-                    <tr>
-                      <th className="py-2 px-4 text-left">SR. No</th>
-                      {OnlineOrdercolumns.map((column, index) => (
-                        <th
-                          key={column.id}
-                          onClick={() => sortByColumn(column.id)}
-                          className="py-2 px-4 text-left cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span>{column.label}</span>
-                            <SwapVertIcon
-                              style={{ cursor: "pointer" }}
-                              onClick={() => sortByColumn(column.id)}
-                            />
-                            <TextField
-                              autoComplete="off"
-                              label={`Search ${column.label}`}
-                              id="filled-basic"
-                              sx={{ minWidth: 155 }}
-                              size="small"
-                              value={searchTerms[index]}
-                              onChange={(e) =>
-                                handleSearchChange(index, e.target.value)
-                              }
-                              className="ml-2"
-                            />
-                          </div>
-                        </th>
-                      ))}
-                      <th className="py-2 px-4 text-left">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ background: "#3f621217" }}>
-                    {filteredList.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={OnlineOrdercolumns.length + 2}
-                          className="text-center py-4 text-gray-500"
-                          style={{
-                            textAlign: "center",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          No data found
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredList.map((row, index) => (
-                        <tr key={row.code} className="hover:bg-gray-100">
-                          <td
-                            className="py-2 px-4"
-                            style={{ borderRadius: "10px 0 0 10px" }}
-                          >
-                            {startIndex + index}
-                          </td>
-                          {OnlineOrdercolumns.map((column) => {
-                            const value = row[column.id] || "-";
-                            const isStatus = column.id === "y_n";
-
-                            if (isStatus) {
-                              return (
-                                <td
-                                  key={column.id}
-                                  className="py-2 px-4"
-                                  align={column.align}
-                                >
-                                  <FormControl size="small" sx={{ minWidth: 120 }}>
-                                    <Select
-                                      value={getStatusIdFromName(value) || ""}
-                                      onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
-                                      disabled={updatingStatus === row.item_id}
-                                      variant="standard"
-                                      disableUnderline
-                                      sx={{
-                                        "& .MuiSelect-select": {
-                                          padding: "4px 8px",
-                                          fontSize: "0.875rem",
-                                          color: value === "Order" ? "#3f6212" : "#f6a609",
-                                          backgroundColor: value === "Order" ? "#f0f9e8" : "#fef3e2",
-                                          fontWeight: 700,
-                                          borderRadius: "10px",
-                                          border: "none",
-                                          outline: "none",
-                                        },
-                                        "& .MuiSelect-icon": {
-                                          color: value === "Order" ? "#3f6212" : "#f6a609",
-                                        },
-                                        "& .MuiInput-root": {
-                                          "&:before": {
-                                            display: "none",
-                                          },
-                                          "&:after": {
-                                            display: "none",
-                                          },
-                                        },
-                                      }}
-                                    >
-                                      {statusOption.map((option) => (
-                                        <MenuItem key={option.id} value={option.id}>
-                                          {option.name}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                  {updatingStatus === row.item_id && (
-                                    <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
-                                      Updating...
-                                    </div>
-                                  )}
-                                </td>
-                              );
-                            } else {
-                              return (
-                                <td
-                                  key={column.id}
-                                  className="py-2 px-4"
-                                  align={column.align}
-                                >
-                                  <span className="text">
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                  </span>
-                                </td>
-                              );
-                            }
-                          })}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <VisibilityIcon
-                              className="cursor-pointer"
-                              onClick={() => handleOpenDialog(row.item_id)}
-                              style={{ color: "var(--color1)" }}
-                            />
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div
-                className="mt-4 space-x-1"
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 50,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  padding: '1rem',
-                  background: '#fff'
-                }}
+              className="flex justify-center mt-4"
+              style={{
+                marginTop: 'auto',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '1rem',
+              }}
+            >
+              <button
+                onClick={handlePrevious}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
+                disabled={currentPage === 1}
               >
+                Previous
+              </button>
+              {currentPage > 2 && (
                 <button
-                  onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage === 1}
+                  onClick={() => handleClick(currentPage - 2)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Previous
+                  {currentPage - 2}
                 </button>
-                {currentPage > 2 && (
-                  <button
-                    onClick={() => handleClick(currentPage - 2)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage - 2}
-                  </button>
-                )}
-                {currentPage > 1 && (
-                  <button
-                    onClick={() => handleClick(currentPage - 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage - 1}
-                  </button>
-                )}
+              )}
+              {currentPage > 1 && (
                 <button
-                  onClick={() => handleClick(currentPage)}
-                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                  onClick={() => handleClick(currentPage - 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  {currentPage}
+                  {currentPage - 1}
                 </button>
-                {currentPage < totalPages && (
-                  <button
-                    onClick={() => handleClick(currentPage + 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage + 1}
-                  </button>
-                )}
+              )}
+              <button
+                onClick={() => handleClick(currentPage)}
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
                 <button
-                  onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage >= totalPages}
+                  onClick={() => handleClick(currentPage + 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Next
+                  {currentPage + 1}
                 </button>
-              </div>
+              )}
+              <button
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
+                disabled={currentPage >= totalPages}
+              >
+                Next
+              </button>
             </div>
 
             <Dialog

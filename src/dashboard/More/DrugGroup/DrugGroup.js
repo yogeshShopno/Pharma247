@@ -282,10 +282,15 @@ const DrugGroup = () => {
         draggable
         pauseOnHover
       />
-      <div>
-        {isLoading ? (
-          <Loader />
-        ) : (
+      <div
+        style={{
+          minHeight: 'calc(100vh - 64px)',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
           <div className="p-6">
             <div
               className="mb-4 add_company_hdr"
@@ -416,122 +421,123 @@ const DrugGroup = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="flex justify-center mt-4" style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '1rem',
-                background: '#fff'
-              }}>
-                <button
-                  onClick={() => setPage(page - 1)}
-                  className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                  disabled={page === 0}
-                >
-                  Previous
-                </button>
-                {page > 1 && (
-                  <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
-                )}
-                {page > 0 && (
-                  <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
-                )}
-                <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
-                {page + 1 < Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) && (
-                  <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
-                )}
-                <button
-                  onClick={() => setPage(page + 1)}
-                  className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                  disabled={(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage)}
-                >
-                  Next
-                </button>
-              </div>
             </div>
           </div>
-        )}
-        <Dialog
-          className="order_list_ml custom-dialog"
-          open={openAddPopUp}
+        </div>
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
         >
-          <DialogTitle
-            id="alert-dialog-title"
-            style={{ fontWeight: 700 }}
+          <button
+            onClick={() => setPage(page - 1)}
+            className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+            disabled={page === 0}
           >
-            {header}
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={resetAddDialog}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
+            Previous
+          </button>
+          {page > 1 && (
+            <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+          )}
+          {page > 0 && (
+            <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
+          )}
+          <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
+          {page + 1 < Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) && (
+            <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+          )}
+          <button
+            onClick={() => setPage(page + 1)}
+            className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+            disabled={(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage)}
           >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div
-                className="flex flex-col gap-5"
-                style={{ flexDirection: "column", width: "100%" }}
-              >
-                <FormControl size="small" style={{ width: "100%" }}>
-                  <span className="label primary">Drug Group Name</span>
-                  <Autocomplete
-                    value={drugGroupName}
-                    sx={{ width: "100%" }}
-                    size="small"
-                    onChange={handleOptionChange}
-                    onInputChange={handleInputChange}
-                    getOptionLabel={(option) =>
-                      typeof option === "string" ? option : option.name
-                    }
-                    options={drugGroupData}
-                    renderOption={(props, option) => (
-                      <ListItem {...props}>
-                        <ListItemText primary={option.name} />
-                      </ListItem>
-                    )}
-                    renderInput={(params) => (
-                      <TextField autoComplete="off" {...params} />
-                    )}
-                    freeSolo
-                  />
-                </FormControl>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions style={{ padding: "20px 24px" }}>
-            <Button
-              autoFocus
-              variant="contained"
-              className="p-5"
-              style={{
-                backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                color: "white",
-              }}
-              onClick={validData}
-            >
-              {buttonLabel}
-            </Button>
-            <Button
-              autoFocus
-              variant="contained"
-              onClick={resetAddDialog}
-              style={{ backgroundColor: "#F31C1C", color: "white" }}
-            >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
+            Next
+          </button>
+        </div>
       </div>
+      <Dialog
+        className="order_list_ml custom-dialog"
+        open={openAddPopUp}
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          style={{ fontWeight: 700 }}
+        >
+          {header}
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={resetAddDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <div
+              className="flex flex-col gap-5"
+              style={{ flexDirection: "column", width: "100%" }}
+            >
+              <FormControl size="small" style={{ width: "100%" }}>
+                <span className="label primary">Drug Group Name</span>
+                <Autocomplete
+                  value={drugGroupName}
+                  sx={{ width: "100%" }}
+                  size="small"
+                  onChange={handleOptionChange}
+                  onInputChange={handleInputChange}
+                  getOptionLabel={(option) =>
+                    typeof option === "string" ? option : option.name
+                  }
+                  options={drugGroupData}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText primary={option.name} />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField autoComplete="off" {...params} />
+                  )}
+                  freeSolo
+                />
+              </FormControl>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions style={{ padding: "20px 24px" }}>
+          <Button
+            autoFocus
+            variant="contained"
+            className="p-5"
+            style={{
+              backgroundColor: "var(--COLOR_UI_PHARMACY)",
+              color: "white",
+            }}
+            onClick={validData}
+          >
+            {buttonLabel}
+          </Button>
+          <Button
+            autoFocus
+            variant="contained"
+            onClick={resetAddDialog}
+            style={{ backgroundColor: "#F31C1C", color: "white" }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* Delete PopUp */}
       <div
         id="modal"

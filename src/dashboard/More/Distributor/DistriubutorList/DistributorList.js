@@ -9,7 +9,7 @@ import Header from "../../../Header";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
@@ -43,6 +43,7 @@ const columns = [
   { id: "gst", label: "GST", minWidth: 150 },
   { id: "phone_number", label: "Phone Number", minWidth: 150 },
 ];
+
 const DistributerList = () => {
   const token = localStorage.getItem("token");
   const history = useHistory();
@@ -57,8 +58,9 @@ const DistributerList = () => {
     direction: "ascending",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
   const [gstNumber, setGstnumber] = useState("");
   const [distributerName, setDistributerName] = useState("");
@@ -77,11 +79,6 @@ const DistributerList = () => {
   const [distributorDrugLicenseNo, setDistributorDrugLicenseNo] = useState("");
   const [creditDuedays, setCreditDuedays] = useState("");
   const [distributerId, setDistributerId] = useState(null);
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
-    (currentPage) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
   const [errors, setErrors] = useState({});
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
   const [openUpload, setOpenUpload] = useState(false);
@@ -90,27 +87,35 @@ const DistributerList = () => {
 
   const searchKeys = ["search_name", "search_email", "search_gst", "search_phone_number"];
 
+  // Search state management (copied from PurchaseList.js)
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
+
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
   const handlePrevious = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      DistList(newPage);
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    DistList(newPage);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
-    DistList(pageNum);
   };
+
   const resetAddDialog = () => {
     setOpenEdit(false);
   };
+
   const handleEditOpen = (row) => {
     setHeader("Edit Distributor");
     setDistributerId(row.id);
@@ -148,21 +153,58 @@ const DistributerList = () => {
     setTableData(sortedData);
   };
 
-
   const handleSearchChange = (index, value) => {
-    const updatedSearchTerms = [...searchTerms];
-    updatedSearchTerms[index] = value;
-    setSearchTerms(updatedSearchTerms);
-    // DistributorSearch(updatedSearchTerms);
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+
+    // Update state immediately for UI responsiveness
+    setSearchTerms(newSearchTerms);
+
+    // Check if any search term has a value
+    const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
+    setIsSearchActive(hasSearchTerms);
+
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
   };
 
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    DistList(1);
+  };
 
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
+
+  // Clear all search filters
+  const clearSearch = () => {
+    // Clear timeout immediately
+    clearTimeout(searchTimeout.current);
+
+    // Update ref immediately
+    currentSearchTerms.current = initialSearchTerms;
+
+    // Update state immediately
+    setSearchTerms(initialSearchTerms);
+    setIsSearchActive(false);
+    setCurrentPage(1);
+
+    // Trigger search effect to reload data
+    setSearchTrigger(prev => prev + 1);
+  };
+
   const handleChange = (e) => {
     const value = e.target.value;
     if (value.length <= 10) {
@@ -171,8 +213,49 @@ const DistributerList = () => {
   };
 
   useEffect(() => {
-    DistList();
+    DistList(1);
   }, []);
+
+  // Effect for handling search with debouncing (copied from PurchaseList.js)
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout.current);
+
+      // Check if any search term has a value
+      const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
+
+      if (!hasSearchTerms) {
+        // If no search terms, clear the search immediately
+        setIsSearching(false);
+        DistList(1, true);
+      } else {
+        // Show searching state immediately
+        setIsSearching(true);
+
+        // Debounce the search to avoid too many API calls
+        searchTimeout.current = setTimeout(() => {
+          DistList(1, true);
+        }, 150);
+      }
+    }
+  }, [searchTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+
+  // Effect for pagination
+  useEffect(() => {
+    if (currentPage > 0) {
+      DistList(currentPage);
+    }
+  }, [currentPage]);
 
   const editDistributor = async () => {
     let data = new FormData();
@@ -204,7 +287,7 @@ const DistributerList = () => {
           },
         })
         .then((response) => {
-          DistList();
+          DistList(currentPage);
           setOpenEdit(false);
           setGstnumber("");
           setDistributerName("");
@@ -230,6 +313,7 @@ const DistributerList = () => {
       toast.error(error.message);
     }
   };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -262,7 +346,7 @@ const DistributerList = () => {
           },
         })
         .then((response) => {
-          DistList();
+          DistList(currentPage);
           setOpenUpload(false);
           toast.success(response.data.message);
         });
@@ -274,62 +358,58 @@ const DistributerList = () => {
     }
   };
 
-  const DistributorSearch = async (searchTermsState = searchTerms) => {
-    let data = new FormData();
+  const DistList = async (page, isSearch = false) => {
+    if (!page) return;
 
-    searchTermsState.forEach((term, index) => {
-      if (term.trim()) {
-        data.append(searchKeys[index], term.trim());
-      }
-    });
-
-    setIsLoading(true);
-    try {
-      const response = await axios.post("list-distributer?", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setTableData(response.data.data);
-    } catch (error) {
-      console.error("API error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-
-  const DistList = async (page = 1, searchTermsState = searchTerms) => {
     let data = new FormData();
     data.append("page", page);
 
-    // Add search params
-    searchTermsState.forEach((term, index) => {
-      if (term.trim()) {
+    // Add search parameters when any search term has a value
+    currentSearchTerms.current.forEach((term, index) => {
+      if (term && term.trim()) {
         data.append(searchKeys[index], term.trim());
       }
     });
 
-    const params = { page };
+    // Use different loading states for search vs regular operations
+    if (isSearch) {
+      setIsSearchLoading(true);
+    } else {
+      setIsLoading(true);
+    }
 
-    setIsLoading(true);
     try {
       const response = await axios.post("list-distributer?", data, {
-        params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setTableData(response.data.data);
+
+      const responseData = response.data.data;
+
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+        return;
+      }
+
+      // Set the table data directly from backend (paginated and filtered data)
+      setTableData(responseData || []);
+
+      // Extract and set total count for pagination
+      const totalCount = responseData?.length > 0 ? Number(responseData[0].count) : 0;
+      setTotalRecords(totalCount);
     } catch (error) {
       console.error("API error:", error);
+      setTableData([]);
+      setTotalRecords(0);
     } finally {
-      setIsLoading(false);
+      if (isSearch) {
+        setIsSearchLoading(false);
+        setIsSearching(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
-
-
-
 
   const exportToExcel = async () => {
     let data = new FormData();
@@ -375,6 +455,7 @@ const DistributerList = () => {
       })
       .join("\n");
   };
+
   const openFilePopUP = () => {
     setOpenUpload(true);
   };
@@ -398,345 +479,287 @@ const DistributerList = () => {
           <Loader />
         </div>
       ) : (
-        <div className="paddin12-8">
-          <div className="px-4 py-3">
-            <div
-              className="cust_list_main_hdr_bg"
-              style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "7px",
-                  alignItems: "center",
-                  whiteSpace: "nowrap",
-                }}
-                className=""
-              >
-                <span
-                  style={{
-                    color: "var(--color1)",
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    width: "136px",
-                    marginRight: "10px",
-                  }}
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="paddin12-8">
+              <div className="px-4 py-3">
+                <div
+                  className="cust_list_main_hdr_bg"
+                  style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
                 >
-                  Distributor List
-                </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
-              </div>
-              <div className="headerList cust_hdr_mn_bg">
-                {hasPermission(permissions, "distributor import") && (
-                  <Button
-                    variant="contained"
+                  <div
                     style={{
-                      background: "var(--color1)",
                       display: "flex",
+                      gap: "7px",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
                     }}
-                    className="gap-2"
-                    onClick={openFilePopUP}
+                    className=""
                   >
-                    <CloudUploadIcon /> Import
-                  </Button>
-                )}
-                {hasPermission(permissions, "distributor create") && (
-                  <Button
-                    variant="contained"
-                    style={{ background: "var(--color1)", display: "flex" }}
-                    onClick={() => {
-                      history.push("/more/addDistributer");
-                    }}
-                    className="gap-2"
-                  >
-                    <AddIcon className="" />
-                    Add Distributor
-                  </Button>
-                )}
-                {hasPermission(permissions, "distributor download") && (
-                  <Button
-                    className="gap-7"
-                    variant="contained"
-                    style={{
-                      background: "var(--color1)",
-                      color: "white",
-                      // paddingLeft: "35px",
-                      textTransform: "none",
-                      display: "flex",
-                    }}
-                    onClick={exportToExcel}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <img
-                        src="/csv-file.png"
-                        className="report-icon absolute"
-                        alt="csv Icon"
-                      />
-                    </div>
-                    Download
-                  </Button>
-                )}
-              </div>
-            </div>
-            <div
-              className="row border-b px-4 border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-          </div>
-          <div className=" firstrow px-4 ">
-            <div className="overflow-x-auto">
-              <table
-                className="w-full border-collapse custom-table"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead className="">
-                  <tr>
-                    <th>SR. No</th>
-                    <th style={{ minWidth: 150 }}>
-                      <div className="headerStyle">
-                        <span>Name</span>
-                        <SwapVertIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => sortByColumn("name")}
-                        />
-                        <TextField
-                          variant="outlined"
-                          autoComplete="off"
-                          label="Search Name"
-                          size="small"
-                          sx={{ width: "150px" }}
-                          value={searchTerms[0]}
-                          onChange={(e) => handleSearchChange(0, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              DistributorSearch(searchTerms);
-                            }
-                          }}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Email Column */}
-                    <th style={{ minWidth: 150 }}>
-                      <div className="headerStyle">
-                        <span>Email</span>
-                        <SwapVertIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => sortByColumn("email")}
-                        />
-                        <TextField
-                          variant="outlined"
-                          autoComplete="off"
-                          label="Search Email"
-                          size="small"
-                          sx={{ width: "150px" }}
-                          value={searchTerms[1]}
-                          onChange={(e) => handleSearchChange(1, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              DistributorSearch(searchTerms);
-                            }
-                          }}
-                        />
-                      </div>
-                    </th>
-
-                    {/* GST Column */}
-                    <th style={{ minWidth: 150 }}>
-                      <div className="headerStyle">
-                        <span>GST</span>
-                        <SwapVertIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => sortByColumn("gst")}
-                        />
-                        <TextField
-                          variant="outlined"
-                          autoComplete="off"
-                          label="Search GST"
-                          size="small"
-                          sx={{ width: "150px" }}
-                          value={searchTerms[2]}
-                          onChange={(e) => handleSearchChange(2, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              DistributorSearch(searchTerms);
-                            }
-                          }}
-                        />
-                      </div>
-                    </th>
-
-                    {/* Phone Number Column */}
-                    <th style={{ minWidth: 150 }}>
-                      <div className="headerStyle">
-                        <span>Phone Number</span>
-                        <SwapVertIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => sortByColumn("phone_number")}
-                        />
-                        <TextField
-                          variant="outlined"
-                          autoComplete="off"
-                          label="Search Phone"
-                          size="small"
-                          sx={{ width: "150px" }}
-                          value={searchTerms[3]}
-                          onChange={(e) => handleSearchChange(3, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              DistributorSearch(searchTerms);
-                            }
-                          }}
-                        />
-                      </div>
-                    </th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody style={{ background: "#3f621217" }}>
-                  {tableData.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={columns.length + 2}
+                    <span
+                      style={{
+                        color: "var(--color1)",
+                        display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        width: "136px",
+                        marginRight: "10px",
+                      }}
+                    >
+                      Distributor List
+                    </span>
+                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
+                  </div>
+                  <div className="headerList cust_hdr_mn_bg">
+                    {hasPermission(permissions, "distributor import") && (
+                      <Button
+                        variant="contained"
                         style={{
-                          textAlign: "center",
-                          color: "gray",
-                          borderRadius: "10px 10px 10px 10px",
+                          background: "var(--color1)",
+                          display: "flex",
                         }}
+                        className="gap-2"
+                        onClick={openFilePopUP}
                       >
-                        No data found
-                      </td>
-                    </tr>
-                  ) : (
-                    tableData.map((row, index) => {
-                      return (
-                        <tr hover tabIndex={-1} key={row.code}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>
-                            {startIndex + index}
-                          </td>
-
-                          {columns.map((column) => {
-                            let value = row[column.id];
-                            if (column.id === "email") {
-                              if (value && value[0] !== value[0].toLowerCase()) {
-                                value = value.toLowerCase();
-                              }
-                            }
-                            return (
-                              <td
-                                key={column.id}
-                                align={column.align}
-                                onClick={() => {
-                                  history.push(`/DistributerView/${row.id}`);
-                                }}
-                                style={
-                                  column.id === "email"
-                                    ? { textTransform: "none" }
-                                    : { textTransform: "uppercase" }
-                                }
-                              >
-                                {column.format && typeof value === "number"
-                                  ? column.format(value)
-                                  : value}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <div className="px-2 flex gap-1 justify-center">
-                              <VisibilityIcon
-                                style={{ color: "var(--color1)" }}
-                                onClick={() => {
-                                  history.push(`/DistributerView/${row.id}`);
-                                }}
-                              />
-                              {hasPermission(permissions, "distributor edit") && (
-                                <BorderColorIcon
-                                  style={{ color: "var(--color1)" }}
-                                  onClick={() => handleEditOpen(row)}
+                        <CloudUploadIcon /> Import
+                      </Button>
+                    )}
+                    {hasPermission(permissions, "distributor create") && (
+                      <Button
+                        variant="contained"
+                        style={{ background: "var(--color1)", display: "flex" }}
+                        onClick={() => {
+                          history.push("/more/addDistributer");
+                        }}
+                        className="gap-2"
+                      >
+                        <AddIcon className="" />
+                        Add Distributor
+                      </Button>
+                    )}
+                    {hasPermission(permissions, "distributor download") && (
+                      <Button
+                        className="gap-7"
+                        variant="contained"
+                        style={{
+                          background: "var(--color1)",
+                          color: "white",
+                          // paddingLeft: "35px",
+                          textTransform: "none",
+                          display: "flex",
+                        }}
+                        onClick={exportToExcel}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img
+                            src="/csv-file.png"
+                            className="report-icon absolute"
+                            alt="csv Icon"
+                          />
+                        </div>
+                        Download
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <div
+                  className="row border-b px-4 border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
+              </div>
+              <div className=" firstrow px-4 ">
+                <div className="overflow-x-auto">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                        {columns.map((column, index) => (
+                          <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                            <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                              <span>{column.label}</span>
+                              <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                                <SwapVertIcon
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => sortByColumn(column.id)}
                                 />
-                              )}
+                                <TextField
+                                  autoComplete="off"
+                                  label="Type Here"
+                                  id="filled-basic"
+                                  size="small"
+                                  sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                  value={searchTerms[index]}
+                                  onChange={(e) => handleSearchChange(index, e.target.value)}
+                                  onKeyDown={handleKeyDown}
+                                  InputProps={{
+                                    endAdornment: searchTerms[index] && (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => handleSearchChange(index, '')}
+                                        sx={{ padding: 0 }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                />
+                              </div>
                             </div>
+                          </th>
+                        ))}
+                        <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ background: "#3f621217" }}>
+                      {tableData.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length + 1}
+                            className="text-center text-gray-500"
+                            style={{ borderRadius: "10px 10px 10px 10px" }}
+                          >
+                            No data found
                           </td>
                         </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="flex justify-center mt-4" style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '1rem',
-              background: '#fff'
-            }}>
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
+                      ) : (
+                                                tableData.map((row, index) => (
+                          <tr
+                            className="bg-[#f5f8f3] align-middle"
+                            key={row.code}
+                          >
+                            <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                              {((currentPage - 1) * rowsPerPage) + index + 1}
+                            </td>
+
+                            {columns.map((column, colIndex) => {
+                              let value = row[column.id];
+                              if (column.id === "email") {
+                                if (value && value[0] !== value[0].toLowerCase()) {
+                                  value = value.toLowerCase();
+                                }
+                              }
+                              // Remove right border radius from last data cell
+                              const tdClass =
+                                "px-4 py-2 font-semibold text-center";
+                              return (
+                                <td
+                                  style={{
+                                    textTransform: column.id === "email" ? "none" : "uppercase",
+                                  }}
+                                  key={column.id}
+                                  className={`capitalize ${tdClass}`}
+                                  onClick={() => {
+                                    history.push(`/DistributerView/${row.id}`);
+                                  }}
+                                >
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </td>
+                              );
+                            })}
+                            <td className="rounded-r-[10px] px-4 py-2 text-center">
+                              <div className="px-2 flex gap-1 justify-center">
+                                <VisibilityIcon
+                                  style={{ color: "var(--color1)" }}
+                                  onClick={() => {
+                                    history.push(`/DistributerView/${row.id}`);
+                                  }}
+                                />
+                                {hasPermission(permissions, "distributor edit") && (
+                                  <BorderColorIcon
+                                    style={{ color: "var(--color1)" }}
+                                    onClick={() => handleEditOpen(row)}
+                                  />
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
           <Dialog open={openEdit}>
             <div className="flex justify-center items-center h-auto">
               <div className="bg-white rounded-lg p-6 w-full max-w-3xl">

@@ -396,97 +396,106 @@ const AdjustStock = () => {
           <Loader />
         </div>
       ) : (
-        <div className="p-6">
-          <div
-            className="mb-4 adjst_stk_head"
-            style={{ display: "flex", gap: "4px" }}
-          >
-            <div style={{ display: "flex", gap: "7px" }}>
-              <span
-                style={{
-                  color: "var(--color2)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  textWrap: "nowrap",
-                }}
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="p-6">
+              <div
+                className="mb-4 adjst_stk_head"
+                style={{ display: "flex", gap: "4px" }}
               >
-                {" "}
-                Adjust Stock
-              </span>
-              <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-            </div>
-            <div className="headerList">
-              <Button
-                className="gap-2 adjst_btn"
-                variant="contained"
-                style={{ display: "flex", background: "var(--color1)" }}
-                onClick={handelAddOpen}
-              >
-                <AddIcon className="" /> Adjust Stock
-              </Button>
-            </div>
-          </div>
-          <div
-            className="row border-b border-dashed"
-            style={{ borderColor: "var(--color2)" }}
-          ></div>
-          <div className="firstrow mt-4">
-            <div className="flex gap-2 pb-2">
-              <div className="detail drug_fltr_fld">
-                <TextField
-                  autoComplete="off"
-                  id="outlined-basic"
-                  value={search}
-                  sx={{ width: "100%" }}
-                  size="small"
-                  onChange={(e) => setSearch(e.target.value)}
-                  variant="outlined"
-                  onKeyPress={handleKeyPress}
-                  placeholder="Search by Item name , Batch No"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                    type: "search",
-                  }}
-                />
+                <div style={{ display: "flex", gap: "7px" }}>
+                  <span
+                    style={{
+                      color: "var(--color2)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      textWrap: "nowrap",
+                    }}
+                  >
+                    {" "}
+                    Adjust Stock
+                  </span>
+                  <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                </div>
+                <div className="headerList">
+                  <Button
+                    className="gap-2 adjst_btn"
+                    variant="contained"
+                    style={{ display: "flex", background: "var(--color1)" }}
+                    onClick={handelAddOpen}
+                  >
+                    <AddIcon className="" /> Adjust Stock
+                  </Button>
+                </div>
               </div>
-              <div className="text-end">
-                <Button
-                  style={{ background: "var(--color1)" }}
-                  variant="contained"
-                  onClick={adjustStockList}
-                  className="min-h-[41px] h-[41px] mt-6 bg-[#044C9D] text-white flex items-center justify-center"
-                >
-                  Go
-                </Button>
-              </div>
-            </div>
-            <div className="overflow-x-auto mt-4 border-t scroll-two">
-              <table
-                className="w-full border-collapse custom-table pt-2"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead className="">
-                  <tr>
-                    <th className="px-4 py-2 ">SR. No</th>
-                    {stockList.map((column, index) => (
-                      <th key={column.id} style={{ minWidth: column.minWidth }}>
-                        <div>
-                          <span>{column.label}</span>
-                          <SwapVertIcon
-                            style={{ cursor: "pointer" }}
-                            onClick={() => sortByColumn(column.id)}
-                          />
-                          {/* <TextField
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="firstrow mt-4">
+                <div className="flex gap-2 pb-2">
+                  <div className="detail drug_fltr_fld">
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      value={search}
+                      sx={{ width: "100%" }}
+                      size="small"
+                      onChange={(e) => setSearch(e.target.value)}
+                      variant="outlined"
+                      onKeyPress={handleKeyPress}
+                      placeholder="Search by Item name , Batch No"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                        type: "search",
+                      }}
+                    />
+                  </div>
+                  <div className="text-end">
+                    <Button
+                      style={{ background: "var(--color1)" }}
+                      variant="contained"
+                      onClick={adjustStockList}
+                      className="min-h-[41px] h-[41px] mt-6 bg-[#044C9D] text-white flex items-center justify-center"
+                    >
+                      Go
+                    </Button>
+                  </div>
+                </div>
+                <div className="overflow-x-auto mt-4 border-t scroll-two">
+                  <table
+                    className="w-full border-collapse custom-table pt-2"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead className="">
+                      <tr>
+                        <th className="px-4 py-2 ">SR. No</th>
+                        {stockList.map((column, index) => (
+                          <th key={column.id} style={{ minWidth: column.minWidth }}>
+                            <div>
+                              <span>{column.label}</span>
+                              <SwapVertIcon
+                                style={{ cursor: "pointer" }}
+                                onClick={() => sortByColumn(column.id)}
+                              />
+                              {/* <TextField
                  autoComplete="off"
                                                             label={`Search ${column.label}`}
                                                             id="filled-basic"
@@ -496,177 +505,122 @@ const AdjustStock = () => {
                                                             onChange={(e) => handleSearchChange(index, e.target.value)}
                                                             className="ml-2"
                                                         />   */}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "#3f621217" }}>
-                  {filteredList.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={stockList.length + 1}
-                        className=" text-gray-500 py-4"
-                        style={{ borderRadius: "10px 10px 10px 10px" }}
-                      >
-                        No data found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredList.map((row, index) => (
-                      <tr
-                        key={row.code}
-                        className="hover:bg-gray-100 cursor-pointer"
-                      >
-                        <td
-                          className="px-4 py-2"
-                          style={{ borderRadius: "10px 0 0 10px" }}
-                        >
-                          {startIndex + index}
-                        </td>
-                        {stockList.map((column, colIndex) => {
-                          const value = row[column.id];
-                          return (
-                            <td
-                              key={column.id}
-                              style={
-                                colIndex === stockList.length - 1
-                                  ? { borderRadius: "0 10px 10px 0" }
-                                  : {}
-                              }
-                            >
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </td>
-                          );
-                        })}
+                            </div>
+                          </th>
+                        ))}
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* <table className="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>SR. No</th>
-                                        {stockList.map((column, index) => (
-                                            <th key={column.id}  >
-                                                <div className='headerStyle'>
-                                                    <span>{column.label}</span><SwapVertIcon style={{ cursor: 'pointer' }} onClick={() => sortByColumn(column.id)} />
-                                                    <TextField
-                 autoComplete="off"
-                                                    label={`Search ${column.label}`}
-                                                    id="filled-basic"
-                                                    size="small"
-                                                    value={searchTerms[index]}
-                                                    onChange={(e) => handleSearchChange(index, e.target.value)}
-                                                />
-                                                </div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredList.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={stockList.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
-                                                No data found
-                                            </td>
-                                        </tr>
-                                    ) : (filteredList
-                                        .map((row, index) => {
-                                            return (
-                                                <tr hover role="checkbox" tabIndex={-1} key={row.code} className="cursor-pointer">
-                                                    <td>
-                                                        {startIndex + index}
-                                                    </td>
-                                                    {stockList.map((column, index) => {
-                                                        const value = row[column.id];
-                                                        return (
-                                                            <>
-                                                                <td key={column.id} align={column.align} >
-                                                                    {column.format && typeof value === 'number'
-                                                                        ? column.format(value)
-                                                                        : value}
-                                                                </td>
-
-                                                            </>
-                                                        );
-                                                    })}
-                                                </tr>
-                                            );
-                                        }))}
-                                </tbody>
-                            </table> */}
-            <div
-              className="mt-4 space-x-1"
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '1rem',
-                background: '#fff'
-              }}
-            >
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
+                    </thead>
+                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                      {filteredList.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={stockList.length + 1}
+                            className=" text-gray-500 py-4"
+                            style={{ borderRadius: "10px 10px 10px 10px" }}
+                          >
+                            No data found
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredList.map((row, index) => (
+                          <tr
+                            key={row.code}
+                            className="hover:bg-gray-100 cursor-pointer"
+                          >
+                            <td
+                              className="px-4 py-2"
+                              style={{ borderRadius: "10px 0 0 10px" }}
+                            >
+                              {startIndex + index}
+                            </td>
+                            {stockList.map((column, colIndex) => {
+                              const value = row[column.id];
+                              return (
+                                <td
+                                  key={column.id}
+                                  style={
+                                    colIndex === stockList.length - 1
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
+                                  }
+                                >
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
           <Dialog className="custom-dialog modal_991" open={openAddPopUp}>
             <DialogTitle id="alert-dialog-title" className="primary">
               Stock Adjustment

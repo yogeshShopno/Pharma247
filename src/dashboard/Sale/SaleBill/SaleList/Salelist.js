@@ -330,254 +330,259 @@ const Salelist = () => {
         ) : (
           <div
             style={{
-              alignItems: "center",
+              minHeight: 'calc(100vh - 64px)',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
             }}
-            className="p-6"
           >
-            <div
-              className="sales_hdr_mn "
-              style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
-            >
+            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
               <div
-                className="flex flex-row sale_list_pg"
-                style={{ display: "flex", gap: "4px", alignItems: "center" }}
+                className="sales_hdr_mn "
+                style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
               >
                 <div
-                  className="flex flex-row gap-2 sale_lt_txt"
-                  style={{ alignItems: "center" }}
+                  className="flex flex-row sale_list_pg"
+                  style={{ display: "flex", gap: "4px", alignItems: "center" }}
                 >
-                  <span
-                    style={{
-                      color: "var(--color2)",
-                      display: "flex",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
+                  <div
+                    className="flex flex-row gap-2 sale_lt_txt"
+                    style={{ alignItems: "center" }}
+                  >
+                    <span
+                      style={{
+                        color: "var(--color2)",
+                        display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                      }}
+                    >
+                      Sales
+                    </span>
+                    <div>
+                      <ArrowForwardIosIcon
+                        style={{ fontSize: "18px", color: "var(--color1)" }}
+                      />
+                    </div>
+                  </div>
+                  {hasPermission(permissions, "sale bill create") && (
+                    <>
+                      <Button
+                        variant="contained"
+                        className="sale_add_btn gap-2"
+                        size="small"
+                        style={{
+                          backgroundColor: "var(--color1)",
+                          fontSize: "12px",
+                        }}
+                        onClick={goIntoAdd}
+                      >
+                        <AddIcon />
+                        New
+                      </Button>
+                    </>
+                  )}
+                </div>
+                <div className="headerList">
+                  <Button
+                    variant="contained"
+                    className="sale_add_pdf"
+                    style={{ background: "var(--color1)", color: "white" }}
+                    onClick={() => {
+                      setOpenAddPopUp(true);
                     }}
                   >
-                    Sales
-                  </span>
-                  <div>
-                    <ArrowForwardIosIcon
-                      style={{ fontSize: "18px", color: "var(--color1)" }}
-                    />
-                  </div>
+                    Generate PDF
+                  </Button>
                 </div>
-                {hasPermission(permissions, "sale bill create") && (
-                  <>
-                    <Button
-                      variant="contained"
-                      className="sale_add_btn gap-2"
-                      size="small"
-                      style={{
-                        backgroundColor: "var(--color1)",
-                        fontSize: "12px",
-                      }}
-                      onClick={goIntoAdd}
-                    >
-                      <AddIcon />
-                      New
-                    </Button>
-                  </>
-                )}
               </div>
-              <div className="headerList">
-                <Button
-                  variant="contained"
-                  className="sale_add_pdf"
-                  style={{ background: "var(--color1)", color: "white" }}
-                  onClick={() => {
-                    setOpenAddPopUp(true);
-                  }}
-                >
-                  Generate PDF
-                </Button>
+              <div
+                className="row border-b px-4 border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="firstrow">
+                <div className="overflow-x-auto mt-2 scroll-two">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th>SR. No</th>
+                        {columns.map((column, index) => (
+                          <th
+                            key={column.id}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            <div className="headerStyle">
+                              <span>{column.label}</span>
+                              <SwapVertIcon
+                                style={{ cursor: "pointer" }}
+                                onClick={() => sortByColumn(column.id)}
+                              />
+                              <TextField
+                                autoComplete="off"
+                                // label={`Search ${column.label}`}
+                                label="Type Here"
+                                id="filled-basic"
+                                size="small"
+                                sx={{ width: "150px" }}
+                                value={searchTerms[index]}
+                                onChange={(e) =>
+                                  handleSearchChange(index, e.target.value)
+                                }
+                              />
+                            </div>
+                          </th>
+                        ))}
+                        <th> Action</th>
+                      </tr>
+                    </thead>
+                    <tbody style={{ background: "#3f621217" }}>
+                      {filteredList.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length + 2}
+                            style={{
+                              textAlign: "center",
+                              color: "gray",
+                              borderRadius: "10px 10px 10px 10px",
+                            }}
+                          >
+                            No data found
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredList.map((row, index) => {
+                          return (
+                            <tr key={row.id}>
+                              <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                {startIndex + index}
+                              </td>
+                              {columns.map((column) => {
+                                if (column.id === "customer_info") {
+                                  const name = row.name ? row.name : "";
+                                  const mobileNumber = row.mobile_numbr
+                                    ? row.mobile_numbr
+                                    : "";
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      onClick={() => {
+                                        history.push("/salebill/view/" + row.id);
+                                      }}
+                                    >
+                                      {name && mobileNumber
+                                        ? `${name} / ${mobileNumber}`
+                                        : name || mobileNumber || "-"}
+                                    </td>
+                                  );
+                                } else {
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      onClick={() => {
+                                        history.push("/salebill/view/" + row.id);
+                                      }}
+                                    >
+                                      {row[column.id]}
+                                    </td>
+                                  );
+                                }
+                              })}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <div className="flex gap-4">
+                                  <VisibilityIcon
+                                    className="cursor-pointer primary hover:secondary"
+                                    onClick={() => {
+                                      history.push(`/salebill/view/${row.id}`);
+                                    }}
+                                  />
+                                  <FaFilePdf
+                                    className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                    onClick={() => pdfGenerator(row.id)}
+                                  />
+                                  <IoLogoWhatsapp
+                                    className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                    onClick={() => handleWhatsAppmsg(row)}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
             <div
-              className="row border-b px-4 border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="firstrow">
-              <div className="overflow-x-auto mt-2 scroll-two">
-                <table
-                  className="w-full border-collapse custom-table"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                >
-                  <thead>
-                    <tr>
-                      <th>SR. No</th>
-                      {columns.map((column, index) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          <div className="headerStyle">
-                            <span>{column.label}</span>
-                            <SwapVertIcon
-                              style={{ cursor: "pointer" }}
-                              onClick={() => sortByColumn(column.id)}
-                            />
-                            <TextField
-                              autoComplete="off"
-                              // label={`Search ${column.label}`}
-                              label="Type Here"
-                              id="filled-basic"
-                              size="small"
-                              sx={{ width: "150px" }}
-                              value={searchTerms[index]}
-                              onChange={(e) =>
-                                handleSearchChange(index, e.target.value)
-                              }
-                            />
-                          </div>
-                        </th>
-                      ))}
-                      <th> Action</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ background: "#3f621217" }}>
-                    {filteredList.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={columns.length + 2}
-                          style={{
-                            textAlign: "center",
-                            color: "gray",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          No data found
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredList.map((row, index) => {
-                        return (
-                          <tr key={row.id}>
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {startIndex + index}
-                            </td>
-                            {columns.map((column) => {
-                              if (column.id === "customer_info") {
-                                const name = row.name ? row.name : "";
-                                const mobileNumber = row.mobile_numbr
-                                  ? row.mobile_numbr
-                                  : "";
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push("/salebill/view/" + row.id);
-                                    }}
-                                  >
-                                    {name && mobileNumber
-                                      ? `${name} / ${mobileNumber}`
-                                      : name || mobileNumber || "-"}
-                                  </td>
-                                );
-                              } else {
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push("/salebill/view/" + row.id);
-                                    }}
-                                  >
-                                    {row[column.id]}
-                                  </td>
-                                );
-                              }
-                            })}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <div className="flex gap-4">
-                                <VisibilityIcon
-                                  className="cursor-pointer primary hover:secondary"
-                                  onClick={() => {
-                                    history.push(`/salebill/view/${row.id}`);
-                                  }}
-                                />
-                                <FaFilePdf
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => pdfGenerator(row.id)}
-                                />
-                                <IoLogoWhatsapp
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => handleWhatsAppmsg(row)}
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex justify-center mt-4" style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
+              className="flex justify-center mt-4"
+              style={{
+                marginTop: 'auto',
+                width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
+                alignItems: 'center',
                 padding: '1rem',
-                background: '#fff'
-              }}>
+              }}
+            >
+              <button
+                onClick={handlePrevious}
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {currentPage > 2 && (
                 <button
-                  onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage === 1}
+                  onClick={() => handleClick(currentPage - 2)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Previous
+                  {currentPage - 2}
                 </button>
-                {currentPage > 2 && (
-                  <button
-                    onClick={() => handleClick(currentPage - 2)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage - 2}
-                  </button>
-                )}
-                {currentPage > 1 && (
-                  <button
-                    onClick={() => handleClick(currentPage - 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage - 1}
-                  </button>
-                )}
+              )}
+              {currentPage > 1 && (
                 <button
-                  onClick={() => handleClick(currentPage)}
-                  className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                  onClick={() => handleClick(currentPage - 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  {currentPage}
+                  {currentPage - 1}
                 </button>
-                {currentPage < totalPages && (
-                  <button
-                    onClick={() => handleClick(currentPage + 1)}
-                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                  >
-                    {currentPage + 1}
-                  </button>
-                )}
+              )}
+              <button
+                onClick={() => handleClick(currentPage)}
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
                 <button
-                  onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
-                    }`}
-                  disabled={currentPage >= totalPages}
+                  onClick={() => handleClick(currentPage + 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Next
+                  {currentPage + 1}
                 </button>
-              </div>
+              )}
+              <button
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
+                  }`}
+                disabled={currentPage >= totalPages}
+              >
+                Next
+              </button>
             </div>
 
             <Dialog

@@ -789,7 +789,7 @@ const Salereturn = () => {
                                     flexDirection: "column",
 
                                 }}>
-                                    <span className="heading mb-2">Bill No</span>
+                                    <span className="heading mb-2">Bill No <span className="text-red-600">*</span></span>
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-number"
@@ -804,7 +804,7 @@ const Salereturn = () => {
 
                                 </div>
                                 <div style={{ padding: "0 5px", }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date <span className="text-red-600">*</span></span>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                                         <DatePicker
                                             value={endDate}
@@ -823,7 +823,7 @@ const Salereturn = () => {
                                     </LocalizationProvider>
                                 </div>
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name</span>
+                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <span className="text-red-600">*</span></span>
                                     <Autocomplete
                                         value={customer}
                                         onChange={handleCustomerOption}
@@ -961,7 +961,7 @@ const Salereturn = () => {
                                 <div className='flex items-center sale_dates_divv_main '>
                                     <div className='flex pb-4 sale_dates_divv'>
                                         <div style={{ padding: "0 5px", width: '100%' }}>
-                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date</span>
+                                            <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date <span className="text-red-600">*</span></span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     value={startDate}

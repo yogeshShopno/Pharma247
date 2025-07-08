@@ -2017,7 +2017,7 @@ const EditSaleBill = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <label className="font-bold">Discount(%) : </label>
+                        <label className="font-bold">Discount(%) : <span className="text-red-600">*</span></label>
                         <Input
                           type="number"
                           // className="mt-2"
@@ -2065,7 +2065,7 @@ const EditSaleBill = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <label className="font-bold">Other Amount : </label>
+                        <label className="font-bold">Other Amount : <span className="text-red-600">*</span></label>
                         <Input
                           type="number"
                           value={tempOtherAmt || otherAmt}

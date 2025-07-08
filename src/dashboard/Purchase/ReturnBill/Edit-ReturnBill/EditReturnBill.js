@@ -1,4 +1,3 @@
-
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
 import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select, InputAdornment, Input, colors } from '@mui/material';
@@ -1006,7 +1005,7 @@ const EditReturnBill = () => {
                                     flexDirection: "column",
 
                                 }}>
-                                    <span className="heading mb-2">End Date</span>
+                                    <span className="heading mb-2">End Date <span className="text-red-600">*</span></span>
                                     <div>
                                         {/* <DatePicker
                                             className='custom-datepicker '

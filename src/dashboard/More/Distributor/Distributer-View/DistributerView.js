@@ -90,7 +90,7 @@ const DistributerView = () => {
     setIsLoading(true);
     try {
       axios
-        .post("distributer-company-list", data, {
+        .post("", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -754,7 +754,7 @@ const PaymentList = () => {
               <DialogContentText id="alert-dialog-description">
                 <div className="flex sm:flex-nowrap flex-wrap gap-4">
                   <div style={{ width: "100%" }}>
-                    <span className="label primary">Distributor Name</span>
+                    <span className="label primary">Distributor Name <span className="text-red-600">*</span></span>
                     {isEditMode == true ? (
                       <TextField
                         autoComplete="off"
@@ -792,7 +792,7 @@ const PaymentList = () => {
                 <div className="flex sm:flex-nowrap flex-wrap gap-4"> 
 
                     <div style={{ width: "100%" }}>
-                    <span className="label primary">Payment Date</span>
+                    <span className="label primary">Payment Date <span className="text-red-600">*</span></span>
                     {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
                                                         value={paymentDate}
@@ -811,7 +811,7 @@ const PaymentList = () => {
                     />
                   </div>
                   <div style={{ width: "100%" }}>
-                    <span className="label primary">Payment Mode</span>
+                    <span className="label primary">Payment Mode <span className="text-red-600">*</span></span>
                     <Select
                       labelId="dropdown-label"
                       id="dropdown"

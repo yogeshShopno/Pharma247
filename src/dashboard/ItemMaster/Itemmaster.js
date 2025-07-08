@@ -721,7 +721,7 @@ const Itemmaster = () => {
               }}>
                 <div className="row">
                   <div className="fields" style={{ width: "100%", flexDirection: "column", borderColor: 'var(--color1)' }}>
-                    <label className="label">Item Name</label>
+                    <label className="label">Item Name <span className="text-red-600  ">*</span></label>
                     <Autocomplete
                       value={value}
                       inputValue={(searchItem || "").toUpperCase()}
@@ -805,7 +805,7 @@ const Itemmaster = () => {
                     <div
                       style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                     >
-                      <label className="label">Drug Group </label>
+                      <label className="label">Drug Group <span className="text-red-600  ">*</span></label>
                       <FaPlusCircle
                         className="mt-1.5 cursor-pointer"
                         onClick={() => setOpenDrugGroup(true)}
@@ -968,7 +968,7 @@ const Itemmaster = () => {
                     <div
                       style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                     >
-                      <label className="label">Company </label>
+                      <label className="label">Company <span className="text-red-600  ">*</span></label>
                       <FaPlusCircle
                         className="mt-1.5 cursor-pointer"
                         onClick={() => setOpenCompany(true)}
@@ -1622,7 +1622,7 @@ const Itemmaster = () => {
         </IconButton>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <div className="primary">Item File Upload</div>
+            <div className="primary">Item File Upload <span className="text-red-600  ">*</span></div>
             <div
               style={{ display: "flex", gap: "15px", flexDirection: "column" }}
             >

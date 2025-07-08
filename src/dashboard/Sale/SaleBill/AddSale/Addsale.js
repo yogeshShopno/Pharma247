@@ -2039,8 +2039,7 @@ const Addsale = () => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      Customer Mobile / Name
-                      <span className="text-red-600 "> *</span>
+                      Customer Mobile / Name <span className="text-red-600">*</span>
                       <FaPlusCircle
                         className="icon primary"
                         onClick={() => {

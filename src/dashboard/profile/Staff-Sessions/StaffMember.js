@@ -431,7 +431,7 @@ const StaffMember = () => {
                                     <div className="flex flex-col md:flex-row gap-5">
                                         <div className="flex flex-col " style={{ width: "100%" }}>
                                             <div className="mb-1">
-                                                <span className="label primary mb-4">Full Name</span>
+                                                <span className="label primary mb-4">Full Name <span className="text-red-600">*</span></span>
                                             </div>
                                             <TextField
                                                 autoComplete="off" id="standard-basic"
@@ -450,7 +450,7 @@ const StaffMember = () => {
                                         </div>
                                         <div className="flex flex-col " style={{ width: "100%" }}>
                                             <div className="mb-1">
-                                                <span className="label primary">Mobile No</span>
+                                                <span className="label primary">Mobile No <span className="text-red-600">*</span></span>
                                             </div>
                                             <TextField
                                                 autoComplete="off" id="standard-basic"
@@ -466,7 +466,7 @@ const StaffMember = () => {
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-5">
                                         <div className="flex flex-col " style={{ width: "100%" }}>
-                                            <span className="label primary">Assign Role</span>
+                                            <span className="label primary">Assign Role <span className="text-red-600">*</span></span>
                                             <FormControl sx={{ width: '100%' }} size="small">
                                                 <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
                                                 <Select
@@ -490,7 +490,7 @@ const StaffMember = () => {
                                             className="flex flex-col " style={{ width: "100%" }}
                                         >
                                             <div className="mb-1">
-                                                <span className="label primary">Email ID</span>
+                                                <span className="label primary">Email ID <span className="text-red-600">*</span></span>
                                             </div>
                                             <TextField
                                                 autoComplete="off" id="standard-basic"
@@ -505,7 +505,7 @@ const StaffMember = () => {
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-5">
                                         <div className="flex flex-col " style={{ width: "100%" }}>
-                                            <span className="label primary">Password</span>
+                                            <span className="label primary">Password <span className="text-red-600">*</span></span>
                                             <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
                                                 <OutlinedInput
                                                     value={password}
@@ -530,7 +530,7 @@ const StaffMember = () => {
                                             </FormControl>
                                         </div>
                                         <div className="flex flex-col " style={{ width: "100%" }}>
-                                            <span className="label primary">Re-enter Password</span>
+                                            <span className="label primary">Re-enter Password <span className="text-red-600">*</span></span>
                                             <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
                                                 <OutlinedInput
                                                     value={reEnterPassword}

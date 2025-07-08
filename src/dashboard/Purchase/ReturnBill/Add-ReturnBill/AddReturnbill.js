@@ -1011,7 +1011,7 @@ const AddReturnbill = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <span className="heading mb-2">Distributor</span>
+                    <span className="heading mb-2">Distributor <span className="text-red-600">*</span></span>
                     <Autocomplete
                       value={distributor}
                       sx={{ width: "230px" }}
@@ -1060,7 +1060,7 @@ const AddReturnbill = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <span className="heading mb-2">Start Date</span>
+                    <span className="heading mb-2">Start Date <span className="text-red-600">*</span></span>
                     <div>
                       <DatePicker
                         className="custom-datepicker_mn "
@@ -1081,7 +1081,7 @@ const AddReturnbill = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <span className="heading mb-2">End Date</span>
+                    <span className="heading mb-2">End Date <span className="text-red-600">*</span></span>
                     <div>
                       <DatePicker
                         className="custom-datepicker_mn "

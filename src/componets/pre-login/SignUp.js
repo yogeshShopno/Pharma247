@@ -272,7 +272,7 @@ const SignUp = () => {
               <>
                 <div className="mt-4">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Pharmacy Name
+                    Pharmacy Name <span className="text-red-600">*</span>
                   </label>
                   <OutlinedInput
                     value={formData.pharmacy_name}
@@ -288,7 +288,7 @@ const SignUp = () => {
 
                 <div className="mt-2 flex flex-col justify-between">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Mobile Number
+                    Mobile Number <span className="text-red-600">*</span>
                   </label>
                   <OutlinedInput
                     type="number"
@@ -307,7 +307,7 @@ const SignUp = () => {
 
                 <div className="mt-2 flex flex-col justify-between">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Email ID
+                    Email ID <span className="text-red-600">*</span>
                   </label>
                   <OutlinedInput
                     name="email"
@@ -402,7 +402,7 @@ const SignUp = () => {
               <>
                 <div className="mt-4">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    OTP
+                    OTP <span className="text-red-600">*</span>
                   </label>
                   <OutlinedInput
                     type="number"
@@ -419,7 +419,7 @@ const SignUp = () => {
 
                 <div className="mt-2 flex flex-col justify-between">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Password
+                    Password <span className="text-red-600">*</span>
                   </label>
 
                   <FormControl

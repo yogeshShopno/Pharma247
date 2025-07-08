@@ -691,7 +691,7 @@ const EditSaleReturn = () => {
     } catch (error) {
       console.error("Error deleting items:", error);
 
-      // Optional: Provide user feedback if there’s an error
+      // Optional: Provide user feedback if there's an error
       alert("Failed to save changes. Please try again.");
     }
   };
@@ -835,7 +835,7 @@ const EditSaleReturn = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <span className="heading mb-2">Bill No</span>
+                    <span className="heading mb-2">Bill No <span className="text-red-600">*</span></span>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
@@ -887,7 +887,7 @@ const EditSaleReturn = () => {
                         color: "var(--color1)",
                       }}
                     >
-                      Customer Mobile / Name
+                      Customer Mobile / Name <span className="text-red-600">*</span>
                     </span>
 
                     <Autocomplete

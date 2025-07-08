@@ -2036,16 +2036,7 @@ const AddPurchaseBill = () => {
             <div className="firstrow flex gap-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full">
                 <div>
-                  <span className="title mb-2">
-                    Distributor<span className="text-red-600  ">*</span>
-                    <FaPlusCircle
-                      className="primary cursor-pointer"
-                      onClick={() => {
-                        setOpenAddDistributorPopUp(true);
-                      }}
-
-                    />
-                  </span>
+                  <span className="heading mb-2">Distributor <span className="text-red-600">*</span></span>
 
                   <Autocomplete
                     value={distributor ?? ""}

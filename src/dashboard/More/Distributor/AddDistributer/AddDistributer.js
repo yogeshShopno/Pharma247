@@ -217,7 +217,7 @@ const AddDistributer = () => {
                     className="block  text-gray-700 font-bold mb-2"
                     htmlFor="gst_number"
                   >
-                    Distributor GST/IN Number <span className="text-red-600 ">*</span>
+                    Distributor GST/IN Number <span className="text-red-600">*</span>
                   </label>
 
                   <div class="relative w-full">
@@ -262,7 +262,7 @@ const AddDistributer = () => {
                     className="block text-gray-700 font-bold mb-2"
                     htmlFor="distributor_name"
                   >
-                    Distributor Name <span className="text-red-600 ">*</span>
+                    Distributor Name <span className="text-red-600">*</span>
                   </label>
                   <Autocomplete
                     freeSolo
@@ -297,7 +297,7 @@ const AddDistributer = () => {
                     className="block text-gray-700 font-bold mb-2"
                     htmlFor="mobile_no"
                   >
-                    Mobile No. <span className="text-red-600 ">*</span>
+                    Mobile No. <span className="text-red-600">*</span>
                   </label>
                   <TextField
                     variant="outlined"

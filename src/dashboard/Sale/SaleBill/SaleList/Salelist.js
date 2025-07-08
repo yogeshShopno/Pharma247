@@ -337,189 +337,189 @@ const Salelist = () => {
             }}
           >
             <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-              <div
-                className="sales_hdr_mn "
-                style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
-              >
+              <div className="px-4 py-3">
                 <div
-                  className="flex flex-row sale_list_pg"
-                  style={{ display: "flex", gap: "4px", alignItems: "center" }}
+                  className="sales_hdr_mn"
+                  style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
                 >
                   <div
-                    className="flex flex-row gap-2 sale_lt_txt"
-                    style={{ alignItems: "center" }}
+                    className="flex flex-row sale_list_pg"
+                    style={{ display: "flex", gap: "4px", alignItems: "center" }}
                   >
-                    <span
-                      style={{
-                        color: "var(--color2)",
-                        display: "flex",
-                        alignItems: "center",
-                        fontWeight: 700,
-                        fontSize: "20px",
+                    <div
+                      className="flex flex-row gap-2 sale_lt_txt"
+                      style={{ alignItems: "center" }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--color2)",
+                          display: "flex",
+                          alignItems: "center",
+                          fontWeight: 700,
+                          fontSize: "20px",
+                        }}
+                      >
+                        Sales
+                      </span>
+                      <div>
+                        <ArrowForwardIosIcon
+                          style={{ fontSize: "18px", color: "var(--color1)" }}
+                        />
+                      </div>
+                    </div>
+                    {hasPermission(permissions, "sale bill create") && (
+                      <>
+                        <Button
+                          variant="contained"
+                          className="sale_add_btn gap-2"
+                          size="small"
+                          style={{
+                            backgroundColor: "var(--color1)",
+                            fontSize: "12px",
+                          }}
+                          onClick={goIntoAdd}
+                        >
+                          <AddIcon />
+                          New
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  <div className="headerList">
+                    <Button
+                      variant="contained"
+                      className="sale_add_pdf"
+                      style={{ background: "var(--color1)", color: "white" }}
+                      onClick={() => {
+                        setOpenAddPopUp(true);
                       }}
                     >
-                      Sales
-                    </span>
-                    <div>
-                      <ArrowForwardIosIcon
-                        style={{ fontSize: "18px", color: "var(--color1)" }}
-                      />
-                    </div>
+                      Generate PDF
+                    </Button>
                   </div>
-                  {hasPermission(permissions, "sale bill create") && (
-                    <>
-                      <Button
-                        variant="contained"
-                        className="sale_add_btn gap-2"
-                        size="small"
-                        style={{
-                          backgroundColor: "var(--color1)",
-                          fontSize: "12px",
-                        }}
-                        onClick={goIntoAdd}
-                      >
-                        <AddIcon />
-                        New
-                      </Button>
-                    </>
-                  )}
                 </div>
-                <div className="headerList">
-                  <Button
-                    variant="contained"
-                    className="sale_add_pdf"
-                    style={{ background: "var(--color1)", color: "white" }}
-                    onClick={() => {
-                      setOpenAddPopUp(true);
-                    }}
-                  >
-                    Generate PDF
-                  </Button>
-                </div>
+                <div
+                  className="row border-b px-4 border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
               </div>
-              <div
-                className="row border-b px-4 border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-              <div className="firstrow">
-                <div className="overflow-x-auto mt-2 scroll-two">
-                  <table
-                    className="w-full border-collapse custom-table"
-                    style={{
-                      whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
-                    }}
-                  >
-                    <thead>
+              <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th>SR. No</th>
+                      {columns.map((column, index) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          <div className="headerStyle">
+                            <span>{column.label}</span>
+                            <SwapVertIcon
+                              style={{ cursor: "pointer" }}
+                              onClick={() => sortByColumn(column.id)}
+                            />
+                            <TextField
+                              autoComplete="off"
+                              // label={`Search ${column.label}`}
+                              label="Type Here"
+                              id="filled-basic"
+                              size="small"
+                              sx={{ width: "150px" }}
+                              value={searchTerms[index]}
+                              onChange={(e) =>
+                                handleSearchChange(index, e.target.value)
+                              }
+                            />
+                          </div>
+                        </th>
+                      ))}
+                      <th> Action</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ background: "#3f621217" }}>
+                    {filteredList.length === 0 ? (
                       <tr>
-                        <th>SR. No</th>
-                        {columns.map((column, index) => (
-                          <th
-                            key={column.id}
-                            style={{ minWidth: column.minWidth }}
-                          >
-                            <div className="headerStyle">
-                              <span>{column.label}</span>
-                              <SwapVertIcon
-                                style={{ cursor: "pointer" }}
-                                onClick={() => sortByColumn(column.id)}
-                              />
-                              <TextField
-                                autoComplete="off"
-                                // label={`Search ${column.label}`}
-                                label="Type Here"
-                                id="filled-basic"
-                                size="small"
-                                sx={{ width: "150px" }}
-                                value={searchTerms[index]}
-                                onChange={(e) =>
-                                  handleSearchChange(index, e.target.value)
-                                }
-                              />
-                            </div>
-                          </th>
-                        ))}
-                        <th> Action</th>
+                        <td
+                          colSpan={columns.length + 2}
+                          style={{
+                            textAlign: "center",
+                            color: "gray",
+                            borderRadius: "10px 10px 10px 10px",
+                          }}
+                        >
+                          No data found
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody style={{ background: "#3f621217" }}>
-                      {filteredList.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={columns.length + 2}
-                            style={{
-                              textAlign: "center",
-                              color: "gray",
-                              borderRadius: "10px 10px 10px 10px",
-                            }}
-                          >
-                            No data found
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredList.map((row, index) => {
-                          return (
-                            <tr key={row.id}>
-                              <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                {startIndex + index}
-                              </td>
-                              {columns.map((column) => {
-                                if (column.id === "customer_info") {
-                                  const name = row.name ? row.name : "";
-                                  const mobileNumber = row.mobile_numbr
-                                    ? row.mobile_numbr
-                                    : "";
-                                  return (
-                                    <td
-                                      key={column.id}
-                                      onClick={() => {
-                                        history.push("/salebill/view/" + row.id);
-                                      }}
-                                    >
-                                      {name && mobileNumber
-                                        ? `${name} / ${mobileNumber}`
-                                        : name || mobileNumber || "-"}
-                                    </td>
-                                  );
-                                } else {
-                                  return (
-                                    <td
-                                      key={column.id}
-                                      onClick={() => {
-                                        history.push("/salebill/view/" + row.id);
-                                      }}
-                                    >
-                                      {row[column.id]}
-                                    </td>
-                                  );
-                                }
-                              })}
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <div className="flex gap-4">
-                                  <VisibilityIcon
-                                    className="cursor-pointer primary hover:secondary"
+                    ) : (
+                      filteredList.map((row, index) => {
+                        return (
+                          <tr key={row.id}>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {startIndex + index}
+                            </td>
+                            {columns.map((column) => {
+                              if (column.id === "customer_info") {
+                                const name = row.name ? row.name : "";
+                                const mobileNumber = row.mobile_numbr
+                                  ? row.mobile_numbr
+                                  : "";
+                                return (
+                                  <td
+                                    key={column.id}
                                     onClick={() => {
-                                      history.push(`/salebill/view/${row.id}`);
+                                      history.push("/salebill/view/" + row.id);
                                     }}
-                                  />
-                                  <FaFilePdf
-                                    className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                    onClick={() => pdfGenerator(row.id)}
-                                  />
-                                  <IoLogoWhatsapp
-                                    className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                    onClick={() => handleWhatsAppmsg(row)}
-                                  />
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                                  >
+                                    {name && mobileNumber
+                                      ? `${name} / ${mobileNumber}`
+                                      : name || mobileNumber || "-"}
+                                  </td>
+                                );
+                              } else {
+                                return (
+                                  <td
+                                    key={column.id}
+                                    onClick={() => {
+                                      history.push("/salebill/view/" + row.id);
+                                    }}
+                                  >
+                                    {row[column.id]}
+                                  </td>
+                                );
+                              }
+                            })}
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <div className="flex gap-4">
+                                <VisibilityIcon
+                                  className="cursor-pointer primary hover:secondary"
+                                  onClick={() => {
+                                    history.push(`/salebill/view/${row.id}`);
+                                  }}
+                                />
+                                <FaFilePdf
+                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                  onClick={() => pdfGenerator(row.id)}
+                                />
+                                <IoLogoWhatsapp
+                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                  onClick={() => handleWhatsAppmsg(row)}
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
             <div

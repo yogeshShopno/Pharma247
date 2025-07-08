@@ -178,7 +178,7 @@ const PurchaseView = () => {
     }
   };
 
-{/*<================================================================================ get bill details  ================================================================================> */}
+{/*<================================================================================== total details  ==================================================================================> */}
 
   return (
     <>
@@ -191,7 +191,7 @@ const PurchaseView = () => {
         <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
           <div>
             <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
-              <div className="flex flex-row gap-2" style={{ alignItems: "center" }}>
+              <div className="flex flex-row gap-2 " style={{ alignItems: "center" }}>
                 <span
                   style={{
                     color: "var(--color2)",
@@ -237,6 +237,7 @@ const PurchaseView = () => {
                     alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {data.bill_no}

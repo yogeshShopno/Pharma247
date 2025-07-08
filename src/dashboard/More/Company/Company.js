@@ -29,6 +29,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  
 } from "@mui/material";
 import { TablePagination } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -212,9 +213,9 @@ const Company = () => {
     //(newValue, "145214");
   };
 
-const handleInputChange = (event, newInputValue) => {
-  setCompanyName(newInputValue.toUpperCase());
-};
+  const handleInputChange = (event, newInputValue) => {
+    setCompanyName(newInputValue.toUpperCase());
+  };
 
   const [deleteCompanyId, setDeleteCompanyId] = useState(null);
   const [IsDelete, setIsDelete] = useState(false);
@@ -428,6 +429,9 @@ const handleInputChange = (event, newInputValue) => {
           </button>
         </div>
       </div>
+
+      {/* Add Copany PopUp */}
+
       <Dialog
         className="order_list_ml custom-dialog"
         open={openAddPopUp}

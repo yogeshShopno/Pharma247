@@ -8,6 +8,25 @@ import Loader from "../../../../componets/loader/Loader";
 import { TablePagination, Button } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import { toast } from "react-toastify";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+
+
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+  IconButton,
+  TextField
+
+} from "@mui/material";
 
 const DistributerView = () => {
   const { id } = useParams();
@@ -18,6 +37,11 @@ const DistributerView = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [CNAmount, setCNAmount] = useState("");
+  const [openAddPopUp, setOpenAddPopUp] = useState(false);
+
+  const [companyName, setCompanyName] = useState("");
+  const [errors, setErrors] = useState({});
+
 
 
   const PaymentHistory = [
@@ -34,6 +58,51 @@ const DistributerView = () => {
     distributerDetail(id);
     purchaseReturnData(id);
   }, [page, rowsPerPage]);
+
+  const resetAddDialog = () => {
+    setCompanyName("");
+    setErrors({});
+    setOpenAddPopUp(false);
+  };
+
+  const validData = () => {
+    //  Add Package
+    const newErrors = {};
+    if (!companyName) {
+      newErrors.companyName = "Company Name is required";
+      toast.error(newErrors.companyName);
+    }
+    setErrors(newErrors);
+    const isValid = Object.keys(newErrors).length === 0;
+    if (isValid) {
+      AddCompany();
+    }
+    return isValid;
+
+  };
+
+  const AddCompany = (id) => {
+    let data = new FormData();
+    data.append("id", id);
+    data.append("conpany_name", id);
+
+
+    setIsLoading(true);
+    try {
+      axios
+        .post("distributer-company-list", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          resetAddDialog();
+          setIsLoading(false);
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
 
   const distributerDetail = (id) => {
     let data = new FormData();
@@ -54,7 +123,6 @@ const DistributerView = () => {
         })
         .then((response) => {
           setTableData(response.data.data);
-          console.log(response.data.data)
           setIsLoading(false);
         });
     } catch (error) {
@@ -76,7 +144,6 @@ const DistributerView = () => {
   /*<========================================================================== get list of company  ==========================================================================> */
 
   const handleGetCompanyList = async () => {
-    console.log("Fetching Company List for ID:", id);
 
     let data = new FormData();
     data.append("id", id);
@@ -90,7 +157,6 @@ const DistributerView = () => {
       });
 
       const distributorData = response.data.data;
-      console.log("Fetched Distributor Data:", distributorData);
 
       // Pass the fetched data to generate the PDF
       downloadPDF(distributorData);
@@ -100,27 +166,27 @@ const DistributerView = () => {
   };
   /*<========================================================================== get list of company  ==========================================================================> */
 
-   const purchaseReturnData = async (id) => {
+  const purchaseReturnData = async (id) => {
     if (!id) { return; }
-      let data = new FormData();
-      data.append("distributor_id", id);
-      try {
-        await axios
-          .post("purchase-return-pending-bills", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            setCNAmount(response.data);
-          });
-      } catch (error) {
-        if (error.response.data.status == 400) {
-          toast.error(error.response.data.message);
-        } else {
-        }
+    let data = new FormData();
+    data.append("distributor_id", id);
+    try {
+      await axios
+        .post("purchase-return-pending-bills", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setCNAmount(response.data);
+        });
+    } catch (error) {
+      if (error.response.data.status == 400) {
+        toast.error(error.response.data.message);
+      } else {
       }
-    };
+    }
+  };
   /*<============================================================================ download pdf  ============================================================================> */
 
   const downloadPDF = (distributorData) => {
@@ -149,14 +215,14 @@ const DistributerView = () => {
                 </thead>
                 <tbody>
                   ${company_list
-                    .map(
-                      (company, index) =>
-                        `<tr>
+        .map(
+          (company, index) =>
+            `<tr>
                           <td>${index + 1}</td>
                           <td>${company}</td>
                         </tr>`
-                    )
-                    .join("")}
+        )
+        .join("")}
                 </tbody>
               </table>
             </body>
@@ -245,26 +311,43 @@ const DistributerView = () => {
                 </span>
                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
               </div>
-              <Button
-                className="gap-7"
-                variant="contained"
-                style={{
-                  background: "var(--color1)",
-                  color: "white",
-                  textTransform: "none",
-                  display: "flex",
-                }}
-                onClick={() => handleGetCompanyList()}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/csv-file.png"
-                    className=" report-icon absolute "
-                    alt="csv Icon"
-                  />
-                </div>
-                Download Compony List
-              </Button>
+              <div className="flex gap-2">
+
+
+                <Button
+                  variant="contained"
+                  className="order_list_btn"
+                  style={{ background: "var(--color1)" }}
+                  size="small"
+                  onClick={() => { setOpenAddPopUp(true) }}
+                >
+                  <AddIcon />
+                  Add Company
+                </Button>
+
+                <Button
+                  className="gap-7"
+                  variant="contained"
+                  style={{
+                    background: "var(--color1)",
+                    color: "white",
+                    textTransform: "none",
+                    display: "flex",
+                  }}
+                  onClick={() => handleGetCompanyList()}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <img
+                      src="/csv-file.png"
+                      className=" report-icon absolute "
+                      alt="csv Icon"
+                    />
+                  </div>
+                  Download Compony List
+                </Button>
+
+              </div>
+
             </div>
             <div
               className="rounded-md p-3"
@@ -335,7 +418,7 @@ const DistributerView = () => {
                       : "____"}
                   </span>
                 </div>
-                  <div className="distributor-detail">
+                <div className="distributor-detail">
                   <span className="heading_othr ">Total Bill Amount</span>
                   <span className="data_bg">
                     {tableData.total_bill_amount
@@ -343,7 +426,7 @@ const DistributerView = () => {
                       : "____"}
                   </span>
                 </div>
-                   <div className="distributor-detail">
+                <div className="distributor-detail">
                   <span className="heading_othr ">Total Paid Amount</span>
                   <span className="data_bg">
                     {tableData.total_paid_amount
@@ -399,17 +482,16 @@ const DistributerView = () => {
                           // <td key={column.id} className={`text-lg ${column.id === 'due_amount' ? 'text-red-500' : 'text-dark'}`} >
                           <td
                             key={column.id}
-                            className={`text-lg ${
-                              column.id === "due_amount"
-                                ? "text-red-500"
-                                : "text-dark"
-                            }`}
+                            className={`text-lg ${column.id === "due_amount"
+                              ? "text-red-500"
+                              : "text-dark"
+                              }`}
                             style={
                               colIndex === 0 // Check if this is the first column
                                 ? { borderRadius: "10px 0 0 10px" }
                                 : colIndex === PaymentHistory.length - 1 // Last column for right-side radius
-                                ? { borderRadius: "0 10px 10px 0" }
-                                : {}
+                                  ? { borderRadius: "0 10px 10px 0" }
+                                  : {}
                             }
                           >
                             {/* {item[column.id]} */}
@@ -446,6 +528,84 @@ const DistributerView = () => {
           </div>
         </div>
       )}
+      <Dialog
+        className="custom-dialog modal_991"
+        open={openAddPopUp}
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          style={{ fontWeight: 700 }}
+        >
+          Add Company
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={resetAddDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <div className="bg-white">
+              <div className="mainform bg-white rounded-lg flex flex-col gap-5">
+                <div className="row gap-3 sm:flex-nowrap flex-wrap">
+                  <div className="fields add_new_item_divv">
+                    <label className="label secondary">Company Name <span className="text-red-600  ">*</span></label>
+                    <TextField
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      error={!!errors.companyName}
+                      helperText={errors.companyName}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          validData();
+                        }
+                      }}
+                      InputProps={{
+                        sx: {
+                          padding: 0,
+                          '& input': {
+                            padding: '10px 15px', // Lower vertical padding for the input
+                            fontSize: '14px',
+                          }
+                        }
+                      }}
+                    >
+                    </TextField>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions style={{ padding: "20px 24px" }}>
+          <Button
+            autoFocus
+            variant="contained"
+            style={{
+              backgroundColor: "var(--COLOR_UI_PHARMACY)",
+              color: "white",
+            }}
+            onClick={validData}
+          >
+            Save
+          </Button>
+          <Button
+            autoFocus
+            variant="contained"
+            onClick={resetAddDialog}
+            color="error"
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

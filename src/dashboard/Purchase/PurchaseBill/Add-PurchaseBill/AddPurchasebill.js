@@ -3574,9 +3574,7 @@ const AddPurchaseBill = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div className="bg-white">
-                <div
-                  className="mainform bg-white rounded-lg"
-                >
+                <div className="mainform bg-white rounded-lg">
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
                       <label className="label secondary">Item Name <span className="text-red-600  ">*</span></label>

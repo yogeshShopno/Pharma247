@@ -1079,9 +1079,9 @@ const EditPurchaseBill = () => {
           if(response?.data?.status === 200){
           console.log("response", response?.data?.message);
           toast.success(response?.data?.message);
-          // setTimeout(() => {
-          //   history.push("/purchase/purchasebill");
-          // }, 2000)
+          setTimeout(() => {
+            history.push("/purchase/purchasebill");
+          }, 2000)
           }
         })
     } catch (error) {

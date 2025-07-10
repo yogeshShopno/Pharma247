@@ -54,54 +54,16 @@ const Salelist = () => {
     direction: "ascending",
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [PDFURL, setPDFURL] = useState("");
-  
-  // First filter all data, then calculate pagination
-  const filteredData = tableData.filter((row) => {
-    const billNo = row.bill_no ? row.bill_no.toLowerCase() : "";
-    const billDate = row.bill_date ? row.bill_date.toLowerCase() : "";
-    const customerName = row.name ? row.name.toLowerCase() : "";
-    const mobileNumber = String(row.mobile_numbr).toLowerCase();
-    const paymentName = row.payment_name ? row.payment_name.toLowerCase() : "";
-    const status = row.status ? row.status.toLowerCase() : "";
-    const netAmt = String(row.net_amt).toLowerCase();
 
-    const billNoSearchTerm = searchTerms[0]
-      ? String(searchTerms[0]).toLowerCase()
-      : "";
-    const billDateSearchTerm = searchTerms[1]
-      ? String(searchTerms[1]).toLowerCase()
-      : "";
-    const customerSearchTerm = searchTerms[2].toLowerCase();
-    const paymentSearchTerm = searchTerms[3]
-      ? searchTerms[3].toLowerCase()
-      : "";
-    const statusSearchTerm = searchTerms[4] ? searchTerms[4].toLowerCase() : "";
-    const netAmtSearchTerm = searchTerms[5]
-      ? String(searchTerms[5]).toLowerCase()
-      : "";
-    return (
-      (billNo.includes(billNoSearchTerm) || billNoSearchTerm === "") &&
-      (billDate.includes(billDateSearchTerm) || billDateSearchTerm === "") &&
-      (customerName.includes(customerSearchTerm) ||
-        mobileNumber.includes(customerSearchTerm)) &&
-      (paymentName.includes(paymentSearchTerm) || paymentSearchTerm === "") &&
-      (status.includes(statusSearchTerm) || statusSearchTerm === "") &&
-      (netAmt.includes(netAmtSearchTerm) || netAmtSearchTerm === "")
-    );
-  });
-
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  // No frontend filtering needed - all search is handled by backend
+  const paginatedData = tableData;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  
-  // Now paginate the filtered data
-  const filteredList = filteredData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
@@ -109,15 +71,13 @@ const Salelist = () => {
   
   const handlePrevious = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -157,7 +117,6 @@ const Salelist = () => {
   // };
 
   useEffect(() => {
-    // saleBillList();
     if (tableData.length > 0) {
       localStorage.setItem("BillNo", tableData[0].count + 1);
     } else {
@@ -166,14 +125,17 @@ const Salelist = () => {
   }, [tableData, currentPage]);
 
   useEffect(() => {
-    saleBillList();
+    saleBillList(currentPage);
     localStorage.removeItem("RandomNumber");
-  }, []);
+    // eslint-disable-next-line
+  }, [currentPage]);
 
-  const saleBillList = async () => {
+  const saleBillList = async (page) => {
     setIsLoading(true);
     let data = new FormData();
-    data.append("page", 1); // Always fetch from page 1 to get all data
+    data.append("page", page);
+    data.append("start_date", PdfstartDate ? format(PdfstartDate, "yyyy-MM-dd") : "");
+    data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
     try {
       const response = await axios.post("sales-list?", data, {
         headers: {
@@ -181,12 +143,16 @@ const Salelist = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      setTableData(response.data.data);
+      const responseData = response.data.data;
+      setTableData(responseData);
+      // Extract and set total count for pagination
+      const totalCount = responseData?.length > 0 ? Number(responseData[0].count) : 0;
+      setTotalRecords(totalCount);
       setIsLoading(false);
     } catch (error) {
       console.error("API error:", error);
-
+      setTableData([]);
+      setTotalRecords(0);
       setIsLoading(false);
     }
   };
@@ -403,6 +369,55 @@ const Salelist = () => {
                   style={{ borderColor: "var(--color2)" }}
                 ></div>
               </div>
+              <div className="firstrow px-4">
+                <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
+                  <div className="detail flex flex-col">
+                    <span className="text-gray-500 block">Start Date</span>
+                    <div className="" style={{ width: "100%" }}>
+                      <DatePicker
+                        className="custom-datepicker_mn"
+                        selected={PdfstartDate}
+                        onChange={(newDate) => setPdfStartDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div className="detail flex flex-col">
+                    <span className="text-gray-500 block">End Date</span>
+                    <div className="" style={{ width: "100%" }}>
+                      <DatePicker
+                        className="custom-datepicker_mn"
+                        selected={PdfendDate}
+                        onChange={(newDate) => setPdfEndDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      alignItems: "end",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      className=""
+                      size="small"
+                      style={{
+                        minHeight: "38px",
+                        alignItems: "center",
+                        background: "var(--color1)",
+                      }}
+                      onClick={() => saleBillList(currentPage)}
+                    >
+                      <SwapVertIcon size="large" style={{ color: "white", fontSize: "20px" }} />
+                      Filter
+                    </Button>
+                  </div>
+                </div>
+              </div>
               <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
                 <table
                   className="w-full border-collapse custom-table"
@@ -445,7 +460,7 @@ const Salelist = () => {
                     </tr>
                   </thead>
                   <tbody style={{ background: "#3f621217" }}>
-                    {filteredList.length === 0 ? (
+                    {paginatedData.length === 0 ? (
                       <tr>
                         <td
                           colSpan={columns.length + 2}
@@ -459,7 +474,7 @@ const Salelist = () => {
                         </td>
                       </tr>
                     ) : (
-                      filteredList.map((row, index) => {
+                      paginatedData.map((row, index) => {
                         return (
                           <tr key={row.id}>
                             <td style={{ borderRadius: "10px 0 0 10px" }}>

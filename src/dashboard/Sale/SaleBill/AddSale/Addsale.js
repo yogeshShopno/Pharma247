@@ -176,6 +176,7 @@ const Addsale = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef1 = useRef(null); // Reference for table container
+  const rowRefs = useRef([]); // Refs for each row
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
   const inputRefs = useRef([]);
@@ -209,25 +210,23 @@ const Addsale = () => {
   // Handle keyboard navigation (ArrowUp, ArrowDown, Enter)
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!ItemSaleList?.sales_item?.length || isVisible) return;
+      // Prevent up/down selection in tableRef1 if tableRef is open
+      if (isVisible && value && !batch) return;
 
+      if (!ItemSaleList?.sales_item?.length) return;
       const isInputFocused = document.activeElement.tagName === "INPUT";
       if (isInputFocused) return;
 
-      e.preventDefault(); // Prevent default scrolling behavior
-
+      e.preventDefault();
       setSelectedIndex((prevIndex) => {
         if (prevIndex === -1) {
-          // If no row is selected, start selection
           return e.key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1;
         }
-
         if (e.key === "ArrowDown") {
           return Math.min(prevIndex + 1, ItemSaleList.sales_item.length - 1);
         } else if (e.key === "ArrowUp") {
           return Math.max(prevIndex - 1, 0);
         }
-
         return prevIndex;
       });
 
@@ -239,7 +238,16 @@ const Addsale = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [ItemSaleList.sales_item, selectedIndex]);
+  }, [ItemSaleList.sales_item, selectedIndex, isVisible, value, batch]);
+
+  // Focus and scroll selected row into view when selectedIndex changes
+  useEffect(() => {
+    if (selectedIndex !== -1 && rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex].focus();
+      rowRefs.current[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedIndex, ItemSaleList?.sales_item?.length]);
+
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
@@ -252,6 +260,7 @@ const Addsale = () => {
       switch (key) {
         case "s":
           setBillSaveDraft("1");
+
           handleSubmit("1");
 
           break;
@@ -926,20 +935,6 @@ const Addsale = () => {
     }
   };
 
-  const handleDraft = () => {
-    const newErrors = {};
-    if (!customer) {
-      newErrors.customer = "Please select Customer";
-    } else if (ItemSaleList?.sales_item.length == 0) {
-      newErrors.item = "Please Add any Item in Sale Bill";
-      toast.error("Please Add any Item in Sale Bill");
-    }
-    setError(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
-    draftSaleData();
-  };
 
   const handleEditClick = (item) => {
     if (!item) return; // Ensure the item is valid.
@@ -1163,27 +1158,46 @@ const Addsale = () => {
   };
 
   const handleSubmit = (draft) => {
+    console.log("Submit called with draft:", draft);
+    console.log("Current state:", {
+      customer,
+      totalAmount,
+      loyaltyVal,
+      ItemSaleList: ItemSaleList?.sales_item?.length
+    });
+    
     setUnsavedItems(false);
     const newErrors = {};
+    
+    // Common validation for both Save and Draft
     if (!customer) {
       newErrors.customer = "Please select Customer";
     }
-    if (totalAmount < 1) {
-      newErrors.totalAmount = "Total Amount must be greater than 0";
-      toast.error("Total Amount must be greater than 0");
-    }
-    if (loyaltyVal > totalAmount) {
-      newErrors.totalAmount =
-        "Total Amount must be greater than Loyalty points";
-      toast.error("Total Amount must be greater than Loyalty points");
-    } else if (ItemSaleList?.sales_item.length == 0) {
+    
+    if (ItemSaleList?.sales_item.length == 0) {
       newErrors.item = "Please Add any Item in Sale Bill";
       toast.error("Please Add any Item in Sale Bill");
     }
+    
+    // Stricter validation only for Save (draft = "1")
+    if (draft === "1") {
+      if (totalAmount < 1) {
+        newErrors.totalAmount = "Total Amount must be greater than 0";
+        toast.error("Total Amount must be greater than 0");
+      }
+      if (loyaltyVal > totalAmount) {
+        newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
+        toast.error("Total Amount must be greater than Loyalty points");
+      }
+    }
+    
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
+      console.log("Validation errors:", newErrors);
       return;
     }
+    
+    console.log("Proceeding to submitSaleData with draft:", draft);
     submitSaleData(draft);
   };
   const submitSaleData = async (draft) => {
@@ -1238,8 +1252,8 @@ const Addsale = () => {
     data.append("discount", discount ? discount : "");
     data.append("total_gst", totalgst || "");
     data.append("roylti_point", loyaltyVal || 0);
-    data.append("previous_loylti_point ", calculatedPreviousLoyaltyPoint || 0);
-    data.append("today_loylti_point  ", todayLoyltyPoint || 0);
+    data.append("previous_loylti_point", calculatedPreviousLoyaltyPoint || 0);
+    data.append("today_loylti_point", todayLoyltyPoint || 0);
     data.append("draft_save", !draft ? "1" : draft);
 
     try {
@@ -1366,55 +1380,7 @@ const Addsale = () => {
     }
   };
 
-  const draftSaleData = async () => {
-    let data = new FormData();
-    data.append(
-      "bill_no",
-      localStorage.getItem("BillNo") ? localStorage.getItem("BillNo") : ""
-    );
-    data.append("customer_id", customer.id ? customer.id : "");
-    data.append("status", "Draft");
-    data.append("bill_date", selectedDate ? selectedDate : "");
-    data.append("customer_address", address || "");
-    data.append("doctor_id", doctor.id ? doctor.id : "");
-    data.append("igst", "0");
-    data.append("cgst", "0");
-    data.append("sgst", "0");
-    data.append("given_amount", givenAmt || 0);
-    data.append("due_amount", dueAmount || 0);
-    data.append("total_base", totalBase);
-    data.append("pickup", pickup ? pickup : "");
-    data.append("owner_name", "0");
-    data.append("payment_name", paymentType ? paymentType : "");
-    data.append(
-      "product_list",
-      JSON.stringify(ItemSaleList.sales_item)
-        ? JSON.stringify(ItemSaleList.sales_item)
-        : ""
-    );
-    data.append("net_amount", netAmount.toFixed(2));
-    data.append("other_amount", otherAmt || 0);
-    data.append("total_discount", finalDiscount ? finalDiscount : "");
-    data.append("other_amount", otherAmt || 0);
-    data.append("total_amount", totalAmount || 0);
-    try {
-      await axios
-        .post("create-sales", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          localStorage.removeItem("RandomNumber");
-          toast.success(response.data.message);
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
+
 
   const batchList = async () => {
     let data = new FormData();
@@ -1796,6 +1762,35 @@ const Addsale = () => {
       console.error("Invalid URL for the PDF");
     }
   };
+
+  // Add this handler near other handlers
+  const handleSearchInputKeyDown = (e) => {
+    const isArrowKey = e.key === "ArrowDown" || e.key === "ArrowUp";
+    // Only check if searchItem is falsy and no option is selected
+    if (!searchItem && !selectedOption && isArrowKey) {
+      if (tableRef1.current) {
+        tableRef1.current.focus();
+        setTimeout(() => document.activeElement.blur(), 0);
+      }
+      e.preventDefault();
+      return;
+    }
+  };
+
+  useEffect(() => {
+    // If the batch/option table is visible, blur tableRef1 if it's focused
+    if (isVisible && value && !batch && tableRef1.current) {
+      if (document.activeElement === tableRef1.current) {
+        tableRef1.current.blur();
+      }
+    }
+  }, [isVisible, value, batch]);
+
+  useEffect(() => {
+    if (isVisible && value && !batch) {
+      setSelectedIndex(-1); // Unselect any row in tableRef1
+    }
+  }, [isVisible, value, batch]);
 
   return (
     <>
@@ -2407,6 +2402,11 @@ const Addsale = () => {
                                       <TextField
                                         {...params}
                                         inputRef={searchInputRef}
+                                        onKeyDown={handleSearchInputKeyDown}
+                                        onFocus={() => {
+                                          setIsEditMode(false);
+                                          setSelectedIndex(-1);
+                                        }}
                                         variant="outlined"
                                         id="searchResults"
                                         autoFocus
@@ -2418,7 +2418,6 @@ const Addsale = () => {
                                             width: 450,
                                             fontSize: "1.2rem",
                                           },
-
                                           startAdornment: (
                                             <InputAdornment position="start">
                                               <SearchIcon
@@ -2738,18 +2737,38 @@ const Addsale = () => {
                     ref={tableRef1}
                     tabIndex={0}
                     style={{ background: "#F5F5F5", padding: "10px 15px" }}
+                    onKeyDown={(e) => {
+                      const rows = ItemSaleList?.sales_item || [];
+                      if (!rows.length) return;
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
+                      } else if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
+                      } else if (e.key === "Enter" && selectedIndex !== -1) {
+                        e.preventDefault();
+                        const selectedRow = rows[selectedIndex];
+                        if (selectedRow) {
+                          handleEditClick(selectedRow);
+                        }
+                      }
+                    }}
+                    onBlur={() => setSelectedIndex(-1)}
                   >
                     <tbody>
                       {ItemSaleList?.sales_item?.map((item, index) => (
                         <tr
                           key={item.id}
+                          ref={el => rowRefs.current[index] = el}
                           style={{ whiteSpace: "nowrap" }}
                           onClick={() => {
-                            handleEditClick(item);
                             setSelectedIndex(index);
+                            handleEditClick(item);
                           }}
-                          className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                          className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                          tabIndex={-1}
+                          onFocus={() => setSelectedIndex(index)}
                         >
                           <td
                             style={{

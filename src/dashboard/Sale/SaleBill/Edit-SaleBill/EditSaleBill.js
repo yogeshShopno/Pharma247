@@ -135,7 +135,7 @@ const EditSaleBill = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
-  const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
+  const rowRefs = useRef([]); // Refs for each row
 
   const inputRefs = useRef([]);
   const dateRefs = useRef([]);
@@ -146,8 +146,12 @@ const EditSaleBill = () => {
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
   useEffect(() => {
-    const handleTableFocus = () => setAutocompleteDisabled(false);
-    const handleTableBlur = () => setAutocompleteDisabled(true);
+    const handleTableFocus = () => {
+      // No longer needed
+    };
+    const handleTableBlur = () => {
+      // No longer needed
+    };
 
     if (tableRef.current) {
       tableRef.current.addEventListener("focus", handleTableFocus);
@@ -1008,6 +1012,14 @@ const EditSaleBill = () => {
     }
   }, [isVisible, batchListData]);
 
+  // Focus and scroll selected row into view when selectedIndex changes
+  useEffect(() => {
+    if (selectedIndex !== -1 && rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex].focus();
+      rowRefs.current[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedIndex, saleAllData?.sales_item?.length]);
+
   return (
     <>
       <div>
@@ -1717,6 +1729,25 @@ const EditSaleBill = () => {
                         className="p-30 w-full border-collapse custom-table"
                         ref={tableRef}
                         tabIndex={0}
+                        style={{ background: "#F5F5F5", padding: "10px 15px" }}
+                        onKeyDown={(e) => {
+                          const rows = saleAllData?.sales_item || [];
+                          if (!rows.length) return;
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
+                          } else if (e.key === "Enter" && selectedIndex !== -1) {
+                            e.preventDefault();
+                            const selectedRow = rows[selectedIndex];
+                            if (selectedRow) {
+                              handleEditClick(selectedRow);
+                            }
+                          }
+                        }}
+                        onBlur={() => setSelectedIndex(-1)}
                       >
                         <tbody>
                           <tr>
@@ -1725,13 +1756,15 @@ const EditSaleBill = () => {
                           {saleAllData?.sales_item?.map((item, index) => (
                             <tr
                               key={item.id}
-                              className={` cursor-pointer flex justify-between ${
-                                index === selectedIndex ? "highlighted-row" : ""
-                              }`}
+                              ref={el => rowRefs.current[index] = el}
+                              style={{ whiteSpace: "nowrap" }}
                               onClick={() => {
-                                handleEditClick(item);
                                 setSelectedIndex(index);
+                                handleEditClick(item);
                               }}
+                              className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                              tabIndex={-1}
+                              onFocus={() => setSelectedIndex(index)}
                             >
                               <td
                                 style={{
@@ -1744,8 +1777,8 @@ const EditSaleBill = () => {
                                   style={{ color: "var(--color1)" }}
                                   className="cursor-pointer"
                                   onClick={(e) => {
-                                    e.stopPropagation(); // Prevents row click
-                                    handleEditClick(item); // Explicitly set value for editing
+                                    e.stopPropagation();
+                                    handleEditClick(item);
                                   }}
                                 />
 
@@ -1753,7 +1786,7 @@ const EditSaleBill = () => {
                                   className="delete-icon"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    deleteOpen(item.id); // Only triggers delete
+                                    deleteOpen(item.id);
                                   }}
                                 />
                                 {item.iteam_name}

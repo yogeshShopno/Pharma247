@@ -210,7 +210,7 @@ const EditPurchaseBill = () => {
       event.preventDefault(); // Prevent default browser behavior
 
       if (event.key.toLowerCase() === "s") {
-        handleSubmit("1");
+        handleSubmit();
       } else if (event.key.toLowerCase() === "g") {
 
         handleSubmit("0");
@@ -223,10 +223,9 @@ const EditPurchaseBill = () => {
         setValue(null);
         setSelectedOption(null);
         // clear Autocomplete selected option
-        setAutocompleteKey(prevKey => prevKey + 1);
-
+    
         setTimeout(() => {
-          inputRefs.current[0]?.focus();
+          inputRefs.current[2]?.focus();
         }, 50);
       }
     };
@@ -252,8 +251,8 @@ const EditPurchaseBill = () => {
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
 
-  const { id, randomNumber } = useParams();
-  // const {  } = useParams();
+  const { id, randomNumber: paramRandomNumber } = useParams();
+  const randomNumber = paramRandomNumber || localStorage.getItem("RandomNumber");
 
   useEffect(() => {
     const initialize = async () => {
@@ -425,45 +424,38 @@ const EditPurchaseBill = () => {
   /*<=============================================================================== caculation =======================================================================> */
 
   useEffect(() => {
-    if (!qty || !ptr || !disc || !gst || !free) {
-      console.warn("One or more dependencies are undefined");
-      return;
-    }
-    /*<===================================================================== Calculate discount ==========================================================================> */
+    // Convert values to numbers, defaulting to 0 if undefined/null/empty
+    const numericQty = parseFloat(qty) || 0;
+    const numericPtr = parseFloat(ptr) || 0;
+    const numericDisc = parseFloat(disc) || 0;
+    const numericGst = parseFloat(gst) || 0;
+    const numericFree = parseFloat(free) || 0;
+    const numericMrp = parseFloat(mrp) || 0;
 
-    const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+    /*<===================================================================== Calculate discount ==========================================================================> */
+    const totalSchAmt = parseFloat(((numericPtr * numericDisc) / 100) * numericQty).toFixed(2);
     setSchAmt(totalSchAmt);
 
     /*<===================================================================== Calculate totalBase ==========================================================================> */
-
-    const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
-    setItemTotalAmount(0);
+    const totalBase = parseFloat((numericPtr * numericQty - totalSchAmt).toFixed(2));
     setBase(totalBase);
 
     /*<====================================================================== Calculate totalAmount =======================================================================> */
-    const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst) / 100).toFixed(2)
-    );
-    if (totalAmount) {
-      setItemTotalAmount(totalAmount);
-    } else {
-      setItemTotalAmount(0);
-    }
+    const totalAmount = parseFloat((totalBase + (totalBase * numericGst) / 100).toFixed(2));
+    setItemTotalAmount(totalAmount);
 
     /*<================================================================================= Net Rate calculation ==============================================================> */
-
-    const numericQty = parseFloat(qty) || 0;
-    const numericFree = parseFloat(free) || 0;
-    const netRate = parseFloat(
-      (totalAmount / (numericQty + numericFree)).toFixed(2)
-    );
+    const netRate = parseFloat((totalAmount / (numericQty + numericFree)).toFixed(2));
     setNetRate(netRate);
 
     /*<============================================================================= Margin calculation =====================================================================> */
-
-    const margin = parseFloat((((mrp - netRate) / mrp) * 100).toFixed(2));
-    setMargin(margin);
-  }, [qty, ptr, disc, gst, free, ItemTotalAmount]);
+    if (numericMrp > 0) {
+      const margin = parseFloat((((numericMrp - netRate) / numericMrp) * 100).toFixed(2));
+      setMargin(margin);
+    } else {
+      setMargin(0);
+    }
+  }, [qty, ptr, disc, gst, free, mrp]);
 
   // Call the combined function when you want to initiate the data fetching
   useEffect(() => {
@@ -777,7 +769,7 @@ const EditPurchaseBill = () => {
       }
     }
     data.append("unit_id", unit);
-    data.append("hsn_code", HSN);
+    data.append("hsn_code", HSN? HSN : 0);
     data.append("random_number", randomNumber);
     data.append("unit", !unit ? 0 : unit);
     data.append("batch_number", !batch ? 0 : batch);
@@ -846,13 +838,14 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
-      setIsSubmitting(false);
+    
 
     } catch (e) {
       console.error("API error:", error);
       setUnsavedItems(false);
+    
+    }finally{
       setIsSubmitting(false);
-
     }
   };
 
@@ -1015,13 +1008,14 @@ const EditPurchaseBill = () => {
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
+          removeItem()
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
   /*<================================================================= submit purchase bill   ============================================================> */
-  const handleSubmit = (draft) => {
+  const handleSubmit = async () => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -1036,9 +1030,18 @@ const EditPurchaseBill = () => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    updatePurchaseRecord(draft);
+
+    // Fetch latest purchase data before submitting
+    const distributors = distributorList.length ? distributorList : await listDistributor();
+    await purchaseBillGetByID(distributors);
+
+    // Wait a tick to ensure state is updated (React state is async)
+    setTimeout(() => {
+      updatePurchaseRecord();
+    }, 0);
   };
-  const updatePurchaseRecord = async (draft) => {
+  const updatePurchaseRecord = async () => {
+    console.log("purches_data", purchase.item_list);    
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1050,14 +1053,16 @@ const EditPurchaseBill = () => {
     data.append("owner_type", localStorage.getItem("UserName"));
     data.append("user_id", localStorage.getItem("userId"));
     data.append("payment_type", paymentType);
-    data.append("total_amount", purchase.total_amount);
-    data.append("net_amount", netAmount);
-    data.append("total_margin", purchase.total_margin);
-    data.append("total_gst", purchase?.total_gst);
-    data.append("round_off", roundOffAmount);
-    data.append("cn_amount", finalCnAmount);
+    data.append("total_amount", Number(purchase.total_amount) || 0);
+    data.append("net_amount", Number(netAmount) || 0);
+    data.append("total_margin", Number(purchase.total_margin) || 0);
+    data.append("total_gst", Number(purchase?.total_gst) || 0);
+    data.append("round_off", Number(roundOffAmount) || 0);
+    data.append("cn_amount", Number(finalCnAmount) || 0);
+    console.log("typeof purches_data", typeof purchase.item_list, purchase.item_list);
+    console.log("typeof JSON purches_data", typeof JSON.stringify(purchase.item_list), JSON.stringify(purchase.item_list));
     data.append("purches_data", JSON.stringify(purchase.item_list));
-    data.append("draft_save", !draft ? "1" : draft);
+    data.append("draft_save",  "1" );
 
     const params = {
       id: id,
@@ -1071,12 +1076,14 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
+          if(response?.data?.status === 200){
           console.log("response", response?.data?.message);
           toast.success(response?.data?.message);
-          setTimeout(() => {
-            history.push("/purchase/purchasebill");
-          }, 2000);
-        });
+          // setTimeout(() => {
+          //   history.push("/purchase/purchasebill");
+          // }, 2000)
+          }
+        })
     } catch (error) {
       toast.error(error.data.message);
       console.error("API error:", error);
@@ -1092,6 +1099,7 @@ const EditPurchaseBill = () => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
+    inputRefs.current[3].focus();
 
     if (selectedEditItem) {
       setSearchItem(selectedEditItem.item_name);
@@ -1466,7 +1474,7 @@ const EditPurchaseBill = () => {
                   variant="contained"
                   className="cn_fls"
                   color="primary"
-                  onClick={() => handleSubmit("1")}
+                  onClick={handleSubmit}
                   style={{ background: "var(--color1)" }}
                 >
                   Update
@@ -1716,7 +1724,7 @@ const EditPurchaseBill = () => {
                                       {...params}
                                       // label="Search Item Name"
                                       autoFocus
-                                      inputRef={(el) => (inputRefs.current[0] = el)}
+                                      inputRef={(el) => (inputRefs.current[2] = el)}
                                       onKeyDown={(e) => {
                                         const { key } = e;
                                         const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);

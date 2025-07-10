@@ -2058,7 +2058,7 @@ const Addsale = () => {
                       options={customerDetails}
                       getOptionLabel={(option) =>
                         option.name
-                          ? `${option.name} [${option.phone_number}] [${option.roylti_point}]`
+                          ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
                           : option.phone_number || ""
                       }
                       isOptionEqualToValue={(option, value) =>
@@ -2082,7 +2082,7 @@ const Addsale = () => {
                         <ListItem {...props}>
                           <ListItemText
                             primary={`${option.name} `}
-                            secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point}`}
+                            secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
                           />
                         </ListItem>
                       )}

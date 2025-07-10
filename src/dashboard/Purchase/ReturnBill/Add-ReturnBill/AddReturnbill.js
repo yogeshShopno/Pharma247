@@ -143,15 +143,41 @@ const AddReturnbill = () => {
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
+      console.log("enter", index); 
       e.preventDefault();
       const nextElement = inputRefs.current[index + 1];
 
-      // Handle DatePicker separately (access internal input)
-      if (nextElement?.setFocus) {
-        nextElement.setFocus();
-      } else {
-        nextElement?.focus();
+      console.log("Next element:", nextElement);
+      console.log("All refs:", inputRefs.current);
+
+      if (!nextElement) {
+        // If no next element, focus the first element or submit
+        console.log("No next element, focusing first element");
+        if (inputRefs.current[0]) {
+          inputRefs.current[0].focus();
+        }
+        return;
       }
+
+      // Handle different input types
+      if (nextElement.focus) {
+        // Standard input elements
+        console.log("Focusing standard input");
+        nextElement.focus();
+      } else if (nextElement.querySelector) {
+        // For DatePicker or complex components, find the input inside
+        const input = nextElement.querySelector('input');
+        if (input) {
+          console.log("Focusing input inside component");
+          input.focus();
+        }
+      } else if (nextElement.setFocus) {
+        // For components with custom focus methods
+        console.log("Using setFocus method");
+        nextElement.setFocus();
+      }
+      
+      console.log("Next element focused:", index + 1);
     }
   };
 
@@ -566,7 +592,7 @@ const AddReturnbill = () => {
     setIsEdit(false);
   };
 
-  const handleSubmit = (draft) => {
+  const handleSubmit = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -583,12 +609,12 @@ const AddReturnbill = () => {
       return;
     }
 
-    submitPurchaseData(draft);
+    submitPurchaseData();
     setIsOpenBox(false);
     setPendingNavigation(null);
   };
 
-  const submitPurchaseData = async (draft) => {
+  const submitPurchaseData = async () => {
     const hasUncheckedItems = returnItemList?.item_list.every(
       (item) => item.iss_check === false
     );
@@ -628,7 +654,7 @@ const AddReturnbill = () => {
       data.append("round_off", roundOff ? roundOff : "");
       data.append("start_date", startDate ? format(startDate, "MM/yy") : "");
       data.append("end_date", endDate ? format(endDate, "MM/yy") : "");
-      data.append("draft_save", !draft ? "1" : draft);
+      data.append("draft_save", "1");
 
       try {
         await axios
@@ -752,7 +778,7 @@ const AddReturnbill = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        .then((response) => {});
+        .then((response) => { });
     } catch (error) {
       console.error("API error:", error);
     }
@@ -894,7 +920,8 @@ const AddReturnbill = () => {
           >
             <div>
               <div
-                className="py-3 edit_purchs_pg"
+                className="py
+                -3 edit_purchs_pg"
                 style={{ display: "flex", gap: "4px" }}
               >
                 <div
@@ -944,36 +971,11 @@ const AddReturnbill = () => {
                     variant="contained"
                     className="edt_btn_ps"
                     style={{ background: "var(--color1)" }}
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => handleSubmit()}
                   >
                     Save
                   </Button>
-                  {isOpen && (
-                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                      <ul className="transition-all ">
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft(0);
-                            handleSubmit("1");
-                          }}
-                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                        >
-                          <SaveIcon />
-                          Save
-                        </li>
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft(1);
-                            handleSubmit("0");
-                          }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                        >
-                          <SaveAsIcon />
-                          Draft
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+
                 </div>
               </div>
               <div
@@ -1028,6 +1030,11 @@ const AddReturnbill = () => {
                           autoFocus
                         />
                       )}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.target.value) {
+                          handleKeyDown(e, 0);
+                        }
+                      }}
                     />
                   </div>
                   <div
@@ -1049,6 +1056,16 @@ const AddReturnbill = () => {
                         }}
                         ref={(el) => (inputRefs.current[1] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 1)}
+                        customInput={
+                          <input
+                            ref={(el) => {
+                              if (el) {
+                                inputRefs.current[1] = el;
+                              }
+                            }}
+                            onKeyDown={(e) => handleKeyDown(e, 1)}
+                          />
+                        }
                       />
                     </div>
                   </div>
@@ -1071,6 +1088,16 @@ const AddReturnbill = () => {
                         showMonthYearPicker
                         ref={(el) => (inputRefs.current[2] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 2)}
+                        customInput={
+                          <input
+                            ref={(el) => {
+                              if (el) {
+                                inputRefs.current[2] = el;
+                              }
+                            }}
+                            onKeyDown={(e) => handleKeyDown(e, 2)}
+                          />
+                        }
                       />
                     </div>
                   </div>
@@ -1091,6 +1118,16 @@ const AddReturnbill = () => {
                         showMonthYearPicker
                         ref={(el) => (inputRefs.current[3] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 3)}
+                        customInput={
+                          <input
+                            ref={(el) => {
+                              if (el) {
+                                inputRefs.current[3] = el;
+                              }
+                            }}
+                            onKeyDown={(e) => handleKeyDown(e, 3)}
+                          />
+                        }
                       />
                     </div>
                   </div>
@@ -1115,7 +1152,10 @@ const AddReturnbill = () => {
                       ref={(el) => (inputRefs.current[4] = el)}
                       onClick={() => filterData(searchItem)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") filterData(searchItem);
+                        if (e.key === "Enter") {
+                          filterData(searchItem);
+                          handleKeyDown(e, 4);
+                        }
                       }}
                     >
                       <FilterAltIcon
@@ -1188,6 +1228,17 @@ const AddReturnbill = () => {
                                       onChange={handleInputChange}
                                       variant="outlined"
                                       placeholder="Please search any items.."
+                                      inputRef={(el) => (inputRefs.current[5] = el)}
+                                      onKeyDown={e => {
+                                        if (e.key === "Enter") {
+                                          if (searchQuery) {
+                                            handleKeyDown(e, 5);
+                                          } else {
+                                            toast.error("Please search any items..");
+                                            e.preventDefault();
+                                          }
+                                        }
+                                      }}
                                       InputProps={{
                                         endAdornment: (
                                           <InputAdornment position="start">
@@ -1219,13 +1270,15 @@ const AddReturnbill = () => {
                                   );
                                   setUnit(value ? Number(value) : "");
                                 }}
+                                inputRef={(el) => (inputRefs.current[6] = el)}
                                 onKeyDown={(e) => {
-                                  if (
-                                    ["e", "E", ".", "+", "-", ","].includes(
-                                      e.key
-                                    )
-                                  ) {
-                                    e.preventDefault();
+                                  if (e.key === "Enter") {
+                                    if (unit && unit !== 0) {
+                                      handleKeyDown(e, 6);
+                                    } else {
+                                      toast.error("Please enter unit");
+                                      e.preventDefault();
+                                    }
                                   }
                                 }}
                               />
@@ -1241,9 +1294,14 @@ const AddReturnbill = () => {
                                 error={!!errors.batch}
                                 value={batch}
                                 sx={{ width: "100px" }}
-                                onChange={(e) => {
+                                                                onChange={(e) => {
                                   setBatch(e.target.value);
                                 }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleKeyDown(e, 13);
+                                  }
+                                }}                              
                               />
                             </td>
                             <td>
@@ -1259,6 +1317,11 @@ const AddReturnbill = () => {
                                 value={expiryDate}
                                 onChange={handleExpiryDateChange}
                                 placeholder="MM/YY"
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleKeyDown(e, 14);
+                                  }
+                                }}
                               />
                             </td>
                             <td>
@@ -1279,6 +1342,7 @@ const AddReturnbill = () => {
                                     setMRP(value ? Number(value) : "");
                                   }
                                 }}
+                                inputRef={(el) => (inputRefs.current[15] = el)}
                                 onKeyDown={(e) => {
                                   if (
                                     ["e", "E", "+", "-", ","].includes(e.key) ||
@@ -1286,6 +1350,9 @@ const AddReturnbill = () => {
                                       e.target.value.includes("."))
                                   ) {
                                     e.preventDefault();
+                                  }
+                                  if (e.key === "Enter") {
+                                    handleKeyDown(e, 15);
                                   }
                                 }}
                               />
@@ -1301,20 +1368,19 @@ const AddReturnbill = () => {
                                 // onKeyDown={handleKeyDown}
                                 error={!!errors.qty}
                                 value={qty}
+                                inputRef={(el) => (inputRefs.current[7] = el)}
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    ""
-                                  );
+                                  const value = e.target.value.replace(/[^0-9]/g, "");
                                   handleQtyChange(value ? Number(value) : "");
                                 }}
                                 onKeyDown={(e) => {
-                                  if (
-                                    ["e", "E", ".", "+", "-", ","].includes(
-                                      e.key
-                                    )
-                                  ) {
-                                    e.preventDefault();
+                                  if (e.key === "Enter") {
+                                    if (qty && qty !== 0) {
+                                      handleKeyDown(e, 7);
+                                    } else {
+                                      toast.error("Please enter quantity");
+                                      e.preventDefault();
+                                    }
                                   }
                                 }}
                               />
@@ -1324,26 +1390,19 @@ const AddReturnbill = () => {
                                 autoComplete="off"
                                 id="outlined-number"
                                 size="small"
-                                type="number"
-                                sx={{ width: "100px" }}
                                 value={free}
-                                // inputRef={inputRef6}
-                                // onKeyDown={handleKeyDown}
-                                error={!!errors.free}
+                                inputRef={(el) => (inputRefs.current[8] = el)}
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    ""
-                                  );
+                                  const value = e.target.value.replace(/[^0-9]/g, "");
                                   setFree(value ? Number(value) : "");
                                 }}
                                 onKeyDown={(e) => {
-                                  if (
-                                    ["e", "E", ".", "+", "-", ","].includes(
-                                      e.key
-                                    )
-                                  ) {
-                                    e.preventDefault();
+                                  if (e.key === "Enter") {
+                                    if (free !== "") {
+                                      handleKeyDown(e, 8);
+                                    } else {
+                                      toast.error("Please enter free quantity");
+                                    }
                                   }
                                 }}
                               />
@@ -1358,17 +1417,19 @@ const AddReturnbill = () => {
                                 // inputRef={inputRef7}
                                 // onKeyDown={handleKeyDown}
                                 value={ptr}
-                                error={!!errors.ptr}
+                                inputRef={(el) => (inputRefs.current[9] = el)}
+                                onChange={(e) => {
+                                  setPTR(e.target.value);
+                                }}
                                 onKeyDown={(e) => {
-                                  if (
-                                    ["e", "E", "+", "-", ","].includes(e.key) ||
-                                    (e.key === "." &&
-                                      e.target.value.includes("."))
-                                  ) {
-                                    e.preventDefault();
+                                  if (e.key === "Enter") {
+                                    if (ptr && ptr !== 0) {
+                                      handleKeyDown(e, 9);
+                                    } else {
+                                      toast.error("Please enter PTR");
+                                    }
                                   }
                                 }}
-                                onChange={(e) => setPTR(e.target.value)}
                               />
                             </td>
                             <td>
@@ -1381,22 +1442,18 @@ const AddReturnbill = () => {
                                 // inputRef={inputRef8}
                                 // onKeyDown={handleKeyDown}
                                 value={disc}
-                                error={!!errors.disc}
-                                onKeyDown={(e) => {
-                                  if (
-                                    ["e", "E", "+", "-", ","].includes(e.key) ||
-                                    (e.key === "." &&
-                                      e.target.value.includes("."))
-                                  ) {
-                                    e.preventDefault();
-                                  }
-                                }}
+                                inputRef={(el) => (inputRefs.current[10] = el)}
                                 onChange={(e) => {
-                                  const value = e.target.value;
-                                  if (Number(value) > 100) {
-                                    e.target.value = 100;
-                                  }
                                   handleSchAmt(e);
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    if (disc !== "") {
+                                      handleKeyDown(e, 10);
+                                    } else {
+                                      toast.error("Please enter CD");
+                                    }
+                                  }
                                 }}
                               />
                             </td>
@@ -1414,8 +1471,14 @@ const AddReturnbill = () => {
                                   ) {
                                     e.preventDefault();
                                   }
+                                  if (e.key === "Enter") {
+                                    handleKeyDown(e, 11);
+                                  }
                                 }}
-                                onChange={(e) => setGst(e.target.value)}
+                                onChange={(e) => {
+                                  setGst(e.target.value);
+                                }}
+                                inputRef={(el) => (inputRefs.current[11] = el)}
                                 size="small"
                                 displayEmpty
                                 error={!!errors.gst}
@@ -1429,14 +1492,17 @@ const AddReturnbill = () => {
                                 // onKeyDown={handleKeyDown}
                                 size="small"
                                 value={loc}
-                                error={!!errors.loc}
-                                sx={{ width: "100px" }}
+                                inputRef={(el) => (inputRefs.current[12] = el)} 
                                 onChange={(e) => {
                                   setLoc(e.target.value);
                                 }}
                                 onKeyDown={async (e) => {
                                   if (e.key === "Enter") {
                                     await EditReturn();
+                                    // After edit, focus back to the first field
+                                    if (inputRefs.current[0]) {
+                                      inputRefs.current[0].focus();
+                                    }
                                   }
                                 }}
                               />
@@ -1463,7 +1529,7 @@ const AddReturnbill = () => {
                   </table>
                   <>
                     <table
-                      className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                      className="p-30  w-full border-collapse custom-table"
                       ref={tableRef}
                       tabIndex={0}
                     >
@@ -1475,9 +1541,8 @@ const AddReturnbill = () => {
                               setSelectedIndex(index);
                               handleEditClick(item);
                             }}
-                            className={`cursor-pointer ${
-                              index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                            className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                              }`}
                           >
                             <td
                               style={{
@@ -1501,14 +1566,14 @@ const AddReturnbill = () => {
                               <BorderColorIcon
                                 style={{ color: "var(--color1)" }}
                               />
-                              <DeleteIcon
+                              {/* <DeleteIcon
                                 className="delete-icon"
                                 onClick={() => deleteOpen(item.id)}
-                              />
+                              /> */}
                               {item.item_name}
                             </td>
                             <td>{item.weightage}</td>
-                            <td>{item.batch_number}</td>
+                            <td>{item.batch_number}</td>  
                             <td>{item.expiry}</td>
                             <td>{item.mrp}</td>
                             <td>{item.qty}</td>
@@ -1614,7 +1679,7 @@ const AddReturnbill = () => {
                       size="lg"
                       position="bottom-center"
                       className="modal_amount"
-                      // style={{ width: "50%" }}
+                    // style={{ width: "50%" }}
                     >
                       <div
                         style={{
@@ -1724,8 +1789,8 @@ const AddReturnbill = () => {
                             {roundOff === "0.00"
                               ? roundOff
                               : roundOff < 0.49
-                              ? `- ${roundOff}`
-                              : `${parseFloat(1 - roundOff).toFixed(2)}`}
+                                ? `- ${roundOff}`
+                                : `${parseFloat(1 - roundOff).toFixed(2)}`}
                           </span>
                         </div>
 
@@ -1778,9 +1843,8 @@ const AddReturnbill = () => {
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsDelete ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1832,9 +1896,8 @@ const AddReturnbill = () => {
       <div
         id="modal"
         value={isOpenBox}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          isOpenBox ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1876,9 +1939,8 @@ const AddReturnbill = () => {
         <div
           id="modal"
           value={isOpenBox}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            isOpenBox ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

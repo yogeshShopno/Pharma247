@@ -298,7 +298,8 @@ const AddPurchaseBill = () => {
         case "m":
           removeItem();
           setSelectedEditItemId(null);
-          setSelectedIndex(0);
+          setSelectedIndex(-1);
+
           setSearchItem("");
           setValue("");
           setTimeout(() => {
@@ -985,7 +986,7 @@ const AddPurchaseBill = () => {
           },
         })
         .then((response) => {
-          if (response?.data?.alternative_item_check ) {
+          if (response?.data?.alternative_item_check) {
             return;
           }
           const batchData = response.data.data;
@@ -2035,8 +2036,14 @@ const AddPurchaseBill = () => {
           <div className="mt-4 ">
             <div className="firstrow flex gap-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full">
+
                 <div>
-                  <span className="heading mb-2">Distributor <span className="text-red-600">*</span></span>
+                  <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
+                    className="primary cursor-pointer"
+                    onClick={() => {
+                      setOpenAddDistributorPopUp(true);
+                    }}
+                  /></span>
 
                   <Autocomplete
                     value={distributor ?? ""}
@@ -2104,8 +2111,6 @@ const AddPurchaseBill = () => {
                     )}
                   />
 
-
-
                 </div>
                 {/* <div className="detail">
                 <span className="title mb-2">Sr No.</span>
@@ -2163,6 +2168,8 @@ const AddPurchaseBill = () => {
                       onChange={(newDate) => setSelectedDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       filterDate={(date) => !isDateDisabled(date)}
+                      ref={(el) => (inputRefs.current[2] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 2)}
                     />
                   </div>
                 </div>
@@ -2323,6 +2330,7 @@ const AddPurchaseBill = () => {
                                       {...params}
                                       value={searchItem?.iteam_name}
                                       inputRef={(el) => (inputRefs.current[2] = el)}
+                                      onFocus={() => setSelectedIndex(-1)}
                                       inputProps={{
                                         ...params.inputProps,
                                         style: { textTransform: 'uppercase' },

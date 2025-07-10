@@ -155,6 +155,47 @@ const EditReturnBill = () => {
     const submitButtonRef = useRef(null);
     const addButtonref = useRef(null);
 
+    const handleKeyDown = (e, index) => {
+        console.log("index", index);
+        if (e.key === "Enter") {
+            console.log("enter", index);
+            e.preventDefault();
+            const nextElement = inputRefs.current[index + 1];
+
+            console.log("Next element:", nextElement);
+            console.log("All refs:", inputRefs.current);
+
+            if (!nextElement) {
+                // If no next element, focus the first element or submit
+                console.log("No next element, focusing first element");
+                if (inputRefs.current[0]) {
+                    inputRefs.current[0].focus();
+                }
+                return;
+            }
+
+            // Handle different input types
+            if (nextElement.focus) {
+                // Standard input elements
+                console.log("Focusing standard input");
+                nextElement.focus();
+            } else if (nextElement.querySelector) {
+                // For DatePicker or complex components, find the input inside
+                const input = nextElement.querySelector('input');
+                if (input) {
+                    console.log("Focusing input inside component");
+                    input.focus();
+                }
+            } else if (nextElement.setFocus) {
+                // For components with custom focus methods
+                console.log("Using setFocus method");
+                nextElement.setFocus();
+            }
+
+            console.log("Next element focused:", index + 1);
+        }
+    };
+
     /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
 
@@ -197,6 +238,34 @@ const EditReturnBill = () => {
         document.addEventListener("keydown", handleKeyPress);
         return () => document.removeEventListener("keydown", handleKeyPress);
     }, [tableData, selectedIndex]);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+          if (!event.altKey) return; // Exit early if Alt is not pressed
+    
+          event.preventDefault(); // Prevent default browser behavior
+    
+          if (event.key.toLowerCase() === "s") {
+            // Only allow submission if data is loaded and not currently loading
+            if (!isLoading && distributor && distributor.id && billNo && billNo.trim() !== '' && tableData) {
+              // Add a small delay to ensure state updates are complete
+              setTimeout(() => {
+                handleReturnUpdate();
+              }, 100);
+            } else {
+              toast.error("Please wait for data to load completely");
+            }
+          
+          } else if (event.key.toLowerCase() === "m") {
+            inputRefs.current[2]?.focus();
+          }
+        };
+    
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+          document.removeEventListener("keydown", handleKeyDown);
+        };
+      }, [isLoading, distributor, billNo, tableData]);
 
 
     useEffect(() => {
@@ -543,6 +612,13 @@ const EditReturnBill = () => {
         setInitialTotalStock(item.total_stock);
         setIsEditMode(true);
 
+        // Focus the unit field after the next render
+        setTimeout(() => {
+            if (inputRefs.current[3]) {
+                inputRefs.current[3].focus();
+            }
+        }, 100);
+
 
     };
 
@@ -683,15 +759,20 @@ const EditReturnBill = () => {
         setUnsavedItems(true)
         setItemId(Id);
     };
-    const handleReturnUpdate = (draft) => {
+    const handleReturnUpdate = () => {
 
         const newErrors = {};
-        if (!distributor) {
+        
+        // Check if data is loaded and distributor exists
+        if (!distributor || !distributor.id) {
             newErrors.distributor = 'Please select Distributor';
         }
-        if (!billNo) {
+        
+        // Check if billNo exists and is not empty
+        if (!billNo || billNo.trim() === '') {
             newErrors.billNo = 'Bill No is Required';
         }
+        
         // if(checkedItems.length===0){
         //     newErrors.checkedItems = 'Item is not selected';
         //     toast.error("Item is not selected");
@@ -702,13 +783,13 @@ const EditReturnBill = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        updatePurchaseRecord(draft);
+        updatePurchaseRecord();
         setIsOpenBox(false)
         setPendingNavigation(null);
         setUnsavedItems(false)
     }
 
-    const updatePurchaseRecord = async (draft) => {
+    const updatePurchaseRecord = async () => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
         data.append("bill_no", billNo == null ? "0" : billNo);
@@ -727,7 +808,7 @@ const EditReturnBill = () => {
         data.append("purches_return", JSON.stringify(tableData?.item_list));
         data.append('id', id == null ? "0" : id)
         data.append('round_off', roundOff == null ? "0" : roundOff)
-        data.append("draft_save", !draft ? "1" : draft);
+        data.append("draft_save",  "1" );
 
         const params = {
             id: id,
@@ -867,39 +948,10 @@ const EditReturnBill = () => {
                                     variant="contained"
                                     className='edt_btn_ps'
 
-                                    onClick={() => setIsOpen(!isOpen)} >
+                                    onClick={() =>handleReturnUpdate()} >
                                     Update
                                 </Button>
-                                {isOpen && (
-                                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                                        <ul className="transition-all ">
-
-                                            <li
-                                                onClick={() => {
-                                                    setBillSaveDraft("1")
-                                                    handleReturnUpdate("1")
-                                                }}
-                                                className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                                            >
-                                                <SaveIcon />
-
-
-                                                Save
-                                            </li>
-                                            <li
-                                                onClick={() => {
-                                                    setBillSaveDraft("0")
-                                                    handleReturnUpdate("0")
-                                                }}
-                                                className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                                            >
-                                                <SaveAsIcon />
-
-                                                Draft
-                                            </li>
-                                        </ul>
-                                    </div>
-                                )}
+                           
 
                             </div>
                         </div>
@@ -1114,8 +1166,16 @@ const EditReturnBill = () => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
                                                             setUnit(value ? Number(value) : "");
                                                         }}
+                                                        inputRef={(el) => (inputRefs.current[3] = el)}
                                                         onKeyDown={(e) => {
-
+                                                            if (e.key === "Enter") {
+                                                                if (unit && unit !== 0) {
+                                                                    handleKeyDown(e, 3);
+                                                                } else {
+                                                                    toast.error("Please enter unit");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '.', '+', '-', ','].includes(e.key)
                                                             ) {
@@ -1138,6 +1198,7 @@ const EditReturnBill = () => {
                                                         value={batch}
                                                         // onChange={handleExpiryDateChange}
                                                         placeholder="MM/YY"
+                                                  
                                                     />
 
                                                 </td>
@@ -1155,6 +1216,7 @@ const EditReturnBill = () => {
                                                         value={expiryDate}
                                                         // onChange={handleExpiryDateChange}
                                                         placeholder="MM/YY"
+                                                        
                                                     />
                                                 </td>
                                                 <td>
@@ -1177,6 +1239,7 @@ const EditReturnBill = () => {
                                                             }
                                                         }}
                                                         onKeyDown={(e) => {
+                                                            
                                                             if (
                                                                 ['e', 'E', '+', '-', ','].includes(e.key) ||
                                                                 (e.key === '.' && e.target.value.includes('.'))
@@ -1202,8 +1265,16 @@ const EditReturnBill = () => {
                                                             handleQtyChange(value ? Number(value) : "");
                                                         }}
 
+                                                        inputRef={(el) => (inputRefs.current[4] = el)}
                                                         onKeyDown={(e) => {
-
+                                                            if (e.key === "Enter") {
+                                                                if (qty && qty !== 0) {
+                                                                    handleKeyDown(e, 4);
+                                                                } else {
+                                                                    toast.error("Please enter quantity");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '.', '+', '-', ','].includes(e.key)
                                                             ) {
@@ -1231,8 +1302,16 @@ const EditReturnBill = () => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
                                                             setFree(value ? Number(value) : "");
                                                         }}
+                                                        inputRef={(el) => (inputRefs.current[5] = el)}
                                                         onKeyDown={(e) => {
-
+                                                            if (e.key === "Enter") {
+                                                                if (free !== "") {
+                                                                    handleKeyDown(e, 5);
+                                                                } else {
+                                                                    toast.error("Please enter free quantity");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '.', '+', '-', ','].includes(e.key)
                                                             ) {
@@ -1253,7 +1332,16 @@ const EditReturnBill = () => {
                                                         // onKeyDown={handleKeyDown}
                                                         value={ptr}
                                                         error={!!errors.ptr}
+                                                        inputRef={(el) => (inputRefs.current[6] = el)}
                                                         onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                if (ptr && ptr !== 0) {
+                                                                    handleKeyDown(e, 6);
+                                                                } else {
+                                                                    toast.error("Please enter PTR");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '+', '-', ','].includes(e.key) ||
                                                                 (e.key === '.' && e.target.value.includes('.'))
@@ -1281,7 +1369,16 @@ const EditReturnBill = () => {
                                                         value={disc}
                                                         error={!!errors.disc}
 
+                                                        inputRef={(el) => (inputRefs.current[7] = el)}
                                                         onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                if (disc !== "") {
+                                                                    handleKeyDown(e, 7);
+                                                                } else {
+                                                                    toast.error("Please enter CD");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '+', '-', ','].includes(e.key) ||
                                                                 (e.key === '.' && e.target.value.includes('.'))
@@ -1304,7 +1401,16 @@ const EditReturnBill = () => {
                                                         id="dropdown"
                                                         value={gst}
                                                         sx={{ width: '100px' }}
+                                                        inputRef={(el) => (inputRefs.current[8] = el)}
                                                         onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                if (gst && gst !== "") {
+                                                                    handleKeyDown(e, 8);
+                                                                } else {
+                                                                    toast.error("Please enter GST");
+                                                                    e.preventDefault();
+                                                                }
+                                                            }
                                                             if (
                                                                 ['e', 'E', '+', '-', ','].includes(e.key) ||
                                                                 (e.key === '.' && e.target.value.includes('.'))
@@ -1332,10 +1438,14 @@ const EditReturnBill = () => {
                                                         // error={!!errors.loc}
                                                         sx={{ width: '100px' }}
                                                         onChange={(e) => { setLoc(e.target.value) }}
+                                                        inputRef={(el) => (inputRefs.current[9] = el)}
                                                         onKeyDown={async (e) => {
                                                             if (e.key === 'Enter') {
                                                                 await EditReturnItem();
-
+                                                                // After edit, focus back to the first field
+                                                                if (inputRefs.current[0]) {
+                                                                    inputRefs.current[0].focus();
+                                                                }
                                                             }
                                                         }}
                                                     />

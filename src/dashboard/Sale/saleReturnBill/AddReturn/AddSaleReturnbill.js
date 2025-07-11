@@ -29,22 +29,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 const Salereturn = () => {
     const token = localStorage.getItem("token")
-    const inputRef1 = useRef();
-    const inputRef2 = useRef();
-    const inputRef3 = useRef();
-    const inputRef4 = useRef();
-    const inputRef5 = useRef();
-    const inputRef6 = useRef();
-    const inputRef7 = useRef();
-    const inputRef8 = useRef();
-    const inputRef9 = useRef();
-    const inputRef10 = useRef();
-    const inputRef11 = useRef();
-    const inputRef12 = useRef();
-    const inputRef13 = useRef();
-    const inputRef14 = useRef();
-    const inputRef15 = useRef();
-    const inputRef16 = useRef();
+
     const [item, setItem] = useState('')
     const [billNo, setbillNo] = useState('')
     const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -457,6 +442,9 @@ const Salereturn = () => {
                 setTotalNetRate(response.data.data.total_net_rate)
                 setMarginNetProfit(response.data.data.margin_net_profit)
                 setIsLoading(false);
+                setTimeout(() => {
+                    inputRefs?.current[5]?.focus();
+                }, 0);
             })
         } catch (error) {
             setIsLoading(false);
@@ -525,39 +513,18 @@ const Salereturn = () => {
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (event.target === inputRef1.current) {
-                inputRef2.current.focus();
-            } else if (event.target === inputRef2.current) {
-                inputRef3.current.focus();
-            } else if (event.target === inputRef3.current) {
-                inputRef4.current.focus();
-            } else if (event.target === inputRef4.current) {
-                inputRef5.current.focus();
-            } else if (event.target === inputRef5.current) {
-                inputRef6.current.focus();
-            } else if (event.target === inputRef6.current) {
-                inputRef7.current.focus();
-            } else if (event.target === inputRef7.current) {
-                inputRef8.current.focus();
-            } else if (event.target === inputRef8.current) {
-                inputRef9.current.focus();
-            } else if (event.target === inputRef9.current) {
-                inputRef10.current.focus();
-            } else if (event.target === inputRef10.current) {
-                inputRef11.current.focus();
-            } else if (event.target === inputRef11.current) {
-                inputRef12.current.focus();
-            } else if (event.target === inputRef12.current) {
-                inputRef13.current.focus();
-            } else if (event.target === inputRef13.current) {
-                inputRef14.current.focus();
-            } else if (event.target === inputRef14.current) {
-                inputRef15.current.focus();
-            } else if (event.target === inputRef15.current) {
-                inputRef16.current.focus();
+            const currentIndex = inputRefs.current.findIndex(ref => ref === event.target);
+            if (currentIndex !== -1) {
+                for (let i = currentIndex + 1; i < inputRefs.current.length; i++) {
+                    const nextRef = inputRefs.current[i];
+                    if (nextRef && !nextRef.disabled) {
+                        nextRef.focus();
+                        break;
+                    }
+                }
             }
-        };
-    }
+        }
+    };
 
     const handleSubmit = () => {
         const newErrors = {};
@@ -682,6 +649,9 @@ const Salereturn = () => {
             setItemAmount(0);
         }
         setIsEditMode(false);
+        setTimeout(() => {
+            inputRefs?.current[5]?.focus();
+        }, 0);
     }
 
     const handleEditClick = (item) => {
@@ -692,6 +662,7 @@ const Salereturn = () => {
         // } else {
         //     setTempQty(existingItem.total_stock);
         // }
+        inputRefs.current[10].focus();
         setTempQty(item.total_stock);
 
         setSelectedEditItem(item);
@@ -773,6 +744,8 @@ const Salereturn = () => {
             }
         }
     };
+
+
 
 
     return (
@@ -881,8 +854,6 @@ const Salereturn = () => {
                                             //     minWidth: '300px',
                                             // },
                                         }}
-                                        inputRef={inputRef1}
-                                        onKeyDown={handleKeyDown}
 
                                         renderOption={(props, option) => (
                                             <ListItem {...props}>
@@ -898,6 +869,8 @@ const Salereturn = () => {
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by Mobile, Name"
+                                                inputRef={el => inputRefs.current[0] = el}
+                                                onKeyDown={handleKeyDown}
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     endAdornment: (
@@ -934,8 +907,6 @@ const Salereturn = () => {
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
                                         isOptionEqualToValue={(option, value) => option.clinic === value.clinic}
                                         loading={isLoading}
-                                        inputRef={inputRef2}
-                                        onKeyDown={handleKeyDown}
                                         sx={{
                                             width: '100%',
                                             // minWidth: '400px',
@@ -964,6 +935,8 @@ const Salereturn = () => {
                                                 {...params}
                                                 variant="outlined"
                                                 placeholder="Search by DR. Name, Clinic Name"
+                                                inputRef={el => inputRefs.current[1] = el}
+                                                onKeyDown={handleKeyDown}
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     endAdornment: (
@@ -997,14 +970,14 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{
-                                                        width: "100%",
-                                                        "& .MuiInputBase-root": {
-                                                            height: "40px",
-                                                        },
-                                                    }}
-                                                    inputRef={inputRef3}
-                                                    onKeyDown={handleKeyDown}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            inputRef={el => inputRefs.current[2] = el}
+                                                            onKeyDown={handleKeyDown}
+                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" } }}
+                                                        />
+                                                    )}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -1019,14 +992,14 @@ const Salereturn = () => {
                                                         setUnsavedItems(true);
                                                     }}
                                                     format="DD/MM/YYYY"
-                                                    sx={{
-                                                        width: "100%",
-                                                        "& .MuiInputBase-root": {
-                                                            height: "40px", // Set height here
-                                                        },
-                                                    }}
-                                                    inputRef={inputRef4}
-                                                    onKeyDown={handleKeyDown}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            inputRef={el => inputRefs.current[3] = el}
+                                                            onKeyDown={handleKeyDown}
+                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" } }}
+                                                        />
+                                                    )}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -1043,9 +1016,9 @@ const Salereturn = () => {
                                                 // marginTop: "7px",
                                                 background: "var(--color1)"
                                             }}
-                                            inputRef={inputRef4}
+                                            ref={el => inputRefs.current[4] = el}
                                             onKeyDown={handleKeyDown}
-                                      
+
                                             onClick={validfilter}
                                         >
                                             <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
@@ -1095,7 +1068,7 @@ const Salereturn = () => {
                                                                     sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
                                                                     value={search}
                                                                     onChange={handleInputChange}
-                                                                    inputRef={inputRef5}
+                                                                    inputRef={el => inputRefs.current[5] = el}
                                                                     onKeyDown={handleKeyDown}
                                                                     variant="outlined"
                                                                     placeholder="Please search any items.."
@@ -1117,7 +1090,7 @@ const Salereturn = () => {
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
-                                                            inputRef={inputRef6}
+                                                            inputRef={el => inputRefs.current[6] = el}
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
@@ -1139,7 +1112,7 @@ const Salereturn = () => {
                                                             size="small"
                                                             disabled
                                                             value={batch}
-                                                            inputRef={inputRef7}
+                                                            inputRef={el => inputRefs.current[7] = el}
                                                             onKeyDown={handleKeyDown}
                                                             // onChange={(e) => { setBatch(e.target.value) }}
                                                             InputProps={{
@@ -1155,7 +1128,7 @@ const Salereturn = () => {
                                                             disabled
                                                             size="small"
                                                             sx={{ width: '130px' }}
-                                                            inputRef={inputRef8}
+                                                            inputRef={el => inputRefs.current[8] = el}
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
@@ -1173,7 +1146,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef9}
+                                                            inputRef={el => inputRefs.current[9] = el}
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
@@ -1190,7 +1163,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef10}
+                                                            inputRef={el => inputRefs.current[10] = el}
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
@@ -1207,7 +1180,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             disabled
                                                             size="small"
-                                                            inputRef={inputRef11}
+                                                            inputRef={el => inputRefs.current[11] = el}
                                                             onKeyDown={handleKeyDown}
                                                             sx={{ width: '130px' }}
                                                             value={gst}
@@ -1226,14 +1199,16 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef12}
-                                                            onKeyDown={(e) => e.key === 'Enter' && editReturnItem()}
-                                                            value={qty}
-                                                            onKeyPress={(e) => {
-                                                                if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                                            inputRef={el => inputRefs.current[12] = el}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') {
+                                                                    editReturnItem();
+                                                                } else if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
+                                                            value={qty}
+                                                            
                                                             onChange={(e) => { handleQty(e.target.value) }}
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
@@ -1247,7 +1222,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
-                                                            inputRef={inputRef13}
+                                                            inputRef={el => inputRefs.current[13] = el}
                                                             onKeyDown={handleKeyDown}
                                                             disabled
                                                             sx={{ width: '130px' }}
@@ -1261,7 +1236,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
                                                 </tr>
-                                         
+
 
 
                                             </>)}
@@ -1269,7 +1244,7 @@ const Salereturn = () => {
                                         </tbody>
                                     </table>
                                     <>
-                                        <table className="p-30 border border-indigo-600 w-full border-collapse custom-table"
+                                        <table className="p-30  w-full border-collapse custom-table"
                                             ref={tableRef} tabIndex={0}>
                                             <tbody>
                                                 {saleItems?.sales_item?.map((item, index) => (
@@ -1376,7 +1351,7 @@ const Salereturn = () => {
                                                     <label className="font-bold">Other Amount : </label>
                                                     <Input
                                                         value={otherAmt}
-                                                        onKeyPress={(e) => {
+                                                        onKeyDown={(e) => {
                                                             const value = e.target.value;
                                                             const isMinusKey = e.key === '-';
 

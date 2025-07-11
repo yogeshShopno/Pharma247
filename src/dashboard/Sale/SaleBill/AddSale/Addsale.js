@@ -209,10 +209,35 @@ const Addsale = () => {
   // Handle keyboard navigation (ArrowUp, ArrowDown, Enter)
   useEffect(() => {
     const handleKeyPress = (e) => {
+      // If autocomplete dropdown is visible and no item is selected, handle arrow keys
+      // Only trigger table focus if there's no search value and no selected option
+      if (isVisible && !selectedOption && !searchItem && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        setIsVisible(false);
+        setSelectedOption(null);
+        setSearchItem("");
+        setValue("");
+        setItem("");
+        setItemId(null);
+        resetValue();
+        setSelectedIndex(-1);
+        
+        // Focus on tableRef1 after a short delay to ensure state updates
+        setTimeout(() => {
+          if (tableRef1.current) {
+            tableRef1.current.focus();
+          }
+        }, 100);
+        return;
+      }
+
+      // Only handle table navigation when table is focused and no autocomplete is visible
       if (!ItemSaleList?.sales_item?.length || isVisible) return;
 
       const isInputFocused = document.activeElement.tagName === "INPUT";
-      if (isInputFocused) return;
+      const isTableFocused = document.activeElement === tableRef1.current;
+      
+      if (isInputFocused && !isTableFocused) return;
 
       e.preventDefault(); // Prevent default scrolling behavior
 
@@ -239,7 +264,7 @@ const Addsale = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [ItemSaleList.sales_item, selectedIndex]);
+  }, [ItemSaleList.sales_item, selectedIndex, isVisible, selectedOption, searchItem]);
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
@@ -710,6 +735,30 @@ const Addsale = () => {
     handleSearch(newInputValue);
   };
 
+  const handleAutocompleteKeyDown = (event) => {
+    // Only trigger table focus if there's no search value and no selected option
+    // This allows normal autocomplete navigation when user is actively searching
+    if (!selectedOption && !searchItem && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+      event.preventDefault();
+      setIsVisible(false);
+      setSelectedOption(null);
+      setSearchItem("");
+      setValue("");
+      setItem("");
+      setItemId(null);
+      resetValue();
+      setSelectedIndex(-1);
+      
+      // Focus on tableRef1 after a short delay
+      setTimeout(() => {
+        if (tableRef1.current) {
+          tableRef1.current.focus();
+        }
+      }, 100);
+    }
+    // If there's a search value, let the autocomplete handle arrow navigation normally
+  };
+
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
     setUnsavedItems(true);
@@ -746,6 +795,7 @@ const Addsale = () => {
       setLoc("");
       setUnit("");
       setBatch("");
+      setIsVisible(false); // Close dropdown when no item is selected
     }
     tableRef1.current?.blur(); // <-- explicitly blur it
 
@@ -2381,6 +2431,7 @@ const Addsale = () => {
                                     sx={{ fontSize: "1.5rem" }}
                                     onChange={handleOptionChange}
                                     onInputChange={handleInputChange}
+                                    onKeyDown={handleAutocompleteKeyDown}
                                     options={itemList}
                                     getOptionLabel={(option) =>
                                       `${option.iteam_name || ""}`
@@ -2738,6 +2789,8 @@ const Addsale = () => {
                     ref={tableRef1}
                     tabIndex={0}
                     style={{ background: "#F5F5F5", padding: "10px 15px" }}
+                    onFocus={() => setAutocompleteDisabled(false)}
+                    onBlur={() => setAutocompleteDisabled(true)}
                   >
                     <tbody>
                       {ItemSaleList?.sales_item?.map((item, index) => (

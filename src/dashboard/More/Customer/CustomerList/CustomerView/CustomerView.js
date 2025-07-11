@@ -338,7 +338,7 @@ const CustomerView = () => {
                     }}
                   />
                 </Tabs>
-                <div class="total_amount_fld">
+                <div className="total_amount_fld">
                   {tabValue === 0 && (
                     <div
                       className=" "

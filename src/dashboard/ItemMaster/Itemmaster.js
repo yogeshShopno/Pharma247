@@ -676,7 +676,7 @@ const Itemmaster = () => {
         <Loader />
       ) : (
         <div className="item_add_box paddin12-8" style={{ gap: "0px" }}>
-          {/* //content class*/}
+          {/* //content className*/}
           <div className="flex justify-between header_bx px-4 py-3">
             <h1
               style={{

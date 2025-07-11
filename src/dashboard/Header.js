@@ -238,7 +238,7 @@ const Header = () => {
         </div>
       </div>
       <nav className="text-sm shadow ">
-        <div class="logomenu flex h-14">
+        <div className="logomenu flex h-14">
           <div className="flex-shrink-0 pr-5 pl-5  sm:flex-wrap">
             <Link to="/admindashboard">
               <img

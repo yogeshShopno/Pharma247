@@ -23,18 +23,18 @@ const Delete = () => {
           <h1 className="flex justify-center text-blue-700 font-bold">
             Are you sure you want to delete this item?
           </h1>
-          <div class="bg-gray-200 px-4 py-3 text-right">
+          <div className="bg-gray-200 px-4 py-3 text-right">
             <button
               type="button"
-              class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
+              className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
               onClick={showModal}
             >
-              <i class="fas fa-times"></i> Cancel
+              <i className="fas fa-times"></i> Cancel
             </button>
             <button
               type=""
               onClick={showModal}
-              class="py-2 px-4 bg-blue-500 text-white rounded font-medium hover:bg-blue-700 mr-2 transition duration-500"
+              className="py-2 px-4 bg-blue-500 text-white rounded font-medium hover:bg-blue-700 mr-2 transition duration-500"
             >
               Delete
             </button>

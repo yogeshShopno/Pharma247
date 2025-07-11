@@ -347,7 +347,7 @@ const SaleReturnView = () => {
                                             <label className="font-bold">Profit : </label>
                                             <label className="font-bold">Total Net Rate : </label>
                                         </div>
-                                        <div class="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
+                                        <div className="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                             <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
                                             <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
                                             <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>

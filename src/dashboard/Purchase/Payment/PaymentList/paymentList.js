@@ -615,13 +615,13 @@ const PaymentList = () => {
                             const isDueAmount = column.id === "due_amount";
                             const isStatus = column.id === "status";
 
-                            // Determine the class for the due_amount field
+                            // Determine the className for the due_amount field
                             const dueAmountClass =
                               isDueAmount || value > 0
                                 ? "text-red-500"
                                 : "text-black";
 
-                            // Determine the class for the status field
+                            // Determine the className for the status field
                             const statusClass =
                               isStatus && value === "Paid"
                                 ? "orderStatus"

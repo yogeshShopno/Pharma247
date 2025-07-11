@@ -220,7 +220,7 @@ const AddDistributer = () => {
                     Distributor GST/IN Number <span className="text-red-600">*</span>
                   </label>
 
-                  <div class="relative w-full">
+                  <div className="relative w-full">
                     <TextField
                       variant="outlined"
                       autoComplete="off"
@@ -249,11 +249,11 @@ const AddDistributer = () => {
                     />
 
                     <div
-                      class="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg"
+                      className="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg"
                       style={{ borderRadius: "0px 4px 4px 0px" }}
                     >
                       <span>Change</span>
-                      <span class="sr-only">Search</span>
+                      <span className="sr-only">Search</span>
                     </div>
                   </div>
                 </div>
@@ -597,7 +597,7 @@ const AddDistributer = () => {
                         Bank Name
                       </label>
 
-                      <div class="relative w-full">
+                      <div className="relative w-full">
                         <TextField
                           variant="outlined"
                           inputRef={(el) => (inputRefs.current[12] = el)}
@@ -621,11 +621,11 @@ const AddDistributer = () => {
                         />
 
                         <div
-                          class="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
+                          className="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
                           style={{ borderRadius: "0px 4px 4px 0px" }}
                         >
                           <svg
-                            class="w-4 h-4"
+                            className="w-4 h-4"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

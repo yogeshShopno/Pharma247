@@ -263,10 +263,10 @@ const Plans = () => {
                 </div>
               </div>
             ) : (
-              <section class="py-8 bg-gray-50">
-                <div class="container mx-auto px-4">
-                  <div class="text-center mb-8">
-                    <h2 class="text-3xl secondary font-bold plans_hdr_txtsss">
+              <section className="py-8 bg-gray-50">
+                <div className="container mx-auto px-4">
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl secondary font-bold plans_hdr_txtsss">
                       Selecting the Best Pricing Plan for Your Pharmacy
                     </h2>
                   </div>
@@ -279,21 +279,21 @@ const Plans = () => {
                       marginTop: "20px",
                     }}
                   ></div>
-                  <div class="flex justify-around mt-5 gap-6 plns_cds">
+                  <div className="flex justify-around mt-5 gap-6 plns_cds">
                     {plansDetails.map((plan) => (
                       <div
                         key={plan.id}
-                        class="border rounded-lg shadow-md bg-white text-center p-6" style={{ width: '100%' }}>
-                        <div class="mb-4" style={{ borderBottom: '1px solid lightgray' }}>
-                          <h5 class="text-xl font-semibold ">{plan.name}</h5>
-                          <h2 class="text-2xl my-1 secondary font-bold">
+                        className="border rounded-lg shadow-md bg-white text-center p-6" style={{ width: '100%' }}>
+                        <div className="mb-4" style={{ borderBottom: '1px solid lightgray' }}>
+                          <h5 className="text-xl font-semibold ">{plan.name}</h5>
+                          <h2 className="text-2xl my-1 secondary font-bold">
                             {plan.annual_price} / Year
                           </h2>
                         </div>
 
                         <div className="flex flex-col justify-between" style={{ height: "86%" }}>
                           <ul
-                            class="text-sm text-gray-600 space-y-2 "
+                            className="text-sm text-gray-600 space-y-2 "
                             style={{
                               maxHeight: "450px",
                               overflowY: "auto",
@@ -304,8 +304,8 @@ const Plans = () => {
                               <li key={index}>{feature}</li>
                             ))}
                           </ul>
-                          <div class="mt-6" onClick={() => loadRazorpay(plan)}>
-                            <a class="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white cursor-pointer">
+                          <div className="mt-6" onClick={() => loadRazorpay(plan)}>
+                            <a className="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white cursor-pointer">
                               Buy Plan
                             </a>
                           </div>

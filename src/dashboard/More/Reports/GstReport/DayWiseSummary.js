@@ -299,7 +299,7 @@ const DayWiseSummary = () => {
                       </Button>
                     </div>
                   </div> 
-                  <div class="flex gap-2  ttl_dldld">
+                  <div className="flex gap-2  ttl_dldld">
                     <div
                       className="total_mng_expn  detail_report_totl"
                       style={{

@@ -168,7 +168,7 @@ const DoctorView = () => {
                                     }} />
 
                                 </Tabs>
-                                <div class='total_amount_fld'>
+                                <div className='total_amount_fld'>
                                     {tabValue === 0 && (
                                         <div
                                             className="mx-4 my-2 "

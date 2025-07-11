@@ -47,14 +47,14 @@ const Salereturn = () => {
     const paymentOptions = [
         { id: 1, label: 'Cash' },
         { id: 3, label: 'UPI' },]
-    const [customer, setCustomer] = useState('')
+    const [customer, setCustomer] = useState(null);
     const [isVisible, setIsVisible] = useState(true);
     const [address, setAddress] = useState('');
     const [billing, setBilling] = useState('')
     const [doctor, setDoctor] = useState('')
     const [selectedOption, setSelectedOption] = useState(1);
     const [paymentType, setPaymentType] = useState('cash');
-    const [error, setError] = useState({ customer: '' });
+    const [error, setError] = useState({ });
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
     const [searchItemID, setSearchItemID] = useState(null);
@@ -111,6 +111,7 @@ const Salereturn = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -208,42 +209,39 @@ const Salereturn = () => {
         };
     }, []);
 
+    const customerRef = useRef(customer);
+    useEffect(() => {
+      customerRef.current = customer;
+    }, [customer]);
+
     useEffect(() => {
         const handleKeyDown = (event) => {
-            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
-
-            if (!isAltCombo || event.repeat) return;
-
-            const key = event.key.toLowerCase();
-
-            event.preventDefault();
-
-            switch (key) {
-                case "s":
-                    handleSubmit();
-                    break;
-                case "g":
-                    handleSubmit();
-                    break;
-                case "m":
-                    removeItem();
-                    setSelectedEditItemId(null);
-                    setSelectedIndex(-1);
-
-                    setSearchItem("");
-                    //   setTimeout(() => {
-                    //     inputRefs.current[2]?.focus();
-                    //   }, 10);
-                    break;
-
+          const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+          if (!isAltCombo || event.repeat) return;
+          const key = event.key.toLowerCase();
+          event.preventDefault();
+          if (key === "s") {
+            if (!customer || !customer.id) {
+              toast.error('Please select customer');
+              setError({ customer: "Please select customer" });
+              return;
             }
+            handleSubmit();
+          } else if (key === "m") {
+            removeItem();
+            setSelectedEditItemId(null);
+            setSelectedIndex(-1);
+            setSearchItem("");
+          }
         };
-
+      
+        
         document.addEventListener("keydown", handleKeyDown);
         return () => {
-            document.removeEventListener("keydown", handleKeyDown);
+          document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+      }, [customer]);
+      
 
     useEffect(() => {
         const totalAmount = (qty / unit);
@@ -273,7 +271,6 @@ const Salereturn = () => {
     }, [totalAmount, otherAmt]);
 
     const handleCustomerOption = (event, newValue) => {
-        setUnsavedItems(true)
         setCustomer(newValue);
     };
 
@@ -413,7 +410,7 @@ const Salereturn = () => {
     const validfilter = () => {
         setUnsavedItems(true)
         const newErrors = {};
-        if (!customer) { newErrors.customer = 'Customer is required'; toast.error('Customer is required'); }
+        if (!customer || !customer.id) { newErrors.customer = 'Customer is required'; toast.error('Customer is required'); }
         if (!startDate) { newErrors.startDate = 'startDate is required'; toast.error('Start Date is required'); }
         if (!endDate) { newErrors.endDate = 'endDate is required'; toast.error('End Date is required'); }
 
@@ -426,12 +423,12 @@ const Salereturn = () => {
 
     const getSaleItemList = async (value) => {
         let data = new FormData();
-        data.append('customer_id', customer.id ? customer.id : '');
+        data.append('customer_id', (customer && customer.id) ? customer.id : '');
         data.append('start_date', startDate.format('YYYY-MM-DD') ? startDate.format('YYYY-MM-DD') : '');
         data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
         data.append('search', value ? value : '');
         const params = {
-            customer_id: customer.id ? customer.id : '',
+            customer_id: (customer && customer.id) ? customer.id : '',
             start_date: startDate ? startDate : '',
             end_date: endDate ? endDate : ''
         }
@@ -545,19 +542,20 @@ const Salereturn = () => {
     }
 
     const handleSubmit = () => {
-
         const newErrors = {};
-        if (!customer) {
+        if (!customer || !customer.id) {
             newErrors.customer = 'Please select customer';
-        }
-        // if (selectedItem === 0) {
-        //     newErrors.ItemId = 'Please select at least one item';
-        //     toast.error('Please select at least one item');
-        // }
-        setError(newErrors);
-        if (Object.keys(newErrors).length > 0) {
+            toast.error('Please select customer');
+            setError(newErrors);
             return;
         }
+        if (!saleItems || !Array.isArray(saleItems.sales_item) || saleItems.sales_item.length === 0) {
+            newErrors.sales_item = 'Please add at least one item';
+            toast.error('Please add at least one item');
+            setError(newErrors);
+            return;
+        }
+        setError({});
         submitSaleReturnData();
     }
 
@@ -717,7 +715,7 @@ const Salereturn = () => {
 
         const randomNumber = Number(localStorage.getItem("RandomNumber"));
         let data = new FormData();
-        data.append('customer_id', customer.id ? customer.id : '');
+        data.append('customer_id', (customer && customer.id) ? customer.id : '');
         data.append('start_date', startDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
         data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
 
@@ -785,7 +783,7 @@ const Salereturn = () => {
                                 </Select>
                                 {/* <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
                                 <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit</Button>
-                              
+
                             </div>
                         </div>
                         <div className="border-b">

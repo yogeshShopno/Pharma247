@@ -19,7 +19,7 @@ const Model = () => {
                         <div className='bg-blue-500 p-3 flex justify-between'>
                             <h1 className='text-white font-semibold text-3xl '>Invoice break down</h1>
                             <div className='flex'>
-                                <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded bg-blue-900 font-medium  mr-2 transition duration-500" onClick={toggleModal}><i class="fas fa-plus"></i> Submit</button>
+                                <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded bg-blue-900 font-medium  mr-2 transition duration-500" onClick={toggleModal}><i className="fas fa-plus"></i> Submit</button>
                                 <div className="close-icon mt-2 " onClick={toggleModal}></div>
                             </div>
                         </div>
@@ -27,15 +27,15 @@ const Model = () => {
                             <div className='w-1/2'>
                                 <div className='border-static p-4 mb-4'>
                                     <p className='text-lg flex mb-4'>Bill Discount</p>
-                                    <div class='flex items-center relative'>
-                                        <div class='border-b-2 border-gray-400'>
-                                            <input type="text" id="percentageInput" disabled class="w-20 outline-0" />
+                                    <div className='flex items-center relative'>
+                                        <div className='border-b-2 border-gray-400'>
+                                            <input type="text" id="percentageInput" disabled className="w-20 outline-0" />
                                             <span className='absolute left-0'>%</span>
                                         </div>
-                                        <span class='text-blue-500 font-semibold mx-2'>OR</span>
-                                        <div class='border-b-2 border-gray-400 relative'>
-                                            <input type="text" id="currencyInput" disabled class="w-20 outline-0" />
-                                            <span class='absolute left-0'>₹</span>
+                                        <span className='text-blue-500 font-semibold mx-2'>OR</span>
+                                        <div className='border-b-2 border-gray-400 relative'>
+                                            <input type="text" id="currencyInput" disabled className="w-20 outline-0" />
+                                            <span className='absolute left-0'>₹</span>
                                         </div>
                                         <button type="submit" className="py-2 min-w-16 px-5 h-8 bg-blue-500 text-white rounded bg-blue-900 ml-2"> <FaCheck /></button>
                                     </div>
@@ -46,7 +46,7 @@ const Model = () => {
                                         <p className='text-sm ml-2'>Note</p>
                                         <span className='text-blue-400 text-sm ml-2'>(0/150)</span>
                                     </div>
-                                    <textarea id="notes" rows="4" class="w-full h-26 bg-amber-100 outline-0 text-black border-b-2 border-blue-400" style={{ resize: "none" }} placeholder="type note...">
+                                    <textarea id="notes" rows="4" className="w-full h-26 bg-amber-100 outline-0 text-black border-b-2 border-blue-400" style={{ resize: "none" }} placeholder="type note...">
                                     </textarea>
                                 </div>
                                 <div className='bg-blue-100 p-4 mt-4'>

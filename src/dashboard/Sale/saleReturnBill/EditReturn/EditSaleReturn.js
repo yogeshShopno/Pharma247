@@ -1013,10 +1013,11 @@ const EditSaleReturn = () => {
                         <tr style={{ borderBottom: "1px solid lightgray" }}>
                           <td style={{ width: "350px" }}>
                             <div style={{ width: 350, padding: 0 }}>
-                              <DeleteIcon
+                             {searchItem ?  <DeleteIcon
                                 className="delete-icon mr-2"
                                 onClick={resetValue}
-                              />
+                              />:<></>}
+ 
                               <span className="font-semibold ">
                                 {searchItem}
                               </span>

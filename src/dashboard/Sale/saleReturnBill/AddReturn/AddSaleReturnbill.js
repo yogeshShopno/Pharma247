@@ -108,10 +108,7 @@ const Salereturn = () => {
     const [unsavedItems, setUnsavedItems] = useState(false);
     const [nextPath, setNextPath] = useState("");
     const [errors, setErrors] = useState({});
-    const [uniqueId, setUniqueId] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
 
-    const [billSaveDraft, setBillSaveDraft] = useState('0');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = () => {
@@ -193,6 +190,7 @@ const Salereturn = () => {
             setDoctorData([]);
         }
     }, [searchDoctor]);
+
     useEffect(() => {
         // ListOfDoctor();
         const RandomNumber = localStorage.getItem('RandomNumber')
@@ -207,6 +205,43 @@ const Salereturn = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+
+            if (!isAltCombo || event.repeat) return;
+
+            const key = event.key.toLowerCase();
+
+            event.preventDefault();
+
+            switch (key) {
+                case "s":
+                    handleSubmit();
+                    break;
+                case "g":
+                    handleSubmit();
+                    break;
+                case "m":
+                    removeItem();
+                    setSelectedEditItemId(null);
+                    setSelectedIndex(-1);
+
+                    setSearchItem("");
+                    //   setTimeout(() => {
+                    //     inputRefs.current[2]?.focus();
+                    //   }, 10);
+                    break;
+
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
 
@@ -509,7 +544,7 @@ const Salereturn = () => {
         };
     }
 
-    const handleSubmit = (draft) => {
+    const handleSubmit = () => {
 
         const newErrors = {};
         if (!customer) {
@@ -523,10 +558,10 @@ const Salereturn = () => {
         if (Object.keys(newErrors).length > 0) {
             return;
         }
-        submitSaleReturnData(draft);
+        submitSaleReturnData();
     }
 
-    const submitSaleReturnData = async (draft) => {
+    const submitSaleReturnData = async () => {
         const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
         if (hasUncheckedItems) {
             toast.error('Please select at least one item');;
@@ -555,7 +590,7 @@ const Salereturn = () => {
             data.append('cgst', '0');
             data.append('sgst', '0');
             data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
-            data.append("draft_save", !draft ? "1" : draft);
+            data.append("draft_save", "1");
 
             try {
                 await axios.post("sales-return-create", data, {
@@ -615,7 +650,7 @@ const Salereturn = () => {
         }
     }
 
-    const resetValue = () => {
+    const removeItem = () => {
         setUnit('');
         setBatch('');
         setSearchItem(' ')
@@ -630,6 +665,7 @@ const Salereturn = () => {
         if (isNaN(itemAmount)) {
             setItemAmount(0);
         }
+        setIsEditMode(false);
     }
 
     const handleEditClick = (item) => {
@@ -710,7 +746,7 @@ const Salereturn = () => {
         <>
             <div>
                 <Header />
-                  <ToastContainer
+                <ToastContainer
 
                     position="top-right"
                     autoClose={5000}
@@ -748,42 +784,13 @@ const Salereturn = () => {
                                     ))}
                                 </Select>
                                 {/* <Button variant="contained" sx={{ textTransform: 'none', background: "var(--color1)" }}> <FiPrinter className="w-4 h-4 mr-1" />Save & Print</Button> */}
-                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => setIsOpen(!isOpen)}> Submit</Button>
-                                {isOpen && (
-                                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                                        <ul className="transition-all ">
-
-                                            <li
-                                                onClick={() => {
-                                                    setBillSaveDraft("1")
-                                                    handleSubmit("1")
-                                                }}
-                                                className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                                            >
-                                                <SaveIcon />
-
-
-                                                Save
-                                            </li>
-                                            <li
-                                                onClick={() => {
-                                                    setBillSaveDraft("0")
-                                                    handleSubmit("0")
-                                                }}
-                                                className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                                            >
-                                                <SaveAsIcon />
-
-                                                Draft
-                                            </li>
-                                        </ul>
-                                    </div>
-                                )}
+                                <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit</Button>
+                              
                             </div>
                         </div>
                         <div className="border-b">
                             <div className="firstrow flex">
-                              
+
                                 <div className="detail custommedia" style={{
                                     display: "flex",
                                     flexDirection: "column",
@@ -795,7 +802,7 @@ const Salereturn = () => {
                                         id="outlined-number"
                                         type='number'
                                         size="small"
-                                        value={localStorage.getItem('SaleRetunBillNo')} 
+                                        value={localStorage.getItem('SaleRetunBillNo')}
                                         disabled
 
                                     />
@@ -803,25 +810,7 @@ const Salereturn = () => {
 
 
                                 </div>
-                                <div style={{ padding: "0 5px", }}>
-                                    <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date <span className="text-red-600">*</span></span>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                                        <DatePicker
-                                            value={endDate}
-                                            onChange={(newDate) => {
-                                                setEndDate(newDate);
-                                                setUnsavedItems(true);
-                                            }}
-                                            format="DD/MM/YYYY"
-                                            sx={{
-                                                width: "100%",
-                                                "& .MuiInputBase-root": {
-                                                    height: "40px", 
-                                                },
-                                            }}
-                                        />
-                                    </LocalizationProvider>
-                                </div>
+
                                 <div className="detail custommedia" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                                     <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)", whiteSpace: "nowrap" }}>Customer Mobile / Name <span className="text-red-600">*</span></span>
                                     <Autocomplete
@@ -832,6 +821,7 @@ const Salereturn = () => {
                                             setSearchQuery(newInputValue);
                                             // setUnsavedItems(true);
                                         }}
+                                        autoFocus
                                         options={customerDetails}
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
                                         isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
@@ -1043,13 +1033,34 @@ const Salereturn = () => {
                                                     <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                                 </tr>
                                             ) : (<>
-                                                <tr className="item-List border-b border-gray-400" >
+                                                <tr className="item-List  border-b border-gray-400" >
+                                                    {
+                                                        isEditMode ? <td className="flex justify-center align-center items-center" style={{ height: '100%', minHeight: '40px' }}>
+                                                            <DeleteIcon className="delete-icon" onClick={removeItem} />
+                                                            {searchItem}
+                                                        </td> :
+                                                            <td  >
 
-                                                    <td  >
-                                                        <DeleteIcon className="delete-icon" onClick={resetValue} />
-                                                        {searchItem}
-                                                    </td>
-
+                                                                <TextField
+                                                                    autoComplete="off"
+                                                                    id="outlined-basic"
+                                                                    size="small"
+                                                                    sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
+                                                                    value={search}
+                                                                    onChange={handleInputChange}
+                                                                    variant="outlined"
+                                                                    placeholder="Please search any items.."
+                                                                    InputProps={{
+                                                                        endAdornment: (
+                                                                            <InputAdornment position="start">
+                                                                                <SearchIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                        type: "search",
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                    }
                                                     <td className="td-up " >
 
                                                         <TextField
@@ -1165,7 +1176,7 @@ const Salereturn = () => {
                                                             sx={{ width: '130px' }}
                                                             size="small"
                                                             inputRef={inputRef5}
-                                                            onKeyDown={handleKeyDown}
+                                                            onKeyDown={(e) => e.key === 'Enter' && editReturnItem()}
                                                             value={qty}
                                                             onKeyPress={(e) => {
                                                                 if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
@@ -1201,29 +1212,10 @@ const Salereturn = () => {
                                                 </tr>
                                                 <tr className="item-List border-b border-gray-400 ">
                                                     <td>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-basic"
-                                                            size="small"
-                                                            sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
-                                                            value={search}
-                                                            onChange={handleInputChange}
-                                                            variant="outlined"
-                                                            placeholder="Please search any items.."
-                                                            InputProps={{
-                                                                endAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <SearchIcon />
-                                                                    </InputAdornment>
-                                                                ),
-                                                                type: "search",
-                                                            }}
-                                                        />
+
                                                     </td>
                                                     <td colSpan={8}></td>
-                                                    <td style={{ textAlign: "right" }} >
-                                                        <Button variant="contained" marginRight="20px" onClick={editReturnItem} style={{ backgroundColor: "var(--color1)" }}>< BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />Edit</Button>
-                                                    </td>
+
                                                 </tr>
 
 

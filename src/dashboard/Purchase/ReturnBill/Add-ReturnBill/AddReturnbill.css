@@ -234,3 +234,14 @@ header {
   -ms-border-radius: 10px !important;
   -o-border-radius: 10px !important;
 }
+
+/* Highlighted row for keyboard navigation */
+.highlighted-row {
+  background-color: var(--color2) !important;
+  color: white !important;
+}
+
+.highlighted-row:hover {
+  background-color: var(--color2) !important;
+  color: white !important;
+}

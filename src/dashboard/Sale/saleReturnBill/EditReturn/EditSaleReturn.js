@@ -161,7 +161,6 @@ const EditSaleReturn = () => {
   };
   const [isOpen, setIsOpen] = useState(false);
 
-  const [billSaveDraft, setBillSaveDraft] = useState("0");
   useEffect(() => {
     const totalAmount = qty / unit;
     const total = parseFloat(base) * totalAmount;
@@ -346,7 +345,7 @@ const EditSaleReturn = () => {
     }
   };
 
-  const editSaleReturnBill = async (draft) => {
+  const editSaleReturnBill = async () => {
     const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(
       (item) => item.iss_check === false
     );
@@ -375,7 +374,7 @@ const EditSaleReturn = () => {
       data.append("margin_net_profit", marginNetProfit);
       data.append("payment_name", paymentType);
       data.append("product_list", JSON.stringify(saleReturnItems?.sales_iteam));
-      data.append("draft_save", !draft ? "1" : draft);
+      data.append("draft_save", "1");
 
       const params = {
         id: id,
@@ -509,7 +508,7 @@ const EditSaleReturn = () => {
     }
   }, []);
 
-  const handleUpdate = (draft) => {
+  const handleUpdate = () => {
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -520,7 +519,7 @@ const EditSaleReturn = () => {
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    editSaleReturnBill(draft);
+    editSaleReturnBill();
   };
 
   const handleDoctorOption = (event, newValue) => {
@@ -790,36 +789,10 @@ const EditSaleReturn = () => {
                     variant="contained"
                     className="payment_btn_divv"
                     style={{ background: "var(--color1)" }}
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() =>handleUpdate()}
                   >
                     Update
                   </Button>
-                  {isOpen && (
-                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                      <ul className="transition-all ">
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("1");
-                            handleUpdate("1");
-                          }}
-                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                        >
-                          <SaveIcon />
-                          Save
-                        </li>
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("0");
-                            handleUpdate("0");
-                          }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
-                        >
-                          <SaveAsIcon />
-                          Draft
-                        </li>
-                      </ul>
-                    </div>
-                  )}
                 </div>
               </div>
               <div
@@ -1176,7 +1149,7 @@ const EditSaleReturn = () => {
                               sx={{ width: "70px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef5}
-                              onKeyDown={handleKeyDown}
+                              onKeyDown={()=>editSaleReturnItem()}
                               value={qty}
                               onKeyPress={(e) => {
                                 if (
@@ -1221,22 +1194,7 @@ const EditSaleReturn = () => {
                           </td>
                           <td className="total ">{itemAmount}</td>
                         </tr>
-                        <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          <td colSpan={9}></td>
-
-                          <td>
-                            <Button
-                              variant="contained"
-                              className="gap-2"
-                              style={{ backgroundColor: "var(--color1)" }}
-                              marginRight="20px"
-                              onClick={editSaleReturnItem}
-                            >
-                              <BorderColorIcon className="w-7 h-6 text-white p-1 cursor-pointer" />
-                              Edit
-                            </Button>
-                          </td>
-                        </tr>
+                        
                       </tbody>
                     </table>
                     <>

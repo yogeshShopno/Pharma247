@@ -353,7 +353,7 @@ const EditReturnBill = () => {
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 setUnsavedItems(false);
-                setOpenModal(false);
+                setIsOpenBox(false);
                 localStorage.setItem("unsavedItems", unsavedItems.toString());
                 setTimeout(() => {
                     history.push(nextPath);

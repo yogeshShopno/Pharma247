@@ -39,6 +39,12 @@ const Salereturn = () => {
     const inputRef8 = useRef();
     const inputRef9 = useRef();
     const inputRef10 = useRef();
+    const inputRef11 = useRef();
+    const inputRef12 = useRef();
+    const inputRef13 = useRef();
+    const inputRef14 = useRef();
+    const inputRef15 = useRef();
+    const inputRef16 = useRef();
     const [item, setItem] = useState('')
     const [billNo, setbillNo] = useState('')
     const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -537,6 +543,18 @@ const Salereturn = () => {
                 inputRef9.current.focus();
             } else if (event.target === inputRef9.current) {
                 inputRef10.current.focus();
+            } else if (event.target === inputRef10.current) {
+                inputRef11.current.focus();
+            } else if (event.target === inputRef11.current) {
+                inputRef12.current.focus();
+            } else if (event.target === inputRef12.current) {
+                inputRef13.current.focus();
+            } else if (event.target === inputRef13.current) {
+                inputRef14.current.focus();
+            } else if (event.target === inputRef14.current) {
+                inputRef15.current.focus();
+            } else if (event.target === inputRef15.current) {
+                inputRef16.current.focus();
             }
         };
     }
@@ -750,7 +768,8 @@ const Salereturn = () => {
                         history.push(nextPath);
                     }, 0);
                 } else {
-                console.error("Error deleting items:", error);}
+                    console.error("Error deleting items:", error);
+                }
             }
         }
     };
@@ -862,6 +881,8 @@ const Salereturn = () => {
                                             //     minWidth: '300px',
                                             // },
                                         }}
+                                        inputRef={inputRef1}
+                                        onKeyDown={handleKeyDown}
 
                                         renderOption={(props, option) => (
                                             <ListItem {...props}>
@@ -913,6 +934,8 @@ const Salereturn = () => {
                                         getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
                                         isOptionEqualToValue={(option, value) => option.clinic === value.clinic}
                                         loading={isLoading}
+                                        inputRef={inputRef2}
+                                        onKeyDown={handleKeyDown}
                                         sx={{
                                             width: '100%',
                                             // minWidth: '400px',
@@ -980,6 +1003,8 @@ const Salereturn = () => {
                                                             height: "40px",
                                                         },
                                                     }}
+                                                    inputRef={inputRef3}
+                                                    onKeyDown={handleKeyDown}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -1000,6 +1025,8 @@ const Salereturn = () => {
                                                             height: "40px", // Set height here
                                                         },
                                                     }}
+                                                    inputRef={inputRef4}
+                                                    onKeyDown={handleKeyDown}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -1016,6 +1043,9 @@ const Salereturn = () => {
                                                 // marginTop: "7px",
                                                 background: "var(--color1)"
                                             }}
+                                            inputRef={inputRef4}
+                                            onKeyDown={handleKeyDown}
+                                      
                                             onClick={validfilter}
                                         >
                                             <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
@@ -1065,6 +1095,8 @@ const Salereturn = () => {
                                                                     sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
                                                                     value={search}
                                                                     onChange={handleInputChange}
+                                                                    inputRef={inputRef5}
+                                                                    onKeyDown={handleKeyDown}
                                                                     variant="outlined"
                                                                     placeholder="Please search any items.."
                                                                     InputProps={{
@@ -1085,7 +1117,7 @@ const Salereturn = () => {
                                                             id="outlined-number"
                                                             disabled
                                                             type="number"
-                                                            inputRef={inputRef1}
+                                                            inputRef={inputRef6}
                                                             onKeyDown={handleKeyDown}
                                                             size="small"
                                                             value={unit}
@@ -1107,6 +1139,8 @@ const Salereturn = () => {
                                                             size="small"
                                                             disabled
                                                             value={batch}
+                                                            inputRef={inputRef7}
+                                                            onKeyDown={handleKeyDown}
                                                             // onChange={(e) => { setBatch(e.target.value) }}
                                                             InputProps={{
                                                                 inputProps: { style: { textAlign: 'right' } },
@@ -1121,7 +1155,7 @@ const Salereturn = () => {
                                                             disabled
                                                             size="small"
                                                             sx={{ width: '130px' }}
-                                                            inputRef={inputRef3}
+                                                            inputRef={inputRef8}
                                                             onKeyDown={handleKeyDown}
                                                             value={expiryDate}
                                                             placeholder="MM/YY"
@@ -1139,7 +1173,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef4}
+                                                            inputRef={inputRef9}
                                                             onKeyDown={handleKeyDown}
                                                             value={mrp}
                                                             onChange={(e) => { setMRP(e.target.value) }}
@@ -1156,7 +1190,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef5}
+                                                            inputRef={inputRef10}
                                                             onKeyDown={handleKeyDown}
                                                             value={base}
                                                             onChange={(e) => { setBase(e.target.value) }}
@@ -1173,7 +1207,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             disabled
                                                             size="small"
-                                                            inputRef={inputRef8}
+                                                            inputRef={inputRef11}
                                                             onKeyDown={handleKeyDown}
                                                             sx={{ width: '130px' }}
                                                             value={gst}
@@ -1192,7 +1226,7 @@ const Salereturn = () => {
                                                             type="number"
                                                             sx={{ width: '130px' }}
                                                             size="small"
-                                                            inputRef={inputRef5}
+                                                            inputRef={inputRef12}
                                                             onKeyDown={(e) => e.key === 'Enter' && editReturnItem()}
                                                             value={qty}
                                                             onKeyPress={(e) => {
@@ -1213,7 +1247,7 @@ const Salereturn = () => {
                                                             autoComplete="off"
                                                             id="outlined-number"
                                                             size="small"
-                                                            inputRef={inputRef9}
+                                                            inputRef={inputRef13}
                                                             onKeyDown={handleKeyDown}
                                                             disabled
                                                             sx={{ width: '130px' }}
@@ -1227,13 +1261,7 @@ const Salereturn = () => {
                                                     </td>
                                                     <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
                                                 </tr>
-                                                <tr className="item-List border-b border-gray-400 ">
-                                                    <td>
-
-                                                    </td>
-                                                    <td colSpan={8}></td>
-
-                                                </tr>
+                                         
 
 
                                             </>)}

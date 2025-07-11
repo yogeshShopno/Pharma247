@@ -162,43 +162,7 @@ const ReturnView = () => {
     }
   };
 
-  const handleLeavePage = async () => {
-    let data = new FormData();
-    data.append("start_date", localStorage.getItem("StartFilterDate"));
-    data.append("end_date", localStorage.getItem("EndFilterDate"));
-    data.append("distributor_id", localStorage.getItem("DistributorId"));
-    data.append("type", "1");
-    try {
-      const response = await axios.post("purches-return-iteam-histroy", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.status === 200) {
-        // setUnsavedItems(false);
-        // setIsOpenBox(false);
-        // setTimeout(() => {
-        //   if (nextPath) {
-        //     history.push(nextPath)
-        //   }
-        // }, 0);
-      }
-
-      //   setIsOpenBox(false);
-      //   setUnsavedItems(false);
-
-      // history.replace(nextPath);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setOpenModal(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-            history.push(nextPath);
-        }, 0);
-    } else {
-      console.error("Error deleting items:", error);
-    }}
-  };
+ 
 
   return (
     <>

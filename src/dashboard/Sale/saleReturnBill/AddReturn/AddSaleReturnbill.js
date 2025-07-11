@@ -54,7 +54,7 @@ const Salereturn = () => {
     const [doctor, setDoctor] = useState('')
     const [selectedOption, setSelectedOption] = useState(1);
     const [paymentType, setPaymentType] = useState('cash');
-    const [error, setError] = useState({ });
+    const [error, setError] = useState({});
     const [expiryDate, setExpiryDate] = useState('');
     const [mrp, setMRP] = useState('');
     const [searchItemID, setSearchItemID] = useState(null);
@@ -111,7 +111,7 @@ const Salereturn = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -211,37 +211,37 @@ const Salereturn = () => {
 
     const customerRef = useRef(customer);
     useEffect(() => {
-      customerRef.current = customer;
+        customerRef.current = customer;
     }, [customer]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-          const isAltCombo = event.altKey || event.getModifierState("AltGraph");
-          if (!isAltCombo || event.repeat) return;
-          const key = event.key.toLowerCase();
-          event.preventDefault();
-          if (key === "s") {
-            if (!customer || !customer.id) {
-              toast.error('Please select customer');
-              setError({ customer: "Please select customer" });
-              return;
+            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+            if (!isAltCombo || event.repeat) return;
+            const key = event.key.toLowerCase();
+            event.preventDefault();
+            if (key === "s") {
+                if (!customer || !customer.id) {
+                    toast.error('Please select customer');
+                    setError({ customer: "Please select customer" });
+                    return;
+                }
+                handleSubmit();
+            } else if (key === "m") {
+                removeItem();
+                setSelectedEditItemId(null);
+                setSelectedIndex(-1);
+                setSearchItem("");
             }
-            handleSubmit();
-          } else if (key === "m") {
-            removeItem();
-            setSelectedEditItemId(null);
-            setSelectedIndex(-1);
-            setSearchItem("");
-          }
         };
-      
-        
+
+
         document.addEventListener("keydown", handleKeyDown);
         return () => {
-          document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("keydown", handleKeyDown);
         };
-      }, [customer]);
-      
+    }, [customer]);
+
 
     useEffect(() => {
         const totalAmount = (qty / unit);
@@ -712,7 +712,6 @@ const Salereturn = () => {
     };
 
     const handleLeavePage = async () => {
-
         const randomNumber = Number(localStorage.getItem("RandomNumber"));
         let data = new FormData();
         data.append('customer_id', (customer && customer.id) ? customer.id : '');
@@ -735,7 +734,24 @@ const Salereturn = () => {
                 }, 0);
             }
         } catch (error) {
-            console.error("Error deleting items:", error);
+            if (error.response && error.response.status === 401) {
+                setUnsavedItems(false);
+                setOpenModal(false);
+                localStorage.setItem("unsavedItems", unsavedItems.toString());
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 0);
+            } else {
+                if (error.response && error.response.status === 401) {
+                    setUnsavedItems(false);
+                    setOpenModal(false);
+                    localStorage.setItem("unsavedItems", unsavedItems.toString());
+                    setTimeout(() => {
+                        history.push(nextPath);
+                    }, 0);
+                } else {
+                console.error("Error deleting items:", error);}
+            }
         }
     };
 
@@ -1033,9 +1049,12 @@ const Salereturn = () => {
                                             ) : (<>
                                                 <tr className="item-List  border-b border-gray-400" >
                                                     {
-                                                        isEditMode ? <td className="flex justify-center align-center items-center" style={{ height: '100%', minHeight: '40px' }}>
-                                                            <DeleteIcon className="delete-icon" onClick={removeItem} />
-                                                            {searchItem}
+                                                        isEditMode ? <td className="" >
+                                                            <div className="flex items-center gap-2">
+                                                                <DeleteIcon className="delete-icon" onClick={removeItem} />
+                                                                <span className="text-sm">{searchItem}</span>
+                                                            </div>
+
                                                         </td> :
                                                             <td  >
 

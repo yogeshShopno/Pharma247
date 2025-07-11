@@ -688,11 +688,19 @@ const EditSaleReturn = () => {
         history.replace(nextPath); // Redirect to the next page
       }
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+        setOpenModal(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+            history.push(nextPath);
+        }, 0);
+    } else {
       console.error("Error deleting items:", error);
 
       // Optional: Provide user feedback if there's an error
       alert("Failed to save changes. Please try again.");
-    }
+    }}
   };
 
   return (

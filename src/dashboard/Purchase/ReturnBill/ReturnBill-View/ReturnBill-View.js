@@ -188,8 +188,16 @@ const ReturnView = () => {
 
       // history.replace(nextPath);
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+        setOpenModal(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+            history.push(nextPath);
+        }, 0);
+    } else {
       console.error("Error deleting items:", error);
-    }
+    }}
   };
 
   return (

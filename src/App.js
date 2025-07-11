@@ -13,7 +13,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-} from "react-router-dom";
+} from "react-router-dom/cjs/react-router-dom.min";
 // import AddPurchaseReturn from './dashboard/Purchase/AddPurchaseReturn';
 import Catagory from './dashboard/More/Catagory/Catagory';
 import Itemmaster from './dashboard/ItemMaster/Itemmaster';

@@ -1288,8 +1288,8 @@ const Addsale = () => {
     data.append("discount", discount ? discount : "");
     data.append("total_gst", totalgst || "");
     data.append("roylti_point", loyaltyVal || 0);
-    data.append("previous_loylti_point ", calculatedPreviousLoyaltyPoint || 0);
-    data.append("today_loylti_point  ", todayLoyltyPoint || 0);
+    data.append("previous_loylti_point", calculatedPreviousLoyaltyPoint || 0);
+    data.append("today_loylti_point", todayLoyltyPoint || 0);
     data.append("draft_save", !draft ? "1" : draft);
 
     try {

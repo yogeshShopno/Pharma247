@@ -6,10 +6,12 @@ import {
   Button,
   Checkbox,
   Input,
+  InputAdornment,
   ListItemText,
   TextField,
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import SearchIcon from "@mui/icons-material/Search";
 import dayjs from "dayjs";
 import { MenuItem, Select } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
@@ -25,8 +27,8 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
-import SaveIcon from "@mui/icons-material/Save";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+
+
 const EditSaleReturn = () => {
   const token = localStorage.getItem("token");
   const inputRef1 = useRef();
@@ -106,6 +108,10 @@ const EditSaleReturn = () => {
 
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
+  // Add missing variables for search functionality
+  const [search, setSearch] = useState("");
+  const inputRefs = useRef({});
+
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
     const handleTableBlur = () => setAutocompleteDisabled(true);
@@ -123,6 +129,7 @@ const EditSaleReturn = () => {
     };
   }, []);
 
+
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!saleReturnItems?.sales_iteam?.length) return;
@@ -130,6 +137,18 @@ const EditSaleReturn = () => {
       const isInputFocused = ["INPUT", "TEXTAREA"].includes(
         document.activeElement.tagName
       );
+      if (e.altKey && e.key === "m") {
+        resetValue();
+        setSelectedEditItemId(null);
+        setSelectedIndex(-1);
+        setSearchItem("");
+        setTimeout(() => {
+          inputRefs?.current[0]?.focus();
+        }, 100);
+      }
+      if (e.altKey && e.key === "s") {
+        editSaleReturnBill();
+      }
       if (isInputFocused) return;
 
       e.preventDefault(); // Prevent scrolling
@@ -150,6 +169,27 @@ const EditSaleReturn = () => {
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, [saleReturnItems, selectedIndex]);
+
+  // New function specifically for arrow key navigation that works even when input is focused
+  const handleArrowNavigation = (e) => {
+    if (!saleReturnItems?.sales_iteam?.length) return;
+
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault(); // Prevent default scrolling behavior
+
+      if (e.key === "ArrowDown") {
+        setSelectedIndex((prev) => Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1));
+      } else if (e.key === "ArrowUp") {
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+    else if (e.key === "Enter" && selectedIndex !== -1) {
+      const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
+      if (!selectedRow) return;
+      handleEditClick(selectedRow);
+    }
+
+  };
 
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
@@ -232,6 +272,7 @@ const EditSaleReturn = () => {
   const saleBillGetBySaleID = async (doctorData, customerData) => {
     let data = new FormData();
     data.append("id", id);
+    data.append("search", search);
     const params = {
       id: id,
     };
@@ -473,7 +514,7 @@ const EditSaleReturn = () => {
       setBatch("");
       setLoc("");
       setIsEditMode(false);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleKeyDown = (event) => {
@@ -532,6 +573,8 @@ const EditSaleReturn = () => {
   };
 
   const resetValue = () => {
+    setSearch("");
+    setIsEditMode(false);
     setUnit("");
     setBatch("");
     setSearchItem(" ");
@@ -543,9 +586,18 @@ const EditSaleReturn = () => {
     setOrder("");
     setLoc("");
     setItemAmount(0);
+    setSearchItem("");
+
     if (isNaN(itemAmount)) {
       setItemAmount(0);
     }
+  };
+
+  // Add handleInputChange function for search functionality
+  const handleInputChange = (e) => {
+    setSearch(e.target.value);
+    saleBillGetBySaleID();
+
   };
 
   const handleDeleteItem = async (saleItemId) => {
@@ -693,14 +745,15 @@ const EditSaleReturn = () => {
         setOpenModal(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
-            history.push(nextPath);
+          history.push(nextPath);
         }, 0);
-    } else {
-      console.error("Error deleting items:", error);
+      } else {
+        console.error("Error deleting items:", error);
 
-      // Optional: Provide user feedback if there's an error
-      alert("Failed to save changes. Please try again.");
-    }}
+        // Optional: Provide user feedback if there's an error
+        alert("Failed to save changes. Please try again.");
+      }
+    }
   };
 
   return (
@@ -797,7 +850,7 @@ const EditSaleReturn = () => {
                     variant="contained"
                     className="payment_btn_divv"
                     style={{ background: "var(--color1)" }}
-                    onClick={() =>handleUpdate()}
+                    onClick={() => handleUpdate()}
                   >
                     Update
                   </Button>
@@ -1001,7 +1054,7 @@ const EditSaleReturn = () => {
                       <thead>
                         <tr
                           style={{
-                            borderBottom: "1px solid lightgray", 
+                            borderBottom: "1px solid lightgray",
                           }}
                         >
                           <th className="w-1/4">Item Name</th>
@@ -1019,18 +1072,40 @@ const EditSaleReturn = () => {
                       </thead>
                       <tbody>
                         <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          <td style={{ width: "350px" }}>
-                            <div style={{ width: 350, padding: 0 }}>
-                             {searchItem ?  <DeleteIcon
-                                className="delete-icon mr-2"
-                                onClick={resetValue}
-                              />:<></>}
- 
-                              <span className="font-semibold ">
-                                {searchItem}
-                              </span>
-                            </div>
-                          </td>
+                          {
+                            isEditMode ? <td>
+                              <div className="flex items-center gap-2">
+                                <DeleteIcon className="delete-icon" onClick={resetValue} />
+                                <span className="text-sm">{searchItem}</span>
+                              </div>
+
+                            </td> :  <td  style={{ width: "350px" }} > <TextField
+                              autoComplete="off"
+                              id="outlined-basic"
+                              size="small"
+                              sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
+                              value={search}
+                              onChange={handleInputChange}
+                              inputRef={el => inputRefs.current[0] = el}
+                              onKeyDown={e => {
+                                if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+                                  // Use the new arrow navigation function that works regardless of input focus
+                                  handleArrowNavigation(e);
+                                }
+                              }}
+                              variant="outlined"
+                              placeholder="Please search any items.."
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    <SearchIcon />
+                                  </InputAdornment>
+                                ),
+                                type: "search",
+                              }}
+                            />
+                            </td>
+                          }
 
                           <td>
                             <TextField
@@ -1158,14 +1233,14 @@ const EditSaleReturn = () => {
                               sx={{ width: "70px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef5}
-                              onKeyDown={()=>editSaleReturnItem()}
                               value={qty}
-                              onKeyPress={(e) => {
+                              onKeyDown={(e) => {
                                 if (
                                   !/[0-9]/.test(e.key) &&
                                   e.key !== "Backspace"
                                 ) {
                                   e.preventDefault();
+                                  editSaleReturnItem()
                                 }
                               }}
                               onChange={(e) => {
@@ -1203,12 +1278,12 @@ const EditSaleReturn = () => {
                           </td>
                           <td className="total ">{itemAmount}</td>
                         </tr>
-                        
+
                       </tbody>
                     </table>
                     <>
                       <table
-                        className="p-30 border w-full border-collapse custom-table"
+                        className="p-30 border w-full border-collapse custom-table "
                         ref={tableRef}
                         tabIndex={0} // Allows table to receive focus
                       >
@@ -1216,9 +1291,8 @@ const EditSaleReturn = () => {
                           {saleReturnItems?.sales_iteam?.map((item, index) => (
                             <tr
                               key={item.id}
-                              className={`item-List cursor-pointer flex justify-between  ${
-                                index === selectedIndex ? "highlighted-row" : ""
-                              }`}
+                              className={`item-List cursor-pointer flex justify-between  ${index === selectedIndex ? "highlighted-row" : ""
+                                }`}
                               onClick={() => {
                                 handleEditClick(item);
                                 setSelectedIndex(index);
@@ -1235,7 +1309,7 @@ const EditSaleReturn = () => {
                                 <Checkbox
                                   sx={{
                                     color: "var(--color2)",
-                                    "&.Mui-checked": { color: "var(--color1)" }, padding:"0px"
+                                    "&.Mui-checked": { color: "var(--color1)" }, padding: "0px"
                                   }}
                                   checked={item?.iss_check}
                                   onClick={(event) => event.stopPropagation()}
@@ -1370,7 +1444,7 @@ const EditSaleReturn = () => {
                         size="lg"
                         position="bottom-center"
                         className="modal_amount"
-                        // style={{ width: "50%" }}
+                      // style={{ width: "50%" }}
                       >
                         <div
                           style={{
@@ -1516,9 +1590,8 @@ const EditSaleReturn = () => {
                 <div
                   id="modal"
                   value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                    IsDelete ? "block" : "hidden"
-                  }`}
+                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                    }`}
                 >
                   <div />
                   <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -1583,9 +1656,8 @@ const EditSaleReturn = () => {
           <div
             id="modal"
             value={openModal}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-              openModal ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+              }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

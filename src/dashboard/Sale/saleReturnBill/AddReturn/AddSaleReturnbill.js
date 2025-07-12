@@ -798,7 +798,7 @@ const Salereturn = () => {
                                 <span className="cursor-pointer" style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', minWidth: "117px", cursor: "pointer", whiteSpace: "nowrap", flexWrap: "nowrap" }} onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', alignItems: 'center', fontWeight: 700, fontSize: '20px' }}>New</span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                             </div>
                             <div className="headerList">
                                 <Select
@@ -1078,8 +1078,7 @@ const Salereturn = () => {
                                                 </tr>
                                             ) : (<>
                                                 <tr className="item-List  border-b border-gray-400" >
-                                                    {
-                                                        isEditMode ? <td className="" >
+                                                    {isEditMode ? <td>
                                                             <div className="flex items-center gap-2">
                                                                 <DeleteIcon className="delete-icon" onClick={removeItem} />
                                                                 <span className="text-sm">{searchItem}</span>
@@ -1268,9 +1267,6 @@ const Salereturn = () => {
                                                     </td>
                                                     <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
                                                 </tr>
-
-
-
                                             </>)}
 
                                         </tbody>

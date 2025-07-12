@@ -2786,9 +2786,6 @@ const Addsale = () => {
                         <td></td>
                         <td colSpan={9}></td>
 
-                        {/* <td >
-                                                    <Button className="gap-2" variant="contained" color="success" marginRight="20px" onClick={addItemValidation} style={{ backgroundColor: 'var(--color1)' }}><ControlPointIcon />Add</Button>
-                                                </td> */}
                       </tr>
                     </tbody>
                   </table>

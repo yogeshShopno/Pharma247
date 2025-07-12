@@ -159,6 +159,11 @@ const Salereturn = () => {
                 setSelectedIndex((prev) => Math.max(prev - 1, 0));
             }
         }
+        else if (e.key === "Enter" && selectedIndex !== -1) {
+            const selectedRow = saleItems.sales_item[selectedIndex];
+            if (!selectedRow) return;
+            handleEditClick(selectedRow);
+        }
     };
 
     useEffect(() => {
@@ -1092,7 +1097,7 @@ const Salereturn = () => {
                                                                     onChange={handleInputChange}
                                                                     inputRef={el => inputRefs.current[5] = el}
                                                                     onKeyDown={e => {
-                                                                        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                                                                        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
                                                                             // Use the new arrow navigation function that works regardless of input focus
                                                                             handleArrowNavigation(e);
                                                                         }

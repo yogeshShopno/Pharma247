@@ -163,6 +163,9 @@ const EditSaleReturn = () => {
         const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
         if (!selectedRow) return;
         handleEditClick(selectedRow);
+        setTimeout(() => {
+          inputRef6?.current?.focus(); // Focus on base field
+        }, 100);
       }
     };
 
@@ -527,15 +530,13 @@ const EditSaleReturn = () => {
       } else if (event.target === inputRef3.current) {
         inputRef4.current.focus();
       } else if (event.target === inputRef4.current) {
-        inputRef5.current.focus();
-      } else if (event.target === inputRef5.current) {
-        inputRef6.current.focus();
+        inputRef6.current.focus(); // Base field
       } else if (event.target === inputRef6.current) {
-        inputRef7.current.focus();
-      } else if (event.target === inputRef7.current) {
-        inputRef8.current.focus();
+        inputRef5.current.focus(); // Skip disabled GST field, go directly to Quantity field
       } else if (event.target === inputRef8.current) {
-        inputRef9.current.focus();
+        inputRef5.current.focus(); // GST field to Quantity field
+      } else if (event.target === inputRef5.current) {
+        inputRef9.current.focus(); // Quantity field to Location field
       } else if (event.target === inputRef9.current) {
         inputRef10.current.focus();
       }
@@ -696,6 +697,9 @@ const EditSaleReturn = () => {
       setLoc(item.location);
       setItemAmount(item.net_rate);
     }
+    setTimeout(() => {
+      inputRef6?.current?.focus(); // This focuses on the base field (inputRef6 is used for base)
+    }, 100);
   };
   const handleQty = (value) => {
     const newQty = Number(value);
@@ -1189,7 +1193,7 @@ const EditSaleReturn = () => {
                               type="number"
                               sx={{ width: "120px", textAlign: "right" }}
                               size="small"
-                              inputRef={inputRef5}
+                              inputRef={inputRef6}
                               onKeyDown={handleKeyDown}
                               value={base}
                               onChange={(e) => {
@@ -1499,7 +1503,7 @@ const EditSaleReturn = () => {
                             <label className="font-bold">Other Amount : </label>
                             <Input
                               value={otherAmt}
-                              onKeyPress={(e) => {
+                              onKeyDown={(e) => {
                                 const value = e.target.value;
                                 const isMinusKey = e.key === "-";
 

@@ -2,19 +2,17 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* ===== REUSABLE TABLE STYLES ===== */
-
-/* Enhanced item-table styles for all tables */
-.item-table {
+.item-table{
     border-collapse: collapse;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color1);
     margin-bottom: 20px;
     font-size: 14px;
     text-align: left;
     padding: 8px;
     background-color: #f9f9f9;
     border-radius: 5px;
+    
 }
 
 .item-table th,
@@ -28,7 +26,7 @@
     color: var(--color1);
     font-size: 14px;
     letter-spacing: 0.2px;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid var(--color1);
     background-color: #f9f9f9;
 }
 
@@ -36,12 +34,16 @@
     background: #ceecfd;
 }
 
+.input-row{
+    background-color: #f9f9f9;
+    border-bottom: 1px solid var(--color1);   
+}
 /* Item list table styles */
 .item-List tr {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .item-List th,
@@ -49,7 +51,7 @@
     padding: 8px;
     text-align: left;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .item-List th {
@@ -204,7 +206,7 @@
 /* Item list styles */
 .itemList {
     padding: 5px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 /* ===== LAYOUT STYLES ===== */

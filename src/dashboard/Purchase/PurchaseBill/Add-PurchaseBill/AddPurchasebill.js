@@ -1334,6 +1334,7 @@ const AddPurchaseBill = () => {
         },
       });
 
+      console.log(response);
       if (response?.data?.status === 200) {
         setOpenAddItemPopUp(false);
         setOpenAddDistributorPopUp(false);
@@ -2244,7 +2245,7 @@ const AddPurchaseBill = () => {
                 </div>
               </div>
 
-              {/*<====================================================================== Merged Item Table =====================================================================> */}
+              {/*<======================================================================Item Table =====================================================================> */}
 
               <div className="overflow-x-auto w-full">
                 <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
@@ -2282,7 +2283,7 @@ const AddPurchaseBill = () => {
                     <tr className="input-row">
                       <td className="p-0">
                         {isEditMode ? (
-                          <div style={{ width: 350, padding: 0 }}>
+                          <div style={{  fontSize: 15,fontWeight: 600, minWidth: 366, padding: 0,display: 'flex',alignItems: 'left',   }}>
                             <DeleteIcon
                               className="delete-icon mr-2"
                               onClick={() => {
@@ -2290,20 +2291,19 @@ const AddPurchaseBill = () => {
                                 setIsEditMode(false);
                               }}
                             />
-                            {searchItem}
+                            {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
                             {error.item && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
+                              <span style={{ color: "red", fontSize: "16px" }}>
                                 {error.item}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div style={{ width: 350, padding: 0 }}>
+                          <div style={{ minWidth: 366, padding: 0 }}>
                            
                               <Autocomplete
                                 key={autocompleteKey}
                                 value={selectedOption}
-                                sx={{ width: 350, padding: 0 }}
                                 size="small"
                                 onChange={handleOptionChange}
                                 onInputChange={handleInputChange}
@@ -2331,7 +2331,6 @@ const AddPurchaseBill = () => {
                                     tabIndex={0}
                                     variant="outlined"
                                     autoComplete="off"
-                                    sx={{ width: 350, padding: 0 }}
                                     {...params}
                                     value={searchItem?.iteam_name}
                                     inputRef={(el) => (inputRefs.current[2] = el)}
@@ -2803,8 +2802,11 @@ const AddPurchaseBill = () => {
                           handleEditClick(item);
                         }}
                         className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                        style={{
+                          borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
+                        }}
                       >
-                        <td style={{ display: "flex", gap: "8px", width: "366px" }}>
+                         <td style={{ display: "flex", gap: "8px", width: "366px", textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                           <BorderColorIcon
                             style={{ color: "var(--color1)" }}
                             onClick={(e) => {
@@ -2820,49 +2822,49 @@ const AddPurchaseBill = () => {
                               deleteOpen(item.id);
                             }}
                           />
-                          {item.iteam_name?item.iteam_name:"-----"}
+                          {item.iteam_name ? item.iteam_name : "-----"}
                         </td>
-                        <td style={{ width: "85px" }}>
-                          {item.weightage?item.weightage:"-----"}
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.weightage ? item.weightage : "-----"}
                         </td>
-                        <td style={{ width: "105px" }}>
-                          {item.batch_number?item.batch_number:"-----"}
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.batch_number ? item.batch_number : "-----"}
                         </td>
-                        <td style={{ width: "105px" }}>
-                          {item.expiry?item.expiry:"-----"}
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.expiry ? item.expiry : "-----"}
                         </td>
-                        <td style={{ width: "95px" }}>
-                          {item.mrp?item.mrp:"-----"}
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.mrp ? item.mrp : "-----"}
                         </td>
-                        <td style={{ width: "85px" }}>
-                          {item.qty?item.qty:"-----"}
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.qty ? item.qty : "-----"}
                         </td>
-                        <td style={{ width: "65px" }}>
-                          {item.free_qty?item.free_qty:"-----"}
+                        <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.free_qty ? item.free_qty : "-----"}
                         </td>
-                        <td style={{ width: "95px" }}>
-                          {item.ptr?item.ptr:"-----"}
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.ptr ? item.ptr : "-----"}
                         </td>
-                        <td style={{ width: "70px" }}>
-                          {item.discount?item.discount:"-----"}
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.discount ? item.discount : "-----"}
                         </td>
-                        <td style={{ width: "95px" }}>
-                          {item.base_price?item.base_price:"-----"}
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.base_price ? item.base_price : "-----"}
                         </td>
-                        <td style={{ width: "70px" }}>
-                          {item.gst?item.gst:"-----"}
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.gst ? item.gst : "-----"}
                         </td>
-                        <td style={{ width: "95px" }}>
-                          {item.location?item.location:"-----"}
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.location ? item.location : "-----"}
                         </td>
-                        <td style={{ width: "95px" }}>
-                          {item.net_rate?item.net_rate:"-----"}
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.net_rate ? item.net_rate : "-----"}
                         </td>
-                        <td style={{ width: "108px" }}>
-                          {item.margin?item.margin:"-----"}
+                        <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.margin ? item.margin : "-----"}
                         </td>
-                        <td style={{ width: "107px" }}>
-                          {item.total_amount?item.total_amount:"-----"}
+                        <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
+                          {item.total_amount ? item.total_amount : "-----"}
                         </td>
                       </tr>
                     ))}

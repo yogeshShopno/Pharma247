@@ -145,6 +145,22 @@ const Salereturn = () => {
         }
     };
 
+    // New function specifically for arrow key navigation that works even when input is focused
+    const handleArrowNavigation = (e) => {
+        console.log("handleArrowNavigation");
+        if (!saleItems?.sales_item?.length) return;
+
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+            e.preventDefault(); // Prevent default scrolling behavior
+            
+            if (e.key === "ArrowDown") {
+                setSelectedIndex((prev) => Math.min(prev + 1, saleItems.sales_item.length - 1));
+            } else if (e.key === "ArrowUp") {
+                setSelectedIndex((prev) => Math.max(prev - 1, 0));
+            }
+        }
+    };
+
     useEffect(() => {
         document.addEventListener("keydown", handleKeyPress);
         return () => document.removeEventListener("keydown", handleKeyPress);
@@ -1023,7 +1039,7 @@ const Salereturn = () => {
                                                 background: "var(--color1)"
                                             }}
                                             ref={el => inputRefs.current[4] = el}
-                                            onKeyDown={handleKeyDown}
+                                            onKeyDown={validfilter}
 
                                             onClick={validfilter}
                                         >
@@ -1076,7 +1092,10 @@ const Salereturn = () => {
                                                                     onChange={handleInputChange}
                                                                     inputRef={el => inputRefs.current[5] = el}
                                                                     onKeyDown={e => {
-                                                                        handleKeyPress(e);
+                                                                        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                                                                            // Use the new arrow navigation function that works regardless of input focus
+                                                                            handleArrowNavigation(e);
+                                                                        }
                                                                     }}
                                                                     variant="outlined"
                                                                     placeholder="Please search any items.."

@@ -543,7 +543,7 @@ const InventoryList = () => {
         .then((response) => {
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
-            toast.error("No Record Found");
+            // toast.error("No Record Found");
           }
           setIsLoading(false);
           // console.log(data);
@@ -606,7 +606,7 @@ const InventoryList = () => {
       });
       setData(res.data.data.data);
       if (res.data.data.data.length == 0) {
-        toast.error("No Record Found");
+        // toast.error("No Record Found");
       }
     } catch (error) {
       console.error("API error:", error);

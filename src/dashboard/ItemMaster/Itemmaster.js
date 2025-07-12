@@ -455,7 +455,7 @@ const Itemmaster = () => {
       if (response.data.status === 200) {
         toast.success(response.data.message);
         setTimeout(() => {
-          history.push("/admindashboard");
+          history.push("/inventory");
         }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);

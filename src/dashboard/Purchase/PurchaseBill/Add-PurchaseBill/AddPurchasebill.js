@@ -150,7 +150,6 @@ const AddPurchaseBill = () => {
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
-  const [itemAutofoucs, setItemAutofoucs] = useState(false);
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const [focusedField, setFocusedField] = useState("distributor");
 
@@ -1123,7 +1122,6 @@ const AddPurchaseBill = () => {
     if (isSubmitting) return false; // Prevent double submissions
     setIsSubmitting(true); // Lock
 
-    setItemAutofoucs(true);
 
     setUnsavedItems(true);
     const gstMapping = {
@@ -1206,7 +1204,6 @@ const AddPurchaseBill = () => {
       setSchAmt("");
       setMargin("");
       setLoc("");
-
       setIsEditMode(false);
       setSelectedEditItemId(null);
       setBarcode("");
@@ -2795,11 +2792,8 @@ const AddPurchaseBill = () => {
                               onKeyDown={async (e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
-                                  const isValid = await handleAddButtonClick();
-
-                                  if (isValid) {
-                                    handleKeyDown(e, 1); // Move to next field only if add is successful
-                                  }
+                                 await handleAddButtonClick();
+                                 
                                 }
                               }}
 

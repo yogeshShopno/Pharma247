@@ -1,4 +1,4 @@
-import "./AddPurchasebill.css";
+// import "./AddPurchasebill.css";
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
@@ -2219,7 +2219,7 @@ const AddPurchaseBill = () => {
               {/*<====================================================================== add Item field =====================================================================> */}
 
               <div className="overflow-x-auto w-full">
-                <table className="customtable  w-full  border-collapse custom-table">
+                <table className="w-full  border-collapse item-table">
                   <thead>
                     <tr>
                       <th>
@@ -2841,7 +2841,7 @@ const AddPurchaseBill = () => {
                   {/*<========================================================================= added Item  ========================================================================> */}
 
                   <table
-                    className="customtable  w-full  border-collapse custom-table"
+                    className="item-table  w-full  border-collapse "
                     ref={tableRef}
                     tabIndex={0}
                   >

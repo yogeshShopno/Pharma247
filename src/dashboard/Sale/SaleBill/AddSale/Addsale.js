@@ -1,7 +1,7 @@
 import Header from "../../../Header";
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import "../../../../App.css";
+// import "../../../../App.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DatePicker from "react-datepicker";
@@ -221,7 +221,7 @@ const Addsale = () => {
         setItemId(null);
         resetValue();
         setSelectedIndex(-1);
-        
+
         // Focus on tableRef1 after a short delay to ensure state updates
         setTimeout(() => {
           if (tableRef1.current) {
@@ -236,7 +236,7 @@ const Addsale = () => {
 
       const isInputFocused = document.activeElement.tagName === "INPUT";
       const isTableFocused = document.activeElement === tableRef1.current;
-      
+
       if (isInputFocused && !isTableFocused) return;
 
       e.preventDefault(); // Prevent default scrolling behavior
@@ -748,7 +748,7 @@ const Addsale = () => {
       setItemId(null);
       resetValue();
       setSelectedIndex(-1);
-      
+
       // Focus on tableRef1 after a short delay
       setTimeout(() => {
         if (tableRef1.current) {
@@ -1417,11 +1417,12 @@ const Addsale = () => {
         setOpenModal(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
-            history.push(nextPath);
+          history.push(nextPath);
         }, 0);
-    } else {
-      console.error("Error deleting items:", error);
-    }}
+      } else {
+        console.error("Error deleting items:", error);
+      }
+    }
   };
 
   const draftSaleData = async () => {
@@ -1870,34 +1871,22 @@ const Addsale = () => {
           draggable
           pauseOnHover
         />
-        <div
-          className="p-6"
-          style={{ height: "calc(-190px + 100vh)", overflow: "auto" }}
-        >
-          <div>
-            <div
-              className="header_sale_divv"
-              style={{
-                display: "flex",
-                gap: "4px",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "7px",
-                  alignItems: "center",
-                }}
-              >
+        <div className="p-6">
+          <div
+            style={{
+              height: "calc(-125px + 100vh)",
+              overflow: "auto",
+            }}
+          >
+            <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
+              <div style={{ display: "flex", gap: "7px" }}>
                 <span
                   style={{
                     color: "var(--color2)",
+                    alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
                     cursor: "pointer",
-                    width: "50px",
                   }}
                   onClick={() => {
                     history.push("/salelist");
@@ -1906,21 +1895,23 @@ const Addsale = () => {
                   Sales
                 </span>
                 <ArrowForwardIosIcon
-                  style={{ fontSize: "18px", color: "var(--color1)" }}
+                  style={{
+                    fontSize: "18px",
+                    marginTop: "8px",
+                    color: "var(--color1)",
+                  }}
                 />
                 <span
                   style={{
                     color: "var(--color1)",
+                    alignItems: "center",
                     fontWeight: 700,
                     fontSize: "20px",
                   }}
                 >
                   New
                 </span>
-                <BsLightbulbFill
-                  // onClick={handleSendInvoice}
-                  className="w-6 h-6 secondary hover-yellow"
-                />
+                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
                 <Button
@@ -1932,7 +1923,6 @@ const Addsale = () => {
                   <ControlPointIcon className="mr-2" />
                   Add New Item
                 </Button>
-
                 <Select
                   labelId="dropdown-label"
                   id="dropdown"
@@ -1943,6 +1933,7 @@ const Addsale = () => {
                     setUnsavedItems(true);
                   }}
                   size="small"
+                  sx={{ minWidth: "150px" }}
                 >
                   <MenuItem value="cash">Cash</MenuItem>
                   <MenuItem value="credit">Credit</MenuItem>
@@ -1963,6 +1954,7 @@ const Addsale = () => {
                   }}
                   size="small"
                   sx={{
+                    minWidth: "150px",
                     "& .MuiInputBase-input": {
                       display: "flex",
                       whiteSpace: "nowrap",
@@ -1993,7 +1985,6 @@ const Addsale = () => {
                       setIsOpen(false);
                     }, 200);
                   }}
-                  style={{ zIndex: 1 }} // keep dropdown above other elements
                 >
                   {/* Save button */}
                   <Button
@@ -2012,7 +2003,6 @@ const Addsale = () => {
                   >
                     Save
                   </Button>
-
                   {/* Dropdown toggle button */}
                   <Button
                     variant="contained"
@@ -2029,7 +2019,6 @@ const Addsale = () => {
                   >
                     <IoCaretDown className="text-white" />
                   </Button>
-
                   {/* Dropdown menu */}
                   {isOpen && (
                     <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
@@ -2044,17 +2033,6 @@ const Addsale = () => {
                           <SaveIcon />
                           Save
                         </li>
-                        {/* <li
-                          onClick={() => {
-                            setBillSaveDraft("1");
-                            handleSubmit("2");
-                          }}
-                          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
-                        >
-                          <WhatsAppIcon /> WhatsApp
-
-                        </li> */}
-
                         <li
                           onClick={() => {
                             setBillSaveDraft("0");
@@ -2340,7 +2318,7 @@ const Addsale = () => {
                   </div>
                 </div>
                 <div className=" overflow-x-auto w-full scroll-two">
-                  <table className="saleTable">
+                  <table className="item-table">
                     <thead>
                       <tr>
                         <th>
@@ -2398,18 +2376,19 @@ const Addsale = () => {
                             textAlign: "center",
                           }}
                         >
-                          Amount{" "}
+                          Amount
                         </th>
                       </tr>
                     </thead>
                     <tbody>
+                      {/* Input row (with inner table for autocomplete/batch selection) */}
                       <tr style={{ borderBottom: "1px solid lightgray" }}>
                         <td style={{ padding: "10px", textAlign: "center" }}>
                           <div
                             className="flex gap-5 search_fld_divv"
-                            style={{ width: "100%" }}
+                            style={{ width: "100%" , minWidth: 500  }}
                           >
-                            <table style={{ maxWidth: "100%", width: "100%" }}>
+                            <table style={{minWidth: 500, maxWidth: "100%"}}>
                               <Box
                                 sx={{
                                   display: "flex",
@@ -2430,6 +2409,8 @@ const Addsale = () => {
                                     width: "100%",
                                     background: "#ffffff",
                                     borderRadius: "7px",
+                                    minWidth: 500, 
+                                    padding: 0
                                   }}
                                 >
                                   <Autocomplete
@@ -2474,7 +2455,7 @@ const Addsale = () => {
                                           ...params.InputProps,
                                           style: {
                                             height: 40,
-                                            width: 450,
+                                            width: 500,
                                             fontSize: "1.2rem",
                                           },
 
@@ -2632,7 +2613,7 @@ const Addsale = () => {
                             onKeyDown={handleKeyDown}
                             size="small"
                             value={unit}
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             onChange={(e) => {
                               setUnit(e.target.value);
                             }}
@@ -2641,7 +2622,7 @@ const Addsale = () => {
                         <td style={{ padding: "10px", textAlign: "center" }}>
                           <TextField
                             id="outlined-number"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             size="small"
                             disabled
                             value={batch}
@@ -2655,7 +2636,7 @@ const Addsale = () => {
                             id="outlined-number"
                             disabled
                             size="small"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             inputRef={inputRef3}
                             onKeyDown={handleKeyDown}
                             value={expiryDate}
@@ -2668,7 +2649,7 @@ const Addsale = () => {
                             disabled
                             id="outlined-number"
                             type="number"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef4}
                             onKeyDown={handleKeyDown}
@@ -2683,7 +2664,7 @@ const Addsale = () => {
                             autoComplete="off"
                             id="outlined-number"
                             type="number"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef5}
                             onKeyDown={handleKeyDown}
@@ -2701,7 +2682,7 @@ const Addsale = () => {
                             size="small"
                             inputRef={inputRef6}
                             onKeyDown={handleKeyDown}
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             value={gst}
                             onChange={(e) => {
                               setGst(e.target.value);
@@ -2713,7 +2694,7 @@ const Addsale = () => {
                             autoComplete="off"
                             id="outlined-number"
                             type="number"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef7}
                             onKeyDown={handleKeyDown}
@@ -2745,7 +2726,7 @@ const Addsale = () => {
                             inputRef={inputRef9}
                             onKeyDown={handleKeyDown}
                             disabled
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             value={loc}
                             onChange={(e) => {
                               setLoc(e.target.value);
@@ -2756,7 +2737,7 @@ const Addsale = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-number"
-                            sx={{ width: "130px" }}
+                            sx={{ width: "100px" }}
                             size="small"
                             value={order}
                             inputRef={inputRef8}
@@ -2782,22 +2763,7 @@ const Addsale = () => {
                           {itemAmount}
                         </td>
                       </tr>
-                      <tr style={{ borderBottom: "1px solid lightgray" }}>
-                        <td></td>
-                        <td colSpan={9}></td>
-
-                      </tr>
-                    </tbody>
-                  </table>
-                  <table
-                    className="p-30 w-full border-collapse custom-table"
-                    ref={tableRef1}
-                    tabIndex={0}
-                    style={{ background: "#F5F5F5", padding: "10px 15px" }}
-                    onFocus={() => setAutocompleteDisabled(false)}
-                    onBlur={() => setAutocompleteDisabled(true)}
-                  >
-                    <tbody>
+                      {/* Mapped item rows (moved from the second table) */}
                       {ItemSaleList?.sales_item?.map((item, index) => (
                         <tr
                           key={item.id}
@@ -2806,8 +2772,7 @@ const Addsale = () => {
                             handleEditClick(item);
                             setSelectedIndex(index);
                           }}
-                          className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                            }`}
+                          className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                         >
                           <td
                             style={{
@@ -3445,6 +3410,7 @@ const Addsale = () => {
             </div>
           </DialogActions>
         </Dialog>
+        
         <Dialog
           open={openPurchaseHistoryPopUp}
           sx={{

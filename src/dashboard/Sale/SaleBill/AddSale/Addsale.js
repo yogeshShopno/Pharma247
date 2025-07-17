@@ -186,6 +186,11 @@ const Addsale = () => {
 
   const timeoutRef = useRef(null);
 
+  // Add controlled open state for Autocomplete
+  const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
+
+  const [autocompleteKey, setAutocompleteKey] = useState(0);
+
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
   // Handle table focus and blur to enable/disable autocomplete
   useEffect(() => {
@@ -737,8 +742,7 @@ const Addsale = () => {
 
   const handleAutocompleteKeyDown = (event) => {
     // Only trigger table focus if there's no search value and no selected option
-    // This allows normal autocomplete navigation when user is actively searching
-    if (!selectedOption && !searchItem && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+    if (!(selectedOption || searchItem) && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
       event.preventDefault();
       setIsVisible(false);
       setSelectedOption(null);
@@ -830,6 +834,7 @@ const Addsale = () => {
     if (inputRef5.current) {
       inputRef5.current.focus();
     }
+    setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
   };
 
   useEffect(() => { }, [searchItem, itemList]);
@@ -1748,6 +1753,7 @@ const Addsale = () => {
     let currentIndex = rows.findIndex((row) => row === document.activeElement);
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      setAutoCompleteOpen(false); // Close dropdown on keyboard navigation
       if (rows.length > 0) {
         const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
         rows[nextIndex]?.focus();
@@ -1756,6 +1762,7 @@ const Addsale = () => {
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
+      setAutoCompleteOpen(false); // Close dropdown on keyboard navigation
       if (rows.length > 0) {
         const prevIndex =
           currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
@@ -1774,6 +1781,7 @@ const Addsale = () => {
         if (item) {
           handlePassData(item);
           setHighlightedRowId(itemId);
+          setAutoCompleteOpen(false); // Close dropdown on Enter
         }
       }
     }
@@ -1855,6 +1863,19 @@ const Addsale = () => {
       console.error("Invalid URL for the PDF");
     }
   };
+
+  // Add useEffect to close dropdown if Autocomplete input is not focused
+  useEffect(() => {
+    function handleDocumentFocus() {
+      if (autoCompleteOpen && searchInputRef.current && document.activeElement !== searchInputRef.current) {
+        setAutoCompleteOpen(false);
+      }
+    }
+    document.addEventListener('focusin', handleDocumentFocus);
+    return () => {
+      document.removeEventListener('focusin', handleDocumentFocus);
+    };
+  }, [autoCompleteOpen]);
 
   return (
     <>
@@ -2414,31 +2435,20 @@ const Addsale = () => {
                                   }}
                                 >
                                   <Autocomplete
+                                    key={autocompleteKey}
                                     value={selectedOption}
-                                    blurOnSelect
                                     size="small"
-                                    sx={{ fontSize: "1.5rem" }}
                                     onChange={handleOptionChange}
                                     onInputChange={handleInputChange}
-                                    onKeyDown={handleAutocompleteKeyDown}
+                                    open={autoCompleteOpen}
+                                    onOpen={() => setAutoCompleteOpen(true)}
+                                    onClose={() => setAutoCompleteOpen(false)}
+                                    getOptionLabel={(option) => `${option.iteam_name || ""}`}
                                     options={itemList}
-                                    getOptionLabel={(option) =>
-                                      `${option.iteam_name || ""}`
-                                    }
-                                    filterOptions={(option, state) => {
-                                      return itemList;
-                                    }}
                                     renderOption={(props, option) => (
                                       <ListItem {...props} key={option.id}>
                                         <ListItemText
                                           primary={`${option.iteam_name}, (${option.company})`}
-                                          // secondary={
-                                          //     <>
-                                          //         <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                          //         ₹: {option.mrp || 0},
-                                          //         <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                          //     </>
-                                          // }
                                           secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
                                         />
                                       </ListItem>
@@ -2458,7 +2468,6 @@ const Addsale = () => {
                                             width: 500,
                                             fontSize: "1.2rem",
                                           },
-
                                           startAdornment: (
                                             <InputAdornment position="start">
                                               <SearchIcon
@@ -2476,6 +2485,40 @@ const Addsale = () => {
                                             fontSize: "1rem",
                                             color: "black",
                                           },
+                                        }}
+                                        onFocus={() => setSelectedIndex(-1)}
+                                        onKeyDown={(e) => {
+                                          const key = e.key;
+                                          const isTab = key === "Tab";
+                                          const isShiftTab = isTab && e.shiftKey;
+                                          const isEnter = key === "Enter";
+                                          const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                                          // If searchItem is empty or only whitespace, or no selectedOption, up/down focuses table
+                                          if (!searchItem  && isArrowKey) {
+                                            if (tableRef1.current) {
+                                              tableRef1.current.focus();
+                                              setTimeout(() => {
+                                                if (document.activeElement && document.activeElement.blur) {
+                                                  document.activeElement.blur();
+                                                }
+                                              }, 0);
+                                            }
+                                            return;
+                                          }
+                                          if (isShiftTab) return;
+                                          // If dropdown is open, let MUI handle up/down/enter/tab
+                                          if ((isEnter || isTab) && autoCompleteOpen) return;
+                                          if (isEnter || isTab) {
+                                            e.preventDefault();
+                                            if (!selectedOption) {
+                                              setTimeout(() => toast.error("Please select an Item"), 100);
+                                            } else {
+                                              setTimeout(() => {
+                                                if (inputRef1.current) inputRef1.current.focus();
+                                              }, 100);
+                                            }
+                                            return;
+                                          }
                                         }}
                                       />
                                     )}
@@ -2556,6 +2599,7 @@ const Addsale = () => {
                                                 onClick={() =>
                                                   handlePassData(item)
                                                 }
+                                                onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
                                                 onMouseEnter={handleMouseEnter}
                                               >
                                                 <td className="text-base font-semibold">
@@ -2763,7 +2807,7 @@ const Addsale = () => {
                           {itemAmount}
                         </td>
                       </tr>
-                      {/* Mapped item rows (moved from the second table) */}
+
                       {ItemSaleList?.sales_item?.map((item, index) => (
                         <tr
                           key={item.id}

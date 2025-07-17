@@ -1,5 +1,6 @@
 import Header from "../../../Header";
 // import "../Add-PurchaseBill/AddPurchasebill.css";
+import "../Add-PurchaseBill/AddPurchasebill.css";
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
@@ -1495,7 +1496,7 @@ const EditPurchaseBill = () => {
               style={{ borderColor: "var(--color2)" }}
             ></div>
             <div className="border-b mt-4">
-              <div className="firstrow flex">
+              <div className="firstrow flex gap-4">
                 <div
                   className="detail custommedia"
                   style={{
@@ -1601,38 +1602,25 @@ const EditPurchaseBill = () => {
                   />
                 </div>
 
-                <div className="overflow-x-auto w-full scroll-two">
-                  <table className="customtable w-full border-collapse custom-table" ref={tableRef} tabIndex={0}>
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                     <thead>
                       <tr>
                         <th>
                           <div className="flex justify-center items-center gap-2">
-                            Search Item Name
-                            <span className="text-red-600 ">*</span>
+                            Search Item Name <span className="text-red-600 ">*</span>
                           </div>
                         </th>
-                        <th>
-                          Unit <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>
-                          Batch <span className="text-red-600 ">*</span>{" "}
-                        </th>
-                        <th>
-                          Expiry <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>
-                          MRP <span className="text-red-600 ">*</span>
-                        </th>
+                        <th>Unit <span className="text-red-600 ">*</span></th>
+                        <th>Batch <span className="text-red-600 ">*</span> </th>
+                        <th>Expiry <span className="text-red-600 ">*</span></th>
+                        <th>MRP <span className="text-red-600 ">*</span></th>
                         <th>Qty. </th>
                         <th>Free</th>
-                        <th>
-                          PTR <span className="text-red-600 ">*</span>
-                        </th>
+                        <th>PTR <span className="text-red-600 ">*</span></th>
                         <th>CD%</th>
                         <th>Base</th>
-                        <th>
-                          GST% <span className="text-red-600 ">*</span>
-                        </th>
+                        <th>GST% <span className="text-red-600 ">*</span></th>
                         <th>Loc.</th>
                         <th>Net Rate</th>
                         <th>Margin%</th>
@@ -1641,10 +1629,10 @@ const EditPurchaseBill = () => {
                     </thead>
                     <tbody>
                       {/* Input row (add/edit) */}
-                      <tr>
+                      <tr className="input-row">
                         {isEditMode ? (
                           <td className="p-0">
-                            <div style={{ width: 350, padding: 10 }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left' }}>
                               <DeleteIcon
                                 className="delete-icon mr-2"
                                 onClick={() => {
@@ -1652,19 +1640,19 @@ const EditPurchaseBill = () => {
                                   setIsEditMode(false);
                                 }}
                               />
-                              {searchItem}
+                              {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
+                              {error.item && (
+                                <span style={{ color: "red", fontSize: "16px" }}>
+                                  {error.item}
+                                </span>
+                              )}
                             </div>
-                            {error.item && (
-                              <span style={{ color: "red", fontSize: "12px" }}>
-                                {error.item}
-                              </span>
-                            )}
                           </td>
                         ) : (
-                          <td>
+                          <td >
                             <Autocomplete
                               value={searchItem?.iteam_name}
-                              sx={{ width: 350, padding: 0 }}
+                             
                               size="small"
                               key={autocompleteKey}
                               onChange={handleOptionChange}
@@ -1677,7 +1665,7 @@ const EditPurchaseBill = () => {
                               options={itemList}
                               renderOption={(props, option) => (
                                 <ListItem {...props}>
-                                  <ListItemText
+                                  <ListItemText 
                                     primary={`${option.iteam_name}`}
                                     secondary={` ${option.stock === 0
                                       ? `Unit: ${option.weightage}`
@@ -1719,7 +1707,7 @@ const EditPurchaseBill = () => {
                             />
                           </td>
                         )}
-                        <td>
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1753,7 +1741,7 @@ const EditPurchaseBill = () => {
                             inputRef={(el) => (inputRefs.current[3] = el)}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1776,7 +1764,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1824,7 +1812,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1857,7 +1845,7 @@ const EditPurchaseBill = () => {
                             inputRef={(el) => (inputRefs.current[6] = el)}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1886,7 +1874,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1920,7 +1908,7 @@ const EditPurchaseBill = () => {
                             inputRef={(el) => (inputRefs.current[8] = el)}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1963,7 +1951,7 @@ const EditPurchaseBill = () => {
                             inputRef={(el) => (inputRefs.current[9] = el)}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -1989,7 +1977,7 @@ const EditPurchaseBill = () => {
                             inputRef={(el) => (inputRefs.current[10] = el)}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -2004,7 +1992,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             size="small"
@@ -2040,7 +2028,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -2060,7 +2048,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -2072,7 +2060,7 @@ const EditPurchaseBill = () => {
                             sx={{ width: "100px" }}
                           />
                         </td>
-                        <td>
+                        <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -2087,7 +2075,7 @@ const EditPurchaseBill = () => {
                             }}
                           />
                         </td>
-                        <td className="total">
+                        <td className="total" style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
                           <span className="font-bold">{ItemTotalAmount}</span>
                         </td>
                       </tr>
@@ -2100,32 +2088,33 @@ const EditPurchaseBill = () => {
                             handleEditClick(item);
                           }}
                           className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                          style={{ borderBottom: index !== purchase.item_list.length - 1 ? '1px solid #e0e0e0' : 'none' }}
                         >
-                          <td style={{ display: "flex", gap: "8px", width: "335px" }}>
+                          <td style={{ display: "flex", gap: "8px", width: "366px", textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
                               onClick={() => handleEditClick(item)}
                             />
                             <DeleteIcon
-                              className="delete-icon"
+                              className="delete-icon bg-none"
                               onClick={() => deleteOpen(item.id)}
                             />
-                            {item.item_name}
+                            {item.item_name ? item.item_name : "-----"}
                           </td>
-                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.weightage}</td>
-                          <td style={{ paddingLeft: "22px", width: "105px" }}>{item.batch_number}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.expiry}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.mrp}</td>
-                          <td style={{ paddingLeft: "22px", width: "85px" }}>{item.qty}</td>
-                          <td style={{ paddingLeft: "22px", width: "60px" }}>{item.fr_qty}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.ptr}</td>
-                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.disocunt}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.base_price}</td>
-                          <td style={{ paddingLeft: "22px", width: "70px" }}>{item.gst_name}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.location}</td>
-                          <td style={{ paddingLeft: "22px", width: "95px" }}>{item.net_rate}</td>
-                          <td style={{ paddingLeft: "22px", width: "108px" }}>{item.margin}</td>
-                          <td style={{ paddingLeft: "22px", width: "102px" }}>{item.amount}</td>
+                          <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
+                          <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
+                          <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
+                          <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
+                          <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-----"}</td>
+                          <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
+                          <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
+                          <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
+                          <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-----"}</td>
+                          <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
+                          <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
+                          <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-----"}</td>
+                          <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
+                          <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
                         </tr>
                       ))}
                     </tbody>

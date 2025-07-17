@@ -1244,8 +1244,11 @@ const AddPurchaseBill = () => {
       
     } catch (e) {
       console.log(e);
-      setUnsavedItems(false);
       throw e; // Re-throw to be caught by handleAddButtonClick
+    }finally{
+      setIsSubmitting(false);
+      setUnsavedItems(false);
+
     }
   };
   /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */

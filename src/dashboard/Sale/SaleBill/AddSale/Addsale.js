@@ -2406,38 +2406,24 @@ const Addsale = () => {
                       <tr style={{ borderBottom: "1px solid lightgray" }}>
                         <td style={{ padding: "10px", textAlign: "center" }}>
                           <div
-                            className="flex gap-5 search_fld_divv"
-                            style={{ width: "100%" , minWidth: 500  }}
+                            className="flex gap-5 "
                           >
-                            <table style={{minWidth: 500, maxWidth: "100%"}}>
+                            
                               <Box
                                 sx={{
                                   display: "flex",
                                   flexWrap: "wrap",
-                                  gap: 2,
+                                  width: "100%",
                                   alignItems: "center",
                                 }}
-                              >
-                                <Box
-                                  sx={{
-                                    flex: "1 1 auto",
-                                    // minWidth: {
-                                    //     xs: '350px',
-                                    //     sm: '500px',
-                                    //     md: '806px',
-                                    //     lg: '1000px'
-                                    // },
-                                    width: "100%",
-                                    background: "#ffffff",
-                                    borderRadius: "7px",
-                                    minWidth: 500, 
-                                    padding: 0
-                                  }}
-                                >
-                                  <Autocomplete
+                              ><Autocomplete
                                     key={autocompleteKey}
                                     value={selectedOption}
                                     size="small"
+                                    sx={{
+                                      width: "100%",
+                                      minWidth: "450px",
+                                    }}
                                     onChange={handleOptionChange}
                                     onInputChange={handleInputChange}
                                     open={autoCompleteOpen}
@@ -2465,7 +2451,7 @@ const Addsale = () => {
                                           ...params.InputProps,
                                           style: {
                                             height: 40,
-                                            width: 500,
+                                           
                                             fontSize: "1.2rem",
                                           },
                                           startAdornment: (
@@ -2523,7 +2509,7 @@ const Addsale = () => {
                                       />
                                     )}
                                   />
-                                </Box>
+                                
                               </Box>
                               {isVisible && value && !batch && (
                                 <Box
@@ -2535,14 +2521,14 @@ const Addsale = () => {
                                     },
                                     backgroundColor: "white",
                                     position: "absolute",
-                                    marginTop: "10px",
+                                    marginTop: "50px",
                                     zIndex: 1,
                                   }}
                                   id="tempId"
                                 >
                                   <div
                                     className="custom-scroll-sale"
-                                    style={{ width: "100%" }}
+                                    style={{ width: "100%"}}
                                     tabIndex={0}
                                     onKeyDown={handleTableKeyDown}
                                   >
@@ -2645,7 +2631,7 @@ const Addsale = () => {
                                   </div>
                                 </Box>
                               )}
-                            </table>
+                            
                           </div>
                         </td>
                         <td style={{ padding: "10px", textAlign: "center" }}>
@@ -2844,16 +2830,16 @@ const Addsale = () => {
                             />
                             {item.iteam_name || barcodeItemName}
                           </td>
-                          <td>{item.unit}</td>
-                          <td>{item.batch}</td>
-                          <td>{item.exp}</td>
-                          <td>{item.mrp}</td>
-                          <td>{item.base}</td>
-                          <td>{item.gst}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.location}</td>
-                          <td>{item.order ? item.order : "------"}</td>
-                          <td>{item.net_rate}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
                         </tr>
                       ))}
                     </tbody>

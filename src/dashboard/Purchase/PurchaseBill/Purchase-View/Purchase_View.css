@@ -444,23 +444,7 @@
   }
 }
 
-.search_fld_divv {
-  @media (max-width: 575px) {
-    flex-direction: column !important;
 
-    table {
-      max-width: 100% !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column !important;
-
-    table {
-      max-width: 100% !important;
-    }
-  }
-}
 
 .header_sale_divv {
   @media (max-width: 906px) {

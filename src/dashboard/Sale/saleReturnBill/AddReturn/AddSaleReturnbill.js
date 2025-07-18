@@ -20,7 +20,7 @@ import { toast, ToastContainer } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
-import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
+// import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
@@ -1054,8 +1054,8 @@ const Salereturn = () => {
                                 </div>
 
 
-                                <div className="scroll-two">
-                                    <table className="saleTable ">
+                                <div className="overflow-x-auto w-full scroll-two">
+                                    <table className="w-full border-collapse item-table">
                                         <thead>
                                             <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
                                                 <th className="w-1/4 " style={{ textAlign: "center" }}>Item Name</th>
@@ -1071,211 +1071,193 @@ const Salereturn = () => {
                                                 <th >Amount </th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {saleItems.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
-                                                </tr>
-                                            ) : (<>
-                                                <tr className="item-List  border-b border-gray-400" >
-                                                    {isEditMode ? <td>
-                                                            <div className="flex items-center gap-2">
-                                                                <DeleteIcon className="delete-icon" onClick={removeItem} />
-                                                                <span className="text-sm">{searchItem}</span>
-                                                            </div>
-
-                                                        </td> :
-                                                            <td  >
-
-                                                                <TextField
-                                                                    autoComplete="off"
-                                                                    id="outlined-basic"
-                                                                    size="small"
-                                                                    sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
-                                                                    value={search}
-                                                                    onChange={handleInputChange}
-                                                                    inputRef={el => inputRefs.current[5] = el}
-                                                                    onKeyDown={e => {
-                                                                        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
-                                                                            // Use the new arrow navigation function that works regardless of input focus
-                                                                            handleArrowNavigation(e);
-                                                                        }
-                                                                    }}
-                                                                    variant="outlined"
-                                                                    placeholder="Please search any items.."
-                                                                    InputProps={{
-                                                                        endAdornment: (
-                                                                            <InputAdornment position="start">
-                                                                                <SearchIcon />
-                                                                            </InputAdornment>
-                                                                        ),
-                                                                        type: "search",
-                                                                    }}
-                                                                />
-                                                            </td>
-                                                    }
-                                                    <td className="td-up " >
-
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            disabled
-                                                            type="number"
-                                                            inputRef={el => inputRefs.current[6] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            size="small"
-                                                            value={unit}
-                                                            sx={{ width: '130px', textAlign: 'right', }}
-                                                            onChange={(e) => { setUnit(e.target.value) }}
-
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up "  >
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            type="string"
-                                                            sx={{ width: '130px' }}
-                                                            size="small"
-                                                            disabled
-                                                            value={batch}
-                                                            inputRef={el => inputRefs.current[7] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            // onChange={(e) => { setBatch(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up " >
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            disabled
-                                                            size="small"
-                                                            sx={{ width: '130px' }}
-                                                            inputRef={el => inputRefs.current[8] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            value={expiryDate}
-                                                            placeholder="MM/YY"
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up ">
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            disabled
-                                                            id="outlined-number"
-                                                            type="number"
-                                                            sx={{ width: '130px' }}
-                                                            size="small"
-                                                            inputRef={el => inputRefs.current[9] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            value={mrp}
-                                                            onChange={(e) => { setMRP(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up " >
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            type="number"
-                                                            sx={{ width: '130px' }}
-                                                            size="small"
-                                                            inputRef={el => inputRefs.current[10] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            value={base}
-                                                            onChange={(e) => { setBase(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up ">
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            type="number"
-                                                            disabled
-                                                            size="small"
-                                                            inputRef={el => inputRefs.current[11] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            sx={{ width: '130px' }}
-                                                            value={gst}
-                                                            onChange={(e) => { setGst(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="td-up ">
-
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            type="number"
-                                                            sx={{ width: '130px' }}
-                                                            size="small"
-                                                            inputRef={el => inputRefs.current[12] = el}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === 'Enter') {
-                                                                    editReturnItem();
-                                                                } else if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
-                                                                    e.preventDefault();
-                                                                }
-                                                            }}
-                                                            value={qty}
-
-                                                            onChange={(e) => { handleQty(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td >
-
-                                                    <td className="td-up ">
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-number"
-                                                            size="small"
-                                                            inputRef={el => inputRefs.current[13] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            disabled
-                                                            sx={{ width: '130px' }}
-                                                            value={loc}
-                                                            onChange={(e) => { setLoc(e.target.value) }}
-                                                            InputProps={{
-                                                                inputProps: { style: { textAlign: 'right' } },
-                                                                disableUnderline: true
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
-                                                </tr>
-                                            </>)}
-
-                                        </tbody>
-                                    </table>
-                                    <>
-                                        <table className="p-30  w-full border-collapse custom-table"
-                                            ref={tableRef} tabIndex={0}>
-                                            <tbody>
-                                                {saleItems?.sales_item?.map((item, index) => (
+                                        <tbody ref={tableRef} tabIndex={0}>
+                                            {/* Editable row: always show for add/edit */}
+                                            <tr className="input-row" >
+                                                {isEditMode ? <td>
+                                                        <div className="flex items-center gap-2">
+                                                            <DeleteIcon className="delete-icon" onClick={removeItem} />
+                                                            <span className="text-sm">{searchItem}</span>
+                                                        </div>
+                                                    </td> :
+                                                        <td  >
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                id="outlined-basic"
+                                                                size="small"
+                                                                sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
+                                                                value={search}
+                                                                onChange={handleInputChange}
+                                                                inputRef={el => inputRefs.current[5] = el}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+                                                                        handleArrowNavigation(e);
+                                                                    }
+                                                                }}
+                                                                variant="outlined"
+                                                                placeholder="Please search any items.."
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <SearchIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                    type: "search",
+                                                                }}
+                                                            />
+                                                        </td>
+                                                }
+                                                <td className="td-up " >
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        disabled
+                                                        type="number"
+                                                        inputRef={el => inputRefs.current[6] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        size="small"
+                                                        value={unit}
+                                                        sx={{ width: '130px', textAlign: 'right', }}
+                                                        onChange={(e) => { setUnit(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up "  >
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="string"
+                                                        sx={{ width: '130px' }}
+                                                        size="small"
+                                                        disabled
+                                                        value={batch}
+                                                        inputRef={el => inputRefs.current[7] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        // onChange={(e) => { setBatch(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up " >
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        disabled
+                                                        size="small"
+                                                        sx={{ width: '130px' }}
+                                                        inputRef={el => inputRefs.current[8] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        value={expiryDate}
+                                                        placeholder="MM/YY"
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up ">
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        disabled
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '130px' }}
+                                                        size="small"
+                                                        inputRef={el => inputRefs.current[9] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        value={mrp}
+                                                        onChange={(e) => { setMRP(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up " >
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '130px' }}
+                                                        size="small"
+                                                        inputRef={el => inputRefs.current[10] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        value={base}
+                                                        onChange={(e) => { setBase(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up ">
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        disabled
+                                                        size="small"
+                                                        inputRef={el => inputRefs.current[11] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        sx={{ width: '130px' }}
+                                                        value={gst}
+                                                        onChange={(e) => { setGst(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="td-up ">
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        type="number"
+                                                        sx={{ width: '130px' }}
+                                                        size="small"
+                                                        inputRef={el => inputRefs.current[12] = el}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                editReturnItem();
+                                                            } else if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        value={qty}
+                                                        onChange={(e) => { handleQty(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td >
+                                                <td className="td-up ">
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-number"
+                                                        size="small"
+                                                        inputRef={el => inputRefs.current[13] = el}
+                                                        onKeyDown={handleKeyDown}
+                                                        disabled
+                                                        sx={{ width: '130px' }}
+                                                        value={loc}
+                                                        onChange={(e) => { setLoc(e.target.value) }}
+                                                        InputProps={{
+                                                            inputProps: { style: { textAlign: 'right' } },
+                                                            disableUnderline: true
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
+                                            </tr>
+                                            {/* Mapped rows for each item */}
+                                            {saleItems?.sales_item?.length > 0 ? (
+                                                saleItems.sales_item.map((item, index) => (
                                                     <tr key={item.id}
                                                         className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                                                         onClick={(event) => {
@@ -1308,10 +1290,14 @@ const Salereturn = () => {
                                                         <td className="td-bottom">{item.location}</td>
                                                         <td className="td-bottom">{item.net_rate}</td>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </>
+                                                ))
+                                            ) : (!isEditMode && (
+                                                <tr>
+                                                    <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 

@@ -218,15 +218,6 @@ const Addsale = () => {
       // Only trigger table focus if there's no search value and no selected option
       if (isVisible && !selectedOption && !searchItem && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
-        setIsVisible(false);
-        setSelectedOption(null);
-        setSearchItem("");
-        setValue("");
-        setItem("");
-        setItemId(null);
-        resetValue();
-        setSelectedIndex(-1);
-
         // Focus on tableRef1 after a short delay to ensure state updates
         setTimeout(() => {
           if (tableRef1.current) {
@@ -740,28 +731,7 @@ const Addsale = () => {
     handleSearch(newInputValue);
   };
 
-  const handleAutocompleteKeyDown = (event) => {
-    // Only trigger table focus if there's no search value and no selected option
-    if (!(selectedOption || searchItem) && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
-      event.preventDefault();
-      setIsVisible(false);
-      setSelectedOption(null);
-      setSearchItem("");
-      setValue("");
-      setItem("");
-      setItemId(null);
-      resetValue();
-      setSelectedIndex(-1);
 
-      // Focus on tableRef1 after a short delay
-      setTimeout(() => {
-        if (tableRef1.current) {
-          tableRef1.current.focus();
-        }
-      }, 100);
-    }
-    // If there's a search value, let the autocomplete handle arrow navigation normally
-  };
 
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
@@ -1527,7 +1497,9 @@ const Addsale = () => {
   };
 
   const addItemValidation = async () => {
+
     setUnsavedItems(true);
+
     const newErrors = {};
     if (!mrp) {
       newErrors.mrp = "Please Select any Item Name";
@@ -1552,6 +1524,8 @@ const Addsale = () => {
       if (searchInputRef.current) {
         searchInputRef.current.focus();
         setSelectedIndex(-1); // Clear any selection
+        setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
+
       }
     }
     return isValid;
@@ -2408,230 +2382,246 @@ const Addsale = () => {
                           <div
                             className="flex gap-5 "
                           >
-                            
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                width: "100%",
+                                alignItems: "center",
+                              }}
+                            ><Autocomplete
+                                key={autocompleteKey}
+                                value={selectedOption}
+                                size="small"
+                                sx={{
+                                  width: "100%",
+                                  minWidth: "450px",
+                                }}
+                                onChange={handleOptionChange}
+                                onInputChange={handleInputChange}
+                                open={autoCompleteOpen}
+                                onOpen={() => setAutoCompleteOpen(true)}
+                                onClose={() => setAutoCompleteOpen(false)}
+                                getOptionLabel={(option) => `${option.iteam_name || ""}`}
+                                options={itemList}
+                                renderOption={(props, option) => (
+                                  <ListItem {...props} key={option.id}>
+                                    <ListItemText
+                                      primary={`${option.iteam_name}, (${option.company})`}
+                                      secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
+                                    />
+                                  </ListItem>
+                                )}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    inputRef={searchInputRef}
+                                    variant="outlined"
+                                    id="searchResults"
+                                    autoFocus
+                                    placeholder="Search Item Name..."
+                                    InputProps={{
+                                      ...params.InputProps,
+                                      style: {
+                                        height: 40,
+
+                                        fontSize: "1.2rem",
+                                      },
+                                      startAdornment: (
+                                        <InputAdornment position="start">
+                                          <SearchIcon
+                                            sx={{
+                                              color: "var(--color1)",
+                                              cursor: "pointer",
+                                            }}
+                                          />
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                    sx={{
+                                      "& .MuiInputBase-input::placeholder":
+                                      {
+                                        fontSize: "1rem",
+                                        color: "black",
+                                      },
+                                    }}
+                                    onFocus={() => setSelectedIndex(-1)}
+
+                                    onKeyDown={(e) => {
+                                      const key = e.key;
+                                      const isTab = key === "Tab";
+                                      const isShiftTab = isTab && e.shiftKey;
+                                      const isEnter = key === "Enter";
+                                      const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+
+                                      // Only trigger custom logic if searchItem is empty/null
+                                      if (
+                                        isArrowKey &&
+                                        !isShiftTab &&
+                                        (searchItem === null || searchItem === "") &&
+                                        !selectedOption
+                                      ) {
+                                        e.preventDefault();
+                                        setAutocompleteDisabled(true); // Disable Autocomplete
+                                        setAutoCompleteOpen(false);    // Close dropdown
+                                        setTimeout(() => {
+                                          // Blur Autocomplete input if possible
+                                          if (searchInputRef.current) searchInputRef.current.blur();
+                                          // Focus table if possible
+                                          if (tableRef1.current) tableRef1.current.focus();
+                                          // Select first or last row in ItemSaleList if available
+                                          if (ItemSaleList?.sales_item?.length > 0) {
+                                            setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
+                                          } else {
+                                            setSelectedIndex(-1);
+                                          }
+                                        }, 0);
+                                        return;
+                                      }
+
+                                      // If dropdown is open, let MUI handle up/down/enter/tab
+                                      if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                      // On Enter/Tab, move to next input or show error if no selection
+                                      if (isEnter || isTab) {
+                                        e.preventDefault();
+                                        if (!selectedOption) {
+                                          setTimeout(() => toast.error("Please select an Item"), 100);
+                                        } else {
+                                          setTimeout(() => {
+                                            if (inputRef1.current) inputRef1.current.focus();
+                                          }, 100);
+                                        }
+                                        return;
+                                      }
+                                    }}
+                                  />
+                                )}
+                              />
+
+                            </Box>
+                            {isVisible && value && !batch && (
                               <Box
                                 sx={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                  width: "100%",
-                                  alignItems: "center",
+                                  minWidth: {
+                                    xs: "200px",
+                                    sm: "500px",
+                                    md: "1000px",
+                                  },
+                                  backgroundColor: "white",
+                                  position: "absolute",
+                                  marginTop: "50px",
+                                  zIndex: 1,
                                 }}
-                              ><Autocomplete
-                                    key={autocompleteKey}
-                                    value={selectedOption}
-                                    size="small"
-                                    sx={{
-                                      width: "100%",
-                                      minWidth: "450px",
-                                    }}
-                                    onChange={handleOptionChange}
-                                    onInputChange={handleInputChange}
-                                    open={autoCompleteOpen}
-                                    onOpen={() => setAutoCompleteOpen(true)}
-                                    onClose={() => setAutoCompleteOpen(false)}
-                                    getOptionLabel={(option) => `${option.iteam_name || ""}`}
-                                    options={itemList}
-                                    renderOption={(props, option) => (
-                                      <ListItem {...props} key={option.id}>
-                                        <ListItemText
-                                          primary={`${option.iteam_name}, (${option.company})`}
-                                          secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
-                                        />
-                                      </ListItem>
-                                    )}
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        inputRef={searchInputRef}
-                                        variant="outlined"
-                                        id="searchResults"
-                                        autoFocus
-                                        placeholder="Search Item Name..."
-                                        InputProps={{
-                                          ...params.InputProps,
-                                          style: {
-                                            height: 40,
-                                           
-                                            fontSize: "1.2rem",
-                                          },
-                                          startAdornment: (
-                                            <InputAdornment position="start">
-                                              <SearchIcon
-                                                sx={{
-                                                  color: "var(--color1)",
-                                                  cursor: "pointer",
-                                                }}
-                                              />
-                                            </InputAdornment>
-                                          ),
-                                        }}
-                                        sx={{
-                                          "& .MuiInputBase-input::placeholder":
-                                          {
-                                            fontSize: "1rem",
-                                            color: "black",
-                                          },
-                                        }}
-                                        onFocus={() => setSelectedIndex(-1)}
-                                        onKeyDown={(e) => {
-                                          const key = e.key;
-                                          const isTab = key === "Tab";
-                                          const isShiftTab = isTab && e.shiftKey;
-                                          const isEnter = key === "Enter";
-                                          const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
-                                          // If searchItem is empty or only whitespace, or no selectedOption, up/down focuses table
-                                          if (!searchItem  && isArrowKey) {
-                                            if (tableRef1.current) {
-                                              tableRef1.current.focus();
-                                              setTimeout(() => {
-                                                if (document.activeElement && document.activeElement.blur) {
-                                                  document.activeElement.blur();
-                                                }
-                                              }, 0);
-                                            }
-                                            return;
-                                          }
-                                          if (isShiftTab) return;
-                                          // If dropdown is open, let MUI handle up/down/enter/tab
-                                          if ((isEnter || isTab) && autoCompleteOpen) return;
-                                          if (isEnter || isTab) {
-                                            e.preventDefault();
-                                            if (!selectedOption) {
-                                              setTimeout(() => toast.error("Please select an Item"), 100);
-                                            } else {
-                                              setTimeout(() => {
-                                                if (inputRef1.current) inputRef1.current.focus();
-                                              }, 100);
-                                            }
-                                            return;
-                                          }
-                                        }}
-                                      />
-                                    )}
-                                  />
-                                
-                              </Box>
-                              {isVisible && value && !batch && (
-                                <Box
-                                  sx={{
-                                    minWidth: {
-                                      xs: "200px",
-                                      sm: "500px",
-                                      md: "1000px",
-                                    },
-                                    backgroundColor: "white",
-                                    position: "absolute",
-                                    marginTop: "50px",
-                                    zIndex: 1,
-                                  }}
-                                  id="tempId"
+                                id="tempId"
+                              >
+                                <div
+                                  className="custom-scroll-sale"
+                                  style={{ width: "100%" }}
+                                  tabIndex={0}
+                                  onKeyDown={handleTableKeyDown}
                                 >
-                                  <div
-                                    className="custom-scroll-sale"
-                                    style={{ width: "100%"}}
+                                  <table
+                                    ref={tableRef}
                                     tabIndex={0}
-                                    onKeyDown={handleTableKeyDown}
+                                    style={{
+                                      width: "100%",
+                                      borderCollapse: "collapse",
+                                    }}
                                   >
-                                    <table
-                                      ref={tableRef}
-                                      tabIndex={0}
-                                      style={{
-                                        width: "100%",
-                                        borderCollapse: "collapse",
-                                      }}
-                                    >
-                                      <thead>
-                                        {isAlternative && (
-                                          <tr className="customtable">
-                                            <th
-                                              className="saleTable highlighted-row"
-                                              colSpan={8}
-                                            >
-                                              Alternate Medicine
-                                            </th>
-                                          </tr>
-                                        )}
-
+                                    <thead>
+                                      {isAlternative && (
                                         <tr className="customtable">
-                                          <th>Item Name</th>
-                                          <th>Batch Number</th>
-                                          <th>Unit</th>
-                                          <th>Expiry Date</th>
-                                          <th>MRP</th>
-                                          <th>QTY</th>
-                                          <th>Loc</th>
+                                          <th
+                                            className="saleTable highlighted-row"
+                                            colSpan={8}
+                                          >
+                                            Alternate Medicine
+                                          </th>
                                         </tr>
-                                      </thead>
+                                      )}
 
-                                      <tbody>
-                                        {batchListData.length > 0 ? (
-                                          <>
-                                            {batchListData.map((item) => (
-                                              <tr
-                                                className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                                  String(item.id)
-                                                  ? "highlighted-row"
-                                                  : ""
-                                                  }`}
-                                                key={item.id}
-                                                data-id={item.id}
-                                                tabIndex={0}
-                                                style={{
-                                                  border:
-                                                    "1px solid rgba(4, 76, 157, 0.1)",
-                                                  padding: "10px",
-                                                  outline: "none",
-                                                }}
-                                                onClick={() =>
-                                                  handlePassData(item)
-                                                }
-                                                onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
-                                                onMouseEnter={handleMouseEnter}
-                                              >
-                                                <td className="text-base font-semibold">
-                                                  {item.iteam_name}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.batch_number}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.unit}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.expiry_date}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.mrp}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.qty}
-                                                </td>
-                                                <td className="text-base font-semibold">
-                                                  {item.location}
-                                                </td>
-                                              </tr>
-                                            ))}
-                                          </>
-                                        ) : (
-                                          <tr>
-                                            <td
-                                              colSpan={6}
+                                      <tr className="customtable">
+                                        <th>Item Name</th>
+                                        <th>Batch Number</th>
+                                        <th>Unit</th>
+                                        <th>Expiry Date</th>
+                                        <th>MRP</th>
+                                        <th>QTY</th>
+                                        <th>Loc</th>
+                                      </tr>
+                                    </thead>
+
+                                    <tbody>
+                                      {batchListData.length > 0 ? (
+                                        <>
+                                          {batchListData.map((item) => (
+                                            <tr
+                                              className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                                String(item.id)
+                                                ? "highlighted-row"
+                                                : ""
+                                                }`}
+                                              key={item.id}
+                                              data-id={item.id}
+                                              tabIndex={0}
                                               style={{
-                                                textAlign: "center",
-                                                fontSize: "16px",
-                                                fontWeight: 600,
+                                                border:
+                                                  "1px solid rgba(4, 76, 157, 0.1)",
+                                                padding: "10px",
+                                                outline: "none",
                                               }}
+                                              onClick={() =>
+                                                handlePassData(item)
+                                              }
+                                              onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
+                                              onMouseEnter={handleMouseEnter}
                                             >
-                                              No record found
-                                            </td>
-                                          </tr>
-                                        )}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </Box>
-                              )}
-                            
+                                              <td className="text-base font-semibold">
+                                                {item.iteam_name}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.batch_number}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.unit}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.expiry_date}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.mrp}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.qty}
+                                              </td>
+                                              <td className="text-base font-semibold">
+                                                {item.location}
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </>
+                                      ) : (
+                                        <tr>
+                                          <td
+                                            colSpan={6}
+                                            style={{
+                                              textAlign: "center",
+                                              fontSize: "16px",
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            No record found
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </Box>
+                            )}
+
                           </div>
                         </td>
                         <td style={{ padding: "10px", textAlign: "center" }}>
@@ -3440,7 +3430,7 @@ const Addsale = () => {
             </div>
           </DialogActions>
         </Dialog>
-        
+
         <Dialog
           open={openPurchaseHistoryPopUp}
           sx={{

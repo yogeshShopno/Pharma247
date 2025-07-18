@@ -813,54 +813,91 @@ const Addsale = () => {
     setUnsavedItems(true);
   };
 
+  // Define the order of refs for the item entry row (from first td to last td)
+  const itemRowInputOrder = [
+    inputRef1, // Unit
+    inputRef3, // Batch
+    inputRef4, // Expiry
+    inputRef5, // MRP
+    inputRef6, // Base
+    inputRef7, // GST
+    inputRef9, // Qty
+    inputRef8, // Loc
+    inputRef10 // Order
+  ];
+
+  // Validation for each input in the item entry row
+  const validateInput = (ref, index) => {
+    const value = ref.current?.value;
+    switch (index) {
+      case 0: // inputRef1 (Unit)
+        if (!value ) {
+          toast.error("Unit is required and must be > 0");
+          return false;
+        }
+        break;
+      case 1: // inputRef3 (Batch)
+        if (!value) {
+          toast.error("Batch is required");
+          return false;
+        }
+        break;
+      case 2: // inputRef4 (Expiry)
+        if (!value) {
+          toast.error("Expiry is required");
+          return false;
+        }
+        break;
+      case 3: // inputRef5 (MRP)
+        if (!value || isNaN(value) || Number(value) <= 0) {
+          toast.error("MRP is required and must be > 0");
+          return false;
+        }
+        break;
+      case 4: // inputRef6 (Base)
+        if (!value) {
+          toast.error("Base is required and must be >= 0");
+          return false;
+        }
+        break;
+      case 5: // inputRef7 (GST)
+        if (!value) {
+          toast.error("GST is required and must be >= 0");
+          return false;
+        }
+        break;
+      case 6: // inputRef9 (Qty)
+        if (!value || value <= 0) {
+          toast.error("Qty is required and must be > 0");
+          return false;
+        }
+        break;
+      case 7: // inputRef8 (Loc)
+        if (!value) {
+          toast.error("Location is required");
+          return false;
+        }
+        break;
+      case 8: // inputRef10 (Order)
+        // Order can be optional, skip validation or add if needed
+        break;
+      default:
+        break;
+    }
+    return true;
+  };
+
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      if (event.target === inputRef1.current && inputRef2.current) {
-        inputRef2.current.focus();
-      } else if (event.target === inputRef2.current && inputRef3.current) {
-        inputRef3.current.focus();
-      } else if (event.target === inputRef3.current && inputRef4.current) {
-        inputRef4.current.focus();
-      } else if (event.target === inputRef4.current && inputRef5.current) {
-        inputRef5.current.focus();
-      } else if (event.target === inputRef5.current && inputRef7.current) {
-        inputRef7.current.focus();
-      } else if (event.target === inputRef7.current && inputRef8.current) {
-        inputRef8.current.focus();
-      } else if (event.target === inputRef8.current && inputRef9.current) {
-        inputRef9.current.focus();
-      } else if (event.target === inputRef9.current && inputRef10.current) {
-        inputRef10.current.focus();
-      }
-
-      if (
-        event.target === itemNameInputRef.current &&
-        barcodeInputRef.current
-      ) {
-        barcodeInputRef.current.focus();
-      } else if (
-        event.target === barcodeInputRef.current &&
-        unitInputRef.current
-      ) {
-        unitInputRef.current.focus();
-      }
-    }
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const nextInput = inputRefs?.current[index + 1];
-
-      if (nextInput) {
-        setTimeout(() => {
-          nextInput.focus();
-        }, 100);
-      } else {
-        // No next input, focus the Save button if it's in refs
-        const saveButton = inputRefs?.current[index + 1];
-        if (saveButton) {
-          saveButton.focus();
+      for (let i = index + 1; i < itemRowInputOrder.length; i++) {
+        const nextRef = itemRowInputOrder[i];
+        if (nextRef && nextRef.current && !nextRef.current.disabled) {
+          nextRef.current.focus();
+          return;
         }
       }
+      // Optionally, focus a save/add button or do nothing if at the end
     }
   };
 
@@ -2630,7 +2667,19 @@ const Addsale = () => {
                             disabled
                             type="number"
                             inputRef={inputRef1}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 0 for Unit, so none)
+                                e.preventDefault();
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[1]?.current) {
+                                  itemRowInputOrder[1].current.focus();
+                                }
+                              }
+                            }}
                             size="small"
                             value={unit}
                             sx={{ width: "100px" }}
@@ -2646,6 +2695,22 @@ const Addsale = () => {
                             size="small"
                             disabled
                             value={batch}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 1 for Batch, so 0)
+                                e.preventDefault();
+                                if (itemRowInputOrder[0]?.current) {
+                                  itemRowInputOrder[0].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[2]?.current) {
+                                  itemRowInputOrder[2].current.focus();
+                                }
+                              }
+                            }}
                             onChange={(e) => {
                               setBatch(e.target.value);
                             }}
@@ -2658,7 +2723,22 @@ const Addsale = () => {
                             size="small"
                             sx={{ width: "100px" }}
                             inputRef={inputRef3}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 2 for Expiry, so 1)
+                                e.preventDefault();
+                                if (itemRowInputOrder[1]?.current) {
+                                  itemRowInputOrder[1].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[3]?.current) {
+                                  itemRowInputOrder[3].current.focus();
+                                }
+                              }
+                            }}
                             value={expiryDate}
                             onChange={handleExpiryDateChange}
                             placeholder="MM/YY"
@@ -2672,7 +2752,22 @@ const Addsale = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef4}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 3 for MRP, so 2)
+                                e.preventDefault();
+                                if (itemRowInputOrder[2]?.current) {
+                                  itemRowInputOrder[2].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[4]?.current) {
+                                  itemRowInputOrder[4].current.focus();
+                                }
+                              }
+                            }}
                             value={mrp}
                             onChange={(e) => {
                               setMRP(e.target.value);
@@ -2687,11 +2782,32 @@ const Addsale = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef5}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 4 for Base, so 3)
+                                e.preventDefault();
+                                if (itemRowInputOrder[3]?.current) {
+                                  itemRowInputOrder[3].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                if(base === "" || base === null || base === undefined){
+                                  toast.error("Base is required");
+                                  e.preventDefault();
+                                  return;
+                                }
+                                e.preventDefault();
+                                if (itemRowInputOrder[5]?.current) {
+                                  itemRowInputOrder[5].current.focus();
+                                }
+                              }
+                            }}
                             value={base}
                             onChange={(e) => {
                               setBase(e.target.value);
                             }}
+                        
                           />
                         </td>
                         <td style={{ padding: "10px", textAlign: "center" }}>
@@ -2701,7 +2817,22 @@ const Addsale = () => {
                             disabled
                             size="small"
                             inputRef={inputRef6}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 5 for GST, so 4)
+                                e.preventDefault();
+                                if (itemRowInputOrder[4]?.current) {
+                                  itemRowInputOrder[4].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[6]?.current) {
+                                  itemRowInputOrder[6].current.focus();
+                                }
+                              }
+                            }}
                             sx={{ width: "100px" }}
                             value={gst}
                             onChange={(e) => {
@@ -2717,14 +2848,26 @@ const Addsale = () => {
                             sx={{ width: "100px" }}
                             size="small"
                             inputRef={inputRef7}
-                            onKeyDown={handleKeyDown}
                             value={qty}
-                            onKeyPress={(e) => {
-                              if (
-                                !/[0-9]/.test(e.key) &&
-                                e.key !== "Backspace"
-                              ) {
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 6 for Qty, so 5)
                                 e.preventDefault();
+                                if (itemRowInputOrder[5]?.current) {
+                                  itemRowInputOrder[5].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                if (qty === "" || qty === null || qty === undefined) {
+                                  toast.error("Qty is required");
+                                  e.preventDefault();
+                                  return;
+                                }
+                                e.preventDefault();
+                                if (itemRowInputOrder[7]?.current) {
+                                  itemRowInputOrder[7].current.focus();
+                                }
                               }
                             }}
                             onChange={(e) => {
@@ -2744,7 +2887,22 @@ const Addsale = () => {
                             id="outlined-number"
                             size="small"
                             inputRef={inputRef9}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 7 for Loc, so 6)
+                                e.preventDefault();
+                                if (itemRowInputOrder[6]?.current) {
+                                  itemRowInputOrder[6].current.focus();
+                                }
+                                return;
+                              }
+                              if (e.key === "Enter" || e.key === "Tab") {
+                                e.preventDefault();
+                                if (itemRowInputOrder[8]?.current) {
+                                  itemRowInputOrder[8].current.focus();
+                                }
+                              }
+                            }}
                             disabled
                             sx={{ width: "100px" }}
                             value={loc}
@@ -2761,8 +2919,15 @@ const Addsale = () => {
                             size="small"
                             value={order}
                             inputRef={inputRef8}
-                            // onKeyDown={handleKeyDown}
                             onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey) {
+                                // Move to previous input (index 8 for Order, so 7)
+                                e.preventDefault();
+                                if (itemRowInputOrder[7]?.current) {
+                                  itemRowInputOrder[7].current.focus();
+                                }
+                                return;
+                              }
                               handleKeyDown(e);
                               if (e.key === "Enter") {
                                 addItemValidation();

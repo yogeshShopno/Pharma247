@@ -1,6 +1,5 @@
 import Header from "../../../Header";
-// import "../Add-PurchaseBill/AddPurchasebill.css";
-import "../Add-PurchaseBill/AddPurchasebill.css";
+
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";

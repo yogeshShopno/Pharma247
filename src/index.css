@@ -65,8 +65,76 @@
 
 /* Table container for scrollable tables */
 .table-container {
-    max-height: 205px;
+    max-height: 400px;
+    height: 400px;
     overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+    .table-container {
+        max-height: 400px;
+        height: 400px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+    
+    .item-table {
+        min-width: 1200px; /* Ensure table doesn't get too cramped */
+    }
+    
+    .item-table th,
+    .item-table td {
+        padding: 6px 4px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    
+    .item-table th {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-container {
+        max-height: 300px;
+        height: 300px;
+    }
+    
+    .item-table {
+        min-width: 1000px;
+    }
+    
+    .item-table th,
+    .item-table td {
+        padding: 4px 2px;
+        font-size: 11px;
+    }
+    
+    .item-table th {
+        font-size: 11px;
+    }
 }
 
 /* ===== REUSABLE COMPONENT STYLES ===== */
@@ -226,4 +294,115 @@
 
 .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
     height: 0.5rem !important;
+}
+
+/* ===== ADDITIONAL TABLE STYLES ===== */
+
+/* Sale table styles */
+.saleTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.saleTable th,
+.saleTable td {
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.saleTable th {
+    color: var(--color1);
+    font-size: 14px;
+    border-bottom: 1px solid;
+}
+
+/* Custom table styles */
+.customtable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.customtable th,
+.customtable td {
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.customtable th {
+    color: var(--color1);
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid;
+}
+
+/* Ensure table headers stay fixed and properly styled */
+.item-table thead th {
+    background-color: white;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: var(--color1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Ensure table body has proper spacing */
+.item-table tbody {
+    background-color: white;
+}
+
+/* Add subtle hover effect for better UX */
+.item-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Item list styles */
+.itemList {
+    padding: 5px;
+    font-weight: 600;
+}
+
+/* ===== ADDITIONAL STYLES FROM ADDRETURNBILL ===== */
+
+/* Enhanced list bank styles */
+.list-bank {
+    cursor: pointer;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
+    background-color: rgba(63, 98, 18, 0.09);
+}
+
+.list-bank.highlighted {
+    background-color: var(--color2);
+    color: white;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
+}
+
+/* Highlighted row for keyboard navigation */
+.highlighted-row {
+    background-color: var(--color2) !important;
+    color: white !important;
+}
+
+.highlighted-row:hover {
+    background-color: var(--color2) !important;
+    color: white !important;
+}
+
+/* Enhanced custom table styles */
+.customtable th,
+.customtable td {
+    padding: 8px !important;
+    text-align: center;
+    font-size: 14px;
 }

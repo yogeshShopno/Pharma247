@@ -1,4 +1,3 @@
-// import "./AddPurchasebill.css";
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
@@ -2250,7 +2249,7 @@ const AddPurchaseBill = () => {
 
               {/*<======================================================================Item Table =====================================================================> */}
 
-              <div className="overflow-x-auto w-full">
+              <div className="table-container">
                 <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                   <thead>
                     <tr>

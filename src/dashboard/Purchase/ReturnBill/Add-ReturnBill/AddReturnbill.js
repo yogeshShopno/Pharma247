@@ -30,7 +30,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { BsLightbulbFill } from "react-icons/bs";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import axios from "axios";
-import "../Add-ReturnBill/AddReturnbill.css";
+
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
@@ -238,6 +238,7 @@ const AddReturnbill = () => {
       } else if (event.key.toLowerCase() === "g") {
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
+        removeItem();
         inputRefs.current[2]?.focus();
       }
     };
@@ -1024,7 +1025,7 @@ const AddReturnbill = () => {
                     <span className="heading mb-2">Distributor <span className="text-red-600">*</span></span>
                     <Autocomplete
                       value={distributor}
-                      sx={{ width: "230px" }}
+                      sx={{ width: "350px" }}
                       size="small"
                       onChange={(e, value) => setDistributor(value)}
                       options={distributorList}
@@ -1238,13 +1239,9 @@ const AddReturnbill = () => {
                                       placeholder="Please search any items.."
                                       inputRef={(el) => (inputRefs.current[5] = el)}
                                       onKeyDown={e => {
-                                        if (e.key === "Enter") {
-                                          if (searchQuery) {
-                                            handleKeyDown(e, 5);
-                                          } else {
-                                            toast.error("Please search any items..");
-                                            e.preventDefault();
-                                          }
+                                        if (e.key === "Enter" && !searchQuery) {
+                                          toast.error("Please search any items..");
+                                          e.preventDefault();
                                         }
                                       }}
                                       InputProps={{
@@ -1517,20 +1514,7 @@ const AddReturnbill = () => {
                             </td>
                             <td className="total">{ItemTotalAmount}</td>
                           </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                          </tr>
+                                
                         </>
                       )}
                     </tbody>

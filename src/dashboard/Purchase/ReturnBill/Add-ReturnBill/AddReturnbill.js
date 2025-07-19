@@ -204,20 +204,25 @@ const AddReturnbill = () => {
     const handleKeyPress = (e) => {
       if (!returnItemList?.item_list?.length) return;
 
-      const isInputFocused = document.activeElement.tagName === "INPUT";
+      // Check if search TextField is focused
+      const searchInput = inputRefs.current[5];
+      const isSearchFocused = document.activeElement === searchInput;
 
-      if (isInputFocused) return;
-
-      if (e.key === "ArrowDown") {
-        setSelectedIndex((prev) =>
-          Math.min(prev + 1, returnItemList.item_list.length - 1)
-        );
-      } else if (e.key === "ArrowUp") {
-        setSelectedIndex((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === "Enter" && selectedIndex !== -1) {
-        const selectedRow = returnItemList.item_list[selectedIndex];
-        if (!selectedRow) return;
-        handleEditClick(selectedRow);
+      // Only handle arrow keys when search input is focused or no input is focused
+      if (isSearchFocused || document.activeElement.tagName !== "INPUT") {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setSelectedIndex((prev) =>
+            Math.min(prev + 1, returnItemList.item_list.length - 1)
+          );
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setSelectedIndex((prev) => Math.max(prev - 1, 0));
+        } else if (e.key === "Enter" && selectedIndex !== -1) {
+          const selectedRow = returnItemList.item_list[selectedIndex];
+          if (!selectedRow) return;
+          handleEditClick(selectedRow);
+        }
       }
     };
 
@@ -1204,7 +1209,7 @@ const AddReturnbill = () => {
                       </tr>
                     </thead>
                       <tbody>
-                      <tr className="input-row">
+                      <tr className="input-row" >
                             <td style={{ width: "350px" }}>
                               <div>
                                 {isEdit ? (
@@ -1231,6 +1236,10 @@ const AddReturnbill = () => {
                                         if (e.key === "Enter" && !searchQuery) {
                                           toast.error("Please search any items..");
                                           e.preventDefault();
+                                        }
+                                        // Allow arrow keys to work for table row selection
+                                        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                          // Don't prevent default here, let the global handler manage it
                                         }
                                       }}
                                       InputProps={{

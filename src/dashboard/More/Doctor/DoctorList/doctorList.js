@@ -53,6 +53,8 @@ const DoctorList = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [emailId, setEmailId] = useState("");
+  const [defaultDr, setDefaultDr] = useState("");
+
   const history = useHistory();
   const rowsPerPage = 10;
   const permissions = usePermissions();
@@ -109,6 +111,7 @@ const DoctorList = () => {
     setLicence("");
     setClinic("");
     setCity("");
+    setDefaultDr("");
     setErrors({});
     setOpenAddPopUp(false);
   };
@@ -125,6 +128,7 @@ const DoctorList = () => {
     setLicence(row.license);
     setClinic(row.clinic);
     setAddress(row.address);
+    setDefaultDr(row.default_doctor ? row.default_doctor.toString() : "0");
   };
 
   const exportToCSV = async () => {
@@ -214,6 +218,7 @@ const DoctorList = () => {
     data.append("license", licence);
     data.append("address", address);
     data.append("clinic", clinic);
+    data.append("default_doctor", defaultDr);
     try {
       await axios
         .post("doctor-create", data, {
@@ -230,6 +235,7 @@ const DoctorList = () => {
           setLicence("");
           setClinic("");
           setAddress("");
+          setDefaultDr("");
           toast.success(response.data.message);
         });
     } catch (error) {
@@ -250,6 +256,8 @@ const DoctorList = () => {
     data.append("license", licence);
     data.append("address", address);
     data.append("clinic", clinic);
+    data.append("default_doctor", defaultDr);
+
     try {
       await axios
         .post("doctor-update", data, {
@@ -266,6 +274,7 @@ const DoctorList = () => {
           setLicence("");
           setClinic("");
           setAddress("");
+          setDefaultDr("");
           setIsEditMode(false);
           toast.success(response.data.message);
         });
@@ -817,7 +826,7 @@ const DoctorList = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
                       {/* Doctor Name - full width */}
-                      <div className="flex flex-col col-span-12 w-full">
+                      <div className="flex flex-col col-span-8 ">
                         <div className="mb-1">
                           <span className="label primary mb-4">Doctor Name</span>
                           <span className="text-red-600 ml-1">*</span>
@@ -840,14 +849,34 @@ const DoctorList = () => {
                             <TextField autoComplete="off" {...params} />
                           )}
                           freeSolo
-                          className="w-full"
                         />
                         {errors.Doctor && (
                           <span style={{ color: "red", fontSize: "12px" }}>
                             {errors.Doctor}
                           </span>
                         )}
+                
                       </div>
+
+                      
+
+                      <div className="flex flex-col col-span-4">
+                          <span className="label primary">Set Default Doctor ?</span>
+                          <FormControl size="small" className="w-full">
+                            <Select
+                              value={defaultDr || ""}
+                              onChange={(e) => setDefaultDr(e.target.value)}
+                              displayEmpty
+                              inputProps={{ 'aria-label': 'Default Doctor' }}
+                            >
+                              <MenuItem value="">
+                                <em>Select Default Doctor</em>
+                              </MenuItem>
+                              <MenuItem value="1">Yes</MenuItem>
+                              <MenuItem value="0">No</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
 
                       {/* Clinic Name - full width */}
                       <div className="flex flex-col col-span-12 w-full">

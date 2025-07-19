@@ -137,6 +137,10 @@ const DoctorView = () => {
                                 <span className="data_bg">{doctorDetails.license ? doctorDetails.license : '____'}</span>
                             </div>
                             <div className="detail_main_bg_CV">
+                                <span className="heading_othr ">Default Doctor</span>
+                                <span className="data_bg">{doctorDetails.default_doctor ? doctorDetails.default_doctor : 'No'}</span>
+                            </div>
+                            <div className="detail_main_bg_CV">
                                 <span className="heading_othr ">Address</span>
                                 <span className="data_bg">{doctorDetails.address ? doctorDetails.address : '____'}</span>
                             </div>

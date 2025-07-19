@@ -831,7 +831,7 @@ const Addsale = () => {
     const value = ref.current?.value;
     switch (index) {
       case 0: // inputRef1 (Unit)
-        if (!value ) {
+        if (!value) {
           toast.error("Unit is required and must be > 0");
           return false;
         }
@@ -2200,7 +2200,7 @@ const Addsale = () => {
                         color: "var(--color1)",
                       }}
                     >
-                      Doctor{" "}
+                      Doctor
                       <FaPlusCircle
                         className="icon primary"
                         onClick={() => {
@@ -2208,7 +2208,15 @@ const Addsale = () => {
                           setUnsavedItems(true);
                         }}
                       />
+                      <p
+                        onClick={() => history.push("/doctorlist")}
+                        className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-lg"
+                      >
+                        set default
+                      </p>
+
                     </span>
+
                     <Autocomplete
                       value={doctor}
                       onChange={handleDoctorOption}
@@ -2792,7 +2800,7 @@ const Addsale = () => {
                                 return;
                               }
                               if (e.key === "Enter" || e.key === "Tab") {
-                                if(base === "" || base === null || base === undefined){
+                                if (base === "" || base === null || base === undefined) {
                                   toast.error("Base is required");
                                   e.preventDefault();
                                   return;
@@ -2807,7 +2815,7 @@ const Addsale = () => {
                             onChange={(e) => {
                               setBase(e.target.value);
                             }}
-                        
+
                           />
                         </td>
                         <td style={{ padding: "10px", textAlign: "center" }}>

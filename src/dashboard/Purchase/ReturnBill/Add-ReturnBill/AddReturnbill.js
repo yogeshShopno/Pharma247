@@ -1176,9 +1176,13 @@ const AddReturnbill = () => {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto mt-4 w-full ">
-                  <table className="customtable w-full border-collapse custom-table">
-                    <thead>
+                <div className="table-container">
+                    <table
+                      className="w-full border-collapse item-table"
+                      ref={tableRef}
+                      tabIndex={0}
+                    >
+                      <thead>
                       <tr
                         style={{
                           borderBottom: "1px solid lightgray",
@@ -1199,23 +1203,8 @@ const AddReturnbill = () => {
                         <th>Amount </th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {returnItemList.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={12}
-                            style={{
-                              textAlign: "center",
-                              fontSize: "16px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            No record found
-                          </td>
-                        </tr>
-                      ) : (
-                        <>
-                          <tr>
+                      <tbody>
+                      <tr className="input-row">
                             <td style={{ width: "350px" }}>
                               <div>
                                 {isEdit ? (
@@ -1514,18 +1503,6 @@ const AddReturnbill = () => {
                             </td>
                             <td className="total">{ItemTotalAmount}</td>
                           </tr>
-                                
-                        </>
-                      )}
-                    </tbody>
-                  </table>
-                  <>
-                    <table
-                      className="p-30  w-full border-collapse custom-table"
-                      ref={tableRef}
-                      tabIndex={0}
-                    >
-                      <tbody>
                         {returnItemList?.item_list?.map((item, index) => (
                           <tr
                             key={item.id}
@@ -1579,7 +1556,6 @@ const AddReturnbill = () => {
                         ))}
                       </tbody>
                     </table>
-                  </>
                 </div>
 
                 <div

@@ -27,6 +27,7 @@ import { Modal } from 'flowbite-react';
 import { FaCaretUp } from 'react-icons/fa6';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
+import IconButton from '@mui/material/IconButton';
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -929,40 +930,144 @@ const EditReturnBill = () => {
     return (
         <>
             <Header />
-            {isLoading ? <div className="loader-container ">
-                <Loader />
-            </div> :
-
-                <div style={{
-                    height: "calc(100vh - 225px)",
-                    padding: "0px 20px",
-                    overflow: "auto",
-                }} >
-                      <ToastContainer
- />
-                    <div>
-                        <div className='py-3 edit_purchs_pg' style={{ display: 'flex', gap: '4px' }}>
-                            <div style={{ display: 'flex', whiteSpace: 'nowrap', gap: '7px', alignItems: "center" }}>
-                                <span style={{ color: 'var(--color2)', alignItems: 'center', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={() => history.push('/purchase/return')}>Purchase Return</span>
-
-                                <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
-                                <span style={{ color: 'var(--color1)', fontWeight: 600, fontSize: '18px' }}>Edit </span>
-                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            {isLoading ? (
+                <div className="loader-container">
+                    <Loader />
+                </div>
+            ) : (
+                <div className="p-6">
+                    <div style={{ height: "calc(-125px + 100vh)", overflow: "auto" }}>
+                        {/* Header Section */}
+                        <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
+                            <div style={{ display: "flex", gap: "7px" }}>
+                                <span
+                                    style={{
+                                        color: "var(--color2)",
+                                        alignItems: "center",
+                                        fontWeight: 700,
+                                        fontSize: "20px",
+                                        cursor: "pointer",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                    onClick={() => history.push("/purchase/return")}
+                                >
+                                    Purchase Return
+                                </span>
+                                <ArrowForwardIosIcon
+                                    style={{
+                                        fontSize: "18px",
+                                        marginTop: "8px",
+                                        color: "var(--color1)",
+                                    }}
+                                />
+                                <span
+                                    style={{
+                                        color: "var(--color1)",
+                                        alignItems: "center",
+                                        fontWeight: 700,
+                                        fontSize: "20px",
+                                    }}
+                                >
+                                    Edit
+                                </span>
+                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
                             </div>
-                            <div className="headerList ">
-
+                            <div className="headerList" style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
                                 <Button
-                                    style={{ background: 'var(--color1)' }}
                                     variant="contained"
-                                    className='edt_btn_ps'
-
-                                    onClick={() =>handleReturnUpdate()} >
+                                    style={{ background: "var(--color1)", padding: "10px 24px", height: "40px" }}
+                                    onClick={() => handleReturnUpdate()}
+                                >
                                     Update
                                 </Button>
-                           
-
                             </div>
                         </div>
+
+                        {/* Form Fields Section */}
+                        <div className="mt-4">
+                            <div className="firstrow flex gap-4">
+                                <div className="flex flex-row gap-4 overflow-x-auto w-full">
+                                    {/* Distributor Field */}
+                                    <div>
+                                        <span className="title mb-2 flex items-center gap-2">
+                                            Distributor <span className="text-red-600">*</span>
+                                        </span>
+                                        <Autocomplete
+                                            disabled
+                                            value={distributor}
+                                            sx={{ width: "100%", minWidth: "350px" }}
+                                            size="small"
+                                            options={distributorList}
+                                            getOptionLabel={(option) => option.name}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    error={!!error.distributor}
+                                                    helperText={error.distributor}
+                                                />
+                                            )}
+                                        />
+                                    </div>
+
+                                    {/* Bill No Field */}
+                                    <div>
+                                        <span className="title mb-2">Bill No <span className="text-red-600">*</span></span>
+                                        <TextField
+                                            disabled
+                                            size="small"
+                                            value={billNo}
+                                            error={!!error.billNo}
+                                            helperText={error.billNo}
+                                        />
+                                    </div>
+
+                                    {/* Bill Date Field */}
+                                    <div>
+                                        <span className="title mb-2">Bill Date</span>
+                                        <DatePicker
+                                            disabled
+                                            selected={selectedDate}
+                                            dateFormat="dd/MM/yyyy"
+                                            className="custom-datepicker"
+                                            onChange={(date) => setSelectedDate(date)}
+                                        />
+                                    </div>
+
+                                    {/* Start Date Field */}
+                                    <div>
+                                        <span className="title mb-2">Start Date</span>
+                                        <TextField
+                                            disabled
+                                            size="small"
+                                            value={startDate}
+                                        />
+                                    </div>
+
+                                    {/* End Date Field */}
+                                    <div>
+                                        <span className="title mb-2">End Date</span>
+                                        <TextField
+                                            disabled
+                                            size="small"
+                                            value={endDate}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Continue with table and other sections... */}
                         <div className="border-b">
                             <div className="firstrow flex" >
                                 <div className="detail custommedia" style={{
@@ -1096,35 +1201,41 @@ const EditReturnBill = () => {
 
                                 <div>
                                 </div>
-                                <div className='scroll-two'>
-                                    <table className="saleTable">
+                                {/* Table Section */}
+                                <div className="table-container">
+                                    <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
-                                                <th >Item Name</th>
-                                                <th >Unit</th>
-                                                <th >Batch  </th>
-                                                <th >Expiry </ th>
-                                                <th >MRP  </th>
-                                                <th >Qty. </th>
-                                                <th >Free </th>
-                                                <th >PTR </ th>
-                                                <th >CD%</th>
-                                                <th >GST%  </th>
-                                                <th >Loc.</th>
-                                                <th >Amount</th>
+                                            <tr>
+                                                <th>
+                                                    <div className="flex justify-center items-center gap-2">
+                                                        Search Item Name <span className="text-red-600">*</span>
+                                                    </div>
+                                                </th>
+                                                <th>Unit <span className="text-red-600">*</span></th>
+                                                <th>Batch <span className="text-red-600">*</span></th>
+                                                <th>Expiry <span className="text-red-600">*</span></th>
+                                                <th>MRP <span className="text-red-600">*</span></th>
+                                                <th>Qty.</th>
+                                                <th>Free</th>
+                                                <th>PTR <span className="text-red-600">*</span></th>
+                                                <th>CD%</th>
+                                                <th>GST% <span className="text-red-600">*</span></th>
+                                                <th>Loc.</th>
+                                                <th>Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr style={{ borderBottom: '1px solid lightgray' }}>
-                                                {!isEditMode ?
-                                                    <td style={{ width: '350px' }}>
-                                                        <div >
+                                            {/* Input Row */}
+                                            <tr className="input-row">
+                                                <td className="p-0">
+                                                    {!isEditMode ? (
+                                                        <div style={{ minWidth: 366, padding: 0 }}>
                                                             <TextField
                                                                 autoComplete="off"
                                                                 id="outlined-basic"
                                                                 size="small"
                                                                 autoFocus
-                                                                sx={{ width: "350px" }}
+                                                                sx={{ width: "366px" }}
                                                                 value={searchQuery}
                                                                 onChange={handleInputChange}
                                                                 variant="outlined"
@@ -1132,44 +1243,31 @@ const EditReturnBill = () => {
                                                                 InputProps={{
                                                                     endAdornment: (
                                                                         <InputAdornment position="start">
-                                                                            <SearchIcon />
+                                                                            <svg width="20" height="20" fill="gray">
+                                                                                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                                                                            </svg>
                                                                         </InputAdornment>
                                                                     ),
                                                                     type: "search",
                                                                 }}
                                                             />
-
-
                                                         </div>
-
-                                                    </td> : <td style={{ width: '350px' }}>
-                                                        <div style={{ width: 350, padding: 0 }} >
-                                                            <BorderColorIcon
-                                                                style={{ color: "var(--color1)" }}
-                                                                onClick={() => setIsEditMode(false)}
-                                                            />
-                                                            <DeleteIcon
-                                                                className="delete-icon mr-2"
-                                                                onClick={removeItem}
-                                                            />
-                                                            <span className="font-semibold ">
-                                                                {searchItem}
-
-                                                            </span>
+                                                    ) : (
+                                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left' }}>
+                                                            <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
+                                                            {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                                                         </div>
-                                                    </td>
-                                                }
+                                                    )}
+                                                </td>
                                                 <td>
                                                     <TextField
                                                         autoComplete="off"
-                                                        id="outlined-number"
                                                         type="number"
-                                                        // inputRef={inputRef1}
-                                                        // onKeyDown={handleKeyDown}
                                                         size="small"
+                                                        sx={{ width: "100px" }}
                                                         error={!!errors.unit}
+                                                        helperText={errors.unit}
                                                         value={unit}
-                                                        sx={{ width: '100px' }}
                                                         onChange={(e) => {
                                                             const value = e.target.value.replace(/[^0-9]/g, '');
                                                             setUnit(value ? Number(value) : "");
@@ -1184,9 +1282,7 @@ const EditReturnBill = () => {
                                                                     e.preventDefault();
                                                                 }
                                                             }
-                                                            if (
-                                                                ['e', 'E', '.', '+', '-', ','].includes(e.key)
-                                                            ) {
+                                                            if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -1740,42 +1836,81 @@ const EditReturnBill = () => {
 
                     </div >
 
-                    {/* Delete PopUP */}
-                    <div id="modal" value={IsDelete}
-                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                            }`}>
-                        <div />
-                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
-                                viewBox="0 0 24 24" onClick={handleClose}>
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                            </svg>
+                    {/* Delete Confirmation Dialog */}
+                    <Dialog open={IsDelete} className="custom-dialog">
+                        <DialogTitle className="primary">Delete Confirmation</DialogTitle>
+                        <IconButton
+                            aria-label="close"
+                            onClick={() => setIsDelete(false)}
+                            sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+                        >
+                            <IoMdClose />
+                        </IconButton>
+                        <DialogContent>
                             <div className="my-4 text-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                                    <path
-                                        d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                                        data-original="#000000" />
-                                    <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                                        data-original="#000000" />
+                                    <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                                    <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
                                 </svg>
                                 <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
                             </div>
-                            <div className="flex gap-5 justify-center">
-                                <button type="submit"
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                                    onClick={() => handleDeleteItem(ItemId)}
-                                >Delete</button>
-                                <button type="button"
-                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                                    onClick={handleClose}
-                                >
-                                    Cancel
-                                </button>
+                        </DialogContent>
+                        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => handleDeleteItem(ItemId)}
+                                sx={{ minWidth: 120 }}
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="inherit"
+                                onClick={() => setIsDelete(false)}
+                                sx={{ minWidth: 120 }}
+                            >
+                                Cancel
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    {/* Leave Page Dialog */}
+                    <Dialog open={isOpenBox} className="custom-dialog">
+                        <DialogTitle className="primary">Leave Page</DialogTitle>
+                        <IconButton
+                            aria-label="close"
+                            onClick={LogoutClose}
+                            sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+                        >
+                            <IoMdClose />
+                        </IconButton>
+                        <DialogContent>
+                            <div className="my-4 logout-icon text-center">
+                                <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
+                                <h4 className="text-lg font-semibold mt-6">Are you sure you want to leave this page?</h4>
                             </div>
-                        </div>
-                    </div>
-                    {/* popup for history api call */}
+                        </DialogContent>
+                        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleLeavePage}
+                                sx={{ minWidth: 120 }}
+                            >
+                                Yes
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="inherit"
+                                onClick={LogoutClose}
+                                sx={{ minWidth: 120 }}
+                            >
+                                Cancel
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
                     <Prompt
                         when={unsavedItems}
                         message={(location) => {
@@ -1783,42 +1918,12 @@ const EditReturnBill = () => {
                             return false;
                         }}
                     />
-                    <div
-                        id="modal"
-                        value={isOpenBox}
-                        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"}`}
-                    >
-                        <div />
-                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                            <div className="my-4 logout-icon">
-                                <VscDebugStepBack className=" h-12 w-14" style={{ color: "#628A2F" }} />
-                                <h4 className="text-lg font-semibold mt-6 text-center">
-                                    <span style={{ textTransform: "none" }}>Are you sure you want to leave this page?</span></h4>
-                            </div>
-                            <div className="flex gap-5 justify-center">
-                                <button
-                                    type="submit"
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-                                    onClick={handleLeavePage}
-                                >
-                                    Yes
-                                </button>
-                                <button
-                                    type="button"
-                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                                    onClick={LogoutClose}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
 
 
                 </div >
-            }
+            )}
         </>
-    )
-}
-export default EditReturnBill
+    );
+};
+
+export default EditReturnBill;

@@ -1069,15 +1069,13 @@ const EditSaleReturn = () => {
                     />
                   </div>
 
-                  <div className="scroll-two">
-                    <table className="saleTable">
+                  <div className="overflow-x-auto w-full scroll-two">
+                    <table className="w-full border-collapse item-table">
                       <thead>
                         <tr
-                          style={{
-                            borderBottom: "1px solid lightgray",
-                          }}
+                          style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}
                         >
-                          <th className="w-1/4">Item Name</th>
+                          <th className="w-1/4" style={{ textAlign: 'center' }}>Item Name</th>
                           <th>Unit </th>
                           <th>Batch </th>
                           <th>Expiry</th>
@@ -1085,12 +1083,11 @@ const EditSaleReturn = () => {
                           <th>Base</th>
                           <th>GST% </th>
                           <th>QTY </th>
-                          {/* <th >Order</th> */}
                           <th>Loc.</th>
                           <th>Amount </th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody ref={tableRef} tabIndex={0}>
                         <tr style={{ borderBottom: "1px solid lightgray" }}>
                           {
                             isEditMode ? <td>
@@ -1099,31 +1096,31 @@ const EditSaleReturn = () => {
                                 <span className="text-sm">{searchItem}</span>
                               </div>
 
-                            </td> :  <td  style={{ width: "350px" }} > <TextField
-                              autoComplete="off"
-                              id="outlined-basic"
-                              size="small"
-                              sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
-                              value={search}
-                              onChange={handleInputChange}
-                              inputRef={el => inputRefs.current[0] = el}
-                              onKeyDown={e => {
-                                if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
-                                  // Use the new arrow navigation function that works regardless of input focus
-                                  handleArrowNavigation(e);
-                                }
-                              }}
-                              variant="outlined"
-                              placeholder="Please search any items.."
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="start">
-                                    <SearchIcon />
-                                  </InputAdornment>
-                                ),
-                                type: "search",
-                              }}
-                            />
+                            </td> : <td style={{ width: "415px" }}>
+                              <TextField
+                                autoComplete="off"
+                                id="outlined-basic"
+                                size="small"
+                                sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
+                                value={search}
+                                onChange={handleInputChange}
+                                inputRef={el => inputRefs.current[0] = el}
+                                onKeyDown={e => {
+                                  if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+                                    handleArrowNavigation(e);
+                                  }
+                                }}
+                                variant="outlined"
+                                placeholder="Please search any items.."
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment position="start">
+                                      <SearchIcon />
+                                    </InputAdornment>
+                                  ),
+                                  type: "search",
+                                }}
+                              />
                             </td>
                           }
 
@@ -1137,7 +1134,7 @@ const EditSaleReturn = () => {
                               onKeyDown={handleKeyDown}
                               size="small"
                               value={unit}
-                              sx={{ width: "90px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               onChange={(e) => {
                                 setUnit(e.target.value);
                               }}
@@ -1152,7 +1149,7 @@ const EditSaleReturn = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="string"
-                              sx={{ width: "110px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               size="small"
                               disabled
                               value={batch}
@@ -1171,7 +1168,7 @@ const EditSaleReturn = () => {
                               id="outlined-number"
                               disabled
                               size="small"
-                              sx={{ width: "100px" }}
+                              sx={{ width: "130px" }}
                               inputRef={inputRef3}
                               onKeyDown={handleKeyDown}
                               value={expiryDate}
@@ -1188,7 +1185,7 @@ const EditSaleReturn = () => {
                               disabled
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "100px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef4}
                               onKeyDown={handleKeyDown}
@@ -1207,7 +1204,7 @@ const EditSaleReturn = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "120px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef6}
                               onKeyDown={handleKeyDown}
@@ -1234,7 +1231,7 @@ const EditSaleReturn = () => {
                               size="small"
                               inputRef={inputRef8}
                               onKeyDown={handleKeyDown}
-                              sx={{ width: "80px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               value={gst}
                               onChange={(e) => {
                                 setGst(e.target.value);
@@ -1250,7 +1247,7 @@ const EditSaleReturn = () => {
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "70px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef5}
                               value={qty}
@@ -1285,7 +1282,7 @@ const EditSaleReturn = () => {
                               inputRef={inputRef9}
                               onKeyDown={handleKeyDown}
                               disabled
-                              sx={{ width: "100px", textAlign: "right" }}
+                              sx={{ width: "130px", textAlign: "right" }}
                               value={loc}
                               onChange={(e) => {
                                 setLoc(e.target.value);
@@ -1298,20 +1295,10 @@ const EditSaleReturn = () => {
                           </td>
                           <td className="total ">{itemAmount}</td>
                         </tr>
-
-                      </tbody>
-                    </table>
-                    <>
-                      <table
-                        className="p-30 border w-full border-collapse custom-table "
-                        ref={tableRef}
-                        tabIndex={0} // Allows table to receive focus
-                      >
-                        <tbody>
-                          {filteredItems.map((item, index) => (
+                        {filteredItems.map((item, index) => (
                             <tr
                               key={item.id}
-                              className={`item-List cursor-pointer flex justify-between  ${index === selectedIndex ? "highlighted-row" : ""
+                              className={`input-row cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
                                 }`}
                               onClick={() => {
                                 handleEditClick(item);
@@ -1342,8 +1329,11 @@ const EditSaleReturn = () => {
                                   }}
                                 />
                                 <BorderColorIcon
+                                 sx={{
+                                  color: "var(--color1)",
+                                }}
                                   color="primary"
-                                  className="cursor-pointer"
+                                  className="cursor-pointer primary"
                                   onClick={() => handleEditClick(item)}
                                 />
                                 {item.iteam_name}
@@ -1359,131 +1349,71 @@ const EditSaleReturn = () => {
                               <td>{item.net_rate}</td>
                             </tr>
                           ))}
-                        </tbody>
-                      </table>
+
+                      </tbody>
+                    </table>
+                    <>
+                   
                     </>
                   </div>
                 </div>
 
                 {saleReturnItems?.sales_iteam?.length > 0 && (
                   <div
-                    className=""
+                    className="sale_filtr_add"
                     style={{
-                      background: "var(--color1)",
-                      color: "white",
+                      background: 'var(--color1)',
+                      color: 'white',
                       display: "flex",
-                      justifyContent: "space-between",
-                      position: "fixed",
-                      width: "100%",
-                      bottom: "0",
-                      left: "0",
-                      overflow: "auto",
+                      position: 'fixed',
+                      width: '100%',
+                      bottom: '0',
+                      left: '0',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      overflow: 'auto',
+                      padding: '20px',
                     }}
                   >
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        gap: "40px",
-                        whiteSpace: "nowrap",
-                        left: "0",
-                        padding: "20px",
-                      }}
-                    >
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
+                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0' }}>
+                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                         <label className="font-bold">Total GST : </label>
-
                         <span style={{ fontWeight: 600 }}>{totalGst} </span>
                       </div>
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
+                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                         <label className="font-bold">Total Base : </label>
                         <span style={{ fontWeight: 600 }}>{totalBase} </span>
                       </div>
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
+                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                         <label className="font-bold">Profit : </label>
                         <span style={{ fontWeight: 600 }}>
-                          ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)}
-                          %)
+                          ₹ {marginNetProfit}({Number(totalMargin).toFixed(2)} %)
                         </span>
                       </div>
-                      <div
-                        className="gap-2 invoice_total_fld"
-                        style={{ display: "flex" }}
-                      >
+                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                         <label className="font-bold">Total Net Rate : </label>
                         <span style={{ fontWeight: 600 }}>
                           ₹ {totalNetRate}
                         </span>
                       </div>
                     </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        padding: "0 20px",
-                        whiteSpace: "noWrap",
-                      }}
-                    >
-                      <div
-                        className="gap-2 "
-                        onClick={toggleModal}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          cursor: "pointer",
-                        }}
-                      >
+                    <div style={{ padding: '0 20px', whiteSpace: 'noWrap' }}>
+                      <div className="gap-2" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                         <label className="font-bold">Net Amount : </label>
-                        <span
-                          className="gap-1"
-                          style={{
-                            fontWeight: 800,
-                            fontSize: "22px",
-                            whiteSpace: "nowrap",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          {!netAmount ? 0 : netAmount}
+                        <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}
                           <FaCaretUp />
                         </span>
                       </div>
-
                       <Modal
                         show={isModalOpen}
                         onClose={toggleModal}
                         size="lg"
                         position="bottom-center"
                         className="modal_amount"
-                      // style={{ width: "50%" }}
                       >
-                        <div
-                          style={{
-                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                            color: "white",
-                            padding: "20px",
-                            fontSize: "larger",
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <h2 style={{ textTransform: "uppercase" }}>
-                            invoice total
-                          </h2>
-                          <IoMdClose
-                            onClick={toggleModal}
-                            cursor={"pointer"}
-                            size={30}
-                          />
+                        <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                          <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                          <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
                         </div>
                         <div
                           style={{
@@ -1492,114 +1422,58 @@ const EditSaleReturn = () => {
                             width: "100%",
                             maxWidth: "600px",
                             margin: "0 auto",
-                            lineHeight: "2.5rem",
+                            lineHeight: "2.5rem"
                           }}
                         >
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
+                          <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
                             <label className="font-bold">Total Amount : </label>
-                            <span style={{ fontWeight: 600 }}>
-                              {totalAmount}
-                            </span>
+                            <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                           </div>
-
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              paddingBottom: "5px",
-                            }}
-                          >
+                          <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
                             <label className="font-bold">Other Amount : </label>
                             <Input
                               value={otherAmt}
                               onKeyDown={(e) => {
                                 const value = e.target.value;
-                                const isMinusKey = e.key === "-";
-
-                                // Allow Backspace and numeric keys
-                                if (
-                                  !/[0-9.-]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
+                                const isMinusKey = e.key === '-';
+                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
                                   e.preventDefault();
                                 }
-
-                                // Allow only one '-' at the beginning of the input value
-                                if (isMinusKey && value.includes("-")) {
+                                if (isMinusKey && value.includes('-')) {
                                   e.preventDefault();
                                 }
                               }}
                               onChange={(e) => {
                                 setUnsavedItems(true);
-                                const x = e.target.value;
-                                const y = x;
-
+                                const x = e.target.value
+                                const y = (x)
                                 if (-y >= totalAmount) {
-                                  setOtherAmt(-totalAmount);
+                                  setOtherAmt((-totalAmount))
                                 } else {
-                                  setOtherAmt(y);
+                                  setOtherAmt(y)
                                 }
                               }}
                               size="small"
                               style={{
                                 width: "70px",
                                 background: "none",
-                                // borderBottom: "1px solid gray",
                                 justifyItems: "end",
                                 outline: "none",
-                              }}
-                              sx={{
-                                "& .MuiInputBase-root": {
-                                  height: "35px",
+                              }} sx={{
+                                '& .MuiInputBase-root': {
+                                  height: '35px',
                                 },
-                                "& .MuiInputBase-input": { textAlign: "end" },
+                                "& .MuiInputBase-input": { textAlign: "end" }
                               }}
                             />
                           </div>
-
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              paddingBottom: "5px",
-                              borderTop:
-                                "1px solid var(--toastify-spinner-color-empty-area)",
-                              paddingTop: "5px",
-                            }}
-                          >
+                          <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
                             <label className="font-bold">Round Off : </label>
-                            <span>{!roundOff ? 0 : roundOff.toFixed(2)}</span>
+                            <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
                           </div>
-
-                          <div
-                            className=""
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                              justifyContent: "space-between",
-                              borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                              paddingTop: "5px",
-                            }}
-                          >
+                          <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
                             <label className="font-bold">Net Amount: </label>
-                            <span
-                              style={{
-                                fontWeight: 800,
-                                fontSize: "22px",
-                                color: "var(--COLOR_UI_PHARMACY)",
-                              }}
-                            >
-                              {netAmount}
-                            </span>
+                            <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
                           </div>
                         </div>
                       </Modal>

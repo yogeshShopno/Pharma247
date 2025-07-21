@@ -1036,9 +1036,7 @@ const AddPurchaseBill = () => {
 
   const handleAddButtonClick = async () => {
     // Prevent multiple submissions
-    if (isSubmitting) {
-      return false;
-    }
+
 
     setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
@@ -1115,23 +1113,13 @@ const AddPurchaseBill = () => {
     const isValid = Object.keys(newErrors).length === 0;
     
     if (isValid) {
-      // Set submitting state to prevent multiple calls
-      setIsSubmitting(true);
-      
-      try {
-        await handleAddItem();
-        setUnsavedItems(true);
-        return true;
-      } catch (error) {
-        console.error("Error adding item:", error);
-        return false;
-      } finally {
-        // Reset submitting state after a delay to prevent rapid re-submissions
-        const timeout = setTimeout(() => {
-          setIsSubmitting(false);
-        }, 2000); // 2 second cooldown
-        setSubmitTimeout(timeout);
+      if (isSubmitting) return; // ⛔ Block if already submitting
+      else{
+      await handleAddItem(); // Call handleEditItem if validation passes
+
       }
+    
+
     }
     
     return false;
@@ -1140,6 +1128,9 @@ const AddPurchaseBill = () => {
   /*<========================================================================= Add and Edit item function  ====================================================================> */
 
   const handleAddItem = async () => {
+    if (isSubmitting) return false; // Prevent double submissions
+    setIsSubmitting(true); // Lock
+
     setUnsavedItems(true);
     const gstMapping = {
       28: 6,
@@ -2750,10 +2741,8 @@ const AddPurchaseBill = () => {
                           onKeyDown={async (e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
-                              if (isSubmitting) {
-                                return;
-                              }
-                              await handleAddButtonClick();
+
+                              handleAddButtonClick();
                             }
                           }}
                         />

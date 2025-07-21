@@ -521,6 +521,12 @@ const AddReturnbill = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
+    
+    if (!distributor) {
+      toast.error("Please select distributor first");
+      return;
+    }
+    
     purcheseReturnFilter(value);
   };
 

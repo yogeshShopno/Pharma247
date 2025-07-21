@@ -110,7 +110,11 @@ const EditSaleReturn = () => {
 
   // Add missing variables for search functionality
   const [search, setSearch] = useState("");
+  const [filteredItems, setFilteredItems] = useState([]);
   const inputRefs = useRef({});
+
+  // Debounce ref for search
+  const searchTimeout = useRef();
 
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
@@ -272,10 +276,10 @@ const EditSaleReturn = () => {
       console.error("API error:", error);
     }
   };
-  const saleBillGetBySaleID = async (doctorData, customerData) => {
+  const saleBillGetBySaleID = async (doctorData, customerData, searchValue = "") => {
     let data = new FormData();
     data.append("id", id);
-    data.append("search", search);
+    data.append("search", searchValue);
     const params = {
       id: id,
     };
@@ -596,10 +600,22 @@ const EditSaleReturn = () => {
 
   // Add handleInputChange function for search functionality
   const handleInputChange = (e) => {
-    setSearch(e.target.value);
-    saleBillGetBySaleID();
+    const searchValue = e.target.value;
+    setSearch(searchValue);
 
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+
+    searchTimeout.current = setTimeout(() => {
+      saleBillGetBySaleID(doctorData, customerDetails, searchValue);
+    }, 400); // 400ms debounce
   };
+
+  // Update useEffect to initialize filteredItems when saleReturnItems changes
+  useEffect(() => {
+    if (saleReturnItems?.sales_iteam) {
+      setFilteredItems(saleReturnItems.sales_iteam);
+    }
+  }, [saleReturnItems]);
 
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
@@ -1292,7 +1308,7 @@ const EditSaleReturn = () => {
                         tabIndex={0} // Allows table to receive focus
                       >
                         <tbody>
-                          {saleReturnItems?.sales_iteam?.map((item, index) => (
+                          {filteredItems.map((item, index) => (
                             <tr
                               key={item.id}
                               className={`item-List cursor-pointer flex justify-between  ${index === selectedIndex ? "highlighted-row" : ""

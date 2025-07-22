@@ -13,12 +13,11 @@ const AllOrder = () => {
     const types = [{ id: 1, value: 'sales' }, { id: 0, value: 'purchase' },]
 
     const [billData, setBilldata] = useState([])
-
+    // Use useEffect to reload data whenever currentPage changes
     useEffect(() => {
-        // dashboardData();
-        orderdata()
+        orderdata();
+    }, [currentPage, value]);
 
-    }, [value])
     const orderdata = async () => {
 
         let data = new FormData();
@@ -26,6 +25,8 @@ const AllOrder = () => {
         // data.append("start_date", "2025-03-10")
         // data.append("end_date", "2025-03-31")
         // data.append("patient_name", "shailesh")
+        data.append("page", currentPage)
+
 
         try {
             await axios.post("chemist-order-list?", data, {
@@ -36,8 +37,8 @@ const AllOrder = () => {
             ).then((response) => {
                 setIsLoading(false)
                 setBilldata(response.data.data);
-                const records=(response?.data?.count);
-                const pages = Math.ceil(Number(records)/10);
+                const records = (response?.data?.count);
+                const pages = Math.ceil(Number(records) / 10);
                 setTotalPages(pages);
             })
         } catch (error) {
@@ -45,22 +46,22 @@ const AllOrder = () => {
         }
     }
 
-    
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-  };
 
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+    const handleClick = (pageNum) => {
+        setCurrentPage(pageNum);
+    };
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
 
     return (
         <div>
@@ -95,71 +96,72 @@ const AllOrder = () => {
                                         </tr>
                                     ))}
                                 </tbody>
-                                <div
-                                    className="flex justify-center mt-4"
-                                    style={{
-                                        marginTop: 'auto',
-                                        width: '100%',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        padding: '1rem',
-                                    }}
-                                >
-                                    <button
-                                        onClick={handlePrevious}
-                                        className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                                            ? "bg-gray-200 text-gray-700"
-                                            : "secondary-bg text-white"
-                                            }`}
-                                        disabled={currentPage === 1}
-                                    >
-                                        Previous
-                                    </button>
-                                    {currentPage > 2 && (
-                                        <button
-                                            onClick={() => handleClick(currentPage - 2)}
-                                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                        >
-                                            {currentPage - 2}
-                                        </button>
-                                    )}
-                                    {currentPage > 1 && (
-                                        <button
-                                            onClick={() => handleClick(currentPage - 1)}
-                                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                        >
-                                            {currentPage - 1}
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={() => handleClick(currentPage)}
-                                        className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                                    >
-                                        {currentPage}
-                                    </button>
-                                    {currentPage < totalPages && (
-                                        <button
-                                            onClick={() => handleClick(currentPage + 1)}
-                                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                                        >
-                                            {currentPage + 1}
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={handleNext}
-                                        className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                                            ? "bg-gray-200 text-gray-700"
-                                            : "secondary-bg text-white"
-                                            }`}
-                                        disabled={currentPage >= totalPages}
-                                    >
-                                        Next
-                                    </button>
-                                </div>
+
 
 
                             </table>
+                        </div>
+                        <div
+                            className="flex justify-center mt-4"
+                            style={{
+                                marginTop: 'auto',
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                padding: '1rem',
+                            }}
+                        >
+                            <button
+                                onClick={handlePrevious}
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                                    ? "bg-gray-200 text-gray-700"
+                                    : "secondary-bg text-white"
+                                    }`}
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            {currentPage > 2 && (
+                                <button
+                                    onClick={() => handleClick(currentPage - 2)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage - 2}
+                                </button>
+                            )}
+                            {currentPage > 1 && (
+                                <button
+                                    onClick={() => handleClick(currentPage - 1)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage - 1}
+                                </button>
+                            )}
+                            <button
+                                onClick={() => handleClick(currentPage)}
+                                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                            >
+                                {currentPage}
+                            </button>
+                            {currentPage < totalPages && (
+                                <button
+                                    onClick={() => handleClick(currentPage + 1)}
+                                    className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                                >
+                                    {currentPage + 1}
+                                </button>
+                            )}
+                            <button
+                                onClick={handleNext}
+                                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                                    ? "bg-gray-200 text-gray-700"
+                                    : "secondary-bg text-white"
+                                    }`}
+                                disabled={currentPage >= totalPages}
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
                 </div>

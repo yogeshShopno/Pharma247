@@ -78,28 +78,28 @@ function StatusCardsSection() {
       count: 30,
       bg: "from-lime-50 to-white border-lime-600 text-lime-800",
       component: <AllOrder />,
-      borderColor: "#65a30d", // lime-600
+      borderColor: "#65a30d", 
     },
     {
       label: "Accepted",
       count: 30,
       bg: "from-lime-50 to-white border-lime-600 text-lime-800",
       component: <Accepted />,
-      borderColor: "#65a30d", // lime-600
+      borderColor: "#65a30d", 
     },
-    {
-      label: "Assigned",
-      count: 410,
-      bg: "from-yellow-50 to-white border-yellow-400 text-yellow-800",
-      component: <Assigned />,
-      borderColor: "#facc15", // yellow-400
-    },
+    // {
+    //   label: "Assigned",
+    //   count: 410,
+    //   bg: "from-yellow-50 to-white border-yellow-400 text-yellow-800",
+    //   component: <Assigned />,
+    //   borderColor: "#facc15", 
+    // },
     {
       label: "Processing",
       count: 150,
       bg: "from-red-50 to-white border-orange-400 text-orange-800",
       component: <Processing />,
-      borderColor: "#fb923c", // orange-400
+      borderColor: "#fb923c", 
     },
     {
       label: "Delivered",

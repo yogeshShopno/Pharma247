@@ -135,7 +135,7 @@ function StatusCardsSection() {
                 className={`bg-gradient-to-br ${card.bg} border-2 p-1 rounded-xl flex flex-col items-center justify-center gap-2 py-4 cursor-pointer`}
                 onClick={() => setSelectedTab(idx)}
                 style={{
-                  borderWidth: selectedTab === idx ? "3px" : "2px",
+                  borderWidth: selectedTab === idx ? "3px" : "1px",
                   borderColor:  card.borderColor,
                   transition: "border-color 0.2s, border-width 0.2s",
                 }}

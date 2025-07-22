@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuItem from '@mui/material/MenuItem';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import { GoInfo } from "react-icons/go";
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { FaUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
-import Box from '@mui/material/Box';
+import React, { useEffect, useState } from 'react';
+import Header from '../dashboard/Header';
+import { Button } from "@mui/material";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import Loader from '../componets/loader/Loader';
+import Accepted from './Accepted';
+import { BsLightbulbFill } from "react-icons/bs";
+import Assigned from './Assigned';
 import axios from 'axios';
 
-const Accepted = () => {
+const Delivered = () => {
+
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [value, setValue] = useState(1)
@@ -31,7 +25,7 @@ const Accepted = () => {
 
 
   useEffect(() => {
-  
+
     orderdata()
 
   }, [value])
@@ -57,20 +51,22 @@ const Accepted = () => {
 
     } catch (error) {
       setIsLoading(false);
-    } finally{
+    } finally {
       setIsLoading(false);
 
     }
   }
-  return (
 
+  {/*<========================================================================= ui ===================================================================> */ }
+
+  return (
     <div className="flex flex-col gap-4 rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
-      <div className="bg-lime-500/5 border border-lime-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
-        <span className="text-lg font-medium text-lime-800">
-          Orders ID : {orderData[0]?.order_id}
+      <div className="bg-teal-500/5 border border-teal-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
+        <span className="text-lg font-medium text-teal-800">
+          Orders ID : $#12424
         </span>
-        <span className="text-lg font-medium text-lime-800">
-          Amount : {orderData[0]?.total_amount}
+        <span className="text-lg font-medium text-teal-800">
+          Reason : Out of stock
         </span>
       </div>
 
@@ -78,16 +74,16 @@ const Accepted = () => {
         {/* Left: Grid */}
         <div className="grid grid-cols-2 w-1/2 gap-x-8 gap-y-4 p-6 flex-grow overflow-auto">
           <div className="font-semibold">Patient</div>
-          <div>{orderData[0]?.patient_name}</div>
+          <div>Umang rathod</div>
 
           <div className="font-semibold">Patient No</div>
-          <div>{orderData[0]?.patient_number}</div>
+          <div>9876543210</div>
 
           <div className="font-semibold">Address</div>
-          <div>{orderData[0]?.delivery_address}</div>
+          <div>shopno,rcom pvt , surat</div>
 
           <div className="font-semibold">Date</div>
-          <div>{orderData[0]?.date}</div>
+          <div>12/12/25</div>
 
           <div className="font-semibold">Delivery type</div>
           <div>Pickup / Delivery</div>
@@ -108,14 +104,16 @@ const Accepted = () => {
 
         {/* Right: Button at bottom-right */}
         <div className="w-1/2 flex flex-col justify-end items-end p-6">
-          <button className="bg-lime-800 text-white px-4 py-2 rounded-lg">
-            Assign Staff
-          </button>
+          <Button
+            variant="contained"
+            className="sale_add_pdf"
+            style={{ background: "var(--color1)" }}>
+            Print Bill
+          </Button>
         </div>
       </div>
     </div>
-
-
-  );
+  )
 }
-export default Accepted;
+
+export default Delivered ;

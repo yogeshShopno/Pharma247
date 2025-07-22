@@ -2209,7 +2209,7 @@ const Addsale = () => {
                         }}
                       />
                       <p
-                        onClick={() => history.push("/doctorlist")}
+                        onClick={() => history.push("/more/doctors")}
                         className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-lg"
                       >
                         set default

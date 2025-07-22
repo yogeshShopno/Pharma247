@@ -1311,14 +1311,23 @@ const AddPurchaseBill = () => {
     formData.append("pack", `1*${addUnit}`);
     formData.append("barcode", addBarcode);
 
-    // Append remaining optional fields as empty strings
-    const optionalFields = [
-      "packaging_id", "drug_group", "gst", "location", "mrp", "minimum",
-      "maximum", "discount", "margin", "hsn_code", "message",
-      "item_category_id", "pahrma", "distributer", "front_photo",
-      "back_photo", "mrp_photo"
-    ];
-    optionalFields.forEach(field => formData.append(field, ""));
+    formData.append("packaging_id", "");
+    formData.append("drug_group", "");
+    formData.append("gst", "");
+    formData.append("location", "");
+    formData.append("mrp", "");
+    formData.append("minimum", "");
+    formData.append("maximum", "");
+    formData.append("discount", "");
+    formData.append("margin", "");
+    formData.append("hsn_code", "");
+    formData.append("message", "");
+    formData.append("item_category_id", "");
+    formData.append("pahrma", "");
+    formData.append("distributer", "");
+    formData.append("front_photo", "");
+    formData.append("back_photo", "");
+    formData.append("mrp_photo", "");
 
     try {
       const response = await axios.post("create-iteams", formData, {

@@ -599,6 +599,8 @@ const Salereturn = () => {
             data.append('sgst', '0');
             data.append('product_list', JSON.stringify(saleItems.sales_item) ? JSON.stringify(saleItems.sales_item) : '');
             data.append("draft_save", "1");
+            data.append("start_date",startDate.format('YYYY-MM-DD'))
+            data.append("end_date",endDate.format('YYYY-MM-DD'))
 
             try {
                 await axios.post("sales-return-create", data, {

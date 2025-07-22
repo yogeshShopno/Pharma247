@@ -858,7 +858,6 @@ const DoctorList = () => {
                 
                       </div>
 
-                      
 
                       <div className="flex flex-col col-span-4">
                           <span className="label primary">Set Default Doctor ?</span>

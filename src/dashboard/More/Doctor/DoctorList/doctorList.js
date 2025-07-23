@@ -610,6 +610,22 @@ const DoctorList = () => {
                                     value = value.toLowerCase();
                                   }
                                 }
+
+                                if (column.id === "name") {
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      align={column.align}
+                                      onClick={() => history.push(`/more/doctor/${row.id}`)}
+                                    >
+                                      {value}
+                                      {row.default_doctor === "1" && (
+                                        <span className="cursor-pointer self-end text-xs text-white bg-[var(--color1)] mx-2 px-2 py-1 rounded-2xl">default</span>
+                                      )}
+                                    </td>
+                                  );
+                                }
+
                                 return (
                                   <td
                                     key={column.id}
@@ -855,27 +871,27 @@ const DoctorList = () => {
                             {errors.Doctor}
                           </span>
                         )}
-                
+
                       </div>
 
 
                       <div className="flex flex-col col-span-4">
-                          <span className="label primary">Set Default Doctor ?</span>
-                          <FormControl size="small" className="w-full">
-                            <Select
-                              value={defaultDr || ""}
-                              onChange={(e) => setDefaultDr(e.target.value)}
-                              displayEmpty
-                              inputProps={{ 'aria-label': 'Default Doctor' }}
-                            >
-                              <MenuItem value="">
-                                <em>Select Default Doctor</em>
-                              </MenuItem>
-                              <MenuItem value="1">Yes</MenuItem>
-                              <MenuItem value="0">No</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </div>
+                        <span className="label primary">Set Default Doctor ?</span>
+                        <FormControl size="small" className="w-full">
+                          <Select
+                            value={defaultDr || ""}
+                            onChange={(e) => setDefaultDr(e.target.value)}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Default Doctor' }}
+                          >
+                            <MenuItem value="">
+                              <em>Select Default Doctor</em>
+                            </MenuItem>
+                            <MenuItem value="1">Yes</MenuItem>
+                            <MenuItem value="0">No</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
 
                       {/* Clinic Name - full width */}
                       <div className="flex flex-col col-span-12 w-full">

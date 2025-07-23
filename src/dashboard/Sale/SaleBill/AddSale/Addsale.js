@@ -114,7 +114,7 @@ const Addsale = () => {
     useState(false);
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [openCustomer, setOpenCustomer] = useState(false);
-  const [doctor, setDoctor] = useState("");
+  const [doctor, setDoctor] = useState(null);
   const [clinic, setClinic] = useState();
   const [netAmount, setNetAmount] = useState(0);
   const [loc, setLoc] = useState("");
@@ -484,38 +484,41 @@ const Addsale = () => {
   }, [searchQuery, token]);
 
   useEffect(() => {
-    if (searchDoctor) {
-      const ListOfDoctor = async () => {
-        let data = new FormData();
-        const params = {
-          search: searchDoctor ? searchDoctor : "",
-        };
-        setIsLoading(true);
-        try {
-          const response = await axios.post("doctor-list?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setDoctorData(response.data.data);
-          setIsLoading(false);
-        } catch (error) {
-          setIsLoading(false);
-          console.error("API error:", error);
+    const fetchDoctors = async () => {
+      let data = new FormData();
+      const params = { search: searchDoctor || "" };
+      setIsLoading(true);
+      try {
+        const res = await axios.post("doctor-list?", data, {
+          params,
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setDoctorData(res.data.data || []);
+
+        // Set default doctor only on initial load
+        if (!doctor && res.data.data?.length) {
+          const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
+          setDoctor(defaultDoc);
         }
-      };
+      } catch (err) {
+        // handle error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    const timeout = setTimeout(fetchDoctors, 500);
+    return () => clearTimeout(timeout);
 
-      const delayDebounceFn = setTimeout(() => {
-        ListOfDoctor();
-      }, 500); // Debounce to prevent too many API calls
+  }, [token]);
 
-      return () => clearTimeout(delayDebounceFn);
-    } else {
-      setDoctorData([]);
-    }
-  }, [searchDoctor]);
 
+  useEffect(() => {
+    let doctor = doctorData.filter((d) => d.default_doctor === "1");
+
+    setDoctor(doctor[0]);
+
+  }, [doctorData])
+ 
   useEffect(() => {
     if (itemId) {
       batchList(itemId);
@@ -808,6 +811,7 @@ const Addsale = () => {
   };
 
   useEffect(() => { }, [searchItem, itemList]);
+
   const handleDoctorOption = (event, newValue) => {
     setDoctor(newValue);
     setUnsavedItems(true);
@@ -826,66 +830,7 @@ const Addsale = () => {
     inputRef10 // Order
   ];
 
-  // Validation for each input in the item entry row
-  const validateInput = (ref, index) => {
-    const value = ref.current?.value;
-    switch (index) {
-      case 0: // inputRef1 (Unit)
-        if (!value) {
-          toast.error("Unit is required and must be > 0");
-          return false;
-        }
-        break;
-      case 1: // inputRef3 (Batch)
-        if (!value) {
-          toast.error("Batch is required");
-          return false;
-        }
-        break;
-      case 2: // inputRef4 (Expiry)
-        if (!value) {
-          toast.error("Expiry is required");
-          return false;
-        }
-        break;
-      case 3: // inputRef5 (MRP)
-        if (!value || isNaN(value) || Number(value) <= 0) {
-          toast.error("MRP is required and must be > 0");
-          return false;
-        }
-        break;
-      case 4: // inputRef6 (Base)
-        if (!value) {
-          toast.error("Base is required and must be >= 0");
-          return false;
-        }
-        break;
-      case 5: // inputRef7 (GST)
-        if (!value) {
-          toast.error("GST is required and must be >= 0");
-          return false;
-        }
-        break;
-      case 6: // inputRef9 (Qty)
-        if (!value || value <= 0) {
-          toast.error("Qty is required and must be > 0");
-          return false;
-        }
-        break;
-      case 7: // inputRef8 (Loc)
-        if (!value) {
-          toast.error("Location is required");
-          return false;
-        }
-        break;
-      case 8: // inputRef10 (Order)
-        // Order can be optional, skip validation or add if needed
-        break;
-      default:
-        break;
-    }
-    return true;
-  };
+
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -2193,13 +2138,15 @@ const Addsale = () => {
                     }}
                   >
                     <span
-                      className="heading mb-2 title"
+                      className="heading mb-2 title flex flex-row justify-between"
                       style={{
                         fontWeight: "500",
                         fontSize: "17px",
                         color: "var(--color1)",
+
                       }}
                     >
+                      <span className="flex flex-row gap-1">
                       Doctor
                       <FaPlusCircle
                         className="icon primary"
@@ -2208,9 +2155,11 @@ const Addsale = () => {
                           setUnsavedItems(true);
                         }}
                       />
+                      </span>
+                     
                       <p
                         onClick={() => history.push("/more/doctors")}
-                        className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-lg"
+                        className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
                       >
                         set default
                       </p>
@@ -2219,7 +2168,7 @@ const Addsale = () => {
 
                     <Autocomplete
                       value={doctor}
-                      onChange={handleDoctorOption}
+                      onChange={(e, newVal) => setDoctor(newVal)} 
                       inputValue={searchDoctor}
                       onInputChange={(event, newInputValue) => {
                         setSearchDoctor(newInputValue);

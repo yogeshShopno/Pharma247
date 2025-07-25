@@ -8,7 +8,7 @@ import { BsLightbulbFill } from "react-icons/bs";
 import Assigned from './Assigned';
 import Rejected from './Rejected';
 import Pickup from './Pickup';
-import Delivered from './Delivered';
+import Completed from './Completed';
 import Processing from './Processing';
 import AllOrder from './AllOrder';
 
@@ -78,14 +78,14 @@ function StatusCardsSection() {
       count: 30,
       bg: "from-lime-50 to-white border-lime-600 text-lime-800",
       component: <AllOrder />,
-      borderColor: "#65a30d", 
+      borderColor: "#65a30d",
     },
     {
       label: "Accepted",
       count: 30,
       bg: "from-lime-50 to-white border-lime-600 text-lime-800",
       component: <Accepted />,
-      borderColor: "#65a30d", 
+      borderColor: "#65a30d",
     },
     // {
     //   label: "Assigned",
@@ -99,13 +99,13 @@ function StatusCardsSection() {
       count: 150,
       bg: "from-red-50 to-white border-orange-400 text-orange-800",
       component: <Processing />,
-      borderColor: "#fb923c", 
+      borderColor: "#fb923c",
     },
     {
-      label: "Delivered",
+      label: "Completed",
       count: 320,
       bg: "from-green-50 to-white border-teal-400 text-teal-800",
-      component: <Delivered />,
+      component: <Completed />,
       borderColor: "#2dd4bf", // teal-400
     },
     {
@@ -118,7 +118,14 @@ function StatusCardsSection() {
     {
       label: "Rejected",
       count: 550,
-      bg: "from-red-50 to-white border-red-400 text-red-800", 
+      bg: "from-red-50 to-white border-red-400 text-red-800",
+      component: <Rejected />,
+      borderColor: "#fb7185", // rose-400
+    },
+    {
+      label: "single",
+      count: 550,
+      bg: "from-red-50 to-white border-red-400 text-red-800",
       component: <Rejected />,
       borderColor: "#fb7185", // rose-400
     },
@@ -126,17 +133,17 @@ function StatusCardsSection() {
 
   return (
     <div className="flex flex-col gap-5 md:flex-row col-md-6" style={{ width: "100%" }}>
-      <div className="w-full bg-white border border-gray-100 rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300">
+      <div className="w-full  p-6 ">
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 text-center">
-          {statusCards.map((card, idx) => (
+            {statusCards.map((card, idx) => (
               <div
                 key={card.label}
-                className={`bg-gradient-to-br ${card.bg} border-2 p-1 rounded-xl flex flex-col items-center justify-center gap-2 py-4 cursor-pointer`}
+                className={`bg-gradient-to-br ${card.bg} border-2 p-1 rounded-xl flex flex-row items-center justify-center gap-2 py-2 cursor-pointer`}
                 onClick={() => setSelectedTab(idx)}
                 style={{
                   borderWidth: selectedTab === idx ? "3px" : "1px",
-                  borderColor:  card.borderColor,
+                  borderColor: card.borderColor,
                   transition: "border-color 0.2s, border-width 0.2s",
                 }}
               >

@@ -8,27 +8,18 @@ import { BsLightbulbFill } from "react-icons/bs";
 import Assigned from './Assigned';
 import axios from 'axios';
 
-const Delivered = () => {
-
+const Completed = ({ orderid }) => {
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const [value, setValue] = useState(1)
-
   const token = localStorage.getItem("token");
-
   const [orderData, setOrderData] = useState([])
-
-  const handlechange = (event, newValue) => {
-    setValue(newValue);
-  }
 
 
   useEffect(() => {
 
     orderdata()
 
-  }, [value])
+  }, [orderid])
 
   const orderdata = async () => {
 
@@ -116,4 +107,4 @@ const Delivered = () => {
   )
 }
 
-export default Delivered ;
+export default Completed ;

@@ -2482,7 +2482,7 @@ const AddPurchaseBill = () => {
                               e.preventDefault();
                               toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
-                              e.preventDefault();
+                             
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {

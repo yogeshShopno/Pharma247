@@ -243,6 +243,8 @@ const Purchasebill = () => {
 
     // Use different loading states for search vs regular operations
     if (isSearch) {
+            setCurrentPage(1);
+
       setIsSearchLoading(true);
     } else {
       setIsLoading(true);
@@ -263,9 +265,9 @@ const Purchasebill = () => {
 
       // Set the table data directly from backend (paginated and filtered data)
       setTableData(responseData || []);
-
+      
       // Extract and set total count for pagination
-      const totalCount = responseData?.length > 0 ? Number(responseData[0].count) : 0;
+      const totalCount = responseData?.length > 0 ? Number(response.data.total_records) : 0;
       setTotalRecords(totalCount);
     } catch (error) {
       console.error("API error:", error);
@@ -280,8 +282,6 @@ const Purchasebill = () => {
       }
     }
   };
-
-
 
   const handleDeleteItem = async (id) => {
     if (!id) return;
@@ -312,8 +312,6 @@ const Purchasebill = () => {
       console.error("API error:", error);
     }
   };
-
-
 
   const pdfGenerator = async (id) => {
     let data = new FormData();
@@ -385,9 +383,6 @@ const Purchasebill = () => {
     }
   };
 
-
-
-
   return (
     <>
       <Header />
@@ -415,7 +410,7 @@ const Purchasebill = () => {
             width: '100%',
           }}
         >
-          <div style={{ flex: 1, overflowY: 'auto',  }}>
+          <div style={{ flex: 1, overflowY: 'auto', }}>
             <div className="px-4 py-3 ">
               <div
                 className="sales_hdr_mn"

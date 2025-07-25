@@ -518,7 +518,7 @@ const Addsale = () => {
     setDoctor(doctor[0]);
 
   }, [doctorData])
- 
+
   useEffect(() => {
     if (itemId) {
       batchList(itemId);
@@ -1193,6 +1193,7 @@ const Addsale = () => {
     }
     submitSaleData(draft);
   };
+
   const submitSaleData = async (draft) => {
     let data = new FormData();
     // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
@@ -1270,15 +1271,7 @@ const Addsale = () => {
 
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
-        }
-
-        if (billSaveDraft == 0 && customer.id !== 1) {
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
+    
         }
 
         if (billSaveDraft == 2) {
@@ -1297,10 +1290,11 @@ const Addsale = () => {
           }
           pdfGenerator(saleId);
 
+        
+        }
           setTimeout(() => {
             history.push("/salelist");
           }, 2000);
-        }
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -2147,16 +2141,16 @@ const Addsale = () => {
                       }}
                     >
                       <span className="flex flex-row gap-1">
-                      Doctor
-                      <FaPlusCircle
-                        className="icon primary"
-                        onClick={() => {
-                          setOpenAddPopUp(true);
-                          setUnsavedItems(true);
-                        }}
-                      />
+                        Doctor
+                        <FaPlusCircle
+                          className="icon primary"
+                          onClick={() => {
+                            setOpenAddPopUp(true);
+                            setUnsavedItems(true);
+                          }}
+                        />
                       </span>
-                     
+
                       <p
                         onClick={() => history.push("/more/doctors")}
                         className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
@@ -2168,20 +2162,22 @@ const Addsale = () => {
 
                     <Autocomplete
                       value={doctor}
-                      onChange={(e, newVal) => setDoctor(newVal)} 
+                      onChange={(e, newVal) => setDoctor(newVal)}
                       inputValue={searchDoctor}
                       onInputChange={(event, newInputValue) => {
                         setSearchDoctor(newInputValue);
                       }}
                       options={doctorData}
                       getOptionLabel={(option) =>
-                        option.name
-                          ? `${option.name} [${option.clinic}]`
-                          : option.clinic || ""
+                        option?.name
+                          ? `${option.name} [${option.clinic || ''}]`
+                          : option?.clinic || ''
                       }
+
                       isOptionEqualToValue={(option, value) =>
-                        option.clinic === value.clinic
+                        option?.clinic === value?.clinic
                       }
+
                       loading={isLoading}
                       sx={{
                         width: "100%",

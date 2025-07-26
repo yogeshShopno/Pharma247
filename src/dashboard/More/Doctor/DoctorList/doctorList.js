@@ -620,7 +620,7 @@ const DoctorList = () => {
                                     >
                                       {value}
                                       {row.default_doctor === "1" && (
-                                        <span className="cursor-pointer self-end text-xs text-white bg-[var(--color1)] mx-2 px-2 py-1 rounded-2xl">default</span>
+                                        <span className="cursor-pointer self-end text-xs text-white bg-[var(--color2)] mx-2 px-2 py-1 rounded-2xl">default</span>
                                       )}
                                     </td>
                                   );

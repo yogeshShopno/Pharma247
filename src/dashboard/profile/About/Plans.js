@@ -305,7 +305,7 @@ const Plans = () => {
                             ))}
                           </ul>
                           <div className="mt-6" onClick={() => loadRazorpay(plan)}>
-                            <a className="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color1)] hover:text-white cursor-pointer">
+                            <a className="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color2)] hover:text-white cursor-pointer">
                               Buy Plan
                             </a>
                           </div>

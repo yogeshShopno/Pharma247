@@ -1926,10 +1926,10 @@ const AddPurchaseBill = () => {
                 }}
                 size="small"
               >
-                <MenuItem className=" hover:bg-[var(--color1)]" value="cash">
+                <MenuItem className=" hover:bg-[var(--color2)]" value="cash">
                   Cash
                 </MenuItem>
-                <MenuItem className=" hover:bg-[var(--color1)]" value="credit">
+                <MenuItem className=" hover:bg-[var(--color2)]" value="credit">
                   Credit
                 </MenuItem>
                 {bankData?.map((option) => (
@@ -2041,7 +2041,7 @@ const AddPurchaseBill = () => {
                           setBillSaveDraft("1");
                           handleSubmit("1");
                         }}
-                        className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                        className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
                       >
                         <SaveIcon />
                         Save
@@ -2051,7 +2051,7 @@ const AddPurchaseBill = () => {
                           setBillSaveDraft("0");
                           handleSubmit("0");
                         }}
-                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                        className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
                       >
                         <SaveAsIcon />
                         Draft

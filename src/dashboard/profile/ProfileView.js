@@ -63,7 +63,7 @@ const ProfileView = () => {
                                 <ul className='list-text_pb'>
                                     {hasPermission(permissions, "profile details update") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/about-info' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/about-info' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/about-info', 'About Pharmacy')}
                                         >
                                             Profile Details
@@ -71,7 +71,7 @@ const ProfileView = () => {
                                     )}
                                     {hasPermission(permissions, "profile details update") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/documents' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/documents' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/documents', 'Documents')}
                                         >
                                             Documents
@@ -79,7 +79,7 @@ const ProfileView = () => {
                                     )}
                                     {hasPermission(permissions, "profile plan view") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/plans' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/plans' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/plans', 'Plan')}
                                         >
                                             Plan
@@ -87,14 +87,14 @@ const ProfileView = () => {
                                     )}
                                     {hasPermission(permissions, "profile plan view") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/refer&earn' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/refer&earn' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/refer&earn', 'refer&earn')}
                                         >
                                             Refer & Earn
                                         </li>
                                     )}
                                     <li
-                                        className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/password' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                        className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/password' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                         onClick={() => handleItemClick('/password', 'Password')}
                                     >
                                         Password
@@ -115,7 +115,7 @@ const ProfileView = () => {
                                     <ul className='list-text_pb'>
                                         {hasPermission(permissions, "staff members view") && (
                                             <li
-                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/staff-member' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/staff-member' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                                 onClick={() => handleItemClick('/Staff-sessions/staff-member', 'Staff Members')}
                                             >
                                                 Staff Members
@@ -123,7 +123,7 @@ const ProfileView = () => {
                                         )}
                                         {hasPermission(permissions, "manage staff roles view") && (
                                             <li
-                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/manage-staffrole' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/manage-staffrole' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                                 onClick={() => handleItemClick('/Staff-sessions/manage-staffrole', 'Manage Staff Roles')}
                                             >
                                                 Manage Staff Roles
@@ -131,7 +131,7 @@ const ProfileView = () => {
                                         )}
                                         {hasPermission(permissions, "staff members view") && (
                                             <li
-                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/reconciliation-manage' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/reconciliation-manage' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                                 onClick={() => handleItemClick('/Staff-sessions/reconciliation-manage', 'Reconciliation')}
                                             >
                                                 Reconciliation
@@ -139,7 +139,7 @@ const ProfileView = () => {
                                         )}
 
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/sessions' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/Staff-sessions/sessions' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                             onClick={() => handleItemClick('/Staff-sessions/sessions', 'Log Activity')}
                                         >Log Activity
                                         </li>
@@ -161,7 +161,7 @@ const ProfileView = () => {
 
                                         {hasPermission(permissions, "staff members view") && (
                                             <li
-                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/settings/online-orders' ? 'bg-[var(--color1)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                                className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/settings/online-orders' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                                 onClick={() => handleItemClick('/settings/online-orders', 'online-orders')}
                                             >
                                                 Online Orders

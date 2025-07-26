@@ -1136,7 +1136,7 @@ const EditSaleBill = () => {
                             setBillSaveDraft("1");
                             handleUpdate("1");
                           }}
-                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)] flex  justify-around"
                         >
                           <SaveIcon />
                           Save
@@ -1146,7 +1146,7 @@ const EditSaleBill = () => {
                             setBillSaveDraft("0");
                             handleUpdate("0");
                           }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)] flex  justify-around"
+                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)] flex  justify-around"
                         >
                           <SaveAsIcon />
                           Draft

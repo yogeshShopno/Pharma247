@@ -274,17 +274,14 @@ const Addsale = () => {
         case "s":
           setBillSaveDraft("1");
           handleSubmit("1");
-
           break;
 
         case "g":
           setBillSaveDraft("0");
-
           handleSubmit("0");
           break;
         case "p":
           setBillSaveDraft("2");
-
           handleSubmit("1");
           break;
 
@@ -1999,7 +1996,7 @@ const Addsale = () => {
                             setBillSaveDraft("1");
                             handleSubmit("1");
                           }}
-                          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
                         >
                           <SaveIcon />
                           Save
@@ -2009,7 +2006,7 @@ const Addsale = () => {
                             setBillSaveDraft("0");
                             handleSubmit("0");
                           }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color1)] justify-around"
+                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
                         >
                           <SaveAsIcon />
                           Draft

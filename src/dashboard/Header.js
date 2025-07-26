@@ -291,12 +291,12 @@ const Header = () => {
                         <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
                       </button>
                       <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48  ">
-                        <li className="block flex items-center border-b bg-white hover:bg-[var(--color1)]  hover:text-white">
+                        <li className="block flex items-center border-b bg-white hover:bg-[var(--color2)]  hover:text-white">
                           {hasPermission(permissions, "purchase bill view") && (
                             <div className="w-36 border-r">
                               <Link to="/purchase/purchasebill">
                                 <span
-                                  className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                  className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                   href=""
                                 >
                                   Purchase
@@ -316,7 +316,7 @@ const Header = () => {
                               </div>
                             )}
                         </li>
-                        <li className="block flex items-center border-b bg-white hover:bg-[var(--color1)]  hover:text-white">
+                        <li className="block flex items-center border-b bg-white hover:bg-[var(--color2)]  hover:text-white">
                           {hasPermission(
                             permissions,
                             "purchase return bill view"
@@ -324,7 +324,7 @@ const Header = () => {
                               <div className="w-36 border-r">
                                 <Link to="/purchase/return">
                                   <span
-                                    className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                    className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                     href=""
                                   >
                                     Returns
@@ -352,7 +352,7 @@ const Header = () => {
                             <li className="block">
                               <Link to="/purchase/paymentList">
                                 <span
-                                  className="bg-white   hover:bg-[var(--color1)]   transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black  hover:text-white flex"
+                                  className="bg-white   hover:bg-[var(--color2)]   transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black  hover:text-white flex"
                                   href=""
                                 >
                                   Payment
@@ -371,12 +371,12 @@ const Header = () => {
                         <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
                       </button>
                       <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48">
-                        <li className="block flex items-center bg-white border-b-2 hover:bg-[var(--color1)]   hover:text-white">
+                        <li className="block flex items-center bg-white border-b-2 hover:bg-[var(--color2)]   hover:text-white">
                           {hasPermission(permissions, "sale bill view") && (
                             <div className="w-36 border-r-2">
                               <Link to="/salelist">
                                 <span
-                                  className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                  className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                   href=""
                                 >
                                   Sales
@@ -393,7 +393,7 @@ const Header = () => {
                           )}
                         </li>
 
-                        <li className="block flex items-center border-b-2 hover:bg-[var(--color1)]  bg-white  hover:text-white z-10">
+                        <li className="block flex items-center border-b-2 hover:bg-[var(--color2)]  bg-white  hover:text-white z-10">
                           {hasPermission(
                             permissions,
                             "sale return bill view"
@@ -401,7 +401,7 @@ const Header = () => {
                               <div className="w-36 border-r-2">
                                 <Link to="/saleReturn/list">
                                   <span
-                                    className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
+                                    className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                     href=""
                                   >
                                     Return
@@ -449,7 +449,7 @@ const Header = () => {
                             <Link to="/more/DistributorList">
                               <div>
                                 <span
-                                  className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                  className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                   href=""
                                 >
                                   Distributor
@@ -463,7 +463,7 @@ const Header = () => {
                           <Link to="/more/company">
                             <li className="block border-b-2">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Company
@@ -475,7 +475,7 @@ const Header = () => {
                           <Link to="/more/drug-group">
                             <li className="block border-b-2">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Drug Group
@@ -487,7 +487,7 @@ const Header = () => {
                           <Link to="/more/customer">
                             <li className="block border-b-2">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Customers
@@ -499,7 +499,7 @@ const Header = () => {
                           <Link to="/more/doctors">
                             <li className="block border-b-2">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Doctors
@@ -512,7 +512,7 @@ const Header = () => {
                           <li className="block border-b-2">
                             <Link to="/more/adjust-stock">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Adjust stock
@@ -524,7 +524,7 @@ const Header = () => {
                           <li className="block border-b-2">
                             <Link to="/more/BankAccountdetails">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Bank Accounts
@@ -536,7 +536,7 @@ const Header = () => {
                           <li className="block border-b-2">
                             <Link to="/more/Cashmanagement">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
                               >
                                 Cash Management
@@ -548,7 +548,7 @@ const Header = () => {
                         <li className="block border-b-2">
                           <Link to="/more/reconciliation">
                             <span
-                              className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >
                               Reconciliation
@@ -558,7 +558,7 @@ const Header = () => {
                         <li className="block border-b-2">
                           <Link to="/more/loyaltypoints">
                             <span
-                              className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >
                               Loyalty Point
@@ -568,7 +568,7 @@ const Header = () => {
                         <Link to="/Resports">
                           <li className="block border-b-2">
                             <span
-                              className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
+                              className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >
                               Reports
@@ -579,7 +579,7 @@ const Header = () => {
                           <Link to="/more/expense-manage">
                             <li className="block">
                               <span
-                                className="bg-white hover:bg-[var(--color1)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black hover:text-white flex"
+                                className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black hover:text-white flex"
                                 href=""
                               >
                                 Manage Expenses
@@ -746,7 +746,7 @@ const Header = () => {
                           <Link to="/about-info">
                             <li
                               style={{}}
-                              className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]"
+                              className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)]"
                             >
                               <FaUserAlt style={{ fontSize: "1.2rem" }} />
                               Profile
@@ -754,7 +754,7 @@ const Header = () => {
                           </Link>
                           <li
                             onClick={LogoutOpen}
-                            className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color1)]"
+                            className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)]"
                           >
                             <LuLogOut style={{ fontSize: "1.2rem" }} />
                             Logout

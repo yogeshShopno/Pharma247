@@ -342,14 +342,14 @@ body {
 }
 
 .custom-hover:hover {
-   background-color: var(--color1) !important;
+   background-color: var(--color2) !important;
   box-shadow: 0 12px 13px rgba(60, 136, 77, 0.4) !important;
   color: white !important;
   outline: none;
 }
 
 .highlighted-row {
-  background-color: var(--color1) !important;
+  background-color: var(--color2) !important;
   box-shadow: 0 12px 13px rgba(60, 136, 77, 0.4) !important;
   color: white !important;
   outline: none;

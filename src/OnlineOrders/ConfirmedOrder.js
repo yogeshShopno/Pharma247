@@ -17,6 +17,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import InputLabel from "@mui/material/InputLabel";
 import ImageCarousel from "../componets/ImageCarousel/ImageCarousel ";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const ConfirmedOrder = ({ orderid }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +25,7 @@ const ConfirmedOrder = ({ orderid }) => {
   const [value, setValue] = useState(1);
 
   const token = localStorage.getItem("token");
+  const history = useHistory();
 
   const [orderData, setOrderData] = useState([]);
   const [roleList, setRolelist] = useState([]);
@@ -138,8 +140,8 @@ const ConfirmedOrder = ({ orderid }) => {
         </div>
 
         {/* Right: Button at bottom-right */}
-        <div className="w-1/2 flex flex-col justify-end items-end p-6">
-          <FormControl sx={{ width: "150px" }} size="small">
+        <div className="w-1/2 flex flex-col justify-between items-end p-6">
+         <FormControl sx={{ width: "150px" }} size="small">
             <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
             <Select
               labelId="demo-select-small-label"
@@ -158,6 +160,20 @@ const ConfirmedOrder = ({ orderid }) => {
               ))}
             </Select>
           </FormControl>
+          
+        <button
+            className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
+            onClick={() => history.push(`/view-bill/${orderData?.id}`)}
+            style={{
+              backgroundColor: "var(--color1)",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            
+            View Bill
+          </button>
+
+         
         </div>
       </div>
     </div>

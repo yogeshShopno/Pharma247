@@ -837,70 +837,68 @@ sx={{
               )}
             </table>
           </div>
-          <div
-            className="mt-4 space-x-1"
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '1rem',
-              background: '#fff'
-            }}
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
+        >
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
           >
+            Previous
+          </button>
+          {currentPage > 2 && (
             <button
-              onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage === 1}
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Previous
+              {currentPage - 2}
             </button>
-            {currentPage > 2 && (
-              <button
-                onClick={() => handleClick(currentPage - 2)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 2}
-              </button>
-            )}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handleClick(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 1}
-              </button>
-            )}
+          )}
+          {currentPage > 1 && (
             <button
-              onClick={() => handleClick(currentPage)}
-              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              {currentPage}
+              {currentPage - 1}
             </button>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage + 1}
-              </button>
-            )}
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
             <button
-              onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                ? "bg-gray-200 text-gray-700 "
-                : "secondary-bg  text-white"
-                }`}
-              disabled={currentPage >= totalPages}
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Next
+              {currentPage + 1}
             </button>
-          </div>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+        </div>
         </div>
 
         {/* File Upload Popup */}

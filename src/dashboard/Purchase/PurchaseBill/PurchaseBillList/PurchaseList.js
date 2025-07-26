@@ -66,14 +66,11 @@ const Purchasebill = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTrigger, setSearchTrigger] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
-  
-  
+
   const searchTimeout = React.useRef(null);
   const currentSearchTerms = React.useRef(searchTerms);
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-
 
   useEffect(() => {
     if (tableData.length > 0) {
@@ -371,51 +368,51 @@ const Purchasebill = () => {
   };
 
   const PurchaseTableBody = ({ data, columns, onView, onPdf, onDelete, permissions }) => {
-  return (
-    <tbody style={{ background: "#3f621217" }}>
-      {data.length === 0 ? (
-        <tr>
-          <td colSpan={columns.length + 1} className="text-center text-gray-500">
-            No data found
-          </td>
-        </tr>
-      ) : (
-        data.map((row) => (
-          <tr className="cursor-pointer hover:bg-gray-100" key={row.id}>
-            {columns.map((column, colIndex) => {
-              const value = row[column.id];
-              return (
-                <td
-                  key={column.id}
-                  className="capitalize"
-                  style={
-                    colIndex === 0
-                      ? { borderRadius: "10px 0 0 10px" }
-                      : colIndex === columns.length - 1
-                      ? { borderRadius: "0 10px 10px 0" }
-                      : {}
-                  }
-                  onClick={() => onView(row.id)}
-                >
-                  {value}
-                </td>
-              );
-            })}
-            <td>
-              <div className="flex gap-2 items-center">
-                <VisibilityIcon onClick={() => onView(row.id)} />
-                <FaFilePdf onClick={() => onPdf(row.id)} />
-                {hasPermission(permissions, "purchase bill delete") && (
-                  <DeleteIcon onClick={() => onDelete(row.id)} style={{ color: "#F31C1C" }} />
-                )}
-              </div>
+    return (
+      <tbody style={{ background: "#3f621217" }}>
+        {data.length === 0 ? (
+          <tr>
+            <td colSpan={columns.length + 1} className="text-center text-gray-500">
+              No data found
             </td>
           </tr>
-        ))
-      )}
-    </tbody>
-  );
-};
+        ) : (
+          data.map((row) => (
+            <tr className="cursor-pointer hover:bg-gray-100" key={row.id}>
+              {columns.map((column, colIndex) => {
+                const value = row[column.id];
+                return (
+                  <td
+                    key={column.id}
+                    className="capitalize"
+                    style={
+                      colIndex === 0
+                        ? { borderRadius: "10px 0 0 10px" }
+                        : colIndex === columns.length - 1
+                          ? { borderRadius: "0 10px 10px 0" }
+                          : {}
+                    }
+                    onClick={() => onView(row.id)}
+                  >
+                    {value}
+                  </td>
+                );
+              })}
+              <td>
+                <div className="flex gap-2 items-center">
+                  <VisibilityIcon onClick={() => onView(row.id)} />
+                  <FaFilePdf onClick={() => onPdf(row.id)} />
+                  {hasPermission(permissions, "purchase bill delete") && (
+                    <DeleteIcon onClick={() => onDelete(row.id)} style={{ color: "#F31C1C" }} />
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    );
+  };
 
   return (
     <>
@@ -431,185 +428,185 @@ const Purchasebill = () => {
         draggable
         pauseOnHover
       />
-     
-        <div
-          style={{
-            minHeight: 'calc(100vh - 64px)', // adjust 64px to your header height
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-          }}
-        >
-          <div style={{ flex: 1, overflowY: 'auto', }}>
-            <div className="px-4 py-3 ">
+
+      <div
+        style={{
+          minHeight: 'calc(100vh - 64px)', // adjust 64px to your header height
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div style={{ flex: 1, overflowY: 'auto', }}>
+          <div className="px-4 py-3 ">
+            <div
+              className="sales_hdr_mn"
+              style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
+            >
               <div
-                className="sales_hdr_mn"
-                style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
+                className="flex flex-row sale_list_pg"
+                style={{ display: "flex", gap: "4px", alignItems: "center" }}
               >
                 <div
-                  className="flex flex-row sale_list_pg"
-                  style={{ display: "flex", gap: "4px", alignItems: "center" }}
+                  className="flex flex-row gap-2 sale_lt_txt"
+                  style={{ alignItems: "center" }}
                 >
-                  <div
-                    className="flex flex-row gap-2 sale_lt_txt"
-                    style={{ alignItems: "center" }}
+                  <span
+                    style={{
+                      color: "var(--color2)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                    }}
+                    onClick={() => {
+                      history.push("/purchase/purchasebill");
+                    }}
                   >
-                    <span
+                    Purchase
+                  </span>
+                  <div>
+                    <ArrowForwardIosIcon
                       style={{
-                        color: "var(--color2)",
-                        display: "flex",
-                        alignItems: "center",
-                        fontWeight: 700,
                         fontSize: "20px",
+                        color: "var(--color1)",
                       }}
+                    />
+                  </div>
+                </div>
+                {hasPermission(permissions, "purchase bill create") && (
+                  <>
+                    <Button
+                      variant="contained"
+                      className="sale_add_btn gap-2"
+                      size="small"
+                      style={{ background: "var(--color1)", fontSize: "12px" }}
                       onClick={() => {
-                        history.push("/purchase/purchasebill");
+                        history.push("/purchase/addPurchaseBill");
                       }}
                     >
-                      Purchase
-                    </span>
-                    <div>
-                      <ArrowForwardIosIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "var(--color1)",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {hasPermission(permissions, "purchase bill create") && (
-                    <>
-                      <Button
-                        variant="contained"
-                        className="sale_add_btn gap-2"
-                        size="small"
-                        style={{ background: "var(--color1)", fontSize: "12px" }}
-                        onClick={() => {
-                          history.push("/purchase/addPurchaseBill");
-                        }}
-                      >
-                        <AddIcon />
-                        New
-                      </Button>
-                    </>
-                  )}
+                      <AddIcon />
+                      New
+                    </Button>
+                  </>
+                )}
+              </div>
+              <div className="headerList">
+                <Button
+                  variant="contained"
+                  className="sale_add_pdf"
+                  style={{ background: "var(--color1)" }}
+                  onClick={() => {
+                    setOpenAddPopUp(true);
+                  }}
+                >
+                  Generate PDF
+                </Button>
+              </div>
+            </div>
+            <div
+              className="row border-b px-4 border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+          </div>
+
+          <div className="firstrow px-4" >
+            <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
+              <div className="detail flex flex-col">
+                <span className="text-gray-500 block">Start Date</span>
+                <div className="" style={{ width: "100%" }}>
+                  <DatePicker
+                    className="custom-datepicker_mn"
+                    selected={startDate}
+                    onChange={(newDate) => setStartDate(newDate)}
+                    dateFormat="dd/MM/yyyy"
+                  />
                 </div>
-                <div className="headerList">
-                  <Button
-                    variant="contained"
-                    className="sale_add_pdf"
-                    style={{ background: "var(--color1)" }}
-                    onClick={() => {
-                      setOpenAddPopUp(true);
-                    }}
-                  >
-                    Generate PDF
-                  </Button>
+              </div>
+              <div className="detail flex flex-col">
+                <span className="text-gray-500 block">End Date</span>
+                <div className="" style={{ width: "100%" }}>
+                  <DatePicker
+                    className="custom-datepicker_mn"
+                    selected={endDate}
+                    onChange={(newDate) => setEndDate(newDate)}
+                    dateFormat="dd/MM/yyyy"
+                  />
                 </div>
               </div>
               <div
-                className="row border-b px-4 border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-            </div>
-
-            <div className="firstrow px-4" >
-              <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500 block">Start Date</span>
-                  <div className="" style={{ width: "100%" }}>
-                    <DatePicker
-                      className="custom-datepicker_mn"
-                      selected={startDate}
-                      onChange={(newDate) => setStartDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </div>
-                </div>
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500 block">End Date</span>
-                  <div className="" style={{ width: "100%" }}>
-                    <DatePicker
-                      className="custom-datepicker_mn"
-                      selected={endDate}
-                      onChange={(newDate) => setEndDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </div>
-                </div>
-                <div
-                  className=""
-                  style={{
-                    display: "flex",
-                    alignItems: "end",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    className=""
-                    size="small"
-                    style={{
-                      minHeight: "38px",
-                      alignItems: "center",
-                      background: "var(--color1)",
-                    }}
-                    onClick={() => purchaseBillList(currentPage)}
-                  >
-                    <FilterAltIcon
-                      size="large"
-                      style={{ color: "white", fontSize: "20px" }}
-                    />
-                    Filter
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ overflowX: 'auto', width: '100%' }}>
-              <table
-                className="w-full border-collapse custom-table"
+                className=""
                 style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
+                  display: "flex",
+                  alignItems: "end",
+                  justifyContent: "flex-end",
                 }}
               >
-                <thead>
-                  <tr>
-                    <th style={{ minWidth: 150, padding: '8px' }}>Sr. No</th>
-                    {columns.slice(1).map((column, index) => (
-                      <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
-                        <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                          <span>{column.label}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                            <SwapVertIcon
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => sortByColumn(column.id)}
-                            />
-                            <TextField
-                              autoComplete="off"
-                              label="Type Here"
-                              id="filled-basic"
-                              size="small"
-                              sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
-                              value={searchTerms[index + 1]}
-                              onChange={(e) => handleSearchChange(index + 1, e.target.value)}
-                              onKeyDown={handleKeyDown}
-                            />
-                          </div>
-                        </div>
+                <Button
+                  variant="contained"
+                  className=""
+                  size="small"
+                  style={{
+                    minHeight: "38px",
+                    alignItems: "center",
+                    background: "var(--color1)",
+                  }}
+                  onClick={() => purchaseBillList(currentPage)}
+                >
+                  <FilterAltIcon
+                    size="large"
+                    style={{ color: "white", fontSize: "20px" }}
+                  />
+                  Filter
+                </Button>
+              </div>
+            </div>
+          </div>
 
-                      </th>
-                    ))}
-                    <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
-                  </tr>
-                </thead>
- {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
+          <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ overflowX: 'auto', width: '100%' }}>
+            <table
+              className="w-full border-collapse custom-table"
+              style={{
+                whiteSpace: "nowrap",
+                borderCollapse: "separate",
+                borderSpacing: "0 6px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ minWidth: 150, padding: '8px' }}>Sr. No</th>
+                  {columns.slice(1).map((column, index) => (
+                    <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                      <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                        <span>{column.label}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                          <SwapVertIcon
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => sortByColumn(column.id)}
+                          />
+                          <TextField
+                            autoComplete="off"
+                            label="Type Here"
+                            id="filled-basic"
+                            size="small"
+                            sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                            value={searchTerms[index + 1]}
+                            onChange={(e) => handleSearchChange(index + 1, e.target.value)}
+                            onKeyDown={handleKeyDown}
+                          />
+                        </div>
+                      </div>
+
+                    </th>
+                  ))}
+                  <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
+                </tr>
+              </thead>
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : (
                 <tbody style={{ background: "#3f621217" }}>
                   {paginatedData.length === 0 ? (
                     <tr>
@@ -680,73 +677,73 @@ const Purchasebill = () => {
                     ))
                   )}
                 </tbody>)}
-              </table>
-            </div>
-          </div>
-          <div
-            className="flex justify-center mt-4"
-            style={{
-              marginTop: 'auto',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '1rem',
-            }}
-          >
-            <button
-              onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            {currentPage > 2 && (
-              <button
-                onClick={() => handleClick(currentPage - 2)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 2}
-              </button>
-            )}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handleClick(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 1}
-              </button>
-            )}
-            <button
-              onClick={() => handleClick(currentPage)}
-              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-            >
-              {currentPage}
-            </button>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage + 1}
-              </button>
-            )}
-            <button
-              onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage >= totalPages}
-            >
-              Next
-            </button>
+            </table>
           </div>
         </div>
-     
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
+        >
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {currentPage > 2 && (
+            <button
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 2}
+            </button>
+          )}
+          {currentPage > 1 && (
+            <button
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 1}
+            </button>
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
 
       {/*<=================================================================================== Delete Popup ===================================================================================> */}
 

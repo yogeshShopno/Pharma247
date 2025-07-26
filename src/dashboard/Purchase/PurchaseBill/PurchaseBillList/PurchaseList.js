@@ -67,6 +67,7 @@ const Purchasebill = () => {
   const [searchTrigger, setSearchTrigger] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
   
+  
   const searchTimeout = React.useRef(null);
   const currentSearchTerms = React.useRef(searchTerms);
 

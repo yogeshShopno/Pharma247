@@ -73,17 +73,25 @@ const CustomerList = () => {
 
     // { id: 'due_amount', label: 'Due Amount', minWidth: 100 },
   ];
+  const apiKeys = ["customer_name", "mobile_number", "email", "gst", "address", "area"];
+
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+
+  const [searchTrigger, setSearchTrigger] = useState(0);
+const searchTimeout = React.useRef(null);
+const currentSearchTerms = React.useRef(searchTerms);
 
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
+
   const paginatedData = tableData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
+
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
@@ -157,6 +165,13 @@ const CustomerList = () => {
       setMobileNo(value);
     }
   };
+
+  const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    customerAllData(1, currentSearchTerms.current);
+  }
+};
 
   const resetAddDialog = () => {
     setCustomer("");
@@ -394,12 +409,6 @@ const CustomerList = () => {
     }
   };
 
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -418,49 +427,72 @@ const CustomerList = () => {
   };
 
 
-  const handleSearchChange = (index, event) => {
-    if (event.key === "Enter") {
-      const newSearchTerms = [...searchTerms];
-      newSearchTerms[index] = event.target.value;
-      setSearchTerms(newSearchTerms);
+const handleSearchChange = (index, value) => {
+  const newSearchTerms = [...searchTerms];
+  newSearchTerms[index] = value;
+
+  // Save the latest search to the ref for effect/API use
+  currentSearchTerms.current = newSearchTerms;
+  setSearchTerms(newSearchTerms);
+  setCurrentPage(1); // Always reset to page 1 on search
+  setSearchTrigger(prev => prev + 1); // Fire effect for debounced API
+};
+
+
+useEffect(() => {
+  if (searchTrigger > 0) {
+    // Clear previous debounce if any
+    clearTimeout(searchTimeout.current);
+
+    const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
+    if (!hasSearchTerms) {
+      // If all empty, just fetch all data without filters
+      customerAllData(1, ["", "", "", "", "", ""]);
+    } else {
+      // Debounce for 200ms
+      searchTimeout.current = setTimeout(() => {
+        customerAllData(1, currentSearchTerms.current);
+      }, 200);
     }
+  }
+  // Cleanup timeout on unmount
+  return () => {
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
   };
+}, [searchTrigger]);
 
 
   useEffect(() => {
     customerAllData();
   }, []);
 
-  const customerAllData = async (currentPage) => {
-    let data = new FormData();
-    setIsLoading(true);
-    data.append("page", currentPage);
-    data.append("due_only", chipState?.value);
-
-    const params = {
-      page: currentPage,
-    };
-    try {
-      await axios
-        .post("list-customer?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTableData(response.data.data);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-          setIsLoading(false);
-        });
-    } catch (error) {
-      setIsLoading(false);
-      console.error("API error:", error);
+  const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
+  let data = new FormData();
+  setIsLoading(true);
+  data.append("page", page);
+  data.append("due_only", chipState?.value);
+  apiKeys.forEach((key, idx) => {
+    const term = customSearchTerms[idx];
+    if (term && term.trim()) {
+      data.append(key, term.trim());
     }
-  };
+  });
+  try {
+    const response = await axios.post("list-customer?", data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setTableData(response.data.data);
+    if (response.data.status === 401) {
+      history.push("/");
+      localStorage.clear();
+    }
+    setIsLoading(false);
+  } catch (error) {
+    setIsLoading(false);
+    console.error("API error:", error);
+  }
+};
+
 
   const bankIdToNameMap = tableData.reduce((map, bank) => {
     map[bank.id] = bank.bank_name;
@@ -509,107 +541,103 @@ const CustomerList = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div className="p-6">
+
+      <div className="p-6">
+        <div
+          className="mb-4 cust_list_main_hdr"
+          style={{ display: "flex", gap: "4px" }}
+        >
           <div
-            className="mb-4 cust_list_main_hdr"
-            style={{ display: "flex", gap: "4px" }}
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              width: "200px",
+              gap: "7px",
+            }}
           >
-            <div
+            <span
               style={{
+                color: "var(--color1)",
                 display: "flex",
-                flexWrap: "wrap",
-                width: "200px",
-                gap: "7px",
+                fontWeight: 700,
+                fontSize: "20px",
               }}
             >
-              <span
-                style={{
-                  color: "var(--color1)",
-                  display: "flex",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                }}
-              >
-                Customers
-              </span>
-              <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-            </div>
-            <div className="headerList cust_hdr_mn">
-              {hasPermission(permissions, "customer import") && (
-                <Button
-                  variant="contained"
-                  style={{
-                    background: "var(--color1)",
-                    display: "flex",
-                  }}
-                  className="gap-2"
-                  onClick={openFilePopUP}
-                >
-                  <CloudUploadIcon /> Import
-                </Button>
-              )}
-              {hasPermission(permissions, "customer create") && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    background: "var(--color1)",
-                    display: "flex",
-                  }}
-                  className="gap-2"
-                  onClick={handelAddOpen}
-                >
-                  <AddIcon /> Add
-                </Button>
-              )}
-              {hasPermission(permissions, "customer download") && (
-                <Button
-                  className="gap-7"
-                  variant="contained"
-                  style={{
-                    background: "var(--color1)",
-                    color: "white",
-                    // paddingLeft: "35px",
-                    textTransform: "none",
-                    display: "flex",
-                  }}
-                  onClick={exportToExcel}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute"
-                      alt="csv Icon"
-                    />
-                  </div>
-                  Download
-                </Button>
-              )}
-            </div>
+              Customers
+            </span>
+            <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
           </div>
-          <div
-            className="row border-b border-dashed"
-            style={{ borderColor: "var(--color2)" }}
-          ></div>
-          <div className="mt-4">
-            <div className="flex flex-wrap gap-6">
-              <Chip
-                label="Due Only"
+          <div className="headerList cust_hdr_mn">
+            {hasPermission(permissions, "customer import") && (
+              <Button
+                variant="contained"
                 style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
+                  background: "var(--color1)",
+                  display: "flex",
                 }}
-                value={chipState.value}
-                variant={chipState.variant}
-                onClick={handleChipClick}
-              />
+                className="gap-2"
+                onClick={openFilePopUP}
+              >
+                <CloudUploadIcon /> Import
+              </Button>
+            )}
+            {hasPermission(permissions, "customer create") && (
+              <Button
+                variant="contained"
+                color="primary"
+                style={{
+                  background: "var(--color1)",
+                  display: "flex",
+                }}
+                className="gap-2"
+                onClick={handelAddOpen}
+              >
+                <AddIcon /> Add
+              </Button>
+            )}
+            {hasPermission(permissions, "customer download") && (
+              <Button
+                className="gap-7"
+                variant="contained"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                  // paddingLeft: "35px",
+                  textTransform: "none",
+                  display: "flex",
+                }}
+                onClick={exportToExcel}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src="/csv-file.png"
+                    className="report-icon absolute"
+                    alt="csv Icon"
+                  />
+                </div>
+                Download
+              </Button>
+            )}
+          </div>
+        </div>
+        <div
+          className="row border-b border-dashed"
+          style={{ borderColor: "var(--color2)" }}
+        ></div>
+        <div className="mt-4">
+          <div className="flex flex-wrap gap-6">
+            <Chip
+              label="Due Only"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+              }}
+              value={chipState.value}
+              variant={chipState.variant}
+              onClick={handleChipClick}
+            />
 
-              {/* <FormControl sx={{ minWidth: 240 }} size="small">
+            {/* <FormControl sx={{ minWidth: 240 }} size="small">
                                 <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
                                 <Select
                                     labelId="demo-select-small-label"
@@ -669,45 +697,50 @@ sx={{
                                     <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
                                 </Button>
                             </div> */}
-            </div>
-            <div className="overflow-x-auto mt-3 scroll-two">
-              <table
-                className="w-full border-collapse custom-table"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead className="">
-                  <tr>
-                    <th>SR. No</th>
-                    {columns.map((column, index) => (
-                      <th key={column.id} style={{ minWidth: column.minWidth }}>
-                        <div className="headerStyle">
-                          <span>{column.label}</span>
-                          <SwapVertIcon
-                            style={{ cursor: "pointer" }}
-                            onClick={() => sortByColumn(column.id)}
-                          />
-                          <TextField
-                            variant="outlined"
-                            autoComplete="off"
-                            label={`Search ${column.label}`}
-                            id="filled-basic"
-                            size="small"
-                            sx={{ width: "150px" }}
-                            defaultvalue={searchTerms[index]}
-                            onKeyDown={(e) => handleSearchChange(index, e)}
-                          />
-                        </div>
-                      </th>
-                    ))}
-                    <th>Action</th>
-                  </tr>
-                </thead>
+          </div>
+          <div className="overflow-x-auto mt-3 scroll-two">
+            <table
+              className="w-full border-collapse custom-table"
+              style={{
+                whiteSpace: "nowrap",
+                borderCollapse: "separate",
+                borderSpacing: "0 6px",
+              }}
+            >
+              <thead className="">
+                <tr>
+                  <th>SR. No</th>
+                  {columns.map((column, index) => (
+                    <th key={column.id} style={{ minWidth: column.minWidth }}>
+                      <div className="headerStyle">
+                        <span>{column.label}</span>
+                        <SwapVertIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={() => sortByColumn(column.id)}
+                        />
+                        <TextField
+                          variant="outlined"
+                          autoComplete="off"
+                          label="Type Here"
+                          size="small"
+                          sx={{ width: "150px" }}
+                          value={searchTerms[index]}
+                          onChange={e => handleSearchChange(index, e.target.value)}
+                        />
+                      </div>
+                    </th>
+                  ))}
+
+                  <th>Action</th>
+                </tr>
+              </thead>
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : (
                 <tbody style={{ backgroundColor: "#3f621217" }}>
-                  {filteredList.length === 0 ? (
+                  {tableData.length === 0 ? (
                     <tr>
                       <td
                         colSpan={columns.length + 2}
@@ -721,7 +754,7 @@ sx={{
                       </td>
                     </tr>
                   ) : (
-                    filteredList.map((row, index) => {
+                    tableData.map((row, index) => {
                       return (
                         <tr hover role="checkbox" tabIndex={-1} key={row.code}>
                           <td style={{ borderRadius: "10px 0 0 10px" }}>
@@ -801,421 +834,380 @@ sx={{
                     })
                   )}
                 </tbody>
-
-                {/* <tbody>
-
-                                    {filteredList.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', color: 'gray' }}>
-                                                No data found
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        filteredList.map((row, index) => {
-                                            return (
-                                                <tr hover role="checkbox" tabIndex={-1} key={row.code} >
-                                                    <td>
-                                                        {startIndex + index}
-                                                    </td>
-                                                    {columns.map((column) => {
-                                                        let value = row[column.id];
-                                                        if (column.id === 'email') {
-                                                            if (value && value[0] !== value[0].toLowerCase()) {
-                                                                value = value.toLowerCase();
-                                                            }
-                                                        } 
-                                                        return (
-                                                            <td key={column.id} align={column.align} onClick={() => { history.push(`/more/customerView/${row.id}`) }} style={column.id === 'email' ? { textTransform: 'none' } : {}}>
-                                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                                            </td>
-                                                        );
-                                                    })}
-
-                                                    <td style={{ fontSize: '15px', display: 'flex', gap: '5px', color: 'gray', cursor: 'pointer' }}>
-                                                        <VisibilityIcon style={{ color: "#1976d2" }} onClick={() => { history.push(`/more/customerView/${row.id}`) }} />
-                                                        {hasPermission(permissions, "customer edit") && (
-                                                            <BorderColorIcon
-                              style={{ color: "var(--color1)" }} color="primary" onClick={() => handleEditOpen(row)} />)}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        }))}
-
-
-                                </tbody> */}
-              </table>
-            </div>
-            <div
-              className="mt-4 space-x-1"
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '1rem',
-                background: '#fff'
-              }}
-            >
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
               )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700 "
-                  : "secondary-bg  text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
-            </div>
+            </table>
           </div>
-
-          {/* File Upload Popup */}
-          <Dialog open={openUpload} className="custom-dialog">
-            <DialogTitle id="alert-dialog-title " className="primary">
-              Import Customer
-            </DialogTitle>
-            <div className="px-6 ">
-              <Alert severity="warning">
-                <AlertTitle>Warning</AlertTitle>
-                Please Make Sure Repeated Email ID record is not accepted.
-              </Alert>
-            </div>
-            <IconButton
-              aria-label="close"
-              onClick={() => setOpenUpload(false)}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: "#ffffff",
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <div className="primary">Item File Upload</div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "15px",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div className="mt-2">
-                    <input
-                      className="File-upload"
-                      type="file"
-                      accept=".csv"
-                      id="file-upload"
-                      onChange={handleFileChange}
-                    />
-                    <span className="errorFile" style={{ fontSize: "small" }}>
-                      *select only .csv File
-                    </span>
-                  </div>
-                  <div className="mt-2">
-                    <Button
-                      onClick={handleDownload}
-                      style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                      }}
-                      className="downloadFile"
-                    >
-                      <CloudDownloadIcon className="mr-2" />
-                      Download Sample File
-                    </Button>
-                  </div>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions style={{ padding: "20px 24px" }}>
-              <Button
-                autoFocus
-                variant="contained"
-                style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
-                  width: "100%",
-                }}
-                onClick={uploadCustomerFile}
-              >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-          <Dialog
-            open={openAddPopUp}
-          // sx={{
-          //     "& .MuiDialog-container": {
-          //         "& .MuiPaper-root": {
-          //             width: "36%",
-          //             maxWidth: "600px",  // Set your width here
-          //         },
-          //     },
-          // }}
+          <div
+            className="mt-4 space-x-1"
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 50,
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '1rem',
+              background: '#fff'
+            }}
           >
-            <div className="flex justify-center items-center h-auto">
-              <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
-                <div className="flex justify-between items-center">
-                  <DialogTitle
-                    id="alert-dialog-title"
-                    style={{
-                      color: "var(--COLOR_UI_PHARMACY)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {header}
-                  </DialogTitle>
-                  <IconButton
-                    aria-label="close"
-                    onClick={resetAddDialog}
-                    className="text-gray-500"
-                  // sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700 "
+                : "secondary-bg  text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        {/* File Upload Popup */}
+        <Dialog open={openUpload} className="custom-dialog">
+          <DialogTitle id="alert-dialog-title " className="primary">
+            Import Customer
+          </DialogTitle>
+          <div className="px-6 ">
+            <Alert severity="warning">
+              <AlertTitle>Warning</AlertTitle>
+              Please Make Sure Repeated Email ID record is not accepted.
+            </Alert>
+          </div>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenUpload(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="primary">Item File Upload</div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  flexDirection: "column",
+                }}
+              >
+                <div className="mt-2">
+                  <input
+                    className="File-upload"
+                    type="file"
+                    accept=".csv"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                  />
+                  <span className="errorFile" style={{ fontSize: "small" }}>
+                    *select only .csv File
+                  </span>
                 </div>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <div className="mb-2">
-                            <span className="label primary mb-4">
-                              Customer Name
-                            </span>
-                            <span className="text-red-600 ml-1">*</span>
-                          </div>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            type="name"
-                            value={customer}
-                            onChange={(e) => {
-                              const cst =
-                                e.target.value.charAt(0).toUpperCase() +
-                                e.target.value.slice(1).toLowerCase();
-                              setCustomer(cst);
-                            }}
-
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                          {errors.customer && (
-                            <span style={{ color: "red", fontSize: "12px" }}>
-                              {errors.customer}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <div className="mb-2">
-                            <span className="label primary mb-4">
-                              Mobile No
-                            </span>
-                            <span className="text-red-600 ml-1">*</span>
-                          </div>
-                          <OutlinedInput
-                            type="number"
-                            value={mobileNo}
-                            onChange={handleChange}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                +91
-                              </InputAdornment>
-                            }
-                            style={{ width: "100%" }}
-                            size="small"
-                          />
-                          {errors.mobileNo && (
-                            <span style={{ color: "red", fontSize: "12px" }}>
-                              {errors.mobileNo}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">Email ID</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={emailId}
-                            onChange={(e) => {
-                              setEmailId(e.target.value);
-                            }}
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">Amount</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            type="number"
-                            value={amount}
-                            onChange={(e) => {
-                              setAmount(e.target.value);
-                            }}
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">Area</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={area}
-
-                            onChange={(e) => {
-                              const amt =
-                                e.target.value.charAt(0).toUpperCase() +
-                                e.target.value.slice(1).toLowerCase();
-                              setArea(amt);
-                            }}
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">City</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={city}
-                            onChange={(e) => {
-                              const city =
-                                e.target.value.charAt(0).toUpperCase() +
-                                e.target.value.slice(1).toLowerCase();
-                              setCity(city);
-                            }}
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">Address</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={address}
-                            onChange={(e) => {
-                              const add =
-                                e.target.value.charAt(0).toUpperCase() +
-                                e.target.value.slice(1).toLowerCase();
-                              setAddress(add);
-                            }}                       
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                        <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                          <span className="label primary">State</span>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-multiline-static"
-                            size="small"
-                            value={state}
-                            onChange={(e) => {
-                              const state =
-                                e.target.value.charAt(0).toUpperCase() +
-                                e.target.value.slice(1).toLowerCase();
-                              setState(state);
-                            }}
-                            style={{ width: "100%" }}
-                            variant="outlined"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions style={{ padding: "20px 24px" }}>
+                <div className="mt-2">
                   <Button
-                    variant="contained"
+                    onClick={handleDownload}
                     style={{
                       backgroundColor: "var(--COLOR_UI_PHARMACY)",
                       color: "white",
                     }}
-                    autoFocus
-                    className="p-5"
-                    onClick={Addcustomer}
+                    className="downloadFile"
                   >
-                    {buttonLabel}
+                    <CloudDownloadIcon className="mr-2" />
+                    Download Sample File
                   </Button>
-                  <Button
-                    autoFocus
-                    variant="contained"
-                    onClick={resetAddDialog}
-                    color="error"
-                  >
-                    Cancel
-                  </Button>
-                </DialogActions>
+                </div>
               </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions style={{ padding: "20px 24px" }}>
+            <Button
+              autoFocus
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+                width: "100%",
+              }}
+              onClick={uploadCustomerFile}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openAddPopUp}
+        // sx={{
+        //     "& .MuiDialog-container": {
+        //         "& .MuiPaper-root": {
+        //             width: "36%",
+        //             maxWidth: "600px",  // Set your width here
+        //         },
+        //     },
+        // }}
+        >
+          <div className="flex justify-center items-center h-auto">
+            <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
+              <div className="flex justify-between items-center">
+                <DialogTitle
+                  id="alert-dialog-title"
+                  style={{
+                    color: "var(--COLOR_UI_PHARMACY)",
+                    fontWeight: 700,
+                  }}
+                >
+                  {header}
+                </DialogTitle>
+                <IconButton
+                  aria-label="close"
+                  onClick={resetAddDialog}
+                  className="text-gray-500"
+                // sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <div className="mb-2">
+                          <span className="label primary mb-4">
+                            Customer Name
+                          </span>
+                          <span className="text-red-600 ml-1">*</span>
+                        </div>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          type="name"
+                          value={customer}
+                          onChange={(e) => {
+                            const cst =
+                              e.target.value.charAt(0).toUpperCase() +
+                              e.target.value.slice(1).toLowerCase();
+                            setCustomer(cst);
+                          }}
+
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                        {errors.customer && (
+                          <span style={{ color: "red", fontSize: "12px" }}>
+                            {errors.customer}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <div className="mb-2">
+                          <span className="label primary mb-4">
+                            Mobile No
+                          </span>
+                          <span className="text-red-600 ml-1">*</span>
+                        </div>
+                        <OutlinedInput
+                          type="number"
+                          value={mobileNo}
+                          onChange={handleChange}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              +91
+                            </InputAdornment>
+                          }
+                          style={{ width: "100%" }}
+                          size="small"
+                        />
+                        {errors.mobileNo && (
+                          <span style={{ color: "red", fontSize: "12px" }}>
+                            {errors.mobileNo}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">Email ID</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={emailId}
+                          onChange={(e) => {
+                            setEmailId(e.target.value);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">Amount</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          type="number"
+                          value={amount}
+                          onChange={(e) => {
+                            setAmount(e.target.value);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">Area</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={area}
+
+                          onChange={(e) => {
+                            const amt =
+                              e.target.value.charAt(0).toUpperCase() +
+                              e.target.value.slice(1).toLowerCase();
+                            setArea(amt);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">City</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={city}
+                          onChange={(e) => {
+                            const city =
+                              e.target.value.charAt(0).toUpperCase() +
+                              e.target.value.slice(1).toLowerCase();
+                            setCity(city);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">Address</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={address}
+                          onChange={(e) => {
+                            const add =
+                              e.target.value.charAt(0).toUpperCase() +
+                              e.target.value.slice(1).toLowerCase();
+                            setAddress(add);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                        <span className="label primary">State</span>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-multiline-static"
+                          size="small"
+                          value={state}
+                          onChange={(e) => {
+                            const state =
+                              e.target.value.charAt(0).toUpperCase() +
+                              e.target.value.slice(1).toLowerCase();
+                            setState(state);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions style={{ padding: "20px 24px" }}>
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white",
+                  }}
+                  autoFocus
+                  className="p-5"
+                  onClick={Addcustomer}
+                >
+                  {buttonLabel}
+                </Button>
+                <Button
+                  autoFocus
+                  variant="contained"
+                  onClick={resetAddDialog}
+                  color="error"
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
             </div>
-          </Dialog>
-        </div>
-      )}
+          </div>
+        </Dialog>
+      </div>
+
     </>
   );
 };

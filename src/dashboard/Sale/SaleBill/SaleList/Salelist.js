@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import Header from "../../../Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import {
@@ -64,45 +64,17 @@ const Salelist = () => {
   const paginatedData = tableData;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
+  const apiKeys = ["bill_no", "bill_date", "name_mobile", "payment_method", "status", "bill_amount"];
 
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-  };
-  
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const sortByColumn = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-
-    const sortedData = [...tableData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-      return 0;
+  const handleSearchChange = useCallback((index, value) => {
+    setSearchTerms(prev => {
+      const newSearchTerms = [...prev];
+      newSearchTerms[index] = value;
+      if (currentPage !== 1) setCurrentPage(1);
+      saleBillList(1, newSearchTerms);
+      return newSearchTerms;
     });
-    setTableData(sortedData);
-  };
-
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
-    setCurrentPage(1); // Reset to first page when searching
-  };
-
+  }, [currentPage]);
   const goIntoAdd = () => {
     history.push("/addsale");
   };
@@ -130,12 +102,19 @@ const Salelist = () => {
     // eslint-disable-next-line
   }, [currentPage]);
 
-  const saleBillList = async (page) => {
+  const saleBillList = async (page, customSearchTerms = searchTerms) => {
     setIsLoading(true);
     let data = new FormData();
     data.append("page", page);
     data.append("start_date", PdfstartDate ? format(PdfstartDate, "yyyy-MM-dd") : "");
     data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
+
+    apiKeys.forEach((key, index) => {
+      const term = customSearchTerms[index];
+      if (term && term.trim()) {
+        data.append(key, term.trim());
+      }
+    });
     try {
       const response = await axios.post("sales-list?", data, {
         headers: {
@@ -157,30 +136,6 @@ const Salelist = () => {
     }
   };
 
-  // const handleDelete = async () => {
-  //   if (!saleId) return;
-  //   let data = new FormData();
-  //   data.append("id", saleId);
-  //   const params = {
-  //     id: saleId,
-  //   };
-  //   try {
-  //     await axios
-  //       .post("delete-sales?", data, {
-  //         params: params,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         saleBillList();
-  //         setIsDelete(false);
-  //       });
-  //   } catch (error) {
-  //     console.error("API error:", error);
-  //   }
-  // };
 
   const AllPDFGenerate = async () => {
     let data = new FormData();
@@ -285,15 +240,43 @@ const Salelist = () => {
     }
   };
 
+  const handleClick = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const sortByColumn = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+
+    const sortedData = [...tableData].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+    setTableData(sortedData);
+  };
+
+
   return (
     <>
       <div>
         <Header />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
+       
           <div
             style={{
               minHeight: 'calc(100vh - 64px)',
@@ -459,6 +442,7 @@ const Salelist = () => {
                       <th> Action</th>
                     </tr>
                   </thead>
+                 
                   <tbody style={{ background: "#3f621217" }}>
                     {paginatedData.length === 0 ? (
                       <tr>
@@ -707,7 +691,7 @@ const Salelist = () => {
               </DialogActions>
             </Dialog>
           </div>
-        )}
+        
       </div>
     </>
   );

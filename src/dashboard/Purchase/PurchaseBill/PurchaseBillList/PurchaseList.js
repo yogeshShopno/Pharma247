@@ -66,6 +66,7 @@ const Purchasebill = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchTrigger, setSearchTrigger] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
+  
   const searchTimeout = React.useRef(null);
   const currentSearchTerms = React.useRef(searchTerms);
 
@@ -197,22 +198,6 @@ const Purchasebill = () => {
     }
   };
 
-  // Clear all search filters
-  const clearSearch = () => {
-    // Clear timeout immediately
-    clearTimeout(searchTimeout.current);
-
-    // Update ref immediately
-    currentSearchTerms.current = initialSearchTerms;
-
-    // Update state immediately
-    setSearchTerms(initialSearchTerms);
-    setIsSearchActive(false);
-    setCurrentPage(1);
-
-    // Trigger search effect to reload data
-    setSearchTrigger(prev => prev + 1);
-  };
 
   // No frontend filtering needed - all search is handled by backend
   const paginatedData = tableData;
@@ -243,10 +228,10 @@ const Purchasebill = () => {
 
     // Use different loading states for search vs regular operations
     if (isSearch) {
-            setCurrentPage(1);
-
+      if (page !== 1) return setCurrentPage(1); // 👈 Ensure `setCurrentPage(1)` happens outside the render cycle
       setIsSearchLoading(true);
-    } else {
+    }
+    else {
       setIsLoading(true);
     }
 
@@ -265,7 +250,7 @@ const Purchasebill = () => {
 
       // Set the table data directly from backend (paginated and filtered data)
       setTableData(responseData || []);
-      
+
       // Extract and set total count for pagination
       const totalCount = responseData?.length > 0 ? Number(response.data.total_records) : 0;
       setTotalRecords(totalCount);
@@ -275,9 +260,10 @@ const Purchasebill = () => {
       setTotalRecords(0);
     } finally {
       if (isSearch) {
-        setIsSearchLoading(false);
-        setIsSearching(false);
-      } else {
+        if (page !== 1) return setCurrentPage(1); // 👈 Ensure `setCurrentPage(1)` happens outside the render cycle
+        setIsSearchLoading(true);
+      }
+      else {
         setIsLoading(false);
       }
     }
@@ -383,6 +369,53 @@ const Purchasebill = () => {
     }
   };
 
+  const PurchaseTableBody = ({ data, columns, onView, onPdf, onDelete, permissions }) => {
+  return (
+    <tbody style={{ background: "#3f621217" }}>
+      {data.length === 0 ? (
+        <tr>
+          <td colSpan={columns.length + 1} className="text-center text-gray-500">
+            No data found
+          </td>
+        </tr>
+      ) : (
+        data.map((row) => (
+          <tr className="cursor-pointer hover:bg-gray-100" key={row.id}>
+            {columns.map((column, colIndex) => {
+              const value = row[column.id];
+              return (
+                <td
+                  key={column.id}
+                  className="capitalize"
+                  style={
+                    colIndex === 0
+                      ? { borderRadius: "10px 0 0 10px" }
+                      : colIndex === columns.length - 1
+                      ? { borderRadius: "0 10px 10px 0" }
+                      : {}
+                  }
+                  onClick={() => onView(row.id)}
+                >
+                  {value}
+                </td>
+              );
+            })}
+            <td>
+              <div className="flex gap-2 items-center">
+                <VisibilityIcon onClick={() => onView(row.id)} />
+                <FaFilePdf onClick={() => onPdf(row.id)} />
+                {hasPermission(permissions, "purchase bill delete") && (
+                  <DeleteIcon onClick={() => onDelete(row.id)} style={{ color: "#F31C1C" }} />
+                )}
+              </div>
+            </td>
+          </tr>
+        ))
+      )}
+    </tbody>
+  );
+};
+
   return (
     <>
       <Header />
@@ -397,11 +430,7 @@ const Purchasebill = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
+     
         <div
           style={{
             minHeight: 'calc(100vh - 64px)', // adjust 64px to your header height
@@ -575,7 +604,11 @@ const Purchasebill = () => {
                     <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                   </tr>
                 </thead>
-
+ {isLoading ? (
+        <div className="loader-container ">
+          <Loader />
+        </div>
+      ) : (
                 <tbody style={{ background: "#3f621217" }}>
                   {paginatedData.length === 0 ? (
                     <tr>
@@ -645,7 +678,7 @@ const Purchasebill = () => {
                       </tr>
                     ))
                   )}
-                </tbody>
+                </tbody>)}
               </table>
             </div>
           </div>
@@ -712,7 +745,7 @@ const Purchasebill = () => {
             </button>
           </div>
         </div>
-      )}
+     
 
       {/*<=================================================================================== Delete Popup ===================================================================================> */}
 

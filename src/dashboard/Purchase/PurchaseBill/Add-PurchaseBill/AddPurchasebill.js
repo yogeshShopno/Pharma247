@@ -3554,7 +3554,7 @@ const AddPurchaseBill = () => {
                       />
                     </div>
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Unit<span className="text-red-600  ">*</span></label>
+                      <label className="label secondary">Unit <span className="text-red-600  ">*</span></label>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"

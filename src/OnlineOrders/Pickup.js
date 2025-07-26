@@ -3,7 +3,7 @@ import Header from '../dashboard/Header';
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import Loader from '../componets/loader/Loader';
-import Accepted from './Accepted';
+import ConfirmedOrder from './ConfirmedOrder';
 import { BsLightbulbFill } from "react-icons/bs";
 import Assigned from './Assigned';
 import axios from 'axios';

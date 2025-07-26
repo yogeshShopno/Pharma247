@@ -3,7 +3,7 @@ import Header from '../dashboard/Header';
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import Loader from '../componets/loader/Loader';
-import Accepted from './Accepted';
+import ConfirmedOrder from './ConfirmedOrder';
 import { BsLightbulbFill } from "react-icons/bs";
 import Assigned from './Assigned';
 import Rejected from './Rejected';
@@ -81,10 +81,10 @@ function StatusCardsSection() {
       borderColor: "#65a30d",
     },
     {
-      label: "Accepted",
+      label: "Confirmed Orders",
       count: 30,
       bg: "from-lime-50 to-white border-lime-600 text-lime-800",
-      component: <Accepted />,
+      component: <ConfirmedOrder />,
       borderColor: "#65a30d",
     },
     // {

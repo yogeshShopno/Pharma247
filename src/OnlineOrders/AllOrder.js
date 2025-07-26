@@ -6,7 +6,7 @@ import Tab from "@mui/material/Tab";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
-import Accepted from "./Accepted";
+import ConfirmedOrder from "./ConfirmedOrder";
 import Processing from "./Processing";
 import Delivered from "./Completed";
 import Rejected from "./Rejected";
@@ -98,7 +98,7 @@ const openOrderDetails = (order) => {
           <Single orderid={selectedOrder.id} />
         )}
         {selectedOrder.status === "Order Confirmed" && (
-          <Accepted orderid={selectedOrder.id} />
+          <ConfirmedOrder orderid={selectedOrder.id} />
         )}
         {selectedOrder.status === "Completed" && (
           <Delivered orderid={selectedOrder.id} />

@@ -21,7 +21,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
-const Completed = ({ orderid }) => {
+const ReadyForPickup = ({ orderid }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [value, setValue] = useState(1);
@@ -123,14 +123,14 @@ const [imageUrls,setImageUrls] =useState([])
   };
   return (
     <div className="flex flex-col gap-4 rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
-      <div className="bg-lime-500/5 border border-lime-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
-        <span className="text-lg font-medium text-lime-800">
+      <div className="bg-teal-500/5 border border-teal-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
+        <span className="text-lg font-medium text-teal-800">
           Orders ID : {orderData?.bill_no}
         </span>
-        <span className="text-lg font-medium text-lime-800">
+        <span className="text-lg font-medium text-teal-800">
           Date/Time : {orderData?.date}
         </span>
-        <span className="text-lg font-medium text-lime-800">
+        <span className="text-lg font-medium text-teal-800">
           Amount : {orderData?.total_amount}
         </span>
       </div>
@@ -169,7 +169,7 @@ const [imageUrls,setImageUrls] =useState([])
           <div className="relative w-full max-w-full md:max-w-3xl mx-auto" style={{ minHeight: "9rem" }}>
             {imageUrls.length > 1 && (
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-600 bg-white/80 hover:bg-lime-700 hover:text-white transition-colors border border-lime-200"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-600 bg-white/80 hover:bg-teal-700 hover:text-white transition-colors border border-teal-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -207,7 +207,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             {imageUrls.length > 1 && (
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-600 bg-white/80 hover:bg-lime-700 hover:text-white transition-colors border border-lime-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-600 bg-white/80 hover:bg-teal-700 hover:text-white transition-colors border border-teal-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -243,7 +243,7 @@ const [imageUrls,setImageUrls] =useState([])
               {/* Previous Button */}
               {modal.index > 0 && (
                 <button
-                  className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-lime-700 hover:text-white border border-lime-200"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-teal-700 hover:text-white border border-teal-200"
                   onClick={() => navigate(-1)}
                   aria-label="Previous"
                   style={{
@@ -261,7 +261,7 @@ const [imageUrls,setImageUrls] =useState([])
               {/* Next Button */}
               {modal.index < imageUrls.length - 1 && (
                 <button
-                  className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-lime-700 hover:text-white border border-lime-200"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-teal-700 hover:text-white border border-teal-200"
                   onClick={() => navigate(1)}
                   aria-label="Next"
                   style={{
@@ -369,4 +369,4 @@ const [imageUrls,setImageUrls] =useState([])
     </div>
   );
 };
-export default Completed;
+export default ReadyForPickup;

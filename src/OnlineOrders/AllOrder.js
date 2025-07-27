@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Single from "./Single";
+
 
 import Tab from "@mui/material/Tab";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import ConfirmedOrder from "./ConfirmedOrder";
-import Processing from "./Processing";
+import ReadyForPickup from "./ReadyForPickup";
 import Delivered from "./Completed";
-import Rejected from "./Rejected";
+import Rejected from "./Cancelled";
+import AssignedPharmacy from "./AssignedPharmacy";
 
 
 const AllOrder = () => {
@@ -94,9 +95,10 @@ const openOrderDetails = (order) => {
         </div>
        {selectedOrder ? (
       <>
-        {selectedOrder.status === "Assigned Pharmacy" && (
-          <Single orderid={selectedOrder.id} />
+       {selectedOrder.status === "Assigned pharmacy" && (
+          <AssignedPharmacy orderid={selectedOrder.id} />
         )}
+     
         {selectedOrder.status === "Order Confirmed" && (
           <ConfirmedOrder orderid={selectedOrder.id} />
         )}
@@ -104,7 +106,7 @@ const openOrderDetails = (order) => {
           <Delivered orderid={selectedOrder.id} />
         )}
         {selectedOrder.status === "Ready For Pickup" && (
-          <Processing orderid={selectedOrder.id} />
+          <ReadyForPickup orderid={selectedOrder.id} />
         )}
         {(selectedOrder.status === "Cancelled By Customer" ||
           selectedOrder.status === "Cancelled By Pharmacy") && (

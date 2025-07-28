@@ -12,7 +12,6 @@ import Delivered from "./Completed";
 import Rejected from "./Cancelled";
 import AssignedPharmacy from "./AssignedPharmacy";
 
-
 const AllOrder = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState(1);
@@ -64,6 +63,7 @@ const [selectedOrder, setSelectedOrder] = useState(null);
 
 const openOrderDetails = (order) => {
   setSelectedOrder(order);
+  console.log("Selected Order:", order);
 };
 
 
@@ -95,7 +95,7 @@ const openOrderDetails = (order) => {
         </div>
        {selectedOrder ? (
       <>
-       {selectedOrder.status === "Assigned pharmacy" && (
+       {selectedOrder.status === "Assigned Pharmacy" && (
           <AssignedPharmacy orderid={selectedOrder.id} />
         )}
      

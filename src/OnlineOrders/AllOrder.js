@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-
-import Tab from "@mui/material/Tab";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import TabContext from "@mui/lab/TabContext";
 import ConfirmedOrder from "./ConfirmedOrder";
 import ReadyForPickup from "./ReadyForPickup";
 import Delivered from "./Completed";
@@ -20,7 +14,7 @@ const AllOrder = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [billData, setBilldata] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
-const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     orderdata();
@@ -28,13 +22,13 @@ const [selectedOrder, setSelectedOrder] = useState(null);
   }, [currentPage, selectedStatus]);
 
   const statusOptions = [
-    { id: "", value: "All Orders" },
-    { id: "1", value: "Assigned pharmacy" },
-    { id: "2", value: "Cancel By Customer" },
-    { id: "3", value: "Cancel By Pharmacy" },
-    { id: "4", value: "Confirmed Orders" },
-    { id: "5", value: "Ready For Pickup" },
-    { id: "6", value: "Completed" },
+    { id: "", value: "All Orders", count: billData.length },
+    { id: "1", value: "Assigned Pharmacy", count: 0 },
+    { id: "2", value: "Cancel By Customer", count: 0 },
+    { id: "3", value: "Cancel By Pharmacy", count: 0 },
+    { id: "4", value: "Confirmed Orders", count: 0 },
+    { id: "5", value: "Ready For Pickup", count: 0 },
+    { id: "6", value: "Completed", count: 0 },
   ];
 
   const orderdata = async () => {
@@ -61,11 +55,10 @@ const [selectedOrder, setSelectedOrder] = useState(null);
     }
   };
 
-const openOrderDetails = (order) => {
-  setSelectedOrder(order);
-  console.log("Selected Order:", order);
-};
-
+  const openOrderDetails = (order) => {
+    setSelectedOrder(order);
+    console.log("Selected Order:", order);
+  };
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
@@ -83,145 +76,171 @@ const openOrderDetails = (order) => {
     }
   };
 
-  return (
-    <div>
-       <div className="text-center mt-4">
-          <button
-            className="px-4 py-2 bg-gray-200 rounded"
-            onClick={() => setSelectedOrder(null)}
-          >
-            Back to Orders
-          </button>
-        </div>
-       {selectedOrder ? (
-      <>
-       {selectedOrder.status === "Assigned Pharmacy" && (
-          <AssignedPharmacy orderid={selectedOrder.id} />
-        )}
-     
-        {selectedOrder.status === "Order Confirmed" && (
-          <ConfirmedOrder orderid={selectedOrder.id} />
-        )}
-        {selectedOrder.status === "Completed" && (
-          <Delivered orderid={selectedOrder.id} />
-        )}
-        {selectedOrder.status === "Ready For Pickup" && (
-          <ReadyForPickup orderid={selectedOrder.id} />
-        )}
-        {(selectedOrder.status === "Cancelled By Customer" ||
-          selectedOrder.status === "Cancelled By Pharmacy") && (
-            <Rejected orderid={selectedOrder.id} />
-        )}
-       
-      </>
-    ) : (
-      <div className="dashbd_crd_bx gap-5  p-8 grid grid-cols-1 md:grid-cols-1  sm:grid-cols-1">
-        <div
-          className="gap-4 flex flex-col justify-between"
-          style={{ height: "100%" }}
-        >
-          
-          <TabContext value={selectedStatus}>
-            <TabList
-              onChange={(event, newValue) => setSelectedStatus(newValue)}
-              aria-label="Sales Purchase Tabs"
-              TabIndicatorProps={{ style: { display: "none" } }}
-              variant="scrollable"
-              scrollButtons="auto"
-              sx={{
-                "& .MuiTab-root": {
-                  textTransform: "none",
-                  fontWeight: 500,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  borderRadius: "999px",
-                  color: "#374151",
-                  backgroundColor: "#fff",
-                  mx: 0.5,
-                  transition: "0.3s ease",
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                  minWidth: { xs: "auto", sm: "64px" },
-                  minHeight: { xs: "32px", sm: "40px" },
-                },
-                "& .Mui-selected": {
-                  backgroundColor: "var(--color1)",
-                  color: "white",
-                },
-                "& .MuiTabs-scrollButtons": {
-                  display: { xs: "flex", sm: "none" },
-                },
-              }}
-            >
-              {statusOptions.map((status) => (
-                <Tab
-                  key={status.id}
-                  value={status.id}
-                  label={status.value}
-                  className="whitespace-nowrap"
-                />
-              ))}
-            </TabList>
-          </TabContext>
+  const getStatusBadgeStyle = (status) => {
+    const baseStyle = "px-3 py-1 rounded-full text-xs font-medium";
+    switch (status) {
+      case "Assigned Pharmacy":
+        return `${baseStyle} bg-blue-100 text-blue-800`;
+      case "Order Confirmed":
+        return `${baseStyle} bg-green-100 text-green-800`;
+      case "Ready For Pickup":
+        return `${baseStyle} bg-yellow-100 text-yellow-800`;
+      case "Completed":
+        return `${baseStyle} bg-emerald-100 text-emerald-800`;
+      case "Cancelled By Customer":
+      case "Cancelled By Pharmacy":
+        return `${baseStyle} bg-red-100 text-red-800`;
+      default:
+        return `${baseStyle} bg-gray-100 text-gray-800`;
+    }
+  };
 
+  const getButtonStatusStyle = (statusId) => {
+    switch (statusId) {
+      case "1": // Assigned Pharmacy
+        return "bg-blue-100 text-blue-800 hover:bg-blue-200";
+      case "4": // Confirmed Orders
+        return "bg-green-100 text-green-800 hover:bg-green-200";
+      case "5": // Ready For Pickup
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
+      case "6": // Completed
+        return "bg-emerald-100 text-emerald-800 hover:bg-emerald-200";
+      case "2": // Cancel By Customer
+      case "3": // Cancel By Pharmacy
+        return "bg-red-100 text-red-800 hover:bg-red-200";
+      default: // All Orders
+        return "bg-gray-100 text-gray-700 hover:bg-gray-200";
+    }
+  };
+
+  return (
+    <div className=" bg-gray-50">
+      {selectedOrder ? (
+        <div className="p-6">
+          <div className="mb-6">
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium text-gray-700"
+              onClick={() => setSelectedOrder(null)}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Orders
+            </button>
+          </div>
+
+          {selectedOrder.status === "Assigned Pharmacy" && (
+            <AssignedPharmacy orderid={selectedOrder.id} />
+          )}
+          {selectedOrder.status === "Order Confirmed" && (
+            <ConfirmedOrder orderid={selectedOrder.id} />
+          )}
+          {selectedOrder.status === "Completed" && (
+            <Delivered orderid={selectedOrder.id} />
+          )}
+          {selectedOrder.status === "Ready For Pickup" && (
+            <ReadyForPickup orderid={selectedOrder.id} />
+          )}
+          {(selectedOrder.status === "Cancelled By Customer" ||
+            selectedOrder.status === "Cancelled By Pharmacy") && (
+              <Rejected orderid={selectedOrder.id} />
+            )}
+        </div>
+      ) : (
+        <div className="p-6">
           <div
-            className="bg-white  px-2 py-1 rounded-lg flex flex-col justify-between"
-            style={{
-              boxShadow: "0 0 16px rgba(0, 0, 0, .16)",
-              height: "450px",
-            }}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+            style={{ height: "calc(80vh - 150px)", display: "flex", flexDirection: "column" }}
           >
-            <div className="overflow-x-auto">
-              <table className="w-full custom-table">
-                <thead className="primary ">
+
+            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex flex-wrap gap-3">
+                  {statusOptions.map((status) => (
+                    <button
+                      key={status.id}
+                      onClick={() => setSelectedStatus(status.id)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${selectedStatus === status.id
+                        ? "text-white shadow-lg transform scale-105"
+                        : getButtonStatusStyle(status.id)
+                        }`}
+                      style={{
+                        backgroundColor: selectedStatus === status.id ? "var(--color1)" : undefined,
+                      }}
+                    >
+                      {status.value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            <div className="overflow-x-auto overflow-y-auto overflow-x-auto flex-grow" style={{ height: "calc(100% - 80px)" }}>
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200 sticky top-0">
                   <tr>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Order ID
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Patient Name
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Patient Number
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Date
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Delivery Type
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Status
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Net Amount
-                    </th>
-                    <th className="border-b border-gray-200 font-bold px-4 py-2">
-                      Total Amount
-                    </th>
+                    <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Order ID</th>
+                    <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Patient Info</th>
+                    <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Date</th>
+                    <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Delivery</th>
+                    <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Status</th>
+                    <th className="text-right px-6 py-2 font-semibold text-gray-800 text-sm">Amount</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-gray-200">
                   {billData?.map((order, index) => (
                     <tr
-                      onClick={() => openOrderDetails(order)}
                       key={index}
-                      className="border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition"
-                      style={{ textAlign: "center" }}
+                      onClick={() => openOrderDetails(order)}
+                      className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
                     >
-                      <td className="px-4 py-2">{order.order_id}</td>
-                      <td className="px-4 py-2">{order.patient_name}</td>
-                      <td className="px-4 py-2">{order.patient_number}</td>
-                      <td className="px-4 py-2">{order.date}</td>
-                      <td className="px-4 py-2">{order.delivery_status}</td>
-                      <td className="px-4 py-2">{order.status}</td>
-                      <td className="px-4 py-2">{order.net_amount}</td>
-                      <td className="px-4 py-2">{order.total_amount}</td>
+                      <td className="px-6 py-2">
+                        <div className="font-medium text-gray-900">{order.order_id}</div>
+                      </td>
+                      <td className="px-6 py-2">
+                        <div>
+                          <span className="font-medium text-gray-900">{order.patient_name}</span> (
+                          <span className="text-sm text-gray-500">{order.patient_number}</span>
+                          )
+                        </div>
+                      </td>
+                      <td className="px-6 py-2">
+                        <div className="text-sm text-gray-900">{order.date}</div>
+                      </td>
+                      <td className="px-6 py-2">
+                        <div className="text-sm text-gray-900">{order.delivery_status}</div>
+                      </td>
+                      <td className="px-6 py-2">
+                        <span className={getStatusBadgeStyle(order.status)}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-2 text-right">
+                        <div>
+                          <div className="font-semibold text-gray-900">₹{order.total_amount}</div>
+                        </div>
+                      </td>
                     </tr>
                   ))}
+                  {billData?.length === 0 && (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-12 text-center">
+                        <div className="text-gray-500">
+                          <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <p className="text-lg font-medium">No orders found</p>
+                          <p className="text-sm">Try adjusting your filters</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
+
           {/* Pagination */}
           <div
             className="flex justify-center mt-4"
@@ -236,11 +255,10 @@ const openOrderDetails = (order) => {
           >
             <button
               onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${
-                currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-              }`}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
               disabled={currentPage === 1}
             >
               Previous
@@ -277,20 +295,19 @@ const openOrderDetails = (order) => {
             )}
             <button
               onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${
-                currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-              }`}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
               disabled={currentPage >= totalPages}
             >
               Next
             </button>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 };
+
 export default AllOrder;

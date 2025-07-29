@@ -38,7 +38,7 @@ const Completed = ({ orderid }) => {
   // Carousel hooks (moved to top level)
   const scrollRef = React.useRef(null);
   const [modal, setModal] = React.useState({ open: false, index: -1 });
-const [imageUrls,setImageUrls] =useState([])
+  const [imageUrls, setImageUrls] = useState([])
 
   // Responsive scroll offset
   const getScrollOffset = () => {
@@ -122,15 +122,15 @@ const [imageUrls,setImageUrls] =useState([])
     }
   };
   return (
-    <div className="flex flex-col gap-4 rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
-      <div className="bg-lime-500/5 border border-lime-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
-        <span className="text-lg font-medium text-lime-800">
+    <div className="flex flex-col  rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
+      <div className="bg-emerald-500/5 border border-emerald-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
+        <span className="text-lg font-medium text-emerald-800">
           Orders ID : {orderData?.bill_no}
         </span>
-        <span className="text-lg font-medium text-lime-800">
+        <span className="text-lg font-medium text-emerald-800">
           Date/Time : {orderData?.date}
         </span>
-        <span className="text-lg font-medium text-lime-800">
+        <span className="text-lg font-medium text-emerald-800">
           Amount : {orderData?.total_amount}
         </span>
       </div>
@@ -169,7 +169,7 @@ const [imageUrls,setImageUrls] =useState([])
           <div className="relative w-full max-w-full md:max-w-3xl mx-auto" style={{ minHeight: "9rem" }}>
             {imageUrls.length > 1 && (
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-600 bg-white/80 hover:bg-lime-700 hover:text-white transition-colors border border-lime-200"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white/80 hover:bg-emerald-700 hover:text-white transition-colors border border-emerald-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -189,7 +189,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             <div
               ref={scrollRef}
-              className="flex gap-4 sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
+              className="flex  sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
               style={{ scrollBehavior: "smooth" }}
             >
               {imageUrls.map((url, idx) => (
@@ -207,7 +207,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             {imageUrls.length > 1 && (
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-600 bg-white/80 hover:bg-lime-700 hover:text-white transition-colors border border-lime-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white/80 hover:bg-emerald-700 hover:text-white transition-colors border border-emerald-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -231,69 +231,73 @@ const [imageUrls,setImageUrls] =useState([])
               className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-85"
               onClick={closeModal}
             >
-              {/* Close Button */}
-              <button
-                className="absolute top-4 right-4 bg-red-500 opacity-90 shadow-lg p-2 rounded-full z-10 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
-                onClick={closeModal}
-                aria-label="Close"
-              >
-                <CloseIcon className="text-white font-bold" />
-              </button>
-
-              {/* Previous Button */}
-              {modal.index > 0 && (
-                <button
-                  className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-lime-700 hover:text-white border border-lime-200"
-                  onClick={() => navigate(-1)}
-                  aria-label="Previous"
-                  style={{
-                    height: "3rem",
-                    width: "3rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
-                  <ArrowBackIosIcon fontSize="inherit" />
-                </button>
-              )}
-
-              {/* Next Button */}
-              {modal.index < imageUrls.length - 1 && (
-                <button
-                  className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-lime-700 hover:text-white border border-lime-200"
-                  onClick={() => navigate(1)}
-                  aria-label="Next"
-                  style={{
-                    height: "3rem",
-                    width: "3rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
-                  <ArrowForwardIosIcon fontSize="inherit" />
-                </button>
-              )}
-
-              {/* Image Counter */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-white text-xs font-semibold bg-black/60 rounded-xl py-1 px-4">
-                {modal.index + 1} / {imageUrls.length}
-              </div>
-
-              {/* Modal Image */}
+              {/* Prevent close on any child click */}
               <div
-                className="relative flex flex-col items-center max-w-[94vw] max-h-[88vh]"
+                className="relative w-full h-full flex items-center justify-center"
                 onClick={(e) => e.stopPropagation()}
               >
-                <img
-                  src={imageUrls[modal.index]?.image}
-                  alt={`Preview ${modal.index + 1}`}
-                  className="rounded-xl shadow-xl bg-white max-h-[80vh] max-w-[90vw]"
-                />
+                {/* Close Button */}
+                <button
+                  className="absolute top-4 right-4 bg-red-500 opacity-90 shadow-lg p-2 rounded-full z-10 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  onClick={closeModal}
+                  aria-label="Close"
+                >
+                  <CloseIcon className="text-white font-bold" />
+                </button>
+
+                {/* Previous Button */}
+                {modal.index > 0 && (
+                  <button
+                    className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-emerald-700 hover:text-white border border-emerald-200"
+                    onClick={() => navigate(-1)}
+                    aria-label="Previous"
+                    style={{
+                      height: "3rem",
+                      width: "3rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <ArrowBackIosIcon fontSize="inherit" />
+                  </button>
+                )}
+
+                {/* Next Button */}
+                {modal.index < imageUrls.length - 1 && (
+                  <button
+                    className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-emerald-700 hover:text-white border border-emerald-200"
+                    onClick={() => navigate(1)}
+                    aria-label="Next"
+                    style={{
+                      height: "3rem",
+                      width: "3rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <ArrowForwardIosIcon fontSize="inherit" />
+                  </button>
+                )}
+
+                {/* Image Counter */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-white text-xs font-semibold bg-black/60 rounded-xl py-1 px-4">
+                  {modal.index + 1} / {imageUrls.length}
+                </div>
+
+                {/* Modal Image */}
+                <div className="relative flex flex-col items-center max-w-[94vw] max-h-[88vh]">
+                  <img
+                    src={imageUrls[modal.index]?.image}
+                    alt={`Preview ${modal.index + 1}`}
+                    className="rounded-xl shadow-xl bg-white max-h-[80vh] max-w-[90vw]"
+                  />
+                </div>
               </div>
             </div>
           )}
+
 
           <style jsx>{`
             .scrollbar-hide {
@@ -309,51 +313,50 @@ const [imageUrls,setImageUrls] =useState([])
 
         {/* Right: Button at bottom-right */}
         <div className="w-1/2 flex flex-col justify-between items-end p-6">
-        <div className="flex flex-col gap-5" >
-        <FormControl sx={{ width: "150px" }} size="small">
-            <InputLabel id="demo-select-small-label">Assign Staff</InputLabel>
-            <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              value={selectedStaff}
-              onChange={(e) => setSelectedStaff(e.target.value)}
-              label="Assign Staff"
-            >
-              <MenuItem value="" disabled>
-              Assign Staff
-              </MenuItem>
-              {roleList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
+          <div className="flex flex-col gap-5" >
+            <FormControl sx={{ width: "150px" }} size="small">
+              <InputLabel id="demo-select-small-label">Assign Staff</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={selectedStaff}
+                onChange={(e) => setSelectedStaff(e.target.value)}
+                label="Assign Staff"
+              >
+                <MenuItem value="" disabled>
+                  Assign Staff
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ width: "150px" }} size="small">
-            <InputLabel id="demo-select-small-label">Select Rider</InputLabel>
-            <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              value={selectedRider}
-              onChange={(e) => setSelectedRider(e.target.value)}
-              label=" Select Rider"
-            >
-              <MenuItem value="" disabled>
-              Select Rider
-              </MenuItem>
-              {roleList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
+                {roleList.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{ width: "150px" }} size="small">
+              <InputLabel id="demo-select-small-label">Select Rider</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={selectedRider}
+                onChange={(e) => setSelectedRider(e.target.value)}
+                label=" Select Rider"
+              >
+                <MenuItem value="" disabled>
+                  Select Rider
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>  
-        </div>
-       
+                {roleList.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
           <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
-            onClick={() => history.push(`/view-bill/${orderData?.id}`)}
+            onClick={() => history.push(`/salebill/view/${orderData?.id}`)}
             style={{
               backgroundColor: "var(--color1)",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",

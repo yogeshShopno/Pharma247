@@ -122,7 +122,7 @@ const [imageUrls,setImageUrls] =useState([])
     }
   };
   return (
-    <div className="flex flex-col gap-4 rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
+    <div className="flex flex-col  rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
       <div className="bg-red-500/5 border border-red-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
         <span className="text-lg font-medium text-red-800">
           Orders ID : {orderData?.bill_no}
@@ -189,7 +189,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             <div
               ref={scrollRef}
-              className="flex gap-4 sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
+              className="flex  sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
               style={{ scrollBehavior: "smooth" }}
             >
               {imageUrls.map((url, idx) => (

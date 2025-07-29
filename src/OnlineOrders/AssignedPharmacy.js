@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuItem from "@mui/material/MenuItem";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import TabContext from "@mui/lab/TabContext";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import { GoInfo } from "react-icons/go";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { FaUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
-import Box from "@mui/material/Box";
 import axios from "axios";
 import InputLabel from "@mui/material/InputLabel";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -34,11 +22,10 @@ const AssignedPharmacy = ({ orderid }) => {
   const [selectedStaff, setSelectedStaff] = useState("");
   const [selectedRider, setSelectedRider] = useState("");
 
-
   // Carousel hooks (moved to top level)
   const scrollRef = React.useRef(null);
   const [modal, setModal] = React.useState({ open: false, index: -1 });
-const [imageUrls,setImageUrls] =useState([])
+  const [imageUrls, setImageUrls] = useState([])
 
   // Responsive scroll offset
   const getScrollOffset = () => {
@@ -122,15 +109,15 @@ const [imageUrls,setImageUrls] =useState([])
     }
   };
   return (
-    <div className="flex flex-col gap-4 rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
-      <div className="bg-amber-500/5 border border-amber-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
-        <span className="text-lg font-medium text-amber-800">
+    <div className="flex flex-col  rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
+      <div className="bg-blue-500/5 border border-blue-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
+        <span className="text-lg font-medium text-blue-800">
           Orders ID : {orderData?.bill_no}
         </span>
-        <span className="text-lg font-medium text-amber-800">
+        <span className="text-lg font-medium text-blue-800">
           Date/Time : {orderData?.date}
         </span>
-        <span className="text-lg font-medium text-amber-800">
+        <span className="text-lg font-medium text-blue-800">
           Amount : {orderData?.total_amount}
         </span>
       </div>
@@ -169,7 +156,7 @@ const [imageUrls,setImageUrls] =useState([])
           <div className="relative w-full max-w-full md:max-w-3xl mx-auto" style={{ minHeight: "9rem" }}>
             {imageUrls.length > 1 && (
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-600 bg-white/80 hover:bg-amber-700 hover:text-white transition-colors border border-amber-200"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white/80 hover:bg-blue-700 hover:text-white transition-colors border border-blue-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -189,7 +176,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             <div
               ref={scrollRef}
-              className="flex gap-4 sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
+              className="flex  sm:gap-6 overflow-x-auto py-4 px-8 sm:px-12 scrollbar-hide scroll-smooth"
               style={{ scrollBehavior: "smooth" }}
             >
               {imageUrls.map((url, idx) => (
@@ -207,7 +194,7 @@ const [imageUrls,setImageUrls] =useState([])
 
             {imageUrls.length > 1 && (
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-600 bg-white/80 hover:bg-amber-700 hover:text-white transition-colors border border-amber-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 shadow-lg p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white/80 hover:bg-blue-700 hover:text-white transition-colors border border-blue-200"
                 style={{
                   height: "2.5rem",
                   width: "2.5rem",
@@ -243,7 +230,7 @@ const [imageUrls,setImageUrls] =useState([])
               {/* Previous Button */}
               {modal.index > 0 && (
                 <button
-                  className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-amber-700 hover:text-white border border-amber-200"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-blue-700 hover:text-white border border-blue-200"
                   onClick={() => navigate(-1)}
                   aria-label="Previous"
                   style={{
@@ -261,7 +248,7 @@ const [imageUrls,setImageUrls] =useState([])
               {/* Next Button */}
               {modal.index < imageUrls.length - 1 && (
                 <button
-                  className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-amber-700 hover:text-white border border-amber-200"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 z-10 shadow-lg p-3 rounded-full bg-white/80 hover:bg-blue-700 hover:text-white border border-blue-200"
                   onClick={() => navigate(1)}
                   aria-label="Next"
                   style={{
@@ -309,47 +296,47 @@ const [imageUrls,setImageUrls] =useState([])
 
         {/* Right: Button at bottom-right */}
         <div className="w-1/2 flex flex-col justify-between items-end p-6">
-        <div className="flex flex-col gap-5" >
-        <FormControl sx={{ width: "150px" }} size="small">
-            <InputLabel id="demo-select-small-label">Assign Staff</InputLabel>
-            <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              value={selectedStaff}
-              onChange={(e) => setSelectedStaff(e.target.value)}
-              label="Assign Staff"
-            >
-              <MenuItem value="" disabled>
-              Assign Staff
-              </MenuItem>
-              {roleList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
+          <div className="flex flex-col gap-5" >
+            <FormControl sx={{ width: "150px" }} size="small">
+              <InputLabel id="demo-select-small-label">Assign Staff</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={selectedStaff}
+                onChange={(e) => setSelectedStaff(e.target.value)}
+                label="Assign Staff"
+              >
+                <MenuItem value="" disabled>
+                  Assign Staff
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ width: "150px" }} size="small">
-            <InputLabel id="demo-select-small-label">Select Rider</InputLabel>
-            <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              value={selectedRider}
-              onChange={(e) => setSelectedRider(e.target.value)}
-              label=" Select Rider"
-            >
-              <MenuItem value="" disabled>
-              Select Rider
-              </MenuItem>
-              {roleList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
+                {roleList.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{ width: "150px" }} size="small">
+              <InputLabel id="demo-select-small-label">Select Rider</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={selectedRider}
+                onChange={(e) => setSelectedRider(e.target.value)}
+                label=" Select Rider"
+              >
+                <MenuItem value="" disabled>
+                  Select Rider
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>  
-        </div>
-       
+                {roleList.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
 
           <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"

@@ -311,14 +311,15 @@ const [imageUrls,setImageUrls] =useState([])
         <div className="w-1/2 flex flex-col justify-between items-end p-6">
         <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
-            onClick={() => history.push('/purchase/addPurchaseBill')}
+                          onClick={() => window.open(`https://wa.me/91${orderData?.patient_number}`, '_blank')}
+
             style={{
               backgroundColor: "var(--color1)",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
 
-            WhatsApp Patient
+            WhatsApp 
           </button>
        
 

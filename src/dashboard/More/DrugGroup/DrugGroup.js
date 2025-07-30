@@ -59,6 +59,7 @@ const DrugGroup = () => {
   const [IsDelete, setIsDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
+const [totalRecords, setTotalRecords] = useState(0);
 
   const handelAddOpen = () => {
     setOpenAddPopUp(true);
@@ -98,6 +99,7 @@ const DrugGroup = () => {
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
+  setPage(0); // Reset page on new search
 
     if (value.trim() === "") {
       setFilteredData(drugGroupData);
@@ -109,34 +111,44 @@ const DrugGroup = () => {
     }
   };
 
-  useEffect(() => {
-    DrugGroupList();
-  }, [page, rowsPerPage]);
+useEffect(() => {
+  const delayDebounce = setTimeout(() => {
+    DrugGroupList(page + 1, true);
+  }, 300);
+
+  return () => clearTimeout(delayDebounce);
+}, [searchTerm, page, rowsPerPage]);
+
 
   useEffect(() => {
     setFilteredData(drugGroupData);
   }, [drugGroupData]);
 
-  const DrugGroupList = () => {
-    const params = {
-      page: page + 1,
-      limit: rowsPerPage,
-    };
-    axios
-      .post("drug-list", {
-        params: params,
-      })
-      .then((response) => {
-        setDrugGroupData(response.data.data);
-        setFilteredData(response.data.data);
-        setIsLoading(false);
-        console.log("drug called");
-      })
-      .catch((error) => {
-        console.error("API error:", error);
-        setIsLoading(false);
-      });
-  };
+  const DrugGroupList = async (page = 1, isSearch = false) => {
+  const formData = new FormData();
+  formData.append("search", searchTerm.trim());
+  formData.append("page", page);
+  formData.append("limit", rowsPerPage);
+
+  try {
+    setIsLoading(true);
+    const response = await axios.post("drug-list", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const responseData = response.data.data || [];
+    setTotalRecords(response.data.count || 0);
+
+    setDrugGroupData(responseData);
+    setFilteredData(responseData);
+    setIsLoading(false);
+  } catch (error) {
+    console.error("API error:", error);
+    setIsLoading(false);
+  }
+};
+
 
   const validData = () => {
     if (isEditMode == false) {

@@ -8,6 +8,8 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { TextField } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
 
 const AssignedPharmacy = ({ orderid }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +23,11 @@ const AssignedPharmacy = ({ orderid }) => {
   const [roleList, setRolelist] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState("");
   const [selectedRider, setSelectedRider] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [statusList, setStatusList] = useState([{ "id": 3, "name": "reject" }, { "id": 4, "name": "accept" }]);
+
+
+  const [reason, setReason] = useState("");
 
   // Carousel hooks (moved to top level)
   const scrollRef = React.useRef(null);
@@ -100,7 +107,6 @@ const AssignedPharmacy = ({ orderid }) => {
           setIsLoading(false);
           setOrderData(response.data.data);
           setImageUrls(response.data.data.prescrption_list)
-          console.log("orderData", response.data.data);
         });
     } catch (error) {
       setIsLoading(false);
@@ -108,8 +114,54 @@ const AssignedPharmacy = ({ orderid }) => {
       setIsLoading(false);
     }
   };
+
+  const handleAcceptReject = async () => {
+    let data = new FormData();
+    data.append("order_id", orderid);
+    data.append("status", selectedStatus);
+    data.append("reason", reason? reason : "");
+
+    // data.append("order_status", 0)
+    // data.append("start_date", "2025-03-10")
+    // data.append("end_date", "2025-03-31")
+    // data.append("patient_name", "shailesh")
+
+    try {
+      await axios
+        .post("chemist-order-status?", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setIsLoading(false);
+          toast.success(response.data.message);
+          setSelectedStatus("");
+         setTimeout(() => history.push("/onlinedashboard"), 2000);
+
+
+        });
+    } catch (error) {
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   return (
     <div className="flex flex-col  rounded-lg shadow-[0_0_16px_rgba(0,0,0,0.16)] my-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="bg-blue-500/5 border border-blue-600 p-4 rounded-t-xl flex flex-row w-full justify-between items-center shadow-sm">
         <span className="text-lg font-medium text-blue-800">
           Orders ID : {orderData?.bill_no}
@@ -337,7 +389,51 @@ const AssignedPharmacy = ({ orderid }) => {
             </FormControl>
           </div>
 
+          <div className="flex flex-col gap-5" >
+            <FormControl sx={{ width: "150px" }} size="small">
+              <InputLabel id="demo-select-small-label">Status</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                label="Select Status"
+              >
+                <MenuItem value="" disabled>
+                  Select Status
+                </MenuItem>
+                {statusList.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {selectedStatus && (
+              <>{selectedStatus === 3 && (
+                <FormControl sx={{ width: "150px" }} size="small">
+                  <InputLabel id="demo-select-small-label">Reason</InputLabel>
+                  <TextField
+                    id="reason-textfield"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    label="Reason"
+                  />
+                </FormControl>
+              )}
 
+                <button
+                  className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
+                  onClick={() => handleAcceptReject()}
+                  style={{
+                    backgroundColor: "var(--color1)",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  }}
+                >Submit
+                </button>
+              </>
+            )}
+          </div>
           <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
             onClick={() => history.push(`/view-bill/${orderData?.id}`)}

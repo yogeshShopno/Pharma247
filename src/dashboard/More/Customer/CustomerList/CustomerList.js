@@ -79,18 +79,17 @@ const CustomerList = () => {
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
 
   const [searchTrigger, setSearchTrigger] = useState(0);
-const searchTimeout = React.useRef(null);
-const currentSearchTerms = React.useRef(searchTerms);
+  const searchTimeout = React.useRef(null);
+  const currentSearchTerms = React.useRef(searchTerms);
+  const [totalRecords, setTotalRecords] = useState(0); // ✅ ADD
 
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
+  const totalPages = Math.ceil(totalRecords / rowsPerPage); // ✅ FIX PAGINATION BASED ON SERVER
 
-  const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const paginatedData = tableData; // ✅ SERVER-SIDE PAGINATED DATA
+
 
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -167,11 +166,11 @@ const currentSearchTerms = React.useRef(searchTerms);
   };
 
   const handleKeyDown = (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    customerAllData(1, currentSearchTerms.current);
-  }
-};
+    if (e.key === "Enter") {
+      e.preventDefault();
+      customerAllData(1, currentSearchTerms.current);
+    }
+  };
 
   const resetAddDialog = () => {
     setCustomer("");
@@ -349,6 +348,7 @@ const currentSearchTerms = React.useRef(searchTerms);
     }
   };
 
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
@@ -358,9 +358,11 @@ const currentSearchTerms = React.useRef(searchTerms);
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    customerAllData(newPage);
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      customerAllData(newPage);
+    }
   };
 
   const handleClick = (pageNum) => {
@@ -427,71 +429,77 @@ const currentSearchTerms = React.useRef(searchTerms);
   };
 
 
-const handleSearchChange = (index, value) => {
-  const newSearchTerms = [...searchTerms];
-  newSearchTerms[index] = value;
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
 
-  // Save the latest search to the ref for effect/API use
-  currentSearchTerms.current = newSearchTerms;
-  setSearchTerms(newSearchTerms);
-  setCurrentPage(1); // Always reset to page 1 on search
-  setSearchTrigger(prev => prev + 1); // Fire effect for debounced API
-};
-
-
-useEffect(() => {
-  if (searchTrigger > 0) {
-    // Clear previous debounce if any
-    clearTimeout(searchTimeout.current);
-
-    const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
-    if (!hasSearchTerms) {
-      // If all empty, just fetch all data without filters
-      customerAllData(1, ["", "", "", "", "", ""]);
-    } else {
-      // Debounce for 200ms
-      searchTimeout.current = setTimeout(() => {
-        customerAllData(1, currentSearchTerms.current);
-      }, 200);
-    }
-  }
-  // Cleanup timeout on unmount
-  return () => {
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    // Save the latest search to the ref for effect/API use
+    currentSearchTerms.current = newSearchTerms;
+    setSearchTerms(newSearchTerms);
+    setCurrentPage(1); // Always reset to page 1 on search
+    setSearchTrigger(prev => prev + 1); // Fire effect for debounced API
   };
-}, [searchTrigger]);
 
+
+    useEffect(() => {
+    if (searchTrigger > 0) {
+      clearTimeout(searchTimeout.current);
+
+      const hasSearchTerms = currentSearchTerms.current.some(
+        (term) => term && term.trim()
+      );
+
+      if (!hasSearchTerms) {
+        customerAllData(1, ["", "", "", "", "", ""]);
+      } else {
+        searchTimeout.current = setTimeout(() => {
+          customerAllData(1, currentSearchTerms.current);
+        }, 300); // ✅ DEBOUNCE
+      }
+    }
+    return () => {
+      if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    };
+  }, [searchTrigger]);
 
   useEffect(() => {
-    customerAllData();
-  }, []);
+    customerAllData(currentPage);
+  }, [currentPage]);
 
-  const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
-  let data = new FormData();
-  setIsLoading(true);
-  data.append("page", page);
-  data.append("due_only", chipState?.value);
-  apiKeys.forEach((key, idx) => {
-    const term = customSearchTerms[idx];
-    if (term && term.trim()) {
-      data.append(key, term.trim());
-    }
-  });
-  try {
-    const response = await axios.post("list-customer?", data, {
-      headers: { Authorization: `Bearer ${token}` },
+
+const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
+    let data = new FormData();
+    setIsLoading(true);
+    data.append("page", page);
+    data.append("due_only", chipState?.value);
+    data.append("iss_value", "search");
+
+    apiKeys.forEach((key, idx) => {
+      const term = customSearchTerms[idx];
+      if (term && term.trim()) {
+        data.append(key, term.trim());
+      }
     });
-    setTableData(response.data.data);
-    if (response.data.status === 401) {
-      history.push("/");
-      localStorage.clear();
+
+    try {
+      const response = await axios.post("list-customer?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setTableData(response.data.data);
+      setTotalRecords(response.data.total_records || 0); // ✅ SET TOTAL
+
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("API error:", error);
     }
-    setIsLoading(false);
-  } catch (error) {
-    setIsLoading(false);
-    console.error("API error:", error);
-  }
-};
+  };
+
 
 
   const bankIdToNameMap = tableData.reduce((map, bank) => {
@@ -625,6 +633,19 @@ useEffect(() => {
           style={{ borderColor: "var(--color2)" }}
         ></div>
         <div className="mt-4">
+          <div className="flex gap-2 flex-row pb-2">
+            <div className="detail drug_fltr_fld">
+              <TextField
+                variant="outlined"
+                size="small"
+                label="Search Customer"
+                value={searchTerms}
+                onChange={handleSearchChange}
+                autoComplete="off"
+                sx={{ width: "100%" }}
+              />
+            </div>
+          </div>
           <div className="flex flex-wrap gap-6">
             <Chip
               label="Due Only"
@@ -637,66 +658,6 @@ useEffect(() => {
               onClick={handleChipClick}
             />
 
-            {/* <FormControl sx={{ minWidth: 240 }} size="small">
-                                <InputLabel id="demo-select-small-label">All Payment Mode</InputLabel>
-                                <Select
-                                    labelId="demo-select-small-label"
-                                    id="demo-select-small"
-                                    multiple
-                                    value={paymentMode}
-                                    onChange={handleChangeFilter}
-                                    renderValue={renderValue}
-                                    label="All Payment Mode"
-                                >
-                                    <MenuItem value="" disabled >
-                                        Customer Due Payment
-                                    </MenuItem>
-                                    <MenuItem value="dueOnly">
-                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('dueOnly') > -1} />
-                                        <ListItemText primary="Due Only" />
-                                    </MenuItem>
-                                    <MenuItem value="active">
-                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('active') > -1} />
-                                        <ListItemText primary="Active" />
-                                    </MenuItem>
-                                    <MenuItem value="deactivate">
-                                        <Checkbox 
-sx={{
-    color: "var(--color2)", // Color for unchecked checkboxes
-    '&.Mui-checked': {
-      color: "var(--color1)", // Color for checked checkboxes
-    },
-  }} checked={paymentMode.indexOf('deactivate') > -1} />
-                                        <ListItemText primary="Deactivate" />
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                            <div>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    style={{
-                                        minHeight: '38px',
-                                        alignItems: "center",
-                                        background: "var(--color1)"
-                                    }}
-                                // onClick={filterData}
-                                >
-                                    <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
-                                </Button>
-                            </div> */}
           </div>
           <div className="overflow-x-auto mt-3 scroll-two">
             <table
@@ -837,68 +798,68 @@ sx={{
               )}
             </table>
           </div>
-        <div
-          className="flex justify-center mt-4"
-          style={{
-            marginTop: 'auto',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '1rem',
-          }}
-        >
-          <button
-            onClick={handlePrevious}
-            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-              ? "bg-gray-200 text-gray-700"
-              : "secondary-bg text-white"
-              }`}
-            disabled={currentPage === 1}
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
           >
-            Previous
-          </button>
-          {currentPage > 2 && (
             <button
-              onClick={() => handleClick(currentPage - 2)}
-              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
             >
-              {currentPage - 2}
+              Previous
             </button>
-          )}
-          {currentPage > 1 && (
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
             <button
-              onClick={() => handleClick(currentPage - 1)}
-              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
             >
-              {currentPage - 1}
+              {currentPage}
             </button>
-          )}
-          <button
-            onClick={() => handleClick(currentPage)}
-            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-          >
-            {currentPage}
-          </button>
-          {currentPage < totalPages && (
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
             <button
-              onClick={() => handleClick(currentPage + 1)}
-              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
             >
-              {currentPage + 1}
+              Next
             </button>
-          )}
-          <button
-            onClick={handleNext}
-            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-              ? "bg-gray-200 text-gray-700"
-              : "secondary-bg text-white"
-              }`}
-            disabled={currentPage >= totalPages}
-          >
-            Next
-          </button>
-        </div>
+          </div>
         </div>
 
         {/* File Upload Popup */}

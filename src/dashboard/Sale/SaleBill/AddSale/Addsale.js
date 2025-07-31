@@ -44,6 +44,11 @@ import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { IoCaretDown } from "react-icons/io5";
+import Checkbox from "@mui/material/Checkbox";
+import { FaCloudMoon } from "react-icons/fa";
+import { FaSun } from "react-icons/fa";
+import { FaCloudSun } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
 
 const Addsale = () => {
   const token = localStorage.getItem("token");
@@ -124,6 +129,8 @@ const Addsale = () => {
   const [searchItem, setSearchItem] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
+  const [openReminderPopUp, setOpenReminderPopUp] = useState(false);
+
 
   const [itemList, setItemList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
@@ -190,6 +197,31 @@ const Addsale = () => {
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
 
   const [autocompleteKey, setAutocompleteKey] = useState(0);
+  const [pillTimes, setPillTimes] = useState({}); // { [item.id]: { morning, noon, night, refillDays, refillDate } }
+  const [checkedItems, setCheckedItems] = useState({});
+
+  useEffect(() => {
+    if (!ItemSaleList?.sales_item?.length) return;
+
+    const updated = {};
+    ItemSaleList.sales_item.forEach((item) => {
+      const totalDose = 1 + 0 + 1;
+      const refillDays = totalDose > 0 ? Math.floor(item.qty / totalDose) : 0;
+      const refillDate = new Date();
+      refillDate.setDate(refillDate.getDate() + refillDays);
+
+      updated[item.id] = {
+        morning: 1,
+        noon: 0,
+        night: 1,
+        refillDays,
+        refillDate,
+      };
+    });
+
+    setPillTimes(updated);
+  }, [ItemSaleList]);
+
 
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
   // Handle table focus and blur to enable/disable autocomplete
@@ -616,10 +648,10 @@ const Addsale = () => {
 
       const allOutOfStock = items.every((item) => item.stock === 0);
 
-      if (allOutOfStock) {
-        // console.log('Search Item-------');
-        fetchItemDrugGroup(searchItem);
-      }
+      // if (allOutOfStock) {
+      //   // console.log('Search Item-------');
+      //   fetchItemDrugGroup(searchItem);
+      // }
 
       return items;
     } catch (error) {
@@ -731,8 +763,6 @@ const Addsale = () => {
     handleSearch(newInputValue);
   };
 
-
-
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
     setUnsavedItems(true);
@@ -750,6 +780,7 @@ const Addsale = () => {
   };
 
   const handleOptionChange = (event, newValue) => {
+    console.log("Selected option:", newValue,selectedOption);
     setUnsavedItems(true);
 
     setSelectedOption(newValue);
@@ -788,6 +819,9 @@ const Addsale = () => {
   };
 
   const handlePassData = (event) => {
+
+    console.log("Selected item:", event);
+    setSelectedOption(event);
     setSearchItem(event.iteam_name);
     setBatch(event.batch_number);
     setItem(event.iteam_name);
@@ -930,20 +964,7 @@ const Addsale = () => {
     }
   };
 
-  const handleDraft = () => {
-    const newErrors = {};
-    if (!customer) {
-      newErrors.customer = "Please select Customer";
-    } else if (ItemSaleList?.sales_item.length == 0) {
-      newErrors.item = "Please Add any Item in Sale Bill";
-      toast.error("Please Add any Item in Sale Bill");
-    }
-    setError(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
-    draftSaleData();
-  };
+
 
   const handleEditClick = (item) => {
     if (!item) return; // Ensure the item is valid.
@@ -1268,7 +1289,7 @@ const Addsale = () => {
 
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
-    
+
         }
 
         if (billSaveDraft == 2) {
@@ -1287,11 +1308,11 @@ const Addsale = () => {
           }
           pdfGenerator(saleId);
 
-        
+
         }
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
+        setTimeout(() => {
+          history.push("/salelist");
+        }, 2000);
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       }
@@ -1590,27 +1611,6 @@ const Addsale = () => {
     } catch (e) { }
   };
 
-  const bulkOrderData = async () => {
-    let data = new FormData();
-
-    data.append("item_id", value.id ? value.id : "");
-
-    try {
-      const response = await axios.post("online-bulck-order", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      toast.success(response.data.message);
-      // handleSearch();
-    } catch (error) {
-      setIsLoading(false);
-      console.error("API error:", error);
-      toast.error("Failed to place bulk order.");
-    }
-  };
-
   const handleQtyChange = (e) => {
     const val = e.target.value;
 
@@ -1824,6 +1824,68 @@ const Addsale = () => {
     };
   }, [autoCompleteOpen]);
 
+  const updatePillTiming = (item, updated) => {
+    const total = Number(updated.morning || 0) + Number(updated.noon || 0) + Number(updated.night || 0);
+    const refillDays = total > 0 ? Math.floor(item.qty / total) : 0;
+
+    const refillDate = new Date();
+    refillDate.setDate(refillDate.getDate() + refillDays);
+
+    setPillTimes((prev) => ({
+      ...prev,
+      [item.id]: {
+        ...updated,
+        refillDays,
+        refillDate,
+      },
+    }));
+  };
+
+  const handleReminder = async () => {
+    const selectedItems = Object.keys(checkedItems).filter((id) => checkedItems[id]);
+
+    for (const id of selectedItems) {
+      const item = ItemSaleList.sales_item.find((i) => i.id === parseInt(id));
+      const dose = pillTimes[id];
+
+      if (!item || !dose) continue;
+
+      const data = new FormData();
+      data.append("item_id", item.id);
+      data.append("refill_date", dose.refillDate.toLocaleDateString("en-GB")); // dd/mm/yyyy
+      data.append("morning", dose.morning);
+      data.append("noon", dose.noon);
+      data.append("night", dose.night);
+
+      try {
+        const response = await axios.post("pill-refill-reminder?", data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.status === 200) {
+          //console.log("response===>", response.data);
+          toast.success("Reminder(s) set successfully");
+          setOpenReminderPopUp(false);
+
+
+        } else if (response.data.status === 400) {
+          toast.error(response.data.message);
+        } else if (response.data.status === 401) {
+          history.push("/");
+          localStorage.clear();
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Error setting reminder. Please try again later.");
+        }
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -1882,6 +1944,15 @@ const Addsale = () => {
                 <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: "var(--color1)" }}
+                  className="payment_btn_divv"
+                  onClick={() => setOpenReminderPopUp(true)}
+                >
+                  <FaBell className="mr-2" />
+                  set Reminder
+                </Button>
                 <Button
                   variant="contained"
                   style={{ backgroundColor: "var(--color1)" }}
@@ -1989,7 +2060,9 @@ const Addsale = () => {
                   </Button>
                   {/* Dropdown menu */}
                   {isOpen && (
-                    <div className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
+                    <div style={{
+                      zIndex: 1000,
+                    }} className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
                       <ul className="transition-all">
                         <li
                           onClick={() => {
@@ -3620,7 +3693,7 @@ const Addsale = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-
+        //add item dialog
         <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add New Item
@@ -3713,6 +3786,152 @@ const Addsale = () => {
             >
               <ControlPointIcon className="mr-2" />
               Add New Item
+            </Button>
+          </DialogActions>
+        </Dialog>
+        //refill/pill remider dialog
+
+        <Dialog open={openReminderPopUp} className="custom-dialog modal_991 ">
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Set Pill/Refill Reminder
+          </DialogTitle>
+
+
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenReminderPopUp(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent className="">
+            <DialogContentText id="alert-dialog-description">
+              <div className="bg-white">
+                <div className="mainform bg-white rounded-lg">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <table className="item-table">
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th>Item Name</th>
+                          <th>Quantity</th>
+                          <th className="">
+                            <span style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
+                              Morning <FaCloudSun />
+                            </span>
+                          </th>
+                          <th className="">
+                            <span style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
+                              Noon <FaSun />
+                            </span>
+                          </th>
+                          <th className="">
+                            <span style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
+                              Night <FaCloudMoon />
+                            </span>
+                          </th>
+
+                          <th>Refill day</th>
+                          <th>Refill Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {ItemSaleList?.sales_item?.map((item) => (
+                          <tr key={item.id} className="item-List" style={{ whiteSpace: "nowrap" }}>
+                            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                              <Checkbox
+                                checked={checkedItems[item.id] || false}
+                                onChange={(e) =>
+                                  setCheckedItems((prev) => ({
+                                    ...prev,
+                                    [item.id]: e.target.checked,
+                                  }))
+                                }
+                              />
+                            </td>
+                            <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.iteam_name || barcodeItemName}</td>
+                            <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty || "-----"}</td>
+
+                            {["morning", "noon", "night"].map((time) => (
+                              <td key={time}>
+                                <TextField
+                                  type="number"
+                                  size="small"
+                                  sx={{ width: "100px" }}
+                                  value={pillTimes[item.id]?.[time] || 0}
+                                  onChange={(e) => {
+                                    const updated = {
+                                      ...pillTimes[item.id],
+                                      [time]: Number(e.target.value),
+                                    };
+                                    updatePillTiming(item, updated);
+                                  }}
+                                />
+                              </td>
+                            ))}
+
+                            <td>
+                              <TextField
+                                type="number"
+                                size="small"
+                                sx={{ width: "100px" }}
+                                disabled
+                                value={pillTimes[item.id]?.refillDays || 0}
+                              />
+                            </td>
+
+                            <td>
+                              <DatePicker
+                                selected={pillTimes[item.id]?.refillDate || new Date()}
+                                onChange={(date) => {
+                                  setPillTimes((prev) => ({
+                                    ...prev,
+                                    [item.id]: {
+                                      ...prev[item.id],
+                                      refillDate: date,
+                                    },
+                                  }));
+                                }}
+                                dateFormat="dd/MM/yyyy"
+                                customInput={
+                                  <TextField
+                                    size="small"
+                                    sx={{ width: "130px" }}
+                                  />
+                                }
+                              />
+                            </td>
+
+                          </tr>
+                        ))}
+                      </tbody>
+
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                "&:hover": {
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)", // Keep the hover color same
+                },
+              }}
+              onClick={() => {
+                handleReminder();
+              }}
+            >
+              <ControlPointIcon className="mr-2" />
+              Set Reminder
             </Button>
           </DialogActions>
         </Dialog>

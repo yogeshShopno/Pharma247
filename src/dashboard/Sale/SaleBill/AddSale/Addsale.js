@@ -108,7 +108,6 @@ const Addsale = () => {
 
   const [order, setOrder] = useState("");
   const [roundOff, setRoundOff] = useState(0);
-  const [uniqueId, setUniqueId] = useState([]);
   const [itemEditID, setItemEditID] = useState(0);
   const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
@@ -130,8 +129,6 @@ const Addsale = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [openAddItemPopUp, setOpenAddItemPopUp] = useState(false);
   const [openReminderPopUp, setOpenReminderPopUp] = useState(false);
-
-
   const [itemList, setItemList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
   const [doctorData, setDoctorData] = useState([]);
@@ -561,6 +558,22 @@ const Addsale = () => {
     }
   }, [itemId, base, qty]);
 
+  useEffect(() => {
+    if (selectedEditItem) {
+      setUnit(selectedEditItem.unit);
+      setBatch(selectedEditItem.batch);
+      setExpiryDate(selectedEditItem.exp);
+      setMRP(selectedEditItem.mrp);
+      setQty(item.qty);
+      setBase(item.base);
+      setGst(item.gst_name);
+      setOrder(item.order);
+      setItemAmount(selectedEditItem.net_rate);
+
+      inputRef5.current.focus();
+    }
+  }, [selectedEditItem]);
+
   const handleAddNewItemValidation = () => {
     const newErrors = {};
     if (!addItemName) {
@@ -780,7 +793,7 @@ const Addsale = () => {
   };
 
   const handleOptionChange = (event, newValue) => {
-    console.log("Selected option:", newValue,selectedOption);
+    console.log("Selected option:", newValue, selectedOption);
     setUnsavedItems(true);
 
     setSelectedOption(newValue);
@@ -819,9 +832,10 @@ const Addsale = () => {
   };
 
   const handlePassData = (event) => {
-
     console.log("Selected item:", event);
+    setItemId(event.item_id);
     setSelectedOption(event);
+    setSelectedEditItemId(event.id);
     setSearchItem(event.iteam_name);
     setBatch(event.batch_number);
     setItem(event.iteam_name);
@@ -978,20 +992,7 @@ const Addsale = () => {
     setLoc(item.location);
     setSelectedOption(item);
 
-    if (selectedEditItem) {
-      // setSearchItem(selectedEditItem.iteam_name);
-      setUnit(selectedEditItem.unit);
-      setBatch(selectedEditItem.batch);
-      setExpiryDate(selectedEditItem.exp);
-      setMRP(selectedEditItem.mrp);
-      setQty(item.qty);
-      setBase(item.base);
-      setGst(item.gst_name);
-      setOrder(item.order);
-      setItemAmount(selectedEditItem.net_rate);
 
-      inputRef7.current.focus();
-    }
   };
 
   const saleItemList = async () => {
@@ -1535,7 +1536,7 @@ const Addsale = () => {
       if (barcode) {
         data.append("item_id", itemId);
       } else {
-        data.append("item_id", value && value.id ? value.id : "");
+        data.append("item_id", itemId ? itemId : "");
       }
     }
     // data.append("id", selectedEditItemId ? selectedEditItemId : '')

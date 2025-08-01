@@ -18,7 +18,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
@@ -26,6 +26,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { encryptData, decryptData } from "../componets/cryptoUtils";
 import { toast, ToastContainer } from "react-toastify";
 import Search from "./Search";
+import { Typography } from "@mui/material";
 
 const Header = () => {
   const history = useHistory();
@@ -39,14 +40,11 @@ const Header = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   // const token = localStorage.getItem("token");
   const [permission, setPermission] = useState([]);
-  const [checkedper, setCheckedper] = useState();
   const [searchPage, setSearchPage] = useState(false);
   const [notifications, setNotifications] = useState(false);
+  const [notificationsList, setNotificationsList] = useState([],);
 
-  const [items, setItems] = useState({
-    topItems: ["Inbox", "Starred", "Send email", "Drafts"],
-    bottomItems: ["All mail", "Trash", "Spam"],
-  });
+
 
   /*<=============================================================================== get permissions  ======================================================================> */
 
@@ -55,11 +53,13 @@ const Header = () => {
       await userPermission(); // Assuming this fetches permissions and stores them correctly
     };
     fetchPermissions();
+    fetchNotification(); // Fetch notifications when the component mounts
   }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, [token]);
+
   const userPermission = async () => {
     let data = new FormData();
     try {
@@ -94,7 +94,20 @@ const Header = () => {
     }
   };
 
-
+  const fetchNotification = () => {
+    axios
+      .get("chemist_notification_list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setNotificationsList(response.data.data);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
+  };
 
   /*<=============================================================================== logout  ======================================================================> */
 
@@ -596,25 +609,25 @@ const Header = () => {
 
             {/*<============================================================================= order dashboard  ====================================================================> */}
 
-           
+
             {/*<==================================================================================== search  ===========================================================================> */}
 
             <div className="flex items-center justify-end cursor-pointer flex-end">
-            <div>
-              <div className="text-white mr-4 bg-transparent mr-2">
+              <div>
+                <div className="text-white mr-4 bg-transparent mr-2">
 
-                <div>
-                  <Link to="/onlinedashboard">
-                    <span
-                      href=""
-                      className="text-white font-semibold py-2  primhover secondary-bg rounded-md   px-4 transition-all  hover:rounded-md inline-flex items-center"
-                    >
-                      Online Orders 
-                    </span>
-                  </Link>
+                  <div>
+                    <Link to="/onlinedashboard">
+                      <span
+                        href=""
+                        className="text-white font-semibold py-2  primhover secondary-bg rounded-md   px-4 transition-all  hover:rounded-md inline-flex items-center"
+                      >
+                        Online Orders
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
               <div className="hidden xl:flex">
                 <div>
                   <div className="text-white mr-4 bg-transparent mr-2">
@@ -673,10 +686,7 @@ const Header = () => {
                             style={{ alignItems: "center" }}
                           >
                             <div>
-                              <DoneAllIcon
-                                style={{ cursor: "pointer" }}
-                                className="primary"
-                              />
+                             
                             </div>
                             <IconButton
                               onClick={toggleDrawerNotifications(false)}
@@ -686,42 +696,40 @@ const Header = () => {
                             </IconButton>
                           </div>
                         </Box>
-                        <List>
-                          <ListItem disablePadding>
-                            <ListItemButton>
-                              <div>
-                                <ListItem disablePadding>
-                                  <ListItemButton>
-                                    <div>
-                                      <p className="text-black">
-                                        Subscription for package - Capsule
-                                        Package has been added.
-                                      </p>
-                                      <h6 className="text-sm flex text-gray-500">
-                                        <MdWatchLater className="mt-1 mr-1" />
-                                        21 Jun 2024 9:03 AM
-                                      </h6>
-                                    </div>
-                                  </ListItemButton>
-                                </ListItem>
-                                <ListItem disablePadding>
-                                  <ListItemButton>
-                                    <div>
-                                      <p className="text-black">
-                                        Subscription for package - Capsule
-                                        Package has been added.
-                                      </p>
-                                      <h6 className="text-sm flex text-gray-500">
-                                        <MdWatchLater className="mt-1 mr-1" />
-                                        21 Jun 2024 9:03 AM
-                                      </h6>
-                                    </div>
-                                  </ListItemButton>
-                                </ListItem>
-                              </div>
-                            </ListItemButton>
-                          </ListItem>
+                        <List sx={{ p: 1 }}>
+                          {notificationsList.map((notification) => (
+                            <ListItem key={notification.id} disablePadding sx={{ mb: 1 }}>
+                              <ListItemButton
+                                sx={{
+                                  alignItems: "start",
+                                  backgroundColor: "#f9f9f9",
+                                  borderRadius: 2,
+                                  px: 2,
+                                  py: 1.5,
+                                  boxShadow: 1,
+                                  "&:hover": {
+                                    backgroundColor: "#eef6e9",
+                                    boxShadow: 3,
+                                  },
+                                }}
+                              >
+                                <Box>
+                                  <Typography variant="body1" className="text-black font-medium" gutterBottom>
+                                    {notification.description}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    className="text-gray-500 flex items-center"
+                                  >
+                                    <MdWatchLater className="mr-1" /> {notification.date}
+                                  </Typography>
+                                </Box>
+                              </ListItemButton>
+                            </ListItem>
+                          ))}
                         </List>
+
+
                         <Divider />
                       </Box>
                     }

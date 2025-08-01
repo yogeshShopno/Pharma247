@@ -832,7 +832,7 @@ const Addsale = () => {
   };
 
   const handlePassData = (event) => {
-    console.log("Selected item:", event);
+    
     setItemId(event.item_id);
     setSelectedOption(event);
     setSelectedEditItemId(event.id);

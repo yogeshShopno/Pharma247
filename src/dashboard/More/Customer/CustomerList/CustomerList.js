@@ -73,7 +73,7 @@ const CustomerList = () => {
 
     // { id: 'due_amount', label: 'Due Amount', minWidth: 100 },
   ];
-  const apiKeys = ["customer_name", "mobile_number", "email", "gst", "address", "area"];
+  const apiKeys = ["customer_name", "mobile_number", "email", "area", "amount", "state"];
 
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
@@ -318,6 +318,7 @@ const CustomerList = () => {
     data.append("area", area);
     data.append("amount", amount);
     data.append("address", address);
+    data.append("state", state);
     try {
       await axios
         .post("update-customer", data, {
@@ -441,7 +442,7 @@ const CustomerList = () => {
   };
 
 
-    useEffect(() => {
+  useEffect(() => {
     if (searchTrigger > 0) {
       clearTimeout(searchTimeout.current);
 
@@ -467,7 +468,7 @@ const CustomerList = () => {
   }, [currentPage]);
 
 
-const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
+  const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
     let data = new FormData();
     setIsLoading(true);
     data.append("page", page);
@@ -550,7 +551,12 @@ const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
         pauseOnHover
       />
 
-      <div className="p-6">
+      <div   style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }} className="p-6">
         <div
           className="mb-4 cust_list_main_hdr"
           style={{ display: "flex", gap: "4px" }}
@@ -633,7 +639,7 @@ const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
           style={{ borderColor: "var(--color2)" }}
         ></div>
         <div className="mt-4">
-          <div className="flex gap-2 flex-row pb-2">
+          {/* <div className="flex gap-2 flex-row pb-2">
             <div className="detail drug_fltr_fld">
               <TextField
                 variant="outlined"
@@ -645,20 +651,8 @@ const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
                 sx={{ width: "100%" }}
               />
             </div>
-          </div>
-          <div className="flex flex-wrap gap-6">
-            <Chip
-              label="Due Only"
-              style={{
-                backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                color: "white",
-              }}
-              value={chipState.value}
-              variant={chipState.variant}
-              onClick={handleChipClick}
-            />
+          </div> */}
 
-          </div>
           <div className="overflow-x-auto mt-3 scroll-two">
             <table
               className="w-full border-collapse custom-table"
@@ -688,6 +682,22 @@ const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
                           value={searchTerms[index]}
                           onChange={e => handleSearchChange(index, e.target.value)}
                         />
+                        {column.label == "Amount" && (
+                          <div className="flex mx-2 flex-wrap gap-6">
+                            <Chip
+                              label="Due Only"
+                              style={{
+                                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                color: "white",
+                              }}
+                              value={chipState.value}
+                              variant={chipState.variant}
+                              onClick={handleChipClick}
+                            />
+                          </div>
+                        )}
+
+
                       </div>
                     </th>
                   ))}
@@ -941,229 +951,227 @@ const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
 
         <Dialog
           open={openAddPopUp}
-        // sx={{
-        //     "& .MuiDialog-container": {
-        //         "& .MuiPaper-root": {
-        //             width: "36%",
-        //             maxWidth: "600px",  // Set your width here
-        //         },
-        //     },
-        // }}
+          className="custom-dialog"
+
         >
-          <div className="flex justify-center items-center h-auto">
-            <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
-              <div className="flex justify-between items-center">
-                <DialogTitle
-                  id="alert-dialog-title"
-                  style={{
-                    color: "var(--COLOR_UI_PHARMACY)",
-                    fontWeight: 700,
-                  }}
-                >
-                  {header}
-                </DialogTitle>
-                <IconButton
-                  aria-label="close"
-                  onClick={resetAddDialog}
-                  className="text-gray-500"
-                // sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <div className="mb-2">
-                          <span className="label primary mb-4">
-                            Customer Name
-                          </span>
-                          <span className="text-red-600 ml-1">*</span>
-                        </div>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          type="name"
-                          value={customer}
-                          onChange={(e) => {
-                            const cst =
-                              e.target.value.charAt(0).toUpperCase() +
-                              e.target.value.slice(1).toLowerCase();
-                            setCustomer(cst);
-                          }}
 
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                        {errors.customer && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.customer}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <div className="mb-2">
-                          <span className="label primary mb-4">
-                            Mobile No
-                          </span>
-                          <span className="text-red-600 ml-1">*</span>
-                        </div>
-                        <OutlinedInput
-                          type="number"
-                          value={mobileNo}
-                          onChange={handleChange}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              +91
-                            </InputAdornment>
-                          }
-                          style={{ width: "100%" }}
-                          size="small"
-                        />
-                        {errors.mobileNo && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.mobileNo}
-                          </span>
-                        )}
-                      </div>
+
+          <DialogTitle
+            id="alert-dialog-title" className="primary"
+
+          >
+            {header}
+          </DialogTitle>
+
+          <IconButton
+            aria-label="close"
+            onClick={resetAddDialog}
+            className="text-gray-500"
+            // sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+
+
+          </IconButton>
+
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">
+                        Customer Name
+                      </span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      type="name"
+                      value={customer}
+                      onChange={(e) => {
+                        const cst =
+                          e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1).toLowerCase();
+                        setCustomer(cst);
+                      }}
 
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">Email ID</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={emailId}
-                          onChange={(e) => {
-                            setEmailId(e.target.value);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">Amount</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          type="number"
-                          value={amount}
-                          onChange={(e) => {
-                            setAmount(e.target.value);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">Area</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={area}
-
-                          onChange={(e) => {
-                            const amt =
-                              e.target.value.charAt(0).toUpperCase() +
-                              e.target.value.slice(1).toLowerCase();
-                            setArea(amt);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">City</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={city}
-                          onChange={(e) => {
-                            const city =
-                              e.target.value.charAt(0).toUpperCase() +
-                              e.target.value.slice(1).toLowerCase();
-                            setCity(city);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">Address</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={address}
-                          onChange={(e) => {
-                            const add =
-                              e.target.value.charAt(0).toUpperCase() +
-                              e.target.value.slice(1).toLowerCase();
-                            setAddress(add);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                      <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                        <span className="label primary">State</span>
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-multiline-static"
-                          size="small"
-                          value={state}
-                          onChange={(e) => {
-                            const state =
-                              e.target.value.charAt(0).toUpperCase() +
-                              e.target.value.slice(1).toLowerCase();
-                            setState(state);
-                          }}
-                          style={{ width: "100%" }}
-                          variant="outlined"
-                        />
-                      </div>
-                    </div>
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                    {errors.customer && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.customer}
+                      </span>
+                    )}
                   </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions style={{ padding: "20px 24px" }}>
-                <Button
-                  variant="contained"
-                  style={{
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                  }}
-                  autoFocus
-                  className="p-5"
-                  onClick={Addcustomer}
-                >
-                  {buttonLabel}
-                </Button>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  onClick={resetAddDialog}
-                  color="error"
-                >
-                  Cancel
-                </Button>
-              </DialogActions>
-            </div>
-          </div>
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">
+                        Mobile No
+                      </span>
+                      <span className="text-red-600 ml-1">*</span>
+                    </div>
+                    <OutlinedInput
+                      type="number"
+                      value={mobileNo}
+                      onChange={handleChange}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          +91
+                        </InputAdornment>
+                      }
+                      style={{ width: "100%" }}
+                      size="small"
+                    />
+                    {errors.mobileNo && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.mobileNo}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">Email ID</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={emailId}
+                      onChange={(e) => {
+                        setEmailId(e.target.value);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">Amount</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      type="number"
+                      value={amount}
+                      onChange={(e) => {
+                        setAmount(e.target.value);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">Area</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={area}
+
+                      onChange={(e) => {
+                        const amt =
+                          e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1).toLowerCase();
+                        setArea(amt);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">City</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={city}
+                      onChange={(e) => {
+                        const city =
+                          e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1).toLowerCase();
+                        setCity(city);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">Address</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={address}
+                      onChange={(e) => {
+                        const add =
+                          e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1).toLowerCase();
+                        setAddress(add);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <span className="label primary">State</span>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-multiline-static"
+                      size="small"
+                      value={state}
+                      onChange={(e) => {
+                        const state =
+                          e.target.value.charAt(0).toUpperCase() +
+                          e.target.value.slice(1).toLowerCase();
+                        setState(state);
+                      }}
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                    />
+                  </div>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions style={{ padding: "20px 24px" }}>
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+              }}
+              autoFocus
+              className="p-5"
+              onClick={Addcustomer}
+            >
+              {buttonLabel}
+            </Button>
+            <Button
+              autoFocus
+              variant="contained"
+              onClick={resetAddDialog}
+              color="error"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+
         </Dialog>
       </div>
 

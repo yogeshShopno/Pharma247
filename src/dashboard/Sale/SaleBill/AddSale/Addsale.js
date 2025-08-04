@@ -1857,6 +1857,7 @@ const Addsale = () => {
       data.append("morning", dose.morning);
       data.append("noon", dose.noon);
       data.append("night", dose.night);
+      data.append("customer_id")
 
       try {
         const response = await axios.post("pill-refill-reminder?", data, {

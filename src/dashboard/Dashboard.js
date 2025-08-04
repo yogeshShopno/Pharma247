@@ -55,6 +55,7 @@ const Dashboard = () => {
   // const history = useHistory()
 
   const token = localStorage.getItem("token");
+
   const staffList = [
     { id: "today", value: "Today" },
     { id: "yesterday", value: "Yesterday" },
@@ -72,8 +73,8 @@ const Dashboard = () => {
     { id: 0, value: "purchase" },
   ];
   const types = [
-    { id: 1, value: "sales" },
-    { id: 0, value: "purchase" },
+    { id: 0, value: "sales" },
+    { id: 1, value: "purchase" },
   ];
   const [linechartValue, setLinechartValue] = useState("Today");
   const [staffListValue, setStaffListValue] = useState("7_day");
@@ -82,7 +83,7 @@ const Dashboard = () => {
   const [record, setRecord] = useState();
   const [distributor, setDistributor] = useState([]);
   const [billData, setBilldata] = useState([]);
-  const [customer, setCustomer] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [expiry, setExpiry] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [pieChartvalue, setpieChartValue] = useState('sales');
@@ -96,7 +97,7 @@ const Dashboard = () => {
   const [barChartData, setBarChartData] = useState([]);
 
   const [tickFontSize, setTickFontSize] = useState("2px");
-
+const [staffOverview,setStaffOverview]=useState([])
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) {
@@ -194,6 +195,8 @@ const Dashboard = () => {
 
   const handlestaffTabchange = (event, newValue) => {
     setpieChartValue(newValue);
+    console.log(newValue)
+    setValue(newValue);
   };
 
   const staffListHandlechange = (event) => {
@@ -296,7 +299,8 @@ const Dashboard = () => {
           setData(formattedData);
 
           setBilldata(billData);
-          setCustomer(initialData?.top_customer);
+          setCustomers(initialData?.top_customer);
+          setStaffOverview(initialData?.staff_overview)
           setExpiry(initialData?.expiring_iteam);
           setDistributor(initialData?.top_distributor);
           setLoyaltyPoints(initialData?.loyalti_point_all_customer);
@@ -324,28 +328,7 @@ const Dashboard = () => {
     } catch (error) { }
   };
 
-  // const handleSwitchChange = (event) => {
-  //   setSwitchValue(event.target.checked);
-  // }
-  // const handleSwitchCustomerChange = (event) => {
-  //   setSwitchCustomerValue(event.target.checked);
-  // }
-  const dataOne = [
-    { value: 40 },
-    { value: 60 },
-    { value: 80 },
-    { value: 100 },
-    { value: 70 },
-    { value: 90 },
-    { value: 110 },
-  ];
-  const topCustomers = [
-    { name: "Alice", number: "9876543210", price: 1200 },
-    { name: "Bob", number: "9123456789", price: 950 },
-    { name: "Charlie", number: "9988776655", price: 1350 },
-    { name: "Diana", number: "9090909090", price: 1100 },
-    // { name: "Eve", number: "9812345678", price: 1450 },
-  ];
+
   const getNiceTicks = (data) => {
     if (!data || data.length === 0) return [];
     const max = Math.max(...data.map((d) => d.value || 0));
@@ -357,23 +340,6 @@ const Dashboard = () => {
     { id: "purchase", value: "Purchase" },
   ];
 
-  // Static data for tables
-  const staticData = {
-    sales: [
-      { name: "John Doe", amount: 3000 },
-      { name: "Alice Smith", amount: 2000 },
-      { name: "David Lee", amount: 1500 },
-      { name: "Maria Green", amount: 1800 },
-      { name: "Kevin Hart", amount: 1200 },
-    ],
-    purchase: [
-      { name: "Emma Stone", amount: 2500 },
-      { name: "Olivia Brown", amount: 2200 },
-      { name: "Liam Johnson", amount: 1700 },
-      { name: "Sophia Clark", amount: 1400 },
-      { name: "Noah Davis", amount: 1900 },
-    ],
-  };
 
   return (
     <div>
@@ -584,7 +550,7 @@ const Dashboard = () => {
                             </p>
                           </div>
                           <div className="mt-3 space-y-4">
-                            {topCustomers.map((customer, index) => (
+                            {customers.map((customer, index) => (
                               <div
                                 key={index}
                                 className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
@@ -594,11 +560,11 @@ const Dashboard = () => {
                                     {customer.name}
                                   </p>
                                   <p className="text-sm text-gray-500">
-                                    {customer.number}
+                                    {customer.mobile}
                                   </p>
                                 </div>
                                 <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                                  ₹{customer.price.toLocaleString()}
+                                  ₹{customer.balance.toLocaleString()}
                                 </div>
                               </div>
                             ))}
@@ -617,48 +583,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-              {/* <div className="col-md-3 w-full" style={{ width: '70%' }}>
-                <div className="flex" style={{ width: '100%', height: "780px" }}>
-                  <Card className="w-full rounded-2xl shadow-lg bg-white border border-gray-200">
-                    <div className='flex h-full flex-col justify-center gap-4 p-6' style={{ justifyContent: "flex-start" }}>
-                      <div className="flex justify-between items-center border-b pb-4 pt-2">
-                        <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
-                          Top Distributors
-                          <Tooltip title="Latest Distributors">
-                            <Button variant="ghost" size="icon" className="ml-2">
-                              <GoInfo className="text-green-600" style={{ fontSize: "1rem" }} />
-                            </Button>
-                          </Tooltip>
-                        </p>
-                      </div>
-                      <div className="mt-6 space-y-4">
-                        {distributor.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
-                          >
-                            <div>
-                              <p className="font-semibold text-base text-gray-800">{item.name}</p>
-                              <p className="text-sm text-gray-500">GST: {item.gst_number}</p>
-                            </div>
-                            <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                              ₹{item.due_amount === 0 ? '0' : item.due_amount.toLocaleString()}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-6 flex justify-end">
-                        <Link
-                          to="/more/DistributorList"
-                          className="text-green-600 flex items-center gap-1 hover:underline font-medium"
-                        >
-                          View all <ChevronRightIcon className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              </div> */}
+              
               <div className="lg:col-span-2 md:col-span-1">
                 <div className="bg-white h-full rounded-2xl shadow-lg border border-gray-200 p-6 w-full">
                   {/* Tabs */}
@@ -987,9 +912,9 @@ const Dashboard = () => {
                   <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between w-full">
                     {/* Tabs - Responsive */}
                     <div className="w-full sm:w-auto order-2 sm:order-1">
-                      <TabContext value={pieChartvalue}>
+                      <TabContext value={value}>
                         <TabList
-                          onChange={handlestaffTabchange}
+                          onChange={handlechange}
                           aria-label="Sales Purchase Tabs"
                           TabIndicatorProps={{ style: { display: "none" } }}
                           variant="scrollable"
@@ -1018,7 +943,7 @@ const Dashboard = () => {
                             },
                           }}
                         >
-                          {pieChartTabs.map((tab) => (
+                          {types.map((tab) => (
                             <Tab
                               key={tab.id}
                               value={tab.id}
@@ -1094,7 +1019,7 @@ const Dashboard = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {staticData[tab.id].map((item, index) => (
+                                {staffOverview.map((item, index) => (
                                   <TableRow key={index} hover>
                                     <TableCell
                                       sx={{
@@ -1102,7 +1027,7 @@ const Dashboard = () => {
                                         py: { xs: 1, sm: 1.5 }
                                       }}
                                     >
-                                      {item.name}
+                                      {item.lable}
                                     </TableCell>
                                     <TableCell
                                       className="text-green-700 font-medium"
@@ -1111,7 +1036,7 @@ const Dashboard = () => {
                                         py: { xs: 1, sm: 1.5 }
                                       }}
                                     >
-                                      ₹ {item.amount.toLocaleString()}
+                                      ₹ {item.value.toLocaleString()}
                                     </TableCell>
                                   </TableRow>
                                 ))}

@@ -73,8 +73,8 @@ const Dashboard = () => {
     { id: 0, value: "purchase" },
   ];
   const types = [
-    { id: 0, value: "sales" },
-    { id: 1, value: "purchase" },
+    { id: 1, value: "sales" },
+    { id: 0, value: "purchase" },
   ];
   const [linechartValue, setLinechartValue] = useState("Today");
   const [staffListValue, setStaffListValue] = useState("7_day");

@@ -301,7 +301,7 @@
 /* Inventory Page */
 @media (max-width: 1115px) {
   .inventory_search {
-    width: 100% !important;
+    width: 50% !important;
   }
 
   .inventory_search_btn {
@@ -315,7 +315,7 @@
 
 @media (min-width: 1549px) {
   .inventory_search {
-    width: 75% !important;
+    width: 50% !important;
   }
 
   .inventory_search_btn {
@@ -330,7 +330,7 @@
 
 @media (min-width: 1441px) and (max-width: 1550px) {
   .inventory_search {
-    width: 70% !important;
+    width: 50% !important;
   }
 
   .inventory_search_btn {

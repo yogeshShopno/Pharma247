@@ -391,7 +391,6 @@ const CashManage = () => {
               </table>
             </div>
             <div className="flex justify-center mt-4" style={{
-              position: 'absolute',
               left: 0,
               right: 0,
               bottom: 50,

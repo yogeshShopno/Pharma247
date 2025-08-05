@@ -464,80 +464,92 @@ const DoctorList = () => {
           }}
         >
           <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-            <div className="p-6">
-              <div
-                className="mb-4 cust_list_main_hdr_bg"
-                style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
-              >
+            <div className="paddin12-8">
+              <div className="px-4 py-3">
                 <div
-                  style={{ display: "flex", gap: "7px", alignItems: "center" }}
-                  className="mt-2"
+                  className="cust_list_main_hdr_bg"
+                  style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
                 >
-                  <span
+                  <div
                     style={{
-                      color: "var(--color1)",
                       display: "flex",
+                      gap: "7px",
                       alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
+                      whiteSpace: "nowrap",
                     }}
+                    className=""
                   >
-                    Doctors
-                  </span>
-                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-                </div>
-                <div className="headerList cust_hdr_mn_bg mt-2">
-                  {hasPermission(permissions, "doctor import") && (
-                    <Button
-                      variant="contained"
-                      className="gap-2"
-                      style={{ background: "var(--color1)", display: "flex" }}
-                      onClick={openFilePopUP}
-                    >
-                      <CloudUploadIcon /> Import
-                    </Button>
-                  )}
-                  {hasPermission(permissions, "doctor create") && (
-                    <Button
-                      variant="contained"
-                      className="gap-2"
-                      style={{ background: "var(--color1)", display: "flex" }}
-                      onClick={handelAddOpen}
-                    >
-                      <AddIcon /> Add Doctor
-                    </Button>
-                  )}
-                  {hasPermission(permissions, "doctor download") && (
-                    <Button
-                      variant="contained"
-                      className="gap-7"
+                    <span
                       style={{
-                        background: "var(--color1)",
-                        color: "white",
-                        // paddingLeft: "35px",
-                        textTransform: "none",
+                        color: "var(--color1)",
                         display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        marginRight: "10px",
+                        whiteSpace: "none"
                       }}
-                      onClick={exportToCSV}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          src="/csv-file.png"
-                          className="report-icon absolute mr-10"
-                          alt="csv Icon"
-                        />
-                      </div>
-                      Download
-                    </Button>
-                  )}
+                      Doctor List
+                    </span>
+                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
+                  </div>
+                  <div className="headerList cust_hdr_mn_bg mt-2">
+                    {hasPermission(permissions, "doctor import") && (
+                      <Button
+                        variant="contained"
+                        className="gap-2"
+                        style={{ background: "var(--color1)", display: "flex" }}
+                        onClick={openFilePopUP}
+                      >
+                        <CloudUploadIcon /> Import
+                      </Button>
+                    )}
+                    {hasPermission(permissions, "doctor create") && (
+                      <Button
+                        variant="contained"
+                        className="gap-2"
+                        style={{ background: "var(--color1)", display: "flex" }}
+                        onClick={handelAddOpen}
+                      >
+                        <AddIcon /> Add Doctor
+                      </Button>
+                    )}
+                    {hasPermission(permissions, "doctor download") && (
+                      <Button
+                        variant="contained"
+                        className="gap-7"
+                        style={{
+                          background: "var(--color1)",
+                          color: "white",
+                          // paddingLeft: "35px",
+                          textTransform: "none",
+                          display: "flex",
+                        }}
+                        onClick={exportToCSV}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img
+                            src="/csv-file.png"
+                            className="report-icon absolute mr-10"
+                            alt="csv Icon"
+                          />
+                        </div>
+                        Download
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
+              
               <div
                 className="row border-b border-dashed"
                 style={{ borderColor: "var(--color2)" }}
               ></div>
-              <div className="mt-4">
-                <div className="overflow-x-auto mt-4">
+              </div>
+              {/*<====================================================================== table  =====================================================================> */}
+
+              <div className="firstrow px-4 ">
+                <div className="overflow-x-auto">
                   <table
                     className="w-full border-collapse custom-table"
                     style={{
@@ -676,328 +688,333 @@ const DoctorList = () => {
                     </tbody>
                   </table>
                 </div>
-                <div
-                  className="flex justify-center mt-4"
-                  style={{
-                    marginTop: 'auto',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '1rem',
-                  }}
-                >
-                  <button
-                    onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                      }`}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </button>
-                  {currentPage > 2 && (
-                    <button
-                      onClick={() => handleClick(currentPage - 2)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage - 2}
-                    </button>
-                  )}
-                  {currentPage > 1 && (
-                    <button
-                      onClick={() => handleClick(currentPage - 1)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage - 1}
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleClick(currentPage)}
-                    className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                  >
-                    {currentPage}
-                  </button>
-                  {currentPage < totalPages && (
-                    <button
-                      onClick={() => handleClick(currentPage + 1)}
-                      className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                    >
-                      {currentPage + 1}
-                    </button>
-                  )}
-                  <button
-                    onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
-                      }`}
-                    disabled={currentPage >= totalPages}
-                  >
-                    Next
-                  </button>
-                </div>
               </div>
             </div>
-
-            {/* File Upload Popup */}
-            <Dialog open={openUpload} className="custom-dialog">
-              <DialogTitle id="alert-dialog-title" className="primary">
-                Import Doctor
-              </DialogTitle>
-              <div className="">
-                <Alert severity="warning">
-                  <AlertTitle>Warning</AlertTitle>
-                  Please Make Sure Repeated Email ID record is not accepted.
-                </Alert>
-              </div>
-              <IconButton
-                aria-label="close"
-                onClick={() => setOpenUpload(false)}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  top: 8,
-                  color: "#ffffff",
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div className="primary">Item File Upload</div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "15px",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div className="mt-2">
-                      <input
-                        className="File-upload"
-                        type="file"
-                        accept=".csv"
-                        id="file-upload"
-                        onChange={handleFileChange}
-                      />
-                      <span className="errorFile" style={{ fontSize: "small" }}>
-                        *select only .csv, File.
-                      </span>
-                    </div>
-                    <div className="mt-2">
-                      <Button
-                        onClick={handleDownload}
-                        style={{
-                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                          color: "white",
-                        }}
-                        className="downloadFile"
-                      >
-                        <CloudDownloadIcon className="mr-2" />
-                        Download Sample File
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions style={{ padding: "0 24px 24px" }}>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  style={{
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                  }}
-                  onClick={uploadDoctorFile}
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            <Dialog open={openAddPopUp} className="custom-dialog modal_991">
-              <DialogTitle id="alert-dialog-title" className="primary">
-                {header}
-              </DialogTitle>
-
-              <IconButton
-                aria-label="close"
-                onClick={resetAddDialog}
-                className="text-gray-500"
-                sx={{
-                  position: "absolute",
-                  right: 12,
-                  top: 8,
-                  color: "#ffffff",
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div className="flex flex-col gap-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
-
-                      {/* Doctor Name - full width */}
-                      <div className="flex flex-col col-span-8 ">
-                        <div className="mb-1">
-                          <span className="label primary mb-4">Doctor Name</span>
-                          <span className="text-red-600 ml-1">*</span>
-                        </div>
-                        <Autocomplete
-                          value={doctor}
-                          size="small"
-                          onChange={handleOptionChange}
-                          onInputChange={(e, value) => handleInputChange(e, value.toUpperCase())}
-                          getOptionLabel={(option) =>
-                            typeof option === "string" ? option : option.name
-                          }
-                          options={tableData}
-                          renderOption={(props, option) => (
-                            <ListItem {...props}>
-                              <ListItemText primary={option.name} />
-                            </ListItem>
-                          )}
-                          renderInput={(params) => (
-                            <TextField autoComplete="off" {...params} />
-                          )}
-                          freeSolo
-                        />
-                        {errors.Doctor && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.Doctor}
-                          </span>
-                        )}
-
-                      </div>
-
-
-                      <div className="flex flex-col col-span-4">
-                        <span className="label primary">Set Default Doctor ?</span>
-                        <FormControl size="small" className="w-full">
-                          <Select
-                            value={defaultDr || ""}
-                            onChange={(e) => setDefaultDr(e.target.value)}
-                            displayEmpty
-                            inputProps={{ 'aria-label': 'Default Doctor' }}
-                          >
-                            <MenuItem value="">
-                              <em>Select Default Doctor</em>
-                            </MenuItem>
-                            <MenuItem value="1">Yes</MenuItem>
-                            <MenuItem value="0">No</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </div>
-
-                      {/* Clinic Name - full width */}
-                      <div className="flex flex-col col-span-12 w-full">
-                        <div className="mb-1">
-                          <span className="label primary">Clinic Name</span>
-                        </div>
-                        <TextField
-                          autoComplete="off"
-                          size="small"
-                          value={clinic}
-                          onChange={(e) => setClinic(e.target.value.toUpperCase())}
-                          className="w-full"
-                          variant="outlined"
-                        />
-                        {errors.clinic && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.clinic}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Email ID */}
-                      <div className="flex flex-col col-span-4">
-                        <span className="label primary">Email ID</span>
-                        <TextField
-                          autoComplete="off"
-                          size="small"
-                          value={emailId}
-                          onChange={(e) => setEmailId(e.target.value)}
-                          className="w-full"
-                          variant="outlined"
-                        />
-                      </div>
-
-                      {/* Mobile No */}
-                      <div className="flex flex-col col-span-4">
-                        <div className="mb-1">
-                          <span className="label primary">Mobile No</span>
-                        </div>
-                        <OutlinedInput
-                          type="number"
-                          value={mobileNo}
-                          onChange={handleChange}
-                          startAdornment={<InputAdornment position="start">+91</InputAdornment>}
-                          className="w-full"
-                          size="small"
-                        />
-                        {errors.mobileNo && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.mobileNo}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Licence No */}
-                      <div className="flex flex-col col-span-4">
-                        <span className="label primary">Licence No.</span>
-                        <OutlinedInput
-                          type="text"
-                          value={licence}
-                          onChange={(e) => setLicence(e.target.value.toUpperCase())}
-                          className="w-full"
-                          size="small"
-                        />
-                      </div>
-
-                      {/* Address - full width */}
-                      <div className="flex flex-col col-span-12 w-full">
-                        <span className="label primary">Address</span>
-                        <TextField
-                          autoComplete="off"
-                          size="small"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value.toUpperCase())}
-                          className="w-full"
-                          variant="outlined"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
-
-              <DialogActions style={{ padding: "20px 24px" }}>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  style={{
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                  }}
-                  onClick={AddDoctor}
-                >
-                  {buttonLabel}
-                </Button>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  color="error"
-                  onClick={resetAddDialog}
-                >
-                  Cancel
-                </Button>
-              </DialogActions>
-            </Dialog>
           </div>
+          {/*<====================================================================== pagination  =====================================================================> */}
+
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
+          {/*<====================================================================== upload import doctor  =====================================================================> */}
+
+          <Dialog open={openUpload} className="custom-dialog">
+            <DialogTitle id="alert-dialog-title" className="primary">
+              Import Doctor
+            </DialogTitle>
+            <div className="">
+              <Alert severity="warning">
+                <AlertTitle>Warning</AlertTitle>
+                Please Make Sure Repeated Email ID record is not accepted.
+              </Alert>
+            </div>
+            <IconButton
+              aria-label="close"
+              onClick={() => setOpenUpload(false)}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="primary">Item File Upload</div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "15px",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div className="mt-2">
+                    <input
+                      className="File-upload"
+                      type="file"
+                      accept=".csv"
+                      id="file-upload"
+                      onChange={handleFileChange}
+                    />
+                    <span className="errorFile" style={{ fontSize: "small" }}>
+                      *select only .csv, File.
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <Button
+                      onClick={handleDownload}
+                      style={{
+                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                        color: "white",
+                      }}
+                      className="downloadFile"
+                    >
+                      <CloudDownloadIcon className="mr-2" />
+                      Download Sample File
+                    </Button>
+                  </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions style={{ padding: "0 24px 24px" }}>
+              <Button
+                autoFocus
+                variant="contained"
+                style={{
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                  color: "white",
+                }}
+                onClick={uploadDoctorFile}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/*<====================================================================== Add edit doctor  =====================================================================> */}
+
+
+          <Dialog open={openAddPopUp} className="custom-dialog modal_991">
+            <DialogTitle id="alert-dialog-title" className="primary">
+              {header}
+            </DialogTitle>
+
+            <IconButton
+              aria-label="close"
+              onClick={resetAddDialog}
+              className="text-gray-500"
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
+
+                    {/* Doctor Name - full width */}
+                    <div className="flex flex-col col-span-8 ">
+                      <div className="mb-1">
+                        <span className="label primary mb-4">Doctor Name</span>
+                        <span className="text-red-600 ml-1">*</span>
+                      </div>
+                      <Autocomplete
+                        value={doctor}
+                        size="small"
+                        onChange={handleOptionChange}
+                        onInputChange={(e, value) => handleInputChange(e, value.toUpperCase())}
+                        getOptionLabel={(option) =>
+                          typeof option === "string" ? option : option.name
+                        }
+                        options={tableData}
+                        renderOption={(props, option) => (
+                          <ListItem {...props}>
+                            <ListItemText primary={option.name} />
+                          </ListItem>
+                        )}
+                        renderInput={(params) => (
+                          <TextField autoComplete="off" {...params} />
+                        )}
+                        freeSolo
+                      />
+                      {errors.Doctor && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.Doctor}
+                        </span>
+                      )}
+
+                    </div>
+
+
+                    <div className="flex flex-col col-span-4">
+                      <span className="label primary">Set Default Doctor ?</span>
+                      <FormControl size="small" className="w-full">
+                        <Select
+                          value={defaultDr || ""}
+                          onChange={(e) => setDefaultDr(e.target.value)}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Default Doctor' }}
+                        >
+                          <MenuItem value="">
+                            <em>Select Default Doctor</em>
+                          </MenuItem>
+                          <MenuItem value="1">Yes</MenuItem>
+                          <MenuItem value="0">No</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    {/* Clinic Name - full width */}
+                    <div className="flex flex-col col-span-12 w-full">
+                      <div className="mb-1">
+                        <span className="label primary">Clinic Name</span>
+                      </div>
+                      <TextField
+                        autoComplete="off"
+                        size="small"
+                        value={clinic}
+                        onChange={(e) => setClinic(e.target.value.toUpperCase())}
+                        className="w-full"
+                        variant="outlined"
+                      />
+                      {errors.clinic && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.clinic}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Email ID */}
+                    <div className="flex flex-col col-span-4">
+                      <span className="label primary">Email ID</span>
+                      <TextField
+                        autoComplete="off"
+                        size="small"
+                        value={emailId}
+                        onChange={(e) => setEmailId(e.target.value)}
+                        className="w-full"
+                        variant="outlined"
+                      />
+                    </div>
+
+                    {/* Mobile No */}
+                    <div className="flex flex-col col-span-4">
+                      <div className="mb-1">
+                        <span className="label primary">Mobile No</span>
+                      </div>
+                      <OutlinedInput
+                        type="number"
+                        value={mobileNo}
+                        onChange={handleChange}
+                        startAdornment={<InputAdornment position="start">+91</InputAdornment>}
+                        className="w-full"
+                        size="small"
+                      />
+                      {errors.mobileNo && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.mobileNo}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Licence No */}
+                    <div className="flex flex-col col-span-4">
+                      <span className="label primary">Licence No.</span>
+                      <OutlinedInput
+                        type="text"
+                        value={licence}
+                        onChange={(e) => setLicence(e.target.value.toUpperCase())}
+                        className="w-full"
+                        size="small"
+                      />
+                    </div>
+
+                    {/* Address - full width */}
+                    <div className="flex flex-col col-span-12 w-full">
+                      <span className="label primary">Address</span>
+                      <TextField
+                        autoComplete="off"
+                        size="small"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                        className="w-full"
+                        variant="outlined"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions style={{ padding: "20px 24px" }}>
+              <Button
+                autoFocus
+                variant="contained"
+                style={{
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                  color: "white",
+                }}
+                onClick={AddDoctor}
+              >
+                {buttonLabel}
+              </Button>
+              <Button
+                autoFocus
+                variant="contained"
+                color="error"
+                onClick={resetAddDialog}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       )}
     </>

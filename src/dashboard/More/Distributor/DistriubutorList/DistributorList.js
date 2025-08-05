@@ -510,13 +510,12 @@ const DistributerList = () => {
                         alignItems: "center",
                         fontWeight: 700,
                         fontSize: "20px",
-                        width: "136px",
                         marginRight: "10px",
                       }}
                     >
                       Distributor List
                     </span>
-                    <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow align-center" />
+                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
                   </div>
                   <div className="headerList cust_hdr_mn_bg">
                     {hasPermission(permissions, "distributor import") && (
@@ -575,6 +574,8 @@ const DistributerList = () => {
                   style={{ borderColor: "var(--color2)" }}
                 ></div>
               </div>
+          {/*<====================================================================== table  =====================================================================> */}
+
               <div className=" firstrow px-4 ">
                 <div className="overflow-x-auto">
                   <table
@@ -637,7 +638,7 @@ const DistributerList = () => {
                           </td>
                         </tr>
                       ) : (
-                                                tableData.map((row, index) => (
+                        tableData.map((row, index) => (
                           <tr
                             className="bg-[#f5f8f3] align-middle"
                             key={row.code}
@@ -698,6 +699,8 @@ const DistributerList = () => {
               </div>
             </div>
           </div>
+          {/*<====================================================================== pagination  =====================================================================> */}
+
           <div
             className="flex justify-center mt-4"
             style={{
@@ -760,6 +763,8 @@ const DistributerList = () => {
               Next
             </button>
           </div>
+          {/*<====================================================================== add distributor  =====================================================================> */}
+
           <Dialog open={openEdit}>
             <div className="flex justify-center items-center h-auto">
               <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
@@ -1112,6 +1117,7 @@ const DistributerList = () => {
               </div>
             </div>
           </Dialog>
+          {/*<====================================================================== upload import distributor  =====================================================================> */}
 
           <Dialog open={openUpload} className="custom-dialog">
             <DialogTitle id="alert-dialog-title " className="primary">

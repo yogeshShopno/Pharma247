@@ -95,123 +95,6 @@ const DistributerList = () => {
   const currentSearchTerms = useRef(searchTerms);
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-  };
-
-  const resetAddDialog = () => {
-    setOpenEdit(false);
-  };
-
-  const handleEditOpen = (row) => {
-    setHeader("Edit Distributor");
-    setDistributerId(row.id);
-    setOpenEdit(true);
-    setGstnumber(row.gst);
-    setDistributerName(row.name);
-    setEmail(row.email);
-    setMobileNo(row.phone_number);
-    setWhatsApp(row.whatsapp_number);
-    setAddress(row.address);
-    setArea(row.area);
-    setPincode(row.pincode);
-    setState(row.state);
-
-    setBankName(row.bank_name);
-    setAccountNo(row.account_no);
-    setIfscCode(row.ifsc_code);
-    setLicenceNo(row.food_licence_number);
-    setDistributorDrugLicenseNo(row.distributer_drug_licence_no);
-    setCreditDuedays(row.payment_drug_days);
-  };
-
-  const sortByColumn = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-
-    const sortedData = [...tableData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-      return 0;
-    });
-    setTableData(sortedData);
-  };
-
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-
-    // Update ref immediately for API calls
-    currentSearchTerms.current = newSearchTerms;
-
-    // Update state immediately for UI responsiveness
-    setSearchTerms(newSearchTerms);
-
-    // Check if any search term has a value
-    const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
-    setIsSearchActive(hasSearchTerms);
-
-    // Reset to page 1 when searching
-    setCurrentPage(1);
-
-    // Trigger search effect immediately
-    setSearchTrigger(prev => prev + 1);
-  };
-
-  // Handle search on Enter key press
-  const handleSearchSubmit = () => {
-    setCurrentPage(1);
-    DistList(1);
-  };
-
-  // Handle search on Enter key press for specific field
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSearchSubmit();
-    }
-  };
-
-  // Clear all search filters
-  const clearSearch = () => {
-    // Clear timeout immediately
-    clearTimeout(searchTimeout.current);
-
-    // Update ref immediately
-    currentSearchTerms.current = initialSearchTerms;
-
-    // Update state immediately
-    setSearchTerms(initialSearchTerms);
-    setIsSearchActive(false);
-    setCurrentPage(1);
-
-    // Trigger search effect to reload data
-    setSearchTrigger(prev => prev + 1);
-  };
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    if (value.length <= 10) {
-      setMobileNo(value);
-    }
-  };
-
   useEffect(() => {
     DistList(1);
   }, []);
@@ -256,6 +139,76 @@ const DistributerList = () => {
       DistList(currentPage);
     }
   }, [currentPage]);
+
+  const resetAddDialog = () => {
+    setOpenEdit(false);
+  };
+
+  const handleEditOpen = (row) => {
+    setHeader("Edit Distributor");
+    setDistributerId(row.id);
+    setOpenEdit(true);
+    setGstnumber(row.gst);
+    setDistributerName(row.name);
+    setEmail(row.email);
+    setMobileNo(row.phone_number);
+    setWhatsApp(row.whatsapp_number);
+    setAddress(row.address);
+    setArea(row.area);
+    setPincode(row.pincode);
+    setState(row.state);
+
+    setBankName(row.bank_name);
+    setAccountNo(row.account_no);
+    setIfscCode(row.ifsc_code);
+    setLicenceNo(row.food_licence_number);
+    setDistributorDrugLicenseNo(row.distributer_drug_licence_no);
+    setCreditDuedays(row.payment_drug_days);
+  };
+
+
+
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+
+    // Update state immediately for UI responsiveness
+    setSearchTerms(newSearchTerms);
+
+    // Check if any search term has a value
+    const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
+    setIsSearchActive(hasSearchTerms);
+
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
+  };
+
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    DistList(1);
+  };
+
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 10) {
+      setMobileNo(value);
+    }
+  };
 
   const editDistributor = async () => {
     let data = new FormData();
@@ -459,7 +412,35 @@ const DistributerList = () => {
   const openFilePopUP = () => {
     setOpenUpload(true);
   };
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleClick = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+  const sortByColumn = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+
+    const sortedData = [...tableData].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+    setTableData(sortedData);
+  };
   return (
     <>
       <Header />
@@ -574,7 +555,7 @@ const DistributerList = () => {
                   style={{ borderColor: "var(--color2)" }}
                 ></div>
               </div>
-          {/*<====================================================================== table  =====================================================================> */}
+              {/*<====================================================================== table  =====================================================================> */}
 
               <div className=" firstrow px-4 ">
                 <div className="overflow-x-auto">
@@ -626,74 +607,79 @@ const DistributerList = () => {
                         <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                       </tr>
                     </thead>
-                    <tbody style={{ background: "#3f621217" }}>
-                      {tableData.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={columns.length + 1}
-                            className="text-center text-gray-500"
-                            style={{ borderRadius: "10px 10px 10px 10px" }}
-                          >
-                            No data found
-                          </td>
-                        </tr>
-                      ) : (
-                        tableData.map((row, index) => (
-                          <tr
-                            className="bg-[#f5f8f3] align-middle"
-                            key={row.code}
-                          >
-                            <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
-                              {((currentPage - 1) * rowsPerPage) + index + 1}
-                            </td>
-
-                            {columns.map((column, colIndex) => {
-                              let value = row[column.id];
-                              if (column.id === "email") {
-                                if (value && value[0] !== value[0].toLowerCase()) {
-                                  value = value.toLowerCase();
-                                }
-                              }
-                              // Remove right border radius from last data cell
-                              const tdClass =
-                                "px-4 py-2 font-semibold text-center";
-                              return (
-                                <td
-                                  style={{
-                                    textTransform: column.id === "email" ? "none" : "uppercase",
-                                  }}
-                                  key={column.id}
-                                  className={`capitalize ${tdClass}`}
-                                  onClick={() => {
-                                    history.push(`/DistributerView/${row.id}`);
-                                  }}
-                                >
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </td>
-                              );
-                            })}
-                            <td className="rounded-r-[10px] px-4 py-2 text-center">
-                              <div className="px-2 flex gap-1 justify-center">
-                                <VisibilityIcon
-                                  style={{ color: "var(--color1)" }}
-                                  onClick={() => {
-                                    history.push(`/DistributerView/${row.id}`);
-                                  }}
-                                />
-                                {hasPermission(permissions, "distributor edit") && (
-                                  <BorderColorIcon
-                                    style={{ color: "var(--color1)" }}
-                                    onClick={() => handleEditOpen(row)}
-                                  />
-                                )}
-                              </div>
+                    {isSearchLoading ? (
+                      <div className="loader-container ">
+                        <Loader />
+                      </div>
+                    ) : (
+                      <tbody style={{ background: "#3f621217" }}>
+                        {tableData.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={columns.length + 1}
+                              className="text-center text-gray-500"
+                              style={{ borderRadius: "10px 10px 10px 10px" }}
+                            >
+                              No data found
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
+                        ) : (
+                          tableData.map((row, index) => (
+                            <tr
+                              className="bg-[#f5f8f3] align-middle"
+                              key={row.code}
+                            >
+                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                                {((currentPage - 1) * rowsPerPage) + index + 1}
+                              </td>
+
+                              {columns.map((column, colIndex) => {
+                                let value = row[column.id];
+                                if (column.id === "email") {
+                                  if (value && value[0] !== value[0].toLowerCase()) {
+                                    value = value.toLowerCase();
+                                  }
+                                }
+                                // Remove right border radius from last data cell
+                                const tdClass =
+                                  "px-4 py-2 font-semibold text-center";
+                                return (
+                                  <td
+                                    style={{
+                                      textTransform: column.id === "email" ? "none" : "uppercase",
+                                    }}
+                                    key={column.id}
+                                    className={`capitalize ${tdClass}`}
+                                    onClick={() => {
+                                      history.push(`/DistributerView/${row.id}`);
+                                    }}
+                                  >
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </td>
+                                );
+                              })}
+                              <td className="rounded-r-[10px] px-4 py-2 text-center">
+                                <div className="px-2 flex gap-1 justify-center">
+                                  <VisibilityIcon
+                                    style={{ color: "var(--color1)" }}
+                                    onClick={() => {
+                                      history.push(`/DistributerView/${row.id}`);
+                                    }}
+                                  />
+                                  {hasPermission(permissions, "distributor edit") && (
+                                    <BorderColorIcon
+                                      style={{ color: "var(--color1)" }}
+                                      onClick={() => handleEditOpen(row)}
+                                    />
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>)}
                   </table>
                 </div>
               </div>

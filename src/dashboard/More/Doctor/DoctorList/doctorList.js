@@ -1,6 +1,6 @@
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { BsLightbulbFill } from "react-icons/bs";
 import {
@@ -54,6 +54,7 @@ const DoctorList = () => {
   const [city, setCity] = useState("");
   const [emailId, setEmailId] = useState("");
   const [defaultDr, setDefaultDr] = useState("");
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   const history = useHistory();
   const rowsPerPage = 10;
@@ -75,8 +76,12 @@ const DoctorList = () => {
     { id: "email", label: "Email ID", minWidth: 150 },
     { id: "clinic", label: "Clinic Name", minWidth: 150 },
   ];
+  const searchKeys = ["name", "phone_number", "email", "clinic_name"];
+
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+  const currentSearchTerms = useRef(searchTerms);
+
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
@@ -100,6 +105,20 @@ const DoctorList = () => {
     const value = e.target.value;
     if (value.length <= 10) {
       setMobileNo(value);
+    }
+  };
+
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    ListOfDoctor(1);
+  };
+
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
     }
   };
 
@@ -304,17 +323,18 @@ const DoctorList = () => {
       ListOfDoctor(newPage);
     }
   };
-
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    ListOfDoctor(newPage);
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      ListOfDoctor(newPage);
+    }
   };
-
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
     ListOfDoctor(pageNum);
   };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -366,16 +386,19 @@ const DoctorList = () => {
     setTableData(sortedData);
   };
 
-  const handleSearchChange = (index, event) => {
-    if (event.key === "Enter") {
-      const newSearchTerms = [...searchTerms];
-      newSearchTerms[index] = event.target.value;
-      setSearchTerms(newSearchTerms);
-    }
+  // Update search term and trigger search API instantly (debounced recommended)
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+    setSearchTerms(newSearchTerms);
+    currentSearchTerms.current = newSearchTerms;
+    setCurrentPage(1);        // reset to first page when search changes
+    ListOfDoctor(1, newSearchTerms); // pass the new search terms
   };
 
+
   useEffect(() => {
-    ListOfDoctor();
+    ListOfDoctor(1, searchTerms);
   }, []);
 
   const convertToCSV = (data) => {
@@ -388,10 +411,18 @@ const DoctorList = () => {
       .join("\n");
   };
 
-  const ListOfDoctor = async (currentPage) => {
+  const ListOfDoctor = async (currentPage = 1, searchValues = searchTerms) => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsSearchLoading(true);
+
     data.append("page", currentPage);
+    // Use searchValues instead of ref
+    searchValues.forEach((term, index) => {
+      if (term && term.trim()) {
+        data.append(searchKeys[index], term.trim());
+      }
+    });
+
     const params = {
       page: currentPage,
     };
@@ -405,11 +436,12 @@ const DoctorList = () => {
         })
         .then((response) => {
           setTableData(response.data.data);
-          setIsLoading(false);
         });
     } catch (error) {
-      setIsLoading(false);
       console.error("API error:", error);
+    } finally {
+      setIsSearchLoading(false);
+
     }
   };
 
@@ -540,11 +572,11 @@ const DoctorList = () => {
                     )}
                   </div>
                 </div>
-              
-              <div
-                className="row border-b border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
+
+                <div
+                  className="row border-b border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
               </div>
               {/*<====================================================================== table  =====================================================================> */}
 
@@ -560,132 +592,156 @@ const DoctorList = () => {
                   >
                     <thead className="">
                       <tr>
-                        <th>SR. No</th>
+                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
                         {columns.map((column, index) => (
                           <th
                             key={column.id}
-                            style={{ minWidth: column.minWidth }}
+                            style={{ minWidth: column.minWidth, padding: '8px' }}
                           >
-                            <div className="headerStyle">
-                              <span onClick={() => sortByColumn(column.id)}>
-                                {column.label}
-                              </span>
-                              <SwapVertIcon />
-                              <TextField
-                                autoComplete="off"
-                                label={`Search ${column.label}`}
-                                id="filled-basic"
-                                size="small"
-                                sx={{ minWidth: "150px" }}
-                                defaultvalue={searchTerms[index]}
-                                onKeyDown={(e) => handleSearchChange(index, e)}
-                              />
+                            <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                              <span >{column.label}</span>
+
+                              <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+
+                                <SwapVertIcon
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => sortByColumn(column.id)}
+                                />
+                                <TextField
+                                  autoComplete="off"
+                                  label="Type Here"
+                                  id="filled-basic"
+                                  size="small"
+                                  sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                  value={searchTerms[index]}
+                                  onChange={(e) => handleSearchChange(index, e.target.value)}
+                                  InputProps={{
+                                    endAdornment: searchTerms[index] && (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => handleSearchChange(index, '')}
+                                        sx={{ padding: 0 }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                />
+
+                              </div>
                             </div>
+
                           </th>
                         ))}
                         <th>Action</th>
                       </tr>
                     </thead>
-                    <tbody style={{ backgroundColor: "#3f621217" }}>
-                      {filteredList.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={columns.length + 2}
-                            style={{
-                              textAlign: "center",
-                              color: "gray",
-                              borderRadius: "10px 10px 10px 10px",
-                            }}
-                          >
-                            No data found
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredList.map((row, index) => {
-                          return (
-                            <tr
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={row.code}
+                    {isSearchLoading ? (
+                      <div className="loader-container ">
+                        <Loader />
+                      </div>
+                    ) : (
+                      <tbody style={{ backgroundColor: "#3f621217" }}>
+                        {filteredList.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={columns.length + 2}
+                              style={{
+                                textAlign: "center",
+                                color: "gray",
+                                borderRadius: "10px 10px 10px 10px",
+                              }}
                             >
-                              <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                {startIndex + index}
-                              </td>
-                              {columns.map((column) => {
-                                let value = row[column.id];
-                                if (column.id === "email") {
-                                  if (
-                                    value &&
-                                    value[0] !== value[0].toLowerCase()
-                                  ) {
-                                    value = value.toLowerCase();
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredList.map((row, index) => {
+                            return (
+                              <tr
+                                hover
+                                role="checkbox"
+                                tabIndex={-1}
+                                key={row.code}
+                              >
+                                <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                  {startIndex + index}
+                                </td>
+                                {columns.map((column) => {
+                                  let value = row[column.id];
+                                  if (column.id === "email") {
+                                    if (
+                                      value &&
+                                      value[0] !== value[0].toLowerCase()
+                                    ) {
+                                      value = value.toLowerCase();
+                                    }
                                   }
-                                }
 
-                                if (column.id === "name") {
+                                  if (column.id === "name") {
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        align={column.align}
+                                        onClick={() => history.push(`/more/doctor/${row.id}`)}
+                                      >
+                                        {value}
+                                        {row.default_doctor === "1" && (
+                                          <span className="cursor-pointer self-end text-xs text-white bg-[var(--color2)] mx-2 px-2 py-1 rounded-2xl">default</span>
+                                        )}
+                                      </td>
+                                    );
+                                  }
+
                                   return (
                                     <td
                                       key={column.id}
                                       align={column.align}
-                                      onClick={() => history.push(`/more/doctor/${row.id}`)}
+                                      onClick={() => {
+                                        history.push(`/more/doctor/${row.id}`);
+                                      }}
+                                      style={
+                                        column.id === "email"
+                                          ? { textTransform: "none" }
+                                          : {}
+                                      }
                                     >
-                                      {value}
-                                      {row.default_doctor === "1" && (
-                                        <span className="cursor-pointer self-end text-xs text-white bg-[var(--color2)] mx-2 px-2 py-1 rounded-2xl">default</span>
-                                      )}
+                                      {column.format && typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
                                     </td>
                                   );
-                                }
-
-                                return (
-                                  <td
-                                    key={column.id}
-                                    align={column.align}
-                                    onClick={() => {
-                                      history.push(`/more/doctor/${row.id}`);
+                                })}
+                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                  <div
+                                    style={{
+                                      fontSize: "15px",
+                                      display: "flex",
+                                      gap: "5px",
+                                      color: "gray",
+                                      cursor: "pointer",
                                     }}
-                                    style={
-                                      column.id === "email"
-                                        ? { textTransform: "none" }
-                                        : {}
-                                    }
                                   >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                  </td>
-                                );
-                              })}
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <div
-                                  style={{
-                                    fontSize: "15px",
-                                    display: "flex",
-                                    gap: "5px",
-                                    color: "gray",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  <VisibilityIcon
-                                    style={{ color: "var(--color1)" }}
-                                    onClick={() => {
-                                      history.push(`/more/doctor/${row.id}`);
-                                    }}
-                                  />
-                                  {hasPermission(permissions, "doctor edit") && (
-                                    <BorderColorIcon
+                                    <VisibilityIcon
                                       style={{ color: "var(--color1)" }}
-                                      onClick={() => handleEditOpen(row)}
+                                      onClick={() => {
+                                        history.push(`/more/doctor/${row.id}`);
+                                      }}
                                     />
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
+                                    {hasPermission(permissions, "doctor edit") && (
+                                      <BorderColorIcon
+                                        style={{ color: "var(--color1)" }}
+                                        onClick={() => handleEditOpen(row)}
+                                      />
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    )}
                   </table>
                 </div>
               </div>

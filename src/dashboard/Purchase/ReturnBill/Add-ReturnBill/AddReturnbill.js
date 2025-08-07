@@ -147,12 +147,8 @@ const AddReturnbill = () => {
       e.preventDefault();
       const nextElement = inputRefs.current[index + 1];
 
-      console.log("Next element:", nextElement);
-      console.log("All refs:", inputRefs.current);
-
       if (!nextElement) {
         // If no next element, focus the first element or submit
-        console.log("No next element, focusing first element");
         if (inputRefs.current[0]) {
           inputRefs.current[0].focus();
         }
@@ -162,22 +158,17 @@ const AddReturnbill = () => {
       // Handle different input types
       if (nextElement.focus) {
         // Standard input elements
-        console.log("Focusing standard input");
         nextElement.focus();
       } else if (nextElement.querySelector) {
         // For DatePicker or complex components, find the input inside
         const input = nextElement.querySelector('input');
         if (input) {
-          console.log("Focusing input inside component");
           input.focus();
         }
       } else if (nextElement.setFocus) {
         // For components with custom focus methods
-        console.log("Using setFocus method");
         nextElement.setFocus();
       }
-
-      console.log("Next element focused:", index + 1);
     }
   };
 
@@ -243,8 +234,14 @@ const AddReturnbill = () => {
       } else if (event.key.toLowerCase() === "g") {
         handleSubmit();
       } else if (event.key.toLowerCase() === "m") {
+
         removeItem();
-        inputRefs.current[2]?.focus();
+        setSelectedIndex(-1);
+
+        setSearchItem("");
+        setTimeout(() => {
+          inputRefs.current[5]?.focus();
+        }, 10);
       }
     };
 
@@ -521,12 +518,12 @@ const AddReturnbill = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
-    
+
     if (!distributor) {
       toast.error("Please select distributor first");
       return;
     }
-    
+
     purcheseReturnFilter(value);
   };
 
@@ -587,6 +584,9 @@ const AddReturnbill = () => {
   };
 
   const removeItem = () => {
+    setSelectedEditItem(null)
+    setSelectedEditItemId(null)
+
     setUnit("");
     setBatch("");
     setSearchItem("");
@@ -600,6 +600,8 @@ const AddReturnbill = () => {
     setLoc("");
     setItemTotalAmount(0);
     setIsEdit(false);
+
+
   };
 
   const handleSubmit = () => {
@@ -1397,7 +1399,7 @@ const AddReturnbill = () => {
                           setSelectedIndex(index);
                           handleEditClick(item);
                         }}
-                        className={`item-List input-row cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                        className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                       >
                         <td style={{ display: "flex", gap: "8px", alignItems: "center", whiteSpace: "nowrap" }}>
                           <Checkbox

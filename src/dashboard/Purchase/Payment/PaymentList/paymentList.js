@@ -16,7 +16,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import axios from "axios";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
@@ -29,8 +29,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
-
-import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import "./paymentList.css";
 import Loader from "../../../../componets/loader/Loader";
@@ -39,6 +37,7 @@ import { toast, ToastContainer } from "react-toastify";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
+
 const PaymentList = () => {
   const history = useHistory();
   const rowsPerPage = 10;
@@ -55,6 +54,35 @@ const PaymentList = () => {
     { id: "paid_amount", label: "Paid Amount", minWidth: 150 },
     { id: "due_amount", label: "Due Amount", minWidth: 150 },
   ];
+  const searchKeys = [
+    "bill_no",
+    "distributor_id",
+    "payment_date",
+    "payment_mode",
+    "status",
+    "bill_amount",
+    "paid_amount",
+    "due_amount",
+  ];
+
+  // Enhanced search and pagination state (copied from OrderList)
+  const initialSearchTerms = columns.map(() => "");
+  const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  // Search state management (copied from OrderList)
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
 
   const [editId, setEditId] = useState(null);
   const [confirm, setConfirm] = useState(false);
@@ -73,28 +101,17 @@ const PaymentList = () => {
   const [buttonLabel, setButtonLabel] = useState("");
   const [paymentDate, setPaymentDate] = useState(new Date());
   const [amounts, setAmounts] = useState({});
-  const initialSearchTerms = columns.map(() => "");
-  const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+
   const [payMode, setPayMode] = useState("");
   const [paymentList, setPaymentList] = useState("");
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
   const [purchaseBill, setPurchaseBill] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "ascending",
-  });
+
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
   const [isEditMode, setIsEditMode] = useState(false);
   const [paymentType, setPaymentType] = useState("");
   const [bankData, setBankData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const paymentOptions = [
     { value: "cash", label: "Cash" },
@@ -105,8 +122,141 @@ const PaymentList = () => {
     { value: "rtgs/neft", label: "RTGS/NEFT" },
   ];
 
+  // Effect for handling search with debouncing (copied from OrderList)
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout.current);
+
+      // Check if any search term has a value
+      const hasSearchTerms = currentSearchTerms.current.some(term => {
+        if (!term) return false;
+        const stringTerm = String(term).trim();
+        return stringTerm !== '';
+      });
+      if (!hasSearchTerms) {
+        // If no search terms, clear the search immediately
+        setIsSearching(false);
+        paymentBillList(1, true);
+      } else {
+        // Show searching state immediately
+        setIsSearching(true);
+
+        // Debounce the search to avoid too many API calls
+        searchTimeout.current = setTimeout(() => {
+          paymentBillList(1, true);
+        }, 150);
+      }
+    }
+  }, [searchTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+
+  // Effect for pagination
+  useEffect(() => {
+    if (currentPage > 0) {
+      paymentBillList(currentPage);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    paymentBillList(1);
+    listDistributor();
+    BankList();
+  }, []);
+
+  useEffect(() => {
+    if (distributorId && purchaseBill?.pruches_bill) {
+      const initialAmounts = {};
+      purchaseBill.pruches_bill.forEach((row, index) => {
+        initialAmounts[index] = row.pending_amount;
+      });
+      setAmounts(initialAmounts);
+    }
+  }, [distributorId, purchaseBill]);
+
+  useEffect(() => {
+    const total = Object.values(amounts)
+      .map((amount) => parseFloat(amount) || 0)
+      .reduce((acc, amount) => acc + amount, 0);
+    setTotalpayAmount(total);
+  }, [amounts]);
+
+  // Enhanced search functionality (copied from OrderList)
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+
+    // Update state immediately for UI responsiveness
+    setSearchTerms(newSearchTerms);
+
+    // Check if any search term has a value
+    const hasSearchTerms = currentSearchTerms.current.some(term => term && String(term).trim()); setIsSearchActive(hasSearchTerms);
+
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
+  };
+
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    paymentBillList(1);
+  };
+
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
+
+  // Enhanced pagination functions (copied from OrderList)
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleClick = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+
+  const sortByColumn = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+
+    const sortedData = [...tableData].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+    setTableData(sortedData);
+  };
+
   const handleEditOpen = (row) => {
-    console.log(row);
     setOpen(true);
     setShowTable(false);
     setIsEditMode(true);
@@ -114,13 +264,9 @@ const PaymentList = () => {
     setButtonLabel("Update");
     setPaymentType(row?.payment_mode);
     setEditId(row?.id);
-    // const foundDistributor = distributorList.find(option => {
-    //     return option.name == row?.distributor_name;
-    // });
     setDistributor(row?.distributor_name);
     setDistributorsId(row?.distributor_id);
     setNote(row?.note);
-    // setPaymentDate(row?.payment_date)
   };
 
   const handelAddOpen = () => {
@@ -135,7 +281,6 @@ const PaymentList = () => {
     if (isEditMode == false) {
       if (!distributor) newErrors.distributor = "Distributor is required";
       if (!paymentType) newErrors.paymentType = "Select Any Payment Mode";
-
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
       if (isValid) {
@@ -160,75 +305,6 @@ const PaymentList = () => {
     }
     return isValid;
   };
-  const handleClick = (pageNum) => {
-    setCurrentPage(pageNum);
-    paymentBillList(pageNum);
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      paymentBillList(newPage);
-    }
-  };
-
-  const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    paymentBillList(newPage);
-  };
-
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
-
-  const sortByColumn = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-
-    const sortedData = [...tableData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-      return 0;
-    });
-    setTableData(sortedData);
-  };
-
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
-  };
-
-  useEffect(() => {
-    paymentBillList();
-    listDistributor();
-    BankList();
-  }, []);
-
-  useEffect(() => {
-    if (distributorId && purchaseBill?.pruches_bill) {
-      const initialAmounts = {};
-      purchaseBill.pruches_bill.forEach((row, index) => {
-        initialAmounts[index] = row.pending_amount;
-      });
-      setAmounts(initialAmounts);
-    }
-  }, [distributorId, purchaseBill]);
-
-  useEffect(() => {
-    const total = Object.values(amounts)
-      .map((amount) => parseFloat(amount) || 0)
-      .reduce((acc, amount) => acc + amount, 0);
-    setTotalpayAmount(total);
-  }, [amounts]);
 
   const BankList = async () => {
     let data = new FormData();
@@ -299,7 +375,7 @@ const PaymentList = () => {
             setIsLoading(false);
             setConfirm(false);
             setOpen(false);
-            paymentBillList();
+            paymentBillList(currentPage);
             setDistributor(null);
             setPaymentType("");
             setErrors({});
@@ -324,7 +400,7 @@ const PaymentList = () => {
             setIsLoading(false);
             setConfirm(false);
             setOpen(false);
-            paymentBillList();
+            paymentBillList(currentPage);
             setDistributor(null);
             setPaymentType("");
             setErrors({});
@@ -348,7 +424,6 @@ const PaymentList = () => {
     const params = {
       distributor_id: distributorId,
     };
-    // setIsLoading(true);
     try {
       await axios
         .post("purches-payment-list?", data, {
@@ -359,7 +434,6 @@ const PaymentList = () => {
         })
         .then((response) => {
           setPurchaseBill(response?.data?.data);
-          // setIsLoading(false);
         });
     } catch (error) {
       setIsLoading(false);
@@ -388,29 +462,53 @@ const PaymentList = () => {
     }
   };
 
-  const paymentBillList = async (currentPage) => {
-    setIsLoading(true);
+  // Enhanced paymentBillList function with search and pagination (copied from OrderList)
+  const paymentBillList = async (page, isSearch = false) => {
+    if (!page) return;
+
     let data = new FormData();
-    data.append("page", currentPage);
-    const params = {
-      page: currentPage,
-    };
+    data.append("page", page);
+
+    // Add search parameters when any search term has a value
+    currentSearchTerms.current.forEach((term, index) => {
+      if (term !== "" && term !== undefined && term !== null) {
+        const value = String(term).trim();
+        if (value !== "") {
+          data.append(searchKeys[index], value);
+        }
+      }
+    });
+
+
+    // Use different loading states for search vs regular operations
+    setIsSearchLoading(true);
+
     try {
-      const response = await axios.post("payment-purches-list?", {
-        params: params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post("payment-purches-list?", data, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+
+      const responseData = response.data.data;
+
       if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
+        return;
       }
-      setTableData(response?.data?.data);
-      setIsLoading(false);
+
+      // Set the table data directly from backend (paginated and filtered data)
+      setTableData(responseData || []);
+
+      // Extract and set total count for pagination
+      const totalCount = response.data.total_records || responseData?.length || 0;
+      setTotalRecords(totalCount);
+
     } catch (error) {
-      console.error("API Error fetching distributors:", error);
-      return [];
+      console.error("API error:", error);
+      setTableData([]);
+      setTotalRecords(0);
+    } finally {
+      setIsSearchLoading(false);
     }
   };
 
@@ -464,6 +562,7 @@ const PaymentList = () => {
     }
   };
 
+  // Render
   return (
     <>
       <Header />
@@ -477,257 +576,350 @@ const PaymentList = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />{" "}
+      />
       {isLoading ? (
         <div className="loader-container ">
           <Loader />
         </div>
       ) : (
-        <div className="p-6">
-          <div
-            className="mb-4 purch_hdr_mn"
-            style={{ display: "flex", gap: "2px" }}
-          >
-            <span
-              style={{
-                color: "var(--color2)",
-                display: "flex",
-                whiteSpace: "nowrap",
-                alignItems: "center",
-                fontWeight: 700,
-                fontSize: "20px",
-              }}
-            >
-              Purchase Payment
-            </span>
-            {hasPermission(permissions, "purchase payment create") && (
-              <div className="headerList">
-                <Button
-                  variant="contained"
-                  className="sale_add_btns gap-2"
-                  size="small"
-                  style={{ fontSize: "14px", background: "var(--color1)" }}
-                  onClick={handelAddOpen}
-                >
-                  <AddIcon />
-                  Add New Payment
-                </Button>
-              </div>
-            )}
-          </div>
-          <div
-            className="row border-b px-4 my-4 border-dashed"
-            style={{ borderColor: "var(--color2)" }}
-          ></div>
-          <div className="firstrow pt-2">
-            <div className="flex gap-2 pb-2">
-              <div className="detail drug_fltr_fld">
-                <Autocomplete
-                  value={distributorValue}
-                  sx={{
-                    width: "100%",
-                    // minWidth: '400px',
-                    // '@media (max-width:600px)': {
-                    //     minWidth: '300px',
-                    // },
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="p-6">
+              <div
+                className="mb-4 purch_hdr_mn"
+                style={{ display: "flex", gap: "2px" }}
+              >
+                <span
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    whiteSpace: "nowrap",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
                   }}
-                  size="small"
-                  autoFocus
-                  onChange={handleDistributorBillList}
-                  options={distributorList}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => (
-                    <TextField
-                      autoFocus
-                      {...params}
-                      label="Search Distributor Name"
-                    />
-                  )}
-                />
-                {/* {!distributorValue && <span style={{ color: 'red', fontSize: '12px' }}>{errors.distributorValue}</span>} */}
-              </div>
-              <div style={{ justifyContent: "end", display: "flex" }}>
-                <Button
-                  className="serch_btn_ad"
-                  style={{ background: "var(--color1)" }}
-                  variant="contained"
-                  onClick={openBillDetails}
                 >
-                  Search
-                </Button>
-              </div>
-            </div>
-            <div
-              className="overflow-x-auto mt-4 border-t"
-              style={{ overflowX: "auto" }}
-            >
-              <table
-                className="w-full border-collapse custom-table pt-2"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead className="">
-                  <tr>
-                    <th>SR. No</th>
-                    {columns.map((column, index) => (
-                      <th
-                        key={column.id}
-                        onClick={() => sortByColumn(column.id)}
-                        style={{ width: column.width }}
-                      >
-                        <div className="headerStyle">
-                          <span>{column.label}</span>
-                          <SwapVertIcon />
-                        </div>
-                      </th>
-                    ))}
-                    {hasPermission(permissions, "purchase payment edit") && (
-                      <th>Action</th>
+                  Purchase Payment
+                </span>
+                {hasPermission(permissions, "purchase payment create") && (
+                  <div className="headerList">
+                    <Button
+                      variant="contained"
+                      className="sale_add_btns gap-2"
+                      size="small"
+                      style={{ fontSize: "14px", background: "var(--color1)" }}
+                      onClick={handelAddOpen}
+                    >
+                      <AddIcon />
+                      Add New Payment
+                    </Button>
+                  </div>
+                )}
+                <div className="detail drug_fltr_fld headerList">
+                  <Autocomplete
+                    value={distributorValue}
+                    sx={{
+                      width: "100%",
+                    }}
+                    size="small"
+                    autoFocus
+                    onChange={handleDistributorBillList}
+                    options={distributorList}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        autoFocus
+                        {...params}
+                        label="Search Distributor Name"
+                      />
                     )}
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "#3f621217" }}>
-                  {filteredList.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={columns.length + 2}
-                        style={{
-                          textAlign: "center",
-                          color: "gray",
-                          borderRadius: "10px 10px 10px 10px",
-                        }}
-                      >
-                        No data found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredList.map((row, index) => {
-                      return (
-                        <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>
-                            {startIndex + index}
-                          </td>
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            const isDueAmount = column.id === "due_amount";
-                            const isStatus = column.id === "status";
-
-                            // Determine the className for the due_amount field
-                            const dueAmountClass =
-                              isDueAmount || value > 0
-                                ? "text-red-500"
-                                : "text-black";
-
-                            // Determine the className for the status field
-                            const statusClass =
-                              isStatus && value === "Paid"
-                                ? "orderStatus"
-                                : isStatus && value === "Partially Paid"
-                                  ? "pendingStatus"
-                                  : "text-black";
-
-                            return (
-                              <td
-                                key={column.id}
-                                align={column.align}
-                                className={`text-lg `}
-                              >
-                                <span
-                                  className={`text ${isStatus && statusClass} ${isDueAmount ? dueAmountClass : "text-black"
-                                    }`}
-                                >
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </span>
-                              </td>
-                            );
-                          })}
-                          {hasPermission(
-                            permissions,
-                            "purchase payment edit"
-                          ) && (
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <BorderColorIcon
-                                  style={{ color: "var(--color1)" }}
-                                  onClick={() => handleEditOpen(row)}
+                  />
+                </div>
+                <div style={{ justifyContent: "end", display: "flex" }}>
+                  <Button
+                    className="serch_btn_ad"
+                    style={{ background: "var(--color1)" }}
+                    variant="contained"
+                    onClick={openBillDetails}
+                  >
+                    Search
+                  </Button>
+                </div>
+              </div>
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="firstrow mt-4">
+                <div className="overflow-x-auto mt-4 ">
+                  <table
+                    className="w-full bg-transparent border-collapse custom-table pt-2"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead className="">
+                      <tr>
+                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                        {columns.map((column, index) => (
+                          <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                            <div className="headerStyle" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <span>{column.label}</span>
+                                <SwapVertIcon
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => sortByColumn(column.id)}
                                 />
-                              </td>
-                            )}
+                              </div>
+                              {/* Search controls based on column type */}
+                              {column.id === "distributor_name" ? (
+                                <Autocomplete
+                                  value={
+                                    distributorList.find(
+                                      (dist) => dist.name?.toString().toLowerCase() === searchTerms[index]?.toString().toLowerCase()
+                                    ) || null
+                                  }
+                                  sx={{ width: 150 }}
+                                  size="small"
+                                  autoFocus
+                                  onChange={(_, val) => handleSearchChange(index, val ? val.id : "")}
+
+                                  options={distributorList}
+                                  getOptionLabel={(opt) => opt.name || ""}
+
+
+                                  renderInput={(params) => (
+                                    <TextField {...params} placeholder="Distributor" variant="outlined" />
+                                  )}
+                                />
+                              ) : column.id === "payment_mode" ? (
+                                <Autocomplete
+                                  options={[
+                                    { id: "", name: "All" },
+                                    { id: "cash", name: "Cash" },
+                                    { id: "credit", name: "Credit" },
+                                    ...bankData.map(bank => ({ id: bank.id, name: bank.bank_name }))
+                                  ]}
+                                  getOptionLabel={(opt) => opt.name || ""}
+                                  value={
+                                    [
+                                      { id: "", name: "All" },
+                                      { id: "cash", name: "Cash" },
+                                      { id: "credit", name: "Credit" },
+                                      ...bankData.map(bank => ({ id: bank.id, name: bank.bank_name }))
+                                    ].find(mode => mode.id?.toString() === searchTerms[index]?.toString()) || { id: "", name: "All" }
+                                  }
+                                  onChange={(_, val) => handleSearchChange(index, val ? val.id : "")}
+                                  size="small"
+                                  sx={{ width: 150 }}
+                                  renderInput={(params) => (
+                                    <TextField {...params} placeholder="Payment Mode" variant="outlined" />
+                                  )}
+                                />
+                              ) : column.id === "status" ? (
+                                <Autocomplete
+                                  options={[
+                                    { value: "", label: "All" },
+                                    { value: "paid", label: "Paid" },
+                                    { value: "partially Paid", label: "Partially Paid" }
+                                  ]}
+                                  getOptionLabel={(opt) => opt.label || ""}
+                                  value={
+                                    [
+                                      { value: "", label: "All" },
+                                      { value: "paid", label: "Paid" },
+                                      { value: "partially Paid", label: "Partially Paid" }
+                                    ].find(status => status.value === searchTerms[index]) || { value: "", label: "All" }
+                                  }
+                                  onChange={(_, val) => handleSearchChange(index, val ? val.value : "")}
+                                  size="small"
+                                  sx={{ width: 150 }}
+                                  renderInput={(params) => (
+                                    <TextField {...params} placeholder="Status" variant="outlined" />
+                                  )}
+                                />
+                              ) : (
+                                <TextField
+                                  autoComplete="off"
+                                  label="Type Here"
+                                  id="filled-basic"
+                                  size="small"
+                                  sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                  value={searchTerms[index]}
+                                  onChange={(e) => handleSearchChange(index, e.target.value)}
+                                  onKeyDown={handleKeyDown}
+                                  InputProps={{
+                                    endAdornment: searchTerms[index] && (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => handleSearchChange(index, '')}
+                                        sx={{ padding: 0 }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </th>
+                        ))}
+                        {hasPermission(permissions, "purchase payment edit") && (
+                          <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
+                        )}
+                      </tr>
+                    </thead>
+
+                    {isSearchLoading ? (
+                      <tbody>
+                        <tr>
+                          <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '20px' }}>
+                            <Loader />
+                          </td>
                         </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+                      </tbody>
+                    ) : (
+                      <tbody style={{ background: "#3f621217" }}>
+                        {tableData.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={columns.length + 2}
+                              className="text-center py-4 text-gray-500"
+                              style={{
+                                textAlign: "center",
+                                borderRadius: "10px 10px 10px 10px",
+                              }}
+                            >
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          tableData.map((row, index) => (
+                            <tr key={row.code || index} className="bg-[#f5f8f3] align-middle">
+                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                                {((currentPage - 1) * rowsPerPage) + index + 1}
+                              </td>
+                              {columns.map((column) => {
+                                const value = row[column.id] || "-";
+                                const isDueAmount = column.id === "due_amount";
+                                const isStatus = column.id === "status";
+                                const dueAmountClass = isDueAmount && value > 0 ? "text-red-500" : "text-black";
+                                const statusClass = isStatus && value === "Paid"
+                                  ? "orderStatus"
+                                  : isStatus && value === "Partially Paid"
+                                    ? "pendingStatus"
+                                    : "text-black";
+
+                                return (
+                                  <td
+                                    key={column.id}
+                                    className="px-4 py-2 font-semibold text-center capitalize"
+                                    align={column.align}
+                                  >
+                                    <span
+                                      className={`text ${isStatus ? statusClass : isDueAmount ? dueAmountClass : "text-black"}`}
+                                    >
+                                      {column.format && typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
+                                    </span>
+                                  </td>
+                                );
+                              })}
+                              {hasPermission(permissions, "purchase payment edit") && (
+                                <td className="rounded-r-[10px] px-4 py-2 text-center">
+                                  <div className="px-2 flex gap-1 justify-center">
+                                    <BorderColorIcon
+                                      className="cursor-pointer"
+                                      onClick={() => handleEditOpen(row)}
+                                      style={{ color: "var(--color1)" }}
+                                    />
+                                  </div>
+                                </td>
+                              )}
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    )}
+                  </table>
+                </div>
+              </div>
             </div>
-            <div
-              className="mt-4 space-x-1"
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '1rem',
-                background: '#fff'
-              }}
+          </div>
+
+          {/*<====================================================================== pagination  =====================================================================> */}
+
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
             >
+              Previous
+            </button>
+            {currentPage > 2 && (
               <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
               >
-                Previous
+                {currentPage - 2}
               </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
+            )}
+            {currentPage > 1 && (
               <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
               >
-                {currentPage}
+                {currentPage - 1}
               </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
               <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
               >
-                Next
+                {currentPage + 1}
               </button>
-            </div>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
           </div>
 
           <Dialog
@@ -787,11 +979,11 @@ const PaymentList = () => {
                       </>
                     )}
                   </div>
-                
-                </div>
-                <div className="flex sm:flex-nowrap flex-wrap gap-4"> 
 
-                    <div style={{ width: "100%" }}>
+                </div>
+                <div className="flex sm:flex-nowrap flex-wrap gap-4">
+
+                  <div style={{ width: "100%" }}>
                     <span className="label primary">Payment Date <span className="text-red-600">*</span></span>
                     {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker

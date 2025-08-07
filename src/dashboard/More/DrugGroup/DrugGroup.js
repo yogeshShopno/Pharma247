@@ -1,72 +1,76 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../Header";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
-import { FaEdit, FaSlack, FaTrash } from "react-icons/fa";
-import Loader from "../../../componets/loader/Loader";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from "@mui/icons-material/Add";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Alert,
-  AlertTitle,
   Autocomplete,
   Button,
   ListItem,
+  ListItemText,
   TextField,
-} from "@mui/material";
-import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
+  IconButton,
 } from "@mui/material";
-import { TablePagination } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
+import Loader from "../../../componets/loader/Loader";
+import { toast, ToastContainer } from "react-toastify";
+
+const drugGroupColumns = [
+  { id: "name", label: "Drug Group Name", minWidth: 100 },
+];
 
 const DrugGroup = () => {
   const history = useHistory();
-
   const token = localStorage.getItem("token");
-  const drugGroupColumns = [
-    { id: "name", label: "Drug Group Name", minWidth: 100 },
-  ];
   const [drugGroupData, setDrugGroupData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [header, setHeader] = useState("");
   const [buttonLabel, setButtonLabel] = useState("");
   const [drugGroupName, setDrugGroupName] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [drugGroupID, setDrugGroupID] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Search state
+  const [searchTerms, setSearchTerms] = useState([""]);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+
+  // Delete state
   const [deleteDrugGroupId, setDeleteDrugGroupId] = useState(null);
   const [IsDelete, setIsDelete] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
-const [totalRecords, setTotalRecords] = useState(0);
+
+  // Dialog helpers
+  const resetAddDialog = () => {
+    setDrugGroupName("");
+    setErrors({});
+    setOpenAddPopUp(false);
+    setIsEditMode(false);
+    setDrugGroupID(null);
+  };
 
   const handelAddOpen = () => {
     setOpenAddPopUp(true);
     setHeader("Add Drug Group");
     setButtonLabel("Save");
+    setIsEditMode(false);
+    setDrugGroupName("");
   };
-
   const handleEditOpen = (row) => {
     setOpenAddPopUp(true);
     setDrugGroupID(row.id);
@@ -76,132 +80,115 @@ const [totalRecords, setTotalRecords] = useState(0);
     setButtonLabel("Update");
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  // Backend-driven Pagination + Search effect
+  useEffect(() => {
+    DrugGroupList(currentPage);
+    // eslint-disable-next-line
+  }, [currentPage]);
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const resetAddDialog = () => {
-    setDrugGroupName("");
-    setErrors({});
-    setOpenAddPopUp(false);
-    setIsEditMode(false);
-  };
-
-  const handleRowClick = (drugGroupId) => {
-    history.push(`/more/drugGroupView/${drugGroupId}`);
-  };
-
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-  setPage(0); // Reset page on new search
-
-    if (value.trim() === "") {
-      setFilteredData(drugGroupData);
-    } else {
-      const filtered = drugGroupData.filter(item =>
-        item.name.toLowerCase().includes(value.toLowerCase())
+  // Debounced search effect - COPIED FROM COMPANY
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      clearTimeout(searchTimeout.current);
+      const hasSearchTerms = currentSearchTerms.current.some(
+        (term) => term && term.trim()
       );
-      setFilteredData(filtered);
+      if (!hasSearchTerms) {
+        setIsSearching(false);
+        DrugGroupList(1, true);
+      } else {
+        setIsSearching(true);
+        searchTimeout.current = setTimeout(() => {
+          DrugGroupList(1, true);
+        }, 200);
+      }
+    }
+    // eslint-disable-next-line
+  }, [searchTrigger]);
+
+  // Clean up debounce timeout on unmount
+  useEffect(() => {
+    return () => clearTimeout(searchTimeout.current);
+  }, []);
+
+  // Core List API (backend pagination + search)
+  const DrugGroupList = (page = 1, isSearch = false) => {
+    if (!page) return;
+    setIsLoading(!isSearch);
+    setIsSearching(isSearch);
+
+    const formData = new FormData();
+    formData.append("page", page);
+    formData.append("limit", rowsPerPage);
+    if (searchTerms[0] && searchTerms[0].trim()) {
+      formData.append("search", searchTerms[0].trim());
+    }
+
+    axios
+      .post("drug-list", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setDrugGroupData(response.data.data || []);
+        setTotalRecords(Number(response.data.total_records) || 0);
+        setIsLoading(false);
+        setIsSearching(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        setIsSearching(false);
+        setDrugGroupData([]);
+        setTotalRecords(0);
+      });
+  };
+
+  // Search input handler (debounced, backend) - UPDATED FROM COMPANY
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+    currentSearchTerms.current = newSearchTerms;
+    setSearchTerms(newSearchTerms);
+    setCurrentPage(1);
+    setSearchTrigger((prev) => prev + 1); // ADDED THIS LINE FROM COMPANY
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      DrugGroupList(1, true);
     }
   };
 
-useEffect(() => {
-  const delayDebounce = setTimeout(() => {
-    DrugGroupList(page + 1, true);
-  }, 300);
+  // Pagination controls
+ const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const handleClick = (pageNum) => setCurrentPage(pageNum);
+  const handlePrevious = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const handleNext = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
 
-  return () => clearTimeout(delayDebounce);
-}, [searchTerm, page, rowsPerPage]);
-
-
-  useEffect(() => {
-    setFilteredData(drugGroupData);
-  }, [drugGroupData]);
-
-  const DrugGroupList = async (page = 1, isSearch = false) => {
-  const formData = new FormData();
-  formData.append("search", searchTerm.trim());
-  formData.append("page", page);
-  formData.append("limit", rowsPerPage);
-
-  try {
-    setIsLoading(true);
-    const response = await axios.post("drug-list", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const responseData = response.data.data || [];
-    setTotalRecords(response.data.count || 0);
-
-    setDrugGroupData(responseData);
-    setFilteredData(responseData);
-    setIsLoading(false);
-  } catch (error) {
-    console.error("API error:", error);
-    setIsLoading(false);
-  }
-};
-
-
+  // Add/Edit Logic
   const validData = () => {
-    if (isEditMode == false) {
-      //  Add Package
-      const newErrors = {};
-      if (!drugGroupName) {
-        newErrors.drugGroupName = "Drug Group Name is required";
-        toast.error(newErrors.drugGroupName);
-      }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
-        AddDrugGroup();
-      }
-      return isValid;
-    } else {
-      // Edit Package
-      const newErrors = {};
-      if (!drugGroupName) {
-        newErrors.drugGroupName = "Drug Group Name is required";
-        toast.error(newErrors.drugGroupName);
-      }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
-        EditDrugGroup();
-      }
-      return isValid;
+    const newErrors = {};
+    if (!drugGroupName) {
+      newErrors.drugGroupName = "Drug Group Name is required";
+      toast.error(newErrors.drugGroupName);
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      isEditMode ? EditDrugGroup() : AddDrugGroup();
     }
   };
 
   const AddDrugGroup = async () => {
     let data = new FormData();
     data.append("name", drugGroupName);
-
     try {
-      await axios
-        .post("drug-group-store", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          DrugGroupList();
-          setOpenAddPopUp(false);
-          setDrugGroupName("");
-          toast.success(response.data.message);
-        });
+      await axios.post("drug-group-store", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      resetAddDialog();
+      DrugGroupList(currentPage);
+      toast.success("Drug Group added!");
     } catch (error) {
-      setIsLoading(false);
-      if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
-      }
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -210,128 +197,83 @@ useEffect(() => {
     data.append("id", drugGroupID);
     data.append("name", drugGroupName);
     try {
-      await axios
-        .post("drug-group-update", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          DrugGroupList();
-          setOpenAddPopUp(false);
-          toast.success(response.data.message);
-          setDrugGroupName("");
-          setIsEditMode(false);
-        });
+      await axios.post("drug-group-update", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      resetAddDialog();
+      DrugGroupList(currentPage);
+      toast.success("Drug Group updated!");
     } catch (error) {
-      if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
-      }
-      console.error("API error:", error);
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
 
-  const drugGroupDelete = async (id) => {
-    let data = new FormData();
-    data.append("id", id);
-
-    try {
-      await axios
-        .post("drug-group-delete", data, {
-          headers: {
-            // Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          setIsLoading(true);
-          DrugGroupList();
-          toast.success(response.data.message);
-        });
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
-  };
-
-  const deleteOpen = (drugGroupID) => {
-    setDeleteDrugGroupId(drugGroupID);
-    setIsDelete(true);
-  };
-
-  const deleteClose = () => {
-    setIsDelete(false);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteDrugGroupId) return;
-    await drugGroupDelete(deleteDrugGroupId);
-    setIsDelete(false);
-  };
-
+  // Autocomplete (edit dialog) handlers
   const handleOptionChange = (event, newValue) => {
     if (newValue && typeof newValue === "object") {
       setDrugGroupName(newValue.name);
     } else {
-      setDrugGroupName(newValue);
+      setDrugGroupName(newValue || "");
     }
   };
-
   const handleInputChange = (event, newInputValue) => {
-    setDrugGroupName(newInputValue);
+    setDrugGroupName((newInputValue || "").toUpperCase());
+  };
+
+  // Delete
+  const drugGroupDelete = async (id) => {
+    let data = new FormData();
+    data.append("id", id);
+    try {
+      await axios.post("drug-group-delete", data, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setIsDelete(false);
+      DrugGroupList(currentPage);
+      toast.success("Drug Group deleted!");
+    } catch (error) {
+      toast.error("Error deleting Drug Group");
+    }
+  };
+  const deleteOpen = (id) => {
+    setDeleteDrugGroupId(id);
+    setIsDelete(true);
+  };
+  const deleteClose = () => setIsDelete(false);
+  const handleDelete = () => drugGroupDelete(deleteDrugGroupId);
+
+  // Serial number
+  const startIndex = (currentPage - 1) * rowsPerPage + 1;
+
+  // Row click (existing logic untouched)
+  const handleRowClick = (drugGroupId) => {
+    history.push(`/more/drugGroupView/${drugGroupId}`);
   };
 
   return (
     <div>
       <Header />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <div
-        style={{
-          minHeight: 'calc(100vh - 64px)',
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-        }}
-      >
+      <ToastContainer position="top-right" autoClose={5000} />
+      <div style={{
+        minHeight: 'calc(100vh - 64px)',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }}>
         <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
           <div className="p-6">
-            <div
-              className="mb-4 add_company_hdr"
-              style={{ display: "flex", gap: "4px" }}
-            >
-              <div
-                style={{ display: "flex", gap: "5px", alignItems: "center" }}
-              >
-                <span
-                  className="primary"
-                  style={{
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    width: "120px",
-                  }}
-                >
+            <div className="mb-4 add_company_hdr" style={{ display: "flex", gap: "4px" }}>
+              <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                <span className="primary" style={{ fontWeight: 700, fontSize: "20px", width: "140px" }}>
                   Drug Group
                 </span>
-                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
                 <Button
-                  className="order_list_btn"
-                  style={{
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                  }}
                   variant="contained"
+                  className="order_list_btn"
+                  style={{ background: "var(--color1)" }}
                   size="small"
                   onClick={handelAddOpen}
                 >
@@ -340,102 +282,96 @@ useEffect(() => {
                 </Button>
               </div>
             </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="firstrow mt-4">
-              <div className="flex gap-2 flex-row pb-2">
-                <div className="detail drug_fltr_fld">
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    label="Search Drug Group"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    autoComplete="off"
-                    sx={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-              <div
-                className="overflow-x-auto mt-4 border-t"
-                style={{ overflowX: "auto" }}
+            <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
+            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ overflowX: 'auto', width: '100%' }}>
+              <table
+                className="w-full border-collapse custom-table"
+                style={{
+                  whiteSpace: "nowrap",
+                  borderCollapse: "separate",
+                  borderSpacing: "0 6px",
+                }}
               >
-                <table
-                  className="w-full border-collapse custom-table"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                >
-                  <thead>
+                <thead>
+                  <tr>
+                    <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                    {drugGroupColumns.map((column, colIndex) => (
+                      <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                        <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                          <span>{column.label}</span>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <TextField
+                              autoComplete="off"
+                              label="Type Here"
+                              size="small"
+                              sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                              value={searchTerms[colIndex]}
+                              onChange={e => handleSearchChange(colIndex, e.target.value)}
+                              onKeyDown={handleKeyDown}
+                            />
+                          </div>
+                        </div>
+                      </th>
+                    ))}
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody style={{ background: "#3f621217" }}>
+                  {isLoading || isSearching ? (
                     <tr>
-                      <th>SR No.</th>
-                      {drugGroupColumns.map((column) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          {column.label}
-                        </th>
-                      ))}
-                      <th>Action</th>
+                      <td colSpan={drugGroupColumns.length + 2} style={{ textAlign: "center", padding: "24px" }}>
+                        <Loader />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {filteredData.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={drugGroupColumns.length + 2}
-                          style={{
-                            textAlign: "center",
-                            color: "gray",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          {searchTerm ? "No matching results found" : "No data found"}
+                  ) : drugGroupData.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={drugGroupColumns.length + 2}
+                        style={{
+                          textAlign: "center",
+                          color: "gray",
+                          borderRadius: "10px 10px 10px 10px",
+                        }}
+                      >
+                        No data found
+                      </td>
+                    </tr>
+                  ) : (
+                    drugGroupData.map((item, index) => (
+                      <tr key={item.id || index}>
+                        <td style={{ borderRadius: "10px 0 0 10px" }}>
+                          {startIndex + index}
+                        </td>
+                        {drugGroupColumns.map((column) => (
+                          <td
+                            key={column.id}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleRowClick(item.id)}
+                          >
+                            {item[column.id]}
+                          </td>
+                        ))}
+                        <td style={{ borderRadius: "0 10px 10px 0" }}>
+                          <div className="px-2 flex gap-1 justify-center">
+                            <BorderColorIcon
+                              style={{ color: "var(--color1)" }}
+                              onClick={() => handleEditOpen(item)}
+                            />
+                            <DeleteIcon
+                              style={{ color: "var(--color6)" }}
+                              onClick={() => deleteOpen(item.id)}
+                            />
+                          </div>
                         </td>
                       </tr>
-                    ) : (
-                      filteredData?.map((item, index) => (
-                        <tr key={index}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>
-                            {startIndex + index}
-                          </td>
-                          {drugGroupColumns.map((column) => (
-                            <td
-                              key={column.id}
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleRowClick(item.id)}
-                            >
-                              {item[column.id]}
-                            </td>
-                          ))}
-
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <div className="px-2 flex gap-1 justify-center">
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)", cursor: "pointer" }}
-                                onClick={() => handleEditOpen(item)}
-                              />
-                              <DeleteIcon
-                                className="delete-icon"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => deleteOpen(item.id)}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
+      {/* Pagination UI like PurchaseList */}
         <div
           className="flex justify-center mt-4"
           style={{
@@ -448,39 +384,60 @@ useEffect(() => {
           }}
         >
           <button
-            onClick={() => setPage(page - 1)}
-            className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-            disabled={page === 0}
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
           >
             Previous
           </button>
-          {page > 1 && (
-            <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+          {currentPage > 2 && (
+            <button
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 2}
+            </button>
           )}
-          {page > 0 && (
-            <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
-          )}
-          <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
-          {page + 1 < Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) && (
-            <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+          {currentPage > 1 && (
+            <button
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 1}
+            </button>
           )}
           <button
-            onClick={() => setPage(page + 1)}
-            className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-            disabled={(page + 1) >= Math.ceil((drugGroupData?.[0]?.count || 0) / rowsPerPage)}
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
           >
             Next
           </button>
         </div>
       </div>
-      <Dialog
-        className="order_list_ml custom-dialog"
-        open={openAddPopUp}
-      >
-        <DialogTitle
-          id="alert-dialog-title"
-          style={{ fontWeight: 700 }}
-        >
+      {/* Add/Edit Dialog */}
+      <Dialog className="order_list_ml custom-dialog" open={openAddPopUp}>
+        <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
           {header}
         </DialogTitle>
         <IconButton
@@ -497,10 +454,7 @@ useEffect(() => {
         </IconButton>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <div
-              className="flex flex-col gap-5"
-              style={{ flexDirection: "column", width: "100%" }}
-            >
+            <div className="flex flex-col gap-5" style={{ width: "100%" }}>
               <FormControl size="small" style={{ width: "100%" }}>
                 <span className="label primary">Drug Group Name</span>
                 <Autocomplete
@@ -531,7 +485,6 @@ useEffect(() => {
           <Button
             autoFocus
             variant="contained"
-            className="p-5"
             style={{
               backgroundColor: "var(--COLOR_UI_PHARMACY)",
               color: "white",
@@ -544,7 +497,7 @@ useEffect(() => {
             autoFocus
             variant="contained"
             onClick={resetAddDialog}
-            style={{ backgroundColor: "#F31C1C", color: "white" }}
+            color="error"
           >
             Cancel
           </Button>
@@ -607,4 +560,5 @@ useEffect(() => {
     </div>
   );
 };
+
 export default DrugGroup;

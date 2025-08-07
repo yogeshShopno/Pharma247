@@ -367,53 +367,6 @@ const Purchasebill = () => {
     }
   };
 
-  const PurchaseTableBody = ({ data, columns, onView, onPdf, onDelete, permissions }) => {
-    return (
-      <tbody style={{ background: "#3f621217" }}>
-        {data.length === 0 ? (
-          <tr>
-            <td colSpan={columns.length + 1} className="text-center text-gray-500">
-              No data found
-            </td>
-          </tr>
-        ) : (
-          data.map((row) => (
-            <tr className="cursor-pointer hover:bg-gray-100" key={row.id}>
-              {columns.map((column, colIndex) => {
-                const value = row[column.id];
-                return (
-                  <td
-                    key={column.id}
-                    className="capitalize"
-                    style={
-                      colIndex === 0
-                        ? { borderRadius: "10px 0 0 10px" }
-                        : colIndex === columns.length - 1
-                          ? { borderRadius: "0 10px 10px 0" }
-                          : {}
-                    }
-                    onClick={() => onView(row.id)}
-                  >
-                    {value}
-                  </td>
-                );
-              })}
-              <td>
-                <div className="flex gap-2 items-center">
-                  <VisibilityIcon onClick={() => onView(row.id)} />
-                  <FaFilePdf onClick={() => onPdf(row.id)} />
-                  {hasPermission(permissions, "purchase bill delete") && (
-                    <DeleteIcon onClick={() => onDelete(row.id)} style={{ color: "#F31C1C" }} />
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    );
-  };
-
   return (
     <>
       <Header />
@@ -680,6 +633,8 @@ const Purchasebill = () => {
             </table>
           </div>
         </div>
+      {/*<=================================================================================== pagination ===================================================================================> */}
+
         <div
           className="flex justify-center mt-4"
           style={{

@@ -3,7 +3,7 @@ import { Button, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
@@ -25,41 +25,52 @@ import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import CloseIcon from "@mui/icons-material/Close";
+
 const ReturnList = () => {
   const history = useHistory();
-  const rowsPerPage = 1;
+  const rowsPerPage = 10;
   const token = localStorage.getItem("token");
   const permissions = usePermissions();
 
   const columns = [
-    { id: "bill_no", label: "Bill No", minWidth: 150 },
-    { id: "bill_date", label: "Bill Date", minWidth: 150 },
-    { id: "user_name", label: "Entry By", minWidth: 150 },
-    { id: "distributor_name", label: "Distributor", minWidth: 150 },
-    { id: "total_amount", label: "Amount", minWidth: 150 },
-    { id: "due_amount", label: "Due Amount", minWidth: 150 },
+    { id: "bill_no", label: "Bill No", minWidth: 250 },
+    { id: "bill_date", label: "Bill Date", minWidth: 250 },
+    { id: "distributor_name", label: "Distributor", minWidth: 350 },
+    { id: "total_amount", label: "Amount", minWidth: 250 },
+    { id: "due_amount", label: "Due Amount", minWidth: 250 },
   ];
+
+  const searchableColumnIds = [
+    { id: "bill_no", label: "Bill No", minWidth: 150 },
+    { id: "distributor_name", label: "Distributor", minWidth: 350 },
+    { id: "total_amount", label: "Amount", minWidth: 150 },
+  ];
+  // Instead of array, use an object mapping column id to API key:
+  const searchKeys = {
+    bill_no: "bill_no",
+    distributor_name: "distributor_name",
+    total_amount: "bill_amount",
+  };
+
+
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  // Search state management (copied from PaymentList)
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
+
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  
-  // Filter data first, then calculate pagination
-  const filteredData = tableData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
-  
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-  
+
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
@@ -67,18 +78,107 @@ const ReturnList = () => {
   const [IsDelete, setIsDelete] = useState(false);
   const [returnId, setReturnId] = useState(null);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
-
   const [openCNPopUp, setOpenCNPopUp] = useState(false);
-
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
+  const [cnBillData, setCnBillData] = useState([]);
+  const [dueAmount, setDueAmount] = useState([]);
 
-  const [cnBillData, setCnBillData] = useState([]); // for current row
-  const [dueAmount, setDueAmount] = useState([]); // for current row
+  // Effect for handling search with debouncing (copied from PaymentList)
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout.current);
 
+      // Check if any search term has a value
+      const hasSearchTerms = currentSearchTerms.current.some(term => {
+        if (!term) return false;
+        const stringTerm = String(term).trim();
+        return stringTerm !== '';
+      });
+
+      if (!hasSearchTerms) {
+        // If no search terms, clear the search immediately
+        setIsSearching(false);
+        ReturnBillList(1, true);
+      } else {
+        // Show searching state immediately
+        setIsSearching(true);
+
+        // Debounce the search to avoid too many API calls
+        searchTimeout.current = setTimeout(() => {
+          ReturnBillList(1, true);
+        }, 150);
+      }
+    }
+  }, [searchTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+
+  // Effect for pagination
+  useEffect(() => {
+    if (currentPage > 0) {
+      ReturnBillList(currentPage);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    ReturnBillList(1);
+  }, []);
+
+  useEffect(() => {
+    if (tableData.length > 0) {
+      localStorage.setItem("Purchase_Return_BillNo", tableData[0].count + 1);
+    } else {
+      localStorage.setItem("Purchase_Return_BillNo", 1);
+    }
+  }, [tableData, currentPage]);
 
   const goIntoAdd = () => {
     history.push("/return/add");
+  };
+
+  // Enhanced search functionality (copied from PaymentList)
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+
+    // Update state immediately for UI responsiveness
+    setSearchTerms(newSearchTerms);
+
+    // Check if any search term has a value
+    const hasSearchTerms = currentSearchTerms.current.some(term => term && String(term).trim());
+    setIsSearchActive(hasSearchTerms);
+
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
+  };
+
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    ReturnBillList(1);
+  };
+
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
   };
 
   const handleClick = (pageNum) => {
@@ -103,6 +203,7 @@ const ReturnList = () => {
     setIsDelete(true);
     setReturnId(Id);
   };
+
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
@@ -118,7 +219,6 @@ const ReturnList = () => {
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
           toast.success(response.data.meassage);
-
           setIsLoading(false);
           handlePdf(PDFURL);
         });
@@ -126,6 +226,7 @@ const ReturnList = () => {
       console.error("API error:", error);
     }
   };
+
   const handlePdf = (url) => {
     if (typeof url === "string") {
       window.open(url, "_blank");
@@ -133,15 +234,6 @@ const ReturnList = () => {
       console.error("Invalid URL for the PDF");
     }
   };
-
-  useEffect(() => {
-    // saleBillList();
-    if (tableData.length > 0) {
-      localStorage.setItem("Purchase_Return_BillNo", tableData[0].count + 1);
-    } else {
-      localStorage.setItem("Purchase_Return_BillNo", 1);
-    }
-  }, [tableData, currentPage]);
 
   const handleDeleteItem = async (returnId) => {
     if (!returnId) return;
@@ -161,19 +253,12 @@ const ReturnList = () => {
         })
         .then((response) => {
           setIsDelete(false);
-          ReturnBillList();
+          ReturnBillList(currentPage);
         });
     } catch (error) {
       console.error("API error:", error);
     }
   };
-
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -190,39 +275,53 @@ const ReturnList = () => {
     setTableData(sortedData);
   };
 
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
-    setCurrentPage(1); // Reset to first page when searching
-  };
+  // Enhanced ReturnBillList function with search and pagination (based on PaymentList)
+  const ReturnBillList = async (page, isSearch = false) => {
+    if (!page) return;
 
-  useEffect(() => {
-    ReturnBillList();
-  }, []);
-
-  const ReturnBillList = async (currentPage) => {
     let data = new FormData();
-    data.append("page", currentPage);
-    const params = {
-      page: currentPage,
-    };
-    setIsLoading(true);
+    data.append("page", page);
+
+    // Add search parameters when any search term has a value
+    columns.forEach((column, index) => {
+      const value = String(currentSearchTerms.current[index] || '').trim();
+      const apiKey = searchKeys[column.id];
+      if (apiKey && value) {
+        data.append(apiKey, value);
+      }
+    });
+
+
+    // Use different loading states for search vs regular operations
+    setIsSearchLoading(true);
+
     try {
-      await axios
-        .post("purches-return-list?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTableData(response.data.data);
-          setIsLoading(false);
-        });
+      const response = await axios.post("purches-return-list?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const responseData = response.data.data;
+
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+        return;
+      }
+
+      // Set the table data directly from backend (paginated and filtered data)
+      setTableData(responseData || []);
+
+      // Extract and set total count for pagination
+      const totalCount = response.data.total_records || responseData?.length || 0;
+      setTotalRecords(totalCount);
+
     } catch (error) {
-      setIsLoading(false);
       console.error("API error:", error);
+      setTableData([]);
+      setTotalRecords(0);
+    } finally {
+      setIsSearchLoading(false);
+      setIsSearching(false);
     }
   };
 
@@ -245,7 +344,6 @@ const ReturnList = () => {
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
           toast.success(response.data.meassage);
-
           setIsLoading(false);
           handlePdf(PDFURL);
         });
@@ -352,7 +450,7 @@ const ReturnList = () => {
                 style={{ borderColor: "var(--color2)" }}
               ></div>
               <div className="firstrow">
-                <div className="scroll-two" style={{ overflowX: "auto" }}>
+                <div style={{ overflowX: "auto" }}>
                   <table
                     className="w-full border-collapse custom-table"
                     style={{
@@ -367,160 +465,191 @@ const ReturnList = () => {
                         {columns.map((column, index) => (
                           <th key={column.id} style={{ width: column.minWidth }}>
                             <div className="headerStyle">
-                              <span>{column.label}</span>
-                              <SwapVertIcon
-                                className="cursor-pointer"
-                                onClick={() => sortByColumn(column.id)}
-                              />
-                              <TextField
-                                autoComplete="off"
-                                label={`Type Here`}
-                                id="filled-basic"
-                                size="small"
-                                style={{ width: "150px" }}
-                                value={searchTerms[index]}
-                                onChange={(e) =>
-                                  handleSearchChange(index, e.target.value)
-                                }
-                              />
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <span>{column.label}</span>
+                                <SwapVertIcon
+                                  className="cursor-pointer"
+                                  onClick={() => sortByColumn(column.id)}
+                                />
+                              </div>
+                              {/* Only show search TextField for non-Bill Date & non-Due Amount columns */}
+                              {column.id !== "bill_date" && column.id !== "due_amount" && (
+                                <TextField
+                                  autoComplete="off"
+                                  label={`Type Here`}
+                                  id="filled-basic"
+                                  size="small"
+                                  style={{ width: "150px" }}
+                                  value={searchTerms[index]}
+                                  onChange={(e) =>
+                                    handleSearchChange(index, e.target.value)
+                                  }
+                                  onKeyDown={handleKeyDown}
+                                  InputProps={{
+                                    endAdornment: searchTerms[index] && (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => handleSearchChange(index, '')}
+                                        sx={{ padding: 0 }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                />
+                              )}
                             </div>
                           </th>
                         ))}
+
                         <th></th>
                         <th>Action</th>
                       </tr>
                     </thead>
-                    <tbody style={{ background: "#3f621217" }}>
-                      {filteredList.length === 0 ? (
+
+                    {isSearchLoading ? (
+                      <tbody>
                         <tr>
-                          <td
-                            colSpan={columns.length + 2}
-                            style={{
-                              textAlign: "center",
-                              color: "gray",
-                              borderRadius: "10px 10px 10px 10px",
-                            }}
-                          >
-                            No data found
+                          <td colSpan={columns.length + 3} style={{ textAlign: 'center', padding: '20px' }}>
+                            <Loader />
                           </td>
                         </tr>
-                      ) : (
-                        filteredList.map((row, index) => {
-                          return (
-                            <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                              <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                {startIndex + index}
-                              </td>
+                      </tbody>
+                    ) : (
+                      <tbody style={{ background: "#3f621217" }}>
+                        {tableData.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={columns.length + 3}
+                              style={{
+                                textAlign: "center",
+                                color: "gray",
+                                borderRadius: "10px 10px 10px 10px",
+                              }}
+                            >
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          tableData.map((row, index) => {
+                            return (
+                              <tr hover role="checkbox" tabIndex={-1} key={row.code || index}>
+                                <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                  {startIndex + index}
+                                </td>
 
-                              {columns.map((column) => {
-                                const value = row[column.id];
-                                const isDueAmount = column.id === "total_amount";
-                                const isStatus = column.id === "status";
+                                {columns.map((column) => {
+                                  const value = row[column.id];
+                                  const isDueAmount = column.id === "total_amount";
+                                  const isStatus = column.id === "status";
 
-                                const statusClass =
-                                  isStatus && value === "Paid"
-                                    ? "text-black"
-                                    : isStatus && value === "Due"
-                                      ? "text-red-500"
-                                      : "text-black";
+                                  const statusClass =
+                                    isStatus && value === "Paid"
+                                      ? "text-black"
+                                      : isStatus && value === "Due"
+                                        ? "text-red-500"
+                                        : "text-black";
 
-                                const dueAmountClass =
-                                  isDueAmount && row.status === "Paid"
-                                    ? "text-black"
-                                    : isDueAmount && value > 0
-                                      ? "text-red-500"
-                                      : "text-black";
+                                  const dueAmountClass =
+                                    isDueAmount && row.status === "Paid"
+                                      ? "text-black"
+                                      : isDueAmount && value > 0
+                                        ? "text-red-500"
+                                        : "text-black";
 
-                                return (
-                                  <td
-                                    key={column.id}
-                                    align={column.align}
-                                    onClick={() => {
-                                      history.push(`/return/view/${row.id}`);
-                                    }}
-                                    className="text-lg"
-                                  >
-                                    <span
-                                      className={`text ${isStatus ? statusClass : ""
-                                        } ${isDueAmount ? dueAmountClass : ""}`}
-                                    >
-                                      {column.format && typeof value === "number"
-                                        ? column.format(value)
-                                        : value}
-                                    </span>
-                                  </td>
-                                );
-                              })}
-
-                              <td>
-                                {row.cn_amount_bills &&
-                                  row.cn_amount_bills.length > 0 ? (
-                                  <ul>
-                                    <Button
-                                      variant="contained"
-                                      size="small"
-                                      style={{
-                                        background: "rgb(4, 76, 157)",
-                                        fontSize: "12px",
-                                        whiteSpace: "nowrap",
-                                      }}
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      align={column.align}
                                       onClick={() => {
-                                        setCnBillData(row.cn_amount_bills || []);
-                                        setDueAmount(row.due_amount);
-                                        setOpenCNPopUp(true);
+                                        history.push(`/return/view/${row.id}`);
                                       }}
+                                      className="text-lg"
                                     >
-                                      View CN
-                                    </Button>
+                                      <span
+                                        className={`text ${isStatus ? statusClass : ""
+                                          } ${isDueAmount ? dueAmountClass : ""}`}
+                                      >
+                                        {column.format && typeof value === "number"
+                                          ? column.format(value)
+                                          : value}
+                                      </span>
+                                    </td>
+                                  );
+                                })}
 
+                                <td>
+                                  {row.cn_amount_bills &&
+                                    row.cn_amount_bills.length > 0 ? (
+                                    <ul>
+                                      <Button
+                                        variant="contained"
+                                        size="small"
+                                        style={{
+                                          background: "rgb(4, 76, 157)",
+                                          fontSize: "12px",
+                                          whiteSpace: "nowrap",
+                                        }}
+                                        onClick={() => {
+                                          setCnBillData(row.cn_amount_bills || []);
+                                          setDueAmount(row.due_amount);
+                                          setOpenCNPopUp(true);
+                                        }}
+                                      >
+                                        View CN
+                                      </Button>
+                                    </ul>
+                                  ) : (
+                                    <ul>
+                                    </ul>
+                                  )}
+                                </td>
 
-                                  </ul>
-                                ) : (
-                                  <ul>
-                                    {/* {/ <Button variant="contained" size='small' color="error" style={{ background: "rgb(170, 30, 31)", fontSize: '12px', textWrap:'nowrap' }} onClick={() => setOpenCNPopUp(true)}>No CN</Button> /} */}
-                                  </ul>
-                                )}
-                              </td>
+                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      gap: "5px",
+                                      fontSize: "15px",
 
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "5px",
-                                    fontSize: "15px",
-                                    color: "gray",
-                                    cursor: "pointer",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <VisibilityIcon
-                                    className="cursor-pointer cursor-pointer primary hover:secondary"
-                                    onClick={() => {
-                                      history.push(`/return/view/${row.id}`);
+                                      color: "gray",
+                                      cursor: "pointer",
+                                      alignItems: "center",
+
                                     }}
-                                  />
-                                  <FaFilePdf
-                                    className="primary hover:secondary"
-                                    onClick={() => pdfGenerator(row.id)}
-                                  />
-                                  {hasPermission(
-                                    permissions,
-                                    "purchase return bill delete"
-                                  ) && (
-                                      <DeleteIcon
-                                        style={{ color: "#F31C1C" }}
-                                        className="delete-icon"
-                                        onClick={() => deleteOpen(row.id)}
-                                      />
-                                    )}
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
+                                  >
+                                    <VisibilityIcon
+                                      className="cursor-pointer cursor-pointer primary hover:secondary"
+                                      onClick={() => {
+                                        history.push(`/return/view/${row.id}`);
+                                      }}
+                                    />
+                                    <FaFilePdf
+                                      className="primary hover:secondary"
+                                      onClick={() => pdfGenerator(row.id)}
+                                    />
+                                    {hasPermission(
+                                      permissions,
+                                      "purchase return bill delete"
+                                    ) && (
+                                        <DeleteIcon
+                                          style={{ color: "#F31C1C" }}
+                                          className="delete-icon"
+                                          onClick={() => deleteOpen(row.id)}
+                                        />
+                                      )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    )}
                   </table>
+
+                  {/* CN Dialog remains the same */}
                   <Dialog
                     open={openCNPopUp}
                     onClose={() => setOpenCNPopUp(false)}
@@ -605,6 +734,8 @@ const ReturnList = () => {
               </div>
             </div>
           </div>
+
+          {/* Enhanced Pagination */}
           <div
             className="flex justify-center mt-4"
             style={{

@@ -96,8 +96,11 @@ const DistributerList = () => {
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
   useEffect(() => {
-    DistList(1);
-  }, []);
+    if (currentPage > 0) {
+      DistList(currentPage);
+    }
+  }, [currentPage]);
+
 
   // Effect for handling search with debouncing (copied from PurchaseList.js)
   useEffect(() => {
@@ -325,11 +328,9 @@ const DistributerList = () => {
     });
 
     // Use different loading states for search vs regular operations
-    if (isSearch) {
-      setIsSearchLoading(true);
-    } else {
-      setIsLoading(true);
-    }
+
+    setIsSearchLoading(true);
+
 
     try {
       const response = await axios.post("list-distributer?", data, {
@@ -348,19 +349,16 @@ const DistributerList = () => {
       setTableData(responseData || []);
 
       // Extract and set total count for pagination
-      const totalCount = responseData?.length > 0 ? Number(responseData[0].count) : 0;
+      const totalCount = response.data.total_records
       setTotalRecords(totalCount);
+      console.log()
     } catch (error) {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
     } finally {
-      if (isSearch) {
-        setIsSearchLoading(false);
-        setIsSearching(false);
-      } else {
-        setIsLoading(false);
-      }
+      setIsSearchLoading(false);
+
     }
   };
 
@@ -685,6 +683,7 @@ const DistributerList = () => {
               </div>
             </div>
           </div>
+          
           {/*<====================================================================== pagination  =====================================================================> */}
 
           <div

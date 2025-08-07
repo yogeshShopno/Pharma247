@@ -59,7 +59,6 @@ const DoctorList = () => {
   const history = useHistory();
   const rowsPerPage = 10;
   const permissions = usePermissions();
-  // const [searchDoctor, setSearchDoctor] = useState('')
 
   const token = localStorage.getItem("token");
   const [file, setFile] = useState(null);
@@ -85,11 +84,10 @@ const DoctorList = () => {
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
-  const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const [totalRecords, setTotalRecords] = useState(0);
+  const totalPages = Math.ceil(totalRecords/ rowsPerPage);
+
+
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
@@ -317,23 +315,17 @@ const DoctorList = () => {
     setDoctor(newInputValue);
   };
   const handlePrevious = () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      ListOfDoctor(newPage);
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
   const handleNext = () => {
-    if (currentPage < totalPages) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      ListOfDoctor(newPage);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
+
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
-    ListOfDoctor(pageNum);
   };
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -364,12 +356,6 @@ const DoctorList = () => {
     setOpenUpload(true);
   };
 
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[columns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
 
   const sortByColumn = (key) => {
     let direction = "ascending";
@@ -398,8 +384,9 @@ const DoctorList = () => {
 
 
   useEffect(() => {
-    ListOfDoctor(1, searchTerms);
-  }, []);
+    ListOfDoctor(currentPage, searchTerms);
+  }, [currentPage]);
+
 
   const convertToCSV = (data) => {
     const array = [Object.keys(data[0])].concat(data);
@@ -436,6 +423,8 @@ const DoctorList = () => {
         })
         .then((response) => {
           setTableData(response.data.data);
+          setTotalRecords(response.data.total_records); // <-- Like in DistributerList
+
         });
     } catch (error) {
       console.error("API error:", error);
@@ -642,7 +631,7 @@ const DoctorList = () => {
                       </div>
                     ) : (
                       <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {filteredList.length === 0 ? (
+                        {tableData.length === 0 ? (
                           <tr>
                             <td
                               colSpan={columns.length + 2}
@@ -656,7 +645,7 @@ const DoctorList = () => {
                             </td>
                           </tr>
                         ) : (
-                          filteredList.map((row, index) => {
+                          tableData.map((row, index) => {
                             return (
                               <tr
                                 hover

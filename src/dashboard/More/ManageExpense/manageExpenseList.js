@@ -58,6 +58,11 @@ const ManageExpense = () => {
   const [paymentType, setPaymentType] = useState("cash");
   const pdfIcon = process.env.PUBLIC_URL + "/pdf.png";
 
+  // Pagination states
+  const rowsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+
   const paymentOptions = [
     { id: 1, label: "Cash" },
     { id: 2, label: "Credit" },
@@ -87,22 +92,21 @@ const ManageExpense = () => {
   const [catagory, setCatagory] = useState("");
   const [catagoryList, setCatagoryList] = useState([]);
   const [bankData, setBankData] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const ManageData = expenseData?.expense_list?.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  // Calculate total pages
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
   useEffect(() => {
     CatagoryList();
     BankList();
   }, []);
 
+  // Updated useEffect for pagination
   useEffect(() => {
-    expenseList();
-  }, [page, rowsPerPage, catagory]);
+    if (currentPage > 0) {
+      expenseList();
+    }
+  }, [currentPage, catagory]);
 
   const CatagoryList = async () => {
     let data = new FormData();
@@ -144,14 +148,6 @@ const ManageExpense = () => {
     } catch (error) {
       console.error("API error:", error);
     }
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -195,6 +191,7 @@ const ManageExpense = () => {
 
   const handleCategoryFilter = (e) => {
     setCatagory(e.target.value);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
   useEffect(() => {
@@ -209,12 +206,14 @@ const ManageExpense = () => {
 
   const handleStartDate = (newDate) => {
     setStartDate(newDate);
-    expenseList();
+    setCurrentPage(1); // Reset to first page when filter changes
+    setTimeout(() => expenseList(), 0);
   };
 
   const handleEndDate = (newDate) => {
     setEndDate(newDate);
-    expenseList();
+    setCurrentPage(1); // Reset to first page when filter changes
+    setTimeout(() => expenseList(), 0);
   };
 
   const validateForm = () => {
@@ -261,14 +260,16 @@ const ManageExpense = () => {
     }
   };
 
+  // Updated expenseList function with pagination
   const expenseList = () => {
     let data = new FormData();
+    data.append("page", currentPage);
 
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
       category: catagory,
-      page: page + 1,
+      page: currentPage,
       limit: rowsPerPage,
     };
     setIsLoading(true);
@@ -282,12 +283,28 @@ const ManageExpense = () => {
           },
         })
         .then((response) => {
-          // setOpenAddPopUp(false);
-          setExpenseData(response.data.data);
+          const responseData = response.data.data;
+          
+          if (response.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+            return;
+          }
+
+          // Set the expense data
+          setExpenseData(responseData || { expense_list: [], total: 0 });
+          
+          // Extract and set total count for pagination
+          const totalCount = response.data.total_records || responseData?.expense_list?.length || 0;
+          setTotalRecords(totalCount);
+          
           setIsLoading(false);
         });
     } catch (error) {
       console.error("API error:", error);
+      setExpenseData({ expense_list: [], total: 0 });
+      setTotalRecords(0);
+      setIsLoading(false);
     }
   };
 
@@ -295,7 +312,7 @@ const ManageExpense = () => {
     if (validateForm()) {
       // Proceed with saving the expense
       let data = new FormData();
-      data.append("category", selectedOption);
+      data.append("category", selectedOption||"");
       data.append(
         "expense_date",
         expenseDate ? format(expenseDate, "yyyy-MM-dd") : ""
@@ -304,15 +321,15 @@ const ManageExpense = () => {
         "payment_date",
         paymentdate ? format(paymentdate, "yyyy-MM-dd") : ""
       );
-      data.append("gst_type", selectedGSTOption);
-      data.append("gst", gst);
-      data.append("gstn_number", gstIN);
-      data.append("party", party);
-      data.append("amount", amount);
-      data.append("total", total);
-      data.append("payment_mode", paymentType);
-      data.append("reference_no", refNo);
-      data.append("remark", remark);
+      data.append("gst_type", selectedGSTOption||"");
+      data.append("gst", gst||"");
+      data.append("gstn_number", gstIN||"");
+      data.append("party", party||"");
+      data.append("amount", amount||"");
+      data.append("total", total||"");
+      data.append("payment_mode", paymentType||"");
+      data.append("reference_no", refNo||"");
+      data.append("remark", remark||"");
 
       try {
         await axios
@@ -352,6 +369,23 @@ const ManageExpense = () => {
     }
   };
 
+  // Pagination handlers
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleClick = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+
   return (
     <>
       <div>
@@ -372,223 +406,281 @@ const ManageExpense = () => {
             <Loader />
           </div>
         ) : (
-          <div>
-            <div className="p-6">
-              <div
-                className="mb-4 mng_expnse_main_hdr"
-                style={{ display: "flex", gap: "4px" }}
-              >
+          <div
+            style={{
+              minHeight: 'calc(100vh - 64px)',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+              <div className="p-6">
                 <div
-                  style={{
-                    display: "flex",
-                    gap: "7px",
-                    marginBottom: "10px",
-                    alignItems: "center",
-                  }}
+                  className="mb-4 mng_expnse_main_hdr"
+                  style={{ display: "flex", gap: "4px" }}
                 >
-                  <span
-                    style={{
-                      color: "var(--color1)",
-                      display: "flex",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    Manage Expense
-                  </span>
-                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-                </div>
-                <div
-                  className="headerList both_btn_expn"
-                  style={{ marginBottom: "10px" }}
-                >
-                  <Button
-                    variant="contained"
-                    className="gap-2 add_btn_expn"
-                    style={{
-                      textTransform: "none",
-                      background: "var(--color1)",
-                    }}
-                    onClick={() => setOpenAddPopUp(true)}
-                  >
-                    {" "}
-                    <AddIcon className="" />
-                    Add
-                  </Button>
-                  <Button
-                    variant="contained"
-                    className="gap-7 add_btn_expn"
-                    style={{
-                      background: "var(--color1)",
-                      color: "white",
-                      // paddingLeft: "35px",
-                      textTransform: "none",
-                      display: "flex",
-                    }}
-                    onClick={handlePdf}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <img
-                        src="/csv-file.png"
-                        className="report-icon absolute mr-10"
-                        alt="csv Icon"
-                      />
-                    </div>
-                    Download
-                  </Button>
-                </div>
-              </div>
-              <div
-                className="row border-b border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-              <div className="csrtureddididid flex flex-col gap-3 justify-between md:flex-row mt-4 oreder_list_fld_rp pb-2" style={{ width: "100%", alignItems: "end" }}>
-                <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld">
-                  <div>
-                    <span className="text-gray-500 py-2">Start Date</span>
-                    <div>
-                      <DatePicker
-                        className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
-                        selected={startDate}
-                        onChange={handleStartDate}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">End Date</span>
-                    <div>
-                      <DatePicker
-                        className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
-                        selected={endDate}
-                        onChange={handleEndDate}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-gray-500">Category</span>
-                    <div>
-                      <Select
-                        labelId="dropdown-label"
-                        className="category_fld"
-                        id="dropdown"
-                        value={catagory}
-                        sx={{ width: "100%" }}
-                        onChange={handleCategoryFilter}
-                        size="small"
-                        displayEmpty
-                      >
-                        <MenuItem value="">All</MenuItem>
-                        {catagoryList?.map((option) => (
-                          <MenuItem key={option.id} value={option.id}>
-                            {option.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2 ttl_dldld">
                   <div
-                    className="total_mng_expn"
                     style={{
-                      background: "#f3f3f3",
-                      padding: "12px",
-                      borderRadius: "10px",
-                      whiteSpace: "nowrap",
+                      display: "flex",
+                      gap: "7px",
+                      marginBottom: "10px",
+                      alignItems: "center",
                     }}
                   >
-                    <h2 className="primary font-medium text-xl ">
-                      Total{" "}
-                      <span className="secondary font-bold text-xl ">
-                        Rs.{Number(expenseData.total).toFixed(2)}
-                      </span>
-                    </h2> 
+                    <span
+                      style={{
+                        color: "var(--color1)",
+                        display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Manage Expense
+                    </span>
+                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+                  </div>
+                  <div
+                    className="headerList both_btn_expn"
+                    style={{ marginBottom: "10px" }}
+                  >
+                    <Button
+                      variant="contained"
+                      className="gap-2 add_btn_expn"
+                      style={{
+                        textTransform: "none",
+                        background: "var(--color1)",
+                      }}
+                      onClick={() => setOpenAddPopUp(true)}
+                    >
+                      {" "}
+                      <AddIcon className="" />
+                      Add
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className="gap-7 add_btn_expn"
+                      style={{
+                        background: "var(--color1)",
+                        color: "white",
+                        // paddingLeft: "35px",
+                        textTransform: "none",
+                        display: "flex",
+                      }}
+                      onClick={handlePdf}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv Icon"
+                        />
+                      </div>
+                      Download
+                    </Button>
                   </div>
                 </div>
-              </div>
-              <div className="overflow-x-auto mt-4">
-                <table
-                  className="w-full border-collapse custom-table"
-                  style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
-                  }}
-                >
-                  <thead>
-                    <tr>
-                      {expenseColumns.map((column) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
+                <div
+                  className="row border-b border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
+                <div className="csrtureddididid flex flex-col gap-3 justify-between md:flex-row mt-4 oreder_list_fld_rp pb-2" style={{ width: "100%", alignItems: "end" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld">
+                    <div>
+                      <span className="text-gray-500 py-2">Start Date</span>
+                      <div>
+                        <DatePicker
+                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
+                          selected={startDate}
+                          onChange={handleStartDate}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">End Date</span>
+                      <div>
+                        <DatePicker
+                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
+                          selected={endDate}
+                          onChange={handleEndDate}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-gray-500">Category</span>
+                      <div>
+                        <Select
+                          labelId="dropdown-label"
+                          className="category_fld"
+                          id="dropdown"
+                          value={catagory}
+                          sx={{ width: "100%" }}
+                          onChange={handleCategoryFilter}
+                          size="small"
+                          displayEmpty
                         >
-                          {column.label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {ManageData?.map((item, index) => (
-                      <tr key={index}>
-                        {expenseColumns.map((column, colIndex) => (
-                          <td
+                          <MenuItem value="">All</MenuItem>
+                          {catagoryList?.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                              {option.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 ttl_dldld">
+                    <div
+                      className="total_mng_expn"
+                      style={{
+                        background: "#f3f3f3",
+                        padding: "12px",
+                        borderRadius: "10px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <h2 className="primary font-medium text-xl ">
+                        Total{" "}
+                        <span className="secondary font-bold text-xl ">
+                          Rs.{Number(expenseData.total).toFixed(2)}
+                        </span>
+                      </h2> 
+                    </div>
+                  </div>
+                </div>
+                <div className="overflow-x-auto mt-4">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                        {expenseColumns.map((column) => (
+                          <th
                             key={column.id}
-                            style={
-                              colIndex === 0
-                                ? { borderRadius: "10px 0 0 10px" }
-                                : expenseColumns.length - 1 === colIndex
-                                ? { borderRadius: "0 10px 10px 0" }
-                                : {}
-                            }
+                            style={{ minWidth: column.minWidth, padding: '8px' }}
                           >
-                            {item[column.id]}
-                          </td>
+                            {column.label}
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                      {expenseData?.expense_list?.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={expenseColumns.length + 1}
+                            className="text-center text-gray-500"
+                            style={{ borderRadius: "10px 10px 10px 10px" }}
+                          >
+                            No data found
+                          </td>
+                        </tr>
+                      ) : (
+                        expenseData?.expense_list?.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="bg-[#f5f8f3] align-middle"
+                          >
+                            <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                              {((currentPage - 1) * rowsPerPage) + index + 1}
+                            </td>
+                            {expenseColumns.map((column, colIndex) => {
+                              const tdClass = "px-4 py-2 font-semibold text-center";
+                              return (
+                                <td
+                                  key={column.id}
+                                  className={`capitalize ${tdClass} ${
+                                    colIndex === expenseColumns.length - 1 ? 'rounded-r-[10px]' : ''
+                                  }`}
+                                >
+                                  {item[column.id]}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div className="flex justify-center mt-4" style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 50,
+            </div>
+
+            {/* Updated Pagination Section */}
+            <div
+              className="flex justify-center mt-4"
+              style={{
+                marginTop: 'auto',
+                width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
+                alignItems: 'center',
                 padding: '1rem',
-                background: '#fff'
-              }}>
+              }}
+            >
+              <button
+                onClick={handlePrevious}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {currentPage > 2 && (
                 <button
-                  onClick={() => setPage(page - 1)}
-                  className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                  disabled={page === 0}
+                  onClick={() => handleClick(currentPage - 2)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Previous
+                  {currentPage - 2}
                 </button>
-                {page > 1 && (
-                  <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
-                )}
-                {page > 0 && (
-                  <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
-                )}
-                <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
-                {page + 1 < Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage) && (
-                  <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
-                )}
+              )}
+              {currentPage > 1 && (
                 <button
-                  onClick={() => setPage(page + 1)}
-                  className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                  disabled={(page + 1) >= Math.ceil((expenseData?.expense_list?.length || 0) / rowsPerPage)}
+                  onClick={() => handleClick(currentPage - 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
                 >
-                  Next
+                  {currentPage - 1}
                 </button>
-              </div>
+              )}
+              <button
+                onClick={() => handleClick(currentPage)}
+                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => handleClick(currentPage + 1)}
+                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              <button
+                onClick={handleNext}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage >= totalPages
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
+                }`}
+                disabled={currentPage >= totalPages}
+              >
+                Next
+              </button>
             </div>
 
             <Dialog className="custom-dialog"

@@ -1,47 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../Header";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
-import { FaEdit, FaSlack, FaTrash } from "react-icons/fa";
-import Loader from "../../../componets/loader/Loader";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from "@mui/icons-material/Add";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 import {
   Autocomplete,
   Button,
-  InputAdornment,
   ListItem,
+  ListItemText,
   TextField,
-} from "@mui/material";
-import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
-  
+  IconButton,
 } from "@mui/material";
-import { TablePagination } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
+import Loader from "../../../componets/loader/Loader";
+import { toast, ToastContainer } from "react-toastify";
+
+const companyColumns = [
+  { id: "company_name", label: "Company Name", minWidth: 100 },
+];
 
 const Company = () => {
   const history = useHistory();
-
   const token = localStorage.getItem("token");
-  const companyColumns = [
-    { id: "company_name", label: "Company Name", minWidth: 100 },
-  ];
   const [companyData, setCompanyData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [header, setHeader] = useState("");
@@ -49,17 +39,39 @@ const Company = () => {
   const [companyName, setCompanyName] = useState("");
   const [companyID, setCompanyID] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Search state
+  const [searchTerms, setSearchTerms] = useState([""]);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+
+  // Delete state
+  const [deleteCompanyId, setDeleteCompanyId] = useState(null);
+  const [IsDelete, setIsDelete] = useState(false);
+
+  // Dialog helpers
+  const resetAddDialog = () => {
+    setCompanyName("");
+    setErrors({});
+    setOpenAddPopUp(false);
+    setIsEditMode(false);
+    setCompanyID(null);
+  };
 
   const handelAddOpen = () => {
     setOpenAddPopUp(true);
     setHeader("Add Company");
     setButtonLabel("Save");
+    setIsEditMode(false);
+    setCompanyName("");
   };
-
   const handleEditOpen = (row) => {
     setOpenAddPopUp(true);
     setCompanyID(row.id);
@@ -67,107 +79,118 @@ const Company = () => {
     setIsEditMode(true);
     setHeader("Edit Company");
     setButtonLabel("Update");
-    // setCompanyName(row.category_name);
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const resetAddDialog = () => {
-    setCompanyName("");
-    setErrors({});
-    setOpenAddPopUp(false);
-  };
-
+  // Backend-driven Pagination + Search effect
   useEffect(() => {
-    companyList();
-  }, [page, rowsPerPage]);
+    companyList(currentPage);
+    // eslint-disable-next-line
+  }, [currentPage]);
 
-  const companyList = () => {
+  // Debounced search effect
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      clearTimeout(searchTimeout.current);
+      const hasSearchTerms = currentSearchTerms.current.some(
+        (term) => term && term.trim()
+      );
+      if (!hasSearchTerms) {
+        setIsSearching(false);
+        companyList(1, true);
+      } else {
+        setIsSearching(true);
+        searchTimeout.current = setTimeout(() => {
+          companyList(1, true);
+        }, 200);
+      }
+    }
+    // eslint-disable-next-line
+  }, [searchTrigger]);
+
+  // Clean up debounce timeout on unmount
+  useEffect(() => {
+    return () => clearTimeout(searchTimeout.current);
+  }, []);
+
+  // Core List API (backend pagination + search)
+  const companyList = (page = 1, isSearch = false) => {
+    if (!page) return;
+    setIsLoading(!isSearch);
+    setIsSearching(isSearch);
+
     const params = {
-      page: page + 1,
+      page,
       limit: rowsPerPage,
+      ...(searchTerms[0]
+        ? {name: searchTerms[0] }
+        : {}),
     };
     axios
-      .get("company-list", {
-        params: params,
-      })
+      .get("company-list", { params })
       .then((response) => {
-        setCompanyData(response.data.data);
+        setCompanyData(response.data.data || []);
+        setTotalRecords(Number(response.data.total_records) || 0);
         setIsLoading(false);
+        setIsSearching(false);
         if (response.data.status === 401) {
           history.push("/");
           localStorage.clear();
         }
       })
-      .catch((error) => {
-        console.error("API error:", error);
-
+      .catch(() => {
         setIsLoading(false);
+        setIsSearching(false);
+        setCompanyData([]);
+        setTotalRecords(0);
       });
   };
 
+  // Search input handler (debounced, backend)
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+    currentSearchTerms.current = newSearchTerms;
+    setSearchTerms(newSearchTerms);
+    setCurrentPage(1);
+    setSearchTrigger((prev) => prev + 1);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      companyList(1, true);
+    }
+  };
+
+  // Pagination controls
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const handleClick = (pageNum) => setCurrentPage(pageNum);
+  const handlePrevious = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const handleNext = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
+
+  // Add/Edit Logic
   const validData = () => {
-    if (isEditMode == false) {
-      //  Add Package
-      const newErrors = {};
-      if (!companyName) {
-        newErrors.companyName = "Company Name is required";
-        toast.error(newErrors.companyName);
-      }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
-        AddCompany();
-      }
-      return isValid;
-    } else {
-      // Edit Package
-      const newErrors = {};
-      if (!companyName) {
-        newErrors.companyName = "Company Name is required";
-        toast.error(newErrors.companyName);
-      }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
-        EditCompany();
-      }
-      return isValid;
+    const newErrors = {};
+    if (!companyName) {
+      newErrors.companyName = "Company Name is required";
+      toast.error(newErrors.companyName);
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      isEditMode ? EditCompany() : AddCompany();
     }
   };
   const AddCompany = async () => {
     let data = new FormData();
     data.append("company_name", companyName);
-
     try {
-      await axios
-        .post("company-store", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          companyList();
-          setOpenAddPopUp(false);
-          setCompanyName("");
-          companyList();
-          toast.success(response.data.message);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
+      await axios.post("company-store", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      resetAddDialog();
+      companyList(currentPage);
+      toast.success("Company added!");
     } catch (error) {
-      setIsLoading(false);
-      if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
-      }
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
   const EditCompany = async () => {
@@ -175,139 +198,72 @@ const Company = () => {
     data.append("id", companyID);
     data.append("company_name", companyName);
     try {
-      await axios
-        .post("company-update", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          companyList();
-          setOpenAddPopUp(false);
-          toast.success(response.data.message);
-          setCompanyName("");
-          setIsEditMode(false);
-
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
+      await axios.post("company-update", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      resetAddDialog();
+      companyList(currentPage);
+      toast.success("Company updated!");
     } catch (error) {
-      if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
-      }
-      console.error("API error:", error);
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
-  // const handleOptionChange = (event, newValue) => {
-  //     setCompanyName(newValue);
 
-  // };
+  // Autocomplete (edit dialog) handlers
   const handleOptionChange = (event, newValue) => {
     if (newValue && typeof newValue === "object") {
       setCompanyName(newValue.company_name);
     } else {
-      setCompanyName(newValue);
+      setCompanyName(newValue || "");
     }
-    //(newValue, "145214");
   };
-
   const handleInputChange = (event, newInputValue) => {
-    setCompanyName(newInputValue.toUpperCase());
+    setCompanyName((newInputValue || "").toUpperCase());
   };
 
-  const [deleteCompanyId, setDeleteCompanyId] = useState(null);
-  const [IsDelete, setIsDelete] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
-
+  // Delete
   const companyDelete = async (id) => {
     let data = new FormData();
     data.append("id", id);
     try {
-      await axios
-        .post("company-delete", data, {
-          headers: {
-            // Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          setIsLoading(true);
-          companyList();
-          toast.success(response.data.message);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
+      await axios.post("company-delete", data, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setIsDelete(false);
+      companyList(currentPage);
+      toast.success("Company deleted!");
     } catch (error) {
-      // alert("404 error");
-      console.error("Error deleting item:", error);
+      toast.error("Error deleting company");
     }
   };
-
-  const deleteOpen = (companyID) => {
-    setDeleteCompanyId(companyID);
+  const deleteOpen = (id) => {
+    setDeleteCompanyId(id);
     setIsDelete(true);
   };
+  const deleteClose = () => setIsDelete(false);
+  const handleDelete = () => companyDelete(deleteCompanyId);
 
-  const deleteClose = () => {
-    setIsDelete(false);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteCompanyId) return;
-    await companyDelete(deleteCompanyId);
-    setIsDelete(false);
-  };
+  // Serial number
+  const startIndex = (currentPage - 1) * rowsPerPage + 1;
 
   return (
     <div>
       <Header />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <div
-        style={{
-          minHeight: 'calc(100vh - 64px)',
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-        }}
-      >
+      <ToastContainer position="top-right" autoClose={5000} />
+      <div style={{
+        minHeight: 'calc(100vh - 64px)',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }}>
         <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-          <div
-            className="p-6"
-          >
-            <div
-              className="mb-4 add_company_hdr"
-              style={{ display: "flex", gap: "4px" }}
-            >
-              <div
-                style={{ display: "flex", gap: "5px", alignItems: "center" }}
-              >
-                <span
-                  className="primary"
-                  style={{
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    width: "90px",
-                  }}
-                >
-                  Company
+          <div className="p-6">
+            <div className="mb-4 add_company_hdr" style={{ display: "flex", gap: "4px" }}>
+              <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                <span className="primary" style={{ fontWeight: 700, fontSize: "20px", width: "140px" }}>
+                  Company List
                 </span>
-                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
               </div>
               <div className="headerList">
                 <Button
@@ -322,13 +278,8 @@ const Company = () => {
                 </Button>
               </div>
             </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div
-              className=" overflow-x-auto mt-4"
-            >
+            <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
+            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ overflowX: 'auto', width: '100%' }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -338,18 +289,38 @@ const Company = () => {
                 }}
               >
                 <thead>
-                  <tr>
-                    <th>SR No.</th>
-                    {companyColumns.map((column) => (
-                      <th key={column.id} style={{ minWidth: column.minWidth }}>
-                        {column.label}
+                  <tr >
+                    <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                    {companyColumns.map((column, colIndex) => (
+                      <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                        <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                          <span>{column.label}</span>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <SwapVertIcon style={{ cursor: 'pointer' }} />
+                            <TextField
+                              autoComplete="off"
+                              label="Type Here"
+                              size="small"
+                              sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                              value={searchTerms[colIndex]}
+                              onChange={e => handleSearchChange(colIndex, e.target.value)}
+                              onKeyDown={handleKeyDown}
+                            />
+                          </div>
+                        </div>
                       </th>
                     ))}
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody style={{ background: "#3f621217" }}>
-                  {companyData.length === 0 ? (
+                  {isLoading || isSearching ? (
+                    <tr>
+                      <td colSpan={companyColumns.length + 2} style={{ textAlign: "center", padding: "24px" }}>
+                        <Loader />
+                      </td>
+                    </tr>
+                  ) : companyData.length === 0 ? (
                     <tr>
                       <td
                         colSpan={companyColumns.length + 2}
@@ -363,15 +334,14 @@ const Company = () => {
                       </td>
                     </tr>
                   ) : (
-                    companyData?.map((item, index) => (
-                      <tr key={index}>
+                    companyData.map((item, index) => (
+                      <tr key={item.id || index}>
                         <td style={{ borderRadius: "10px 0 0 10px" }}>
                           {startIndex + index}
                         </td>
                         {companyColumns.map((column) => (
                           <td key={column.id}>{item[column.id]}</td>
                         ))}
-
                         <td style={{ borderRadius: "0 10px 10px 0" }}>
                           <div className="px-2 flex gap-1 justify-center">
                             <BorderColorIcon
@@ -392,6 +362,7 @@ const Company = () => {
             </div>
           </div>
         </div>
+        {/* Pagination UI like PurchaseList */}
         <div
           className="flex justify-center mt-4"
           style={{
@@ -404,42 +375,60 @@ const Company = () => {
           }}
         >
           <button
-            onClick={() => setPage(page - 1)}
-            className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-            disabled={page === 0}
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
           >
             Previous
           </button>
-          {page > 1 && (
-            <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+          {currentPage > 2 && (
+            <button
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 2}
+            </button>
           )}
-          {page > 0 && (
-            <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
-          )}
-          <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
-          {page + 1 < Math.ceil((companyData?.[0]?.count || 0) / rowsPerPage) && (
-            <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+          {currentPage > 1 && (
+            <button
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 1}
+            </button>
           )}
           <button
-            onClick={() => setPage(page + 1)}
-            className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((companyData?.[0]?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-            disabled={(page + 1) >= Math.ceil((companyData?.[0]?.count || 0) / rowsPerPage)}
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
           >
             Next
           </button>
         </div>
       </div>
-
-      {/* Add Copany PopUp */}
-
-      <Dialog
-        className="order_list_ml custom-dialog"
-        open={openAddPopUp}
-      >
-        <DialogTitle
-          id="alert-dialog-title"
-          style={{ fontWeight: 700 }}
-        >
+      {/* Add/Edit Dialog */}
+      <Dialog className="order_list_ml custom-dialog" open={openAddPopUp}>
+        <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
           {header}
         </DialogTitle>
         <IconButton
@@ -456,10 +445,7 @@ const Company = () => {
         </IconButton>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <div
-              className="flex flex-col gap-5"
-              style={{ flexDirection: "column", width: "100%" }}
-            >
+            <div className="flex flex-col gap-5" style={{ width: "100%" }}>
               <FormControl size="small" style={{ width: "100%" }}>
                 <span className="label primary">Company Name</span>
                 <Autocomplete
@@ -565,4 +551,5 @@ const Company = () => {
     </div>
   );
 };
+
 export default Company;

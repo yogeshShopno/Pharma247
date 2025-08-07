@@ -188,208 +188,229 @@ const CashManage = () => {
             <Loader />
           </div>
         ) : (
-          <div className="p-6">
-            <div
-              className="mb-4 csh_mng_main_hdr"
-              style={{ display: "flex", gap: "4px" }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "7px", 
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  className="primary"
-                  style={{
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    whiteSpace: "nowrap",
-                  }}
+          <div
+            style={{
+              minHeight: 'calc(100vh - 64px)',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+              <div className="paddin12-8">
+              <div className="px-4 py-3">
+
+                <div
+                  className="mb-4 csh_mng_main_hdr"
+                  style={{ display: "flex", gap: "4px" }}
                 >
-                  Cash Management
-                </span>
-                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
-              </div>
-              <div className="headerList">
-                <Button
-                  className="gap-7 downld_btn_csh"
-                  variant="contained"
-                  style={{
-                    background: "var(--color1)",
-                    color: "white",
-                    // paddingLeft: "35px",
-                    textTransform: "none",
-                    display: "flex",
-                  }}
-                  onClick={handlePdf}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv Icon"
-                    />
-                  </div>
-                  Download
-                </Button>
-              </div>
-            </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0 mt-4">
-              <div className="flex flex-col md:flex-row gap-5 oreder_list_fld">
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500">Start Date</span>
-                  <DatePicker
-                    className="custom-datepicker_mn dst_fld_odr"
-                    selected={startdate}
-                    onChange={(newDate) => setStartDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                  />
-                </div>
-                <div className="detail flex flex-col">
-                  <span className="text-gray-500">End Date</span>
-                  <DatePicker
-                    className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn dst_fld_odr"
-                    selected={enddate}
-                    onChange={(newDate) => setEndDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                  />
-                </div>
-                <div className="flex flex-col  space-x-1">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={CaseManageMentList}
-                    className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
-                    // style={{ background: "var(--COLOR_UI_PHARMACY)" }}
+                  <div
                     style={{
-                      minHeight: "45px",
+                      display: "flex",
+                      gap: "7px",
                       alignItems: "center",
-                      marginTop: "23px",
-                      background: "var(--color1)",
-                      width: "100%",
                     }}
                   >
-                    <FilterAltIcon className="text-white text-lg" />
-                    Filter
-                  </Button>
+                    <span
+                      className="primary"
+                      style={{
+                        display: "flex",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Cash Management
+                    </span>
+                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+                  </div>
+                  <div className="headerList">
+                    <Button
+                      className="gap-7 downld_btn_csh"
+                      variant="contained"
+                      style={{
+                        background: "var(--color1)",
+                        color: "white",
+                        // paddingLeft: "35px",
+                        textTransform: "none",
+                        display: "flex",
+                      }}
+                      onClick={handlePdf}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv Icon"
+                        />
+                      </div>
+                      Download
+                    </Button>
+                  </div>
+                </div>
+                <div
+                  className="row border-b border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
+                <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0 mt-4">
+                  <div className="flex flex-col md:flex-row gap-5 oreder_list_fld">
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">Start Date</span>
+                      <DatePicker
+                        className="custom-datepicker_mn dst_fld_odr"
+                        selected={startdate}
+                        onChange={(newDate) => setStartDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">End Date</span>
+                      <DatePicker
+                        className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn dst_fld_odr"
+                        selected={enddate}
+                        onChange={(newDate) => setEndDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                    <div className="flex flex-col  space-x-1">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={CaseManageMentList}
+                        className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
+                        // style={{ background: "var(--COLOR_UI_PHARMACY)" }}
+                        style={{
+                          minHeight: "45px",
+                          alignItems: "center",
+                          marginTop: "23px",
+                          background: "var(--color1)",
+                          width: "100%",
+                        }}
+                      >
+                        <FilterAltIcon className="text-white text-lg" />
+                        Filter
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
+                    <div className="csh_tl_txt csh_tl_txt_1st">
+                      <div className="relative">
+                        <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
+                          <FaArrowDown className="absolute left-0 bg-blue-500 text-white rounded-full p-1 mt-1" />
+                          Total In
+                        </h2>
+                      </div>
+                      <div className="flex">
+                        <h2 className="secondary font-bold text-lg ml-6 ttl_csh_mng_txt">
+                          Rs.{parseInt(cashManageDetails.credit).toFixed(2)}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="csh_tl_txt">
+                      <div className="relative">
+                        <h2 className="text-red-600 font-medium text-md ml-6 ttl_txt_hd">
+                          <FaArrowUp className="absolute left-0 bg-red-600 text-white rounded-full p-1 mt-1" />
+                          Total Out
+                        </h2>
+                      </div>
+                      <div className="flex">
+                        <h2 className="text-red-600 font-bold text-lg ml-6 ttl_csh_mng_txt">
+                          Rs.{parseInt(cashManageDetails.debit).toFixed(2)}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="csh_tl_txt_lst">
+                      <div className="relative">
+                        <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
+                          Net
+                        </h2>
+                      </div>
+                      <div className="flex">
+                        <h2 className="secondary font-bold text-lg ml-6 ttl_csh_mng_txt">
+                          Rs.{parseInt(cashManageDetails.total).toFixed(2)}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
-                <div className="csh_tl_txt csh_tl_txt_1st">
-                  <div className="relative">
-                    <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
-                      <FaArrowDown className="absolute left-0 bg-blue-500 text-white rounded-full p-1 mt-1" />
-                      Total In
-                    </h2>
-                  </div>
-                  <div className="flex">
-                    <h2 className="secondary font-bold text-lg ml-6 ttl_csh_mng_txt">
-                      Rs.{parseInt(cashManageDetails.credit).toFixed(2)}
-                    </h2>
-                  </div>
-                </div>
-                <div className="csh_tl_txt">
-                  <div className="relative">
-                    <h2 className="text-red-600 font-medium text-md ml-6 ttl_txt_hd">
-                      <FaArrowUp className="absolute left-0 bg-red-600 text-white rounded-full p-1 mt-1" />
-                      Total Out
-                    </h2>
-                  </div>
-                  <div className="flex">
-                    <h2 className="text-red-600 font-bold text-lg ml-6 ttl_csh_mng_txt">
-                      Rs.{parseInt(cashManageDetails.debit).toFixed(2)}
-                    </h2>
-                  </div>
-                </div>
-                <div className="csh_tl_txt_lst">
-                  <div className="relative">
-                    <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
-                      Net
-                    </h2>
-                  </div>
-                  <div className="flex">
-                    <h2 className="secondary font-bold text-lg ml-6 ttl_csh_mng_txt">
-                      Rs.{parseInt(cashManageDetails.total).toFixed(2)}
-                    </h2>
+                <div className=" firstrow px-4 ">
+
+                  <div className="overflow-x-auto">
+                    <table
+                      className="w-full border-collapse custom-table"
+                      style={{
+                        whiteSpace: "nowrap",
+                        borderCollapse: "separate",
+                        borderSpacing: "0 6px",
+                      }}
+                    >
+                      <thead>
+                        <tr>
+                          {cashManageDetailscolumns.map((column) => (
+                            <th
+                              key={column.id}
+                              onClick={() => sortByColumn(column.id)}
+                              className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                              style={{ minWidth: column.minWidth }}
+                            >
+                              <div className="headerStyle">
+                                <span style={{ minWidth: 150 }}>{column.label}</span>
+                              </div>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody style={{ backgroundColor: "#3f621217" }}>
+                        {cashManageDetails?.cash_list?.map((row) => {
+                          return (
+                            <tr
+                              key={row.code}
+                              className="hover:bg-gray-100 cursor-pointer"
+                              tabIndex={-1}
+                            >
+                              {cashManageDetailscolumns.map((column, colIndex) => {
+                                const value = row[column.id];
+                                return (
+                                  <td
+                                    key={column.id}
+                                    align={column.align}
+                                    className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
+                                      ? "debit-cell"
+                                      : column.id === "credit"
+                                        ? "credit-cell"
+                                        : ""
+                                      }`}
+                                    style={
+                                      colIndex === 0
+                                        ? { borderRadius: "10px 0 0 10px" }
+                                        : colIndex ===
+                                          cashManageDetailscolumns.length - 1
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
+                                    }
+                                  >
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="overflow-x-auto mt-4">
-              <table
-                className="w-full border-collapse custom-table"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead>
-                  <tr>
-                    {cashManageDetailscolumns.map((column) => (
-                      <th
-                        key={column.id}
-                        onClick={() => sortByColumn(column.id)}
-                        className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        <div className="headerStyle">
-                          <span style={{ minWidth: 150 }}>{column.label}</span>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "#3f621217" }}>
-                  {cashManageDetails?.cash_list?.map((row) => {
-                    return (
-                      <tr
-                        key={row.code}
-                        className="hover:bg-gray-100 cursor-pointer"
-                        tabIndex={-1}
-                      >
-                        {cashManageDetailscolumns.map((column, colIndex) => {
-                          const value = row[column.id];
-                          return (
-                            <td
-                              key={column.id}
-                              align={column.align}
-                              className={`px-4 py-2 whitespace-nowrap ${
-                                column.id === "debit"
-                                  ? "debit-cell"
-                                  : column.id === "credit"
-                                  ? "credit-cell"
-                                  : ""
-                              }`}
-                              style={
-                                colIndex === 0
-                                  ? { borderRadius: "10px 0 0 10px" }
-                                  : colIndex ===
-                                    cashManageDetailscolumns.length - 1
-                                  ? { borderRadius: "0 10px 10px 0" }
-                                  : {}
-                              }
-                            >
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+
+
+            {/*<====================================================================== pagination  =====================================================================> */}
+
             <div className="flex justify-center mt-4" style={{
               left: 0,
               right: 0,

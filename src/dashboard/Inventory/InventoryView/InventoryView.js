@@ -965,10 +965,10 @@ const InventoryView = () => {
                       <tbody>
                         <tr>
                           <td className="px-12 py-4 text-center">
-                            {!itemAllData.maximum ? "---" : itemAllData.maximum}
+                            {!itemAllData.minimum ? "---" : itemAllData.minimum}
                           </td>
                           <td className="px-12 py-4 text-center">
-                            {!itemAllData.minimum ? "---" : itemAllData.minimum}
+                            {!itemAllData.maximum ? "---" : itemAllData.maximum}
                           </td>
                           <td className="px-12 py-4 text-center">
                             {itemAllData.gst}%
@@ -2075,7 +2075,7 @@ const InventoryView = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: "#ffffff",
+              color: "#d61818ff",
             }}
           >
             <CloseIcon />

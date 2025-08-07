@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -36,6 +36,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const OrderList = () => {
   const history = useHistory();
+  const token = localStorage.getItem("token");
 
   const rowsPerPage = 10;
   const OnlineOrdercolumns = [
@@ -45,6 +46,7 @@ const OrderList = () => {
     { id: "supplier_name", label: "Last Purchase", minWidth: 150 },
     { id: "stock", label: "Stock", minWidth: 150 },
   ];
+
   const LastPurchaseListcolumns = [
     {
       id: "supplier_name",
@@ -61,6 +63,30 @@ const OrderList = () => {
     { id: "bill_date", label: "Date", minWidth: 100 },
     { id: "bill_no", label: "Bill No", minWidth: 100 },
   ];
+
+  // Enhanced search and pagination state (copied from DistributerList)
+  const initialSearchTerms = OnlineOrdercolumns.map(() => "");
+  const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  // Search state management (copied from DistributerList)
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = useRef(null);
+  const currentSearchTerms = useRef(searchTerms);
+
+  // Search keys for API parameters
+  const searchKeys = ["company_id", "item_name", "status", "distributor_id", "stock"];
+
+  // Other existing state
   const [distributor, setDistributor] = useState(null);
   const [itemName, setItemName] = useState(null);
   const [items, setItems] = useState([]);
@@ -68,32 +94,147 @@ const OrderList = () => {
   const [statusName, setStatusName] = useState({ id: 2, name: "Order" });
   const [distributorList, setDistributorList] = useState([]);
   const [statusOption, setStatusOpation] = useState([]);
-  const initialSearchTerms = OnlineOrdercolumns.map(() => "");
-  const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [company, setCompany] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [updatingStatus, setUpdatingStatus] = useState(null); // Track which row is being updated
-  const totalPages = Math.ceil(
-    onlineOrder.length === 0 ? 0 : onlineOrder.length / rowsPerPage
-  );
-  const startIndex = (currentPage - 1) * rowsPerPage + 1;
-  const token = localStorage.getItem("token");
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "ascending",
-  });
-  const paginatedData = onlineOrder.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const [updatingStatus, setUpdatingStatus] = useState(null);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [openAddPopUpPlaceOrder, setOpenAddPopUpPlaceOrder] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [orderId, setOrderId] = useState(null);
 
-  const handelAddOpen = () => {
-    setOpenAddPopUpPlaceOrder(true);
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  // Effect for handling search with debouncing (copied from DistributerList)
+  useEffect(() => {
+    if (searchTrigger > 0) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout.current);
+
+      // Check if any search term has a value
+      const hasSearchTerms = currentSearchTerms.current.some(term => term && term.trim());
+
+      if (!hasSearchTerms) {
+        // If no search terms, clear the search immediately
+        setIsSearching(false);
+        OnlineOrderList(1, true);
+      } else {
+        // Show searching state immediately
+        setIsSearching(true);
+
+        // Debounce the search to avoid too many API calls
+        searchTimeout.current = setTimeout(() => {
+          OnlineOrderList(1, true);
+        }, 150);
+      }
+    }
+  }, [searchTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+
+  // Effect for pagination
+  useEffect(() => {
+    if (currentPage > 0) {
+      OnlineOrderList(currentPage);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    OnlineOrderList(1);
+    listDistributor();
+    listOnlineSaleStatus();
+  }, []);
+
+  // Enhanced search functionality (copied from DistributerList)
+  const handleSearchChange = (index, value) => {
+    const newSearchTerms = [...searchTerms];
+    newSearchTerms[index] = value;
+
+    // Update ref immediately for API calls
+    currentSearchTerms.current = newSearchTerms;
+
+    // Update state immediately for UI responsiveness
+    setSearchTerms(newSearchTerms);
+
+    // Check if any search term has a value
+    const hasSearchTerms = newSearchTerms.some(term => term && term.trim());
+    setIsSearchActive(hasSearchTerms);
+
+    // Reset to page 1 when searching
+    setCurrentPage(1);
+
+    // Trigger search effect immediately
+    setSearchTrigger(prev => prev + 1);
+  };
+
+  // Handle search on Enter key press
+  const handleSearchSubmit = () => {
+    setCurrentPage(1);
+    OnlineOrderList(1);
+  };
+
+  // Handle search on Enter key press for specific field
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
+
+  // Enhanced OnlineOrderList function with search and pagination
+  const OnlineOrderList = async (page, isSearch = false) => {
+    if (!page) return;
+
+    let data = new FormData();
+    data.append("page", page);
+
+    // Add search parameters when any search term has a value
+    currentSearchTerms.current.forEach((term, index) => {
+      if (term && term.trim()) {
+        data.append(searchKeys[index], term.trim());
+      }
+    });
+
+    // Add existing filter parameters
+    if (company) data.append("company_id", company);
+    if (distributor?.name) data.append("distributor_id", distributor.name);
+    if (itemName?.iteam_name) data.append("item_id", itemName.iteam_name);
+
+    // Use different loading states for search vs regular operations
+    setIsSearchLoading(true);
+
+    try {
+      const response = await axios.post("online-sales-order?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const responseData = response.data.data;
+
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+        return;
+      }
+
+      // Set the table data directly from backend (paginated and filtered data)
+      setOnlineOrder(responseData || []);
+
+      // Extract and set total count for pagination
+      const totalCount = response.data.total_records || responseData?.length || 0;
+      setTotalRecords(totalCount);
+
+    } catch (error) {
+      console.error("API error:", error);
+      setOnlineOrder([]);
+      setTotalRecords(0);
+    } finally {
+      setIsSearchLoading(false);
+    }
   };
 
   // New function to update individual order status
@@ -129,15 +270,12 @@ const OrderList = () => {
     updateOrderStatus(itemId, newStatusId);
   };
 
-  useEffect(() => {
-    OnlineOrderList();
-    listDistributor();
-    listOnlineSaleStatus();
-  }, []);
+  const handelAddOpen = () => {
+    setOpenAddPopUpPlaceOrder(true);
+  };
 
   const PlaceOrder = async () => {
     let data = new FormData();
-    // setIsLoading(true);
     const params = {
       id: items.join(","),
       status: statusName,
@@ -152,37 +290,10 @@ const OrderList = () => {
         })
         .then((response) => {
           toast.success(response.data.meassage);
-          OnlineOrderList();
+          OnlineOrderList(currentPage);
           setOpenAddPopUpPlaceOrder(false);
           setItems([]);
           setStatusName({ id: 2, name: "Order" });
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
-
-  const OnlineOrderList = async (currentPage) => {
-    let data = new FormData();
-    setIsLoading(true);
-    const params = {
-      company_id: company,
-      distributor_id: distributor?.name,
-      item_id: itemName?.iteam_name,
-      page: currentPage,
-    };
-    try {
-      await axios
-        .post("online-sales-order?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setOnlineOrder(response.data.data);
-          setItemName(response.data.data);
-          setIsLoading(false);
         });
     } catch (error) {
       console.error("API error:", error);
@@ -242,6 +353,7 @@ const OrderList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -257,23 +369,21 @@ const OrderList = () => {
     setStatusName({ id: 2, name: "Order" });
   };
 
+  // Enhanced pagination functions (copied from DistributerList)
   const handlePrevious = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      OnlineOrderList(newPage);
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    OnlineOrderList(newPage);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
-    OnlineOrderList(pageNum);
   };
 
   const sortByColumn = (key) => {
@@ -289,19 +399,6 @@ const OrderList = () => {
       return 0;
     });
     setOnlineOrder(sortedData);
-  };
-
-  const filteredList = paginatedData.filter((row) => {
-    return searchTerms.every((term, index) => {
-      const value = row[OnlineOrdercolumns[index].id];
-      return String(value).toLowerCase().includes(term.toLowerCase());
-    });
-  });
-
-  const handleSearchChange = (index, value) => {
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms[index] = value;
-    setSearchTerms(newSearchTerms);
   };
 
   const handleChangeFilter = (event) => {
@@ -380,7 +477,7 @@ const OrderList = () => {
                   <div style={{ display: "flex", gap: "7px" }}>
                     <span
                       style={{
-                        color: "var(--color2)",
+                        color: "var(--color1)",
                         display: "flex",
                         alignItems: "center",
                         fontWeight: 700,
@@ -412,80 +509,7 @@ const OrderList = () => {
                   style={{ borderColor: "var(--color2)" }}
                 ></div>
                 <div className="firstrow mt-4">
-                  <div className="oreder_list_fld flex flex-col gap-2 sm:flex-row lg:flex-row pb-2">
-                    <div className="detail flex flex-col">
-                      <span className="text-gray-500">Distributor</span>
-                      <Autocomplete
-                        value={distributor}
-                        sx={{
-                          width: "full",
-                          "& .MuiInputBase-root": {
-                            height: 45,
-                            fontSize: "1.10rem",
-                          },
-                          "& .MuiAutocomplete-inputRoot": {
-                            padding: "10px 14px",
-                          },
-                        }}
-                        className="dst_fld_odr"
-                        fullWidth
-                        onChange={(e, value) => setDistributor(value)}
-                        options={distributorList}
-                        getOptionLabel={(option) => option.name}
-                        renderInput={(params) => (
-                          <TextField
-                            variant="outlined"
-                            autoComplete="off"
-                            {...params}
-                            name={distributor?.name || ""}
-                          />
-                        )}
-                      />
-                    </div>
-                    <div className="detail flex flex-col">
-                      <span className="text-gray-500">Company Name</span>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-basic"
-                        className="dst_fld_odr"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value.toUpperCase())}
-                        sx={{
-                          width: "full",
-                          "& .MuiInputBase-root": {
-                            height: 45,
-                            fontSize: "1.10rem",
-                          },
-                          "& .MuiAutocomplete-inputRoot": {
-                            padding: "10px 14px",
-                          },
-                        }}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </div>
-                    <div className="flex flex-col  space-x-1">
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={OnlineOrderList}
-                        style={{
-                          minHeight: "45px",
-                          alignItems: "center",
-                          marginTop: "23px",
-                          background: "var(--color1)",
-                          width: "100%",
-                        }}
-                      >
-                        <FilterAltIcon
-                          size="large"
-                          className="text-white text-lg"
-                        />{" "}
-                        Filter
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto mt-4 border-t scroll-two">
+                  <div className="overflow-x-auto mt-4 ">
                     <table
                       className="w-full bg-transparent border-collapse custom-table pt-2"
                       style={{
@@ -496,148 +520,194 @@ const OrderList = () => {
                     >
                       <thead className="">
                         <tr>
-                          <th className="py-2 px-4 text-left">SR. No</th>
+                          <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
                           {OnlineOrdercolumns.map((column, index) => (
-                            <th
-                              key={column.id}
-                              onClick={() => sortByColumn(column.id)}
-                              className="py-2 px-4 text-left cursor-pointer"
-                            >
-                              <div className="flex items-center gap-2">
+                            <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                              <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                                 <span>{column.label}</span>
-                                <SwapVertIcon
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => sortByColumn(column.id)}
-                                />
-                                <TextField
-                                  autoComplete="off"
-                                  label={`Search ${column.label}`}
-                                  id="filled-basic"
-                                  sx={{ minWidth: 155 }}
-                                  size="small"
-                                  value={searchTerms[index]}
-                                  onChange={(e) =>
-                                    handleSearchChange(index, e.target.value)
-                                  }
-                                  className="ml-2"
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                                  <SwapVertIcon
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => sortByColumn(column.id)}
+                                  />
+                                  {/* --- change below --- */}
+                                  {column.id === "y_n" ? (
+                                    <FormControl size="small" sx={{ minWidth: 100, marginLeft: '4px' }}>
+                                      <Select
+                                        displayEmpty
+                                        value={searchTerms[index] || ""}
+                                        onChange={e => handleSearchChange(index, e.target.value)}
+                                        size="small"
+                                        sx={{ fontSize: "0.9rem" }}
+                                        renderValue={(selected) => {
+                                          if (!selected) return "All";
+                                          // You can use statusOption for mapping if dynamic, else static:
+                                          if (selected === "1") return "Pending";
+                                          if (selected === "2") return "Order";
+                                          return selected;
+                                        }}
+                                      >
+                                        <MenuItem value="">All</MenuItem>
+                                        <MenuItem value="1">Pending</MenuItem>
+                                        <MenuItem value="2">Order</MenuItem>
+                                        {/* Or loop through statusOption if needed */}
+                                      </Select>
+                                    </FormControl>
+                                  ) : (
+                                    <TextField
+                                      autoComplete="off"
+                                      label="Type Here"
+                                      id="filled-basic"
+                                      size="small"
+                                      sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                      value={searchTerms[index]}
+                                      onChange={(e) => handleSearchChange(index, e.target.value)}
+                                      onKeyDown={handleKeyDown}
+                                      InputProps={{
+                                        endAdornment: searchTerms[index] && (
+                                          <IconButton
+                                            size="small"
+                                            onClick={() => handleSearchChange(index, '')}
+                                            sx={{ padding: 0 }}
+                                          >
+                                            <CloseIcon fontSize="small" />
+                                          </IconButton>
+                                        ),
+                                      }}
+                                    />
+                                  )}
+                                </div>
                               </div>
                             </th>
                           ))}
-                          <th className="py-2 px-4 text-left">Action</th>
+                          <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                         </tr>
                       </thead>
-                      <tbody style={{ background: "#3f621217" }}>
-                        {filteredList.length === 0 ? (
+
+                      {isSearchLoading ? (
+                        <tbody>
                           <tr>
-                            <td
-                              colSpan={OnlineOrdercolumns.length + 2}
-                              className="text-center py-4 text-gray-500"
-                              style={{
-                                textAlign: "center",
-                                borderRadius: "10px 10px 10px 10px",
-                              }}
-                            >
-                              No data found
+                            <td colSpan={OnlineOrdercolumns.length + 2} style={{ textAlign: 'center', padding: '20px' }}>
+                              <Loader />
                             </td>
                           </tr>
-                        ) : (
-                          filteredList.map((row, index) => (
-                            <tr key={row.code} className="hover:bg-gray-100">
+                        </tbody>
+                      ) : (
+                        <tbody style={{ background: "#3f621217" }}>
+                          {onlineOrder.length === 0 ? (
+                            <tr>
                               <td
-                                className="py-2 px-4"
-                                style={{ borderRadius: "10px 0 0 10px" }}
+                                colSpan={OnlineOrdercolumns.length + 2}
+                                className="text-center py-4 text-gray-500"
+                                style={{
+                                  textAlign: "center",
+                                  borderRadius: "10px 10px 10px 10px",
+                                }}
                               >
-                                {startIndex + index}
-                              </td>
-                              {OnlineOrdercolumns.map((column) => {
-                                const value = row[column.id] || "-";
-                                const isStatus = column.id === "y_n";
-
-                                if (isStatus) {
-                                  return (
-                                    <td
-                                      key={column.id}
-                                      className="py-2 px-4"
-                                      align={column.align}
-                                    >
-                                      <FormControl size="small" sx={{ minWidth: 120 }}>
-                                        <Select
-                                          value={getStatusIdFromName(value) || ""}
-                                          onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
-                                          disabled={updatingStatus === row.item_id}
-                                          variant="standard"
-                                          disableUnderline
-                                          sx={{
-                                            "& .MuiSelect-select": {
-                                              padding: "4px 8px",
-                                              fontSize: "0.875rem",
-                                              color: value === "Order" ? "#3f6212" : "#f6a609",
-                                              backgroundColor: value === "Order" ? "#f0f9e8" : "#fef3e2",
-                                              fontWeight: 700,
-                                              borderRadius: "10px",
-                                              border: "none",
-                                              outline: "none",
-                                            },
-                                            "& .MuiSelect-icon": {
-                                              color: value === "Order" ? "#3f6212" : "#f6a609",
-                                            },
-                                            "& .MuiInput-root": {
-                                              "&:before": {
-                                                display: "none",
-                                              },
-                                              "&:after": {
-                                                display: "none",
-                                              },
-                                            },
-                                          }}
-                                        >
-                                          {statusOption.map((option) => (
-                                            <MenuItem key={option.id} value={option.id}>
-                                              {option.name}
-                                            </MenuItem>
-                                          ))}
-                                        </Select>
-                                      </FormControl>
-                                      {updatingStatus === row.item_id && (
-                                        <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
-                                          Updating...
-                                        </div>
-                                      )}
-                                    </td>
-                                  );
-                                } else {
-                                  return (
-                                    <td
-                                      key={column.id}
-                                      className="py-2 px-4"
-                                      align={column.align}
-                                    >
-                                      <span className="text">
-                                        {column.format && typeof value === "number"
-                                          ? column.format(value)
-                                          : value}
-                                      </span>
-                                    </td>
-                                  );
-                                }
-                              })}
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <VisibilityIcon
-                                  className="cursor-pointer"
-                                  onClick={() => handleOpenDialog(row.item_id)}
-                                  style={{ color: "var(--color1)" }}
-                                />
+                                No data found
                               </td>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
+                          ) : (
+                            onlineOrder.map((row, index) => (
+                              <tr key={row.code || index} className="bg-[#f5f8f3] align-middle">
+                                <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                                  {((currentPage - 1) * rowsPerPage) + index + 1}
+                                </td>
+                                {OnlineOrdercolumns.map((column, colIndex) => {
+                                  const value = row[column.id] || "-";
+                                  const isStatus = column.id === "y_n";
+
+                                  if (isStatus) {
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        className="px-4 py-2 font-semibold text-center"
+                                        align={column.align}
+                                      >
+                                        <FormControl size="small" sx={{ minWidth: 120 }}>
+                                          <Select
+                                            value={getStatusIdFromName(value) || ""}
+                                            onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
+                                            disabled={updatingStatus === row.item_id}
+                                            variant="standard"
+                                            disableUnderline
+                                            sx={{
+                                              "& .MuiSelect-select": {
+                                                padding: "4px 8px",
+                                                fontSize: "0.875rem",
+                                                color: value === "Order" ? "#3f6212" : "#f6a609",
+                                                backgroundColor: value === "Order" ? "#f0f9e8" : "#fef3e2",
+                                                fontWeight: 700,
+                                                borderRadius: "10px",
+                                                border: "none",
+                                                outline: "none",
+                                              },
+                                              "& .MuiSelect-icon": {
+                                                color: value === "Order" ? "#3f6212" : "#f6a609",
+                                              },
+                                              "& .MuiInput-root": {
+                                                "&:before": {
+                                                  display: "none",
+                                                },
+                                                "&:after": {
+                                                  display: "none",
+                                                },
+                                              },
+                                            }}
+                                          >
+                                            {statusOption.map((option) => (
+                                              <MenuItem key={option.id} value={option.id}>
+                                                {option.name}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                        </FormControl>
+                                        {updatingStatus === row.item_id && (
+                                          <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
+                                            Updating...
+                                          </div>
+                                        )}
+                                      </td>
+                                    );
+                                  } else {
+                                    const tdClass = "px-4 py-2 font-semibold text-center capitalize";
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        className={tdClass}
+                                        align={column.align}
+                                      >
+                                        <span className="text">
+                                          {column.format && typeof value === "number"
+                                            ? column.format(value)
+                                            : value}
+                                        </span>
+                                      </td>
+                                    );
+                                  }
+                                })}
+                                <td className="rounded-r-[10px] px-4 py-2 text-center">
+                                  <div className="px-2 flex gap-1 justify-center">
+                                    <VisibilityIcon
+                                      className="cursor-pointer"
+                                      onClick={() => handleOpenDialog(row.item_id)}
+                                      style={{ color: "var(--color1)" }}
+                                    />
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      )}
                     </table>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/*<====================================================================== pagination  =====================================================================> */}
+
             <div
               className="flex justify-center mt-4"
               style={{
@@ -702,6 +772,7 @@ const OrderList = () => {
             </div>
 
             <Dialog
+              className="order_list_ml custom-dialog"
               open={openAddPopUp}
               sx={{
                 "& .MuiDialog-container": {
@@ -940,4 +1011,5 @@ const OrderList = () => {
     </>
   );
 };
+
 export default OrderList;

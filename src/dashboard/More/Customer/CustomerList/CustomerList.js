@@ -551,12 +551,12 @@ const CustomerList = () => {
         pauseOnHover
       />
 
-      <div   style={{
-            minHeight: 'calc(100vh - 64px)',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-          }} className="p-6">
+      <div style={{
+        minHeight: 'calc(100vh - 64px)',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }} className="p-6">
         <div
           className="mb-4 cust_list_main_hdr"
           style={{ display: "flex", gap: "4px" }}
@@ -652,227 +652,232 @@ const CustomerList = () => {
               />
             </div>
           </div> */}
+          <div className=" firstrow px-4 ">
 
-          <div className="overflow-x-auto mt-3 scroll-two">
-            <table
-              className="w-full border-collapse custom-table"
-              style={{
-                whiteSpace: "nowrap",
-                borderCollapse: "separate",
-                borderSpacing: "0 6px",
-              }}
-            >
-              <thead className="">
-                <tr>
-                  <th>SR. No</th>
-                  {columns.map((column, index) => (
-                    <th key={column.id} style={{ minWidth: column.minWidth }}>
-                      <div className="headerStyle">
-                        <span>{column.label}</span>
-                        <SwapVertIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => sortByColumn(column.id)}
-                        />
-                        <TextField
-                          variant="outlined"
-                          autoComplete="off"
-                          label="Type Here"
-                          size="small"
-                          sx={{ width: "150px" }}
-                          value={searchTerms[index]}
-                          onChange={e => handleSearchChange(index, e.target.value)}
-                        />
-                        {column.label == "Amount" && (
-                          <div className="flex mx-2 flex-wrap gap-6">
-                            <Chip
-                              label="Due Only"
-                              style={{
-                                backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                color: "white",
-                              }}
-                              value={chipState.value}
-                              variant={chipState.variant}
-                              onClick={handleChipClick}
-                            />
-                          </div>
-                        )}
-
-
-                      </div>
-                    </th>
-                  ))}
-
-                  <th>Action</th>
-                </tr>
-              </thead>
-              {isLoading ? (
-                <div className="loader-container ">
-                  <Loader />
-                </div>
-              ) : (
-                <tbody style={{ backgroundColor: "#3f621217" }}>
-                  {tableData.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={columns.length + 2}
-                        style={{
-                          textAlign: "center",
-                          color: "gray",
-                          borderRadius: "10px 10px 10px 10px",
-                        }}
-                      >
-                        No data found
-                      </td>
-                    </tr>
-                  ) : (
-                    tableData.map((row, index) => {
-                      return (
-                        <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>
-                            {startIndex + index}
-                          </td>
-                          {columns.map((column) => {
-                            let value = row[column.id];
-                            let style = {};
-
-                            // Apply red color if the column is 'due_amount' and status is 'due'
-                            if (
-                              column.id === "total_amount" &&
-                              row.status === "due"
-                            ) {
-                              style.color = "var(--color6)";
-                            } else if (
-                              column.id === "total_amount" &&
-                              row.status === ""
-                            ) {
-                              style.color = "var(--color2)";
-                            }
-
-                            // Lowercase email if it's not already in lowercase
-                            if (column.id === "email") {
-                              if (
-                                value &&
-                                value[0] !== value[0].toLowerCase()
-                              ) {
-                                value = value.toLowerCase();
-                              }
-                              style.textTransform = "none";
-                            }
-
-                            return (
-                              <td
-                                key={column.id}
-                                align={column.align}
-                                onClick={() => {
-                                  history.push(`/more/customerView/${row.id}`);
+            <div className="overflow-x-auto ">
+              <table
+                className="w-full border-collapse custom-table"
+                style={{
+                  whiteSpace: "nowrap",
+                  borderCollapse: "separate",
+                  borderSpacing: "0 6px",
+                }}
+              >
+                <thead className="">
+                  <tr>
+                    <th>SR. No</th>
+                    {columns.map((column, index) => (
+                      <th key={column.id} style={{ minWidth: column.minWidth }}>
+                        <div className="headerStyle">
+                          <span>{column.label}</span>
+                          <SwapVertIcon
+                            style={{ cursor: "pointer" }}
+                            onClick={() => sortByColumn(column.id)}
+                          />
+                          <TextField
+                            variant="outlined"
+                            autoComplete="off"
+                            label="Type Here"
+                            size="small"
+                            sx={{ width: "150px" }}
+                            value={searchTerms[index]}
+                            onChange={e => handleSearchChange(index, e.target.value)}
+                          />
+                          {column.label == "Amount" && (
+                            <div className="flex mx-2 flex-wrap gap-6">
+                              <Chip
+                                label="Due Only"
+                                style={{
+                                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                  color: "white",
                                 }}
-                                style={style}
-                              >
-                                {column.format && typeof value === "number"
-                                  ? column.format(value)
-                                  : value}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <div
-                              style={{
-                                fontSize: "15px",
-                                display: "flex",
-                                gap: "6px",
-                                color: "gray",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <VisibilityIcon
-                                style={{ color: "var(--color1)" }}
-                                onClick={() => {
-                                  history.push(`/more/customerView/${row.id}`);
-                                }}
+                                value={chipState.value}
+                                variant={chipState.variant}
+                                onClick={handleChipClick}
                               />
-                              {hasPermission(permissions, "customer edit") &&
-                                row.name !== "Direct Customers" && (
-                                  <BorderColorIcon
-                                    style={{ color: "var(--color1)" }}
-                                    onClick={() => handleEditOpen(row)}
-                                    disabled={row.name == "Direct Customers"}
-                                  />
-                                )}
                             </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              )}
-            </table>
-          </div>
-          <div
-            className="flex justify-center mt-4"
-            style={{
-              marginTop: 'auto',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '1rem',
-            }}
-          >
-            <button
-              onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            {currentPage > 2 && (
-              <button
-                onClick={() => handleClick(currentPage - 2)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 2}
-              </button>
-            )}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handleClick(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 1}
-              </button>
-            )}
-            <button
-              onClick={() => handleClick(currentPage)}
-              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-            >
-              {currentPage}
-            </button>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage + 1}
-              </button>
-            )}
-            <button
-              onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage >= totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
+                          )}
 
-        {/* File Upload Popup */}
+
+                        </div>
+                      </th>
+                    ))}
+
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                {isLoading ? (
+                  <div className="loader-container ">
+                    <Loader />
+                  </div>
+                ) : (
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                    {tableData.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={columns.length + 2}
+                          style={{
+                            textAlign: "center",
+                            color: "gray",
+                            borderRadius: "10px 10px 10px 10px",
+                          }}
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      tableData.map((row, index) => {
+                        return (
+                          <tr hover role="checkbox" tabIndex={-1} key={row.code}>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {currentPage==1?index:startIndex + index} 
+                              
+                            </td>
+                            {columns.map((column) => {
+                              let value = row[column.id];
+                              let style = {};
+
+                              // Apply red color if the column is 'due_amount' and status is 'due'
+                              if (
+                                column.id === "total_amount" &&
+                                row.status === "due"
+                              ) {
+                                style.color = "var(--color6)";
+                              } else if (
+                                column.id === "total_amount" &&
+                                row.status === ""
+                              ) {
+                                style.color = "var(--color2)";
+                              }
+
+                              // Lowercase email if it's not already in lowercase
+                              if (column.id === "email") {
+                                if (
+                                  value &&
+                                  value[0] !== value[0].toLowerCase()
+                                ) {
+                                  value = value.toLowerCase();
+                                }
+                                style.textTransform = "none";
+                              }
+
+                              return (
+                                <td
+                                  key={column.id}
+                                  align={column.align}
+                                  onClick={() => {
+                                    history.push(`/more/customerView/${row.id}`);
+                                  }}
+                                  style={style}
+                                >
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </td>
+                              );
+                            })}
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <div
+                                style={{
+                                  fontSize: "15px",
+                                  display: "flex",
+                                  gap: "6px",
+                                  color: "gray",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <VisibilityIcon
+                                  style={{ color: "var(--color1)" }}
+                                  onClick={() => {
+                                    history.push(`/more/customerView/${row.id}`);
+                                  }}
+                                />
+                                {hasPermission(permissions, "customer edit") &&
+                                  row.name !== "Direct Customers" && (
+                                    <BorderColorIcon
+                                      style={{ color: "var(--color1)" }}
+                                      onClick={() => handleEditOpen(row)}
+                                      disabled={row.name == "Direct Customers"}
+                                    />
+                                  )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                )}
+              </table>
+            </div>
+          </div>
+
+        </div>
+        {/*<====================================================================== pagination  =====================================================================> */}
+
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
+        >
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {currentPage > 2 && (
+            <button
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 2}
+            </button>
+          )}
+          {currentPage > 1 && (
+            <button
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 1}
+            </button>
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+        </div>
+        {/*<====================================================================== customer upload  =====================================================================> */}
         <Dialog open={openUpload} className="custom-dialog">
           <DialogTitle id="alert-dialog-title " className="primary">
             Import Customer
@@ -948,14 +953,12 @@ const CustomerList = () => {
             </Button>
           </DialogActions>
         </Dialog>
-
+        {/*<====================================================================== add customer  =====================================================================> */}
         <Dialog
           open={openAddPopUp}
           className="custom-dialog"
 
         >
-
-
           <DialogTitle
             id="alert-dialog-title" className="primary"
 

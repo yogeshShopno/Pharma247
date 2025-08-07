@@ -564,10 +564,10 @@ const Addsale = () => {
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
-      setQty(item.qty);
-      setBase(item.base);
-      setGst(item.gst_name);
-      setOrder(item.order);
+      setQty(selectedEditItem.qty);
+      setBase(selectedEditItem.base);
+      setGst(selectedEditItem.gst_name);
+      setOrder(selectedEditItem.order);
       setItemAmount(selectedEditItem.net_rate);
 
       inputRef5.current.focus();
@@ -991,8 +991,6 @@ const Addsale = () => {
     setItemEditID(item.item_id);
     setLoc(item.location);
     setSelectedOption(item);
-
-
   };
 
   const saleItemList = async () => {
@@ -2242,12 +2240,12 @@ const Addsale = () => {
                       options={doctorData}
                       getOptionLabel={(option) =>
                         option?.name
-                          ? `${option.name} [${option.clinic || ''}]`
-                          : option?.clinic || ''
+                          ? `${option.name} [${option.phone_number || ''}]`
+                          : option?.phone_number || ''
                       }
 
                       isOptionEqualToValue={(option, value) =>
-                        option?.clinic === value?.clinic
+                        option?.phone_number === value?.phone_number
                       }
 
                       loading={isLoading}
@@ -2270,7 +2268,7 @@ const Addsale = () => {
                         <ListItem {...props}>
                           <ListItemText
                             primary={`${option.name} `}
-                            secondary={`Mobile No: ${option.clinic}`}
+                            secondary={`Mobile No: ${option.phone_number}`}
                           />
                         </ListItem>
                       )}
@@ -2278,7 +2276,7 @@ const Addsale = () => {
                         <TextField
                           {...params}
                           variant="outlined"
-                          placeholder="Search by DR. Name, Clinic Name"
+                          placeholder="Search by DR. Name, Mobile Number"
                           InputProps={{
                             ...params.InputProps,
                             endAdornment: (

@@ -351,7 +351,6 @@ const EditSaleBill = () => {
       setSaleAllData({ ...record, sales_item: [] });
       setSaleAllData(record);
       // setPreviousLoyaltyPoints(record.roylti_point);
-      console.log(saleAllData);
 
       setAddress(record.customer_address);
       setTotalBase(record.total_base);
@@ -543,17 +542,18 @@ const EditSaleBill = () => {
           console.error("Error fetching sales history:", error);
         });
     } catch (error) {
-      
+
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
         setOpenModal(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
-            history.push(nextPath);
+          history.push(nextPath);
         }, 0);
-    } else {
-      console.error("Error fetching sales history:", error);
-    }}
+      } else {
+        console.error("Error fetching sales history:", error);
+      }
+    }
   };
 
   const handleEditClick = (item) => {
@@ -568,11 +568,18 @@ const EditSaleBill = () => {
     } else {
       setTempQty(existingItem.qty);
     }
+    handleSearch()
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
     setSearchItem(item.iteam_name);
     setSearchItemID(item.item_id);
+
+    const matchedOption = itemList.find(opt => opt.id == item.item_id);
+    setSelectedOption(matchedOption || null);
+
+    setValue(matchedOption || null);
+    // -----------------------------------------------------------------------
 
     if (selectedEditItem) {
       setUnit(selectedEditItem.unit);
@@ -789,16 +796,16 @@ const EditSaleBill = () => {
     try {
       const response = isEditMode
         ? await axios.post("sales-item-edit?", data, {
-            params: params,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          params: params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         : await axios.post("sales-item-add", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       saleBillGetBySaleID();
       setSearchItem(null);
       setUnit("");
@@ -815,7 +822,7 @@ const EditSaleBill = () => {
       setIsEditMode(false);
       setIsVisible(false);
       setSelectedOption(null);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const resetValue = () => {
@@ -1202,7 +1209,7 @@ const EditSaleBill = () => {
                       sx={{ width: "250px" }}
                       disabled
                     />
-                  </div> 
+                  </div>
                   <div
                     className="detail custommedia"
                     style={{
@@ -1362,12 +1369,37 @@ const EditSaleBill = () => {
                   </div>
 
                   {/* {value && */}
-                  <div className="scroll-two">
-                    <table className="saleTable">
+                  <div className=" overflow-x-auto w-full scroll-two">
+
+
+                    <table
+                      className="p-30 w-full border-collapse item-table"
+                      ref={tableRef}
+                      tabIndex={0}
+                      style={{ background: "#F5F5F5", padding: "10px 15px" }}
+                      onKeyDown={(e) => {
+                        const rows = saleAllData?.sales_item || [];
+                        if (!rows.length) return;
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault();
+                          setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
+                        } else if (e.key === "ArrowUp") {
+                          e.preventDefault();
+                          setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
+                        } else if (e.key === "Enter" && selectedIndex !== -1) {
+                          e.preventDefault();
+                          const selectedRow = rows[selectedIndex];
+                          if (selectedRow) {
+                            handleEditClick(selectedRow);
+                          }
+                        }
+                      }}
+                      onBlur={() => setSelectedIndex(-1)}
+                    >
                       <thead>
                         <tr
                           style={{
-                            borderBottom: "1px solid lightgray", 
+                            borderBottom: "1px solid lightgray",
                           }}
                         >
                           <th className="w-1/4">Item Name</th>
@@ -1481,10 +1513,10 @@ const EditSaleBill = () => {
                                           }}
                                           sx={{
                                             "& .MuiInputBase-input::placeholder":
-                                              {
-                                                fontSize: "1rem",
-                                                color: "black",
-                                              },
+                                            {
+                                              fontSize: "1rem",
+                                              color: "black",
+                                            },
                                           }}
                                         />
                                       )}
@@ -1534,12 +1566,11 @@ const EditSaleBill = () => {
                                             <>
                                               {batchListData?.map((item) => (
                                                 <tr
-                                                  className={`cursor-pointer saleTable custom-hover ${
-                                                    highlightedRowId ===
+                                                  className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
                                                     String(item.id)
-                                                      ? "highlighted-row"
-                                                      : ""
-                                                  }`}
+                                                    ? "highlighted-row"
+                                                    : ""
+                                                    }`}
                                                   key={item.id}
                                                   data-id={item.id}
                                                   tabIndex={0}
@@ -1731,90 +1762,59 @@ const EditSaleBill = () => {
                           </td>
                           <td className="total">{itemAmount}</td>
                         </tr>
+                        {saleAllData?.sales_item?.map((item, index) => (
+                          <tr
+                            key={item.id}
+                            ref={el => rowRefs.current[index] = el}
+                            style={{ whiteSpace: "nowrap" }}
+                            onClick={() => {
+                              setSelectedIndex(index);
+                              handleEditClick(item);
+                            }}
+                            className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                            tabIndex={-1}
+                            onFocus={() => setSelectedIndex(index)}
+                          >
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "8px",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              <BorderColorIcon
+                                style={{ color: "var(--color1)" }}
+                                className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditClick(item);
+                                }}
+                              />
+
+                              <DeleteIcon
+                                className="delete-icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteOpen(item.id);
+                                }}
+                              />
+                              {item.iteam_name}
+                            </td>
+                            <td>{item.unit}</td>
+                            <td>{item.batch}</td>
+                            <td>{item.exp}</td>
+                            <td>{item.mrp}</td>
+                            <td>{item.base}</td>
+                            <td>{item.gst_name}</td>
+                            <td>{item.qty}</td>
+                            <td>{item.order}</td>
+                            <td>{item.location}</td>
+                            <td>{item.net_rate}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
-                    <>
-                      <table
-                        className="p-30 w-full border-collapse custom-table"
-                        ref={tableRef}
-                        tabIndex={0}
-                        style={{ background: "#F5F5F5", padding: "10px 15px" }}
-                        onKeyDown={(e) => {
-                          const rows = saleAllData?.sales_item || [];
-                          if (!rows.length) return;
-                          if (e.key === "ArrowDown") {
-                            e.preventDefault();
-                            setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
-                          } else if (e.key === "ArrowUp") {
-                            e.preventDefault();
-                            setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
-                          } else if (e.key === "Enter" && selectedIndex !== -1) {
-                            e.preventDefault();
-                            const selectedRow = rows[selectedIndex];
-                            if (selectedRow) {
-                              handleEditClick(selectedRow);
-                            }
-                          }
-                        }}
-                        onBlur={() => setSelectedIndex(-1)}
-                      >
-                        <tbody>
-                          <tr>
-                            <td></td>
-                          </tr>
-                          {saleAllData?.sales_item?.map((item, index) => (
-                            <tr
-                              key={item.id}
-                              ref={el => rowRefs.current[index] = el}
-                              style={{ whiteSpace: "nowrap" }}
-                              onClick={() => {
-                                setSelectedIndex(index);
-                                handleEditClick(item);
-                              }}
-                              className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                              tabIndex={-1}
-                              onFocus={() => setSelectedIndex(index)}
-                            >
-                              <td
-                                style={{
-                                  display: "flex",
-                                  gap: "8px",
-                                  whiteSpace: "nowrap",
-                                }}
-                              >
-                                <BorderColorIcon
-                                  style={{ color: "var(--color1)" }}
-                                  className="cursor-pointer"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleEditClick(item);
-                                  }}
-                                />
 
-                                <DeleteIcon
-                                  className="delete-icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteOpen(item.id);
-                                  }}
-                                />
-                                {item.iteam_name}
-                              </td>
-                              <td>{item.unit}</td>
-                              <td>{item.batch}</td>
-                              <td>{item.exp}</td>
-                              <td>{item.mrp}</td>
-                              <td>{item.base}</td>
-                              <td>{item.gst_name}</td>
-                              <td>{item.qty}</td>
-                              <td>{item.order}</td>
-                              <td>{item.location}</td>
-                              <td>{item.net_rate}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </>
                   </div>
                 </div>
               </div>
@@ -2011,7 +2011,7 @@ const EditSaleBill = () => {
                     size="lg"
                     position="bottom-center"
                     className="modal_amount"
-                    // style={{ width: "50%" }}
+                  // style={{ width: "50%" }}
                   >
                     <div
                       style={{
@@ -2225,9 +2225,8 @@ const EditSaleBill = () => {
             <div
               id="modal"
               value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-                IsDelete ? "block" : "hidden"
-              }`}
+              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+                }`}
             >
               <div />
               <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
@@ -2295,9 +2294,8 @@ const EditSaleBill = () => {
         id="modal"
         value={openModal}
         style={{ zIndex: 9999 }}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          openModal ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

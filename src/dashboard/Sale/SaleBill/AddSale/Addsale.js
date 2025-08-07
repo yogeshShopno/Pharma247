@@ -832,7 +832,7 @@ const Addsale = () => {
   };
 
   const handlePassData = (event) => {
-    
+
     setItemId(event.item_id);
     setSelectedOption(event);
     setSelectedEditItemId(event.id);
@@ -3789,6 +3789,7 @@ const Addsale = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
         //refill/pill remider dialog
 
         <Dialog open={openReminderPopUp} className="custom-dialog modal_991 ">

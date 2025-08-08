@@ -982,7 +982,7 @@ const AddReturnbill = () => {
               className="row border-b border-dashed"
               style={{ borderColor: "var(--color2)" }}
             ></div>
-            
+
             <div className="mt-4">
               <div className="firstrow flex gap-4">
                 <div className="flex flex-row gap-4 overflow-x-auto w-full ">
@@ -1722,41 +1722,7 @@ const AddReturnbill = () => {
             </DialogActions>
           </Dialog>
 
-          {/* Leave Page PopUP */}
-          <Dialog open={isOpenBox} className="custom-dialog">
-            <DialogTitle className="primary">Leave Page</DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={LogoutClose}
-              sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
-            >
-              <IoMdClose />
-            </IconButton>
-            <DialogContent>
-              <div className="my-4 logout-icon text-center">
-                <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
-                <h4 className="text-lg font-semibold mt-6">Are you sure you want to leave this page?</h4>
-              </div>
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleLeavePage}
-                sx={{ minWidth: 120 }}
-              >
-                Yes
-              </Button>
-              <Button
-                variant="contained"
-                color="inherit"
-                onClick={LogoutClose}
-                sx={{ minWidth: 120 }}
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
+
 
           <Prompt
             when={unsavedItems}
@@ -1765,29 +1731,30 @@ const AddReturnbill = () => {
               return false;
             }}
           />
+
           <div
             id="modal"
             value={isOpenBox}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
               }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack
-                  className=" h-12 w-14"
+                  className="h-12 w-14"
                   style={{ color: "#628A2F" }}
                 />
-                <h4 className="text-lg font-semibold mt-6 text-center">
+                <h4 className=" font-semibold mt-6 text-center">
                   <span style={{ textTransform: "none" }}>
-                    Are you sure you want to leave this page ?
+                    Are you sure you want to leave this page?
                   </span>
                 </h4>
               </div>
               <div className="flex gap-5 justify-center">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
                   onClick={handleLeavePage}
                 >
                   Yes

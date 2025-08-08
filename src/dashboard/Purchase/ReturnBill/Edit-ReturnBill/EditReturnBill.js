@@ -220,7 +220,7 @@ const EditReturnBill = () => {
     useEffect(() => {
         const handleKeyPress = (e) => {
             if (!tableData?.item_list?.length) return;
-            
+
             if (e.key === "ArrowDown") {
                 setSelectedIndex((prev) => Math.min(prev + 1, tableData.item_list.length - 1));
             } else if (e.key === "ArrowUp") {
@@ -1741,42 +1741,6 @@ const EditReturnBill = () => {
                         </DialogActions>
                     </Dialog>
 
-                    {/* Leave Page Dialog */}
-                    <Dialog open={isOpenBox} className="custom-dialog">
-                        <DialogTitle className="primary">Leave Page</DialogTitle>
-                        <IconButton
-                            aria-label="close"
-                            onClick={LogoutClose}
-                            sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
-                        >
-                            <IoMdClose />
-                        </IconButton>
-                        <DialogContent>
-                            <div className="my-4 logout-icon text-center">
-                                <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
-                                <h4 className="text-lg font-semibold mt-6">Are you sure you want to leave this page?</h4>
-                            </div>
-                        </DialogContent>
-                        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleLeavePage}
-                                sx={{ minWidth: 120 }}
-                            >
-                                Yes
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="inherit"
-                                onClick={LogoutClose}
-                                sx={{ minWidth: 120 }}
-                            >
-                                Cancel
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-
                     <Prompt
                         when={unsavedItems}
                         message={(location) => {
@@ -1784,6 +1748,44 @@ const EditReturnBill = () => {
                             return false;
                         }}
                     />
+
+                    <div
+                        id="modal"
+                        value={isOpenBox}
+                        className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+                            }`}
+                    >
+                        <div />
+                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                            <div className="my-4 logout-icon">
+                                <VscDebugStepBack
+                                    className="h-12 w-14"
+                                    style={{ color: "#628A2F" }}
+                                />
+                                <h4 className=" font-semibold mt-6 text-center">
+                                    <span style={{ textTransform: "none" }}>
+                                        Are you sure you want to leave this page?
+                                    </span>
+                                </h4>
+                            </div>
+                            <div className="flex gap-5 justify-center">
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                                    onClick={handleLeavePage}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                                    onClick={LogoutClose}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div >

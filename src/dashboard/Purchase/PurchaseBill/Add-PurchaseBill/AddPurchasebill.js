@@ -1131,7 +1131,6 @@ const AddPurchaseBill = () => {
     if (isSubmitting) return false; // Prevent double submissions
     setIsSubmitting(true); // Lock
 
-    setUnsavedItems(true);
     const gstMapping = {
       28: 6,
       18: 4,
@@ -1218,6 +1217,7 @@ const AddPurchaseBill = () => {
       setBarcode("");
       setValue("");
       setSearchItem("");
+      setUnsavedItems(true);
 
       if (ItemTotalAmount <= finalCnAmount) {
         setFinalCnAmount(0);
@@ -1237,7 +1237,6 @@ const AddPurchaseBill = () => {
       throw e; // Re-throw to be caught by handleAddButtonClick
     } finally {
       setIsSubmitting(false);
-      setUnsavedItems(false);
 
     }
   };
@@ -1642,7 +1641,7 @@ const AddPurchaseBill = () => {
 
   /*<============================================================================== Discount calculation  ==========================================================================> */
 
- const handleSchAmt = (e) => {
+  const handleSchAmt = (e) => {
     const valueStr = String(e.target.value); // ensure string
     const inputDiscount =
       valueStr.replace(/[eE]/g, "") === ""
@@ -1666,7 +1665,7 @@ const AddPurchaseBill = () => {
 
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setBase(totalBase);
-};
+  };
 
   /*<============================================================================== Remove Item  ==========================================================================> */
 
@@ -2149,21 +2148,7 @@ const AddPurchaseBill = () => {
                   />
 
                 </div>
-                {/* <div className="detail">
-                <span className="title mb-2">Sr No.</span>
-                <TextField
-                  autoComplete="off"
-                  id="outlined-number"
-                  size="small"
-                  style={{ width: "200px" }}
-                  value={srNo}
-                  variant="outlined"
-                  disabled
-                  onChange={(e) => {
-                    setSrNo(e.target.value);
-                  }}
-                />
-              </div> */}
+              
                 <div className="detail">
                   <span className="title mb-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
                   <TextField

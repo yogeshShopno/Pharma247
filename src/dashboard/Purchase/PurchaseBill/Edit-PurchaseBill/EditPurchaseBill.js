@@ -1200,9 +1200,9 @@ const EditPurchaseBill = () => {
 
   const removeItem = () => {
     // setAutocompleteDisabled(false);
-    setAutocompleteKey(autocompleteKey+1)
+    setAutocompleteKey(autocompleteKey + 1)
     setValue("");
-    
+
     setUnit("");
     setSearchItem("");
     setBatch("");
@@ -2507,6 +2507,7 @@ const EditPurchaseBill = () => {
               </div>
             </div>
           </div>
+
           <Prompt
             when={unsavedItems}
             message={(location) => {
@@ -2514,22 +2515,23 @@ const EditPurchaseBill = () => {
               return false;
             }}
           />
+
           <div
             id="modal"
             value={isOpenBox}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+            className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
               }`}
           >
             <div />
             <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <div className="my-4 logout-icon">
                 <VscDebugStepBack
-                  className=" h-12 w-14"
+                  className="h-12 w-14"
                   style={{ color: "#628A2F" }}
                 />
-                <h4 className="text-lg font-semibold mt-6 text-center">
-                  <span style={{ textTransform: "lowercase" }}>
-                    Are you sure you want to delete it?
+                <h4 className=" font-semibold mt-6 text-center">
+                  <span style={{ textTransform: "none" }}>
+                    Are you sure you want to leave this page?
                   </span>
                 </h4>
               </div>

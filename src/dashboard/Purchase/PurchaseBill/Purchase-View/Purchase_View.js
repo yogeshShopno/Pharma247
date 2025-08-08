@@ -48,23 +48,13 @@ const PurchaseView = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-{/*<=============================================================================== get initial data  ===============================================================================> */}
+  {/*<=============================================================================== get initial data  ===============================================================================> */ }
 
   useEffect(() => {
-       purchaseBillList(); 
-     }, []);
+    purchaseBillList();
+  }, []);
   
-  useEffect(() => {
-    const index = tableData.findIndex((item) => item.id == parseInt(id));
-    if (index !== -1) {
-      setCurrentIndex(index);
-      purchaseBillGetByID(tableData[index].id);
-    }
-  }, [id, tableData]);
-
-  useEffect(() => { purchaseBillGetByID() }, []);
-
-{/*<========================================================================== up down arrow functionality  ==========================================================================> */}
+  {/*<========================================================================== up down arrow functionality  ==========================================================================> */ }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -89,12 +79,12 @@ const PurchaseView = () => {
     };
   });
 
-{/*<=========================================================================== get purchase list data  ===========================================================================> */}
-  
+  {/*<=========================================================================== get purchase list data  ===========================================================================> */ }
+
   const purchaseBillList = async () => {
 
     let data = new FormData();
-    
+
     setIsLoading(true);
     try {
       const response = await axios.post("purches-list?", data, {
@@ -103,7 +93,11 @@ const PurchaseView = () => {
         },
       });
       setTableData(response.data.data);
-      console.log(tableData,"tableData") 
+      const index = response.data.data.findIndex((item) => item.id == parseInt(id));
+      if (index !== -1) {
+        setCurrentIndex(index);
+        purchaseBillGetByID(response.data.data[index].id);
+      }
     } catch (error) {
       console.error("API error:", error);
     } finally {
@@ -111,7 +105,7 @@ const PurchaseView = () => {
     }
   };
 
-{/*<=============================================================================== generate PDf  ===============================================================================> */}
+  {/*<=============================================================================== generate PDf  ===============================================================================> */ }
 
   const pdfGenerator = async (id) => {
     let data = new FormData();
@@ -151,7 +145,7 @@ const PurchaseView = () => {
     }
   };
 
-{/*<================================================================================ get bill details  ================================================================================> */}
+  {/*<================================================================================ get bill details  ================================================================================> */ }
 
   const purchaseBillGetByID = async () => {
     let data = new FormData();
@@ -178,7 +172,7 @@ const PurchaseView = () => {
     }
   };
 
-{/*<================================================================================== total details  ==================================================================================> */}
+  {/*<================================================================================== total details  ==================================================================================> */ }
 
   return (
     <>
@@ -257,7 +251,7 @@ const PurchaseView = () => {
                       style={{ backgroundColor: "var(--color1)" }}
 
 
-                      onClick={()=>setOpenAddPopUp(true)}
+                      onClick={() => setOpenAddPopUp(true)}
                     >
                       <AddIcon className="mr-2" />
                       CN View
@@ -292,11 +286,11 @@ const PurchaseView = () => {
             </div>
           </div>
 
-{/*<================================================================================ top details  ================================================================================> */}
+          {/*<================================================================================ top details  ================================================================================> */}
 
           <div>
             <div className="firstrow flex mt-2 rounded-md p-3" style={{
-              backgroundColor: 'rgb(63 98 18 / 11%)', 
+              backgroundColor: 'rgb(63 98 18 / 11%)',
             }}>
               <div className="detail_main">
                 <span className="heading mb-2">SR No.</span>
@@ -334,8 +328,8 @@ const PurchaseView = () => {
               </div>
             </div>
 
-{/*<================================================================================ bill table data  ================================================================================> */}
-           
+            {/*<================================================================================ bill table data  ================================================================================> */}
+
             <div className="overflow-x-auto mt-5">
               <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
                 <thead>
@@ -388,7 +382,7 @@ const PurchaseView = () => {
             </div>
           </div>
 
-{/*<================================================================================== total details  ==================================================================================> */}
+          {/*<================================================================================== total details  ==================================================================================> */}
 
           <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
             <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
@@ -447,7 +441,7 @@ const PurchaseView = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>
-                <div className="gap-2 " onClick={()=> setIsModalOpen(!isModalOpen)} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
+                <div className="gap-2 " onClick={() => setIsModalOpen(!isModalOpen)} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
                   <label className="font-bold">Net Amount : </label>
                   <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
                     <FaCaretUp />
@@ -457,14 +451,14 @@ const PurchaseView = () => {
 
                 <Modal
                   show={isModalOpen}
-                  onClose={()=> setIsModalOpen(!isModalOpen)}
+                  onClose={() => setIsModalOpen(!isModalOpen)}
                   size="lg"
                   position="bottom-center"
                   className="modal_amount"
                 >
                   <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
                     <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                    <IoMdClose onClick={ ()=>setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
+                    <IoMdClose onClick={() => setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
 
                   </div>
                   <div
@@ -508,16 +502,16 @@ const PurchaseView = () => {
             </div>
           </div>
 
-{/*<================================================================================== CN Popup  ==================================================================================> */}
+          {/*<================================================================================== CN Popup  ==================================================================================> */}
           {/* CN List PopUp Box */}
 
           <Dialog className="custom-dialog max-991" open={openAddPopUp}>
             <DialogTitle id="alert-dialog-title" className="secondary">
-            Cn Amount List
+              Cn Amount List
             </DialogTitle>
             <IconButton
               aria-label="close"
-              onClick={()=>setOpenAddPopUp(false)}
+              onClick={() => setOpenAddPopUp(false)}
               sx={{
                 position: "absolute",
                 right: 8,

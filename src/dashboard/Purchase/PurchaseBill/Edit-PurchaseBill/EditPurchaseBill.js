@@ -219,8 +219,9 @@ const EditPurchaseBill = () => {
         setIsEditMode(false);
         setSelectedIndex(-1);
         setSearchItem("");
-        setValue(null);
+        setValue("");
         setSelectedOption(null);
+        setSearchItem("")
         // clear Autocomplete selected option
 
         setTimeout(() => {
@@ -1148,7 +1149,6 @@ const EditPurchaseBill = () => {
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
     handleSearch(newInputValue);
-    console.log(newInputValue, newInputValue, "itemName");
 
   };
 
@@ -1156,7 +1156,7 @@ const EditPurchaseBill = () => {
     setValue(newValue);
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
-
+    setSelectedOption(itemName)
 
     handleSearch(itemName);
   };
@@ -1200,7 +1200,9 @@ const EditPurchaseBill = () => {
 
   const removeItem = () => {
     // setAutocompleteDisabled(false);
+    setAutocompleteKey(autocompleteKey+1)
     setValue("");
+    
     setUnit("");
     setSearchItem("");
     setBatch("");
@@ -1654,7 +1656,6 @@ const EditPurchaseBill = () => {
                           <td >
                             <Autocomplete
                               value={searchItem?.iteam_name}
-
                               size="small"
                               key={autocompleteKey}
                               onChange={handleOptionChange}

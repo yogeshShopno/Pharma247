@@ -855,7 +855,6 @@ const Addsale = () => {
     setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
   };
 
-  useEffect(() => { }, [searchItem, itemList]);
 
   const handleDoctorOption = (event, newValue) => {
     setDoctor(newValue);
@@ -1393,55 +1392,7 @@ const Addsale = () => {
     }
   };
 
-  const draftSaleData = async () => {
-    let data = new FormData();
-    data.append(
-      "bill_no",
-      localStorage.getItem("BillNo") ? localStorage.getItem("BillNo") : ""
-    );
-    data.append("customer_id", customer.id ? customer.id : "");
-    data.append("status", "Draft");
-    data.append("bill_date", selectedDate ? selectedDate : "");
-    data.append("customer_address", address || "");
-    data.append("doctor_id", doctor.id ? doctor.id : "");
-    data.append("igst", "0");
-    data.append("cgst", "0");
-    data.append("sgst", "0");
-    data.append("given_amount", givenAmt || 0);
-    data.append("due_amount", dueAmount || 0);
-    data.append("total_base", totalBase);
-    data.append("pickup", pickup ? pickup : "");
-    data.append("owner_name", "0");
-    data.append("payment_name", paymentType ? paymentType : "");
-    data.append(
-      "product_list",
-      JSON.stringify(ItemSaleList.sales_item)
-        ? JSON.stringify(ItemSaleList.sales_item)
-        : ""
-    );
-    data.append("net_amount", netAmount.toFixed(2));
-    data.append("other_amount", otherAmt || 0);
-    data.append("total_discount", finalDiscount ? finalDiscount : "");
-    data.append("other_amount", otherAmt || 0);
-    data.append("total_amount", totalAmount || 0);
-    try {
-      await axios
-        .post("create-sales", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          localStorage.removeItem("RandomNumber");
-          toast.success(response.data.message);
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
+
 
   const batchList = async () => {
     let data = new FormData();
@@ -1732,6 +1683,7 @@ const Addsale = () => {
       }
     }
   };
+  {/*<====================================================================== row select    =====================================================================> */ }
 
   useEffect(() => {
     if (isVisible && tableRef.current) {
@@ -1742,6 +1694,7 @@ const Addsale = () => {
       }
     }
   }, [isVisible, batchListData]);
+  {/*<====================================================================== send whatsapp bil   =====================================================================> */ }
 
   const handleSendInvoice = async (customer, Amount, date, billNo) => {
     const url = "https://web.wabridge.com/api/createmessage";
@@ -1778,6 +1731,8 @@ const Addsale = () => {
       console.error("Error sending message:", error);
     }
   };
+  {/*<====================================================================== Handle PDF download   =====================================================================> */ }
+
   const pdfGenerator = async (id) => {
     console.log(id);
     let data = new FormData();
@@ -1810,6 +1765,8 @@ const Addsale = () => {
     }
   };
 
+  {/*<====================================================================== Autocomplete focus   =====================================================================> */ }
+
   // Add useEffect to close dropdown if Autocomplete input is not focused
   useEffect(() => {
     function handleDocumentFocus() {
@@ -1822,6 +1779,7 @@ const Addsale = () => {
       document.removeEventListener('focusin', handleDocumentFocus);
     };
   }, [autoCompleteOpen]);
+  {/*<====================================================================== pill /refill timing   =====================================================================> */ }
 
   const updatePillTiming = (item, updated) => {
     const total = Number(updated.morning || 0) + Number(updated.noon || 0) + Number(updated.night || 0);
@@ -1839,6 +1797,7 @@ const Addsale = () => {
       },
     }));
   };
+  {/*<====================================================================== pill /refill remider   =====================================================================> */ }
 
   const handleReminder = async () => {
     const selectedItems = Object.keys(checkedItems).filter((id) => checkedItems[id]);
@@ -1908,6 +1867,8 @@ const Addsale = () => {
               overflow: "auto",
             }}
           >
+            {/*<====================================================================== header   =====================================================================> */}
+
             <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
               <div style={{ display: "flex", gap: "7px" }}>
                 <span
@@ -2090,10 +2051,13 @@ const Addsale = () => {
                 </div>
               </div>
             </div>
+
             <div
               className="row border-b border-dashed"
               style={{ borderColor: "var(--color2)" }}
             ></div>
+            {/*<====================================================================== Top detail   =====================================================================> */}
+
             <div>
               <div className="firstrow mt-4">
                 <div className="flex gap-4 mb-4 overflow-auto">
@@ -2372,6 +2336,8 @@ const Addsale = () => {
                     />
                   </div>
                 </div>
+                {/*<====================================================================== item table   =====================================================================> */}
+
                 <div className=" overflow-x-auto w-full scroll-two">
                   <table className="item-table">
                     <thead>
@@ -3025,8 +2991,7 @@ const Addsale = () => {
                 </div>
                 {/* } */}
               </div>
-
-              {/* bottom details */}
+              {/*<====================================================================== bottom details   =====================================================================> */}
 
               <div
                 className="sale_filtr_add"
@@ -3425,7 +3390,7 @@ const Addsale = () => {
           </div>
         </div>
 
-        {/* add doctor */}
+        {/*<====================================================================== Add Doctor  =====================================================================> */}
 
         <Dialog open={openAddPopUp} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -3524,7 +3489,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        {/* add Customer */}
+        {/*<====================================================================== Add customer  =====================================================================> */}
         <Dialog open={openCustomer} className="custom-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Customer
@@ -3619,6 +3584,8 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
+        {/*<====================================================================== item purchase history  =====================================================================> */}
+
         <Dialog
           open={openPurchaseHistoryPopUp}
           sx={{
@@ -3693,7 +3660,7 @@ const Addsale = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-        //add item dialog
+        {/*<====================================================================== Add item  =====================================================================> */}
         <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add New Item
@@ -3790,7 +3757,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        //refill/pill remider dialog
+        {/*<====================================================================== Pill refill modal  =====================================================================> */}
 
         <Dialog open={openReminderPopUp} className="custom-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -3936,6 +3903,7 @@ const Addsale = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        {/*<====================================================================== Delete modal  =====================================================================> */}
 
         <div
           id="modal"
@@ -3991,6 +3959,7 @@ const Addsale = () => {
           </div>
         </div>
       </div>
+      {/*<====================================================================== Leave page modal  =====================================================================> */}
 
       <Prompt
         when={unsavedItems}

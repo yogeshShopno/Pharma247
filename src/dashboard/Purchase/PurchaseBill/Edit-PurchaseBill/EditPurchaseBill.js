@@ -222,7 +222,7 @@ const EditPurchaseBill = () => {
         setValue(null);
         setSelectedOption(null);
         // clear Autocomplete selected option
-    
+
         setTimeout(() => {
           inputRefs.current[2]?.focus();
         }, 50);
@@ -421,7 +421,6 @@ const EditPurchaseBill = () => {
     // listOfHistory()
   }, [id]);
   /*<=============================================================================== caculation =======================================================================> */
-
   useEffect(() => {
     // Convert values to numbers, defaulting to 0 if undefined/null/empty
     const numericQty = parseFloat(qty) || 0;
@@ -432,11 +431,13 @@ const EditPurchaseBill = () => {
     const numericMrp = parseFloat(mrp) || 0;
 
     /*<===================================================================== Calculate discount ==========================================================================> */
-    const totalSchAmt = parseFloat(((numericPtr * numericDisc) / 100) * numericQty).toFixed(2);
+    // FIX: Correct discount calculation - discount on gross amount (PTR × Qty)
+    const grossAmount = numericPtr * numericQty;
+    const totalSchAmt = parseFloat(((grossAmount * numericDisc) / 100).toFixed(2));
     setSchAmt(totalSchAmt);
 
     /*<===================================================================== Calculate totalBase ==========================================================================> */
-    const totalBase = parseFloat((numericPtr * numericQty - totalSchAmt).toFixed(2));
+    const totalBase = parseFloat((grossAmount - totalSchAmt).toFixed(2));
     setBase(totalBase);
 
     /*<====================================================================== Calculate totalAmount =======================================================================> */
@@ -444,7 +445,9 @@ const EditPurchaseBill = () => {
     setItemTotalAmount(totalAmount);
 
     /*<================================================================================= Net Rate calculation ==============================================================> */
-    const netRate = parseFloat((totalAmount / (numericQty + numericFree)).toFixed(2));
+    // FIX: Safe division to prevent NaN
+    const totalUnits = numericQty + numericFree;
+    const netRate = totalUnits > 0 ? parseFloat((totalAmount / totalUnits).toFixed(2)) : 0;
     setNetRate(netRate);
 
     /*<============================================================================= Margin calculation =====================================================================> */
@@ -626,7 +629,7 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          if (response?.data?.alternative_item_check ) {
+          if (response?.data?.alternative_item_check) {
             return;
           }
           const batchData = response.data.data;
@@ -726,9 +729,9 @@ const EditPurchaseBill = () => {
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
-    if (isSubmitting) return; // ⛔ Block if already submitting
-      else{
-      await handleEditItem(); // Call handleEditItem if validation passes
+      if (isSubmitting) return; // ⛔ Block if already submitting
+      else {
+        await handleEditItem(); // Call handleEditItem if validation passes
 
       }
     }
@@ -768,7 +771,7 @@ const EditPurchaseBill = () => {
       }
     }
     data.append("unit_id", unit);
-    data.append("hsn_code", HSN? HSN : 0);
+    data.append("hsn_code", HSN ? HSN : 0);
     data.append("random_number", randomNumber);
     data.append("unit", !unit ? 0 : unit);
     data.append("batch_number", !batch ? 0 : batch);
@@ -837,13 +840,13 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0);
       setIsEditMode(false);
       setSelectedEditItemId(null);
-    
+
 
     } catch (e) {
       console.error("API error:", error);
       setUnsavedItems(false);
-    
-    }finally{
+
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -884,12 +887,13 @@ const EditPurchaseBill = () => {
         setOpenModal(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
-            history.push(nextPath);
+          history.push(nextPath);
         }, 0);
-    } else {
-      console.error("Error deleting items:", error);
-      setUnsavedItems(false);
-    }}
+      } else {
+        console.error("Error deleting items:", error);
+        setUnsavedItems(false);
+      }
+    }
   };
   /*<============================================================================= barcode =====================================================================> */
 
@@ -1048,7 +1052,7 @@ const EditPurchaseBill = () => {
     }, 0);
   };
   const updatePurchaseRecord = async () => {
-    console.log("purches_data", purchase.item_list);    
+    console.log("purches_data", purchase.item_list);
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
     data.append("bill_no", billNo);
@@ -1069,7 +1073,7 @@ const EditPurchaseBill = () => {
     console.log("typeof purches_data", typeof purchase.item_list, purchase.item_list);
     console.log("typeof JSON purches_data", typeof JSON.stringify(purchase.item_list), JSON.stringify(purchase.item_list));
     data.append("purches_data", JSON.stringify(purchase.item_list));
-    data.append("draft_save",  "1" );
+    data.append("draft_save", "1");
 
     const params = {
       id: id,
@@ -1083,12 +1087,12 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          if(response?.data?.status === 200){
-          console.log("response", response?.data?.message);
-          toast.success(response?.data?.message);
-          setTimeout(() => {
-            history.push("/purchase/purchasebill");
-          }, 2000)
+          if (response?.data?.status === 200) {
+            console.log("response", response?.data?.message);
+            toast.success(response?.data?.message);
+            setTimeout(() => {
+              history.push("/purchase/purchasebill");
+            }, 2000)
           }
         })
     } catch (error) {
@@ -1177,8 +1181,7 @@ const EditPurchaseBill = () => {
     return date > today;
   };
   const handleSchAmt = (e) => {
-    const inputDiscount =
-      e.target.value === "" ? "" : parseFloat(e.target.value);
+    const inputDiscount = e.target.value === "" ? "" : parseFloat(e.target.value);
     if (isNaN(inputDiscount)) {
       setDisc(0);
       setSchAmt(0);
@@ -1186,12 +1189,12 @@ const EditPurchaseBill = () => {
     }
     setDisc(inputDiscount);
 
-    const totalSchAmt = parseFloat(
-      (((ptr * inputDiscount) / 100) * qty).toFixed(2)
-    );
+    // FIX: Calculate discount on (PTR × Qty), not (PTR × discount × Qty)
+    const grossAmount = ptr * qty;
+    const totalSchAmt = parseFloat(((grossAmount * inputDiscount) / 100).toFixed(2));
     setSchAmt(totalSchAmt);
 
-    const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+    const totalBase = parseFloat((grossAmount - totalSchAmt).toFixed(2));
     setBase(totalBase);
   };
 
@@ -1486,8 +1489,8 @@ const EditPurchaseBill = () => {
                 >
                   Update
                 </Button>
-             
-                
+
+
               </div>
             </div>
             <div
@@ -1651,7 +1654,7 @@ const EditPurchaseBill = () => {
                           <td >
                             <Autocomplete
                               value={searchItem?.iteam_name}
-                             
+
                               size="small"
                               key={autocompleteKey}
                               onChange={handleOptionChange}
@@ -1664,7 +1667,7 @@ const EditPurchaseBill = () => {
                               options={itemList}
                               renderOption={(props, option) => (
                                 <ListItem {...props}>
-                                  <ListItemText 
+                                  <ListItemText
                                     primary={`${option.iteam_name}`}
                                     secondary={` ${option.stock === 0
                                       ? `Unit: ${option.weightage}`

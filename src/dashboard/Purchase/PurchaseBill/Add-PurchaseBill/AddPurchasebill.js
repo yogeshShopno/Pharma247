@@ -451,7 +451,7 @@ const AddPurchaseBill = () => {
     };
   }, []);
 
-  /*<================================================================== Clear old purchase item if user leave the browswer ==========================================================> */
+  /*<================================================================== calculation ==========================================================> */
 
   useEffect(() => {
     /*<========================================================================== Calculate discount ===============================================================================> */
@@ -1247,8 +1247,7 @@ const AddPurchaseBill = () => {
     if (
       !addDistributorName ||
       !addDistributorNo ||
-      !addDistributorMobile ||
-      !addDistributorAddress
+      !addDistributorMobile
     ) {
       toast.error("Please fill all the fields");
       return;
@@ -1553,7 +1552,7 @@ const AddPurchaseBill = () => {
     }
   }, [selectedEditItem]);
 
-  /*<=========================================================================== validation  purchase bill  =======================================================================> */
+  /*<=========================================================================== Handle edit =======================================================================> */
 
   const handleEditClick = (item) => {
     setSelectedEditItem(item);
@@ -1563,6 +1562,7 @@ const AddPurchaseBill = () => {
     setSelectedEditItemId(item.id);
     inputRefs.current[3]?.focus();
   };
+  /*<=========================================================================== purchase return data =======================================================================> */
 
   const purchaseReturnData = async () => {
     let data = new FormData();
@@ -1642,7 +1642,7 @@ const AddPurchaseBill = () => {
 
   /*<============================================================================== Discount calculation  ==========================================================================> */
 
-  const handleSchAmt = (e) => {
+ const handleSchAmt = (e) => {
     const valueStr = String(e.target.value); // ensure string
     const inputDiscount =
       valueStr.replace(/[eE]/g, "") === ""
@@ -1658,14 +1658,15 @@ const AddPurchaseBill = () => {
 
     setDisc(inputDiscount);
 
+    // FIXED: Correct discount calculation
     const totalSchAmt = parseFloat(
-      (((ptr * inputDiscount) / 100) * qty).toFixed(2)
+      (((ptr * qty * inputDiscount) / 100)).toFixed(2)
     );
     setSchAmt(totalSchAmt);
 
     const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
     setBase(totalBase);
-  };
+};
 
   /*<============================================================================== Remove Item  ==========================================================================> */
 
@@ -2482,7 +2483,7 @@ const AddPurchaseBill = () => {
                               e.preventDefault();
                               toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
-                             
+
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -3453,7 +3454,7 @@ const AddPurchaseBill = () => {
 
                     {/* Address */}
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Address<span className="text-red-600  ">*</span></label>
+                      <label className="label secondary">Address</label>
                       <TextField
                         autoComplete="off"
                         size="small"

@@ -1305,8 +1305,6 @@ const Addsale = () => {
             setSelectedIndex(-1);
           }
           pdfGenerator(saleId);
-
-
         }
         setTimeout(() => {
           history.push("/salelist");

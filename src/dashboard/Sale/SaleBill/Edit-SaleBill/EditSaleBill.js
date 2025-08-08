@@ -134,8 +134,11 @@ const EditSaleBill = () => {
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
-  const tableRef = useRef(null); // Reference for table container
+  const tableRef = useRef(null); // (kept) Reference used in batch dropdown table
   const rowRefs = useRef([]); // Refs for each row
+
+  // NEW: separate ref for main sales items table container (to mirror AddSale behavior)
+  const tableRef1 = useRef(null);
 
   const inputRefs = useRef([]);
   const dateRefs = useRef([]);
@@ -166,30 +169,95 @@ const EditSaleBill = () => {
     };
   }, []);
 
+  // UPDATED: Global keyboard navigation exactly like AddSale (works anywhere)
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!saleAllData?.item_list?.length) return;
+      // block when batch dropdown list is visible (same as AddSale)
+      if (!saleAllData?.sales_item?.length || isVisible) return;
 
-      const isInputFocused = document.activeElement.tagName === "INPUT";
+      const isInputFocused = document.activeElement?.tagName === "INPUT";
+      const isTableFocused = document.activeElement === tableRef1.current;
+      if (isInputFocused && !isTableFocused) return;
 
-      if (isInputFocused) return;
+      if (
+        e.key !== "ArrowDown" &&
+        e.key !== "ArrowUp" &&
+        e.key !== "Enter"
+      ) {
+        return;
+      }
 
-      if (e.key === "ArrowDown") {
-        setSelectedIndex((prev) =>
-          Math.min(prev + 1, saleAllData.item_list.length - 1)
-        );
-      } else if (e.key === "ArrowUp") {
-        setSelectedIndex((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === "Enter" && selectedIndex !== -1) {
-        const selectedRow = saleAllData.item_list[selectedIndex];
-        if (!selectedRow) return;
-        handleEditClick(selectedRow);
+      e.preventDefault();
+
+      setSelectedIndex((prevIndex) => {
+        if (prevIndex === -1) {
+          return e.key === "ArrowDown"
+            ? 0
+            : saleAllData.sales_item.length - 1;
+        }
+        if (e.key === "ArrowDown") {
+          return Math.min(prevIndex + 1, saleAllData.sales_item.length - 1);
+        } else if (e.key === "ArrowUp") {
+          return Math.max(prevIndex - 1, 0);
+        }
+        return prevIndex;
+      });
+
+      if (e.key === "Enter" && selectedIndex !== -1) {
+        const selectedRow = saleAllData.sales_item[selectedIndex];
+        if (selectedRow) handleEditClick(selectedRow);
       }
     };
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [saleAllData, selectedIndex]);
+  }, [saleAllData?.sales_item, selectedIndex, isVisible]);
+
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!event.altKey || event.repeat) return;
+
+      const key = event.key.toLowerCase();
+      event.preventDefault(); // Prevent default browser behavior
+
+      switch (key) {
+        case "s":
+          // Use setTimeout to ensure state is properly captured
+          setTimeout(() => {
+            handleUpdate("1");
+          }, 0);
+          break;
+
+        case "p":
+          setTimeout(() => {
+            handleUpdate("1");
+          }, 0);
+          break;
+
+        case "m":
+          setSelectedEditItemId(null);
+          setSearchItem("");
+          setValue("");
+          setItem("");
+          setItemId(null);
+          resetValue();
+          setSelectedOption(null);
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [customer, saleAllData, totalAmount, finalDiscount, loyaltyVal, tempOtherAmt, netAmount, roundOff, marginNetProfit, netRateAmount, margin, discountAmount, totalBase, address, doctor, pickup, dueAmount, givenAmt]); // Add all necessary dependencies
+
+
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -542,7 +610,6 @@ const EditSaleBill = () => {
           console.error("Error fetching sales history:", error);
         });
     } catch (error) {
-
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
         setOpenModal(false);
@@ -841,7 +908,77 @@ const EditSaleBill = () => {
       setItemAmount(0);
     }
   };
+
+  const handleSendInvoice = async (customer, Amount, date, billNo) => {
+    const url = "https://web.wabridge.com/api/createmessage";
+
+    const two = 24;
+    const three = "krishna";
+    const four = 20 / 20 / 26;
+    const five = 5;
+    const six = "91986543210";
+    const seven = "sagar";
+
+    const payload = {
+      "app-key": "db8ce965-029b-4f74-aade-04d137663b12",
+      "auth-key": "039d46d11eab7e7863eb651db09f8eac63198154bf41302430",
+      destination_number: customer.phone_number, // change this
+      template_id: "1291715845234841",
+      device_id: "6747f73e1bcbc646dbdc8c5f",
+      variables: [
+        customer.name,
+        Amount,
+        localStorage.getItem("UserName"),
+        date,
+        billNo,
+        localStorage.getItem("contact"),
+        localStorage.getItem("UserName"),
+      ],
+      media: "",
+      message: "",
+    };
+
+    try {
+      const response = await axios.post(url, payload);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+  {/*<====================================================================== Handle PDF download   =====================================================================> */ }
+
+  const pdfGenerator = async (id) => {
+    let data = new FormData();
+    data.append("id", id);
+    setIsLoading(true);
+    try {
+      await axios
+        .post("sales-pdf-downloads", data, {
+          params: { id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const PDFURL = response.data.data.pdf_url;
+          toast.success(response.data.meassage);
+          handlePdf(PDFURL);
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handlePdf = (url) => {
+    if (typeof url === "string") {
+      window.open(url, "_blank");
+    } else {
+      console.error("Invalid URL for the PDF");
+    }
+  };
+
   const handleUpdate = (draft) => {
+
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -849,30 +986,46 @@ const EditSaleBill = () => {
       newErrors.customer = "Please select Customer";
     }
     setError(newErrors);
+
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    updateSaleData(draft);
-  };
 
+    // Use a small delay to ensure all state updates are captured
+    setTimeout(() => {
+      updateSaleData(draft);
+    }, 50);
+  };
   const updateSaleData = async (draft) => {
+    // Ensure we have the current values
+    const currentCustomer = customer;
+    const currentSaleAllData = saleAllData;
+    const currentAddress = address;
+    const currentDoctor = doctor;
+    const currentPickup = pickup;
+
+    if (!currentCustomer?.id) {
+      toast.error("Please select a customer before saving");
+      return;
+    }
+
     let data = new FormData();
-    data.append("bill_no", saleAllData?.bill_no);
-    data.append("customer_id", customer?.id);
+    data.append("bill_no", currentSaleAllData?.bill_no || "");
+    data.append("customer_id", currentCustomer?.id || "");
     data.append("status", "Completed");
-    data.append("bill_date", saleAllData?.bill_date);
-    data.append("customer_address", address || "");
-    data.append("doctor_id", doctor?.id || "");
+    data.append("bill_date", currentSaleAllData?.bill_date || "");
+    data.append("customer_address", currentAddress || "");
+    data.append("doctor_id", currentDoctor?.id || "");
     data.append("igst", "0");
-    data.append("cgst", saleAllData?.cgst || "");
-    data.append("sgst", saleAllData?.sgst || "");
+    data.append("cgst", currentSaleAllData?.cgst || "");
+    data.append("sgst", currentSaleAllData?.sgst || "");
     data.append("given_amount", givenAmt || 0);
     data.append("due_amount", dueAmount || 0);
-    data.append("total_base", totalBase);
-    data.append("pickup", pickup);
+    data.append("total_base", totalBase || 0);
+    data.append("pickup", currentPickup || "");
     data.append("owner_name", "0");
-    data.append("payment_name", location.state.paymentType || "");
-    data.append("product_list", JSON.stringify(saleAllData?.sales_item));
+    data.append("payment_name", location.state?.paymentType || "");
+    data.append("product_list", JSON.stringify(currentSaleAllData?.sales_item || []));
     data.append("net_amount", netAmount || 0);
     data.append("other_amount", tempOtherAmt || 0);
     data.append("total_discount", finalDiscount || "");
@@ -883,95 +1036,27 @@ const EditSaleBill = () => {
     data.append("net_rate", netRateAmount || 0);
     data.append("margin", margin || 0);
     data.append("roylti_point", loyaltyVal || 0);
-    data.append("draft_save", !draft ? "1" : draft);
+    data.append("draft_save", draft || "1");
 
     const params = {
       id: id || "",
     };
+
     try {
-      await axios
-        .post("sales-update?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          toast.success(response.data.message);
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
-        });
+      const response = await axios.post("sales-update?", data, {
+        params: params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(response.data.message);
+      setTimeout(() => {
+        history.push("/salelist");
+      }, 2000);
     } catch (error) {
       console.error("API error:", error);
-    }
-  };
-
-  const handleDraft = () => {
-    const newErrors = {};
-    if (!customer) {
-      newErrors.customer = "Please select Customer";
-    }
-    setError(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
-    draftSaleData();
-  };
-
-  const draftSaleData = async () => {
-    let data = new FormData();
-    data.append("bill_no", saleAllData?.bill_no ? saleAllData?.bill_no : "");
-    data.append("customer_id", customer?.id ? customer?.id : "");
-    data.append("status", "Completed");
-    data.append(
-      "bill_date",
-      saleAllData?.bill_date ? saleAllData?.bill_date : ""
-    );
-    data.append("customer_address", address || "");
-    data.append("doctor_id", doctor?.id ? doctor?.id : "");
-    data.append("igst", "0");
-    data.append("cgst", saleAllData?.cgst ? saleAllData?.cgst : "");
-    data.append("sgst", saleAllData?.sgst ? saleAllData?.sgst : "");
-    data.append("given_amount", givenAmt || 0);
-    data.append("due_amount", dueAmount || 0);
-    data.append("total_base", totalBase);
-    data.append("pickup", pickup ? pickup : "");
-    data.append("owner_name", "0");
-    data.append(
-      "payment_name",
-      location.state.paymentType ? location.state.paymentType : ""
-    );
-    data.append(
-      "product_list",
-      JSON.stringify(saleAllData?.sales_item)
-        ? JSON.stringify(saleAllData?.sales_item)
-        : ""
-    );
-    data.append("net_amount", netAmount);
-    data.append("other_amount", otherAmt ? otherAmt : "");
-    data.append("total_discount", finalDiscount);
-    data.append("discount_amount", discountAmount ? discountAmount : "");
-    data.append("total_amount", totalAmount);
-    const params = {
-      id: id ? id : "",
-    };
-    try {
-      await axios
-        .post("sales-update?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          toast.success(response.data.message);
-          setTimeout(() => {
-            history.push("/salelist");
-          }, 2000);
-        });
-    } catch (error) {
-      console.error("API error:", error);
+      toast.error("Failed to save the bill");
     }
   };
 
@@ -1369,9 +1454,10 @@ const EditSaleBill = () => {
                   </div>
 
                   {/* {value && */}
-                  <div className=" overflow-x-auto w-full scroll-two">
-
-
+                  <div
+                    className=" overflow-x-auto w-full scroll-two"
+                    ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
+                  >
                     <table
                       className="p-30 w-full border-collapse item-table"
                       ref={tableRef}

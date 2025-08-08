@@ -977,10 +977,12 @@ const AddReturnbill = () => {
                 {/* If you want a Draft button or dropdown, add here as in AddPurchasebill.js */}
               </div>
             </div>
+
             <div
               className="row border-b border-dashed"
               style={{ borderColor: "var(--color2)" }}
             ></div>
+            
             <div className="mt-4">
               <div className="firstrow flex gap-4">
                 <div className="flex flex-row gap-4 overflow-x-auto w-full ">
@@ -1432,6 +1434,7 @@ const AddReturnbill = () => {
                   </tbody>
                 </table>
               </div>
+              {/*<====================================================================== Pagination  =====================================================================> */}
 
               <div
                 className=""
@@ -1667,140 +1670,141 @@ const AddReturnbill = () => {
               {/* </div> */}
             </div>
           </div>
+          <Dialog open={open}>
+            <DialogContent style={{ fontSize: "20px" }}>
+              <h2>Please select Return Type.</h2>
+            </DialogContent>
+            <DialogActions
+              style={{ display: "flex", justifyContent: "space-around" }}
+            >
+              <Button onClick={() => setOpen(false)} variant="contained">
+                OK !
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Delete PopUP */}
+          <Dialog open={IsDelete} className="custom-dialog">
+            <DialogTitle className="primary">Delete Confirmation</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => setIsDelete(false)}
+              sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+            >
+              <IoMdClose />
+            </IconButton>
+            <DialogContent>
+              <div className="my-4 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
+                  <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                  <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
+                </svg>
+                <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
+              </div>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleDeleteItem(ItemId)}
+                sx={{ minWidth: 120 }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                color="inherit"
+                onClick={() => setIsDelete(false)}
+                sx={{ minWidth: 120 }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Leave Page PopUP */}
+          <Dialog open={isOpenBox} className="custom-dialog">
+            <DialogTitle className="primary">Leave Page</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={LogoutClose}
+              sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+            >
+              <IoMdClose />
+            </IconButton>
+            <DialogContent>
+              <div className="my-4 logout-icon text-center">
+                <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
+                <h4 className="text-lg font-semibold mt-6">Are you sure you want to leave this page?</h4>
+              </div>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleLeavePage}
+                sx={{ minWidth: 120 }}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="contained"
+                color="inherit"
+                onClick={LogoutClose}
+                sx={{ minWidth: 120 }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Prompt
+            when={unsavedItems}
+            message={(location) => {
+              handleNavigation(location.pathname);
+              return false;
+            }}
+          />
+          <div
+            id="modal"
+            value={isOpenBox}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+              }`}
+          >
+            <div />
+            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+              <div className="my-4 logout-icon">
+                <VscDebugStepBack
+                  className=" h-12 w-14"
+                  style={{ color: "#628A2F" }}
+                />
+                <h4 className="text-lg font-semibold mt-6 text-center">
+                  <span style={{ textTransform: "none" }}>
+                    Are you sure you want to leave this page ?
+                  </span>
+                </h4>
+              </div>
+              <div className="flex gap-5 justify-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
+                  onClick={handleLeavePage}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                  onClick={LogoutClose}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-      <Dialog open={open}>
-        <DialogContent style={{ fontSize: "20px" }}>
-          <h2>Please select Return Type.</h2>
-        </DialogContent>
-        <DialogActions
-          style={{ display: "flex", justifyContent: "space-around" }}
-        >
-          <Button onClick={() => setOpen(false)} variant="contained">
-            OK !
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      {/* Delete PopUP */}
-      <Dialog open={IsDelete} className="custom-dialog">
-        <DialogTitle className="primary">Delete Confirmation</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={() => setIsDelete(false)}
-          sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
-        >
-          <IoMdClose />
-        </IconButton>
-        <DialogContent>
-          <div className="my-4 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-              <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-              <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-            </svg>
-            <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
-          </div>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => handleDeleteItem(ItemId)}
-            sx={{ minWidth: 120 }}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={() => setIsDelete(false)}
-            sx={{ minWidth: 120 }}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Leave Page PopUP */}
-      <Dialog open={isOpenBox} className="custom-dialog">
-        <DialogTitle className="primary">Leave Page</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={LogoutClose}
-          sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
-        >
-          <IoMdClose />
-        </IconButton>
-        <DialogContent>
-          <div className="my-4 logout-icon text-center">
-            <VscDebugStepBack className="h-12 w-14" style={{ color: "#628A2F" }} />
-            <h4 className="text-lg font-semibold mt-6">Are you sure you want to leave this page?</h4>
-          </div>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleLeavePage}
-            sx={{ minWidth: 120 }}
-          >
-            Yes
-          </Button>
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={LogoutClose}
-            sx={{ minWidth: 120 }}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Prompt
-        when={unsavedItems}
-        message={(location) => {
-          handleNavigation(location.pathname);
-          return false;
-        }}
-      />
-      <div
-        id="modal"
-        value={isOpenBox}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
-          }`}
-      >
-        <div />
-        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-          <div className="my-4 logout-icon">
-            <VscDebugStepBack
-              className=" h-12 w-14"
-              style={{ color: "#628A2F" }}
-            />
-            <h4 className="text-lg font-semibold mt-6 text-center">
-              <span style={{ textTransform: "none" }}>
-                Are you sure you want to leave this page ?
-              </span>
-            </h4>
-          </div>
-          <div className="flex gap-5 justify-center">
-            <button
-              type="submit"
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-blue-600 hover:bg-blue-600 active:bg-blue-500"
-              onClick={handleLeavePage}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-              onClick={LogoutClose}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

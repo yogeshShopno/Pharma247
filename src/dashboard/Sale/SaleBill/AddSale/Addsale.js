@@ -2972,8 +2972,8 @@ const Addsale = () => {
                             />
                             {item.iteam_name || barcodeItemName}
                           </td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
                           <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
+                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
                           <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
                           <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
                           <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>

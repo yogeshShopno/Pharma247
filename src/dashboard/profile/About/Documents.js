@@ -52,7 +52,7 @@ const Documents = () => {
     const fetchAboutDetails = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post("license-list", {
+            const response = await axios.post("license-list",{}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

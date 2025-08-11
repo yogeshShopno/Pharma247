@@ -30,7 +30,6 @@ const AboutInfo = () => {
   const [frontImgUrl, setFrontImgUrl] = useState(null);
   const [reRender, setreRender] = useState(0);
 
-
   useEffect(() => {
     if (reRender < 2) {
 
@@ -50,10 +49,10 @@ const AboutInfo = () => {
   const fetchAboutDetails = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("about-get", {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+      const response = await axios.post("about-get",{}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = response.data.data;
       if (response.data.status == 200) {

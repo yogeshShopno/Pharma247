@@ -12,7 +12,6 @@ import {
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
-import PopUpRed from "../../../../componets/popupBox/PopUpRed";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";

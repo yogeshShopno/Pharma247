@@ -48,6 +48,7 @@ import { Modal } from "flowbite-react";
 import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
@@ -150,6 +151,7 @@ const AddPurchaseBill = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -190,11 +192,6 @@ const AddPurchaseBill = () => {
   const inputRefs = useRef([]);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
-
-
-  useEffect(() => {
-    console.log(distributor, "distributor")
-  }, [distributor, distributorList])
 
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
@@ -1862,7 +1859,7 @@ const AddPurchaseBill = () => {
           style={{
             height: "calc(-125px + 100vh)",
             overflow: "auto",
-            
+
           }}
         >
           {/*<============================================================================ Top  buttons   ===========================================================================> */}
@@ -1886,7 +1883,11 @@ const AddPurchaseBill = () => {
 
               <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
 
-              <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow " />
+              <BsLightbulbFill
+                className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                onClick={() => setShowModal(true)}
+              />
+
             </div>
 
             <div className="flex items-center gap-2">
@@ -3645,6 +3646,14 @@ const AddPurchaseBill = () => {
             </div>
           </div>
         </div>
+
+        {showModal && (
+          <TipsModal
+            id="add-purchase"
+            onClose={() => setShowModal(false)}
+          />
+        )}
+
       </div>
     </>
   );

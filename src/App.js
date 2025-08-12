@@ -5,7 +5,6 @@ import Forgot from './componets/pre-login/Forgot';
 import Dashboard from './dashboard/Dashboard';
 import Adminprotected from './protected/AdminProtect';
 import Package from './dashboard/More/Package/Package';
-import PopUp from './componets/popupBox/PopUpRed';
 import Protected from './protected/Protected';
 // import Purchasereturn from './dashboard/Purchase/Purchasereturn';
 import SaleView from './dashboard/Sale/SaleBill/saleView/SaleView';
@@ -351,9 +350,7 @@ function App() {
                 <ReturnList />
               </Protected>
             </Route>
-            <Route path='/popUpbox'>
-              <PopUp />
-            </Route>
+         
             <Route path='/purchase/addPurchaseBill'>
               <Protected>
                 <AddPurchaseBill />

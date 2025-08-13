@@ -49,6 +49,7 @@ import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 import TipsModal from "../../../../componets/Tips/TipsModal";
+import Loader from "../../../../componets/loader/Loader";
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
@@ -144,7 +145,7 @@ const AddPurchaseBill = () => {
 
   const [openFile, setOpenFile] = useState(false);
   const [file, setFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [billSaveDraft, setBillSaveDraft] = useState("1");
   const [isOpen, setIsOpen] = useState(false);
@@ -568,14 +569,15 @@ const AddPurchaseBill = () => {
       });
 
       toast.success(response.data.message);
-      setIsLoading(false);
       setUnsavedItems(true);
       itemPurchaseList();
       inputRefs.current[2]?.focus();
       setOpenFile(false);
     } catch (error) {
-      setIsLoading(false);
       console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+
     }
   };
 
@@ -938,6 +940,9 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
+    } finally {
+      setIsLoading(false);
+
     }
   };
 
@@ -1854,15 +1859,15 @@ const AddPurchaseBill = () => {
         draggable
         pauseOnHover
       />
-      <div className="p-6">
-        <div
-          style={{
-            height: "calc(-125px + 100vh)",
-            overflow: "auto",
 
-          }}
-        >
-          {/*<============================================================================ Top  buttons   ===========================================================================> */}
+      <div className="p-6"
+        style={{
+          height: "calc(-125px + 100vh)",
+          overflow: "auto",
+
+        }}>
+        <div >
+          {/*<============================================================================ Top header & buttons   ===========================================================================> */}
 
           <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
 
@@ -1891,7 +1896,6 @@ const AddPurchaseBill = () => {
             </div>
 
             <div className="flex items-center gap-2">
-
               <Select
                 labelId="dropdown-label"
                 id="dropdown"
@@ -2010,9 +2014,8 @@ const AddPurchaseBill = () => {
 
           {/*<============================================================================ Top details   ===========================================================================> */}
 
-          <div className="firstrow flex gap-4  mt-4">
+          <div className=" flex gap-4  mt-4">
             <div className="flex flex-row gap-4 overflow-x-auto w-full">
-
               <div>
                 <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
                   className="primary cursor-pointer"
@@ -2211,809 +2214,815 @@ const AddPurchaseBill = () => {
                   <th>Amount</th>
                 </tr>
               </thead>
-              <tbody>
-                {/* Input Row */}
-                <tr className="input-row">
-                  <td className="p-0">
-                    {isEditMode ? (
-                      <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left', }}>
-                        <DeleteIcon
-                          className="delete-icon mr-2"
-                          onClick={() => {
-                            removeItem();
-                            setIsEditMode(false);
-                          }}
-                        />
-                        {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
-                        {error.item && (
-                          <span style={{ color: "red", fontSize: "16px" }}>
-                            {error.item}
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <div style={{ minWidth: 366, padding: 0 }}>
-
-                        <Autocomplete
-                          key={autocompleteKey}
-                          value={selectedOption}
-                          size="small"
-                          onChange={handleOptionChange}
-                          onInputChange={handleInputChange}
-                          open={autoCompleteOpen}
-                          onOpen={() => setAutoCompleteOpen(true)}
-                          onClose={() => setAutoCompleteOpen(false)}
-                          getOptionLabel={(option) =>
-                            `${option.iteam_name} `
-                          }
-                          options={itemList}
-                          renderOption={(props, option) => (
-                            <ListItem {...props}>
-                              <ListItemText
-                                primary={`${option.iteam_name}`}
-                                secondary={` ${option.stock === 0
-                                  ? `Unit: ${option.weightage}`
-                                  : `Pack: ${option.pack}`
-                                  } | MRP: ${option.mrp}  | Location: ${option.location
-                                  }  | Current Stock: ${option.stock}`}
-                              />
-                            </ListItem>
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : (
+                <tbody>
+                  {/* Input Row */}
+                  <tr className="input-row">
+                    <td className="p-0">
+                      {isEditMode ? (
+                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left', }}>
+                          <DeleteIcon
+                            className="delete-icon mr-2"
+                            onClick={() => {
+                              removeItem();
+                              setIsEditMode(false);
+                            }}
+                          />
+                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
+                          {error.item && (
+                            <span style={{ color: "red", fontSize: "16px" }}>
+                              {error.item}
+                            </span>
                           )}
-                          renderInput={(params) => (
-                            <TextField
-                              tabIndex={0}
-                              variant="outlined"
-                              autoComplete="off"
-                              {...params}
-                              value={searchItem?.iteam_name}
-                              inputRef={(el) => (inputRefs.current[2] = el)}
-                              onFocus={() => setSelectedIndex(-1)}
-                              inputProps={{
-                                ...params.inputProps,
-                                style: { textTransform: 'uppercase' },
-                              }}
-                              onKeyDown={(e) => {
-                                const { key, shiftKey } = e;
-                                const isTab = key === "Tab";
-                                const isShiftTab = isTab && shiftKey;
-                                const isEnter = key === "Enter";
-                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                        </div>
+                      ) : (
+                        <div style={{ minWidth: 396, padding: 0 }}>
+                          <Autocomplete
+                            key={autocompleteKey}
+                            value={selectedOption}
+                            size="small"
+                            onChange={handleOptionChange}
+                            onInputChange={handleInputChange}
+                            open={autoCompleteOpen}
+                            onOpen={() => setAutoCompleteOpen(true)}
+                            onClose={() => setAutoCompleteOpen(false)}
+                            getOptionLabel={(option) =>
+                              `${option.iteam_name} `
+                            }
+                            options={itemList}
+                            renderOption={(props, option) => (
+                              <ListItem {...props}>
+                                <ListItemText
+                                  primary={`${option.iteam_name}`}
+                                  secondary={` ${option.stock === 0
+                                    ? `Unit: ${option.weightage}`
+                                    : `Pack: ${option.pack}`
+                                    } | MRP: ${option.mrp}  | Location: ${option.location
+                                    }  | Current Stock: ${option.stock}`}
+                                />
+                              </ListItem>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                tabIndex={0}
+                                variant="outlined"
+                                autoComplete="off"
+                                {...params}
+                                value={searchItem?.iteam_name}
+                                inputRef={(el) => (inputRefs.current[2] = el)}
+                                onFocus={() => setSelectedIndex(-1)}
+                                inputProps={{
+                                  ...params.inputProps,
+                                  style: { textTransform: 'uppercase' },
+                                }}
+                                onKeyDown={(e) => {
+                                  const { key, shiftKey } = e;
+                                  const isTab = key === "Tab";
+                                  const isShiftTab = isTab && shiftKey;
+                                  const isEnter = key === "Enter";
+                                  const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                                if (isShiftTab) return;
+                                  if (isShiftTab) return;
 
-                                if (!searchItem && isArrowKey) {
-                                  tableRef.current.focus();
-                                  setTimeout(() => document.activeElement.blur(), 0);
-                                  return;
-                                }
-
-                                if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                                if (isEnter || isTab) {
-                                  e.preventDefault();
-
-                                  if (!selectedOption) {
-                                    e.preventDefault();
-                                    setTimeout(() => toast.error("Please select an Item"), 100);
-                                  } else {
-                                    setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                  if (!searchItem && isArrowKey) {
+                                    tableRef.current.focus();
+                                    setTimeout(() => document.activeElement.blur(), 0);
+                                    return;
                                   }
-                                  return;
-                                }
-                              }}
-                            />
-                          )}
-                        />
-                      </div>
-                    )}
-                  </td>
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="text"
-                      size="small"
-                      error={!!error.unit}
-                      value={unit}
-                      sx={{ width: "80px" }}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, "");
-                        setUnit(value ? Number(value) : "");
-                      }}
-                      onKeyDown={(e) => {
-                        const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
-                        const isTab = e.key === "Tab";
-                        const isShiftTab = isTab && e.shiftKey;
-                        const isEnter = e.key === "Enter";
+                                  if ((isEnter || isTab) && autoCompleteOpen) return;
 
-                        if (isInvalidKey) {
-                          e.preventDefault();
-                          return;
-                        }
+                                  if (isEnter || isTab) {
+                                    e.preventDefault();
 
-                        if (isShiftTab) return;
+                                    if (!selectedOption) {
+                                      e.preventDefault();
+                                      setTimeout(() => toast.error("Please select an Item"), 100);
+                                    } else {
+                                      setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                    }
+                                    return;
+                                  }
+                                }}
+                              />
+                            )}
+                          />
+                        </div>
+                      )}
+                    </td>
 
-                        if (unit) {
-                          handleKeyDown(e, 3);
-                        } else if (isTab || isEnter) {
-                          e.preventDefault();
-                          toast.error("Unit is Required");
-                        }
-                      }}
-                      inputRef={(el) => (inputRefs.current[3] = el)}
-                    />
-                  </td>
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="text"
+                        size="small"
+                        error={!!error.unit}
+                        value={unit}
+                        sx={{ width: "80px" }}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setUnit(value ? Number(value) : "");
+                        }}
+                        onKeyDown={(e) => {
+                          const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
+                          const isTab = e.key === "Tab";
+                          const isShiftTab = isTab && e.shiftKey;
+                          const isEnter = e.key === "Enter";
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      error={!!error.batch}
-                      value={batch}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setBatch((e.target.value).toUpperCase());
-                      }}
-                      inputRef={(el) => (inputRefs.current[4] = el)}
-                      onKeyDown={(e) => {
-                        if (batch) {
-                          handleKeyDown(e, 4);
-                        } else if (e.key === 'Tab' || e.key === 'Enter') {
-                          e.preventDefault();
-                          toast.error("Batch is Required");
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      sx={{ width: "100px" }}
-                      error={!!error.expiryDate}
-                      value={expiryDate}
-                      onChange={handleExpiryDate}
-                      placeholder="MM/YY"
-                      inputRef={(el) => (inputRefs.current[5] = el)}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === 'Tab';
-                        const isEnter = e.key === 'Enter';
-                        const isShiftTab = isTab && e.shiftKey;
-                        const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-
-                        if (isShiftTab) return;
-
-                        if (isTab || isEnter) {
-                          if (!expiryDate) {
+                          if (isInvalidKey) {
                             e.preventDefault();
-                            toast.error("Expiry is required");
                             return;
                           }
 
-                          if (!expiryDateRegex.test(expiryDate)) {
+                          if (isShiftTab) return;
+
+                          if (unit) {
+                            handleKeyDown(e, 3);
+                          } else if (isTab || isEnter) {
                             e.preventDefault();
-                            toast.error("Expiry must be in MM/YY format");
-                            return;
+                            toast.error("Unit is Required");
                           }
+                        }}
+                        inputRef={(el) => (inputRefs.current[3] = el)}
+                      />
+                    </td>
 
-                          const [month, year] = expiryDate.split('/').map(Number);
-                          const expiry = new Date(`20${year}`, month - 1, 1);
-                          const now = new Date();
-                          const sixMonthsLater = new Date();
-                          sixMonthsLater.setMonth(now.getMonth() + 6);
-
-                          if (expiry < now) {
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        error={!!error.batch}
+                        value={batch}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setBatch((e.target.value).toUpperCase());
+                        }}
+                        inputRef={(el) => (inputRefs.current[4] = el)}
+                        onKeyDown={(e) => {
+                          if (batch) {
+                            handleKeyDown(e, 4);
+                          } else if (e.key === 'Tab' || e.key === 'Enter') {
                             e.preventDefault();
-                            toast.error("Product has expired");
-                          } else if (expiry < sixMonthsLater) {
-
-                            toast.warning("Product will expire within 6 months");
-                            handleKeyDown(e, 5);
-                          } else {
-                            handleKeyDown(e, 5);
+                            toast.error("Batch is Required");
                           }
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "90px" }}
-                      size="small"
-                      error={!!error.mrp}
-                      value={mrp}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*\.?\d*$/.test(value)) {
-                          setMRP(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isShiftTab = isTab && e.shiftKey;
-
-                        if (isShiftTab) return;
-
-                        if (
-                          ["e", "E", "+", "-", ","].includes(e.key) ||
-                          (e.key === "." && e.target.value.includes("."))
-                        ) {
-                          e.preventDefault();
-                        }
-
-                        if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
-                          e.preventDefault();
-                          toast.error("MRP is required and must be greater than 0");
-                          return;
-                        }
-
-                        handleKeyDown(e, 6);
-                      }}
-                      inputRef={(el) => (inputRefs.current[6] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "80px" }}
-                      size="small"
-                      error={!!error.qty}
-                      value={qty}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, "");
-                        setQty(value ? Number(value) : "");
-                      }}
-                      inputRef={(el) => (inputRefs.current[7] = el)}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                        const isEnter = e.key === "Enter";
-
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (isEnter) {
-                          e.preventDefault();
-                          handleKeyDown(e, 7);
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      type="number"
-                      sx={{ width: "60px" }}
-                      value={free}
-                      error={!!error.free}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g);
-                        setFree(value ? Number(value) : "");
-                      }}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleKeyDown(e, 8);
-                        }
-                      }}
-                      inputRef={(el) => (inputRefs.current[8] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "90px" }}
-                      size="small"
-                      value={ptr}
-                      error={!!error.ptr}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*\.?\d*$/.test(value)) {
-                          setPTR(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isEnter = e.key === "Enter";
-                        const isShiftTab = isTab && e.shiftKey;
-                        const invalidKeys = ["e", "E", "+", "-", ","];
-
-                        if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (isShiftTab) return;
-
-                        if (isEnter || isTab) {
-                          if (!ptr || ptr === 0) {
-                            e.preventDefault();
-                            toast.error("PTR is required and must be greater than 0");
-                            return;
-                          }
-
-                          if (Number(mrp) && Number(ptr) >= Number(mrp)) {
-                            e.preventDefault();
-                            toast.error("PTR must be less than MRP");
-                            return;
-                          }
-                        }
-
-                        handleKeyDown(e, 9);
-                      }}
-                      inputRef={(el) => (inputRefs.current[9] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      sx={{ width: "65px" }}
-                      size="small"
-                      type="text"
-                      value={disc}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","];
-                        if (
-                          invalidKeys.includes(e.key) ||
-                          (e.key === "." && e.target.value.includes("."))
-                        ) {
-                          e.preventDefault();
-                        }
-
-                        handleKeyDown(e, 10);
-                      }}
-                      onChange={(e) => {
-                        let value = Number(e.target.value);
-                        if (value > 99) {
-                          value = 99;
-                          e.target.value = 99;
-                        }
-                        handleSchAmt({ ...e, target: { ...e.target, value } });
-                      }}
-                      inputRef={(el) => (inputRefs.current[10] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      size="small"
-                      value={base === 0 ? "" : base}
-                      disabled
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setBase(e.target.value);
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      value={gst}
-                      sx={{ width: "65px" }}
-                      error={!!error.gst}
-                      inputRef={(el) => (inputRefs.current[11] = el)}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                          setGst(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isEnter = e.key === "Enter";
-                        const isShiftTab = isTab && e.shiftKey;
-
-                        if (isShiftTab) return;
-
-                        if (isEnter || isTab) {
-                          const allowedGST = [0, 5, 12, 18, 28];
-
-                          if (gst === "" || gst === null || gst === undefined) {
-                            e.preventDefault();
-                            toast.error("GST is required");
-                            return;
-                          }
-
-                          if (!allowedGST.includes(Number(gst))) {
-                            e.preventDefault();
-                            toast.error("Only 0%, 5%, 12%, 18%, or 28% GST is allowed");
-                            return;
-                          }
-                        }
-
-                        handleKeyDown(e, 11);
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      value={loc?.toUpperCase()}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setLoc(e.target.value);
-                      }}
-                      inputRef={(el) => (inputRefs.current[12] = el)}
-                      onKeyDown={async (e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-
-                          handleAddButtonClick();
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={netRate === 0 ? "" : netRate}
-                      sx={{ width: "100px" }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={margin === 0 ? "" : margin}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setMargin(e.target.value);
-                      }}
-                    />
-                  </td>
-
-                  <td className="total">
-                    <span className="font-bold">
-                      {ItemTotalAmount.toFixed(2)}
-                    </span>
-                  </td>
-                </tr>
-
-                {/* Added Items Rows */}
-                {ItemPurchaseList?.item?.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    onClick={() => {
-                      setSelectedIndex(index);
-                      handleEditClick(item);
-                    }}
-                    className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                    style={{
-                      borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
-                    }}
-                  >
-                    <td style={{ display: "flex", gap: "8px", width: "366px", textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
-                      <BorderColorIcon
-                        style={{ color: "var(--color1)" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(item);
                         }}
                       />
-                      <DeleteIcon
-                        style={{ color: "var(--color6)" }}
-                        className="delete-icon bg-none"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteOpen(item.id);
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        sx={{ width: "100px" }}
+                        error={!!error.expiryDate}
+                        value={expiryDate}
+                        onChange={handleExpiryDate}
+                        placeholder="MM/YY"
+                        inputRef={(el) => (inputRefs.current[5] = el)}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === 'Tab';
+                          const isEnter = e.key === 'Enter';
+                          const isShiftTab = isTab && e.shiftKey;
+                          const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+                          if (isShiftTab) return;
+
+                          if (isTab || isEnter) {
+                            if (!expiryDate) {
+                              e.preventDefault();
+                              toast.error("Expiry is required");
+                              return;
+                            }
+
+                            if (!expiryDateRegex.test(expiryDate)) {
+                              e.preventDefault();
+                              toast.error("Expiry must be in MM/YY format");
+                              return;
+                            }
+
+                            const [month, year] = expiryDate.split('/').map(Number);
+                            const expiry = new Date(`20${year}`, month - 1, 1);
+                            const now = new Date();
+                            const sixMonthsLater = new Date();
+                            sixMonthsLater.setMonth(now.getMonth() + 6);
+
+                            if (expiry < now) {
+                              e.preventDefault();
+                              toast.error("Product has expired");
+                            } else if (expiry < sixMonthsLater) {
+
+                              toast.warning("Product will expire within 6 months");
+                              handleKeyDown(e, 5);
+                            } else {
+                              handleKeyDown(e, 5);
+                            }
+                          }
                         }}
                       />
-                      {item.iteam_name ? item.iteam_name : "-----"}
                     </td>
-                    <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.weightage ? item.weightage : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "90px" }}
+                        size="small"
+                        error={!!error.mrp}
+                        value={mrp}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*\.?\d*$/.test(value)) {
+                            setMRP(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isShiftTab = isTab && e.shiftKey;
+
+                          if (isShiftTab) return;
+
+                          if (
+                            ["e", "E", "+", "-", ","].includes(e.key) ||
+                            (e.key === "." && e.target.value.includes("."))
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
+                            e.preventDefault();
+                            toast.error("MRP is required and must be greater than 0");
+                            return;
+                          }
+
+                          handleKeyDown(e, 6);
+                        }}
+                        inputRef={(el) => (inputRefs.current[6] = el)}
+                      />
                     </td>
-                    <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.batch_number ? item.batch_number : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "80px" }}
+                        size="small"
+                        error={!!error.qty}
+                        value={qty}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setQty(value ? Number(value) : "");
+                        }}
+                        inputRef={(el) => (inputRefs.current[7] = el)}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          const isEnter = e.key === "Enter";
+
+                          if (invalidKeys.includes(e.key)) {
+                            e.preventDefault();
+                            return;
+                          }
+
+                          if (isEnter) {
+                            e.preventDefault();
+                            handleKeyDown(e, 7);
+                          }
+                        }}
+                      />
                     </td>
-                    <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.expiry ? item.expiry : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        type="number"
+                        sx={{ width: "60px" }}
+                        value={free}
+                        error={!!error.free}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g);
+                          setFree(value ? Number(value) : "");
+                        }}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          if (invalidKeys.includes(e.key)) {
+                            e.preventDefault();
+                            return;
+                          }
+
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleKeyDown(e, 8);
+                          }
+                        }}
+                        inputRef={(el) => (inputRefs.current[8] = el)}
+                      />
                     </td>
-                    <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.mrp ? item.mrp : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "90px" }}
+                        size="small"
+                        value={ptr}
+                        error={!!error.ptr}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*\.?\d*$/.test(value)) {
+                            setPTR(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isEnter = e.key === "Enter";
+                          const isShiftTab = isTab && e.shiftKey;
+                          const invalidKeys = ["e", "E", "+", "-", ","];
+
+                          if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
+                            e.preventDefault();
+                            return;
+                          }
+
+                          if (isShiftTab) return;
+
+                          if (isEnter || isTab) {
+                            if (!ptr || ptr === 0) {
+                              e.preventDefault();
+                              toast.error("PTR is required and must be greater than 0");
+                              return;
+                            }
+
+                            if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                              e.preventDefault();
+                              toast.error("PTR must be less than MRP");
+                              return;
+                            }
+                          }
+
+                          handleKeyDown(e, 9);
+                        }}
+                        inputRef={(el) => (inputRefs.current[9] = el)}
+                      />
                     </td>
-                    <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.qty ? item.qty : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        sx={{ width: "65px" }}
+                        size="small"
+                        type="text"
+                        value={disc}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", "+", "-", ","];
+                          if (
+                            invalidKeys.includes(e.key) ||
+                            (e.key === "." && e.target.value.includes("."))
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          handleKeyDown(e, 10);
+                        }}
+                        onChange={(e) => {
+                          let value = Number(e.target.value);
+                          if (value > 99) {
+                            value = 99;
+                            e.target.value = 99;
+                          }
+                          handleSchAmt({ ...e, target: { ...e.target, value } });
+                        }}
+                        inputRef={(el) => (inputRefs.current[10] = el)}
+                      />
                     </td>
-                    <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.free_qty ? item.free_qty : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        value={base === 0 ? "" : base}
+                        disabled
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setBase(e.target.value);
+                        }}
+                      />
                     </td>
-                    <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.ptr ? item.ptr : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={gst}
+                        sx={{ width: "65px" }}
+                        error={!!error.gst}
+                        inputRef={(el) => (inputRefs.current[11] = el)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*$/.test(value)) {
+                            setGst(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isEnter = e.key === "Enter";
+                          const isShiftTab = isTab && e.shiftKey;
+
+                          if (isShiftTab) return;
+
+                          if (isEnter || isTab) {
+                            const allowedGST = [0, 5, 12, 18, 28];
+
+                            if (gst === "" || gst === null || gst === undefined) {
+                              e.preventDefault();
+                              toast.error("GST is required");
+                              return;
+                            }
+
+                            if (!allowedGST.includes(Number(gst))) {
+                              e.preventDefault();
+                              toast.error("Only 0%, 5%, 12%, 18%, or 28% GST is allowed");
+                              return;
+                            }
+                          }
+
+                          handleKeyDown(e, 11);
+                        }}
+                      />
                     </td>
-                    <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.discount ? item.discount : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        value={loc?.toUpperCase()}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setLoc(e.target.value);
+                        }}
+                        inputRef={(el) => (inputRefs.current[12] = el)}
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+
+                            handleAddButtonClick();
+                          }
+                        }}
+                      />
                     </td>
-                    <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.base_price ? item.base_price : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        value={netRate === 0 ? "" : netRate}
+                        sx={{ width: "100px" }}
+                      />
                     </td>
-                    <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.gst ? item.gst : "-----"}
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        value={margin === 0 ? "" : margin}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setMargin(e.target.value);
+                        }}
+                      />
                     </td>
-                    <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.location ? item.location : "-----"}
-                    </td>
-                    <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.net_rate ? item.net_rate : "-----"}
-                    </td>
-                    <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.margin ? item.margin : "-----"}
-                    </td>
-                    <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
-                      {item.total_amount ? item.total_amount : "-----"}
+
+                    <td className="total">
+                      <span className="font-bold">
+                        {ItemTotalAmount.toFixed(2)}
+                      </span>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+
+                  {/* Added Items Rows */}
+                  {ItemPurchaseList?.item?.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedIndex(index);
+                        handleEditClick(item);
+                      }}
+                      className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                      style={{
+                        borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
+                      }}
+                    >
+                      <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
+                        <BorderColorIcon
+                          style={{ color: "var(--color1)" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditClick(item);
+                          }}
+                        />
+                        <DeleteIcon
+                          style={{ color: "var(--color6)" }}
+                          className="delete-icon bg-none"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteOpen(item.id);
+                          }}
+                        />
+                        {item.iteam_name ? item.iteam_name : "-----"}
+                      </td>
+                      <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.weightage ? item.weightage : "-----"}
+                      </td>
+                      <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.batch_number ? item.batch_number : "-----"}
+                      </td>
+                      <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.expiry ? item.expiry : "-----"}
+                      </td>
+                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.mrp ? item.mrp : "-----"}
+                      </td>
+                      <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.qty ? item.qty : "-----"}
+                      </td>
+                      <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.free_qty ? item.free_qty : "-----"}
+                      </td>
+                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.ptr ? item.ptr : "-----"}
+                      </td>
+                      <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.discount ? item.discount : "-----"}
+                      </td>
+                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.base_price ? item.base_price : "-----"}
+                      </td>
+                      <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.gst ? item.gst : "-----"}
+                      </td>
+                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.location ? item.location : "-----"}
+                      </td>
+                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.net_rate ? item.net_rate : "-----"}
+                      </td>
+                      <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.margin ? item.margin : "-----"}
+                      </td>
+                      <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.total_amount ? item.total_amount : "-----"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>)}
             </table>
           </div>
 
-        </div>
-        {/*<====================================================================== total and other details  =====================================================================> */}
-        <div
-          className=""
-          style={{
-            background: "var(--color1)",
-            color: "white",
-            display: "flex",
-            justifyContent: "space-between",
-            position: "fixed",
-            width: "100%",
-            bottom: "0",
-            overflow: "auto",
-            left: "0",
-          }}
-        >
+          {/*<====================================================================== total and other details  =====================================================================> */}
           <div
             className=""
             style={{
+              background: "var(--color1)",
+              color: "white",
               display: "flex",
-              gap: "40px",
-              whiteSpace: "nowrap",
+              justifyContent: "space-between",
+              position: "fixed",
+              width: "100%",
+              bottom: "0",
+              overflow: "auto",
               left: "0",
-              padding: "20px",
             }}
           >
             <div
-              className="gap-2 invoice_total_fld"
-              style={{ display: "flex" }}
-            >
-              <label className="font-bold">Total GST : </label>
-
-              <span style={{ fontWeight: 600 }}>
-                {totalGst ? totalGst : 0}{" "}
-              </span>
-            </div>
-            <div
-              className="gap-2 invoice_total_fld"
-              style={{ display: "flex" }}
-            >
-              <label className="font-bold">Total Qty : </label>
-              <span style={{ fontWeight: 600 }}>
-                {" "}
-                {totalQty ? totalQty : 0} +&nbsp;
-                <span className="">{totalFree ? totalFree : 0} Free</span>
-              </span>
-            </div>
-            <div
-              className="gap-2 invoice_total_fld"
-              style={{ display: "flex" }}
-            >
-              <label className="font-bold">Total Base : </label>
-              <span style={{ fontWeight: 600 }}>
-                {" "}
-                {totalBase ? totalBase : 0}
-              </span>
-            </div>
-            <div
-              className="gap-2 invoice_total_fld"
-              style={{ display: "flex" }}
-            >
-              <label className="font-bold">Total Net Rate : </label>
-              <span style={{ fontWeight: 600 }}>
-                ₹ {totalNetRate ? totalNetRate : 0}
-              </span>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              padding: "0 20px",
-              whiteSpace: "noWrap",
-            }}
-          >
-            <div
-              className="gap-2 "
-              onClick={toggleModal}
+              className=""
               style={{
                 display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
+                gap: "40px",
+                whiteSpace: "nowrap",
+                left: "0",
+                padding: "20px",
               }}
             >
-              <label className="font-bold">Net Amount : </label>
-              <span
-                className="gap-1"
-                style={{
-                  fontWeight: 800,
-                  fontSize: "22px",
-                  whiteSpace: "nowrap",
-                  display: "flex",
-                  alignItems: "center",
-                }}
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
               >
-                {netAmount.toFixed(2)}
-                <FaCaretUp />
-              </span>
+                <label className="font-bold">Total GST : </label>
+
+                <span style={{ fontWeight: 600 }}>
+                  {totalGst ? totalGst : 0}{" "}
+                </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Qty : </label>
+                <span style={{ fontWeight: 600 }}>
+                  {" "}
+                  {totalQty ? totalQty : 0} +&nbsp;
+                  <span className="">{totalFree ? totalFree : 0} Free</span>
+                </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Base : </label>
+                <span style={{ fontWeight: 600 }}>
+                  {" "}
+                  {totalBase ? totalBase : 0}
+                </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Net Rate : </label>
+                <span style={{ fontWeight: 600 }}>
+                  ₹ {totalNetRate ? totalNetRate : 0}
+                </span>
+              </div>
             </div>
 
-            <Modal
-              show={isModalOpen}
-              onClose={toggleModal}
-              size="lg"
-              position="bottom-center"
-              className="modal_amount"
-            // style={{ width: "50%" }}
+            <div
+              style={{
+                display: "flex",
+                padding: "0 20px",
+                whiteSpace: "noWrap",
+              }}
             >
               <div
+                className="gap-2 "
+                onClick={toggleModal}
                 style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
-                  padding: "20px",
-                  fontSize: "larger",
                   display: "flex",
-                  justifyContent: "space-between",
+                  alignItems: "center",
+                  cursor: "pointer",
                 }}
               >
-                <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
-              </div>
-              <div
-                style={{
-                  background: "white",
-                  padding: "20px",
-                  width: "100%",
-                  maxWidth: "600px",
-                  margin: "0 auto",
-                  lineHeight: "2.5rem",
-                }}
-              >
-                <div
-                  className=""
+                <label className="font-bold">Net Amount : </label>
+                <span
+                  className="gap-1"
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <label className="font-bold">Total Amount : </label>
-                  <span style={{ fontWeight: 600 }}>
-                    {finalTotalAmount?.toFixed(2)}
-                  </span>
-                </div>
-
-                <div
-                  className=""
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    paddingBottom: "5px",
-                  }}
-                >
-                  <label className="font-bold">CN Amount : </label>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: "#F31C1C",
-                    }}
-                  >
-                    -{finalCnAmount?.toFixed(2)}
-                  </span>
-                </div>
-
-                <div
-                  className="font-bold"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    paddingBottom: "5px",
-                    borderTop:
-                      "1px solid var(--toastify-spinner-color-empty-area)",
-                    paddingTop: "5px",
-                  }}
-                >
-                  <label className="font-bold">Round Off : </label>
-                  <span>
-                    {" "}
-                    {roundOffAmount === "0.00"
-                      ? roundOffAmount
-                      : roundOffAmount < 0
-                        ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                        : `${Math.abs(roundOffAmount.toFixed(2))}`}
-                  </span>
-                </div>
-
-                <div
-                  className=""
-                  style={{
+                    fontWeight: 800,
+                    fontSize: "22px",
+                    whiteSpace: "nowrap",
                     display: "flex",
                     alignItems: "center",
-                    cursor: "pointer",
-                    justifyContent: "space-between",
-                    borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                    paddingTop: "5px",
                   }}
                 >
-                  <label className="font-bold">Net Amount: </label>
-                  <span
+                  {netAmount.toFixed(2)}
+                  <FaCaretUp />
+                </span>
+              </div>
+
+              <Modal
+                show={isModalOpen}
+                onClose={toggleModal}
+                size="lg"
+                position="bottom-center"
+                className="modal_amount"
+              // style={{ width: "50%" }}
+              >
+                <div
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white",
+                    padding: "20px",
+                    fontSize: "larger",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                  <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+                </div>
+                <div
+                  style={{
+                    background: "white",
+                    padding: "20px",
+                    width: "100%",
+                    maxWidth: "600px",
+                    margin: "0 auto",
+                    lineHeight: "2.5rem",
+                  }}
+                >
+                  <div
+                    className=""
                     style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      color: "var(--COLOR_UI_PHARMACY)",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {netAmount.toFixed(2)}
-                  </span>
+                    <label className="font-bold">Total Amount : </label>
+                    <span style={{ fontWeight: 600 }}>
+                      {finalTotalAmount?.toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    <label className="font-bold">CN Amount : </label>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color: "#F31C1C",
+                      }}
+                    >
+                      -{finalCnAmount?.toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div
+                    className="font-bold"
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      paddingBottom: "5px",
+                      borderTop:
+                        "1px solid var(--toastify-spinner-color-empty-area)",
+                      paddingTop: "5px",
+                    }}
+                  >
+                    <label className="font-bold">Round Off : </label>
+                    <span>
+                      {" "}
+                      {roundOffAmount === "0.00"
+                        ? roundOffAmount
+                        : roundOffAmount < 0
+                          ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                          : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                    </span>
+                  </div>
+
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      justifyContent: "space-between",
+                      borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                      paddingTop: "5px",
+                    }}
+                  >
+                    <label className="font-bold">Net Amount: </label>
+                    <span
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "22px",
+                        color: "var(--COLOR_UI_PHARMACY)",
+                      }}
+                    >
+                      {netAmount.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Modal>
+              </Modal>
+            </div>
           </div>
+
         </div>
+
         {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
 
         <Dialog open={openAddPopUp} className="custom-dialog max-991">
@@ -3615,7 +3624,7 @@ const AddPurchaseBill = () => {
           className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
             }`}
         >
-          <div />
+
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
             <div className="my-4 logout-icon">
               <VscDebugStepBack

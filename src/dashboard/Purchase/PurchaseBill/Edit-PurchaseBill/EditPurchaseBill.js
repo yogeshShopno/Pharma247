@@ -41,6 +41,7 @@ import { VscDebugStepBack } from "react-icons/vsc";
 import { Modal } from "flowbite-react";
 import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
+import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const EditPurchaseBill = () => {
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
@@ -131,6 +132,7 @@ const EditPurchaseBill = () => {
 
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
+  const [showModal, setShowModal] = useState(false);
 
   const { id, randomNumber: paramRandomNumber } = useParams();
   const randomNumber = paramRandomNumber || localStorage.getItem("RandomNumber");
@@ -220,17 +222,7 @@ const EditPurchaseBill = () => {
       } else if (event.key.toLowerCase() === "m") {
 
         removeItem();
-        setIsEditMode(false);
-        setSelectedIndex(-1);
-        setSearchItem("");
-        setValue("");
-        setSelectedOption(null);
-        setSearchItem("")
-        // clear Autocomplete selected option
 
-        setTimeout(() => {
-          inputRefs.current[2]?.focus();
-        }, 50);
       }
     };
 
@@ -1027,11 +1019,17 @@ const EditPurchaseBill = () => {
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
     }
+    if (purchase?.item_list?.length === 0) {
+      toast.error("Please add atleast one item");
+      newErrors.item = "Please add atleast one item";
+
+    }
     setError(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
     }
+
 
     // Fetch latest purchase data before submitting
     const distributors = distributorList.length ? distributorList : await listDistributor();
@@ -1042,6 +1040,7 @@ const EditPurchaseBill = () => {
       updatePurchase();
     }, 0);
   };
+
   const updatePurchase = async () => {
     let data = new FormData();
     data.append("distributor_id", distributor?.id);
@@ -1148,7 +1147,16 @@ const EditPurchaseBill = () => {
   /*<================================================================= remove item  ============================================================> */
 
   const removeItem = () => {
-    // setAutocompleteDisabled(false);
+    setAutocompleteDisabled(false);
+
+    setSearchItem("");
+    setValue("");
+    setSelectedOption(null);
+    setSearchItem("")
+
+
+    setSelectedIndex(-1);
+    setIsEditMode(false);
     setAutocompleteKey(autocompleteKey + 1)
     setValue("");
     setUnit("");
@@ -1164,12 +1172,16 @@ const EditPurchaseBill = () => {
     setDisc("");
     setBase(0);
     setSchAmt(0);
-    setIsEditMode(false);
     setBatch("");
     setNetRate(0);
     setMargin("");
     setLoc("");
     setItemTotalAmount("");
+    // clear Autocomplete selected option
+
+    setTimeout(() => {
+      inputRefs.current[2]?.focus();
+    }, 50);
   };
 
   /*<================================================================= cn anount select ============================================================> */
@@ -1403,7 +1415,8 @@ const EditPurchaseBill = () => {
 
               <span className="text-[var(--color1)] font-bold text-[20px]">Edit</span>
 
-              <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow" />
+              <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow" onClick={() => setShowModal(true)} />
+
             </div>
 
             <div className="flex items-center gap-2">
@@ -1546,7 +1559,8 @@ const EditPurchaseBill = () => {
                 <div className="loader-container ">
                   <Loader />
                 </div>
-              ) : (<tbody>
+              ) : (
+              <tbody>
                 {/*<======================================================== Input row (add/edit)   =======================================================> */}
                 <tr className="input-row">
                   <td className="p-0">
@@ -1555,10 +1569,14 @@ const EditPurchaseBill = () => {
                         <DeleteIcon
                           className="delete-icon mr-2"
                           onClick={() => {
-                            removeItem();
                             setIsEditMode(false);
+                            setTimeout(() => {
+                              removeItem();
+                              inputRefs.current[2]?.focus(); // force focus to Autocomplete
+                            }, 0);
                           }}
                         />
+
                         {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
                         {error.item && (
                           <span style={{ color: "red", fontSize: "16px" }}>
@@ -1567,62 +1585,66 @@ const EditPurchaseBill = () => {
                         )}
                       </div>
                     ) : (
-                      <div style={{ minWidth: 396, padding: 0 }} >
-                        <Autocomplete
-                          value={searchItem?.iteam_name}
-                          size="small"
-                          key={autocompleteKey}
-                          onChange={handleOptionChange}
-                          open={autoCompleteOpen}
-                          onOpen={() => setAutoCompleteOpen(true)}
-                          onClose={() => setAutoCompleteOpen(false)}
-                          onInputChange={handleInputChange}
-                          disabled={isAutocompleteDisabled}
-                          getOptionLabel={(option) => `${option.iteam_name} `}
-                          options={itemList}
-                          renderOption={(props, option) => (
-                            <ListItem {...props}>
-                              <ListItemText
-                                primary={`${option.iteam_name}`}
-                                secondary={` ${option.stock === 0
-                                  ? `Unit: ${option.weightage}`
-                                  : `Pack: ${option.pack}`
-                                  } | MRP: ${option.mrp} 
+                      <Autocomplete
+                        value={searchItem?.iteam_name}
+                        size="small"
+                        key={autocompleteKey}
+                        onChange={handleOptionChange}
+                        open={autoCompleteOpen}
+                        onOpen={() => setAutoCompleteOpen(true)}
+                        onClose={() => setAutoCompleteOpen(false)}
+                        onInputChange={handleInputChange}
+                        disabled={isAutocompleteDisabled}
+                        getOptionLabel={(option) => `${option.iteam_name} `}
+                        options={itemList}
+
+                        renderOption={(props, option) => (
+                          <ListItem {...props}>
+                            <ListItemText
+                              primary={`${option.iteam_name}`}
+                              secondary={` ${option.stock === 0
+                                ? `Unit: ${option.weightage}`
+                                : `Pack: ${option.pack}`
+                                } | MRP: ${option.mrp} 
                                         | Location: ${option.location}
                                         | Current Stock: ${option.stock}`}
-                              />
-                            </ListItem>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              variant="outlined"
-                              autoComplete="off"
-                              {...params}
-                              autoFocus
-                              inputRef={(el) => (inputRefs.current[2] = el)}
-                              onKeyDown={(e) => {
-                                const { key } = e;
-                                const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
-                                if (!searchItem) {
-                                  if (isNavKey) {
-                                    e.preventDefault();
-                                    if (key === "ArrowDown" || key === "ArrowUp") {
-                                      if (!searchItem) {
-                                        tableRef.current.focus();
-                                        setTimeout(() => document.activeElement.blur(), 0);
-                                      }
+                            />
+                          </ListItem>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            variant="outlined"
+                            autoComplete="off"
+                            {...params}
+                            autoFocus
+                            fullWidth
+                            sx={{
+                              minWidth: 400,
+                              width: "100%",
+                            }}
+                            inputRef={(el) => (inputRefs.current[2] = el)}
+                            onKeyDown={(e) => {
+                              const { key } = e;
+                              const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
+                              if (!searchItem) {
+                                if (isNavKey) {
+                                  e.preventDefault();
+                                  if (key === "ArrowDown" || key === "ArrowUp") {
+                                    if (!searchItem) {
+                                      tableRef.current.focus();
+                                      setTimeout(() => document.activeElement.blur(), 0);
                                     }
                                   }
-                                } else {
-                                  if (key === "Enter" || key === "Tab") {
-                                    handleKeyDown(e, 2);
-                                  }
                                 }
-                              }}
-                            />
-                          )}
-                        />
-                      </div>
+                              } else {
+                                if (key === "Enter" || key === "Tab") {
+                                  handleKeyDown(e, 2);
+                                }
+                              }
+                            }}
+                          />
+                        )}
+                      />
                     )}
                   </td>
 
@@ -2015,17 +2037,21 @@ const EditPurchaseBill = () => {
                     <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                       <BorderColorIcon
                         style={{ color: "var(--color1)" }}
-                        onClick={() => handleEditClick(item)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditClick(item);
+                          }}
                       />
-                      {/* <DeleteIcon
-                          className="delete-icon bg-none"
-                          onClick={() => {
-                            setIsDelete(true)
-                            setItemId(item.id)
-                            setUnsavedItems(true)
-                          }
-                          }
-                        /> */}
+                      <DeleteIcon
+                        className="delete-icon bg-none"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                          setIsDelete(true)
+                          setItemId(item.id)
+                          setUnsavedItems(true)
+                        }
+                        }
+                      />
                       {item.item_name ? item.item_name : "-----"}
                     </td>
                     <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
@@ -2479,8 +2505,13 @@ const EditPurchaseBill = () => {
             </div>
           </div>
         </div>
+        {showModal && (
+          <TipsModal
+            id="edit-purchase"
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </div >
-
     </>
   );
 };

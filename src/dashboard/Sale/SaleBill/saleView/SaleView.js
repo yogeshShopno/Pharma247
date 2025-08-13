@@ -199,7 +199,7 @@ const SaleView = () => {
             <div className="p-6"
               style={{
                 backgroundColor: "rgb(240, 240, 240)",
-                height: "calc(100vh - 125px)", 
+                height: "calc(100vh - 125px)",
                 alignItems: "center",
                 overflow: "auto",
               }}
@@ -278,8 +278,7 @@ const SaleView = () => {
                         <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
                         Download
                       </Button>
-
-                      <Button
+                      {tableData?.sales_item?.length !== 0 && (<Button
                         variant="contained"
                         className="sale_add_btn sale_dnls gap-2"
                         style={{ backgroundColor: "var(--color1)" }}
@@ -296,7 +295,8 @@ const SaleView = () => {
                       >
                         <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer" />
                         Edit
-                      </Button>
+                      </Button>)}
+
                     </div>
                   )}
                 </div>
@@ -307,7 +307,7 @@ const SaleView = () => {
                   className="firstrow flex rounded-md p-3 gap-3 "
                   style={{
                     backgroundColor: "rgb(63 98 18 / 11%)",
-                    borderRadius: "10px", 
+                    borderRadius: "10px",
                   }}
                 >
                   <div className="detail_main">
@@ -572,7 +572,7 @@ const SaleView = () => {
                       size="lg"
                       position="bottom-center"
                       className="modal_amount"
-                      // style={{ width: "50%" }}
+                    // style={{ width: "50%" }}
                     >
                       <div
                         style={{

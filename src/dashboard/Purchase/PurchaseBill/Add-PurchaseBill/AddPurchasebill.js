@@ -2038,10 +2038,8 @@ const AddPurchaseBill = () => {
                     let finalValue = null;
 
                     if (typeof newValue === "string") {
-                      // New typed value (no ID)
                       finalValue = { id: null, name: newValue.toUpperCase() };
                     } else if (newValue && typeof newValue === "object") {
-                      // From the list (has ID)
                       finalValue = {
                         id: newValue.id ?? null,
                         name: newValue.name?.toUpperCase() || "",
@@ -2157,6 +2155,7 @@ const AddPurchaseBill = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <span className="title mb-2">Scan Barcode</span>
 
@@ -2179,6 +2178,7 @@ const AddPurchaseBill = () => {
                   }}
                 />
               </div>
+
             </div>
           </div>
           {/*<======================================================================Item Table =====================================================================> */}
@@ -2228,8 +2228,11 @@ const AddPurchaseBill = () => {
                           <DeleteIcon
                             className="delete-icon mr-2"
                             onClick={() => {
-                              removeItem();
                               setIsEditMode(false);
+                              setTimeout(() => {
+                                removeItem();
+                                inputRefs.current[2]?.focus();
+                              }, 0);
                             }}
                           />
                           {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
@@ -2240,78 +2243,83 @@ const AddPurchaseBill = () => {
                           )}
                         </div>
                       ) : (
-                        <div style={{ minWidth: 396, padding: 0 }}>
-                          <Autocomplete
-                            key={autocompleteKey}
-                            value={selectedOption}
-                            size="small"
-                            onChange={handleOptionChange}
-                            onInputChange={handleInputChange}
-                            open={autoCompleteOpen}
-                            onOpen={() => setAutoCompleteOpen(true)}
-                            onClose={() => setAutoCompleteOpen(false)}
-                            getOptionLabel={(option) =>
-                              `${option.iteam_name} `
-                            }
-                            options={itemList}
-                            renderOption={(props, option) => (
-                              <ListItem {...props}>
-                                <ListItemText
-                                  primary={`${option.iteam_name}`}
-                                  secondary={` ${option.stock === 0
-                                    ? `Unit: ${option.weightage}`
-                                    : `Pack: ${option.pack}`
-                                    } | MRP: ${option.mrp}  | Location: ${option.location
-                                    }  | Current Stock: ${option.stock}`}
-                                />
-                              </ListItem>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                tabIndex={0}
-                                variant="outlined"
-                                autoComplete="off"
-                                {...params}
-                                value={searchItem?.iteam_name}
-                                inputRef={(el) => (inputRefs.current[2] = el)}
-                                onFocus={() => setSelectedIndex(-1)}
-                                inputProps={{
-                                  ...params.inputProps,
-                                  style: { textTransform: 'uppercase' },
-                                }}
-                                onKeyDown={(e) => {
-                                  const { key, shiftKey } = e;
-                                  const isTab = key === "Tab";
-                                  const isShiftTab = isTab && shiftKey;
-                                  const isEnter = key === "Enter";
-                                  const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                        <Autocomplete
+                          key={autocompleteKey}
+                          value={selectedOption}
+                          size="small"
 
-                                  if (isShiftTab) return;
-
-                                  if (!searchItem && isArrowKey) {
-                                    tableRef.current.focus();
-                                    setTimeout(() => document.activeElement.blur(), 0);
-                                    return;
-                                  }
-
-                                  if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                                  if (isEnter || isTab) {
-                                    e.preventDefault();
-
-                                    if (!selectedOption) {
-                                      e.preventDefault();
-                                      setTimeout(() => toast.error("Please select an Item"), 100);
-                                    } else {
-                                      setTimeout(() => inputRefs?.current[3].focus(), 100);
-                                    }
-                                    return;
-                                  }
-                                }}
+                          onChange={handleOptionChange}
+                          onInputChange={handleInputChange}
+                          open={autoCompleteOpen}
+                          onOpen={() => setAutoCompleteOpen(true)}
+                          onClose={() => setAutoCompleteOpen(false)}
+                          getOptionLabel={(option) =>
+                            `${option.iteam_name} `
+                          }
+                          options={itemList}
+                          renderOption={(props, option) => (
+                            <ListItem {...props}>
+                              <ListItemText
+                                primary={`${option.iteam_name}`}
+                                secondary={` ${option.stock === 0
+                                  ? `Unit: ${option.weightage}`
+                                  : `Pack: ${option.pack}`
+                                  } | MRP: ${option.mrp}  | Location: ${option.location
+                                  }  | Current Stock: ${option.stock}`}
                               />
-                            )}
-                          />
-                        </div>
+                            </ListItem>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              tabIndex={0}
+                              variant="outlined"
+                              autoComplete="off"
+                              {...params}
+                              value={searchItem?.iteam_name}
+                              inputRef={(el) => (inputRefs.current[2] = el)}
+                              onFocus={() => setSelectedIndex(-1)}
+                              fullWidth
+                              sx={{
+                                minWidth: 400,
+                                width: "100%",
+                              }}
+
+                              inputProps={{
+                                ...params.inputProps,
+                                style: { textTransform: 'uppercase' },
+                              }}
+                              onKeyDown={(e) => {
+                                const { key, shiftKey } = e;
+                                const isTab = key === "Tab";
+                                const isShiftTab = isTab && shiftKey;
+                                const isEnter = key === "Enter";
+                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+
+                                if (isShiftTab) return;
+
+                                if (!searchItem && isArrowKey) {
+                                  tableRef.current.focus();
+                                  setTimeout(() => document.activeElement.blur(), 0);
+                                  return;
+                                }
+
+                                if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                if (isEnter || isTab) {
+                                  e.preventDefault();
+
+                                  if (!selectedOption) {
+                                    e.preventDefault();
+                                    setTimeout(() => toast.error("Please select an Item"), 100);
+                                  } else {
+                                    setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                  }
+                                  return;
+                                }
+                              }}
+                            />
+                          )}
+                        />
                       )}
                     </td>
 
@@ -2811,6 +2819,7 @@ const AddPurchaseBill = () => {
           </div>
 
           {/*<====================================================================== total and other details  =====================================================================> */}
+
           <div
             className=""
             style={{

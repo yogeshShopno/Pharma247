@@ -44,6 +44,7 @@ import { FaCaretUp } from "react-icons/fa6";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import IconButton from "@mui/material/IconButton";
+import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const AddReturnbill = () => {
   const token = localStorage.getItem("token");
@@ -126,8 +127,8 @@ const AddReturnbill = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const [billSaveDraft, setBillSaveDraft] = useState("0");
 
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
@@ -135,10 +136,6 @@ const AddReturnbill = () => {
   const tableRef = useRef(null); // Reference for table container
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
-  const dateRefs = useRef([]);
-
-  const submitButtonRef = useRef(null);
-  const addButtonref = useRef(null);
   const inputRefs = useRef([]);
 
   const handleKeyDown = (e, index) => {
@@ -930,67 +927,60 @@ const AddReturnbill = () => {
               overflow: "auto",
             }}
           >
-            <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
-              <div style={{ display: "flex", gap: "7px" }}>
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                  }}
-                  onClick={() => {
-                    history.push("/purchase/return");
-                  }}
-                >
-                  Purchase Return
-                </span>
-                <ArrowForwardIosIcon
-                  style={{
-                    fontSize: "18px",
-                    marginTop: "8px",
-                    color: "var(--color1)",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "var(--color1)",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                  }}
-                >
-                  New
-                </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
-              </div>
-              <div className="headerList" style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
-                <Button
-                  variant="contained"
-                  style={{ background: "var(--color1)", padding: "10px 24px", height: "40px" }}
-                  onClick={() => handleSubmit()}
-                >
-                  Save
-                </Button>
-                {/* If you want a Draft button or dropdown, add here as in AddPurchasebill.js */}
-              </div>
-            </div>
+            <div >
 
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
+              {/*<============================================================================ Top header & buttons   ===========================================================================> */}
+              <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
 
-            <div className="mt-4">
-              <div className="firstrow flex gap-4">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+                    onClick={() => {
+                      history.push("/purchase/return");
+                    }}
+                  >
+                    Purchase Return
+                  </span>
+                  <span className="w-6 h-6">
+
+                    <ArrowForwardIosIcon
+                      fontSize="small"
+                      className="text-[var(--color1)]"
+                    />
+                  </span>
+
+                  <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
+
+                  <BsLightbulbFill
+                    className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                    onClick={() => setShowModal(true)}
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+                    onClick={() => handleSubmit()}
+                  >
+                    Save
+                  </button>
+
+                </div>
+              </div>
+              {/*<============================================================================ Top details   ===========================================================================> */}
+
+              <div className="flex gap-4  mt-4">
                 <div className="flex flex-row gap-4 overflow-x-auto w-full ">
                   <div>
                     <span className="title mb-2 flex items-center gap-2">Distributor <span className="text-red-600">*</span></span>
                     <Autocomplete
                       value={distributor ?? ""}
-                      sx={{ width: "100%", minWidth: "350px", "@media (max-width:600px)": { minWidth: "250px" } }}
+                      sx={{
+                        width: "100%",
+                        minWidth: "350px",
+                        "@media (max-width:600px)": { minWidth: "250px" },
+                      }}
                       size="small"
                       options={distributorList}
                       onChange={(e, newValue) => setDistributor(newValue)}
@@ -1009,7 +999,8 @@ const AddReturnbill = () => {
                       )}
                     />
                   </div>
-                  <div className="detail">
+
+                  <div >
                     <span className="title mb-2">Bill No.<span className="text-red-600">*</span></span>
                     <TextField
                       autoComplete="off"
@@ -1023,7 +1014,9 @@ const AddReturnbill = () => {
                       inputRef={(el) => (inputRefs.current[1] = el)}
                     />
                   </div>
-                  <div className="detail">
+
+
+                  <div >
                     <span className="title mb-2">Bill Date</span>
                     <div>
                       <DatePicker
@@ -1039,7 +1032,8 @@ const AddReturnbill = () => {
                       />
                     </div>
                   </div>
-                  <div className="detail">
+
+                  <div >
                     <span className="title mb-2">Start Date <span className="text-red-600">*</span></span>
                     <div>
                       <DatePicker
@@ -1055,7 +1049,8 @@ const AddReturnbill = () => {
                       />
                     </div>
                   </div>
-                  <div className="detail">
+
+                  <div>
                     <span className="title mb-2">End Date <span className="text-red-600">*</span></span>
                     <div>
                       <DatePicker
@@ -1071,27 +1066,29 @@ const AddReturnbill = () => {
                   </div>
 
                   <div className="flex items-end">
-                    <Button
-                      variant="contained"
-                      size="small"
-                      style={{ minHeight: "38px", alignItems: "center", paddingInline: "20px", background: "var(--color1)" }}
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
                       ref={(el) => (inputRefs.current[5] = el)}
                       onClick={() => filterData(searchItem)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           filterData(searchItem);
-                          handleKeyDown(e, 5);
                         }
                       }}
+
                     >
-                      <span style={{ display: "flex", alignItems: "center" }}>
-                        <svg width="20" height="20" fill="white" style={{ marginRight: 4 }}><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                      <span className="flex align-center mr-4">
+                        <svg width="20" height="20" fill="white" className="mr-4" ><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                         Filter
                       </span>
-                    </Button>
+
+                    </button>
                   </div>
+
                 </div>
               </div>
+
               {/*<======================================================================Item Table =====================================================================> */}
 
               <div className="table-container">
@@ -1126,12 +1123,15 @@ const AddReturnbill = () => {
                             {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                           </div>
                         ) : (
-                          <div style={{ minWidth: 366, padding: 0 }}>
                             <TextField
                               autoComplete="off"
                               id="outlined-basic"
                               size="small"
-                              sx={{ width: "366px" }}
+                              fullWidth
+                              sx={{
+                                minWidth: 350,
+                                width: "100%",
+                              }}
                               value={searchQuery}
                               onChange={handleInputChange}
                               variant="outlined"
@@ -1152,9 +1152,9 @@ const AddReturnbill = () => {
                                 type: "search",
                               }}
                             />
-                          </div>
                         )}
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1182,6 +1182,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1202,6 +1203,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1221,6 +1223,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1249,6 +1252,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1276,6 +1280,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1300,6 +1305,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1323,6 +1329,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1346,6 +1353,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
+
                       <td>
                         <TextField
                           labelId="dropdown-label"
@@ -1370,6 +1378,7 @@ const AddReturnbill = () => {
                           helperText={errors.gst}
                         ></TextField>
                       </td>
+
                       <td>
                         <TextField
                           autoComplete="off"
@@ -1392,8 +1401,15 @@ const AddReturnbill = () => {
                           }}
                         />
                       </td>
-                      <td className="total">{ItemTotalAmount}</td>
+
+                      <td className="total">
+                        <span className="font-bold">
+                          {ItemTotalAmount}
+                        </span>
+
+                      </td>
                     </tr>
+
                     {/* Added Items Rows */}
                     {returnItemList?.item_list?.map((item, index) => (
                       <tr
@@ -1402,13 +1418,19 @@ const AddReturnbill = () => {
                           setSelectedIndex(index);
                           handleEditClick(item);
                         }}
-                        className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                      >
-                        <td style={{ display: "flex", gap: "8px", alignItems: "center", whiteSpace: "nowrap" }}>
+                        className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`
+                        }
+                        style={{
+                          borderBottom: index !== returnItemList.item_list.length - 1 ? '1px solid #e0e0e0' : 'none',
+                        }}>
+
+                        <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                           <Checkbox
                             sx={{
                               color: "var(--color2)",
                               "&.Mui-checked": { color: "var(--color1)" },
+                              margin: 0,
+                              padding: 0
                             }}
                             checked={item?.iss_check}
                             onClick={(e) => e.stopPropagation()}
@@ -1431,10 +1453,11 @@ const AddReturnbill = () => {
                         <td>{item.amount}</td>
                       </tr>
                     ))}
+
                   </tbody>
                 </table>
               </div>
-              {/*<====================================================================== Pagination  =====================================================================> */}
+              {/*<====================================================================== total and other details  =====================================================================> */}
 
               <div
                 className=""
@@ -1668,8 +1691,10 @@ const AddReturnbill = () => {
                 </div>
               </div>
               {/* </div> */}
+
             </div>
           </div>
+
           <Dialog open={open}>
             <DialogContent style={{ fontSize: "20px" }}>
               <h2>Please select Return Type.</h2>
@@ -1683,7 +1708,7 @@ const AddReturnbill = () => {
             </DialogActions>
           </Dialog>
 
-          {/* Delete PopUP */}
+          {/*<==========================================================================  Delete PopUP   =========================================================================> */}
           <Dialog open={IsDelete} className="custom-dialog">
             <DialogTitle className="primary">Delete Confirmation</DialogTitle>
             <IconButton
@@ -1722,8 +1747,7 @@ const AddReturnbill = () => {
             </DialogActions>
           </Dialog>
 
-
-
+          {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
           <Prompt
             when={unsavedItems}
             message={(location) => {
@@ -1770,6 +1794,13 @@ const AddReturnbill = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {showModal && (
+        <TipsModal
+          id="add-purchase"
+          onClose={() => setShowModal(false)}
+        />
       )}
 
     </>

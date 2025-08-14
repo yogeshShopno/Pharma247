@@ -2,6 +2,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import React, { useState, useRef, useEffect } from 'react';
 import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, ListItemText, MenuItem, Select, InputAdornment, Input, colors } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 import Autocomplete from '@mui/material/Autocomplete';
 import { Button, TextField } from "@mui/material";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
@@ -10,7 +11,7 @@ import { BsLightbulbFill } from "react-icons/bs";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import axios from "axios";
 import DatePicker from 'react-datepicker';
-import { addDays, format, parse, subDays } from 'date-fns';
+import { addDays, format, parse, subDays, isValid, parseISO } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
 import { useParams } from 'react-router-dom';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -28,13 +29,14 @@ import { FaCaretUp } from 'react-icons/fa6';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import IconButton from '@mui/material/IconButton';
+import TipsModal from '../../../../componets/Tips/TipsModal';
 
 const EditReturnBill = () => {
     const history = useHistory();
     const unblockRef = useRef(null);
     const token = localStorage.getItem("token");
     const [tableData, setTableData] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState();
     const [endDate, setEndDate] = useState();
     const [startDate, setStartDate] = useState();
     const [mrp, setMRP] = useState()
@@ -42,22 +44,9 @@ const EditReturnBill = () => {
     const [billNo, setBillNo] = useState()
     const [gst, setGst] = useState();
     const [selectedEditItemId, setSelectedEditItemId] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(1);
-    const [returnType, setReturnType] = useState(null);
     const [ItemId, setItemId] = useState('')
     const [IsDelete, setIsDelete] = useState(false);
-    const inputRef1 = useRef();
-    const inputRef2 = useRef();
-    const inputRef3 = useRef();
-    const inputRef4 = useRef();
-    const inputRef5 = useRef();
-    const inputRef6 = useRef();
-    const inputRef7 = useRef();
-    const inputRef8 = useRef();
-    const inputRef9 = useRef();
-    const inputRef10 = useRef();
-    const inputRef12 = useRef();
+
     const [itemPurchaseId, setItemPurchaseId] = useState('');
     const [isDeleteAll, setIsDeleteAll] = useState(false);
     const [unit, setUnit] = useState('');
@@ -68,18 +57,15 @@ const EditReturnBill = () => {
     const [gstList, setGstList] = useState([]);
     const [loc, setLoc] = useState('');
     const [distributorList, setDistributorList] = useState([]);
-    const [returnItemList, setReturnItemList] = useState([])
     const [batchList, setBatchList] = useState([]);
     const [distributor, setDistributor] = useState(null);
+    const [distributorId, setDistributorId] = useState(null);
     const [remark, setRemark] = useState()
     const [expiryDate, setExpiryDate] = useState('');
-    const [intialQty, setIntialQty] = useState(0)
     const [qty, setQty] = useState(0)
     const [tempQty, setTempQty] = useState(0)
     const [free, setFree] = useState('')
     const [error, setError] = useState({ distributor: '', returnType: '', billNo: '', startDate: '', endDate: '' });
-    const staffOptions = [{ value: 'Owner', id: 1 }, { value: localStorage.getItem('UserName'), id: 2 },]
-    const returnTypeOptions = [{ value: 'With GST(Purchase Return)', id: 1 }, { value: 'Without GST (Credit Note)', id: 2 },]
     const [item, setItem] = useState('')
     const [batch, setBatch] = useState('')
     const [searchItem, setSearchItem] = useState('')
@@ -113,17 +99,52 @@ const EditReturnBill = () => {
     const [uniqueId, setUniqueId] = useState([])
     const [isEditMode, setIsEditMode] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-
-    const [billSaveDraft, setBillSaveDraft] = useState('0');
-    const handleClose = () => {
-        setIsDelete(false);
-    };
+    const [showModal, setShowModal] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
+    // ---- Safe parsers for API dates ----
+    const parseDateFromApi = (value) => {
+        if (!value) return null;
+        if (value instanceof Date && isValid(value)) return value;
+
+        // Try common formats: dd/MM/yyyy, yyyy-MM-dd, ISO
+        const try1 = parse(String(value), 'dd/MM/yyyy', new Date());
+        if (isValid(try1)) return try1;
+
+        const try2 = parse(String(value), 'yyyy-MM-dd', new Date());
+        if (isValid(try2)) return try2;
+
+        try {
+            const try3 = parseISO(String(value));
+            if (isValid(try3)) return try3;
+        } catch (_) { }
+
+        return null; // fallback
+    };
+
+    const parseMonthYearFromApi = (value) => {
+        if (!value) return null;
+
+        // Try MM/yy then MM/yyyy
+        const try1 = parse(String(value), 'MM/yy', new Date());
+        if (isValid(try1)) return try1;
+
+        const try2 = parse(String(value), 'MM/yyyy', new Date());
+        if (isValid(try2)) return try2;
+
+        // Also accept yyyy-MM (sometimes used for month-year)
+        const try3 = parse(String(value), 'yyyy-MM', new Date());
+        if (isValid(try3)) return try3;
+
+        return null;
+    };
+
+
+    {/*<========================================================================= get intial data  ========================================================================> */ }
 
     useEffect(() => {
         const initializeData = async () => {
@@ -140,69 +161,84 @@ const EditReturnBill = () => {
         }
         listOfGst();
         BankList();
+        handleLeavePage()
     }, [id, isDeleteAll]); // Add only necessary dependencies
 
 
 
-    /*<============================================================================ Input ref on keydown enter ===================================================================> */
+    /*<==================================================================== Input ref on keydown enter ===========================================================> */
 
     const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
     const tableRef = useRef(null); // Reference for table container
     const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
     const inputRefs = useRef([]);
-    const dateRefs = useRef([]);
 
-    const submitButtonRef = useRef(null);
-    const addButtonref = useRef(null);
 
-    const handleKeyDown = (e, index) => {
-        console.log("index", index);
+    const handleKeyDown = (e, currentIndex) => {
         if (e.key === "Enter") {
-            console.log("enter", index);
             e.preventDefault();
-            const nextElement = inputRefs.current[index + 1];
 
-            console.log("Next element:", nextElement);
-            console.log("All refs:", inputRefs.current);
+            const getNextFocusableIndex = (currentIdx) => {
+                switch (currentIdx) {
+                    case 0: return 1;  
+                    case 1: return 2; 
+                    case 2: return 3;  
+                    case 3: return 4; 
+                    case 4: return 5; 
+                    case 5: return 6;  
+                    case 6: return 7; 
+            
+                }
+            };
+
+            const nextIndex = getNextFocusableIndex(currentIndex);
+            const nextElement = inputRefs.current[nextIndex];
 
             if (!nextElement) {
-                // If no next element, focus the first element or submit
-                console.log("No next element, focusing first element");
-                if (inputRefs.current[0]) {
-                    inputRefs.current[0].focus();
-                }
+                setTimeout(() => {
+                    const searchField = inputRefs.current[0];
+                    if (searchField && searchField.focus) {
+                        searchField.focus();
+                    }
+                }, 10);
                 return;
             }
 
-            // Handle different input types
-            if (nextElement.focus) {
-                // Standard input elements
-                console.log("Focusing standard input");
-                nextElement.focus();
-            } else if (nextElement.querySelector) {
-                // For DatePicker or complex components, find the input inside
-                const input = nextElement.querySelector('input');
-                if (input) {
-                    console.log("Focusing input inside component");
-                    input.focus();
+            setTimeout(() => {
+                if (nextElement && typeof nextElement.focus === 'function') {
+                    nextElement.focus();
+                    return;
                 }
-            } else if (nextElement.setFocus) {
-                // For components with custom focus methods
-                console.log("Using setFocus method");
-                nextElement.setFocus();
-            }
 
-            console.log("Next element focused:", index + 1);
+                if (nextElement && nextElement.querySelector) {
+                    const input = nextElement.querySelector('input');
+                    if (input && typeof input.focus === 'function') {
+                        input.focus();
+                        return;
+                    }
+                }
+
+                if (nextElement && typeof nextElement.setFocus === 'function') {
+                    nextElement.setFocus();
+                    return;
+                }
+
+                try {
+                    nextElement.focus();
+                } catch (error) {
+                    console.warn(`Could not focus element at index ${nextIndex}:`, error);
+                }
+            }, 10);
         }
     };
 
     /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
-
     useEffect(() => {
         const handleTableFocus = () => setAutocompleteDisabled(false);
         const handleTableBlur = () => setAutocompleteDisabled(true);
+
 
         if (tableRef.current) {
             tableRef.current.addEventListener("focus", handleTableFocus);
@@ -215,6 +251,7 @@ const EditReturnBill = () => {
                 tableRef.current.removeEventListener("blur", handleTableBlur);
             }
         };
+
     }, []);
 
     useEffect(() => {
@@ -222,13 +259,27 @@ const EditReturnBill = () => {
             if (!tableData?.item_list?.length) return;
 
             if (e.key === "ArrowDown") {
-                setSelectedIndex((prev) => Math.min(prev + 1, tableData.item_list.length - 1));
-            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                if (document.activeElement === inputRefs.current[0]) {
+                    inputRefs.current[0].blur();
+                }
+                setSelectedIndex((prev) =>
+                    Math.min(prev + 1, tableData.item_list.length - 1)
+                );
+            }
+            else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                if (document.activeElement === inputRefs.current[0]) {
+                    inputRefs.current[0].blur();
+                }
                 setSelectedIndex((prev) => Math.max(prev - 1, 0));
-            } else if (e.key === "Enter" && selectedIndex !== -1) {
+            }
+            else if (e.key === "Enter" && selectedIndex !== -1) {
                 const selectedRow = tableData.item_list[selectedIndex];
                 if (!selectedRow) return;
                 handleEditClick(selectedRow);
+                inputRefs.current[1].focus();
+
             }
         };
 
@@ -236,16 +287,16 @@ const EditReturnBill = () => {
         return () => document.removeEventListener("keydown", handleKeyPress);
     }, [tableData, selectedIndex]);
 
+
+
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (!event.altKey) return; // Exit early if Alt is not pressed
+            if (!event.altKey) return;
 
-            event.preventDefault(); // Prevent default browser behavior
+            event.preventDefault();
 
             if (event.key.toLowerCase() === "s") {
-                // Only allow submission if data is loaded and not currently loading
                 if (!isLoading && distributor && distributor.id && billNo && billNo.trim() !== '' && tableData) {
-                    // Add a small delay to ensure state updates are complete
                     setTimeout(() => {
                         handleReturnUpdate();
                     }, 100);
@@ -254,7 +305,13 @@ const EditReturnBill = () => {
                 }
 
             } else if (event.key.toLowerCase() === "m") {
-                inputRefs.current[2]?.focus();
+                removeItem()
+                setSelectedIndex(-1);
+                setSearchItem("");
+                setTimeout(() => {
+                    inputRefs.current[0]?.focus();
+                }, 10);
+
             }
         };
 
@@ -264,6 +321,7 @@ const EditReturnBill = () => {
         };
     }, [isLoading, distributor, billNo, tableData]);
 
+    /*<================================================================ calculation ======================================================================> */
 
     useEffect(() => {
 
@@ -285,22 +343,16 @@ const EditReturnBill = () => {
 
     }, [otherAmount, totalAmount, roundOff, netAmount, finalAmount]);
 
-    useEffect(() => {
-        if (selectedEditItem) {
-            setSearchItem(selectedEditItem.item_name)
-            setUnit(selectedEditItem.weightage);
-            setBatch(selectedEditItem.batch_number);
-            setExpiryDate(selectedEditItem.expiry);
-            setMRP(selectedEditItem.mrp);
-            setQty(selectedEditItem.qty);
-            setFree(selectedEditItem.fr_qty);
-            setPTR(selectedEditItem.ptr);
-            setDisc(selectedEditItem.disocunt);
-            setGst(selectedEditItem.gst_name);
-            setLoc(selectedEditItem.location);
-            setItemTotalAmount(selectedEditItem.amount)
+    const handleOtherAmount = (event) => {
+        let value = parseFloat(event.target.value) || "";
+
+        if (value < -totalAmount) {
+            value = -totalAmount;
         }
-    }, [selectedEditItem])
+        setUnsavedItems(true)
+        setOtherAmount(value);
+
+    };
 
     useEffect(() => {
         const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
@@ -316,6 +368,27 @@ const EditReturnBill = () => {
         }
     }, [ptr, qty, disc, gst, tempQty])
 
+    /*<================================================================ update state on select item  ======================================================================> */
+
+    useEffect(() => {
+        if (selectedEditItem) {
+            setSearchItem(selectedEditItem.item_name)
+            setUnit(selectedEditItem.weightage);
+            setBatch(selectedEditItem.batch_number);
+            setExpiryDate(selectedEditItem.expiry);
+            setMRP(selectedEditItem.mrp);
+            setQty(selectedEditItem.total_stock);
+            setFree(selectedEditItem.fr_qty);
+            setPTR(selectedEditItem.ptr);
+            setDisc(selectedEditItem.disocunt);
+            setGst(selectedEditItem.gst_name);
+            setLoc(selectedEditItem.location);
+            setItemTotalAmount(selectedEditItem.amount)
+        }
+    }, [selectedEditItem])
+
+    /*<================================================================ handle leave page  ======================================================================> */
+
     const LogoutClose = () => {
         setIsOpenBox(false);
         setPendingNavigation(null);
@@ -323,10 +396,11 @@ const EditReturnBill = () => {
 
     const handleLeavePage = async () => {
         let data = new FormData();
-        data.append("start_date", localStorage.getItem("StartFilterDate"));
-        data.append("end_date", localStorage.getItem("EndFilterDate"));
-        data.append("distributor_id", localStorage.getItem("DistributorId"));
+        data.append("start_date", startDate ? format(startDate, "MM/yy") : "");
+        data.append("end_date", endDate ? format(endDate, "MM/yy") : "");
+        data.append("distributor_id", distributorId);
         data.append("type", "1");
+
 
         try {
             const response = await axios.post("purches-return-iteam-histroy", data,
@@ -365,35 +439,21 @@ const EditReturnBill = () => {
         setIsOpenBox(true);
         setNextPath(path);
     };
-    const handleLogout = async () => {
-        await restoreData();
 
-        if (pendingNavigation) {
-            if (unblockRef.current) {
-                unblockRef.current();
-            }
-            history.push(pendingNavigation.pathname);
-        }
-        setIsOpenBox(false);
+    // const handleLogout = async () => {
+    //     await restoreData();
 
-    };
-
-    // useEffect(() => {
-    //     const initializeData = async () => {
-    //         setIsLoading(true);
-    //         const distributors = await listDistributor();
-    //         await returnBillEditID(distributors);
-    //         setIsLoading(false);
-
-    //     };
-    //     batchListAPI();
-    //     initializeData();
-    //     if (isDeleteAll == true) {
-    //         // restoreData();
+    //     if (pendingNavigation) {
+    //         if (unblockRef.current) {
+    //             unblockRef.current();
+    //         }
+    //         history.push(pendingNavigation.pathname);
     //     }
-    //     listOfGst();
-    //     BankList();
-    // }, [])
+    //     setIsOpenBox(false);
+
+    // };
+
+    /*<================================================================ get distributor data  ======================================================================> */
 
 
     const listDistributor = async () => {
@@ -416,6 +476,8 @@ const EditReturnBill = () => {
             return [];
         }
     };
+    /*<================================================================ get batch data  ======================================================================> */
+
 
     const batchListAPI = async () => {
         let data = new FormData();
@@ -468,6 +530,7 @@ const EditReturnBill = () => {
         }
     }
 
+    /*<================================================================ get banklist data  ======================================================================> */
 
     const BankList = async () => {
         let data = new FormData()
@@ -489,6 +552,7 @@ const EditReturnBill = () => {
 
         }
     }
+    /*<================================================================ get gst data  ======================================================================> */
 
     let listOfGst = () => {
         axios.get("gst-list", {
@@ -505,6 +569,8 @@ const EditReturnBill = () => {
 
             });
     }
+    /*<================================================================ handle search  ======================================================================> */
+
     const handleInputChange = async (e) => {
         const value = e.target.value;
         setSearchQuery(value);
@@ -512,6 +578,7 @@ const EditReturnBill = () => {
         await returnBillEditID(distributors, value);
     };
     let isFetching = false;
+    /*<================================================================ handle get search data  ======================================================================> */
 
     const returnBillEditID = async (distributors, value) => {
         if (isFetching) return; // Prevent multiple calls
@@ -531,7 +598,9 @@ const EditReturnBill = () => {
             const responseData = response.data.data;
 
             setTableData(responseData);
-            setSelectedDate(responseData?.bill_date);
+            setSelectedDate(parseDateFromApi(responseData?.bill_date));
+            setStartDate(parseMonthYearFromApi(responseData?.start_date));
+            setEndDate(parseMonthYearFromApi(responseData?.end_date));
             setFinalAmount(responseData?.final_amount);
             setTotalAmount(responseData?.total_amount);
             setNetAmount(parseFloat(responseData?.total_amount) + parseFloat(responseData?.other_amount || 0));
@@ -540,8 +609,7 @@ const EditReturnBill = () => {
             setTotalNetRate(responseData?.total_net_rate);
             setTotalMargin(responseData?.total_margin);
             setMargin(responseData?.total_margin);
-            setStartDate(responseData?.start_date);
-            setEndDate(responseData?.end_date);
+            setDistributorId(responseData?.distributor_id)
 
 
             const foundDistributor = distributors?.find(option => option.id == responseData.distributor_id);
@@ -565,6 +633,7 @@ const EditReturnBill = () => {
     };
 
 
+    /*<================================================================ handle calculation  ======================================================================> */
 
     const handleSchAmt = (e) => {
         // Get the input value as a string
@@ -582,8 +651,11 @@ const EditReturnBill = () => {
         // setBase(totalBase); // Uncomment if needed
     };
 
+    /*<================================================================ handle remove item  ======================================================================> */
+
 
     const removeItem = () => {
+        setIsEditMode(false)
         setUnit('')
         setBatch('')
         setSearchItem('');
@@ -597,6 +669,7 @@ const EditReturnBill = () => {
         setLoc('')
         setItemTotalAmount(0)
     }
+    /*<================================================================ handle edit click item  ======================================================================> */
 
     const handleEditClick = (item) => {
 
@@ -604,29 +677,21 @@ const EditReturnBill = () => {
 
         if (!existingItem) {
             // If the ID is unique, add the item to uniqueId and set tempQty
-            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.qty }]);
-            setTempQty(item.qty);
+            setUniqueId((prevUniqueIds) => [...prevUniqueIds, { id: item.id, qty: item.total_stock }]);
+            setTempQty(item.total_stock);
         } else {
-            setTempQty(existingItem.qty);
+            setTempQty(existingItem.total_stock);
 
         }
-
         setSelectedEditItem(item);
         setItemPurchaseId(item.item_id);
         setSelectedEditItemId(item.id);
-        setQty(item.qty)
+        setQty(item.total_stock)
         setInitialTotalStock(item.total_stock);
         setIsEditMode(true);
-
-        // Focus the unit field after the next render
-        setTimeout(() => {
-            if (inputRefs.current[3]) {
-                inputRefs.current[3].focus();
-            }
-        }, 100);
-
-
     };
+    /*<================================================================ handle quantity validation  ======================================================================> */
+
 
     const handleQtyChange = (value) => {
         // const inputQty = Number(e.target.value);
@@ -641,6 +706,8 @@ const EditReturnBill = () => {
             toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
     };
+    /*<================================================================ handle PTR MRP validation  ======================================================================> */
+
     const handlePTR = (value) => {
 
         const newPTR = Number(value);
@@ -656,6 +723,8 @@ const EditReturnBill = () => {
         }
 
     }
+
+    /*<================================================================ handle Edit item validation  ======================================================================> */
 
 
     const EditReturnItem = async () => {
@@ -695,6 +764,8 @@ const EditReturnBill = () => {
         return isValid;
 
     }
+
+    /*<================================================================ handle Edit item   ======================================================================> */
 
     const handleEditItem = async () => {
         const gstMapping = {
@@ -749,6 +820,7 @@ const EditReturnBill = () => {
             setBatch('')
             setLoc('')
             setItemTotalAmount(0);
+            setIsEditMode(false)
             // setTableData(response.data.data);
             if (response.data.status === 401) {
                 history.push('/');
@@ -760,11 +832,16 @@ const EditReturnBill = () => {
 
         }
     }
+
+
     const deleteOpen = (Id) => {
         setIsDelete(true);
         setUnsavedItems(true)
         setItemId(Id);
     };
+
+    /*<================================================================ handle Edit bill validation   ======================================================================> */
+
     const handleReturnUpdate = () => {
 
         const newErrors = {};
@@ -794,6 +871,9 @@ const EditReturnBill = () => {
         setPendingNavigation(null);
         setUnsavedItems(false)
     }
+
+    /*<================================================================ handle Edit bill  ======================================================================> */
+
 
     const updatePurchaseRecord = async () => {
         let data = new FormData();
@@ -838,6 +918,7 @@ const EditReturnBill = () => {
         }
     }
 
+    /*<================================================================ handle delete item  ======================================================================> */
 
 
     const handleDeleteItem = async (ItemId) => {
@@ -870,6 +951,8 @@ const EditReturnBill = () => {
 
         }
     }
+
+    /*<================================================================ handle check item  ======================================================================> */
 
     const handleChecked = async (ItemId, event) => {
         setUnsavedItems(true)
@@ -914,16 +997,7 @@ const EditReturnBill = () => {
         }
     };
 
-    const handleOtherAmount = (event) => {
-        let value = parseFloat(event.target.value) || "";
 
-        if (value < -totalAmount) {
-            value = -totalAmount;
-        }
-        setUnsavedItems(true)
-        setOtherAmount(value);
-
-    };
     return (
         <>
             <Header />
@@ -938,233 +1012,211 @@ const EditReturnBill = () => {
                 draggable
                 pauseOnHover
             />
-            {isLoading ? (
-                <div className="loader-container">
-                    <Loader />
-                </div>
-            ) : (
-                <div className="p-6">
-                    <div
-                        style={{
-                            height: "calc(-125px + 100vh)",
-                            overflow: "auto",
-                        }}
-                    >
-                        {/* Header Section */}
-                        <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
-                            <div style={{ display: "flex", gap: "7px" }}>
+
+            <div className="p-6">
+                <div
+                    style={{
+                        height: "calc(-125px + 100vh)",
+                        overflow: "auto",
+                    }}
+                >
+                    <div >
+
+                        {/*<======================================================== Top header & buttons   =======================================================> */}
+
+                        <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
+
+                            <div className="flex items-center gap-2">
                                 <span
-                                    style={{
-                                        color: "var(--color2)",
-                                        alignItems: "center",
-                                        fontWeight: 700,
-                                        fontSize: "20px",
-                                        cursor: "pointer",
-                                        whiteSpace: "nowrap",
-                                    }}
+                                    className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+
                                     onClick={() => history.push("/purchase/return")}
                                 >
                                     Purchase Return
                                 </span>
                                 <ArrowForwardIosIcon
-                                    style={{
-                                        fontSize: "18px",
-                                        marginTop: "8px",
-                                        color: "var(--color1)",
-                                    }}
+                                    fontSize="small"
+                                    className="text-[var(--color1)]"
                                 />
-                                <span
-                                    style={{
-                                        color: "var(--color1)",
-                                        alignItems: "center",
-                                        fontWeight: 700,
-                                        fontSize: "20px",
-                                    }}
-                                >
-                                    Edit
-                                </span>
-                                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                                <span className="text-[var(--color1)] font-bold text-[20px]">Edit</span>
+                                <BsLightbulbFill
+                                    className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                                    onClick={() => setShowModal(true)}
+                                />
                             </div>
-                            <div className="headerList" style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
-                                <Button
-                                    variant="contained"
-                                    style={{ background: "var(--color1)", padding: "10px 24px", height: "40px" }}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
                                     onClick={() => handleReturnUpdate()}
                                 >
-                                    Update
-                                </Button>
+                                    Save
+                                </button>
+
                             </div>
+
                         </div>
+                        {/*<============================================================ Top details   ===========================================================> */}
+                        <div className="flex gap-4  mt-4">
+                            <div className="flex flex-row gap-4 overflow-x-auto w-full " >
 
-                        <div
-                            className="row border-b border-dashed"
-                            style={{ borderColor: "var(--color2)" }}
-                        ></div>
-
-                        {/* Continue with table and other sections... */}
-                        <div className="mt-4">
-                            <div className="firstrow flex gap-4" >
-                                <div className="flex flex-row gap-4 overflow-x-auto w-full ">
-
-                                    <div className="detail custommedia" style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                    }}>
-                                        <span className="heading mb-2">Distributor</span>
-                                        <Autocomplete
-                                            disabled
-                                            value={distributor}
-                                            sx={{ width: '350px' }}
-                                            size='small'
-                                            onChange={(e, value) => setDistributor(value)}
-                                            options={distributorList}
-                                            getOptionLabel={(option) => option.name}
-                                            renderInput={(params) => <TextField
-                                                autoComplete="off" {...params} />}
-                                        />
-                                        {error.distributor && <span style={{ color: 'red', fontSize: '12px' }}>{error.distributor}</span>}
-                                    </div>
-                                    <div className="detail custommedia" style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-
-                                    }}>
-                                        <span className="heading mb-2 ">Bill Date</span>
-                                        <div >
-                                            <DatePicker
-                                                className='custom-datepicker_mn '
-                                                selected={selectedDate}
-                                                onChange={(newDate) => setSelectedDate(newDate)}
-                                                dateFormat="dd/MM/yyyy"
-                                                disabled
-
-                                                sx={{
-                                                    width: '350px', colors: "#BDBDBD"
-
-                                                }}
-                                                style={{
-                                                    color: '#BDBDBD',
-                                                    backgroundColor: '#F0F0F0',
-                                                    border: '1px solid #BDBDBD',
-                                                    cursor: 'not-allowed',
-                                                    width: '350px'
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="detail custommedia" style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-
-                                    }}>
-                                        <span className="heading mb-2">Bill No</span>
-                                        <TextField
-                                            autoComplete="off"
-                                            id="outlined-number"
-                                            size="small"
-
-                                            value={billNo}
-                                            disabled
-                                            onChange={(e) => { setBillNo(e.target.value) }}
-                                        />
-                                        {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
-
-                                    </div>
-                                    <div className="detail custommedia" style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                    }}>
-                                        <span className="heading mb-2">Start Date</span>
-                                        <div >
+                                <div >
+                                    <span className="title mb-2 flex items-center gap-2">Distributor</span>
+                                    <Autocomplete
+                                        value={distributor ?? ""}
+                                        disabled
+                                        sx={{
+                                            width: "100%",
+                                            minWidth: "350px",
+                                            "@media (max-width:600px)": { minWidth: "250px" },
+                                        }}
+                                        size='small'
+                                        onChange={(e, value) => setDistributor(value)}
+                                        options={distributorList}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
                                             <TextField
                                                 autoComplete="off"
+                                                variant="outlined"
+                                                {...params}
+                                            />)}
+                                    />
 
-                                                disabled
-                                                id="outlined-number"
-                                                size="small"
-                                                value={startDate}
-                                            />
+                                </div>
 
-                                        </div>
+                                <div>
+                                    <span className="title mb-2">Bill No</span>
+                                    <TextField
+                                        autoComplete="off"
+                                        id="outlined-number"
+                                        size="small"
+                                        error={!!error.billNo}
+                                        value={billNo}
+                                        disabled
+                                        onChange={(e) => { setBillNo(e.target.value) }}
+                                    />
+                                    {error.billNo && <span style={{ color: 'red', fontSize: '12px' }}>{error.billNo}</span>}
+
+                                </div>
+
+                                <div >
+                                    <span className="title mb-2 ">Bill Date</span>
+                                    <div >
+                                        <DatePicker
+                                            className='custom-datepicker'
+                                            variant="outlined"
+                                            selected={selectedDate}
+                                            onChange={(newDate) => setSelectedDate(newDate)}
+                                            dateFormat="dd/MM/yyyy"
+                                            disabled
+
+                                        />
                                     </div>
-                                    <div className="detail custommedia" style={{
-                                        display: "flex",
-                                        flexDirection: "column",
+                                </div>
 
-                                    }}>
-                                        <span className="heading mb-2">End Date <span className="text-red-600">*</span></span>
-                                        <div>
+                                <div >
+                                    <span className="title mb-2 ">Expiry Start Date</span>
+                                    <div >
+                                        <DatePicker
+                                            disabled
+                                            className="custom-datepicker "
+                                            selected={startDate}
+                                            error={!!errors.startDate}
+                                            helperText={errors.startDate}
+                                            onChange={() => setStartDate()}
+                                            dateFormat="MM/yyyy"
+                                            showMonthYearPicker
+                                        />
 
-                                            <TextField
-                                                autoComplete="off"
+                                    </div>
+                                </div>
 
-                                                disabled
-                                                id="outlined-number"
-                                                size="small"
+                                <div>
+                                    <span className="title mb-2">Expiry End Date <span className="text-red-600">*</span></span>
+                                    <div>
 
-                                                value={endDate}
-                                            />
-                                        </div>
+                                        <DatePicker
+                                            disabled
+                                            className="custom-datepicker "
+                                            selected={endDate}
+                                            onChange={() => setEndDate()}
+                                            dateFormat="MM/yyyy"
+                                            showMonthYearPicker
+
+                                        />
                                     </div>
                                 </div>
 
                             </div>
-                            {/* Table Section */}
-                            <div className="table-container">
-
-                                <table className="w-full border-collapse item-table" ref={tableRef} tabIndex={0}>
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <div className="flex justify-center items-center gap-2">
-                                                    Search Item Name <span className="text-red-600">*</span>
-                                                </div>
-                                            </th>
-                                            <th>Unit <span className="text-red-600">*</span></th>
-                                            <th>Batch <span className="text-red-600">*</span></th>
-                                            <th>Expiry <span className="text-red-600">*</span></th>
-                                            <th>MRP <span className="text-red-600">*</span></th>
-                                            <th>Qty.</th>
-                                            <th>Free</th>
-                                            <th>PTR <span className="text-red-600">*</span></th>
-                                            <th>CD%</th>
-                                            <th>GST% <span className="text-red-600">*</span></th>
-                                            <th>Loc.</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
+                        </div>
+                        {/*<===============================================================Item Table ==============================================================> */}
+                        <div className="table-container">
+                            <table className="w-full border-collapse item-table" ref={tableRef} tabIndex={0}>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div className="flex justify-center items-center gap-2">
+                                                Search Item Name <span className="text-red-600">*</span>
+                                            </div>
+                                        </th>
+                                        <th>Unit <span className="text-red-600">*</span></th>
+                                        <th>Batch <span className="text-red-600">*</span></th>
+                                        <th>Expiry <span className="text-red-600">*</span></th>
+                                        <th>MRP <span className="text-red-600">*</span></th>
+                                        <th>Qty.</th>
+                                        <th>Free</th>
+                                        <th>PTR <span className="text-red-600">*</span></th>
+                                        <th>CD%</th>
+                                        <th>GST% <span className="text-red-600">*</span></th>
+                                        <th>Loc.</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                {isLoading ? (
+                                    <div className="loader-container">
+                                        <Loader />
+                                    </div>
+                                ) : (
                                     <tbody>
                                         <tr className="input-row">
                                             <td className="p-0">
-                                                {!isEditMode ? (
-                                                    <div style={{ minWidth: 366, padding: 0 }}>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-basic"
-                                                            size="small"
-                                                            autoFocus
-                                                            sx={{ width: "366px" }}
-                                                            value={searchQuery}
-                                                            onChange={handleInputChange}
-                                                            variant="outlined"
-                                                            placeholder="Please search any items.."
-                                                            InputProps={{
-                                                                endAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <svg width="20" height="20" fill="gray">
-                                                                            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
-                                                                        </svg>
-                                                                    </InputAdornment>
-                                                                ),
-                                                                type: "search",
-                                                            }}
-                                                        />
-                                                    </div>
-                                                ) : (
+                                                {isEditMode ? (
                                                     <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left' }}>
                                                         <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                                                         {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                                                     </div>
+                                                ) : (
+
+                                                    <TextField
+                                                        autoComplete="off"
+                                                        id="outlined-basic"
+                                                        size="small"
+                                                        fullWidth
+                                                        sx={{
+                                                            minWidth: 350,
+                                                            width: "100%",
+                                                        }}
+                                                        value={searchQuery}
+                                                        onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
+                                                        inputRef={(el) => (inputRefs.current[0] = el)}
+                                                        onKeyDown={e => {
+                                                            if (e.key === "Enter" && !searchQuery) {
+                                                                toast.error("Please search any items..");
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <svg width="20" height="20" fill="gray"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                                                                </InputAdornment>
+                                                            ),
+                                                            type: "search",
+                                                        }}
+                                                    />
+
                                                 )}
                                             </td>
                                             <td>
@@ -1180,11 +1232,11 @@ const EditReturnBill = () => {
                                                         const value = e.target.value.replace(/[^0-9]/g, '');
                                                         setUnit(value ? Number(value) : "");
                                                     }}
-                                                    inputRef={(el) => (inputRefs.current[3] = el)}
+                                                    inputRef={(el) => (inputRefs.current[1] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (unit && unit !== 0) {
-                                                                handleKeyDown(e, 3);
+                                                                handleKeyDown(e, 1);
                                                             } else {
                                                                 toast.error("Please enter unit");
                                                                 e.preventDefault();
@@ -1203,12 +1255,9 @@ const EditReturnBill = () => {
                                                     size="small"
                                                     sx={{ width: '100px' }}
                                                     disabled
-
-                                                    // inputRef={inputRef3}
-                                                    // onKeyDown={handleKeyDown}
                                                     error={!!errors.expiryDate}
                                                     value={batch}
-                                                    // onChange={handleExpiryDateChange}
+
                                                     placeholder="MM/YY"
 
                                                 />
@@ -1221,12 +1270,8 @@ const EditReturnBill = () => {
                                                     size="small"
                                                     sx={{ width: '100px' }}
                                                     disabled
-
-                                                    // inputRef={inputRef3}
-                                                    // onKeyDown={handleKeyDown}
                                                     error={!!errors.expiryDate}
                                                     value={expiryDate}
-                                                    // onChange={handleExpiryDateChange}
                                                     placeholder="MM/YY"
 
                                                 />
@@ -1239,11 +1284,7 @@ const EditReturnBill = () => {
                                                     sx={{ width: '100px' }}
                                                     size="small"
                                                     disabled
-                                                    // inputRef={inputRef4}
-                                                    // error={!!errors.mrp}
-                                                    // onKeyDown={handleKeyDown}
                                                     value={mrp}
-
                                                     onChange={(e) => {
                                                         const value = e.target.value;
                                                         if (/^\d*\.?\d*$/.test(value)) {
@@ -1251,7 +1292,6 @@ const EditReturnBill = () => {
                                                         }
                                                     }}
                                                     onKeyDown={(e) => {
-
                                                         if (
                                                             ['e', 'E', '+', '-', ','].includes(e.key) ||
                                                             (e.key === '.' && e.target.value.includes('.'))
@@ -1268,34 +1308,26 @@ const EditReturnBill = () => {
                                                     type="number"
                                                     sx={{ width: '100px' }}
                                                     size="small"
-                                                    // inputRef={inputRef5}
-                                                    // onKeyDown={handleKeyDown}
+                                                    inputRef={(el) => (inputRefs.current[2] = el)}
                                                     error={!!errors.qty}
                                                     value={qty}
                                                     onChange={(e) => {
                                                         const value = e.target.value.replace(/[^0-9]/g, '');
                                                         handleQtyChange(value ? Number(value) : "");
                                                     }}
-
-                                                    inputRef={(el) => (inputRefs.current[4] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (qty && qty !== 0) {
-                                                                handleKeyDown(e, 4);
+                                                                handleKeyDown(e, 2);
                                                             } else {
                                                                 toast.error("Please enter quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
-                                                        if (
-                                                            ['e', 'E', '.', '+', '-', ','].includes(e.key)
-                                                        ) {
+                                                        if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
                                                             e.preventDefault();
                                                         }
                                                     }}
-
-
-                                                // onChange={(e) => { e.target.value > tempQty ? setQty(tempQty) : setQty(e.target.value) }}
                                                 />
 
                                             </td>
@@ -1307,26 +1339,21 @@ const EditReturnBill = () => {
                                                     type="number"
                                                     sx={{ width: '100px' }}
                                                     value={free}
-                                                    // inputRef={inputRef6}
-                                                    // error={!!errors.free}
-                                                    // onKeyDown={handleKeyDown}
                                                     onChange={(e) => {
                                                         const value = e.target.value.replace(/[^0-9]/g, '');
                                                         setFree(value ? Number(value) : "");
                                                     }}
-                                                    inputRef={(el) => (inputRefs.current[5] = el)}
+                                                    inputRef={(el) => (inputRefs.current[3] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (free !== "") {
-                                                                handleKeyDown(e, 5);
+                                                                handleKeyDown(e, 3);
                                                             } else {
                                                                 toast.error("Please enter free quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
-                                                        if (
-                                                            ['e', 'E', '.', '+', '-', ','].includes(e.key)
-                                                        ) {
+                                                        if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
                                                             e.preventDefault();
                                                         }
                                                     }}
@@ -1340,15 +1367,13 @@ const EditReturnBill = () => {
                                                     type="number"
                                                     sx={{ width: '100px' }}
                                                     size="small"
-                                                    // inputRef={inputRef7}
-                                                    // onKeyDown={handleKeyDown}
                                                     value={ptr}
                                                     error={!!errors.ptr}
-                                                    inputRef={(el) => (inputRefs.current[6] = el)}
+                                                    inputRef={(el) => (inputRefs.current[4] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (ptr && ptr !== 0) {
-                                                                handleKeyDown(e, 6);
+                                                                handleKeyDown(e, 4);
                                                             } else {
                                                                 toast.error("Please enter PTR");
                                                                 e.preventDefault();
@@ -1376,16 +1401,15 @@ const EditReturnBill = () => {
                                                     sx={{ width: '100px' }}
                                                     size="small"
                                                     type="number"
-                                                    // inputRef={inputRef8}
-                                                    // onKeyDown={handleKeyDown}
+
                                                     value={disc}
                                                     error={!!errors.disc}
 
-                                                    inputRef={(el) => (inputRefs.current[7] = el)}
+                                                    inputRef={(el) => (inputRefs.current[5] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (disc !== "") {
-                                                                handleKeyDown(e, 7);
+                                                                handleKeyDown(e, 5);
                                                             } else {
                                                                 toast.error("Please enter CD");
                                                                 e.preventDefault();
@@ -1413,11 +1437,11 @@ const EditReturnBill = () => {
                                                     id="dropdown"
                                                     value={gst}
                                                     sx={{ width: '100px' }}
-                                                    inputRef={(el) => (inputRefs.current[8] = el)}
+                                                    inputRef={(el) => (inputRefs.current[6] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
                                                             if (gst && gst !== "") {
-                                                                handleKeyDown(e, 8);
+                                                                handleKeyDown(e, 6);
                                                             } else {
                                                                 toast.error("Please enter GST");
                                                                 e.preventDefault();
@@ -1431,7 +1455,6 @@ const EditReturnBill = () => {
                                                         }
                                                     }}
                                                     onChange={(e) => setGst(e.target.value)}
-
                                                     size="small"
                                                     displayEmpty
                                                     error={!!errors.gst}
@@ -1443,76 +1466,94 @@ const EditReturnBill = () => {
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
-                                                    // inputRef={inputRef12}
-                                                    // onKeyDown={handleKeyDown}
                                                     size="small"
                                                     value={loc}
-                                                    // error={!!errors.loc}
+                                                    inputRef={(el) => (inputRefs.current[7] = el)}
                                                     sx={{ width: '100px' }}
                                                     onChange={(e) => { setLoc(e.target.value) }}
-                                                    inputRef={(el) => (inputRefs.current[9] = el)}
                                                     onKeyDown={async (e) => {
                                                         if (e.key === 'Enter') {
                                                             await EditReturnItem();
-                                                            // After edit, focus back to the first field
-                                                            if (inputRefs.current[0]) {
-                                                                inputRefs.current[0].focus();
-                                                            }
+                                                            
                                                         }
                                                     }}
                                                 />
                                             </td>
-                                            {/* <td className="total"><span>{ItemTotalAmount}</span></td> */}
-
                                             <td className="total"><span>{ItemTotalAmount}</span></td>
                                         </tr>
+
                                         {tableData?.item_list?.map((item, index) => (
-                                            <tr key={item.id} onClick={() => {
-                                                setSelectedIndex(index)
-                                                handleEditClick(item)
-                                            }}
-                                                className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                            <tr key={item.id}
+                                                onClick={() => {
+                                                    setSelectedIndex(index)
+                                                    handleEditClick(item)
+                                                }}
+                                                className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                                style={{
+                                                    borderBottom: index !== tableData.item_list.length - 1 ? '1px solid #e0e0e0' : 'none',
+                                                }}
                                             >
-                                                <td style={{ whiteSpace: 'nowrap', width: '400px', textAlign: 'left' }}>
+                                                <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                                                     <Checkbox
                                                         sx={{
-                                                            color: "var(--color2)", // Color for unchecked checkboxes
-                                                            '&.Mui-checked': {
-                                                                color: "var(--color1)", // Color for checked checkboxes
-                                                            },
+                                                            color: "var(--color2)",
+                                                            "&.Mui-checked": { color: "var(--color1)" },
+                                                            margin: 0,
+                                                            padding: 0
                                                         }}
                                                         checked={item.iss_check}
                                                         onClick={(event) => event.stopPropagation()}
                                                         onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                     />
-                                                    <BorderColorIcon
-                                                        style={{ color: "var(--color1)" }} onClick={() => handleEditClick(item)} />
+                                                    <BorderColorIcon style={{ color: "var(--color1)" }} />
+
                                                     <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
                                                     {item.item_name}
                                                 </td>
-                                                <td>{item.weightage}</td>
-                                                <td>{item.batch_number}</td>
-                                                <td>{item.expiry}</td>
-                                                <td>{item.mrp}</td>
-                                                <td>{item.qty}</td>
-                                                <td>{item.fr_qty}</td>
-                                                <td>{item.ptr}</td>
-                                                <td>{item.disocunt}</td>
-                                                <td>{item.gst_name}</td>
-                                                <td>{item.location}</td>
-                                                <td>{item.amount}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
+                                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.amount}</td>
                                             </tr>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </tbody>)}
+                            </table>
 
-                            </div>
                         </div>
                     </div >
 
-                    {/* modal here  */}
-                    <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
-                        <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+                    {/*<========================================================= total and other details  ========================================================> */}
+                    <div
+                        className=""
+                        style={{
+                            background: "var(--color1)",
+                            color: "white",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            position: "fixed",
+                            width: "100%",
+                            bottom: "0",
+                            left: "0",
+                            overflow: "auto",
+                        }}
+                    >
+                        <div
+                            className=""
+                            style={{
+                                display: "flex",
+                                gap: "40px",
+                                whiteSpace: "nowrap",
+                                left: "0",
+                                padding: "20px",
+                            }}
+                        >
                             <div
                                 className="gap-2 invoice_total_fld"
                                 style={{ display: "flex" }}
@@ -1702,94 +1743,102 @@ const EditReturnBill = () => {
                             </Modal>
                         </div>
                     </div>
-                    {/* Delete Confirmation Dialog */}
-                    <Dialog open={IsDelete} className="custom-dialog">
-                        <DialogTitle className="primary">Delete Confirmation</DialogTitle>
-                        <IconButton
-                            aria-label="close"
-                            onClick={() => setIsDelete(false)}
-                            sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+
+                </div>
+
+                {/*<=================================================================  Delete PopUP   ================================================================> */}
+                <Dialog open={IsDelete} className="custom-dialog">
+                    <DialogTitle className="primary">Delete Confirmation</DialogTitle>
+                    <IconButton
+                        aria-label="close"
+                        onClick={() => setIsDelete(false)}
+                        sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
+                    >
+                        <IoMdClose />
+                    </IconButton>
+                    <DialogContent>
+                        <div className="my-4 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
+                                <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                                <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
+                            </svg>
+                            <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
+                        </div>
+                    </DialogContent>
+                    <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleDeleteItem(ItemId)}
+                            sx={{ minWidth: 120 }}
                         >
-                            <IoMdClose />
-                        </IconButton>
-                        <DialogContent>
-                            <div className="my-4 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                                    <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                                    <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-                                </svg>
-                                <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
-                            </div>
-                        </DialogContent>
-                        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                onClick={() => handleDeleteItem(ItemId)}
-                                sx={{ minWidth: 120 }}
+                            Delete
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            onClick={() => setIsDelete(false)}
+                            sx={{ minWidth: 120 }}
+                        >
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                {/*<============================================================ Leave page  PopUp Box  ===========================================================> */}
+                <Prompt
+                    when={unsavedItems}
+                    message={(location) => {
+                        handleNavigation(location.pathname);
+                        return false;
+                    }}
+                />
+
+                <div
+                    id="modal"
+                    value={isOpenBox}
+                    className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+                        }`}
+                >
+                    <div />
+                    <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+                        <div className="my-4 logout-icon">
+                            <VscDebugStepBack
+                                className="h-12 w-14"
+                                style={{ color: "#628A2F" }}
+                            />
+                            <h4 className=" font-semibold mt-6 text-center">
+                                <span style={{ textTransform: "none" }}>
+                                    Are you sure you want to leave this page?
+                                </span>
+                            </h4>
+                        </div>
+                        <div className="flex gap-5 justify-center">
+                            <button
+                                type="submit"
+                                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                                onClick={handleLeavePage}
                             >
-                                Delete
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="inherit"
-                                onClick={() => setIsDelete(false)}
-                                sx={{ minWidth: 120 }}
+                                Yes
+                            </button>
+                            <button
+                                type="button"
+                                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                                onClick={LogoutClose}
                             >
                                 Cancel
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-
-                    <Prompt
-                        when={unsavedItems}
-                        message={(location) => {
-                            handleNavigation(location.pathname);
-                            return false;
-                        }}
-                    />
-
-                    <div
-                        id="modal"
-                        value={isOpenBox}
-                        className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
-                            }`}
-                    >
-                        <div />
-                        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                            <div className="my-4 logout-icon">
-                                <VscDebugStepBack
-                                    className="h-12 w-14"
-                                    style={{ color: "#628A2F" }}
-                                />
-                                <h4 className=" font-semibold mt-6 text-center">
-                                    <span style={{ textTransform: "none" }}>
-                                        Are you sure you want to leave this page?
-                                    </span>
-                                </h4>
-                            </div>
-                            <div className="flex gap-5 justify-center">
-                                <button
-                                    type="submit"
-                                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-                                    onClick={handleLeavePage}
-                                >
-                                    Yes
-                                </button>
-                                <button
-                                    type="button"
-                                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                                    onClick={LogoutClose}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
+                            </button>
                         </div>
                     </div>
+                </div>
+            </div >
 
-
-                </div >
+            {showModal && (
+                <TipsModal
+                    id="add-purchase"
+                    onClose={() => setShowModal(false)}
+                />
             )}
+
         </>
     );
 };

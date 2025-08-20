@@ -49,6 +49,7 @@ import { FaCloudMoon } from "react-icons/fa";
 import { FaSun } from "react-icons/fa";
 import { FaCloudSun } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
+import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const Addsale = () => {
   const token = localStorage.getItem("token");
@@ -105,6 +106,8 @@ const Addsale = () => {
   const [qty, setQty] = useState("");
   const [maxQty, setMaxQty] = useState("");
   const [tempQty, setTempQty] = useState("");
+
+  const [uniqueItems, setUniqueItems] = useState([])
 
   const [order, setOrder] = useState("");
   const [roundOff, setRoundOff] = useState(0);
@@ -196,6 +199,9 @@ const Addsale = () => {
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const [pillTimes, setPillTimes] = useState({}); // { [item.id]: { morning, noon, night, refillDays, refillDate } }
   const [checkedItems, setCheckedItems] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
+  /*<============================================================ Pil remider  ===================================================> */
 
   useEffect(() => {
     if (!ItemSaleList?.sales_item?.length) return;
@@ -793,7 +799,6 @@ const Addsale = () => {
   };
 
   const handleOptionChange = (event, newValue) => {
-    console.log("Selected option:", newValue, selectedOption);
     setUnsavedItems(true);
 
     setSelectedOption(newValue);
@@ -853,6 +858,16 @@ const Addsale = () => {
       inputRef5.current.focus();
     }
     setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
+
+    setUniqueItems((uniqueItems) => {
+      // avoid duplicates by id
+      const exists = uniqueItems.some((item) => item.id === event.id);
+      if (exists) return uniqueItems;
+
+      return [...uniqueItems, { id: event.id, stock: event.stock }];
+    });
+
+
   };
 
 
@@ -977,19 +992,34 @@ const Addsale = () => {
     }
   };
 
+  useEffect(() => {
+    if (selectedEditItem) {
+      setSelectedEditItemId(selectedEditItem.id);
+      setBarcodeItemName(selectedEditItem.iteam_name);
+      setSearchItem(selectedEditItem.iteam_name);
+      setItemEditID(selectedEditItem.item_id);
+      setLoc(selectedEditItem.location);
+    }
+    setSelectedOption(selectedEditItem);
+
+  }, [selectedEditItem]);
 
 
   const handleEditClick = (item) => {
-    if (!item) return; // Ensure the item is valid.
-
+    if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
-    setSelectedEditItemId(item.id);
-    setBarcodeItemName(item.iteam_name);
-    setSearchItem(item.iteam_name);
-    setItemEditID(item.item_id);
-    setLoc(item.location);
+    setSelectedEditItemId();
     setSelectedOption(item);
+
+      const found = uniqueItems.find(u => u.id === item.id);
+
+  if (found) {
+    setMaxQty(found.stock); // use stock from uniqueItems
+  } else {
+    setMaxQty(item.stock); // fallback to item stock
+  }
+
   };
 
   const saleItemList = async () => {
@@ -1845,1299 +1875,1382 @@ const Addsale = () => {
 
   return (
     <>
-      <div>
-        <Header />
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <div className="p-6">
-          <div
-            style={{
-              height: "calc(-125px + 100vh)",
-              overflow: "auto",
-            }}
-          >
-            {/*<====================================================================== header   =====================================================================> */}
 
-            <div className="mb-4" style={{ display: "flex", gap: "4px" }}>
-              <div style={{ display: "flex", gap: "7px" }}>
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    history.push("/salelist");
-                  }}
-                >
-                  Sales
-                </span>
+      <Header />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <div className="p-6"
+        style={{
+          height: "calc(-125px + 100vh)",
+          overflow: "auto",
+        }}>
+
+        <div >
+
+          {/*<====================================================================== header   =====================================================================> */}
+
+          <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]" >
+
+            <div className="flex items-center gap-2">
+              <span
+                className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+                onClick={() => {
+                  history.push("/salelist");
+                }}
+              >
+                Sales
+              </span>
+              <span className="w-6 h-6">
+
                 <ArrowForwardIosIcon
-                  style={{
-                    fontSize: "18px",
-                    marginTop: "8px",
-                    color: "var(--color1)",
-                  }}
+                  fontSize="small"
+                  className="text-[var(--color1)]"
                 />
-                <span
-                  style={{
-                    color: "var(--color1)",
+              </span>
+
+              <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
+
+              <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                onClick={() => setShowModal(true)} />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+                onClick={() => setOpenReminderPopUp(true)}
+              >
+                <FaBell className="mr-2" />
+                Set Reminder
+              </button>
+
+              <button
+                type="button"
+                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+                onClick={handelAddItemOpen}
+              >
+                <ControlPointIcon className="mr-2" />
+                Add New Item
+              </button>
+
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={paymentType}
+                className="payment_divv"
+                onChange={(e) => {
+                  setPaymentType(e.target.value);
+                  setUnsavedItems(true);
+                }}
+                size="small"
+                sx={{ minWidth: "150px" }}
+              >
+                <MenuItem value="cash">Cash</MenuItem>
+                <MenuItem value="credit">Credit</MenuItem>
+                {bankData?.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.bank_name}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={pickup}
+                className="payment_divv "
+                onChange={(e) => {
+                  setPickup(e.target.value);
+                  setUnsavedItems(true);
+                }}
+                size="small"
+                sx={{
+                  minWidth: "150px",
+                  "& .MuiInputBase-input": {
+                    display: "flex",
+                    whiteSpace: "nowrap",
                     alignItems: "center",
-                    fontWeight: 700,
-                    fontSize: "20px",
+                    gap: "1rem",
+                  },
+                }}
+              >
+                {pickupOptions.map((option) => (
+                  <MenuItem
+                    key={option.id}
+                    value={option.label}
+                    className="gap-4"
+                  >
+                    {option.icon && option.icon}
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <div
+                className="relative inline-block"
+                onMouseEnter={() => {
+                  clearTimeout(timeoutRef.current);
+                  setIsOpen(true);
+                }}
+                onMouseLeave={() => {
+                  timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
+                }}
+              >
+                <button
+                  type="button"
+                  className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
+                  onClick={() => {
+                    setBillSaveDraft("1");
+                    handleSubmit("1");
                   }}
                 >
-                  New
-                </span>
-                <BsLightbulbFill className="mt-1 w-6 h-6 secondary hover-yellow" />
+                  Save
+                </button>
+
+                <button
+                  type="button"
+                  className="h-10 rounded-r-[4px] bg-[var(--color1)] px-2 text-white hover:bg-[var(--color2)] transition align-middle"
+                  onClick={() => setIsOpen((v) => !v)}
+                  ref={submitButtonRef}
+                  aria-haspopup="menu"
+                  aria-expanded={isOpen}
+                >
+                  <IoCaretDown className="text-white" />
+                </button>
+
+                {isOpen && (
+                  <div className="absolute right-1 top-14 w-36 bg-white shadow-lg  overflow-hidden ring-1 ring-[var(--color1)]">
+                    <ul className="text-slate-800">
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("1");
+                          handleSubmit("1");
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white"
+                        role="menuitem"
+                      >
+                        <SaveIcon />
+                        Save
+                      </li>
+                      <li
+                        onClick={() => {
+                          setBillSaveDraft("0");
+                          handleSubmit("0");
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white border-t border-[var(--color1)]"
+                        role="menuitem"
+                      >
+                        <SaveAsIcon />
+                        Draft
+                      </li>
+                    </ul>
+                  </div>
+                )}
+
               </div>
-              <div className="headerList">
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "var(--color1)" }}
-                  className="payment_btn_divv"
-                  onClick={() => setOpenReminderPopUp(true)}
+            </div>
+          </div>
+
+
+          {/*<====================================================================== Top detail   =====================================================================> */}
+
+
+          <div className=" flex gap-4  mt-4">
+            <div className="flex flex-row gap-4 overflow-x-auto w-full">
+              <div>
+                <span
+                  className="title mb-2 flex  items-center gap-2"
                 >
-                  <FaBell className="mr-2" />
-                  set Reminder
-                </Button>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "var(--color1)" }}
-                  className="payment_btn_divv"
-                  onClick={handelAddItemOpen}
-                >
-                  <ControlPointIcon className="mr-2" />
-                  Add New Item
-                </Button>
-                <Select
-                  labelId="dropdown-label"
-                  id="dropdown"
-                  value={paymentType}
-                  className="payment_divv"
-                  onChange={(e) => {
-                    setPaymentType(e.target.value);
-                    setUnsavedItems(true);
+                  Customer Mobile / Name <span className="text-red-600">*</span>
+                  <FaPlusCircle
+                    className="primary cursor-pointer"
+                    onClick={() => {
+                      setOpenCustomer(true);
+                    }}
+                  />
+                </span>
+
+                <Autocomplete
+                  value={customer}
+                  onChange={handleCustomerOption}
+                  inputValue={searchQuery}
+                  onInputChange={(event, newInputValue) => {
+                    setSearchQuery(newInputValue);
                   }}
-                  size="small"
-                  sx={{ minWidth: "150px" }}
-                >
-                  <MenuItem value="cash">Cash</MenuItem>
-                  <MenuItem value="credit">Credit</MenuItem>
-                  {bankData?.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.bank_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Select
-                  labelId="dropdown-label"
-                  id="dropdown"
-                  value={pickup}
-                  className="payment_divv "
-                  onChange={(e) => {
-                    setPickup(e.target.value);
-                    setUnsavedItems(true);
-                  }}
-                  size="small"
+                  options={customerDetails}
+                  getOptionLabel={(option) =>
+                    option.name
+                      ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
+                      : option.phone_number || ""
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.phone_number === value.phone_number
+                  }
+                  loading={isLoading}
                   sx={{
-                    minWidth: "150px",
-                    "& .MuiInputBase-input": {
-                      display: "flex",
-                      whiteSpace: "nowrap",
-                      alignItems: "center",
-                      gap: "1rem",
+                    width: "100%",
+                    minWidth: {
+                      xs: "350px",
+                      sm: "400px",
+                      md: "400px",
+                      lg: "400px",
+                    },
+
+                    "& .MuiAutocomplete-inputRoot": {
+                      padding: "8px 8px",
                     },
                   }}
-                >
-                  {pickupOptions.map((option) => (
-                    <MenuItem
-                      key={option.id}
-                      value={option.label}
-                      className="gap-4"
-                    >
-                      {option.icon && option.icon}
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <div
-                  className="relative inline-block"
-                  onMouseEnter={() => {
-                    clearTimeout(timeoutRef.current);
-                    setIsOpen(true);
-                  }}
-                  onMouseLeave={() => {
-                    timeoutRef.current = setTimeout(() => {
-                      setIsOpen(false);
-                    }, 200);
-                  }}
-                >
-                  {/* Save button */}
-                  <Button
-                    variant="contained"
-                    style={{
-                      background: "var(--color1)",
-                      padding: "10px 24px",
-                      borderTopRightRadius: 0,
-                      borderBottomRightRadius: 0,
-                      height: "40px",
-                    }}
-                    onClick={() => {
-                      setBillSaveDraft("1");
-                      handleSubmit("1");
-                    }}
-                  >
-                    Save
-                  </Button>
-                  {/* Dropdown toggle button */}
-                  <Button
-                    variant="contained"
-                    style={{
-                      background: "var(--color1)",
-                      padding: "10px",
-                      minWidth: "40px",
-                      borderTopLeftRadius: 0,
-                      borderBottomLeftRadius: 0,
-                      height: "40px",
-                    }}
-                    onClick={() => setIsOpen(!isOpen)}
-                    ref={submitButtonRef}
-                  >
-                    <IoCaretDown className="text-white" />
-                  </Button>
-                  {/* Dropdown menu */}
-                  {isOpen && (
-                    <div style={{
-                      zIndex: 1000,
-                    }} className="absolute right-0 top-14 w-32 bg-white shadow-lg user-icon">
-                      <ul className="transition-all">
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("1");
-                            handleSubmit("1");
-                          }}
-                          className="border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
-                        >
-                          <SaveIcon />
-                          Save
-                        </li>
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("0");
-                            handleSubmit("0");
-                          }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-white hover:bg-[var(--color2)] justify-around"
-                        >
-                          <SaveAsIcon />
-                          Draft
-                        </li>
-                      </ul>
-                    </div>
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText
+                        primary={`${option.name} `}
+                        secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
+                      />
+                    </ListItem>
                   )}
-                </div>
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Search by Mobile, Name"
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {isLoading ? (
+                              <CircularProgress color="inherit" size={20} />
+                            ) : null}
+                            {params.InputProps.endAdornment}
+                          </>
+                        ),
+                      }}
+                      sx={{
+                        "& .MuiInputBase-input::placeholder": {
+                          fontSize: "1rem",
+                          color: "black",
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {error.customer && (
+                  <span style={{ color: "red", fontSize: "14px" }}>
+                    {error.customer}
+                  </span>
+                )}
+              </div>
+              <div
+                className="detail custommedia col-12 col-md-3"
+                style={{
+                  width: "100%",
+                  borderRadius: "15px",
+                }}
+              >
+                <span
+                  className="heading mb-2 title flex flex-row justify-between"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+
+                  }}
+                >
+                  <span className="flex flex-row gap-1">
+                    Doctor
+                    <FaPlusCircle
+                      className="icon primary"
+                      onClick={() => {
+                        setOpenAddPopUp(true);
+                        setUnsavedItems(true);
+                      }}
+                    />
+                  </span>
+
+                  <p
+                    onClick={() => history.push("/more/doctors")}
+                    className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
+                  >
+                    set default
+                  </p>
+
+                </span>
+
+                <Autocomplete
+                  value={doctor}
+                  onChange={(e, newVal) => setDoctor(newVal)}
+                  inputValue={searchDoctor}
+                  onInputChange={(event, newInputValue) => {
+                    setSearchDoctor(newInputValue);
+                  }}
+                  options={doctorData}
+                  getOptionLabel={(option) =>
+                    option?.name
+                      ? `${option.name} [${option.phone_number || ''}]`
+                      : option?.phone_number || ''
+                  }
+
+                  isOptionEqualToValue={(option, value) =>
+                    option?.phone_number === value?.phone_number
+                  }
+
+                  loading={isLoading}
+                  sx={{
+                    width: "100%",
+                    // minWidth: {
+                    //     xs: '350px',
+                    //     sm: '500px',
+                    //     md: '500px',
+                    //     lg: '400px',
+                    // },
+                    "& .MuiInputBase-root": {
+                      fontSize: "1.10rem",
+                    },
+                    "& .MuiAutocomplete-inputRoot": {
+                      padding: "8px 8px",
+                    },
+                  }}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText
+                        primary={`${option.name} `}
+                        secondary={`Mobile No: ${option.phone_number}`}
+                      />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Search by DR. Name, Mobile Number"
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {isLoading ? (
+                              <CircularProgress color="inherit" size={20} />
+                            ) : null}
+                            {params.InputProps.endAdornment}
+                          </>
+                        ),
+                      }}
+                      sx={{
+                        "& .MuiInputBase-input::placeholder": {
+                          fontSize: "1rem",
+                          color: "black",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+
+              <div
+                className="detail custommedia col-12 col-md-3"
+                style={{
+                  width: "100%",
+                  borderRadius: "15px",
+                }}
+              >
+                <span
+                  className="heading mb-2 title"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                  }}
+                >
+                  Select Date{" "}
+                  {/* <FaPlusCircle
+                        className="icon primary"
+                        onClick={() => {
+                          setOpenAddPopUp(true);
+                          setUnsavedItems(true);
+                        }}
+                      /> */}
+                </span>
+
+                <DatePicker
+                  className="custom-datepicker w-100"
+                  selected={selectedDate}
+                  variant="outlined"
+                  onChange={(newDate) => setSelectedDate(newDate)}
+                  dateFormat="dd/MM/yyyy"
+                  filterDate={(date) => !isDateDisabled(date)}
+                />
+              </div>
+              <div
+                className="detail custommedia col-12 col-md-3"
+                style={{
+                  width: "100%",
+                  borderRadius: "15px",
+                }}
+              >
+                <span
+                  className="heading mb-2 title"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                  }}
+                >
+                  Scan Barcode{" "}
+                  {/* <FaPlusCircle
+                        className="icon primary"
+                        onClick={() => {
+                          setOpenAddPopUp(true);
+                          setUnsavedItems(true);
+                        }}
+                      /> */}
+                </span>
+                <TextField
+                  id="outlined-number"
+                  type="number"
+                  size="small"
+                  value={barcode}
+                  placeholder="scan barcode"
+                  // inputRef={inputRef10}
+                  // onKeyDown={handleKeyDown}
+                  sx={{ width: "100%", backgroundColor: "white" }}
+                  onChange={(e) => {
+                    setBarcode(e.target.value);
+                  }}
+                />
               </div>
             </div>
 
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            {/*<====================================================================== Top detail   =====================================================================> */}
+          </div>
+          {/*<====================================================================== item table   =====================================================================> */}
 
-            <div>
-              <div className="firstrow mt-4">
-                <div className="flex gap-4 mb-4 overflow-auto">
-                  <div
-                    className="detail custommedia col-12 col-md-3"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
-                      borderRadius: "15px",
-                      minWidth: "320px",
-                    }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Customer Mobile / Name <span className="text-red-600">*</span>
+          <div className="table-container">
+            <table className="w-full border-collapse item-table">
+              <thead>
+                <tr>
+                  <th>
+                    <div className="flex justify-center items-center gap-2">
+                      Search Item Name{" "}
+                      <span className="text-red-600 ">*</span>
                       <FaPlusCircle
-                        className="icon primary"
+                        className="primary cursor-pointer"
                         onClick={() => {
-                          setOpenCustomer(true);
+                          setOpenAddItemPopUp(true);
                         }}
                       />
-                    </span>
-
-                    <Autocomplete
-                      value={customer}
-                      onChange={handleCustomerOption}
-                      inputValue={searchQuery}
-                      onInputChange={(event, newInputValue) => {
-                        setSearchQuery(newInputValue);
-                      }}
-                      options={customerDetails}
-                      getOptionLabel={(option) =>
-                        option.name
-                          ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
-                          : option.phone_number || ""
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option.phone_number === value.phone_number
-                      }
-                      loading={isLoading}
-                      sx={{
-                        width: "100%",
-                        minWidth: {
-                          xs: "350px",
-                          sm: "400px",
-                          md: "400px",
-                          lg: "400px",
-                        },
-
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "8px 8px",
-                        },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name} `}
-                            secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
+                    </div>
+                  </th>
+                  <th>
+                    Unit <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>
+                    Batch <span className="text-red-600 ">*</span>{" "}
+                  </th>
+                  <th>
+                    Expiry <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>
+                    MRP <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>Base</th>
+                  <th>
+                    GST% <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>Qty. </th>
+                  <th>Loc.</th>
+                  <th style={{ textAlign: "center" }}>
+                    {" "}
+                    <div style={{ display: "flex", flexWrap: "nowrap" }}>
+                      Order
+                      <Tooltip title="Please Enter only (o)" arrow>
+                        <Button
+                          style={{
+                            justifyContent: "left",
+                            color: "var(--color1)",
+                          }}
+                        >
+                          <GoInfo
+                            className="absolute"
+                            style={{ fontSize: "1rem" }}
                           />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Search by Mobile, Name"
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <>
-                                {isLoading ? (
-                                  <CircularProgress color="inherit" size={20} />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </>
-                            ),
-                          }}
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {error.customer && (
-                      <span style={{ color: "red", fontSize: "14px" }}>
-                        {error.customer}
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    className="detail custommedia col-12 col-md-3"
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  </th>
+                  <th
                     style={{
-                      width: "100%",
-                      borderRadius: "15px",
+                      padding: "10px 15px",
+                      textAlign: "center",
                     }}
                   >
-                    <span
-                      className="heading mb-2 title flex flex-row justify-between"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-
-                      }}
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Input row (with inner table for autocomplete/batch selection) */}
+                <tr style={{ borderBottom: "1px solid lightgray" }}>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <div
+                      className="flex gap-5 "
                     >
-                      <span className="flex flex-row gap-1">
-                        Doctor
-                        <FaPlusCircle
-                          className="icon primary"
-                          onClick={() => {
-                            setOpenAddPopUp(true);
-                            setUnsavedItems(true);
-                          }}
-                        />
-                      </span>
 
-                      <p
-                        onClick={() => history.push("/more/doctors")}
-                        className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
-                      >
-                        set default
-                      </p>
-
-                    </span>
-
-                    <Autocomplete
-                      value={doctor}
-                      onChange={(e, newVal) => setDoctor(newVal)}
-                      inputValue={searchDoctor}
-                      onInputChange={(event, newInputValue) => {
-                        setSearchDoctor(newInputValue);
-                      }}
-                      options={doctorData}
-                      getOptionLabel={(option) =>
-                        option?.name
-                          ? `${option.name} [${option.phone_number || ''}]`
-                          : option?.phone_number || ''
-                      }
-
-                      isOptionEqualToValue={(option, value) =>
-                        option?.phone_number === value?.phone_number
-                      }
-
-                      loading={isLoading}
-                      sx={{
-                        width: "100%",
-                        // minWidth: {
-                        //     xs: '350px',
-                        //     sm: '500px',
-                        //     md: '500px',
-                        //     lg: '400px',
-                        // },
-                        "& .MuiInputBase-root": {
-                          fontSize: "1.10rem",
-                        },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "8px 8px",
-                        },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name} `}
-                            secondary={`Mobile No: ${option.phone_number}`}
-                          />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Search by DR. Name, Mobile Number"
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <>
-                                {isLoading ? (
-                                  <CircularProgress color="inherit" size={20} />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </>
-                            ),
-                          }}
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-
-                  <div
-                    className="detail custommedia col-12 col-md-3"
-                    style={{
-                      width: "100%",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      Select Date{" "}
-                      {/* <FaPlusCircle
-                        className="icon primary"
-                        onClick={() => {
-                          setOpenAddPopUp(true);
-                          setUnsavedItems(true);
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          width: "100%",
+                          alignItems: "center",
                         }}
-                      /> */}
-                    </span>
+                      ><Autocomplete
+                          key={autocompleteKey}
+                          value={selectedOption}
+                          size="small"
+                          sx={{
+                            width: "100%",
+                            minWidth: "450px",
+                          }}
+                          onChange={handleOptionChange}
+                          onInputChange={handleInputChange}
+                          open={autoCompleteOpen}
+                          onOpen={() => setAutoCompleteOpen(true)}
+                          onClose={() => setAutoCompleteOpen(false)}
+                          getOptionLabel={(option) => `${option.iteam_name || ""}`}
+                          options={itemList}
+                          renderOption={(props, option) => (
+                            <ListItem {...props} key={option.id}>
+                              <ListItemText
+                                primary={`${option.iteam_name}, (${option.company})`}
+                                secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
+                              />
+                            </ListItem>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              inputRef={searchInputRef}
+                              variant="outlined"
+                              id="searchResults"
+                              autoFocus
+                              placeholder="Search Item Name..."
+                              InputProps={{
+                                ...params.InputProps,
+                                style: {
+                                  height: 40,
 
-                    <DatePicker
-                      className="custom-datepicker w-100"
-                      selected={selectedDate}
-                      variant="outlined"
-                      onChange={(newDate) => setSelectedDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                      filterDate={(date) => !isDateDisabled(date)}
-                    />
-                  </div>
-                  <div
-                    className="detail custommedia col-12 col-md-3"
-                    style={{
-                      width: "100%",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
+                                  fontSize: "1.2rem",
+                                },
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <SearchIcon
+                                      sx={{
+                                        color: "var(--color1)",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              sx={{
+                                "& .MuiInputBase-input::placeholder":
+                                {
+                                  fontSize: "1rem",
+                                  color: "black",
+                                },
+                              }}
+                              onFocus={() => setSelectedIndex(-1)}
+
+                              onKeyDown={(e) => {
+                                const key = e.key;
+                                const isTab = key === "Tab";
+                                const isShiftTab = isTab && e.shiftKey;
+                                const isEnter = key === "Enter";
+                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+
+                                // Only trigger custom logic if searchItem is empty/null
+                                if (
+                                  isArrowKey &&
+                                  !isShiftTab &&
+                                  (searchItem === null || searchItem === "") &&
+                                  !selectedOption
+                                ) {
+                                  e.preventDefault();
+                                  setAutocompleteDisabled(true); // Disable Autocomplete
+                                  setAutoCompleteOpen(false);    // Close dropdown
+                                  setTimeout(() => {
+                                    // Blur Autocomplete input if possible
+                                    if (searchInputRef.current) searchInputRef.current.blur();
+                                    // Focus table if possible
+                                    if (tableRef1.current) tableRef1.current.focus();
+                                    // Select first or last row in ItemSaleList if available
+                                    if (ItemSaleList?.sales_item?.length > 0) {
+                                      setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
+                                    } else {
+                                      setSelectedIndex(-1);
+                                    }
+                                  }, 0);
+                                  return;
+                                }
+
+                                // If dropdown is open, let MUI handle up/down/enter/tab
+                                if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                // On Enter/Tab, move to next input or show error if no selection
+                                if (isEnter || isTab) {
+                                  e.preventDefault();
+                                  if (!selectedOption) {
+                                    setTimeout(() => toast.error("Please select an Item"), 100);
+                                  } else {
+                                    setTimeout(() => {
+                                      if (inputRef1.current) inputRef1.current.focus();
+                                    }, 100);
+                                  }
+                                  return;
+                                }
+                              }}
+                            />
+                          )}
+                        />
+
+                      </Box>
+                      {isVisible && value && !batch && (
+                        <Box
+                          sx={{
+                            minWidth: {
+                              xs: "200px",
+                              sm: "500px",
+                              md: "1000px",
+                            },
+                            backgroundColor: "white",
+                            position: "absolute",
+                            marginTop: "50px",
+                            zIndex: 1,
+                          }}
+                          id="tempId"
+                        >
+                          <div
+                            className="custom-scroll-sale"
+                            style={{ width: "100%" }}
+                            tabIndex={0}
+                            onKeyDown={handleTableKeyDown}
+                          >
+                            <table
+                              ref={tableRef}
+                              tabIndex={0}
+                              style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                              }}
+                            >
+                              <thead>
+                                {isAlternative && (
+                                  <tr className="customtable">
+                                    <th
+                                      className="saleTable highlighted-row"
+                                      colSpan={8}
+                                    >
+                                      Alternate Medicine
+                                    </th>
+                                  </tr>
+                                )}
+
+                                <tr className="customtable">
+                                  <th>Item Name</th>
+                                  <th>Batch Number</th>
+                                  <th>Unit</th>
+                                  <th>Expiry Date</th>
+                                  <th>MRP</th>
+                                  <th>QTY</th>
+                                  <th>Loc</th>
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                {batchListData.length > 0 ? (
+                                  <>
+                                    {batchListData.map((item) => (
+                                      <tr
+                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                          String(item.id)
+                                          ? "highlighted-row"
+                                          : ""
+                                          }`}
+                                        key={item.id}
+                                        data-id={item.id}
+                                        tabIndex={0}
+                                        style={{
+                                          border:
+                                            "1px solid rgba(4, 76, 157, 0.1)",
+                                          padding: "10px",
+                                          outline: "none",
+                                        }}
+                                        onClick={() =>
+                                          handlePassData(item)
+                                        }
+                                        onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
+                                        onMouseEnter={handleMouseEnter}
+                                      >
+                                        <td className="text-base font-semibold">
+                                          {item.iteam_name}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.batch_number}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.unit}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.expiry_date}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.mrp}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.qty}
+                                        </td>
+                                        <td className="text-base font-semibold">
+                                          {item.location}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <tr>
+                                    <td
+                                      colSpan={6}
+                                      style={{
+                                        textAlign: "center",
+                                        fontSize: "16px",
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      No record found
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </Box>
+                      )}
+
+                    </div>
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      id="outlined-number"
+                      disabled
+                      type="number"
+                      inputRef={inputRef1}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 0 for Unit, so none)
+                          e.preventDefault();
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[1]?.current) {
+                            itemRowInputOrder[1].current.focus();
+                          }
+                        }
                       }}
-                    >
-                      Scan Barcode{" "}
-                      {/* <FaPlusCircle
-                        className="icon primary"
-                        onClick={() => {
-                          setOpenAddPopUp(true);
-                          setUnsavedItems(true);
-                        }}
-                      /> */}
-                    </span>
+                      size="small"
+                      value={unit}
+                      sx={{ width: "100px" }}
+                      onChange={(e) => {
+                        setUnit(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ width: "100px" }}
+                      size="small"
+                      disabled
+                      value={batch}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 1 for Batch, so 0)
+                          e.preventDefault();
+                          if (itemRowInputOrder[0]?.current) {
+                            itemRowInputOrder[0].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[2]?.current) {
+                            itemRowInputOrder[2].current.focus();
+                          }
+                        }
+                      }}
+                      onChange={(e) => {
+                        setBatch(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      id="outlined-number"
+                      disabled
+                      size="small"
+                      sx={{ width: "100px" }}
+                      inputRef={inputRef3}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 2 for Expiry, so 1)
+                          e.preventDefault();
+                          if (itemRowInputOrder[1]?.current) {
+                            itemRowInputOrder[1].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[3]?.current) {
+                            itemRowInputOrder[3].current.focus();
+                          }
+                        }
+                      }}
+                      value={expiryDate}
+                      onChange={handleExpiryDateChange}
+                      placeholder="MM/YY"
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      disabled
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "100px" }}
+                      size="small"
+                      inputRef={inputRef4}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 3 for MRP, so 2)
+                          e.preventDefault();
+                          if (itemRowInputOrder[2]?.current) {
+                            itemRowInputOrder[2].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[4]?.current) {
+                            itemRowInputOrder[4].current.focus();
+                          }
+                        }
+                      }}
+                      value={mrp}
+                      onChange={(e) => {
+                        setMRP(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "100px" }}
+                      size="small"
+                      inputRef={inputRef5}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 4 for Base, so 3)
+                          e.preventDefault();
+                          if (itemRowInputOrder[3]?.current) {
+                            itemRowInputOrder[3].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          if (base === "" || base === null || base === undefined) {
+                            toast.error("Base is required");
+                            e.preventDefault();
+                            return;
+                          }
+                          e.preventDefault();
+                          if (itemRowInputOrder[5]?.current) {
+                            itemRowInputOrder[5].current.focus();
+                          }
+                        }
+                      }}
+                      value={base}
+                      onChange={(e) => {
+                        setBase(e.target.value);
+                      }}
+
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
                     <TextField
                       id="outlined-number"
                       type="number"
+                      disabled
                       size="small"
-                      value={barcode}
-                      placeholder="scan barcode"
-                      // inputRef={inputRef10}
-                      // onKeyDown={handleKeyDown}
-                      sx={{ width: "100%", backgroundColor: "white" }}
+                      inputRef={inputRef6}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 5 for GST, so 4)
+                          e.preventDefault();
+                          if (itemRowInputOrder[4]?.current) {
+                            itemRowInputOrder[4].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[6]?.current) {
+                            itemRowInputOrder[6].current.focus();
+                          }
+                        }
+                      }}
+                      sx={{ width: "100px" }}
+                      value={gst}
                       onChange={(e) => {
-                        setBarcode(e.target.value);
+                        setGst(e.target.value);
                       }}
                     />
-                  </div>
-                </div>
-                {/*<====================================================================== item table   =====================================================================> */}
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "100px" }}
+                      size="small"
+                      inputRef={inputRef7}
+                      value={qty}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 6 for Qty, so 5)
+                          e.preventDefault();
+                          if (itemRowInputOrder[5]?.current) {
+                            itemRowInputOrder[5].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          if (qty === "" || qty === null || qty === undefined) {
+                            toast.error("Qty is required");
+                            e.preventDefault();
+                            return;
+                          }
+                          e.preventDefault();
+                          if (itemRowInputOrder[7]?.current) {
+                            itemRowInputOrder[7].current.focus();
+                          }
+                        }
+                      }}
+                      onChange={(e) => {
+                        handleQtyChange(e);
+                        if (
+                          (e.key === "Enter" || e.key === "Tab") &&
+                          Number(qty) === maxQty
+                        ) {
+                          setOrder("O");
+                        }
+                      }}
+                    />
+                  </td>
 
-                <div className=" overflow-x-auto w-full scroll-two">
-                  <table className="item-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className="flex justify-center items-center gap-2">
-                            Search Item Name{" "}
-                            <span className="text-red-600 ">*</span>
-                            <FaPlusCircle
-                              className="primary cursor-pointer"
-                              onClick={() => {
-                                setOpenAddItemPopUp(true);
-                              }}
-                            />
-                          </div>
-                        </th>
-                        <th>
-                          Unit <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>
-                          Batch <span className="text-red-600 ">*</span>{" "}
-                        </th>
-                        <th>
-                          Expiry <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>
-                          MRP <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>Base</th>
-                        <th>
-                          GST% <span className="text-red-600 ">*</span>
-                        </th>
-                        <th>Qty. </th>
-                        <th>Loc.</th>
-                        <th style={{ textAlign: "center" }}>
-                          {" "}
-                          <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                            Order
-                            <Tooltip title="Please Enter only (o)" arrow>
-                              <Button
-                                style={{
-                                  justifyContent: "left",
-                                  color: "var(--color1)",
-                                }}
-                              >
-                                <GoInfo
-                                  className="absolute"
-                                  style={{ fontSize: "1rem" }}
-                                />
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        </th>
-                        <th
-                          style={{
-                            padding: "10px 15px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Amount
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {/* Input row (with inner table for autocomplete/batch selection) */}
-                      <tr style={{ borderBottom: "1px solid lightgray" }}>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <div
-                            className="flex gap-5 "
-                          >
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      id="outlined-number"
+                      size="small"
+                      inputRef={inputRef9}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 7 for Loc, so 6)
+                          e.preventDefault();
+                          if (itemRowInputOrder[6]?.current) {
+                            itemRowInputOrder[6].current.focus();
+                          }
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          if (itemRowInputOrder[8]?.current) {
+                            itemRowInputOrder[8].current.focus();
+                          }
+                        }
+                      }}
+                      disabled
+                      sx={{ width: "100px" }}
+                      value={loc}
+                      onChange={(e) => {
+                        setLoc(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      sx={{ width: "100px" }}
+                      size="small"
+                      value={order}
+                      inputRef={inputRef8}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          // Move to previous input (index 8 for Order, so 7)
+                          e.preventDefault();
+                          if (itemRowInputOrder[7]?.current) {
+                            itemRowInputOrder[7].current.focus();
+                          }
+                          return;
+                        }
+                        handleKeyDown(e);
+                        if (e.key === "Enter") {
+                          addItemValidation();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const value = e.target.value.toUpperCase();
+                        if (value === "" || value === "O") {
+                          setOrder(value);
+                        }
+                      }}
+                    />
+                  </td>
+                  <td
+                    className="total "
+                    style={{ padding: "10px", textAlign: "center" }}
+                  >
+                    {itemAmount}
+                  </td>
+                </tr>
 
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                width: "100%",
-                                alignItems: "center",
-                              }}
-                            ><Autocomplete
-                                key={autocompleteKey}
-                                value={selectedOption}
-                                size="small"
-                                sx={{
-                                  width: "100%",
-                                  minWidth: "450px",
-                                }}
-                                onChange={handleOptionChange}
-                                onInputChange={handleInputChange}
-                                open={autoCompleteOpen}
-                                onOpen={() => setAutoCompleteOpen(true)}
-                                onClose={() => setAutoCompleteOpen(false)}
-                                getOptionLabel={(option) => `${option.iteam_name || ""}`}
-                                options={itemList}
-                                renderOption={(props, option) => (
-                                  <ListItem {...props} key={option.id}>
-                                    <ListItemText
-                                      primary={`${option.iteam_name}, (${option.company})`}
-                                      secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
-                                    />
-                                  </ListItem>
-                                )}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    inputRef={searchInputRef}
-                                    variant="outlined"
-                                    id="searchResults"
-                                    autoFocus
-                                    placeholder="Search Item Name..."
-                                    InputProps={{
-                                      ...params.InputProps,
-                                      style: {
-                                        height: 40,
+                {ItemSaleList?.sales_item?.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    style={{ whiteSpace: "nowrap" }}
+                    onClick={() => {
+                      handleEditClick(item);
+                      setSelectedIndex(index);
+                    }}
+                    className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                  >
+                    <td
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <BorderColorIcon
+                        style={{ color: "#969100" }}
+                        color="primary"
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(item);
+                        }}
+                      />
+                      <DeleteIcon
+                        className="delete-icon"
+                        style={{ color: "#F20000" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteOpen(item.id);
+                        }}
+                      />
+                      {item.iteam_name || barcodeItemName}
+                    </td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
+                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* } */}
+          {/*<====================================================================== total and other details =====================================================================> */}
 
-                                        fontSize: "1.2rem",
-                                      },
-                                      startAdornment: (
-                                        <InputAdornment position="start">
-                                          <SearchIcon
-                                            sx={{
-                                              color: "var(--color1)",
-                                              cursor: "pointer",
-                                            }}
-                                          />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    sx={{
-                                      "& .MuiInputBase-input::placeholder":
-                                      {
-                                        fontSize: "1rem",
-                                        color: "black",
-                                      },
-                                    }}
-                                    onFocus={() => setSelectedIndex(-1)}
-
-                                    onKeyDown={(e) => {
-                                      const key = e.key;
-                                      const isTab = key === "Tab";
-                                      const isShiftTab = isTab && e.shiftKey;
-                                      const isEnter = key === "Enter";
-                                      const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
-
-                                      // Only trigger custom logic if searchItem is empty/null
-                                      if (
-                                        isArrowKey &&
-                                        !isShiftTab &&
-                                        (searchItem === null || searchItem === "") &&
-                                        !selectedOption
-                                      ) {
-                                        e.preventDefault();
-                                        setAutocompleteDisabled(true); // Disable Autocomplete
-                                        setAutoCompleteOpen(false);    // Close dropdown
-                                        setTimeout(() => {
-                                          // Blur Autocomplete input if possible
-                                          if (searchInputRef.current) searchInputRef.current.blur();
-                                          // Focus table if possible
-                                          if (tableRef1.current) tableRef1.current.focus();
-                                          // Select first or last row in ItemSaleList if available
-                                          if (ItemSaleList?.sales_item?.length > 0) {
-                                            setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
-                                          } else {
-                                            setSelectedIndex(-1);
-                                          }
-                                        }, 0);
-                                        return;
-                                      }
-
-                                      // If dropdown is open, let MUI handle up/down/enter/tab
-                                      if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                                      // On Enter/Tab, move to next input or show error if no selection
-                                      if (isEnter || isTab) {
-                                        e.preventDefault();
-                                        if (!selectedOption) {
-                                          setTimeout(() => toast.error("Please select an Item"), 100);
-                                        } else {
-                                          setTimeout(() => {
-                                            if (inputRef1.current) inputRef1.current.focus();
-                                          }, 100);
-                                        }
-                                        return;
-                                      }
-                                    }}
-                                  />
-                                )}
-                              />
-
-                            </Box>
-                            {isVisible && value && !batch && (
-                              <Box
-                                sx={{
-                                  minWidth: {
-                                    xs: "200px",
-                                    sm: "500px",
-                                    md: "1000px",
-                                  },
-                                  backgroundColor: "white",
-                                  position: "absolute",
-                                  marginTop: "50px",
-                                  zIndex: 1,
-                                }}
-                                id="tempId"
-                              >
-                                <div
-                                  className="custom-scroll-sale"
-                                  style={{ width: "100%" }}
-                                  tabIndex={0}
-                                  onKeyDown={handleTableKeyDown}
-                                >
-                                  <table
-                                    ref={tableRef}
-                                    tabIndex={0}
-                                    style={{
-                                      width: "100%",
-                                      borderCollapse: "collapse",
-                                    }}
-                                  >
-                                    <thead>
-                                      {isAlternative && (
-                                        <tr className="customtable">
-                                          <th
-                                            className="saleTable highlighted-row"
-                                            colSpan={8}
-                                          >
-                                            Alternate Medicine
-                                          </th>
-                                        </tr>
-                                      )}
-
-                                      <tr className="customtable">
-                                        <th>Item Name</th>
-                                        <th>Batch Number</th>
-                                        <th>Unit</th>
-                                        <th>Expiry Date</th>
-                                        <th>MRP</th>
-                                        <th>QTY</th>
-                                        <th>Loc</th>
-                                      </tr>
-                                    </thead>
-
-                                    <tbody>
-                                      {batchListData.length > 0 ? (
-                                        <>
-                                          {batchListData.map((item) => (
-                                            <tr
-                                              className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                                String(item.id)
-                                                ? "highlighted-row"
-                                                : ""
-                                                }`}
-                                              key={item.id}
-                                              data-id={item.id}
-                                              tabIndex={0}
-                                              style={{
-                                                border:
-                                                  "1px solid rgba(4, 76, 157, 0.1)",
-                                                padding: "10px",
-                                                outline: "none",
-                                              }}
-                                              onClick={() =>
-                                                handlePassData(item)
-                                              }
-                                              onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
-                                              onMouseEnter={handleMouseEnter}
-                                            >
-                                              <td className="text-base font-semibold">
-                                                {item.iteam_name}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.batch_number}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.unit}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.expiry_date}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.mrp}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.qty}
-                                              </td>
-                                              <td className="text-base font-semibold">
-                                                {item.location}
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </>
-                                      ) : (
-                                        <tr>
-                                          <td
-                                            colSpan={6}
-                                            style={{
-                                              textAlign: "center",
-                                              fontSize: "16px",
-                                              fontWeight: 600,
-                                            }}
-                                          >
-                                            No record found
-                                          </td>
-                                        </tr>
-                                      )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </Box>
-                            )}
-
-                          </div>
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            id="outlined-number"
-                            disabled
-                            type="number"
-                            inputRef={inputRef1}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 0 for Unit, so none)
-                                e.preventDefault();
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[1]?.current) {
-                                  itemRowInputOrder[1].current.focus();
-                                }
-                              }
-                            }}
-                            size="small"
-                            value={unit}
-                            sx={{ width: "100px" }}
-                            onChange={(e) => {
-                              setUnit(e.target.value);
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            id="outlined-number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            disabled
-                            value={batch}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 1 for Batch, so 0)
-                                e.preventDefault();
-                                if (itemRowInputOrder[0]?.current) {
-                                  itemRowInputOrder[0].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[2]?.current) {
-                                  itemRowInputOrder[2].current.focus();
-                                }
-                              }
-                            }}
-                            onChange={(e) => {
-                              setBatch(e.target.value);
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            id="outlined-number"
-                            disabled
-                            size="small"
-                            sx={{ width: "100px" }}
-                            inputRef={inputRef3}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 2 for Expiry, so 1)
-                                e.preventDefault();
-                                if (itemRowInputOrder[1]?.current) {
-                                  itemRowInputOrder[1].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[3]?.current) {
-                                  itemRowInputOrder[3].current.focus();
-                                }
-                              }
-                            }}
-                            value={expiryDate}
-                            onChange={handleExpiryDateChange}
-                            placeholder="MM/YY"
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            disabled
-                            id="outlined-number"
-                            type="number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            inputRef={inputRef4}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 3 for MRP, so 2)
-                                e.preventDefault();
-                                if (itemRowInputOrder[2]?.current) {
-                                  itemRowInputOrder[2].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[4]?.current) {
-                                  itemRowInputOrder[4].current.focus();
-                                }
-                              }
-                            }}
-                            value={mrp}
-                            onChange={(e) => {
-                              setMRP(e.target.value);
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-number"
-                            type="number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            inputRef={inputRef5}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 4 for Base, so 3)
-                                e.preventDefault();
-                                if (itemRowInputOrder[3]?.current) {
-                                  itemRowInputOrder[3].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                if (base === "" || base === null || base === undefined) {
-                                  toast.error("Base is required");
-                                  e.preventDefault();
-                                  return;
-                                }
-                                e.preventDefault();
-                                if (itemRowInputOrder[5]?.current) {
-                                  itemRowInputOrder[5].current.focus();
-                                }
-                              }
-                            }}
-                            value={base}
-                            onChange={(e) => {
-                              setBase(e.target.value);
-                            }}
-
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            id="outlined-number"
-                            type="number"
-                            disabled
-                            size="small"
-                            inputRef={inputRef6}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 5 for GST, so 4)
-                                e.preventDefault();
-                                if (itemRowInputOrder[4]?.current) {
-                                  itemRowInputOrder[4].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[6]?.current) {
-                                  itemRowInputOrder[6].current.focus();
-                                }
-                              }
-                            }}
-                            sx={{ width: "100px" }}
-                            value={gst}
-                            onChange={(e) => {
-                              setGst(e.target.value);
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-number"
-                            type="number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            inputRef={inputRef7}
-                            value={qty}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 6 for Qty, so 5)
-                                e.preventDefault();
-                                if (itemRowInputOrder[5]?.current) {
-                                  itemRowInputOrder[5].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                if (qty === "" || qty === null || qty === undefined) {
-                                  toast.error("Qty is required");
-                                  e.preventDefault();
-                                  return;
-                                }
-                                e.preventDefault();
-                                if (itemRowInputOrder[7]?.current) {
-                                  itemRowInputOrder[7].current.focus();
-                                }
-                              }
-                            }}
-                            onChange={(e) => {
-                              handleQtyChange(e);
-                              if (
-                                (e.key === "Enter" || e.key === "Tab") &&
-                                Number(qty) === maxQty
-                              ) {
-                                setOrder("O");
-                              }
-                            }}
-                          />
-                        </td>
-
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            id="outlined-number"
-                            size="small"
-                            inputRef={inputRef9}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 7 for Loc, so 6)
-                                e.preventDefault();
-                                if (itemRowInputOrder[6]?.current) {
-                                  itemRowInputOrder[6].current.focus();
-                                }
-                                return;
-                              }
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                e.preventDefault();
-                                if (itemRowInputOrder[8]?.current) {
-                                  itemRowInputOrder[8].current.focus();
-                                }
-                              }
-                            }}
-                            disabled
-                            sx={{ width: "100px" }}
-                            value={loc}
-                            onChange={(e) => {
-                              setLoc(e.target.value);
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: "10px", textAlign: "center" }}>
-                          <TextField
-                            autoComplete="off"
-                            id="outlined-number"
-                            sx={{ width: "100px" }}
-                            size="small"
-                            value={order}
-                            inputRef={inputRef8}
-                            onKeyDown={(e) => {
-                              if (e.key === "Tab" && e.shiftKey) {
-                                // Move to previous input (index 8 for Order, so 7)
-                                e.preventDefault();
-                                if (itemRowInputOrder[7]?.current) {
-                                  itemRowInputOrder[7].current.focus();
-                                }
-                                return;
-                              }
-                              handleKeyDown(e);
-                              if (e.key === "Enter") {
-                                addItemValidation();
-                              }
-                            }}
-                            onChange={(e) => {
-                              const value = e.target.value.toUpperCase();
-                              if (value === "" || value === "O") {
-                                setOrder(value);
-                              }
-                            }}
-                          />
-                        </td>
-                        <td
-                          className="total "
-                          style={{ padding: "10px", textAlign: "center" }}
-                        >
-                          {itemAmount}
-                        </td>
-                      </tr>
-
-                      {ItemSaleList?.sales_item?.map((item, index) => (
-                        <tr
-                          key={item.id}
-                          style={{ whiteSpace: "nowrap" }}
-                          onClick={() => {
-                            handleEditClick(item);
-                            setSelectedIndex(index);
-                          }}
-                          className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                        >
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "8px",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            <BorderColorIcon
-                              style={{ color: "#969100" }}
-                              color="primary"
-                              className="cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditClick(item);
-                              }}
-                            />
-                            <DeleteIcon
-                              className="delete-icon"
-                              style={{ color: "#F20000" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteOpen(item.id);
-                              }}
-                            />
-                            {item.iteam_name || barcodeItemName}
-                          </td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
-                          <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {/* } */}
-              </div>
-              {/*<====================================================================== bottom details   =====================================================================> */}
-
+          <div
+            className="sale_filtr_add"
+            style={{
+              background: "var(--color1)",
+              color: "white",
+              display: "flex",
+              flexDirection: "column",
+              position: "fixed",
+              width: "100%",
+              bottom: "0",
+              left: "0",
+            }}
+          >
+            <div
+              className=""
+              style={{
+                display: "flex",
+                whiteSpace: "nowrap",
+                position: "sticky",
+                left: "0",
+                overflow: "auto",
+                padding: "20px",
+              }}
+            >
               <div
-                className="sale_filtr_add"
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total GST : </label>
+
+                <span style={{ fontWeight: 600 }}> {totalgst} </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Base : </label>
+                <span style={{ fontWeight: 600 }}> {totalBase} </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Profit : </label>
+                <span style={{ fontWeight: 600 }}>
+                  ₹ {marginNetProfit || 0} (
+                  {Number(totalMargin || 0).toFixed(2)}%)
+                </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Net Rate : </label>
+                <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
+              </div>
+            </div>
+            <hr
+              style={{
+                opacity: 0.5,
+                position: "sticky",
+                left: "0",
+                width: "100%",
+              }}
+            />
+            <div
+              className=""
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                whiteSpace: "nowrap",
+                padding: "20px",
+                alignItems: "baseline",
+                overflow: "auto",
+              }}
+            >
+              <div
+                className=""
                 style={{
-                  background: "var(--color1)",
-                  color: "white",
                   display: "flex",
-                  flexDirection: "column",
-                  position: "fixed",
-                  width: "100%",
-                  bottom: "0",
+                  whiteSpace: "nowrap",
                   left: "0",
                 }}
               >
                 <div
-                  className=""
-                  style={{
-                    display: "flex",
-                    whiteSpace: "nowrap",
-                    position: "sticky",
-                    left: "0",
-                    overflow: "auto",
-                    padding: "20px",
-                  }}
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
                 >
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Total GST : </label>
-
-                    <span style={{ fontWeight: 600 }}> {totalgst} </span>
-                  </div>
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Total Base : </label>
-                    <span style={{ fontWeight: 600 }}> {totalBase} </span>
-                  </div>
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Profit : </label>
-                    <span style={{ fontWeight: 600 }}>
-                      ₹ {marginNetProfit || 0} (
-                      {Number(totalMargin || 0).toFixed(2)}%)
-                    </span>
-                  </div>
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Total Net Rate : </label>
-                    <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
-                  </div>
+                  <label className="font-bold">Today Points : </label>
+                  {todayLoyltyPoint || 0}
                 </div>
-                <hr
-                  style={{
-                    opacity: 0.5,
-                    position: "sticky",
-                    left: "0",
-                    width: "100%",
-                  }}
-                />
                 <div
-                  className=""
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Previous Points : </label>
+                  {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Redeem : </label>
+                  <Input
+                    type="number"
+                    value={loyaltyVal}
+                    // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      const numericValue = Math.floor(Number(value));
+
+                      const maxAllowedPoints = Math.min(
+                        maxLoyaltyPoints,
+                        totalAmount
+                      );
+
+                      if (
+                        numericValue >= 0 &&
+                        numericValue <= maxAllowedPoints
+                      ) {
+                        setLoyaltyVal(numericValue);
+                      } else if (numericValue < 0) {
+                        setLoyaltyVal(0);
+                      }
+                      setUnsavedItems(true);
+                    }}
+                    onKeyPress={(e) => {
+                      const value = e.target.value;
+                      const isMinusKey = e.key === "-";
+
+                      if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+
+                      if (isMinusKey && value.includes("-")) {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px",
+                      background: "none",
+                      borderBottom: "1px solid gray",
+                      justifyItems: "end",
+                      outline: "none",
+                      color: "white",
+                    }}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "35px",
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" },
+                    }}
+                  />
+                  {/* {previousLoyaltyPoints} */}
+                </div>
+              </div>
+
+              <div style={{ display: "flex", whiteSpace: "nowrap" }}>
+                <div
+                  className="gap-2 "
+                  onClick={toggleModal}
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    whiteSpace: "nowrap",
-                    padding: "20px",
-                    alignItems: "baseline",
-                    overflow: "auto",
+                    alignItems: "center",
+                    cursor: "pointer",
                   }}
                 >
-                  <div
-                    className=""
+                  <label className="font-bold">Net Amount : </label>
+                  <span
+                    className="gap-1"
                     style={{
-                      display: "flex",
+                      fontWeight: 800,
+                      fontSize: "22px",
                       whiteSpace: "nowrap",
-                      left: "0",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {netAmount}
+                    <FaCaretUp />
+                  </span>
+                </div>
+
+                <Modal
+                  show={isModalOpen}
+                  onClose={toggleModal}
+                  size="lg"
+                  position="bottom-center"
+                  className="modal_amount"
+                // style={{ width: "50%" }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                      color: "white",
+                      padding: "20px",
+                      fontSize: "larger",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h2 style={{ textTransform: "uppercase" }}>
+                      invoice total
+                    </h2>
+                    <IoMdClose
+                      onClick={toggleModal}
+                      cursor={"pointer"}
+                      size={30}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      background: "white",
+                      padding: "20px",
+                      width: "100%",
+                      maxWidth: "600px",
+                      margin: "0 auto",
+                      lineHeight: "2.5rem",
                     }}
                   >
                     <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <label className="font-bold">Today Points : </label>
-                      {todayLoyltyPoint || 0}
+                      <label className="font-bold">Total Amount : </label>
+                      <span style={{ fontWeight: 600 }}>{totalAmount}</span>
                     </div>
                     <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <label className="font-bold">Previous Points : </label>
-                      {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
-                    </div>
-                    <div
-                      className="gap-2 invoice_total_fld"
-                      style={{ display: "flex" }}
-                    >
-                      <label className="font-bold">Redeem : </label>
+                      <label className="font-bold">Discount(%) : </label>
                       <Input
                         type="number"
-                        value={loyaltyVal}
-                        // onChange={(e) => { setLoyaltyVal(e.target.value) }}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          const numericValue = Math.floor(Number(value));
-
-                          const maxAllowedPoints = Math.min(
-                            maxLoyaltyPoints,
-                            totalAmount
-                          );
-
-                          if (
-                            numericValue >= 0 &&
-                            numericValue <= maxAllowedPoints
-                          ) {
-                            setLoyaltyVal(numericValue);
-                          } else if (numericValue < 0) {
-                            setLoyaltyVal(0);
-                          }
-                          setUnsavedItems(true);
-                        }}
+                        value={finalDiscount}
                         onKeyPress={(e) => {
-                          const value = e.target.value;
-                          const isMinusKey = e.key === "-";
-
-                          if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
+                          if (
+                            !/[0-9.]/.test(e.key) &&
+                            e.key !== "Backspace"
+                          ) {
                             e.preventDefault();
                           }
+                        }}
+                        onChange={(e) => {
+                          let newValue = e.target.value;
 
-                          if (isMinusKey && value.includes("-")) {
-                            e.preventDefault();
+                          if (newValue > 100) {
+                            setFinalDiscount(100);
+                          } else if (newValue >= 0) {
+                            setFinalDiscount(newValue);
                           }
                         }}
                         size="small"
                         style={{
                           width: "70px",
                           background: "none",
-                          borderBottom: "1px solid gray",
-                          justifyItems: "end",
+                          // borderBottom: "1px solid gray",
                           outline: "none",
-                          color: "white",
+                          justifyItems: "end",
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
@@ -3146,247 +3259,129 @@ const Addsale = () => {
                           "& .MuiInputBase-input": { textAlign: "end" },
                         }}
                       />
-                      {/* {previousLoyaltyPoints} */}
                     </div>
-                  </div>
-
-                  <div style={{ display: "flex", whiteSpace: "nowrap" }}>
                     <div
-                      className="gap-2 "
-                      onClick={toggleModal}
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <label className="font-bold">Other Amount : </label>
+                      <Input
+                        type="number"
+                        value={otherAmt}
+                        onKeyPress={(e) => {
+                          const value = e.target.value;
+                          const isMinusKey = e.key === "-";
+
+                          if (
+                            !/[0-9.-]/.test(e.key) &&
+                            e.key !== "Backspace"
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          if (isMinusKey && value.includes("-")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onChange={handleOtherAmtChange}
+                        size="small"
+                        style={{
+                          width: "70px",
+                          background: "none",
+                          // borderBottom: "1px solid gray",
+                          justifyItems: "end",
+                          outline: "none",
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            height: "35px",
+                          },
+                          "& .MuiInputBase-input": { textAlign: "end" },
+                        }}
+                      />
+                    </div>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <label className="font-bold">
+                        Loyalty Points Redeem:{" "}
+                      </label>
+                      <span>{loyaltyVal || 0}</span>
+                    </div>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                      }}
+                    >
+                      <label className="font-bold">
+                        Discount Amount :{" "}
+                      </label>
+                      {discountAmount !== 0 && (
+                        <span>
+                          {discountAmount > 0
+                            ? `-${discountAmount}`
+                            : discountAmount}
+                        </span>
+                      )}
+                    </div>
+
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                        borderTop:
+                          "1px solid var(--toastify-spinner-color-empty-area)",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Round Off : </label>
+                      <span>{!roundOff ? 0 : roundOff}</span>
+                    </div>
+
+                    <div
+                      className=""
                       style={{
                         display: "flex",
                         alignItems: "center",
                         cursor: "pointer",
+                        justifyContent: "space-between",
+                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                        paddingTop: "5px",
                       }}
                     >
-                      <label className="font-bold">Net Amount : </label>
+                      <label className="font-bold">Net Amount: </label>
                       <span
-                        className="gap-1"
                         style={{
                           fontWeight: 800,
                           fontSize: "22px",
-                          whiteSpace: "nowrap",
-                          display: "flex",
-                          alignItems: "center",
+                          color: "var(--COLOR_UI_PHARMACY)",
                         }}
                       >
                         {netAmount}
-                        <FaCaretUp />
                       </span>
                     </div>
-
-                    <Modal
-                      show={isModalOpen}
-                      onClose={toggleModal}
-                      size="lg"
-                      position="bottom-center"
-                      className="modal_amount"
-                    // style={{ width: "50%" }}
-                    >
-                      <div
-                        style={{
-                          backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                          color: "white",
-                          padding: "20px",
-                          fontSize: "larger",
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <h2 style={{ textTransform: "uppercase" }}>
-                          invoice total
-                        </h2>
-                        <IoMdClose
-                          onClick={toggleModal}
-                          cursor={"pointer"}
-                          size={30}
-                        />
-                      </div>
-                      <div
-                        style={{
-                          background: "white",
-                          padding: "20px",
-                          width: "100%",
-                          maxWidth: "600px",
-                          margin: "0 auto",
-                          lineHeight: "2.5rem",
-                        }}
-                      >
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <label className="font-bold">Total Amount : </label>
-                          <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                        </div>
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <label className="font-bold">Discount(%) : </label>
-                          <Input
-                            type="number"
-                            value={finalDiscount}
-                            onKeyPress={(e) => {
-                              if (
-                                !/[0-9.]/.test(e.key) &&
-                                e.key !== "Backspace"
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
-                            onChange={(e) => {
-                              let newValue = e.target.value;
-
-                              if (newValue > 100) {
-                                setFinalDiscount(100);
-                              } else if (newValue >= 0) {
-                                setFinalDiscount(newValue);
-                              }
-                            }}
-                            size="small"
-                            style={{
-                              width: "70px",
-                              background: "none",
-                              // borderBottom: "1px solid gray",
-                              outline: "none",
-                              justifyItems: "end",
-                            }}
-                            sx={{
-                              "& .MuiInputBase-root": {
-                                height: "35px",
-                              },
-                              "& .MuiInputBase-input": { textAlign: "end" },
-                            }}
-                          />
-                        </div>
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <label className="font-bold">Other Amount : </label>
-                          <Input
-                            type="number"
-                            value={otherAmt}
-                            onKeyPress={(e) => {
-                              const value = e.target.value;
-                              const isMinusKey = e.key === "-";
-
-                              if (
-                                !/[0-9.-]/.test(e.key) &&
-                                e.key !== "Backspace"
-                              ) {
-                                e.preventDefault();
-                              }
-
-                              if (isMinusKey && value.includes("-")) {
-                                e.preventDefault();
-                              }
-                            }}
-                            onChange={handleOtherAmtChange}
-                            size="small"
-                            style={{
-                              width: "70px",
-                              background: "none",
-                              // borderBottom: "1px solid gray",
-                              justifyItems: "end",
-                              outline: "none",
-                            }}
-                            sx={{
-                              "& .MuiInputBase-root": {
-                                height: "35px",
-                              },
-                              "& .MuiInputBase-input": { textAlign: "end" },
-                            }}
-                          />
-                        </div>
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <label className="font-bold">
-                            Loyalty Points Redeem:{" "}
-                          </label>
-                          <span>{loyaltyVal || 0}</span>
-                        </div>
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            paddingBottom: "5px",
-                          }}
-                        >
-                          <label className="font-bold">
-                            Discount Amount :{" "}
-                          </label>
-                          {discountAmount !== 0 && (
-                            <span>
-                              {discountAmount > 0
-                                ? `-${discountAmount}`
-                                : discountAmount}
-                            </span>
-                          )}
-                        </div>
-
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            paddingBottom: "5px",
-                            borderTop:
-                              "1px solid var(--toastify-spinner-color-empty-area)",
-                            paddingTop: "5px",
-                          }}
-                        >
-                          <label className="font-bold">Round Off : </label>
-                          <span>{!roundOff ? 0 : roundOff}</span>
-                        </div>
-
-                        <div
-                          className=""
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                            justifyContent: "space-between",
-                            borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                            paddingTop: "5px",
-                          }}
-                        >
-                          <label className="font-bold">Net Amount: </label>
-                          <span
-                            style={{
-                              fontWeight: 800,
-                              fontSize: "22px",
-                              color: "var(--COLOR_UI_PHARMACY)",
-                            }}
-                          >
-                            {netAmount}
-                          </span>
-                        </div>
-                      </div>
-                    </Modal>
                   </div>
-                </div>
+                </Modal>
               </div>
             </div>
           </div>
+
+
         </div>
+
+
 
         {/*<====================================================================== Add Doctor  =====================================================================> */}
 
@@ -3956,56 +3951,65 @@ const Addsale = () => {
             </div>
           </div>
         </div>
-      </div>
-      {/*<====================================================================== Leave page modal  =====================================================================> */}
 
-      <Prompt
-        when={unsavedItems}
-        message={(location) => {
-          handleNavigation(location.pathname);
-          return false;
-        }}
-      />
-      <div
-        id="modal"
-        value={openModal}
-        style={{ zIndex: 9999 }}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
-          }`}
-      >
-        <div />
+        {/*<====================================================================== Leave page modal  =====================================================================> */}
 
-        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-          <div className="my-4 logout-icon">
-            <VscDebugStepBack
-              className=" h-12 w-14"
-              style={{ color: "#628A2F" }}
-            />
-            <h4
-              className="text-lg font-semibold mt-6 text-center"
-              style={{ textTransform: "none" }}
-            >
-              Are you sure you want to leave this page ?
-            </h4>
-          </div>
-          <div className="flex gap-5 justify-center">
-            <button
-              type="submit"
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-              onClick={handleLeavePage}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-              onClick={() => setOpenModal(false)}
-            >
-              Cancel
-            </button>
+        <Prompt
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            return false;
+          }}
+        />
+        <div
+          id="modal"
+          value={openModal}
+          style={{ zIndex: 9999 }}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+            }`}
+        >
+          <div />
+
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack
+                className=" h-12 w-14"
+                style={{ color: "#628A2F" }}
+              />
+              <h4
+                className="text-lg font-semibold mt-6 text-center"
+                style={{ textTransform: "none" }}
+              >
+                Are you sure you want to leave this page ?
+              </h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={() => setOpenModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
+
+        {showModal && (
+          <TipsModal
+            id="add-purchase"
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </div>
+
     </>
   );
 };

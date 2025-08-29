@@ -53,7 +53,6 @@ const LoginSignup = () => {
 
   const NewUser = location.state?.NewUser; // Access the passed state
 
-  const handleMouseDownPassword = (event) => event.preventDefault();
 
   // const handleClickPassword = () => setShowPasswordIcon((show) => !show);
   {/*<======================================================================= navigate based on user role   ==============================================================> */ }
@@ -146,9 +145,10 @@ const LoginSignup = () => {
       newErrors.mobile_number = "mobile No is required";
       toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(registerData.mobile_number)) {
-      newErrors.mobile_number = "Mobile number must be 10 digits";
-      toast.error("Mobile number must be 10 digits");
+      newErrors.mobile_number = "Mobile number must 10 numbers";;
+      toast.error("Mobile number must 10 numbers");
     }
+
     if (!registerData.email) {
       newErrors.email = "Email Id is required";
       toast.error("Email Id is required");
@@ -884,7 +884,7 @@ const LoginSignup = () => {
             <div className="toggle-panel toggle-left">
               <div className="header-logo1">
                 <a href='index.html'>
-                <img src={loginlogo} alt="logo" width="150px" />
+                  <img src={loginlogo} alt="logo" width="150px" />
 
                 </a>
               </div>

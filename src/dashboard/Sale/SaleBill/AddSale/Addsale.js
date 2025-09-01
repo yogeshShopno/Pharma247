@@ -173,6 +173,8 @@ const Addsale = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitTimeout, setSubmitTimeout] = useState(null);
 
   const [billSaveDraft, setBillSaveDraft] = useState("0");
   const toggleModal = () => {
@@ -304,9 +306,11 @@ const Addsale = () => {
 
       const key = event.key.toLowerCase();
       event.preventDefault(); // Prevent default browser behavior
+      if (isSubmitting) return;
 
       switch (key) {
         case "s":
+          setIsSubmitting(true);
           setBillSaveDraft("1");
           handleSubmit("1");
           break;
@@ -321,12 +325,32 @@ const Addsale = () => {
           break;
 
         case "m":
-          setSelectedEditItemId(null);
           setSearchItem("");
           setValue("");
           setItem("");
           setItemId(null);
           resetValue();
+          setExpiryDate("");
+          setMRP("");
+          setBase("");
+          setGst("");
+          setQty("");
+          setLoc("");
+          setUnit("");
+          setBatch("");
+          setIsVisible(false); // Close dropdown when no item is selected
+          tableRef1.current?.blur(); // <-- explicitly blur it
+          setSelectedEditItem(null);
+          setIsEditMode(false);
+          setSelectedEditItemId("");
+          setItemEditID(0);
+          resetValue();
+          searchInputRef.current?.focus();
+
+          if (isVisible && value && !batch) {
+            tableRef.current.focus();
+            if (!item) return; // Ensure the item is valid.
+          }
           setSelectedOption(null);
           if (searchInputRef.current) {
             searchInputRef.current.focus();
@@ -344,7 +368,7 @@ const Addsale = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [billNo, ItemSaleList]);
+  }, [billNo, ItemSaleList, isSubmitting]);
   // Dependencies only affect Alt+S
 
   //   const handleKeyDown = (event, index) => {
@@ -382,6 +406,7 @@ const Addsale = () => {
     { id: "bill_date", label: "Date", minWidth: 100 },
     { id: "bill_no", label: "Bill No", minWidth: 100 },
   ];
+
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/\D/g, "");
@@ -404,6 +429,7 @@ const Addsale = () => {
     lastPurchseHistory();
     setSearchItemID(id);
   };
+
   useEffect(() => {
     const discount = (totalAmount * finalDiscount) / 100;
     setDiscountAmount(discount.toFixed(2));
@@ -564,6 +590,8 @@ const Addsale = () => {
     }
   }, [itemId, base, qty]);
 
+  /*<========================================================================= update state   ====================================================================> */
+
   useEffect(() => {
     if (selectedEditItem) {
       setUnit(selectedEditItem.unit);
@@ -579,6 +607,132 @@ const Addsale = () => {
       inputRef5.current.focus();
     }
   }, [selectedEditItem]);
+
+  // CORRECTED (NEW) — add once among your effects to clear the timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (submitTimeout) clearTimeout(submitTimeout);
+    };
+  }, [submitTimeout]);
+
+  /*<========================================================================= search add item   ====================================================================> */
+
+  const handleSearch = async (searchItem) => {
+    let data = new FormData();
+    data.append("search", searchItem);
+    try {
+      const res = await axios.post("item-search", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const items = res.data.data.data;
+      setItemList(items);
+
+      const allOutOfStock = items.every((item) => item.stock === 0);
+
+      // if (allOutOfStock) {
+      //   // console.log('Search Item-------');
+      //   fetchItemDrugGroup(searchItem);
+      // }
+
+      return items;
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
+  const handelAddItemOpen = () => {
+    setUnsavedItems(true);
+    setOpenAddItemPopUp(true);
+
+    setTimeout(() => {
+      if (itemNameInputRef.current) {
+        itemNameInputRef.current.focus();
+      }
+    }, 0);
+  };
+
+  const handleInputChange = (event, newInputValue) => {
+    setUnsavedItems(true);
+    setSearchItem(newInputValue);
+    handleSearch(newInputValue);
+  };
+
+
+  const handleOptionChange = (event, newValue) => {
+    setUnsavedItems(true);
+
+    setSelectedOption(newValue);
+    setValue(newValue);
+    const itemName = newValue ? newValue.iteam_name : "";
+
+    setSearchItem(itemName);
+    setItemId(newValue?.id);
+    setIsVisible(true);
+    handleSearch(itemName);
+    if (!itemName) {
+      setExpiryDate("");
+      setMRP("");
+      setBase("");
+      setGst("");
+      setQty("");
+      setLoc("");
+      setUnit("");
+      setBatch("");
+      setIsVisible(false); // Close dropdown when no item is selected
+    }
+    tableRef1.current?.blur(); // <-- explicitly blur it
+
+    // setSelectedIndex(0)
+    setSelectedEditItem(null);
+    setIsEditMode(false);
+    setSelectedEditItemId("");
+    setItemEditID(0);
+    resetValue();
+    searchInputRef.current?.focus();
+
+    if (isVisible && value && !batch) {
+      tableRef.current.focus();
+      if (!item) return; // Ensure the item is valid.
+    }
+  };
+
+  const handlePassData = (event) => {
+
+    setItemId(event.item_id);
+    setSelectedOption(event);
+    setSelectedEditItemId(event.id);
+    setSearchItem(event.iteam_name);
+    setBatch(event.batch_number);
+    setItem(event.iteam_name);
+    setUnit(event.unit);
+    setExpiryDate(event.expiry_date);
+    setMRP(event.mrp);
+    setMaxQty(event.stock);
+    setBase(event.mrp);
+    setGst(event.gst_name);
+    // setQty(event.qty);
+    setLoc(event.location);
+    setTempQty(event.qty);
+
+    if (inputRef5.current) {
+      inputRef5.current.focus();
+    }
+    setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
+
+    setUniqueItems((uniqueItems) => {
+      // avoid duplicates by id
+      const exists = uniqueItems.some((item) => item.id === event.id);
+      if (exists) return uniqueItems;
+
+      return [...uniqueItems, { id: event.id, stock: event.stock }];
+    });
+
+
+  };
+  /*<========================================================================= add new item   ====================================================================> */
 
   const handleAddNewItemValidation = () => {
     const newErrors = {};
@@ -652,31 +806,8 @@ const Addsale = () => {
     }
   };
 
-  const handleSearch = async (searchItem) => {
-    let data = new FormData();
-    data.append("search", searchItem);
-    try {
-      const res = await axios.post("item-search", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      const items = res.data.data.data;
-      setItemList(items);
-
-      const allOutOfStock = items.every((item) => item.stock === 0);
-
-      // if (allOutOfStock) {
-      //   // console.log('Search Item-------');
-      //   fetchItemDrugGroup(searchItem);
-      // }
-
-      return items;
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
+  /*<========================================================================= Find drug group   ====================================================================> */
 
   const fetchItemDrugGroup = async (searchItem) => {
     let data = new FormData();
@@ -711,6 +842,8 @@ const Addsale = () => {
     setAddBarcode("");
   };
 
+  /*<========================================================================= fetch customer data   ====================================================================> */
+
   const customerAllData = async (searchQuery) => {
     let data = new FormData();
     data.append("search", searchQuery);
@@ -744,6 +877,21 @@ const Addsale = () => {
     }
   };
 
+  useEffect(() => {
+    customerAllData();
+    if (searchInputRef.current) {
+      searchInputRef.current.focus(); // Focus on the search item name field
+    }
+    generateRandomNumber();
+    let data = new FormData();
+    data.append("random_number", localStorage.getItem("RandomNumber") || "");
+    axios.post("all-sales-item-delete", data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }, []);
+
+  /*<========================================================================= fetch bank data   ====================================================================> */
+
   const BankList = async () => {
     let data = new FormData();
     try {
@@ -765,22 +913,6 @@ const Addsale = () => {
     }
   };
 
-  const handelAddItemOpen = () => {
-    setUnsavedItems(true);
-    setOpenAddItemPopUp(true);
-
-    setTimeout(() => {
-      if (itemNameInputRef.current) {
-        itemNameInputRef.current.focus();
-      }
-    }, 0);
-  };
-
-  const handleInputChange = (event, newInputValue) => {
-    setUnsavedItems(true);
-    setSearchItem(newInputValue);
-    handleSearch(newInputValue);
-  };
 
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
@@ -798,83 +930,9 @@ const Addsale = () => {
     }
   };
 
-  const handleOptionChange = (event, newValue) => {
-    setUnsavedItems(true);
-
-    setSelectedOption(newValue);
-    setValue(newValue);
-    const itemName = newValue ? newValue.iteam_name : "";
-
-    setSearchItem(itemName);
-    setItemId(newValue?.id);
-    setIsVisible(true);
-    handleSearch(itemName);
-    if (!itemName) {
-      setExpiryDate("");
-      setMRP("");
-      setBase("");
-      setGst("");
-      setQty("");
-      setLoc("");
-      setUnit("");
-      setBatch("");
-      setIsVisible(false); // Close dropdown when no item is selected
-    }
-    tableRef1.current?.blur(); // <-- explicitly blur it
-
-    // setSelectedIndex(0)
-    setSelectedEditItem(null);
-    setIsEditMode(false);
-    setSelectedEditItemId("");
-    setItemEditID(0);
-    resetValue();
-    searchInputRef.current?.focus();
-
-    if (isVisible && value && !batch) {
-      tableRef.current.focus();
-      if (!item) return; // Ensure the item is valid.
-    }
-  };
-
-  const handlePassData = (event) => {
-
-    setItemId(event.item_id);
-    setSelectedOption(event);
-    setSelectedEditItemId(event.id);
-    setSearchItem(event.iteam_name);
-    setBatch(event.batch_number);
-    setItem(event.iteam_name);
-    setUnit(event.unit);
-    setExpiryDate(event.expiry_date);
-    setMRP(event.mrp);
-    setMaxQty(event.stock);
-    setBase(event.mrp);
-    setGst(event.gst_name);
-    // setQty(event.qty);
-    setLoc(event.location);
-    setTempQty(event.qty);
-
-    if (inputRef5.current) {
-      inputRef5.current.focus();
-    }
-    setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
-
-    setUniqueItems((uniqueItems) => {
-      // avoid duplicates by id
-      const exists = uniqueItems.some((item) => item.id === event.id);
-      if (exists) return uniqueItems;
-
-      return [...uniqueItems, { id: event.id, stock: event.stock }];
-    });
 
 
-  };
 
-
-  const handleDoctorOption = (event, newValue) => {
-    setDoctor(newValue);
-    setUnsavedItems(true);
-  };
 
   // Define the order of refs for the item entry row (from first td to last td)
   const itemRowInputOrder = [
@@ -904,6 +962,7 @@ const Addsale = () => {
       // Optionally, focus a save/add button or do nothing if at the end
     }
   };
+  /*<========================================================================= add doctor   ====================================================================> */
 
   const AddDoctorRecord = async () => {
     if (!doctorName || !clinic) {
@@ -937,6 +996,7 @@ const Addsale = () => {
       }
     }
   };
+  /*<========================================================================= add customer   ====================================================================> */
 
   const AddCustomerRecord = async () => {
     if (!customerName.trim() || !mobileNo.trim()) {
@@ -969,6 +1029,8 @@ const Addsale = () => {
     }
   };
 
+  /*<========================================================================= purchase history   ====================================================================> */
+
   const lastPurchseHistory = async () => {
     let data = new FormData();
     const params = {
@@ -991,6 +1053,7 @@ const Addsale = () => {
       console.error("API error:", error);
     }
   };
+  /*<================================================================== state update immediatly  =============================================================> */
 
   useEffect(() => {
     if (selectedEditItem) {
@@ -1004,6 +1067,7 @@ const Addsale = () => {
 
   }, [selectedEditItem]);
 
+  /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
     if (!item) return;
@@ -1012,15 +1076,16 @@ const Addsale = () => {
     setSelectedEditItemId();
     setSelectedOption(item);
 
-      const found = uniqueItems.find(u => u.id === item.id);
+    const found = uniqueItems.find(u => u.id === item.id);
 
-  if (found) {
-    setMaxQty(found.stock); // use stock from uniqueItems
-  } else {
-    setMaxQty(item.stock); // fallback to item stock
-  }
+    if (found) {
+      setMaxQty(found.stock); // use stock from uniqueItems
+    } else {
+      setMaxQty(item.stock); // fallback to item stock
+    }
 
   };
+  /*<========================================================================= get added item  ====================================================================> */
 
   const saleItemList = async () => {
     let data = new FormData();
@@ -1057,6 +1122,8 @@ const Addsale = () => {
       console.error("API error:", error);
     }
   };
+  /*<========================================================================= handle barcode  ====================================================================> */
+
   const handleBarcode = async () => {
     if (!barcode) {
       return;
@@ -1215,7 +1282,24 @@ const Addsale = () => {
     }
   };
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleBarcode();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [barcode]);
+
+  /*<========================================================================= save sale bill  ====================================================================> */
+
   const handleSubmit = (draft) => {
+
+
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
+    setIsSubmitting(true); // Lock
+
     setUnsavedItems(false);
     const newErrors = {};
     if (!customer) {
@@ -1235,12 +1319,20 @@ const Addsale = () => {
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
+      setIsSubmitting(false);
+
       return;
+
     }
     submitSaleData(draft);
   };
 
   const submitSaleData = async (draft) => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
+
     let data = new FormData();
     // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
     const calculatedPreviousLoyaltyPoint =
@@ -1336,13 +1428,28 @@ const Addsale = () => {
           }
           pdfGenerator(saleId);
         }
-        setTimeout(() => {
+
+        // Add cooldown period
+        const timeout = setTimeout(() => {
+          setIsSubmitting(false);
           history.push("/salelist");
         }, 2000);
+
+        setSubmitTimeout(timeout);
+
       } else if (response.data.status === 400) {
+        setIsSubmitting(false); // unlock on known API error
         toast.error(response.data.message);
       }
+
+
     } catch (error) {
+      // Reset after error with shorter cooldown
+      const timeout = setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
+      setSubmitTimeout(timeout);
+
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data.message);
       } else {
@@ -1350,33 +1457,15 @@ const Addsale = () => {
       }
     }
   };
-  useEffect(() => {
-    customerAllData();
-    if (searchInputRef.current) {
-      searchInputRef.current.focus(); // Focus on the search item name field
-    }
-    generateRandomNumber();
-    let data = new FormData();
-    data.append("random_number", localStorage.getItem("RandomNumber") || "");
-    axios.post("all-sales-item-delete", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-  }, []);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleBarcode();
-    }, 1000);
-    return () => clearTimeout(timeoutId);
-  }, [barcode]);
 
+  /*<========================================================================= handle leave page  ====================================================================> */
   const handleNavigation = (path) => {
     setOpenModal(true);
     // setOpenCustomer(false);
     // setOpenAddPopUp(false);
     setNextPath(path);
   };
-
   const handleLeavePage = async () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber") || "");
@@ -1421,6 +1510,7 @@ const Addsale = () => {
   };
 
 
+  /*<========================================================================= get batch list  ====================================================================> */
 
   const batchList = async () => {
     let data = new FormData();
@@ -1458,6 +1548,8 @@ const Addsale = () => {
     }
   };
 
+  /*<========================================================================= generate random number  ====================================================================> */
+
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
       const number = Math.floor(Math.random() * 100000) + 1;
@@ -1467,6 +1559,7 @@ const Addsale = () => {
       return;
     }
   };
+  /*<========================================================================= Add and Edit validation  ====================================================================> */
 
   const addItemValidation = async () => {
 
@@ -1503,7 +1596,11 @@ const Addsale = () => {
     return isValid;
   };
 
+  /*<========================================================================= Add and Edit item function  ====================================================================> */
+
   const addSaleItem = async () => {
+    if (isSubmitting) return false; // Prevent double submissions
+    setIsSubmitting(true); // Lock
     generateRandomNumber();
     let data = new FormData();
 
@@ -1586,8 +1683,11 @@ const Addsale = () => {
       // if (quantityDifference === 1) {
       //     bulkOrderData();
       // }
-    } catch (e) { }
+    } catch (e) { } finally {
+      setIsSubmitting(false); // Unlock
+    }
   };
+  /*<========================================================================= qty validation and calculation  ====================================================================> */
 
   const handleQtyChange = (e) => {
     const val = e.target.value;
@@ -1618,15 +1718,13 @@ const Addsale = () => {
     }
   };
 
-  const deleteOpen = (Id) => {
-    setIsDelete(true);
-    setSaleItemId(Id);
-  };
+
+  /*<========================================================================= reset item value  ====================================================================> */
 
   const resetValue = () => {
     setUnit("");
     setBatch("");
-    setSearchItem(" ");
+    setSearchItem("");
     setExpiryDate("");
     setMRP("");
     setBase("");
@@ -1640,6 +1738,7 @@ const Addsale = () => {
     }
     setIsEditMode(false);
   };
+  /*<========================================================================= delete item  ====================================================================> */
 
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
@@ -1666,10 +1765,8 @@ const Addsale = () => {
     }
   };
 
-  const handleMouseEnter = (e) => {
-    const hoveredRow = e.currentTarget;
-    setHighlightedRowId(hoveredRow);
-  };
+  /*<========================================================================= handle table and keyboard navigation  ====================================================================> */
+
 
   const handleTableKeyDown = (e) => {
     const rows = Array.from(
@@ -1785,6 +1882,7 @@ const Addsale = () => {
       setIsLoading(false);
     }
   };
+
   const handlePdf = (url) => {
     if (typeof url === "string") {
       window.open(url, "_blank");
@@ -1996,7 +2094,7 @@ const Addsale = () => {
               </Select>
 
               <div
-                className="relative inline-block"
+                className="relative inline-block z-index-1000"
                 onMouseEnter={() => {
                   clearTimeout(timeoutRef.current);
                   setIsOpen(true);
@@ -2008,6 +2106,8 @@ const Addsale = () => {
                 <button
                   type="button"
                   className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
+                  disabled={isSubmitting}
+                  aria-disabled={isSubmitting}
                   onClick={() => {
                     setBillSaveDraft("1");
                     handleSubmit("1");
@@ -2142,11 +2242,7 @@ const Addsale = () => {
                     />
                   )}
                 />
-                {error.customer && (
-                  <span style={{ color: "red", fontSize: "14px" }}>
-                    {error.customer}
-                  </span>
-                )}
+
               </div>
               <div
                 className="detail custommedia col-12 col-md-3"
@@ -2302,7 +2398,7 @@ const Addsale = () => {
                     color: "var(--color1)",
                   }}
                 >
-                  Scan Barcode{" "}
+                  Scan Barcode
                   {/* <FaPlusCircle
                         className="icon primary"
                         onClick={() => {
@@ -2319,7 +2415,7 @@ const Addsale = () => {
                   placeholder="scan barcode"
                   // inputRef={inputRef10}
                   // onKeyDown={handleKeyDown}
-                  sx={{ width: "100%", backgroundColor: "white" }}
+                  sx={{ width: "50%", backgroundColor: "white" }}
                   onChange={(e) => {
                     setBarcode(e.target.value);
                   }}
@@ -2594,7 +2690,11 @@ const Addsale = () => {
                                           handlePassData(item)
                                         }
                                         onFocus={() => setAutoCompleteOpen(false)} // Close dropdown on focus
-                                        onMouseEnter={handleMouseEnter}
+                                        onMouseEnter={(e) => {
+                                          const hoveredRow = e.currentTarget;
+                                          setHighlightedRowId(hoveredRow);
+                                        }}
+
                                       >
                                         <td className="text-base font-semibold">
                                           {item.iteam_name}
@@ -2948,7 +3048,7 @@ const Addsale = () => {
                       }}
                     >
                       <BorderColorIcon
-                        style={{ color: "#969100" }}
+                        style={{ color: "var(--color1)" }}
                         color="primary"
                         className="cursor-pointer"
                         onClick={(e) => {
@@ -2961,7 +3061,9 @@ const Addsale = () => {
                         style={{ color: "#F20000" }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteOpen(item.id);
+                          setIsDelete(true);
+                          setSaleItemId(item.id);
+
                         }}
                       />
                       {item.iteam_name || barcodeItemName}

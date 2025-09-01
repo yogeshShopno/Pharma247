@@ -651,6 +651,8 @@ const EditSaleBill = () => {
   };
 
   const handleEditClick = (item) => {
+    if (!item) return;
+
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
     if (!existingItem) {
       setUniqueId((prevUniqueIds) => [
@@ -661,39 +663,42 @@ const EditSaleBill = () => {
     } else {
       setTempQty(existingItem.qty);
     }
-    handleSearch()
+    // handleSearch()
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
     setSearchItem(item.iteam_name);
     setSearchItemID(item.item_id);
     
-    console.log(selectedEditItem);
     const matchedOption = itemList.find(opt => opt.id == item.item_id);
-    setSelectedOption(matchedOption || null);
+    setSelectedOption(item || null);
 
     setValue(matchedOption || null);
 
     // -----------------------------------------------------------------------
 
-    if (selectedEditItem) {
-      setUnit(selectedEditItem.unit);
-      setBatch(selectedEditItem.batch);
-      setExpiryDate(selectedEditItem.exp);
-      setMRP(selectedEditItem.mrp);
-      setQty(item.qty);
-      // setQty(selectedEditItem.qty);
-      setBase(item.base);
-      // setBase(selectedEditItem.base);
-      setOrder(item.order);
-      setGst(item.gst_name);
-      setLoc(selectedEditItem.location);
-      setItemAmount(selectedEditItem.net_rate);
-    }
 
     setTimeout(focusQty, 0);
 
   };
+
+  useEffect(() => {
+        if (selectedEditItem) {
+      setUnit(selectedEditItem.unit);
+      setBatch(selectedEditItem.batch);
+      setExpiryDate(selectedEditItem.exp);
+      setMRP(selectedEditItem.mrp);
+      setQty(selectedEditItem.qty);
+      // setQty(selectedEditItem.qty);
+      setBase(selectedEditItem.base);
+      // setBase(selectedEditItem.base);
+      setOrder(selectedEditItem.order);
+      setGst(selectedEditItem.gst_name);
+      setLoc(selectedEditItem.location);
+      setItemAmount(selectedEditItem.net_rate);
+    }
+
+  }, [selectedEditItem]);
 
   const handleQty = (value) => {
     const newQty = Number(value);

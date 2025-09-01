@@ -130,6 +130,7 @@ const EditSaleBill = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [billSaveDraft, setBillSaveDraft] = useState("0");
+  const [showModal, setShowModal] = useState(false);
 
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
@@ -140,13 +141,35 @@ const EditSaleBill = () => {
   // NEW: separate ref for main sales items table container (to mirror AddSale behavior)
   const tableRef1 = useRef(null);
 
-  const inputRefs = useRef([]);
-  const dateRefs = useRef([]);
+
+  const inputRef1 = useRef(null);
+  const inputRef2 = useRef(null);
+  const inputRef3 = useRef(null);
+  const inputRef4 = useRef(null);
+
 
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
 
+
+  const itemRowInputOrder = [
+    inputRef1, // Item
+    inputRef2, // Base
+    inputRef3, // Qty
+    inputRef4, // Order
+  ];
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+
+  // Helpers to move focus in the Item → Base → Qty → Order order
+  const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
+  const focusItem = () => focusByIndex(0);
+  const focusBase = () => focusByIndex(1);
+  const focusQty = () => focusByIndex(2);
+  const focusOrder = () => focusByIndex(3);
+
+  // (optional) start on Item when the page loads
+  useEffect(() => { focusItem(); }, []);
+
 
   useEffect(() => {
     const handleTableFocus = () => {
@@ -205,7 +228,10 @@ const EditSaleBill = () => {
 
       if (e.key === "Enter" && selectedIndex !== -1) {
         const selectedRow = saleAllData.sales_item[selectedIndex];
-        if (selectedRow) handleEditClick(selectedRow);
+        if (selectedRow) {
+          handleEditClick(selectedRow);
+          setTimeout(focusQty, 0); // ← land on Qty input
+        }
       }
     };
 
@@ -236,6 +262,7 @@ const EditSaleBill = () => {
           break;
 
         case "m":
+          setIsEditMode(false);
           setSelectedEditItemId(null);
           setSearchItem("");
           setValue("");
@@ -243,6 +270,8 @@ const EditSaleBill = () => {
           setItemId(null);
           resetValue();
           setSelectedOption(null);
+          tableRef1.current?.blur();
+          focusItem();   // ← go to Item name
           break;
 
         default:
@@ -257,11 +286,6 @@ const EditSaleBill = () => {
     };
   }, [customer, saleAllData, totalAmount, finalDiscount, loyaltyVal, tempOtherAmt, netAmount, roundOff, marginNetProfit, netRateAmount, margin, discountAmount, totalBase, address, doctor, pickup, dueAmount, givenAmt]); // Add all necessary dependencies
 
-
-
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -343,6 +367,7 @@ const EditSaleBill = () => {
     }
     setUnsavedItems(true);
   };
+
   useEffect(() => {
     const initializeData = async () => {
       const doctorData = await ListOfDoctor();
@@ -464,12 +489,14 @@ const EditSaleBill = () => {
       setIsLoading(false);
     }
   };
+
   const handleChange = (e) => {
     const value = e.target.value.toUpperCase();
     if (value === "" || value === "O") {
       setOrder(value);
     }
   };
+
   const ListOfDoctor = async () => {
     let data = new FormData();
     setIsLoading(true);
@@ -625,7 +652,6 @@ const EditSaleBill = () => {
 
   const handleEditClick = (item) => {
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
-
     if (!existingItem) {
       setUniqueId((prevUniqueIds) => [
         ...prevUniqueIds,
@@ -641,11 +667,13 @@ const EditSaleBill = () => {
     setSelectedEditItemId(item.id);
     setSearchItem(item.iteam_name);
     setSearchItemID(item.item_id);
-
+    
+    console.log(selectedEditItem);
     const matchedOption = itemList.find(opt => opt.id == item.item_id);
     setSelectedOption(matchedOption || null);
 
     setValue(matchedOption || null);
+
     // -----------------------------------------------------------------------
 
     if (selectedEditItem) {
@@ -662,6 +690,9 @@ const EditSaleBill = () => {
       setLoc(selectedEditItem.location);
       setItemAmount(selectedEditItem.net_rate);
     }
+
+    setTimeout(focusQty, 0);
+
   };
 
   const handleQty = (value) => {
@@ -889,6 +920,9 @@ const EditSaleBill = () => {
       setIsEditMode(false);
       setIsVisible(false);
       setSelectedOption(null);
+
+      setTimeout(focusItem, 0);  // ← back to Item
+
     } catch (e) { }
   };
 
@@ -1123,798 +1157,853 @@ const EditSaleBill = () => {
 
   return (
     <>
-      <div>
-        <Header />
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
-          <div
-            className="p-6"
-            style={{
-              // backgroundColor: "rgb(240, 240, 240)",
-              height: "calc(100vh - 225px)",
-              overflow: "auto",
-            }}
-          >
-            <div>
-              <div
-                className="header_sale_divv"
-                style={{ display: "flex", gap: "4px", alignItems: "center", marginBottom: "15px" }}
+
+      <Header />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
+      <div
+        className="p-6"
+        style={{
+          height: "calc(-125px + 100vh)",
+          overflow: "auto",
+
+        }}
+      >
+        <div>
+          {/*<====================================================================== Top header & buttons   =====================================================================> */}
+
+          <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
+
+            <div className="flex items-center gap-2">
+
+              <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+                onClick={() => {
+                  history.push("/salelist");
+                }}
               >
-                <div
-                  style={{ display: "flex", gap: "7px", alignItems: "center" }}
+                Sales
+              </span>
+
+              <span className="w-6 h-6">
+                <ArrowForwardIosIcon
+                  fontSize="small"
+                  className="text-[var(--color1)]"
+                />
+              </span>
+
+              <span className="text-[var(--color1)] font-bold text-[20px]">Edit</span>
+
+              <BsLightbulbFill
+                className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                onClick={() => setShowModal(true)}
+              />
+
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              <input
+                labelId="dropdown-label"
+                id="dropdown"
+                value={location.state.paymentType}
+                disabled
+                size="small"
+                className="Payment_Value payment_divv"
+                style={{ minHeight: "2.4375em" }}
+              ></input>
+
+              <input
+                labelId="dropdown-label"
+                id="dropdown"
+                value={pickup}
+                className="Payment_Value payment_divv"
+                disabled
+                size="small"
+                style={{ minHeight: "2.4375em" }}
+              ></input>
+
+              <Button
+                variant="contained"
+                sx={{
+                  textTransform: "none",
+                  background: "var(--color1)",
+                }}
+                className="payment_btn_divv"
+                onClick={() => handleUpdate("1")}
+              >
+                Update
+              </Button>
+
+            </div>
+          </div>
+
+          {/*<============================================================================ Top details   ===========================================================================> */}
+
+          <div className="flex gap-4  mt-4">
+            <div className="flex flex-row gap-4 overflow-x-auto w-full">
+              <div className="detail custommedia">
+                <span
+                  className="heading mb-2"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                  }}
                 >
-                  <span
-                    style={{
-                      color: "var(--color2)",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      history.push("/salelist");
-                    }}
-                  >
-                    Sales
-                  </span>
-                  <ArrowForwardIosIcon
-                    style={{
-                      fontSize: "18px",
-                      color: "var(--color1)",
-                    }}
-                  />
-                  <span
-                    style={{
-                      color: "var(--color1)",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                    }}
-                  >
-                    Edit
-                  </span>
-                  <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
-                </div>
-                <div className="headerList">
-                  <input
-                    labelId="dropdown-label"
-                    id="dropdown"
-                    value={location.state.paymentType}
-                    disabled
-                    size="small"
-                    className="Payment_Value payment_divv"
-                    style={{ minHeight: "2.4375em" }}
-                  ></input>
-
-                  <input
-                    labelId="dropdown-label"
-                    id="dropdown"
-                    value={pickup}
-                    className="Payment_Value payment_divv"
-                    disabled
-                    size="small"
-                    style={{ minHeight: "2.4375em" }}
-                  ></input>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      textTransform: "none",
-                      background: "var(--color1)",
-                    }}
-                    className="payment_btn_divv"
-                    onClick={() => setIsOpen(!isOpen)}
-                  >
-                    Update
-                  </Button>
-                  {isOpen && (
-                    <div className="absolute right-0 top-28 w-32 bg-white shadow-lg user-icon mr-4 ">
-                      <ul className="transition-all ">
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("1");
-                            handleUpdate("1");
-                          }}
-                          className=" border-t border-l border-r border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)] flex  justify-around"
-                        >
-                          <SaveIcon />
-                          Save
-                        </li>
-                        <li
-                          onClick={() => {
-                            setBillSaveDraft("0");
-                            handleUpdate("0");
-                          }}
-                          className="border border-[var(--color1)] px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)] flex  justify-around"
-                        >
-                          <SaveAsIcon />
-                          Draft
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                  Bill No
+                </span>
+                <TextField
+                  id="outlined-number"
+                  type="number"
+                  size="small"
+                  value={saleAllData.bill_no}
+                  placeholder="Bill No"
+                  sx={{ width: "250px" }}
+                  disabled
+                />
               </div>
-              <div
-                className="row border-b px-4 border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-              <div className="border-b mt-4">
-                <div className="firstrow flex gap-y-4">
-                  <div className="detail custommedia">
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      Bill No
-                    </span>
-                    <TextField
-                      id="outlined-number"
-                      type="number"
-                      size="small"
-                      value={saleAllData.bill_no}
-                      placeholder="Bill No"
-                      sx={{ width: "250px" }}
-                      disabled
-                    />
-                  </div>
-                  <div className="detail custommedia">
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      Bill Date
-                    </span>
-                    <TextField
-                      id="outlined-number"
-                      size="small"
-                      value={saleAllData.bill_date || ""}
-                      placeholder="Bill Date"
-                      sx={{ width: "250px" }}
-                      disabled
-                    />
-                  </div>
-                  <div
-                    className="detail custommedia"
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                        width: "90%",
-                      }}
-                    >
-                      Customer Mobile / Name
-                    </span>
-                    <Autocomplete
-                      value={customer} // Ensure `customer` is a valid object from `customerDetails`.
-                      options={customerDetails}
-                      onChange={handleCustomerOption}
-                      getOptionLabel={(option) =>
-                        option.name
-                          ? `${option.name} [${option.phone_number}] [${option.roylti_point}]`
-                          : option.phone_number || ""
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option.name === value.name
-                      }
-                      disabled
-                      sx={{
-                        width: "100%",
-                        // minWidth: {
-                        //   xs: "320px",
-                        //   sm: "400px",
-                        // },
-                        "& .MuiInputBase-root": {
-                          height: 20,
-                          fontSize: "1.10rem",
-                        },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "10px 14px",
-                        },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name}`}
-                            secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point}`}
-                          />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Search by Mobile, Name"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: { height: 40 },
-                          }}
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="detail custommedia" style={{ width: "100%" }}>
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      Doctor
-                    </span>
-                    <Autocomplete
-                      value={doctor || {}}
-                      onChange={handleDoctorOption}
-                      options={doctorData}
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.name === value.name
-                      }
-                      disabled
-                      sx={{
-                        width: "100%",
-                        // minWidth: {
-                        //   xs: "320px",
-                        //   sm: "400px",
-                        // },
-                        "& .MuiInputBase-root": {
-                          height: 20,
-                          fontSize: "1.10rem",
-                        },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "10px 14px",
-                        },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name} `}
-                            secondary={`Clinic Name: ${option.clinic} `}
-                          />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Search by DR. Name"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: { height: 40 },
-                          }}
-                          disabled
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="detail custommedia">
-                    <span
-                      className="heading mb-2"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      scan barcode
-                    </span>
-                    <TextField
-                      id="outlined-number"
-                      type="number"
-                      size="small"
-                      value={barcode}
-                      placeholder="scan barcode"
-                      sx={{ width: "250px" }}
-                      onChange={(e) => {
-                        setBarcode(e.target.value);
-                        localStorage.setItem("unsavedItems", "true");
-                      }}
-                    />
-                  </div>
 
-                  {/* {value && */}
-                  <div
-                    className=" overflow-x-auto w-full scroll-two"
-                    ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
-                  >
-                    <table
-                      className="p-30 w-full border-collapse item-table"
-                      ref={tableRef}
-                      tabIndex={0}
-                      style={{ background: "#F5F5F5", padding: "10px 15px" }}
-                      onKeyDown={(e) => {
-                        const rows = saleAllData?.sales_item || [];
-                        if (!rows.length) return;
-                        if (e.key === "ArrowDown") {
-                          e.preventDefault();
-                          setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
-                        } else if (e.key === "ArrowUp") {
-                          e.preventDefault();
-                          setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
-                        } else if (e.key === "Enter" && selectedIndex !== -1) {
-                          e.preventDefault();
-                          const selectedRow = rows[selectedIndex];
-                          if (selectedRow) {
-                            handleEditClick(selectedRow);
-                          }
-                        }
+              <div className="detail custommedia">
+                <span
+                  className="heading mb-2"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                  }}
+                >
+                  Bill Date
+                </span>
+                <TextField
+                  id="outlined-number"
+                  size="small"
+                  value={saleAllData.bill_date || ""}
+                  placeholder="Bill Date"
+                  sx={{ width: "250px" }}
+                  disabled
+                />
+              </div>
+
+              <div
+                className="detail custommedia"
+                style={{
+                  width: "100%",
+                }}
+              >
+                <span
+                  className="heading mb-2 title"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                    width: "90%",
+                  }}
+                >
+                  Customer Mobile / Name
+                </span>
+                <Autocomplete
+                  value={customer} // Ensure `customer` is a valid object from `customerDetails`.
+                  options={customerDetails}
+                  onChange={handleCustomerOption}
+                  getOptionLabel={(option) =>
+                    option.name
+                      ? `${option.name} [${option.phone_number}] [${option.roylti_point}]`
+                      : option.phone_number || ""
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.name === value.name
+                  }
+                  disabled
+                  sx={{
+                    width: "100%",
+                    // minWidth: {
+                    //   xs: "320px",
+                    //   sm: "400px",
+                    // },
+                    "& .MuiInputBase-root": {
+                      height: 20,
+                      fontSize: "1.10rem",
+                    },
+                    "& .MuiAutocomplete-inputRoot": {
+                      padding: "10px 14px",
+                    },
+                  }}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText
+                        primary={`${option.name}`}
+                        secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point}`}
+                      />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Search by Mobile, Name"
+                      InputProps={{
+                        ...params.InputProps,
+                        style: { height: 40 },
                       }}
-                      onBlur={() => setSelectedIndex(-1)}
+                      sx={{
+                        "& .MuiInputBase-input::placeholder": {
+                          fontSize: "1rem",
+                          color: "black",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="detail custommedia" style={{ width: "100%" }}>
+                <span
+                  className="heading mb-2"
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "17px",
+                    color: "var(--color1)",
+                  }}
+                >
+                  Doctor
+                </span>
+                <Autocomplete
+                  value={doctor || {}}
+                  onChange={handleDoctorOption}
+                  options={doctorData}
+                  getOptionLabel={(option) => option.name || ""}
+                  isOptionEqualToValue={(option, value) =>
+                    option.name === value.name
+                  }
+                  disabled
+                  sx={{
+                    width: "100%",
+                    // minWidth: {
+                    //   xs: "320px",
+                    //   sm: "400px",
+                    // },
+                    "& .MuiInputBase-root": {
+                      height: 20,
+                      fontSize: "1.10rem",
+                    },
+                    "& .MuiAutocomplete-inputRoot": {
+                      padding: "10px 14px",
+                    },
+                  }}
+                  renderOption={(props, option) => (
+                    <ListItem {...props}>
+                      <ListItemText
+                        primary={`${option.name} `}
+                        secondary={`Clinic Name: ${option.clinic} `}
+                      />
+                    </ListItem>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Search by DR. Name"
+                      InputProps={{
+                        ...params.InputProps,
+                        style: { height: 40 },
+                      }}
+                      disabled
+                      sx={{
+                        "& .MuiInputBase-input::placeholder": {
+                          fontSize: "1rem",
+                          color: "black",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/*<======================================================================Item Table =====================================================================> */}
+
+          <div
+            className="table-container"
+            ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
+          >
+            <table
+              className="p-30 w-full border-collapse item-table"
+              ref={tableRef}
+              tabIndex={0}
+              style={{ background: "#F5F5F5", padding: "10px 15px" }}
+              onKeyDown={(e) => {
+                const rows = saleAllData?.sales_item || [];
+                if (!rows.length) return;
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
+                } else if (e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
+                } else if (e.key === "Enter" && selectedIndex !== -1) {
+                  e.preventDefault();
+                  const selectedRow = rows[selectedIndex];
+                  if (selectedRow) {
+                    handleEditClick(selectedRow);
+                  }
+                }
+              }}
+              onBlur={() => setSelectedIndex(-1)}
+            >
+              <thead>
+                <tr
+                  style={{
+                    borderBottom: "1px solid lightgray",
+                  }}
+                >
+                  <th className="w-1/4">Item Name</th>
+                  <th>Unit </th>
+                  <th>Batch </th>
+                  <th>Expiry</th>
+                  <th>MRP</th>
+                  <th>Base</th>
+                  <th>GST% </th>
+                  <th>QTY </th>
+                  <th>
+                    <div
+                      style={{ display: "flex", flexWrap: "nowrap" }}
                     >
-                      <thead>
-                        <tr
-                          style={{
-                            borderBottom: "1px solid lightgray",
-                          }}
-                        >
-                          <th className="w-1/4">Item Name</th>
-                          <th>Unit </th>
-                          <th>Batch </th>
-                          <th>Expiry</th>
-                          <th>MRP</th>
-                          <th>Base</th>
-                          <th>GST% </th>
-                          <th>QTY </th>
-                          <th>
-                            <div
-                              style={{ display: "flex", flexWrap: "nowrap" }}
-                            >
-                              Order
-                              <Tooltip title="Please Enter only (o)" arrow>
-                                <Button style={{ justifyContent: "left" }}>
-                                  <GoInfo
-                                    className="absolute"
-                                    style={{ fontSize: "1rem" }}
-                                  />
-                                </Button>
-                              </Tooltip>
-                            </div>
-                          </th>
-                          <th>Loc.</th>
-                          <th>Amount </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          <td>
-                            {/* <DeleteIcon
+                      Order
+                      <Tooltip title="Please Enter only (o)" arrow>
+                        <Button style={{ justifyContent: "left" }}>
+                          <GoInfo
+                            className="absolute"
+                            style={{ fontSize: "1rem" }}
+                          />
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  </th>
+                  <th>Loc.</th>
+                  <th>Amount </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr style={{ borderBottom: "1px solid lightgray" }}>
+                  <td>
+                    {/* <DeleteIcon
                               className="delete-icon"
                               onClick={resetValue}
                             />
                             {searchItem} */}
-                            <div
-                              className="search_fld_divv"
-                              style={{ width: "100%" }}
-                            >
-                              <table
-                                style={{ maxWidth: "100%", width: "100%" }}
-                              >
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <Box
-                                    sx={{
-                                      flex: "1 1 auto",
+                    <div
+                      className="search_fld_divv"
+                      style={{ width: "100%" }}
+                    >
+                      <table
+                        style={{ maxWidth: "100%", width: "100%" }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 2,
+                            alignItems: "center",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              flex: "1 1 auto",
 
-                                      width: "100%",
-                                      background: "#ffffff",
-                                      borderRadius: "7px",
+                              width: "100%",
+                              background: "#ffffff",
+                              borderRadius: "7px",
+                            }}
+                          >
+                            <Autocomplete
+                              value={selectedOption}
+                              size="small"
+                              onChange={handleOptionChange}
+                              onInputChange={handleInputChange}
+                              getOptionLabel={(option) =>
+                                `${option.iteam_name} `
+                              }
+                              options={itemList}
+                              renderOption={(props, option) => (
+                                <ListItem {...props}>
+                                  <ListItemText
+                                    // primary={`${option.iteam_name} - ${option.stock}`}
+                                    // secondary={`weightage: ${option.weightage}`}
+                                    primary={`${option.iteam_name},(${option.company})`}
+                                    secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                    // secondary={
+                                    //   <>
+                                    //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
+                                    //     ₹: {option.mrp || 0},
+                                    //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
+                                    //   </>
+                                    // }
+                                    sx={{
+                                      "& .MuiTypography-root": {
+                                        fontSize: "1.1rem",
+                                      },
                                     }}
-                                  >
-                                    <Autocomplete
-                                      value={selectedOption}
-                                      size="small"
-                                      onChange={handleOptionChange}
-                                      onInputChange={handleInputChange}
-                                      getOptionLabel={(option) =>
-                                        `${option.iteam_name} `
-                                      }
-                                      options={itemList}
-                                      renderOption={(props, option) => (
-                                        <ListItem {...props}>
-                                          <ListItemText
-                                            // primary={`${option.iteam_name} - ${option.stock}`}
-                                            // secondary={`weightage: ${option.weightage}`}
-                                            primary={`${option.iteam_name},(${option.company})`}
-                                            secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
-                                            // secondary={
-                                            //   <>
-                                            //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                            //     ₹: {option.mrp || 0},
-                                            //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                            //   </>
-                                            // }
-                                            sx={{
-                                              "& .MuiTypography-root": {
-                                                fontSize: "1.1rem",
-                                              },
-                                            }}
-                                          />
-                                        </ListItem>
-                                      )}
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          variant="outlined"
-                                          placeholder="Search Item Name..."
-                                          InputProps={{
-                                            ...params.InputProps,
-                                            style: { height: 40 },
-                                            startAdornment: (
-                                              <InputAdornment position="start">
-                                                <SearchIcon
-                                                  sx={{
-                                                    color: "var(--color1)",
-                                                    cursor: "pointer",
-                                                  }}
-                                                />
-                                              </InputAdornment>
-                                            ),
-                                          }}
+                                  />
+                                </ListItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  autoFocus
+                                  variant="outlined"
+                                  placeholder="Search Item Name..."
+                                  inputRef={inputRef1}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === "Tab") {
+                                      e.preventDefault();
+                                      focusBase();
+                                    }
+                                  }}
+
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    style: { height: 40 },
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <SearchIcon
                                           sx={{
-                                            "& .MuiInputBase-input::placeholder":
-                                            {
-                                              fontSize: "1rem",
-                                              color: "black",
-                                            },
+                                            color: "var(--color1)",
+                                            cursor: "pointer",
                                           }}
                                         />
-                                      )}
-                                    />
-                                  </Box>
-                                </Box>
-                                {isVisible && value && !batch && (
-                                  <Box
-                                    sx={{
-                                      minWidth: {
-                                        xs: "200px",
-                                        sm: "500px",
-                                        md: "1000px",
-                                      },
-                                      backgroundColor: "white",
-                                      position: "absolute",
-                                      zIndex: 1,
-                                    }}
-                                    id="tempId"
-                                  >
-                                    <div
-                                      className="custom-scroll-sale "
-                                      style={{ width: "100%" }}
-                                      tabIndex={0}
-                                      onKeyDown={handleTableKeyDown}
-                                      ref={tableRef}
-                                    >
-                                      <table
-                                        ref={tableRef}
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  sx={{
+                                    "& .MuiInputBase-input::placeholder":
+                                    {
+                                      fontSize: "1rem",
+                                      color: "black",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </Box>
+                        </Box>
+                        {isVisible && value && !batch && (
+                          <Box
+                            sx={{
+                              minWidth: {
+                                xs: "200px",
+                                sm: "500px",
+                                md: "1000px",
+                              },
+                              backgroundColor: "white",
+                              position: "absolute",
+                              zIndex: 1,
+                            }}
+                            id="tempId"
+                          >
+                            <div
+                              className="custom-scroll-sale "
+                              style={{ width: "100%" }}
+                              tabIndex={0}
+                              onKeyDown={handleTableKeyDown}
+                              ref={tableRef}
+                            >
+                              <table
+                                ref={tableRef}
+                                style={{
+                                  width: "100%",
+                                  borderCollapse: "collapse",
+                                }}
+                              >
+                                <thead>
+                                  <tr className="customtable">
+                                    <th>Item Name</th>
+                                    <th>Batch Number</th>
+                                    <th>Unit</th>
+                                    <th>Expiry Date</th>
+                                    <th>QTY</th>
+                                    <th>Loc</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {batchListData.length > 0 ? (
+                                    <>
+                                      {batchListData?.map((item) => (
+                                        <tr
+                                          className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                            String(item.id)
+                                            ? "highlighted-row"
+                                            : ""
+                                            }`}
+                                          key={item.id}
+                                          data-id={item.id}
+                                          tabIndex={0}
+                                          style={{
+                                            border:
+                                              "1px solid rgba(4, 76, 157, 0.1)",
+                                            padding: "10px",
+                                            outline: "none",
+                                          }}
+                                          onClick={() =>
+                                            handlePassData(item)
+                                          }
+                                          onMouseEnter={
+                                            handleMouseEnter
+                                          }
+                                        >
+                                          <td className=" text-base font-semibold">
+                                            {item.iteam_name}
+                                          </td>
+                                          <td className=" text-base font-semibold">
+                                            {item.batch_number}
+                                          </td>
+                                          <td className=" text-base font-semibold">
+                                            {item.unit}
+                                          </td>
+                                          <td className=" text-base font-semibold">
+                                            {item.expiry_date}
+                                          </td>
+                                          <td className=" text-base font-semibold">
+                                            {item.qty}
+                                          </td>
+                                          <td className=" text-base font-semibold">
+                                            {item.location}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </>
+                                  ) : (
+                                    <tr>
+                                      <td
+                                        colSpan={12}
                                         style={{
-                                          width: "100%",
-                                          borderCollapse: "collapse",
+                                          textAlign: "center",
+                                          fontSize: "16px",
+                                          fontWeight: 600,
                                         }}
                                       >
-                                        <thead>
-                                          <tr className="customtable">
-                                            <th>Item Name</th>
-                                            <th>Batch Number</th>
-                                            <th>Unit</th>
-                                            <th>Expiry Date</th>
-                                            <th>QTY</th>
-                                            <th>Loc</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {batchListData.length > 0 ? (
-                                            <>
-                                              {batchListData?.map((item) => (
-                                                <tr
-                                                  className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                                    String(item.id)
-                                                    ? "highlighted-row"
-                                                    : ""
-                                                    }`}
-                                                  key={item.id}
-                                                  data-id={item.id}
-                                                  tabIndex={0}
-                                                  style={{
-                                                    border:
-                                                      "1px solid rgba(4, 76, 157, 0.1)",
-                                                    padding: "10px",
-                                                    outline: "none",
-                                                  }}
-                                                  onClick={() =>
-                                                    handlePassData(item)
-                                                  }
-                                                  onMouseEnter={
-                                                    handleMouseEnter
-                                                  }
-                                                >
-                                                  <td className=" text-base font-semibold">
-                                                    {item.iteam_name}
-                                                  </td>
-                                                  <td className=" text-base font-semibold">
-                                                    {item.batch_number}
-                                                  </td>
-                                                  <td className=" text-base font-semibold">
-                                                    {item.unit}
-                                                  </td>
-                                                  <td className=" text-base font-semibold">
-                                                    {item.expiry_date}
-                                                  </td>
-                                                  <td className=" text-base font-semibold">
-                                                    {item.qty}
-                                                  </td>
-                                                  <td className=" text-base font-semibold">
-                                                    {item.location}
-                                                  </td>
-                                                </tr>
-                                              ))}
-                                            </>
-                                          ) : (
-                                            <tr>
-                                              <td
-                                                colSpan={12}
-                                                style={{
-                                                  textAlign: "center",
-                                                  fontSize: "16px",
-                                                  fontWeight: 600,
-                                                }}
-                                              >
-                                                No record found
-                                              </td>
-                                            </tr>
-                                          )}
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </Box>
-                                )}
+                                        No record found
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
                               </table>
                             </div>
-                          </td>
-                          <td>
-                            <TextField
-                              id="outlined-number"
-                              disabled
-                              type="number"
-                              size="small"
-                              value={unit}
-                              sx={{ width: "130px" }}
-                              onChange={(e) => {
-                                setUnit(e.target.value);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px" }}
-                              size="small"
-                              disabled
-                              value={batch}
-                              onChange={(e) => {
-                                setBatch(e.target.value);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              id="outlined-number"
-                              disabled
-                              size="small"
-                              sx={{ width: "130px" }}
-                              value={expiryDate}
-                              onChange={handleExpiryDateChange}
-                              placeholder="MM/YY"
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              disabled
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px" }}
-                              size="small"
-                              value={mrp}
-                              onChange={(e) => {
-                                setMRP(e.target.value);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px" }}
-                              size="small"
-                              value={base}
-                              onChange={(e) => {
-                                setBase(e.target.value);
-                                localStorage.setItem("unsavedItems", "true");
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              id="outlined-number"
-                              type="number"
-                              disabled
-                              size="small"
-                              sx={{ width: "130px" }}
-                              value={gst}
-                              onChange={(e) => {
-                                setGst(e.target.value);
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px" }}
-                              size="small"
-                              value={qty}
-                              onKeyDown={(e) => {
-                                if (
-                                  !/[0-9]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onChange={(e) => {
-                                handleQty(e.target.value);
-                                localStorage.setItem("unsavedItems", "true");
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              sx={{ width: "130px" }}
-                              size="small"
-                              value={order}
-                              onChange={handleChange}
-                              onKeyDown={async (e) => {
-                                if (e.key === "Enter") {
-                                  await addSaleItem();
-                                }
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              id="outlined-number"
-                              size="small"
-                              disabled
-                              sx={{ width: "130px" }}
-                              value={loc}
-                              onChange={(e) => {
-                                setLoc(e.target.value);
-                              }}
-                            />
-                          </td>
-                          <td className="total">{itemAmount}</td>
-                        </tr>
-                        {saleAllData?.sales_item?.map((item, index) => (
-                          <tr
-                            key={item.id}
-                            ref={el => rowRefs.current[index] = el}
-                            style={{ whiteSpace: "nowrap" }}
-                            onClick={() => {
-                              setSelectedIndex(index);
-                              handleEditClick(item);
-                            }}
-                            className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                            tabIndex={-1}
-                            onFocus={() => setSelectedIndex(index)}
-                          >
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              <BorderColorIcon
-                                style={{ color: "var(--color1)" }}
-                                className="cursor-pointer"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditClick(item);
-                                }}
-                              />
+                          </Box>
+                        )}
+                      </table>
+                    </div>
+                  </td>
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      disabled
+                      type="number"
+                      size="small"
+                      value={unit}
+                      sx={{ width: "130px" }}
+                      onChange={(e) => {
+                        setUnit(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ width: "130px" }}
+                      size="small"
+                      disabled
+                      value={batch}
+                      onChange={(e) => {
+                        setBatch(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      disabled
+                      size="small"
+                      sx={{ width: "130px" }}
+                      value={expiryDate}
+                      onChange={handleExpiryDateChange}
+                      placeholder="MM/YY"
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      disabled
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "130px" }}
+                      size="small"
+                      value={mrp}
+                      onChange={(e) => {
+                        setMRP(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "130px" }}
+                      size="small"
+                      value={base}
+                      inputRef={inputRef2}
+                      onChange={(e) => {
+                        setBase(e.target.value);
+                        localStorage.setItem("unsavedItems", "true");
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          e.preventDefault();
+                          focusItem(); // ← back to Item
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          if (base === "" || base === null || base === undefined) {
+                            toast.error("Base is required");
+                            e.preventDefault();
+                            return;
+                          }
+                          e.preventDefault();
+                          focusQty();  // ← forward to Qty
+                        }
+                      }}
 
-                              <DeleteIcon
-                                className="delete-icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteOpen(item.id);
-                                }}
-                              />
-                              {item.iteam_name}
-                            </td>
-                            <td>{item.unit}</td>
-                            <td>{item.batch}</td>
-                            <td>{item.exp}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.base}</td>
-                            <td>{item.gst_name}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.order}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      type="number"
+                      disabled
+                      size="small"
+                      sx={{ width: "130px" }}
+                      value={gst}
+                      onChange={(e) => {
+                        setGst(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      type="number"
+                      sx={{ width: "130px" }}
+                      size="small"
+                      value={qty}
+                      inputRef={inputRef3}
 
-                  </div>
-                </div>
-              </div>
-            </div>
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          e.preventDefault();
+                          focusBase(); // ← back to Base
+                          return;
+                        }
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          if (qty === "" || qty === null || qty === undefined) {
+                            toast.error("Qty is required");
+                            e.preventDefault();
+                            return;
+                          }
+                          e.preventDefault();
+                          focusOrder(); // ← forward to Order
+                        }
+                      }}
+
+                      onChange={(e) => {
+                        handleQty(e.target.value);
+                        localStorage.setItem("unsavedItems", "true");
+                      }}
+                      InputProps={{
+                        inputProps: { style: { textAlign: "right" } },
+                        disableUnderline: true,
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-number"
+                      sx={{ width: "130px" }}
+                      size="small"
+                      value={order}
+                      inputRef={inputRef4}
+
+                      onChange={handleChange}
+                      onKeyDown={async (e) => {
+                        if (e.key === "Enter") {
+                          await addSaleItem();
+                          setTimeout(() => {
+                            setIsEditMode(false);
+                            focusItem();    // ← ready for next item
+                          }, 0);
+                        }
+                      }}
+
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      size="small"
+                      disabled
+                      sx={{ width: "130px" }}
+                      value={loc}
+                      onChange={(e) => {
+                        setLoc(e.target.value);
+                      }}
+                    />
+                  </td>
+                  <td className="total">{itemAmount}</td>
+                </tr>
+                {saleAllData?.sales_item?.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    ref={el => rowRefs.current[index] = el}
+                    style={{ whiteSpace: "nowrap" }}
+                    onClick={() => {
+                      setSelectedIndex(index);
+                      handleEditClick(item);
+                    }}
+                    className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                    tabIndex={-1}
+                    onFocus={() => setSelectedIndex(index)}
+                  >
+                    <td
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <BorderColorIcon
+                        style={{ color: "var(--color1)" }}
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(item);
+                        }}
+                      />
+
+                      <DeleteIcon
+                        className="delete-icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteOpen(item.id);
+                        }}
+                      />
+                      {item.iteam_name}
+                    </td>
+                    <td>{item.unit}</td>
+                    <td>{item.batch}</td>
+                    <td>{item.exp}</td>
+                    <td>{item.mrp}</td>
+                    <td>{item.base}</td>
+                    <td>{item.gst_name}</td>
+                    <td>{item.qty}</td>
+                    <td>{item.order}</td>
+                    <td>{item.location}</td>
+                    <td>{item.net_rate}</td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+
+          </div>
+
+          {/*<====================================================================== total and other details  =====================================================================> */}
+
+          <div
+            className=""
+            style={{
+              background: "var(--color1)",
+              display: "flex",
+              flexDirection: "column",
+              position: "fixed",
+              width: "100%",
+              bottom: "0",
+              left: "0",
+            }}
+          >
             <div
               className=""
               style={{
-                background: "var(--color1)",
                 display: "flex",
-                flexDirection: "column",
-                position: "fixed",
-                width: "100%",
-                bottom: "0",
+                whiteSpace: "nowrap",
+                position: "sticky",
                 left: "0",
+                overflow: "auto",
+                padding: "20px",
+                color: "white",
+              }}
+            >
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total GST : </label>
+
+                <span style={{ fontWeight: 600 }}>₹{totalgst} </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Base : </label>
+                <span style={{ fontWeight: 600 }}> {totalBase} </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Profit : </label>
+                <span style={{ fontWeight: 600 }}>
+                  ₹{marginNetProfit} ({Number(margin).toFixed(2)}%){" "}
+                </span>
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Total Net Rate : </label>
+                <span style={{ fontWeight: 600 }}>₹{netRateAmount} </span>
+              </div>
+            </div>
+            <hr
+              style={{
+                opacity: 0.5,
+                position: "sticky",
+                left: "0",
+                width: "100%",
+              }}
+            />
+
+            <div
+              className=""
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                whiteSpace: "nowrap",
+                alignItems: "baseline",
+                overflow: "auto",
+                padding: "20px",
               }}
             >
               <div
@@ -1922,10 +2011,7 @@ const EditSaleBill = () => {
                 style={{
                   display: "flex",
                   whiteSpace: "nowrap",
-                  position: "sticky",
                   left: "0",
-                  overflow: "auto",
-                  padding: "20px",
                   color: "white",
                 }}
               >
@@ -1933,486 +2019,428 @@ const EditSaleBill = () => {
                   className="gap-2 invoice_total_fld"
                   style={{ display: "flex" }}
                 >
-                  <label className="font-bold">Total GST : </label>
+                  <label className="font-bold">Today Points : </label>
+                  {todayLoyltyPoint || 0}
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Previous Points : </label>
+                  {/* {previousLoyaltyPoints || 0} */}
+                  {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Redeem : </label>
+                  <Input
+                    type="number"
+                    value={loyaltyVal}
+                    // onChange={(e) => { setLoyaltyVal(e.target.value) }}
+                    onChange={(e) => {
+                      const value = e.target.value;
 
-                  <span style={{ fontWeight: 600 }}>₹{totalgst} </span>
-                </div>
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Total Base : </label>
-                  <span style={{ fontWeight: 600 }}> {totalBase} </span>
-                </div>
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Profit : </label>
-                  <span style={{ fontWeight: 600 }}>
-                    ₹{marginNetProfit} ({Number(margin).toFixed(2)}%){" "}
-                  </span>
-                </div>
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Total Net Rate : </label>
-                  <span style={{ fontWeight: 600 }}>₹{netRateAmount} </span>
+                      const numericValue = Math.floor(Number(value));
+                      const maxAllowedPoints = Math.min(
+                        previousLoyaltyPoints,
+                        totalAmount
+                      );
+
+                      if (
+                        numericValue >= 0 &&
+                        numericValue <= maxAllowedPoints
+                      ) {
+                        setLoyaltyVal(numericValue);
+                      } else if (numericValue < 0) {
+                        setLoyaltyVal(0);
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      const value = e.target.value;
+                      const isMinusKey = e.key === "-";
+
+                      if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
+                        e.preventDefault();
+                      }
+
+                      if (isMinusKey && value.includes("-")) {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px",
+                      background: "none",
+                      borderBottom: "1px solid gray",
+                      justifyItems: "end",
+                      outline: "none",
+                      color: "white",
+                    }}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "35px",
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" },
+                    }}
+                  />
+                  {/* {previousLoyaltyPoints} */}
                 </div>
               </div>
-              <hr
-                style={{
-                  opacity: 0.5,
-                  position: "sticky",
-                  left: "0",
-                  width: "100%",
-                }}
-              />
 
-              <div
-                className=""
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  whiteSpace: "nowrap",
-                  alignItems: "baseline",
-                  overflow: "auto",
-                  padding: "20px",
-                }}
-              >
+              <div style={{ display: "flex", whiteSpace: "nowrap" }}>
                 <div
-                  className=""
+                  className="gap-2 "
+                  onClick={() => { setIsModalOpen(!isModalOpen) }}
                   style={{
                     display: "flex",
-                    whiteSpace: "nowrap",
-                    left: "0",
+                    alignItems: "center",
+                    cursor: "pointer",
                     color: "white",
                   }}
                 >
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Today Points : </label>
-                    {todayLoyltyPoint || 0}
-                  </div>
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Previous Points : </label>
-                    {/* {previousLoyaltyPoints || 0} */}
-                    {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
-                  </div>
-                  <div
-                    className="gap-2 invoice_total_fld"
-                    style={{ display: "flex" }}
-                  >
-                    <label className="font-bold">Redeem : </label>
-                    <Input
-                      type="number"
-                      value={loyaltyVal}
-                      // onChange={(e) => { setLoyaltyVal(e.target.value) }}
-                      onChange={(e) => {
-                        const value = e.target.value;
-
-                        const numericValue = Math.floor(Number(value));
-                        const maxAllowedPoints = Math.min(
-                          previousLoyaltyPoints,
-                          totalAmount
-                        );
-
-                        if (
-                          numericValue >= 0 &&
-                          numericValue <= maxAllowedPoints
-                        ) {
-                          setLoyaltyVal(numericValue);
-                        } else if (numericValue < 0) {
-                          setLoyaltyVal(0);
-                        }
-                      }}
-                      onKeyPress={(e) => {
-                        const value = e.target.value;
-                        const isMinusKey = e.key === "-";
-
-                        if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
-                          e.preventDefault();
-                        }
-
-                        if (isMinusKey && value.includes("-")) {
-                          e.preventDefault();
-                        }
-                      }}
-                      size="small"
-                      style={{
-                        width: "70px",
-                        background: "none",
-                        borderBottom: "1px solid gray",
-                        justifyItems: "end",
-                        outline: "none",
-                        color: "white",
-                      }}
-                      sx={{
-                        "& .MuiInputBase-root": {
-                          height: "35px",
-                        },
-                        "& .MuiInputBase-input": { textAlign: "end" },
-                      }}
-                    />
-                    {/* {previousLoyaltyPoints} */}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", whiteSpace: "nowrap" }}>
-                  <div
-                    className="gap-2 "
-                    onClick={toggleModal}
+                  <label className="font-bold">Net Amount : </label>
+                  <span
+                    className="gap-1"
                     style={{
+                      fontWeight: 800,
+                      fontSize: "22px",
+                      whiteSpace: "nowrap",
                       display: "flex",
                       alignItems: "center",
-                      cursor: "pointer",
-                      color: "white",
                     }}
                   >
-                    <label className="font-bold">Net Amount : </label>
-                    <span
-                      className="gap-1"
-                      style={{
-                        fontWeight: 800,
-                        fontSize: "22px",
-                        whiteSpace: "nowrap",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {Number(netAmount).toFixed(2)}
-                      <FaCaretUp />
-                    </span>
-                  </div>
+                    {Number(netAmount).toFixed(2)}
+                    <FaCaretUp />
+                  </span>
+                </div>
 
-                  <Modal
-                    show={isModalOpen}
-                    onClose={toggleModal}
-                    size="lg"
-                    position="bottom-center"
-                    className="modal_amount"
-                  // style={{ width: "50%" }}
+                <Modal
+                  show={isModalOpen}
+                  onClose={() => { setIsModalOpen(!isModalOpen) }}
+                  size="lg"
+                  position="bottom-center"
+                  className="modal_amount"
+                // style={{ width: "50%" }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                      color: "white",
+                      padding: "20px",
+                      fontSize: "larger",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h2 style={{ textTransform: "uppercase" }}>
+                      invoice total
+                    </h2>
+                    <IoMdClose
+                      onClick={() => { setIsModalOpen(!isModalOpen) }}
+                      cursor={"pointer"}
+                      size={30}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      background: "white",
+                      padding: "20px",
+                      width: "100%",
+                      maxWidth: "600px",
+                      margin: "0 auto",
+                      lineHeight: "2.5rem",
+                    }}
                   >
                     <div
+                      className=""
                       style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                        padding: "20px",
-                        fontSize: "larger",
                         display: "flex",
                         justifyContent: "space-between",
                       }}
                     >
-                      <h2 style={{ textTransform: "uppercase" }}>
-                        invoice total
-                      </h2>
-                      <IoMdClose
-                        onClick={toggleModal}
-                        cursor={"pointer"}
-                        size={30}
+                      <label className="font-bold">Total Amount : </label>
+                      <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                    </div>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <label className="font-bold">Discount(%) : <span className="text-red-600">*</span></label>
+                      <Input
+                        type="number"
+                        // className="mt-2"
+                        value={finalDiscount}
+                        onChange={(e) => {
+                          let newValue = e.target.value;
+
+                          if (newValue > 100) {
+                            setFinalDiscount(100);
+                          } else if (newValue >= 0) {
+                            setFinalDiscount(newValue);
+                          }
+                          setUnsavedItems(true);
+                          localStorage.setItem("RandomNumber", randomNumber);
+                        }}
+                        onKeyPress={(e) => {
+                          if (
+                            !/[0-9.]/.test(e.key) &&
+                            e.key !== "Backspace"
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                        size="small"
+                        style={{
+                          width: "70px",
+                          background: "none",
+                          //  borderBottom: "1px solid gray",
+                          outline: "none",
+                          justifyItems: "end",
+                          alignItems: "center",
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            height: "35px",
+                          },
+                          "& .MuiInputBase-input": { textAlign: "end" },
+                        }}
                       />
                     </div>
                     <div
+                      className=""
                       style={{
-                        background: "white",
-                        padding: "20px",
-                        width: "100%",
-                        maxWidth: "600px",
-                        margin: "0 auto",
-                        lineHeight: "2.5rem",
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <label className="font-bold">Total Amount : </label>
-                        <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                      </div>
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <label className="font-bold">Discount(%) : <span className="text-red-600">*</span></label>
-                        <Input
-                          type="number"
-                          // className="mt-2"
-                          value={finalDiscount}
-                          onChange={(e) => {
-                            let newValue = e.target.value;
+                      <label className="font-bold">Other Amount : <span className="text-red-600">*</span></label>
+                      <Input
+                        type="number"
+                        value={tempOtherAmt || otherAmt}
+                        onChange={handleOtherAmtChange}
+                        onKeyPress={(e) => {
+                          const value = e.target.value;
+                          const isMinusKey = e.key === "-";
 
-                            if (newValue > 100) {
-                              setFinalDiscount(100);
-                            } else if (newValue >= 0) {
-                              setFinalDiscount(newValue);
-                            }
-                            setUnsavedItems(true);
-                            localStorage.setItem("RandomNumber", randomNumber);
-                          }}
-                          onKeyPress={(e) => {
-                            if (
-                              !/[0-9.]/.test(e.key) &&
-                              e.key !== "Backspace"
-                            ) {
-                              e.preventDefault();
-                            }
-                          }}
-                          size="small"
-                          style={{
-                            width: "70px",
-                            background: "none",
-                            //  borderBottom: "1px solid gray",
-                            outline: "none",
-                            justifyItems: "end",
-                            alignItems: "center",
-                          }}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              height: "35px",
-                            },
-                            "& .MuiInputBase-input": { textAlign: "end" },
-                          }}
-                        />
-                      </div>
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <label className="font-bold">Other Amount : <span className="text-red-600">*</span></label>
-                        <Input
-                          type="number"
-                          value={tempOtherAmt || otherAmt}
-                          onChange={handleOtherAmtChange}
-                          onKeyPress={(e) => {
-                            const value = e.target.value;
-                            const isMinusKey = e.key === "-";
+                          // Allow Backspace and numeric keys
+                          if (
+                            !/[0-9.-]/.test(e.key) &&
+                            e.key !== "Backspace"
+                          ) {
+                            e.preventDefault();
+                          }
 
-                            // Allow Backspace and numeric keys
-                            if (
-                              !/[0-9.-]/.test(e.key) &&
-                              e.key !== "Backspace"
-                            ) {
-                              e.preventDefault();
-                            }
-
-                            // Allow only one '-' at the beginning of the input value
-                            if (isMinusKey && value.includes("-")) {
-                              e.preventDefault();
-                            }
-                          }}
-                          size="small"
-                          style={{
-                            width: "70px",
-                            background: "none",
-                            // borderBottom: "1px solid gray",
-                            outline: "none",
-                            justifyItems: "end",
-                            alignItems: "center",
-                          }}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              height: "35px",
-                            },
-                            "& .MuiInputBase-input": { textAlign: "end" },
-                          }}
-                        />
-                      </div>
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
+                          // Allow only one '-' at the beginning of the input value
+                          if (isMinusKey && value.includes("-")) {
+                            e.preventDefault();
+                          }
                         }}
-                      >
-                        <label className="font-bold">
-                          Loyalty Points Redeem:{" "}
-                        </label>
-                        <span>{loyaltyVal || 0}</span>
-                      </div>
-                      <div
-                        className=""
+                        size="small"
                         style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingBottom: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Discount Amount : </label>
-                        <span>
-                          {discountAmount !== 0 && (
-                            <span>
-                              {discountAmount > 0
-                                ? `-${discountAmount}`
-                                : discountAmount}
-                            </span>
-                          )}
-                        </span>
-                      </div>
-
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingBottom: "5px",
-                          borderTop:
-                            "1px solid var(--toastify-spinner-color-empty-area)",
-                          paddingTop: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Round Off : </label>
-                        <span>{!roundOff ? 0 : roundOff}</span>
-                      </div>
-
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
+                          width: "70px",
+                          background: "none",
+                          // borderBottom: "1px solid gray",
+                          outline: "none",
+                          justifyItems: "end",
                           alignItems: "center",
-                          cursor: "pointer",
-                          justifyContent: "space-between",
-                          borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                          paddingTop: "5px",
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            height: "35px",
+                          },
+                          "& .MuiInputBase-input": { textAlign: "end" },
+                        }}
+                      />
+                    </div>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <label className="font-bold">
+                        Loyalty Points Redeem:{" "}
+                      </label>
+                      <span>{loyaltyVal || 0}</span>
+                    </div>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Discount Amount : </label>
+                      <span>
+                        {discountAmount !== 0 && (
+                          <span>
+                            {discountAmount > 0
+                              ? `-${discountAmount}`
+                              : discountAmount}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                        borderTop:
+                          "1px solid var(--toastify-spinner-color-empty-area)",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Round Off : </label>
+                      <span>{!roundOff ? 0 : roundOff}</span>
+                    </div>
+
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        justifyContent: "space-between",
+                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Net Amount: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: "22px",
+                          color: "var(--COLOR_UI_PHARMACY)",
                         }}
                       >
-                        <label className="font-bold">Net Amount: </label>
-                        <span
-                          style={{
-                            fontWeight: 800,
-                            fontSize: "22px",
-                            color: "var(--COLOR_UI_PHARMACY)",
-                          }}
-                        >
-                          {" "}
-                          {Number(netAmount).toFixed(2)}
-                        </span>
-                      </div>
+                        {" "}
+                        {Number(netAmount).toFixed(2)}
+                      </span>
                     </div>
-                  </Modal>
-                </div>
-              </div>
-            </div>
-            {/* Delete PopUP */}
-            <div
-              id="modal"
-              value={IsDelete}
-              className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                }`}
-            >
-              <div />
-              <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
-                  viewBox="0 0 24 24"
-                  onClick={() => setIsDelete(false)}
-                >
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                </svg>
-                <div className="my-4 text-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-12 fill-red-500 inline"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                      data-original="#000000"
-                    />
-                    <path
-                      d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                      data-original="#000000"
-                    />
-                  </svg>
-                  <h4 className="text-lg font-semibold mt-6">
-                    Are you sure you want to delete it?
-                  </h4>
-                </div>
-                <div className="flex gap-5 justify-center">
-                  <button
-                    type="submit"
-                    className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                    onClick={() => {
-                      handleDeleteItem(saleItemId);
-                      setUnsavedItems(true);
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                    onClick={() => setIsDelete(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
+                  </div>
+                </Modal>
               </div>
             </div>
           </div>
-        )}
-      </div>
 
-      <Prompt
-        when={unsavedItems}
-        message={(location) => {
-          handleNavigation(location.pathname);
-          setOpenModal(true);
-          return false;
-        }}
-      />
-      <div
-        id="modal"
-        value={openModal}
-        style={{ zIndex: 9999 }}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
-          }`}
-      >
-        <div />
-        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-          <div className="my-4 logout-icon">
-            <VscDebugStepBack
-              className=" h-12 w-14"
-              style={{ color: "#628A2F" }}
-            />
-            <h4
-              className="text-lg font-semibold mt-6 text-center"
-              style={{ textTransform: "none" }}
+        </div>
+
+        {/*<======================================================================== delete  PopUp Box  =======================================================================> */}
+
+        <div
+          id="modal"
+          value={IsDelete}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
+              viewBox="0 0 24 24"
+              onClick={() => setIsDelete(false)}
             >
-              Are you sure you want to leave this page ?
-            </h4>
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+            </svg>
+            <div className="my-4 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-12 fill-red-500 inline"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                  data-original="#000000"
+                />
+                <path
+                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                  data-original="#000000"
+                />
+              </svg>
+              <h4 className="text-lg font-semibold mt-6">
+                Are you sure you want to delete it?
+              </h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                onClick={() => {
+                  handleDeleteItem(saleItemId);
+                  setUnsavedItems(true);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                onClick={() => setIsDelete(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
+        </div>
+        {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
 
-          <div className="flex gap-5 justify-center">
-            <button
-              type="submit"
-              className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-              onClick={handleLeavePage}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-              onClick={() => setOpenModal(false)}
-            >
-              Cancel
-            </button>
+        <Prompt
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            setOpenModal(true);
+            return false;
+          }}
+        />
+        <div
+          id="modal"
+          value={openModal}
+          style={{ zIndex: 9999 }}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+            }`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack
+                className=" h-12 w-14"
+                style={{ color: "#628A2F" }}
+              />
+              <h4
+                className="text-lg font-semibold mt-6 text-center"
+                style={{ textTransform: "none" }}
+              >
+                Are you sure you want to leave this page ?
+              </h4>
+            </div>
+
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={() => setOpenModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -132,6 +132,8 @@ const EditSaleBill = () => {
   const [billSaveDraft, setBillSaveDraft] = useState("0");
   const [showModal, setShowModal] = useState(false);
 
+  const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
+
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -148,8 +150,6 @@ const EditSaleBill = () => {
   const inputRef4 = useRef(null);
 
 
-  const submitButtonRef = useRef(null);
-  const addButtonref = useRef(null);
 
 
   const itemRowInputOrder = [
@@ -160,12 +160,21 @@ const EditSaleBill = () => {
   ];
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
+ 
   // Helpers to move focus in the Item → Base → Qty → Order order
   const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
   const focusItem = () => focusByIndex(0);
   const focusBase = () => focusByIndex(1);
   const focusQty = () => focusByIndex(2);
-  const focusOrder = () => focusByIndex(3);
+
+  // NEW: detect if the currently active element is one of the item-row inputs (Item/Base/Qty/Order)
+  const isActiveItemRowInput = () => {
+    const ae = document.activeElement;
+    return itemRowInputOrder.some(ref => {
+      const el = ref?.current;
+      return el && (ae === el || el.contains?.(ae));
+    });
+  };
 
   // (optional) start on Item when the page loads
   useEffect(() => { focusItem(); }, []);
@@ -192,52 +201,64 @@ const EditSaleBill = () => {
     };
   }, []);
 
-  // UPDATED: Global keyboard navigation exactly like AddSale (works anywhere)
-  useEffect(() => {
+
+    useEffect(() => {
     const handleKeyPress = (e) => {
-      // block when batch dropdown list is visible (same as AddSale)
+      // 0) Must have rows, and batch dropdown must be hidden
       if (!saleAllData?.sales_item?.length || isVisible) return;
 
-      const isInputFocused = document.activeElement?.tagName === "INPUT";
-      const isTableFocused = document.activeElement === tableRef1.current;
-      if (isInputFocused && !isTableFocused) return;
+      // 1) If Autocomplete popup is open, let MUI handle all keys
+      if (autoCompleteOpen) return;
 
-      if (
-        e.key !== "ArrowDown" &&
-        e.key !== "ArrowUp" &&
-        e.key !== "Enter"
-      ) {
-        return;
-      }
+      const ae = document.activeElement;
+
+      // 2) Ignore when focus is inside MUI Autocomplete popper/listbox/option
+      const inAutocompleteUI =
+        ae?.closest?.('.MuiAutocomplete-popper') ||
+        ae?.getAttribute?.('role') === 'option' ||
+        ae?.closest?.('[role="listbox"]');
+      if (inAutocompleteUI) return;
+
+      // 3) Ignore ONLY when one of the item-row inputs (Item/Base/Qty/Order) is active
+      if (isActiveItemRowInput()) return;
+
+      // 4) Handle only our navigation keys
+      const key = e.key;
+      if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
 
       e.preventDefault();
 
-      setSelectedIndex((prevIndex) => {
-        if (prevIndex === -1) {
-          return e.key === "ArrowDown"
-            ? 0
-            : saleAllData.sales_item.length - 1;
-        }
-        if (e.key === "ArrowDown") {
-          return Math.min(prevIndex + 1, saleAllData.sales_item.length - 1);
-        } else if (e.key === "ArrowUp") {
-          return Math.max(prevIndex - 1, 0);
-        }
-        return prevIndex;
-      });
+      if (key === 'ArrowDown') {
+        setSelectedIndex(prev => {
+          if (prev === -1) return 0;
+          return Math.min(prev + 1, (saleAllData?.sales_item?.length || 1) - 1);
+        });
+        return;
+      }
 
-      if (e.key === "Enter" && selectedIndex !== -1) {
-        const selectedRow = saleAllData.sales_item[selectedIndex];
+      if (key === 'ArrowUp') {
+        setSelectedIndex(prev => {
+          if (prev === -1) return (saleAllData?.sales_item?.length || 1) - 1;
+          return Math.max(prev - 1, 0);
+        });
+        return;
+      }
+
+      if (key === 'Enter') {
+        const idx = selectedIndex === -1 ? 0 : selectedIndex;
+        const selectedRow = saleAllData?.sales_item?.[idx];
         if (selectedRow) {
           handleEditClick(selectedRow);
-          setTimeout(focusQty, 0); // ← land on Qty input
+          setTimeout(focusQty, 0); // land on Qty input
         }
       }
     };
 
-    document.addEventListener("keydown", handleKeyPress);
-    return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [saleAllData?.sales_item, selectedIndex, isVisible]);
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [saleAllData?.sales_item?.length, isVisible, autoCompleteOpen, selectedIndex]);
+
+
 
 
   useEffect(() => {
@@ -245,7 +266,7 @@ const EditSaleBill = () => {
       if (!event.altKey || event.repeat) return;
 
       const key = event.key.toLowerCase();
-      event.preventDefault(); // Prevent default browser behavior
+      event.preventDefault();
 
       switch (key) {
         case "s":
@@ -663,27 +684,22 @@ const EditSaleBill = () => {
     } else {
       setTempQty(existingItem.qty);
     }
-    // handleSearch()
+
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
     setSearchItem(item.iteam_name);
     setSearchItemID(item.item_id);
-    
+
     const matchedOption = itemList.find(opt => opt.id == item.item_id);
     setSelectedOption(item || null);
-
     setValue(matchedOption || null);
-
-    // -----------------------------------------------------------------------
-
-
     setTimeout(focusQty, 0);
 
   };
 
   useEffect(() => {
-        if (selectedEditItem) {
+    if (selectedEditItem) {
       setUnit(selectedEditItem.unit);
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
@@ -748,7 +764,9 @@ const EditSaleBill = () => {
     setBase(event.mrp);
     setGst(event.gst);
     setQty(event.qty);
+    setTempQty(event.qty);
     setLoc(event.location);
+    setTimeout(focusQty, 0);
   };
 
   const deleteOpen = (Id) => {
@@ -1440,30 +1458,55 @@ const EditSaleBill = () => {
 
           <div
             className="table-container"
-            ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
+          //  ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
           >
             <table
               className="p-30 w-full border-collapse item-table"
-              ref={tableRef}
+              ref={tableRef1}
               tabIndex={0}
               style={{ background: "#F5F5F5", padding: "10px 15px" }}
-              onKeyDown={(e) => {
-                const rows = saleAllData?.sales_item || [];
-                if (!rows.length) return;
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  setSelectedIndex((prev) => Math.min((prev === -1 ? 0 : prev + 1), rows.length - 1));
-                } else if (e.key === "ArrowUp") {
-                  e.preventDefault();
-                  setSelectedIndex((prev) => Math.max((prev === -1 ? 0 : prev - 1), 0));
-                } else if (e.key === "Enter" && selectedIndex !== -1) {
-                  e.preventDefault();
-                  const selectedRow = rows[selectedIndex];
-                  if (selectedRow) {
-                    handleEditClick(selectedRow);
-                  }
-                }
-              }}
+              // onKeyDown={(e) => {
+              //   const rows = saleAllData?.sales_item || [];
+              //   if (!rows.length) return;
+
+              //   const ae = document.activeElement;
+
+              //   const isTableContainerFocused = ae === tableRef1.current;
+              //   if (!isTableContainerFocused) return;
+
+              //   const isAutocompleteFocused =
+              //     inputRef1?.current && ae === inputRef1.current;
+
+              //   const isTypingField =
+              //     ae?.tagName === "INPUT" ||
+              //     ae?.tagName === "TEXTAREA" ||
+              //     ae?.isContentEditable === true ||
+              //     ae?.getAttribute?.("role") === "combobox";
+
+              //   const inAutocompleteUI =
+              //     autoCompleteOpen ||
+              //     ae?.closest?.('[role="listbox"]') ||
+              //     document.querySelector('.MuiAutocomplete-popper [role="listbox"]');
+
+              //   if (isAutocompleteFocused || isTypingField || inAutocompleteUI) return;
+
+              //   if (e.key === "ArrowDown") {
+              //     e.preventDefault();
+              //     setSelectedIndex((prev) =>
+              //       Math.min(prev === -1 ? 0 : prev + 1, rows.length - 1)
+              //     );
+              //   } else if (e.key === "ArrowUp") {
+              //     e.preventDefault();
+              //     setSelectedIndex((prev) => Math.max(prev === -1 ? 0 : prev - 1, 0));
+              //   } else if (e.key === "Enter" && selectedIndex !== -1) {
+              //     e.preventDefault();
+              //     const selectedRow = rows[selectedIndex];
+              //     if (selectedRow) {
+              //       handleEditClick(selectedRow);
+              //     }
+              //   }
+              // }}
+
               onBlur={() => setSelectedIndex(-1)}
             >
               <thead>
@@ -1541,6 +1584,10 @@ const EditSaleBill = () => {
                                 `${option.iteam_name} `
                               }
                               options={itemList}
+                              autoHighlight
+                              open={autoCompleteOpen}
+                              onOpen={() => setAutoCompleteOpen(true)}
+                              onClose={() => setAutoCompleteOpen(false)}
                               renderOption={(props, option) => (
                                 <ListItem {...props}>
                                   <ListItemText
@@ -1571,29 +1618,47 @@ const EditSaleBill = () => {
                                   placeholder="Search Item Name..."
                                   inputRef={inputRef1}
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === "Tab") {
+                                    const { key, shiftKey } = e;
+                                    const isTab = key === "Tab";
+                                    const isShiftTab = isTab && shiftKey;
+                                    const isEnter = key === "Enter";
+                                    const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+
+                                    if (isShiftTab) return;
+
+                                    if (autoCompleteOpen) return;
+
+                                    if (!searchItem && isArrowKey) {
+                                      tableRef.current?.focus();
+                                      setTimeout(() => document.activeElement?.blur(), 0);
+                                      return;
+                                    }
+
+                                    if (isEnter || isTab) {
                                       e.preventDefault();
-                                      focusBase();
+                                      if (!selectedOption) {
+                                        setTimeout(() => toast.error("Please select an Item"), 50);
+                                      } else {
+                                        setTimeout(() => {
+                                          focusBase();
+                                        }, 0);
+                                      }
+                                      return;
                                     }
                                   }}
-
                                   InputProps={{
                                     ...params.InputProps,
                                     style: { height: 40 },
                                     startAdornment: (
                                       <InputAdornment position="start">
                                         <SearchIcon
-                                          sx={{
-                                            color: "var(--color1)",
-                                            cursor: "pointer",
-                                          }}
+                                          sx={{ color: "var(--color1)", cursor: "pointer" }}
                                         />
                                       </InputAdornment>
                                     ),
                                   }}
                                   sx={{
-                                    "& .MuiInputBase-input::placeholder":
-                                    {
+                                    "& .MuiInputBase-input::placeholder": {
                                       fontSize: "1rem",
                                       color: "black",
                                     },
@@ -1814,7 +1879,7 @@ const EditSaleBill = () => {
                       value={qty}
                       inputRef={inputRef3}
 
-                      onKeyDown={(e) => {
+                      onKeyDown={async (e) => {
                         if (e.key === "Tab" && e.shiftKey) {
                           e.preventDefault();
                           focusBase(); // ← back to Base
@@ -1827,7 +1892,11 @@ const EditSaleBill = () => {
                             return;
                           }
                           e.preventDefault();
-                          focusOrder(); // ← forward to Order
+                          await addSaleItem();
+                          setTimeout(() => {
+                            setIsEditMode(false);
+                            focusItem();    // ← ready for next item
+                          }, 0);// ← forward to Order
                         }
                       }}
 
@@ -1849,15 +1918,11 @@ const EditSaleBill = () => {
                       size="small"
                       value={order}
                       inputRef={inputRef4}
-
+                      disabled
                       onChange={handleChange}
                       onKeyDown={async (e) => {
                         if (e.key === "Enter") {
-                          await addSaleItem();
-                          setTimeout(() => {
-                            setIsEditMode(false);
-                            focusItem();    // ← ready for next item
-                          }, 0);
+
                         }
                       }}
 

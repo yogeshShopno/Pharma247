@@ -165,10 +165,12 @@ const AddPurchaseBill = () => {
   ];
 
   const options = {
-    Skyway: "purchase-item-import",
+    "Visual": "visual-item-purchase-import",
+    "Skyway": "purchase-item-import",
     "Pharma Byte": "pharmabyte-item-import",
     "Marg ERP": "mahalaxmi-item-import",
     "Techno Max": "techno-item-import",
+
   };
 
   const [error, setError] = useState({});
@@ -561,24 +563,40 @@ const AddPurchaseBill = () => {
     let data = new FormData();
     data.append("file", file);
     data.append("random_number", localStorage.getItem("RandomNumber"));
+    data.append("distributor_id", distributor ? distributor.id : "");
 
     setIsLoading(true);
+
     try {
       const response = await axios.post(apiEndpoint, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      toast.success(response.data.message);
-      setUnsavedItems(true);
+      if (response?.data?.status === 200) {
+        toast.success(response?.data?.message);
+        setUnsavedItems(true);
+        setOpenFile(false);
+
+      }
       itemPurchaseList();
-      inputRefs.current[2]?.focus();
-      setOpenFile(false);
+      setTimeout(() => {
+        inputRefs.current[2]?.focus();
+      }, 10);
+
+
+
     } catch (error) {
       console.error("API error:", error);
+
+      if (error.response?.data?.status === 400) {
+        toast.error(error.response.data.message);
+      } else {
+        // toast.error(error?.message || "Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
-
     }
+
   };
 
   /*<============================================================================ download selected file =========================================================================> */
@@ -588,6 +606,10 @@ const AddPurchaseBill = () => {
     let filePath = "";
 
     switch (importConpany) {
+      case "Visual":
+        fileName = "Visual.csv";
+        filePath = "/Visual.csv";
+        break;
       case "Skyway":
         fileName = "Skyway.csv";
         filePath = "/Skyway.csv";

@@ -160,7 +160,7 @@ const EditSaleBill = () => {
   ];
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
- 
+
   // Helpers to move focus in the Item → Base → Qty → Order order
   const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
   const focusItem = () => focusByIndex(0);
@@ -175,6 +175,33 @@ const EditSaleBill = () => {
       return el && (ae === el || el.contains?.(ae));
     });
   };
+  // Focus the main table and move selection (clamped). Also focuses the target row immediately.
+  const focusTableAndMove = (dir /* 'up' | 'down' */) => {
+    const total = saleAllData?.sales_item?.length || 0;
+    if (!total) return;
+
+    // Ensure table gets focus so subsequent keys stay there
+    tableRef1.current?.focus();
+
+    setSelectedIndex(prev => {
+      let next;
+      if (dir === 'down') {
+        next = prev === -1 ? 0 : Math.min(prev + 1, total - 1);
+      } else {
+        next = prev === -1 ? total - 1 : Math.max(prev - 1, 0);
+      }
+
+      // Imperatively focus/scroll the target row now (not waiting for useEffect)
+      setTimeout(() => {
+        const row = rowRefs.current?.[next];
+        if (row?.focus) row.focus();
+        if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 0);
+
+      return next;
+    });
+  };
+
 
   // (optional) start on Item when the page loads
   useEffect(() => { focusItem(); }, []);
@@ -202,45 +229,32 @@ const EditSaleBill = () => {
   }, []);
 
 
-    useEffect(() => {
+  useEffect(() => {
     const handleKeyPress = (e) => {
-      // 0) Must have rows, and batch dropdown must be hidden
-      if (!saleAllData?.sales_item?.length || isVisible) return;
+      const key = e.key;
+      if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
 
-      // 1) If Autocomplete popup is open, let MUI handle all keys
-      if (autoCompleteOpen) return;
+      // Must have rows & child (batch) table must not be visible
+      if (!saleAllData?.sales_item?.length || isVisible) return;
 
       const ae = document.activeElement;
 
-      // 2) Ignore when focus is inside MUI Autocomplete popper/listbox/option
+      // If Autocomplete popper/listbox is open, let MUI handle it
       const inAutocompleteUI =
         ae?.closest?.('.MuiAutocomplete-popper') ||
         ae?.getAttribute?.('role') === 'option' ||
         ae?.closest?.('[role="listbox"]');
-      if (inAutocompleteUI) return;
+      if (inAutocompleteUI || autoCompleteOpen) return;
 
-      // 3) Ignore ONLY when one of the item-row inputs (Item/Base/Qty/Order) is active
-      if (isActiveItemRowInput()) return;
-
-      // 4) Handle only our navigation keys
-      const key = e.key;
-      if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
-
+      // Global behavior: always move selection on arrows from anywhere
       e.preventDefault();
 
       if (key === 'ArrowDown') {
-        setSelectedIndex(prev => {
-          if (prev === -1) return 0;
-          return Math.min(prev + 1, (saleAllData?.sales_item?.length || 1) - 1);
-        });
+        focusTableAndMove('down');
         return;
       }
-
       if (key === 'ArrowUp') {
-        setSelectedIndex(prev => {
-          if (prev === -1) return (saleAllData?.sales_item?.length || 1) - 1;
-          return Math.max(prev - 1, 0);
-        });
+        focusTableAndMove('up');
         return;
       }
 
@@ -249,16 +263,19 @@ const EditSaleBill = () => {
         const selectedRow = saleAllData?.sales_item?.[idx];
         if (selectedRow) {
           handleEditClick(selectedRow);
-          setTimeout(focusQty, 0); // land on Qty input
+          setTimeout(focusQty, 0);
         }
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [saleAllData?.sales_item?.length, isVisible, autoCompleteOpen, selectedIndex]);
-
-
+  }, [
+    saleAllData?.sales_item?.length,
+    isVisible,
+    autoCompleteOpen,
+    selectedIndex
+  ]);
 
 
   useEffect(() => {
@@ -1457,7 +1474,11 @@ const EditSaleBill = () => {
           {/*<======================================================================Item Table =====================================================================> */}
 
           <div
+
             className="table-container"
+            ref={tableRef1}          // <-- attach ref
+            tabIndex={-1}            // <-- so we can programmatically focus it
+            style={{ outline: "none" }}  // optional: remove focus ring
           //  ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
           >
             <table
@@ -1622,18 +1643,11 @@ const EditSaleBill = () => {
                                     const isTab = key === "Tab";
                                     const isShiftTab = isTab && shiftKey;
                                     const isEnter = key === "Enter";
-                                    const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
                                     if (isShiftTab) return;
 
-                                    if (autoCompleteOpen) return;
-
-                                    if (!searchItem && isArrowKey) {
-                                      tableRef.current?.focus();
-                                      setTimeout(() => document.activeElement?.blur(), 0);
-                                      return;
-                                    }
-
+                                    // Let ARROW keys be handled globally (document listener).
+                                    // We only handle Enter/Tab here.
                                     if (isEnter || isTab) {
                                       e.preventDefault();
                                       if (!selectedOption) {
@@ -1643,9 +1657,11 @@ const EditSaleBill = () => {
                                           focusBase();
                                         }, 0);
                                       }
-                                      return;
                                     }
                                   }}
+
+
+
                                   InputProps={{
                                     ...params.InputProps,
                                     style: { height: 40 },

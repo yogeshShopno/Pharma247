@@ -454,6 +454,54 @@ const LoginSignup = () => {
 
   };
 
+  {/*<=============================================================================== password rules ======================================================================> */ }
+  // Password rules UI component
+  const PasswordRules = ({ password }) => {
+    if (!password || password.length === 0) return null; // show only after typing
+
+    const rules = [
+      { label: "At least 8 characters", test: (pwd) => pwd.length >= 8 },
+      { label: "One uppercase letter", test: (pwd) => /[A-Z]/.test(pwd) },
+      { label: "One lowercase letter", test: (pwd) => /[a-z]/.test(pwd) },
+      { label: "One number", test: (pwd) => /[0-9]/.test(pwd) },
+      { label: "One special character (!@#$%^&*)", test: (pwd) => /[!@#$%^&*]/.test(pwd) },
+    ];
+
+    return (
+      <ul
+        style={{
+          marginTop: "6px",
+          marginBottom: "0",
+          paddingLeft: "0",
+          fontSize: "13px",
+          textAlign: "left", // left align
+        }}
+      >
+        {rules.map((rule, i) => {
+          const valid = rule.test(password);
+          return (
+            <li
+              key={i}
+              style={{
+                color: valid ? "green" : "red",
+                listStyle: "none",
+                marginBottom: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span>{valid ? "✔" : "✖"}</span>
+              <span>{rule.label}</span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+
+
   {/*<============================================================================== resend otp =====================================================================> */ }
 
   const handleResendOtp = () => {
@@ -637,6 +685,7 @@ const LoginSignup = () => {
                       ),
                     }}
                   />
+                  <PasswordRules password={password} />
                   <i className='bx bxs-key'></i>
                   <div className="forgot-link">
                     <p
@@ -854,6 +903,7 @@ const LoginSignup = () => {
                       ),
                     }}
                   />
+                  <PasswordRules password={password} />
                   <i className='bx bxs-key'></i>
                 </div>
 

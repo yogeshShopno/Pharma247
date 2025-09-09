@@ -689,7 +689,7 @@ const Itemmaster = () => {
             >
               Add Item Master
             </h1>
-            <Button
+            {/* <Button
               variant="contained"
               style={{
                 background: "var(--color1)",
@@ -698,7 +698,8 @@ const Itemmaster = () => {
               }}
               onClick={openFileUpload}
             >
-              <CloudUploadIcon /> Import</Button>
+              <CloudUploadIcon /> Import
+              </Button> */}
           </div>
           <div
             className="mainform bg-white rounded-lg px-4 pb-3 pt-0"
@@ -1645,19 +1646,19 @@ const Itemmaster = () => {
             </div>
           </DialogContentText>
         </DialogContent>
-          <DialogActions>
-        <Button
-          autoFocus
-          style={{ backgroundColor: "var(--color1)", color: "white" }}
+        <DialogActions>
+          <Button
+            autoFocus
+            style={{ backgroundColor: "var(--color1)", color: "white" }}
 
-          type="success"
-          onClick={handleFileUpload}
-        >
-          Save
-        </Button>
-      </DialogActions>
+            type="success"
+            onClick={handleFileUpload}
+          >
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
-    
+
     </div >
   );
 };

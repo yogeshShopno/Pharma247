@@ -320,7 +320,7 @@ const StaffMember = () => {
     return (
         <>
             <Header />
-              <ToastContainer
+            <ToastContainer
 
                 position="top-right"
                 autoClose={5000}
@@ -417,10 +417,16 @@ const StaffMember = () => {
                             <DialogTitle id="alert-dialog-title" className="secondary">
                                 {header}
                             </DialogTitle>
+                            
                             <IconButton
                                 aria-label="close"
                                 onClick={resetAddDialog}
-                                sx={{ position: 'absolute', right: 8, top: 8, color: "#ffffff" }}
+                                sx={{
+                                    position: "absolute",
+                                    right: 8,
+                                    top: 8,
+                                    color: "var(--COLOR_UI_PHARMACY)",
+                                }}
                             >
                                 <CloseIcon />
                             </IconButton>
@@ -589,7 +595,7 @@ const StaffMember = () => {
                                     Yes
                                 </Button>
                                 <Button
-                                    style={{ color: "var(--COLOR_UI_PHARMACY)" ,borderColor:"var(--COLOR_UI_PHARMACY)"}}
+                                    style={{ color: "var(--COLOR_UI_PHARMACY)", borderColor: "var(--COLOR_UI_PHARMACY)" }}
                                     variant="outlined"
                                     onClick={resetAddDialogDeactive}
                                 >

@@ -175,32 +175,32 @@ const EditSaleBill = () => {
       return el && (ae === el || el.contains?.(ae));
     });
   };
+
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
-  const focusTableAndMove = (dir /* 'up' | 'down' */) => {
-    const total = saleAllData?.sales_item?.length || 0;
-    if (!total) return;
+  // Move selection (clamped) globally. Focus the target row directly (no table focus).
+const focusTableAndMove = (dir /* 'up' | 'down' */) => {
+  const total = saleAllData?.sales_item?.length || 0;
+  if (!total) return;
 
-    // Ensure table gets focus so subsequent keys stay there
-    tableRef1.current?.focus();
+  setSelectedIndex(prev => {
+    let next;
+    if (dir === 'down') {
+      next = prev === -1 ? 0 : Math.min(prev + 1, total - 1);
+    } else {
+      next = prev === -1 ? total - 1 : Math.max(prev - 1, 0);
+    }
 
-    setSelectedIndex(prev => {
-      let next;
-      if (dir === 'down') {
-        next = prev === -1 ? 0 : Math.min(prev + 1, total - 1);
-      } else {
-        next = prev === -1 ? total - 1 : Math.max(prev - 1, 0);
-      }
+    // Imperatively focus/scroll the target row now (not waiting for useEffect)
+    setTimeout(() => {
+      const row = rowRefs.current?.[next];
+      if (row?.focus) row.focus();
+      if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 0);
 
-      // Imperatively focus/scroll the target row now (not waiting for useEffect)
-      setTimeout(() => {
-        const row = rowRefs.current?.[next];
-        if (row?.focus) row.focus();
-        if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }, 0);
+    return next;
+  });
+};
 
-      return next;
-    });
-  };
 
 
   // (optional) start on Item when the page loads
@@ -230,52 +230,60 @@ const EditSaleBill = () => {
 
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      const key = e.key;
-      if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
+  const handleKeyPress = (e) => {
+    const key = e.key;
+    if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
 
-      // Must have rows & child (batch) table must not be visible
-      if (!saleAllData?.sales_item?.length || isVisible) return;
+    if (!saleAllData?.sales_item?.length) return;
 
-      const ae = document.activeElement;
+    const ae = document.activeElement;
 
-      // If Autocomplete popper/listbox is open, let MUI handle it
-      const inAutocompleteUI =
-        ae?.closest?.('.MuiAutocomplete-popper') ||
-        ae?.getAttribute?.('role') === 'option' ||
-        ae?.closest?.('[role="listbox"]');
-      if (inAutocompleteUI || autoCompleteOpen) return;
+    // Is search Autocomplete active? (input focused or listbox open)
+    const isAutocompleteActive =
+      autoCompleteOpen ||
+      ae === inputRef1?.current ||
+      inputRef1?.current?.contains?.(ae) ||
+      ae?.closest?.('.MuiAutocomplete-popper') ||
+      ae?.getAttribute?.('role') === 'option' ||
+      ae?.closest?.('[role="listbox"]');
 
-      // Global behavior: always move selection on arrows from anywhere
-      e.preventDefault();
+    // Is batch dropdown table focused? (only block when the dropdown table itself has focus)
+    const isBatchTableFocused =
+      !!tableRef?.current && tableRef.current.contains(ae);
 
-      if (key === 'ArrowDown') {
-        focusTableAndMove('down');
-        return;
+    // Block global row navigation ONLY when Autocomplete is active OR batch dropdown table has focus
+    if (isAutocompleteActive || isBatchTableFocused) return;
+
+    // Global behavior: move selection on arrows from anywhere
+    e.preventDefault();
+
+    if (key === 'ArrowDown') {
+      focusTableAndMove('down');
+      return;
+    }
+    if (key === 'ArrowUp') {
+      focusTableAndMove('up');
+      return;
+    }
+
+    if (key === 'Enter') {
+      const idx = selectedIndex === -1 ? 0 : selectedIndex;
+      const selectedRow = saleAllData?.sales_item?.[idx];
+      if (selectedRow) {
+        handleEditClick(selectedRow);
+        setTimeout(focusQty, 0);
       }
-      if (key === 'ArrowUp') {
-        focusTableAndMove('up');
-        return;
-      }
+    }
+  };
 
-      if (key === 'Enter') {
-        const idx = selectedIndex === -1 ? 0 : selectedIndex;
-        const selectedRow = saleAllData?.sales_item?.[idx];
-        if (selectedRow) {
-          handleEditClick(selectedRow);
-          setTimeout(focusQty, 0);
-        }
-      }
-    };
+  document.addEventListener('keydown', handleKeyPress);
+  return () => document.removeEventListener('keydown', handleKeyPress);
+}, [
+  saleAllData?.sales_item?.length,
+  autoCompleteOpen,
+  selectedIndex
+]);
 
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [
-    saleAllData?.sales_item?.length,
-    isVisible,
-    autoCompleteOpen,
-    selectedIndex
-  ]);
 
 
   useEffect(() => {
@@ -1476,10 +1484,7 @@ const EditSaleBill = () => {
           <div
 
             className="table-container"
-            ref={tableRef1}          // <-- attach ref
-            tabIndex={-1}            // <-- so we can programmatically focus it
-            style={{ outline: "none" }}  // optional: remove focus ring
-          //  ref={tableRef1} // NEW: attach the main table container ref (used by global nav check)
+           
           >
             <table
               className="p-30 w-full border-collapse item-table"

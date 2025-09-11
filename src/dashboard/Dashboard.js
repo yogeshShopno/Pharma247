@@ -871,7 +871,7 @@ const Dashboard = () => {
               {/* Staff Overview Card */}
               <div className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 flex flex-col min-h-[500px]">
                 {/* Header */}
-                <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4 bg-gray-50">
+                <div className="flex justify-between items-start sm:items-center border-b border-gray-200 px-6 py-4 bg-gray-50 flex-wrap gap-3">
                   <div className="flex items-center gap-2">
                     <h2 className="text-xl font-semibold text-gray-800">Staff Overview</h2>
                     <Tooltip title="Staff sales and purchase overview" arrow>
@@ -882,12 +882,13 @@ const Dashboard = () => {
                   </div>
 
                   {/* Tabs + Dropdown */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+                    {/* Tabs */}
                     <TabContext value={value}>
                       <TabList
                         onChange={handlechange}
                         TabIndicatorProps={{ style: { display: "none" } }}
-                        className="rounded-full bg-gray-100"
+                        className="rounded-full bg-gray-100 flex-shrink"
                       >
                         {types.map((tab) => (
                           <Tab
@@ -907,7 +908,8 @@ const Dashboard = () => {
                       </TabList>
                     </TabContext>
 
-                    <FormControl size="small" sx={{ minWidth: 120 }}>
+                    {/* Dropdown */}
+                    <FormControl size="small" sx={{ minWidth: 120 }} className="flex-shrink">
                       <Select
                         value={staffListValue}
                         onChange={staffListHandlechange}
@@ -923,17 +925,13 @@ const Dashboard = () => {
                   </div>
                 </div>
 
+
                 {/* Content + Footer pinned */}
                 <div className="flex flex-col flex-1 p-4">
                   <TabContext value={pieChartvalue}>
                     {pieChartTabs.map((tab) => (
-                      <TabPanel
-                        key={tab.id}
-                        value={tab.id}
-                        sx={{ p: 0 }}
-                        className="flex-1 flex flex-col"
-                      >
-                        {/* Scrollable list or No-data */}
+                      <TabPanel key={tab.id} value={tab.id} sx={{ p: 0 }} className="flex-1 flex flex-col">
+                        {/* Content area */}
                         <div className="flex-1 flex flex-col justify-center">
                           {staffOverview.length > 0 ? (
                             <div className="space-y-3 overflow-auto">
@@ -950,6 +948,7 @@ const Dashboard = () => {
                               ))}
                             </div>
                           ) : (
+                            // ✅ Centered No Data Image
                             <div className="flex flex-1 justify-center items-center">
                               <img src="../no-data.png" alt="No data" className="h-28 opacity-70" />
                             </div>
@@ -970,6 +969,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+
 
               {/* Expiring Items Card */}
               <div className="lg:col-span-3 md:col-span-1 w-full h-full">

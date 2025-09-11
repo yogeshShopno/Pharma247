@@ -367,11 +367,8 @@ const Dashboard = () => {
                     Total Sales
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    Rs. {record?.total_sales === 0 ? 0 : record?.total_sales}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -389,11 +386,8 @@ const Dashboard = () => {
                     Total Purchase
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
+                    Rs. {record?.total_purchase === 0 ? 0 : record?.total_purchase}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -411,11 +405,8 @@ const Dashboard = () => {
                     Total Customer
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    {record?.total_customers === 0 ? 0 : record?.total_customers}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -433,11 +424,8 @@ const Dashboard = () => {
                     Total Distributor
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    {record?.total_distributors === 0 ? 0 : record?.total_distributors}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -459,9 +447,6 @@ const Dashboard = () => {
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
                     </div>
-                    <span className="text-green-600 text-lg font-medium">
-                      ↑ 60.00% from last month
-                    </span>
                   </div>
                   {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockBySales} className="w-full h-full object-contain" />
@@ -477,9 +462,6 @@ const Dashboard = () => {
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
                     </div>
-                    <span className="text-green-600 text-lg font-medium">
-                      ↑ 60.00% from last month
-                    </span>
                   </div>
                   {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockByPurchase} className="w-full h-full object-contain" />

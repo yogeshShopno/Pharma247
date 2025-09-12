@@ -187,7 +187,7 @@ const InventoryList = () => {
     handleSearch();
   }, [page, rowsPerPage]);
 
-    const handleDownload = () => {
+  const handleDownload = () => {
 
     const link = document.createElement("a");
     link.href = "/ItemSample_Data.csv";
@@ -198,43 +198,43 @@ const InventoryList = () => {
   };
 
   let handleFileChange = (e) => {
-      const selectedFile = e.target.files[0];
-      if (selectedFile) {
-        const fileType = selectedFile.type;
-        if (fileType === "text/csv") {
-          setFile(selectedFile);
-        } else {
-          toast.error("Please select an Excel or CSV file.");
-        }
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const fileType = selectedFile.type;
+      if (fileType === "text/csv") {
+        setFile(selectedFile);
+      } else {
+        toast.error("Please select an Excel or CSV file.");
       }
-    };
+    }
+  };
 
-     const handleFileUpload = async () => {
-        if (file) {
-          let data = new FormData();
-          data.append("file", file);
-          setIsLoading(true);
-          try {
-            await axios
-              .post("item-import", data, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-              .then((response) => {
-                toast.success(response.data.message);
-                setOpenFile(false);
-                setIsLoading(false);
-              });
-          } catch (error) {
+  const handleFileUpload = async () => {
+    if (file) {
+      let data = new FormData();
+      data.append("file", file);
+      setIsLoading(true);
+      try {
+        await axios
+          .post("item-import", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            toast.success(response.data.message);
+            setOpenFile(false);
             setIsLoading(false);
-            console.error("API error:", error);
-    
-          }
-        } else {
-          toast.error("No file selected");
-        }
-      };
+          });
+      } catch (error) {
+        setIsLoading(false);
+        console.error("API error:", error);
+
+      }
+    } else {
+      toast.error("No file selected");
+    }
+  };
 
   let missingCount = () => {
     axios
@@ -2659,222 +2659,133 @@ const InventoryList = () => {
           onClick={resetAddDialog}
           sx={{
             position: "absolute",
-            right: 12,
+            right: 8,
             top: 8,
             color: "#ffffff",
           }}
         >
           <CloseIcon />
         </IconButton>
+
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <div
-              className="flex"
-              style={{ flexDirection: "column", gap: "19px" }}
-            >
-              <div className="flex flex-wrap gap-4 justify-">
-                <div>
-                  <span className="title primary mb-2">Adjustment Date</span>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={adjustmentDate}
-                    onChange={(newDate) => setAdjustDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    minDate={subDays(new Date(), 15)} //
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Item Name</span>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={purchaseItemData}
-                    size="small"
-                    value={selectedItem}
-                    onChange={handleOptionChange}
-                    disabled
-                    sx={{ width: 200 }}
-                    getOptionLabel={(option) => option.iteam_name}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                      // label="Select Item"
-                      />
-                    )}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Batch</span>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={batchListData}
-                    size="small"
-                    value={batch}
-                    onChange={handleBatchData}
-                    sx={{ width: 200 }}
-                    getOptionLabel={(option) => option.batch_number}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                        label="Select Batch"
-                      />
-                    )}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Company</span>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={companyList}
-                    size="small"
-                    disabled
-                    value={selectedCompany}
-                    // onChange={(e, value) => setSelectedCompany(value)}
-                    sx={{ width: 200 }}
-                    getOptionLabel={(option) => option.company_name}
-                    renderInput={(params) => (
-                      <TextField
-                        autoComplete="off"
-                        {...params}
-                      // label="Select Company"
-                      />
-                    )}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Unit</span>
-                  <TextField
-                    autoComplete="off"
-                    disabled
-                    required
-                    id="outlined-number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    value={unit}
-                    onChange={(e) => setUnit(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Expiry</span>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    disabled
-                    value={expiry}
-                    onChange={(e) => {
-                      setExpiry(e.target.value);
-                    }}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">MRP</span>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-number"
-                    type="number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    disabled
-                    value={mrp}
-                    onChange={(e) => {
-                      setMrp(e.target.value);
-                    }}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Stock </span>
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-number"
-                    type="number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    disabled
-                    value={stock}
-                    onChange={(e) => {
-                      setStock(e.target.value);
-                    }}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Stock Adjusted </span>
-                  {/* <TextField
-                 autoComplete="off"
-                                        id="outlined-number"
-                                        type="number"
-                                        sx={{ width: '130px' }}
-                                        size="small"
-                                        value={stockAdjust}
-                                        onChange={(e) => { setStockAdjust(e.target.value) }}
-                                    /> */}
-                  <TextField
-                    autoComplete="off"
-                    id="outlined-number"
-                    type="number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    value={stockAdjust}
-                    onChange={(e) => {
-                      const value = parseFloat(e.target.value);
-                      setStockAdjust(value);
-                    }}
-                  />
-                </div>
-                <div>
-                  <span className="title mb-2">Remaining Stock </span>
-                  <TextField
-                    autoComplete="off"
-                    disabled
-                    id="outlined-number"
-                    type="number"
-                    sx={{ width: "130px" }}
-                    size="small"
-                    value={remainingStock}
-                  />
-                </div>
+            {/* First row: Item & Company */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+              <div className="w-full">
+                <span className="title primary mb-2">Item Name</span>
+                <Autocomplete
+                  disablePortal
+                  options={purchaseItemData}
+                  size="small"
+                  value={selectedItem}
+                  onChange={handleOptionChange}
+                  getOptionLabel={(option) => option.iteam_name}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Company</span>
+                <Autocomplete
+                  disablePortal
+                  options={companyList}
+                  size="small"
+                  value={selectedCompany}
+                  disabled
+                  getOptionLabel={(option) => option.company_name}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                />
+              </div>
+            </div>
+
+            {/* Other fields in grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div className="w-full">
+                <span className="title primary mb-2">Adjustment Date</span>
+                <DatePicker
+                  className="custom-datepicker_mn w-full"
+                  selected={adjustmentDate}
+                  onChange={(newDate) => setAdjustDate(newDate)}
+                  dateFormat="dd/MM/yyyy"
+                  minDate={subDays(new Date(), 15)}
+                />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Batch</span>
+                <Autocomplete
+                  disablePortal
+                  options={batchListData}
+                  size="small"
+                  value={batch}
+                  onChange={handleBatchData}
+                  getOptionLabel={(option) => option.batch_number}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Unit</span>
+                <TextField autoComplete="off" disabled size="small" value={unit} />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Expiry</span>
+                <TextField autoComplete="off" disabled size="small" value={expiry} />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">MRP</span>
+                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Stock</span>
+                <TextField autoComplete="off" disabled size="small" type="number" value={stock} />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Stock Adjusted</span>
+                <TextField
+                  autoComplete="off"
+                  size="small"
+                  type="number"
+                  value={stockAdjust}
+                  onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
+                />
+              </div>
+
+              <div className="w-full">
+                <span className="title primary mb-2">Remaining Stock</span>
+                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} />
               </div>
             </div>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <div className="flex gap-2 mr-4 pb-4">
-            <Button
-              autoFocus
-              variant="contained"
-              className="p-5"
-              onClick={validateForm}
-              style={{
-                color: "white",
-                background: "var(--COLOR_UI_PHARMACY)",
-                outline: "none",
-                boxShadow: "none",
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              autoFocus
-              variant="contained"
-              onClick={resetAddDialog}
-              color="error"
-              style={{
-                color: "white",
-                background: "#F31C1C",
-                outline: "none",
-                boxShadow: "none",
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
+
+        <DialogActions style={{ padding: "20px 24px" }}>
+          <Button
+            style={{
+              background: "var(--COLOR_UI_PHARMACY)",
+              color: "white",
+            }}
+            autoFocus
+            variant="contained"
+            onClick={validateForm}
+          >
+            Save
+          </Button>
+          <Button
+            style={{ background: "#F31C1C", color: "white" }}
+            autoFocus
+            variant="contained"
+            onClick={resetAddDialog}
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
+
 
       {/*<=========================================================================== Bulk QR dialog ===========================================================================>*/}
 
@@ -3095,7 +3006,7 @@ const InventoryList = () => {
         <DialogTitle className="primary">Import Item</DialogTitle>
         <IconButton
           aria-label="close"
-          onClick={()=>setOpenFile(false)}
+          onClick={() => setOpenFile(false)}
           sx={{
             position: "absolute",
             right: 8,

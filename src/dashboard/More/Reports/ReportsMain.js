@@ -25,7 +25,7 @@ const ReportsMain = () => {
   const history = useHistory();
   const permissions = usePermissions();
 
-  const GSTIcon = `${process.env.PUBLIC_URL}/gstIcon.png`;
+  const GSTIcon = `${process.env.PUBLIC_URL}/gsticon.png`;
   const MarginIcon = `${process.env.PUBLIC_URL}/marginIcon.png`;
   const StockIcon = `${process.env.PUBLIC_URL}/stockIcon.png`;
   const OtherIcon = `${process.env.PUBLIC_URL}/othersIcon1.png`;

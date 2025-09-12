@@ -194,7 +194,7 @@ function App() {
        SPECIFIC: Add Expense Dialog
        ================================ */
     .modal_991 .MuiDialog-paper {
-      width: 800px !important;   /* wider dialog for expense */
+      width: 800px !important;
       max-width: 95% !important;
     }
     .modal_991 .MuiDialogTitle-root {
@@ -213,6 +213,42 @@ function App() {
     .modal_991 .MuiFormControlLabel-root {
       color: var(--COLOR_UI_PHARMACY) !important;
     }
+
+    /* ================================
+       SPECIFIC: Deactivate Role Dialog
+       ================================ */
+    .MuiDialog-paper[role="dialog"] {
+      border-radius: 10px;
+    }
+    .MuiDialog-paper[role="dialog"] .MuiDialogContent-root {
+      text-align: center;
+      padding: 24px 20px;
+    }
+    .MuiDialog-paper[role="dialog"] .MuiDialogContentText-root span {
+      font-size: 20px;
+      font-weight: 600;
+      color: #444;
+    }
+    .MuiDialog-paper[role="dialog"] .MuiButton-contained {
+      background: var(--COLOR_UI_PHARMACY) !important;
+      color: white !important;
+    }
+    .MuiDialog-paper[role="dialog"] .MuiButton-outlined {
+      border-color: var(--COLOR_UI_PHARMACY) !important;
+      color: var(--COLOR_UI_PHARMACY) !important;
+    }
+
+    .payment_btn_divv {
+      text-transform: none !important;
+      background: var(--color1) !important;
+      color: white !important;
+      box-shadow: none !important;
+    }
+    .payment_btn_divv:hover {
+      background: var(--color1) !important;
+      opacity: 0.9;
+    }
+      
   `;
     document.head.appendChild(style);
 
@@ -220,6 +256,7 @@ function App() {
       document.head.removeChild(style);
     };
   }, []);
+
 
 
   return (

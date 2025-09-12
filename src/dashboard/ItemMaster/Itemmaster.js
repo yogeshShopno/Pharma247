@@ -1568,7 +1568,7 @@ const Itemmaster = () => {
         </DialogActions>
       </Dialog>
       {/* Company Dialog Box */}
-      <Dialog id="modal" className="custom-dialog" open={openCompany} onClose={handleClose} maxWidth="sm" fullWidth >
+      <Dialog id="modal" className="custom-dialog" open={openCompany} onClose={handleClose}>
         <DialogTitle>Add Company</DialogTitle>
         <DialogContent>
           <div className="dialog pt-4">
@@ -1578,7 +1578,7 @@ const Itemmaster = () => {
               label="Enter Company Name"
               type="text"
               size="small"
-              fullWidth
+              style={{ width: "100%" }}
               value={companyName}
               onChange={(e) => {
                 const value = e.target.value;

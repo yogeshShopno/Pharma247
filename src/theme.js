@@ -1,22 +1,18 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  palette: {
-    primary: { main: '#3f6212' },
-    secondary: { main: '#F31C1C' },
-  },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#3f6212',
+            borderColor: '#3f6212', // Default border
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#3f6212',
+            borderColor: '#3f6212', // Hover border
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#3f6212',
+            borderColor: '#3f6212', // Focused border
             borderWidth: 2,
           },
         },
@@ -25,9 +21,9 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: '#3f6212',
+          color: '#3f6212', // Default label
           '&.Mui-focused': {
-            color: '#3f6212',
+            color: '#3f6212', // Focused label
           },
         },
       },
@@ -47,40 +43,10 @@ const theme = createTheme({
         },
       },
     },
-    MuiRadio: {
-      styleOverrides: {
-        root: {
-          '&.Mui-checked': {
-            color: 'var(--color1) !important',
-          },
-        },
-      },
-    },
-    MuiSwitch: {
-      styleOverrides: {
-        switchBase: {
-          '&.Mui-checked + .MuiSwitch-track': {
-            backgroundColor: 'var(--COLOR_UI_PHARMACY) !important',
-          },
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          '&:hover': {
-            backgroundColor: '#3f6212',
-          },
-        },
-      },
-    },
-    MuiTabs: {
-      styleOverrides: {
-        indicator: {
-          backgroundColor: 'var(--color2) !important',
-        },
-      },
-    },
+  },
+  palette: {
+    primary: { main: '#3f6212' },
+    secondary: { main: '#F31C1C' },
   },
 });
 

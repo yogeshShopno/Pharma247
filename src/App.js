@@ -116,8 +116,91 @@ function App() {
       elem.msRequestFullscreen(); // IE11
     }
   };
-  
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+    .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212; /* Default border color */
+    }
+    .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
+      color: var(--color1) !important;
+    }
+    .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+      background-color: var(--color1);
+    }
 
+    /* Outlined Inputs */
+    .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212;
+    }
+    .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212 !important;
+      border-width: 2px;
+    }
+
+    /* Label colors */
+    .MuiInputLabel-root {
+      color: #3f6212;
+    }
+    .MuiInputLabel-root.Mui-focused {
+      color: #3f6212 !important;
+    }
+
+    /* Underline Inputs */
+    .MuiInput-underline:before {
+      border-bottom: 2px solid #3f6212;
+    }
+    .MuiInput-underline:hover:not(.Mui-disabled):before {
+      border-bottom: 2px solid #3f6212;
+    }
+    .MuiInput-underline:after {
+      border-bottom: 2px solid #3f6212;
+    }
+
+    /* Buttons */
+    .css-1z6833-MuiButtonBase-root-MuiButton-root:hover {
+      background-color: #3f6212;
+    }
+
+    /* Tabs */
+    .css-1aquho2-MuiTabs-indicator {
+      background-color: var(--color2) !important;
+    }
+
+    /* Switch */
+    .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+      background-color: var(--COLOR_UI_PHARMACY) !important;
+    }
+
+    /* ================================
+       Add Company Dialog Fix
+       ================================ */
+    #modal .MuiPaper-root {
+      width: 500px !important;      /* fixed width */
+      max-width: 90% !important;    /* responsive on small screens */
+      border-radius: 8px;
+    }
+    #modal .MuiDialogTitle-root {
+      background-color: var(--COLOR_UI_PHARMACY);
+      color: white;
+      font-weight: 600;
+    }
+    #modal .MuiDialogActions-root {
+      justify-content: flex-end;
+      padding: 16px;
+    }
+    #modal .MuiPaper-root {
+      width: 500px !important;
+      max-width: 90% !important;
+    }
+
+  `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <div className="App">

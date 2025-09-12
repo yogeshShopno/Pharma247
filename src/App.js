@@ -201,9 +201,9 @@ function App() {
 
   return (
     <div className="App">
-      <CssBaseline />
 
       <ThemeProvider theme={theme}>
+        <CssBaseline />
 
         <Router>
           <Switch>
@@ -350,7 +350,7 @@ function App() {
                 <ReturnList />
               </Protected>
             </Route>
-         
+
             <Route path='/purchase/addPurchaseBill'>
               <Protected>
                 <AddPurchaseBill />

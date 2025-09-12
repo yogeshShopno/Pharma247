@@ -342,7 +342,7 @@ const AboutInfo = () => {
                     onChange={handleProfilePhoto}
                   />
                   {selectedProfileFile == null || selectedProfileFile == "" ? (
-                    <div className="UploadClass abt_imf_dd">
+                    <div className="UploadProfile abt_imf_dd">
                       <img src={profileImage} width="50%" height="50%" />
                     </div>
                   ) : (
@@ -357,7 +357,7 @@ const AboutInfo = () => {
                       }}
                     />
                   )}
-                  <label htmlFor="front-photo-file" style={{ margin: "10px" }}>
+                  <label htmlFor="front-photo-file" >
                     <Button
                       variant="contained"
                       component="span"

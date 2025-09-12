@@ -116,8 +116,10 @@ function App() {
       elem.msRequestFullscreen(); // IE11
     }
   };
+
+
   useEffect(() => {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.innerHTML = `
     /* ================================
        GLOBAL INPUT / LABEL STYLES
@@ -138,16 +140,6 @@ function App() {
     }
     .MuiInputLabel-root.Mui-focused {
       color: #3f6212 !important;
-    }
-
-    .MuiInput-underline:before {
-      border-bottom: 2px solid #3f6212;
-    }
-    .MuiInput-underline:hover:not(.Mui-disabled):before {
-      border-bottom: 2px solid #3f6212;
-    }
-    .MuiInput-underline:after {
-      border-bottom: 2px solid #3f6212;
     }
 
     /* ================================
@@ -175,7 +167,7 @@ function App() {
     }
 
     /* ================================
-       DIALOG GLOBAL
+       GLOBAL DIALOG
        ================================ */
     .MuiDialog-container {
       display: flex;
@@ -199,18 +191,27 @@ function App() {
     }
 
     /* ================================
-       SPECIFIC DIALOGS (CATEGORY, COMPANY, DRUGGROUP, IMPORT)
+       SPECIFIC: Add Expense Dialog
        ================================ */
-    #modal .MuiPaper-root {
-      width: 500px !important;
-      max-width: 90% !important;
+    .modal_991 .MuiDialog-paper {
+      width: 800px !important;   /* wider dialog for expense */
+      max-width: 95% !important;
     }
-    #modal .MuiDialogTitle-root {
-      background-color: var(--COLOR_UI_PHARMACY);
-      color: white;
+    .modal_991 .MuiDialogTitle-root {
+      background-color: var(--COLOR_UI_PHARMACY) !important;
+      color: white !important;
+      font-weight: 600;
     }
-    #modal .MuiDialogActions-root {
+    .modal_991 .MuiDialogActions-root {
+      padding: 20px 24px !important;
       justify-content: flex-end;
+    }
+    .modal_991 .MuiButton-contained {
+      background: var(--COLOR_UI_PHARMACY) !important;
+      color: white !important;
+    }
+    .modal_991 .MuiFormControlLabel-root {
+      color: var(--COLOR_UI_PHARMACY) !important;
     }
   `;
     document.head.appendChild(style);
@@ -219,6 +220,7 @@ function App() {
       document.head.removeChild(style);
     };
   }, []);
+
 
   return (
     <div className="App">

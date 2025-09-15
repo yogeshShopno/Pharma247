@@ -121,7 +121,14 @@
   min-height: 200px;
   max-height: 200px;
 }
-
+.UploadProfile{
+  display: flex;
+  padding-top: 10px;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  max-height: 200px;
+}
 .content {
   padding: 20px;
   display: flex;

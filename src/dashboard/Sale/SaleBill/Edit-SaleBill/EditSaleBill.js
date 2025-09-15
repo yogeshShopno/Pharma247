@@ -178,28 +178,28 @@ const EditSaleBill = () => {
 
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
   // Move selection (clamped) globally. Focus the target row directly (no table focus).
-const focusTableAndMove = (dir /* 'up' | 'down' */) => {
-  const total = saleAllData?.sales_item?.length || 0;
-  if (!total) return;
+  const focusTableAndMove = (dir /* 'up' | 'down' */) => {
+    const total = saleAllData?.sales_item?.length || 0;
+    if (!total) return;
 
-  setSelectedIndex(prev => {
-    let next;
-    if (dir === 'down') {
-      next = prev === -1 ? 0 : Math.min(prev + 1, total - 1);
-    } else {
-      next = prev === -1 ? total - 1 : Math.max(prev - 1, 0);
-    }
+    setSelectedIndex(prev => {
+      let next;
+      if (dir === 'down') {
+        next = prev === -1 ? 0 : Math.min(prev + 1, total - 1);
+      } else {
+        next = prev === -1 ? total - 1 : Math.max(prev - 1, 0);
+      }
 
-    // Imperatively focus/scroll the target row now (not waiting for useEffect)
-    setTimeout(() => {
-      const row = rowRefs.current?.[next];
-      if (row?.focus) row.focus();
-      if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }, 0);
+      // Imperatively focus/scroll the target row now (not waiting for useEffect)
+      setTimeout(() => {
+        const row = rowRefs.current?.[next];
+        if (row?.focus) row.focus();
+        if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 0);
 
-    return next;
-  });
-};
+      return next;
+    });
+  };
 
 
 
@@ -229,60 +229,90 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
   }, []);
 
 
+
   useEffect(() => {
-  const handleKeyPress = (e) => {
-    const key = e.key;
-    if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
+    const handleKeyPress = (e) => {
+      const key = e.key;
+      const ae = document.activeElement; // Get the currently active element
+      const trimmedSearchItem = searchItem.trim(); // Remove spaces from searchItem to check if it's empty
 
-    if (!saleAllData?.sales_item?.length) return;
+      // If not ArrowDown, ArrowUp, or Enter, return early
+      if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
 
-    const ae = document.activeElement;
+      if (!saleAllData?.sales_item?.length) return;
+      if (e.defaultPrevented) return;
 
-    // Is search Autocomplete active? (input focused or listbox open)
-    const isAutocompleteActive =
-      autoCompleteOpen ||
-      ae === inputRef1?.current ||
-      inputRef1?.current?.contains?.(ae) ||
-      ae?.closest?.('.MuiAutocomplete-popper') ||
-      ae?.getAttribute?.('role') === 'option' ||
-      ae?.closest?.('[role="listbox"]');
-
-    // Is batch dropdown table focused? (only block when the dropdown table itself has focus)
-    const isBatchTableFocused =
-      !!tableRef?.current && tableRef.current.contains(ae);
-
-    // Block global row navigation ONLY when Autocomplete is active OR batch dropdown table has focus
-    if (isAutocompleteActive || isBatchTableFocused) return;
-
-    // Global behavior: move selection on arrows from anywhere
-    e.preventDefault();
-
-    if (key === 'ArrowDown') {
-      focusTableAndMove('down');
-      return;
-    }
-    if (key === 'ArrowUp') {
-      focusTableAndMove('up');
-      return;
-    }
-
-    if (key === 'Enter') {
-      const idx = selectedIndex === -1 ? 0 : selectedIndex;
-      const selectedRow = saleAllData?.sales_item?.[idx];
-      if (selectedRow) {
-        handleEditClick(selectedRow);
-        setTimeout(focusQty, 0);
+      // Case 1: If the search input is focused and empty, handle ArrowDown key
+      if (ae === inputRef1.current && searchItem === "") {
+        if (key === 'ArrowDown') {
+          // If search input is empty, move focus to the first row of the table
+          setSelectedIndex(0); // Set to the first row
+          setTimeout(() => {
+            const row = rowRefs.current?.[0]; // First row
+            if (row?.focus) row.focus();
+            if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }, 0);
+          e.preventDefault(); // Prevent the page from scrolling
+          return;
+        }
       }
-    }
-  };
 
-  document.addEventListener('keydown', handleKeyPress);
-  return () => document.removeEventListener('keydown', handleKeyPress);
-}, [
-  saleAllData?.sales_item?.length,
-  autoCompleteOpen,
-  selectedIndex
-]);
+      // Case 2: If the search box is focused and not empty, we don't want the down key to select rows
+      if (ae === inputRef1.current && trimmedSearchItem) {
+        return; // Do nothing if the search box has content
+      }
+
+      // Case 3: If the focus is not on the search input, we handle ArrowDown/ArrowUp navigation through table rows
+      if (!ae || (ae.tagName !== 'INPUT' && ae.tagName !== 'TEXTAREA' && !ae.isContentEditable)) {
+        if (key === 'ArrowDown') {
+          if (selectedIndex === -1) {
+            // If no row is selected, focus on the first row
+            setSelectedIndex(0); // Set to the first row
+            setTimeout(() => {
+              const row = rowRefs.current?.[0]; // First row
+              if (row?.focus) row.focus();
+              if (row?.scrollIntoView) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }, 0);
+          } else {
+            // Otherwise, move the selection down
+            focusTableAndMove('down');
+          }
+          e.preventDefault();
+          return;
+        }
+
+        if (key === 'ArrowUp') {
+          if (selectedIndex === -1 || selectedIndex === 0) {
+            // If no row is selected or we're at the first row, do nothing
+            return;
+          } else {
+            // Otherwise, move the selection up
+            focusTableAndMove('up');
+          }
+          e.preventDefault();
+          return;
+        }
+      }
+
+      // Handle the Enter key for editing when the row is focused
+      if (key === 'Enter') {
+        const idx = selectedIndex === -1 ? 0 : selectedIndex;
+        const selectedRow = saleAllData?.sales_item?.[idx];
+        if (selectedRow && ae !== inputRef1.current) {  // Prevent row selection if the search box is focused
+          handleEditClick(selectedRow);
+          setTimeout(focusQty, 0);
+        }
+      }
+    };
+
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [
+    saleAllData?.sales_item?.length,
+    autoCompleteOpen,
+    selectedIndex
+  ]);
 
 
 
@@ -638,6 +668,7 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
     setItemId(newValue?.id);
     setIsVisible(true);
     handleSearch(itemName);
+
     if (!itemName) {
       setExpiryDate("");
       setMRP("");
@@ -791,6 +822,7 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
     setQty(event.qty);
     setTempQty(event.qty);
     setLoc(event.location);
+    setAutoCompleteOpen(false);
     setTimeout(focusQty, 0);
   };
 
@@ -1484,56 +1516,56 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
           <div
 
             className="table-container"
-           
+
           >
             <table
               className="p-30 w-full border-collapse item-table"
               ref={tableRef1}
               tabIndex={0}
-              style={{ background: "#F5F5F5", padding: "10px 15px" }}
-              // onKeyDown={(e) => {
-              //   const rows = saleAllData?.sales_item || [];
-              //   if (!rows.length) return;
-
-              //   const ae = document.activeElement;
-
-              //   const isTableContainerFocused = ae === tableRef1.current;
-              //   if (!isTableContainerFocused) return;
-
-              //   const isAutocompleteFocused =
-              //     inputRef1?.current && ae === inputRef1.current;
-
-              //   const isTypingField =
-              //     ae?.tagName === "INPUT" ||
-              //     ae?.tagName === "TEXTAREA" ||
-              //     ae?.isContentEditable === true ||
-              //     ae?.getAttribute?.("role") === "combobox";
-
-              //   const inAutocompleteUI =
-              //     autoCompleteOpen ||
-              //     ae?.closest?.('[role="listbox"]') ||
-              //     document.querySelector('.MuiAutocomplete-popper [role="listbox"]');
-
-              //   if (isAutocompleteFocused || isTypingField || inAutocompleteUI) return;
-
-              //   if (e.key === "ArrowDown") {
-              //     e.preventDefault();
-              //     setSelectedIndex((prev) =>
-              //       Math.min(prev === -1 ? 0 : prev + 1, rows.length - 1)
-              //     );
-              //   } else if (e.key === "ArrowUp") {
-              //     e.preventDefault();
-              //     setSelectedIndex((prev) => Math.max(prev === -1 ? 0 : prev - 1, 0));
-              //   } else if (e.key === "Enter" && selectedIndex !== -1) {
-              //     e.preventDefault();
-              //     const selectedRow = rows[selectedIndex];
-              //     if (selectedRow) {
-              //       handleEditClick(selectedRow);
-              //     }
-              //   }
-              // }}
-
               onBlur={() => setSelectedIndex(-1)}
+              style={{ background: "#F5F5F5", padding: "10px 15px" }}
+            // onKeyDown={(e) => {
+            //   const rows = saleAllData?.sales_item || [];
+            //   if (!rows.length) return;
+
+            //   const ae = document.activeElement;
+
+            //   const isTableContainerFocused = ae === tableRef1.current;
+            //   if (!isTableContainerFocused) return;
+
+            //   const isAutocompleteFocused =
+            //     inputRef1?.current && ae === inputRef1.current;
+
+            //   const isTypingField =
+            //     ae?.tagName === "INPUT" ||
+            //     ae?.tagName === "TEXTAREA" ||
+            //     ae?.isContentEditable === true ||
+            //     ae?.getAttribute?.("role") === "combobox";
+
+            //   const inAutocompleteUI =
+            //     autoCompleteOpen ||
+            //     ae?.closest?.('[role="listbox"]') ||
+            //     document.querySelector('.MuiAutocomplete-popper [role="listbox"]');
+
+            //   if (isAutocompleteFocused || isTypingField || inAutocompleteUI) return;
+
+            //   if (e.key === "ArrowDown") {
+            //     e.preventDefault();
+            //     setSelectedIndex((prev) =>
+            //       Math.min(prev === -1 ? 0 : prev + 1, rows.length - 1)
+            //     );
+            //   } else if (e.key === "ArrowUp") {
+            //     e.preventDefault();
+            //     setSelectedIndex((prev) => Math.max(prev === -1 ? 0 : prev - 1, 0));
+            //   } else if (e.key === "Enter" && selectedIndex !== -1) {
+            //     e.preventDefault();
+            //     const selectedRow = rows[selectedIndex];
+            //     if (selectedRow) {
+            //       handleEditClick(selectedRow);
+            //     }
+            //   }
+            // }}
+
             >
               <thead>
                 <tr
@@ -1639,7 +1671,6 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
-                                  autoFocus
                                   variant="outlined"
                                   placeholder="Search Item Name..."
                                   inputRef={inputRef1}
@@ -1650,8 +1681,7 @@ const focusTableAndMove = (dir /* 'up' | 'down' */) => {
                                     const isEnter = key === "Enter";
 
                                     if (isShiftTab) return;
-
-                                    // Let ARROW keys be handled globally (document listener).
+                                    if ((isEnter || isTab) && autoCompleteOpen) return;
                                     // We only handle Enter/Tab here.
                                     if (isEnter || isTab) {
                                       e.preventDefault();

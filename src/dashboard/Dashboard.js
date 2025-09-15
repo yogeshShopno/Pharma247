@@ -120,6 +120,13 @@ const Dashboard = () => {
   //   balance: item.balance,
   // }));
 
+  // Add at the top of your component
+  const [expiryTabValue, setExpiryTabValue] = useState(types[0]?.id || "0");
+
+  const handleExpiryTabChange = (event, newValue) => {
+    setExpiryTabValue(newValue);
+  };
+
   const generateYAxisTicks = (data) => {
     if (!data.length) return [];
 
@@ -360,11 +367,8 @@ const Dashboard = () => {
                     Total Sales
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    Rs. {record?.total_sales === 0 ? 0 : record?.total_sales}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -382,11 +386,8 @@ const Dashboard = () => {
                     Total Purchase
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
+                    Rs. {record?.total_purchase === 0 ? 0 : record?.total_purchase}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -404,11 +405,8 @@ const Dashboard = () => {
                     Total Customer
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    {record?.total_customers === 0 ? 0 : record?.total_customers}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -426,11 +424,8 @@ const Dashboard = () => {
                     Total Distributor
                   </span>
                   <div className="text-3xl font-bold text-gray-900">
-                    Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
+                    {record?.total_distributors === 0 ? 0 : record?.total_distributors}
                   </div>
-                  <span className="text-green-600 text-lg font-medium">
-                    ↑ 60.00% from last month
-                  </span>
                 </div>
                 <div className="w-16 h-16 flex-shrink-0">
                   <img
@@ -452,9 +447,6 @@ const Dashboard = () => {
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {record?.total_ptr === 0 ? 0 : record?.total_ptr}
                     </div>
-                    <span className="text-green-600 text-lg font-medium">
-                      ↑ 60.00% from last month
-                    </span>
                   </div>
                   {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockBySales} className="w-full h-full object-contain" />
@@ -470,9 +462,6 @@ const Dashboard = () => {
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
                     </div>
-                    <span className="text-green-600 text-lg font-medium">
-                      ↑ 60.00% from last month
-                    </span>
                   </div>
                   {/* <div className="w-24 h-24 flex-shrink-0">
                   <img src={stockByPurchase} className="w-full h-full object-contain" />
@@ -683,86 +672,76 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
             {/*  First Component - Top Distributors & Top Five Bills */}
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6 px-4 py-3 auto-rows-fr">
               {/* Top Distributors Card */}
-              <div className="lg:col-span-1 md:col-span-1">
-                <div className="flex" style={{ minHeight: "626px" }}>
-                  <Card className="w-full rounded-2xl p-6 space-y-4 shadow-lg bg-white border border-gray-200">
-                    <div className="flex h-full flex-col justify-between gap-4 p-1">
-                      <div className="flex justify-between items-center border-b pb-2">
-                        <p className="font-bold text-[1.5625rem] text-gray-800 flex items-center">
-                          Top Distributors
-                          <Tooltip title="Latest Distributors">
-                            <Button variant="ghost" size="icon" className="ml-2">
-                              <GoInfo className="text-green-600" style={{ fontSize: "1rem" }} />
-                            </Button>
-                          </Tooltip>
-                        </p>
-                      </div>
+              <div className="lg:col-span-1 md:col-span-1 mt-2">
+                <div
+                  className="bg-white rounded-2xl shadow-lg p-6 flex flex-col border border-gray-200 h-full"
+                  style={{ minHeight: "577px" }}
+                >
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row items-center border-b pb-4 ">
+                    <p className="font-bold  text-[1.5625rem] text-gray-800 flex items-center">
+                      Top Distributors
+                      <Tooltip title="Latest Distributors">
+                        <Button variant="ghost" size="icon" className="ml-2">
+                          <GoInfo className="text-green-600" style={{ fontSize: "1rem" }} />
+                        </Button>
+                      </Tooltip>
+                    </p>
+                  </div>
 
-                      <div className="mt-6 space-y-4 overflow-auto max-h-[350px] flex-1">
-                        {distributor.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
-                          >
-                            <div>
-                              <p className="font-semibold text-base text-gray-800">
-                                {item.name}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                GST: {item.gst_number}
-                              </p>
-                            </div>
-                            <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                              ₹{item.due_amount === 0 ? "0" : item.due_amount.toLocaleString()}
-                            </div>
-                          </div>
-                        ))}
+                  {/* Scrollable List */}
+                  <div className="mt-6 space-y-4 overflow-auto max-h-[400px] flex-1">
+                    {distributor.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
+                      >
+                        <div>
+                          <p className="font-semibold text-base text-gray-800">{item.name}</p>
+                          <p className="text-sm text-gray-500">GST: {item.gst_number}</p>
+                        </div>
+                        <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
+                          ₹{item.due_amount === 0 ? "0" : item.due_amount.toLocaleString()}
+                        </div>
                       </div>
+                    ))}
+                  </div>
 
-                      {/* View All - Consistent Position */}
-                      <div className="flex justify-end mt-4">
-                        <Link
-                          to="/more/DistributorList"
-                          className="text-green-600 flex items-center gap-1 hover:underline font-medium"
-                        >
-                          View all <ChevronRightIcon className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </Card>
+                  {/* View All */}
+                  <div className="flex justify-end mt-4">
+                    <Link
+                      to="/more/DistributorList"
+                      className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                    >
+                      View all <ChevronRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
 
               {/* Top Five Bills Card */}
               <div className="lg:col-span-2 md:col-span-1">
                 <div
-                  className="bg-white rounded-2xl shadow-lg p-6 space-y-4"
-                  style={{
-                    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.08)",
-                    minHeight: "577px",
-                  }}
+                  className="bg-white rounded-2xl shadow-lg p-6 flex flex-col border border-gray-200 h-full"
+                  style={{ minHeight: "577px" }}
                 >
                   {/* Header */}
-                  <div className="flex flex-col md:flex-row justify-between items-center border-b pb-4 border-[var(--color2)]">
-                    <div className="flex items-center gap-2 text-[1.6rem] font-semibold text-gray-800">
+                  <div className="flex flex-col md:flex-row justify-between items-center border-b pb-4">
+                    <div className="flex items-center text-[1.5625rem] font-bold text-gray-800">
                       Top Five Bills
                       <Tooltip title="Top Five Bills" arrow>
                         <Button>
-                          <GoInfo
-                            style={{
-                              fontSize: "1.1rem",
-                              fill: "var(--color1)",
-                            }}
-                          />
+                          <GoInfo style={{ fontSize: "1.1rem", fill: "var(--color1)" }} />
                         </Button>
                       </Tooltip>
                     </div>
 
-                    {/* Tabs and Staff Select */}
-                    <div className="flex items-center gap-4 flex-wrap mt-4 md:mt-0">
+                    {/* Tabs + Staff Select */}
+                    <div className="flex items-center gap-4 flex-wrap md:mt-0">
                       <TabContext value={value}>
                         <TabList
                           onChange={handlechange}
@@ -807,82 +786,64 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  {/* Table & Content */}
-                  <Box className="w-full flex-1">
-                    <TabContext value={value}>
-                      {billData.length > 0 ? (
-                        types.map((e) => (
-                          <TabPanel
-                            key={e.id}
-                            value={e.id}
-                            className="p-0"
-                            sx={{ height: "100%" }}
-                          >
-                            <div className="flex flex-col justify-between h-full min-h-[450px]">
-                              <div className="overflow-auto max-h-[350px] rounded-xl">
-                                <table className="w-full text-left table-auto border-collapse">
-                                  <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
-                                    <tr>
-                                      <th className="px-4 py-3 border-b min-w-[180px]">
-                                        {value === 0 ? "Distributors" : "Customers"}
-                                      </th>
-                                      <th className="px-4 py-3 border-b min-w-[160px]">
-                                        Contact Number
-                                      </th>
-                                      <th className="px-4 py-3 border-b min-w-[140px]">
-                                        Amount
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="text-sm text-gray-800">
-                                    {billData.map((item, index) => (
-                                      <tr
-                                        key={index}
-                                        className="border-b hover:bg-gray-50 transition"
-                                      >
-                                        <td className="px-4 py-3">{item.name}</td>
-                                        <td className="px-4 py-3">{item.phone_number || "--"}</td>
-                                        <td className="px-4 py-3 font-medium">
-                                          ₹ {item.total_amount || 0}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
+                  {/* Table with scroll + View All pinned */}
+                  <div className="flex flex-col flex-1 mt-6">
+                    {billData.length > 0 ? (
+                      <>
+                        {/* Table Header */}
+                        <div className="grid grid-cols-3 bg-gray-50 text-gray-700 text-sm font-semibold border-b rounded-t-lg">
+                          <div className="px-4 py-3 text-center">Distributors</div>
+                          <div className="px-4 py-3 text-center">Contact Number</div>
+                          <div className="px-4 py-3 text-center">Amount</div>
+                        </div>
 
-                              {/* View All Link - Consistent Position */}
-                              <div className="flex justify-end mt-4">
-                                {value === 0 ? (
-                                  <Link
-                                    to="/purchase/purchasebill"
-                                    className="text-green-600 flex items-center gap-1 hover:underline font-medium"
-                                  >
-                                    View all <ChevronRightIcon className="w-4 h-4" />
-                                  </Link>
-                                ) : (
-                                  <Link
-                                    to="/salelist"
-                                    className="text-green-600 flex items-center gap-1 hover:underline font-medium"
-                                  >
-                                    View all <ChevronRightIcon className="w-4 h-4" />
-                                  </Link>
-                                )}
+                        {/* Scrollable Rows */}
+                        <div className="flex-1 overflow-auto">
+                          {billData.map((item, index) => (
+                            <div
+                              key={index}
+                              className="grid grid-cols-3 border-b hover:bg-gray-50 transition"
+                            >
+                              <div className="px-4 py-3 text-center">{item.name}</div>
+                              <div className="px-4 py-3 text-center">{item.phone_number || "--"}</div>
+                              <div className="px-4 py-3 text-center font-medium">
+                                ₹ {item.total_amount || 0}
                               </div>
                             </div>
-                          </TabPanel>
-                        ))
-                      ) : (
-                        <div className="flex justify-center items-center min-h-[300px]">
-                          <img
-                            src="../no-data.png"
-                            alt="No data"
-                            className="h-40 opacity-80"
-                          />
+                          ))}
                         </div>
+                      </>
+                    ) : (
+                      // No data state
+                      <div className="flex justify-center items-center flex-1">
+                        <img
+                          src="../no-data.png"
+                          alt="No data"
+                          className="h-28 opacity-80"
+                        />
+                      </div>
+                    )}
+
+                    {/* View All pinned at bottom-right */}
+                    <div className="flex justify-end mt-4">
+                      {value === 0 ? (
+                        <Link
+                          to="/purchase/purchasebill"
+                          className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                        >
+                          View all <ChevronRightIcon className="w-4 h-4" />
+                        </Link>
+                      ) : (
+                        <Link
+                          to="/salelist"
+                          className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                        >
+                          View all <ChevronRightIcon className="w-4 h-4" />
+                        </Link>
                       )}
-                    </TabContext>
-                  </Box>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -890,193 +851,124 @@ const Dashboard = () => {
             {/*  Second Component - Staff Overview & Expiring Items */}
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-5 md:grid-cols-2 gap-6 px-4 py-3">
               {/* Staff Overview Card */}
-              <div className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden flex flex-col min-h-[500px]">
-                {/* Header with Tabs */}
-                <div className="flex flex-col gap-4 px-6 py-5 border-b border-gray-200 bg-gray-50">
-                  <div className="flex items-center gap-2 text-xl font-semibold text-gray-800">
-                    Staff Overview
+              <div className="lg:col-span-2 md:col-span-1 w-full bg-white rounded-3xl shadow-lg border border-gray-100 flex flex-col min-h-[500px]">
+                {/* Header */}
+                <div className="flex justify-between items-start sm:items-center border-b border-gray-200 px-6 py-4 bg-gray-50 flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-semibold text-gray-800">Staff Overview</h2>
                     <Tooltip title="Staff sales and purchase overview" arrow>
-                      <Button size="small">
-                        <GoInfo
-                          style={{ fontSize: "1.1rem", fill: "var(--color1)" }}
-                        />
+                      <Button size="small" color="primary" sx={{ minWidth: 0, padding: 0 }}>
+                        <GoInfo className="text-base text-gray-600" />
                       </Button>
                     </Tooltip>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between w-full">
-                    {/* Tabs - Responsive */}
-                    <div className="w-full sm:w-auto order-2 sm:order-1">
-                      <TabContext value={value}>
-                        <TabList
-                          onChange={handlechange}
-                          aria-label="Sales Purchase Tabs"
-                          TabIndicatorProps={{ style: { display: "none" } }}
-                          variant="scrollable"
-                          scrollButtons="auto"
-                          sx={{
-                            "& .MuiTab-root": {
-                              textTransform: "none",
-                              fontWeight: 500,
-                              px: { xs: 2, sm: 3 },
-                              py: 1,
-                              borderRadius: "999px",
-                              color: "#374151",
-                              backgroundColor: "#fff",
-                              mx: 0.5,
-                              transition: "0.3s ease",
-                              fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                              minWidth: { xs: "auto", sm: "64px" },
-                              minHeight: { xs: "32px", sm: "40px" },
-                            },
-                            "& .Mui-selected": {
-                              backgroundColor: "var(--color1)",
-                              color: "white",
-                            },
-                            "& .MuiTabs-scrollButtons": {
-                              display: { xs: "flex", sm: "none" },
-                            },
-                          }}
-                        >
-                          {types.map((tab) => (
-                            <Tab
-                              key={tab.id}
-                              value={tab.id}
-                              label={tab.value}
-                              className="whitespace-nowrap"
-                            />
-                          ))}
-                        </TabList>
-                      </TabContext>
-                    </div>
-
-                    {/* Staff Dropdown - Responsive */}
-                    <div className="w-full sm:w-auto order-1 sm:order-2">
-                      <FormControl
-                        size="small"
-                        sx={{
-                          minWidth: { xs: "100%", sm: 120 },
-                          maxWidth: { xs: "100%", sm: 200 }
-                        }}
+                  {/* Tabs + Dropdown */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+                    {/* Tabs */}
+                    <TabContext value={value}>
+                      <TabList
+                        onChange={handlechange}
+                        TabIndicatorProps={{ style: { display: "none" } }}
+                        className="rounded-full bg-gray-100 flex-shrink"
                       >
-                        <Select
-                          value={staffListValue}
-                          onChange={staffListHandlechange}
-                          displayEmpty
-                          className="bg-white rounded-md shadow-sm text-sm"
-                          inputProps={{ "aria-label": "Staff Select" }}
-                          sx={{
-                            "& .MuiSelect-select": {
-                              py: { xs: 1, sm: 1.5 },
-                              fontSize: { xs: "0.875rem", sm: "0.9375rem" },
-                            },
-                          }}
-                        >
-                          {staffList.map((e) => (
-                            <MenuItem key={e.id} value={e.id}>
-                              {e.value}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
+                        {types.map((tab) => (
+                          <Tab
+                            key={tab.id}
+                            value={tab.id}
+                            label={tab.value}
+                            className="px-4 py-1 text-sm font-medium capitalize"
+                            sx={{
+                              "&.Mui-selected": {
+                                backgroundColor: "var(--color1)",
+                                color: "white",
+                                borderRadius: "999px",
+                              },
+                            }}
+                          />
+                        ))}
+                      </TabList>
+                    </TabContext>
+
+                    {/* Dropdown */}
+                    <FormControl size="small" sx={{ minWidth: 120 }} className="flex-shrink">
+                      <Select
+                        value={staffListValue}
+                        onChange={staffListHandlechange}
+                        className="rounded-md bg-white text-sm"
+                      >
+                        {staffList.map((e) => (
+                          <MenuItem key={e.id} value={e.id}>
+                            {e.value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </div>
                 </div>
 
-                {/* Table Section */}
-                <div className="py-2 flex-1 flex flex-col">
+
+                {/* Content + Footer pinned */}
+                <div className="flex flex-col flex-1 p-4">
                   <TabContext value={pieChartvalue}>
                     {pieChartTabs.map((tab) => (
-                      <TabPanel key={tab.id} value={tab.id} sx={{ px: 0 }} className="h-full p-0">
-                        <div className="flex flex-col h-full ">
-                          <Paper elevation={0} className="overflow-hidden rounded-xl flex-1">
-                            <Table>
-                              <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
-                                <TableRow>
-                                  <TableCell
-                                    sx={{
-                                      fontWeight: 600,
-                                      fontSize: { xs: "0.875rem", sm: "0.9375rem" },
-                                      py: { xs: 1, sm: 1.5 }
-                                    }}
-                                  >
-                                    Name
-                                  </TableCell>
-                                  <TableCell
-                                    sx={{
-                                      fontWeight: 600,
-                                      fontSize: { xs: "0.875rem", sm: "0.9375rem" },
-                                      py: { xs: 1, sm: 1.5 }
-                                    }}
-                                  >
-                                    Amount (₹)
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {staffOverview.map((item, index) => (
-                                  <TableRow key={index} hover>
-                                    <TableCell
-                                      sx={{
-                                        fontSize: { xs: "0.8125rem", sm: "0.875rem" },
-                                        py: { xs: 1, sm: 1.5 }
-                                      }}
-                                    >
-                                      {item.lable}
-                                    </TableCell>
-                                    <TableCell
-                                      className="text-green-700 font-medium"
-                                      sx={{
-                                        fontSize: { xs: "0.8125rem", sm: "0.875rem" },
-                                        py: { xs: 1, sm: 1.5 }
-                                      }}
-                                    >
-                                      ₹ {item.value.toLocaleString()}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </Paper>
-
-                          {/* View All Link - Responsive */}
-                          <div className="mt-auto pt-4 px-2 flex justify-end">
-                            <Link to="/staff/overview" className="text-green-600 flex items-center gap-1 hover:underline font-medium text-sm sm:text-base">
-                              View all <ChevronRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                            </Link>
-                          </div>
+                      <TabPanel key={tab.id} value={tab.id} sx={{ p: 0 }} className="flex-1 flex flex-col">
+                        {/* Content area */}
+                        <div className="flex-1 flex flex-col justify-center">
+                          {staffOverview.length > 0 ? (
+                            <div className="space-y-3 overflow-auto">
+                              {staffOverview.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                                >
+                                  <p className="text-gray-800 font-medium">{item.lable}</p>
+                                  <p className="text-green-700 font-semibold">
+                                    ₹ {item.value.toLocaleString()}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            // ✅ Centered No Data Image
+                            <div className="flex flex-1 justify-center items-center">
+                              <img src="../no-data.png" alt="No data" className="h-28 opacity-70" />
+                            </div>
+                          )}
                         </div>
                       </TabPanel>
                     ))}
                   </TabContext>
+
+                  {/* ✅ Footer pinned bottom-right */}
+                  <div className="pt-4 flex justify-end">
+                    <Link
+                      to="/staff/overview"
+                      className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                    >
+                      View all <ChevronRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
+
 
               {/* Expiring Items Card */}
               <div className="lg:col-span-3 md:col-span-1 w-full h-full">
                 <div className="bg-white rounded-2xl shadow-lg h-full flex flex-col p-4">
-                  {/* Header Section */}
+                  {/* Header */}
                   <div className="flex justify-between items-center border-b border-gray-200 pb-3 mb-3">
                     <div className="flex items-center gap-2">
-                      <h2 className="text-2xl font-semibold text-gray-800">
-                        Expiring Items
-                      </h2>
+                      <h2 className="text-2xl font-semibold text-gray-800">Expiring Items</h2>
                       <Tooltip title="Expiring Items" arrow>
-                        <Button
-                          size="small"
-                          color="primary"
-                          sx={{ minWidth: 0, padding: 0 }}
-                        >
+                        <Button size="small" color="primary" sx={{ minWidth: 0, padding: 0 }}>
                           <GoInfo className="text-base text-gray-600" />
                         </Button>
                       </Tooltip>
                     </div>
 
                     <FormControl size="small" sx={{ minWidth: 120 }}>
-                      <Select
-                        value={expiredValue}
-                        onChange={(e) => setExpiredValue(e.target.value)}
-                      >
+                      <Select value={expiredValue} onChange={(e) => setExpiredValue(e.target.value)}>
                         {expiryList.map((e) => (
                           <MenuItem key={e.id} value={e.id}>
                             {e.value}
@@ -1086,56 +978,57 @@ const Dashboard = () => {
                     </FormControl>
                   </div>
 
-                  {/* Content Section */}
-                  <Box sx={{ flexGrow: 1 }} className="flex-1 flex flex-col">
-                    <TabContext value={value}>
-                      {expiry.length > 0 ? (
-                        types.map((e) => (
-                          <TabPanel key={e.id} value={e.id} sx={{ p: 0 }} className="h-full">
-                            <div className="flex flex-col h-full">
-                              <div className="overflow-auto max-h-[320px]">
-                                <table className="w-full text-sm text-center">
-                                  <thead className="bg-gray-50 text-gray-700 sticky top-0">
-                                    <tr>
-                                      <th className="px-4 py-2 font-semibold">Item Name</th>
-                                      <th className="px-4 py-2 font-semibold">Qty.</th>
-                                      <th className="px-4 py-2 font-semibold">Expiry Date</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {expiry.map((item) => (
-                                      <tr
-                                        key={item.id}
-                                        className="border-b hover:bg-gray-50"
-                                      >
-                                        <td className="px-4 py-2">{item.name}</td>
-                                        <td className="px-4 py-2">{item.qty}</td>
-                                        <td className="px-4 py-2">{item.expiry}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                  {/* Content + Footer pinned */}
+                  <div className="flex-1 flex flex-col">
+                    <TabContext value={expiryTabValue}>
+                      {types.map((e) => (
+                        <TabPanel key={e.id} value={e.id} sx={{ p: 0 }} className="flex-1 flex flex-col">
+                          {expiry.length > 0 ? (
+                            <>
+                              {/* Header Row */}
+                              <div className="grid grid-cols-4 bg-gray-50 text-gray-700 text-sm font-semibold border-b">
+                                <div className="col-span-2 px-4 py-2 text-center">Item Name</div>
+                                <div className="px-4 py-2 text-center">Qty.</div>
+                                <div className="px-4 py-2 text-center">Expiry Date</div>
                               </div>
 
-                              {/* View All Link - Consistent Position */}
-                              <div className="mt-auto pt-4 flex justify-end">
-                                <Link to="/inventory" className="text-green-600 flex items-center gap-1 hover:underline font-medium">
-                                  View all <ChevronRightIcon className="w-4 h-4" />
-                                </Link>
+                              {/* Rows */}
+                              <div className="flex-1 overflow-auto">
+                                {expiry.map((item) => (
+                                  <div
+                                    key={item.id}
+                                    className="grid grid-cols-4 border-b hover:bg-gray-50 text-sm"
+                                  >
+                                    <div className="col-span-2 px-4 py-2 text-center">{item.name}</div>
+                                    <div className="px-4 py-2 text-center">{item.qty}</div>
+                                    <div className="px-4 py-2 text-center">{item.expiry}</div>
+                                  </div>
+                                ))}
                               </div>
+                            </>
+                          ) : (
+                            <div className="flex flex-1 justify-center items-center">
+                              <img src="../no_Data1.png" alt="No data" className="w-48 opacity-70" />
                             </div>
-                          </TabPanel>
-                        ))
-                      ) : (
-                        <div className="flex justify-center items-center flex-1">
-                          <img src="../no_Data1.png" alt="No data" className="w-48 opacity-70" />
-                        </div>
-                      )}
+                          )}
+                        </TabPanel>
+                      ))}
                     </TabContext>
-                  </Box>
+
+                    {/* ✅ Footer pinned bottom-right */}
+                    <div className="pt-4 flex justify-end">
+                      <Link
+                        to="/inventory"
+                        className="text-green-600 flex items-center gap-1 hover:underline font-medium"
+                      >
+                        View all <ChevronRightIcon className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
             {/* <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-5'>
                 <div className='gap-4'>
                   <div className="flex flex-col px-2 py-1 justify-between" style={{ boxShadow: '0 0 16px rgba(0, 0, 0, .1607843137254902)' }}>

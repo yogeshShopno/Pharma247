@@ -11,6 +11,22 @@
   --color6: #f31c1c;
 }
 
+/* Success toast background */
+.Toastify__toast--success {
+  background-color: #fff !important;
+  color: #3f6212 !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #3f6212 !important;
+  stroke: #3f6212 !important;
+}
+
+/* Optional: progress bar color */
+.Toastify__progress-bar--success {
+  background: #3f6212 !important;
+}
+
 .primary {
   color: #3f6212;
 }
@@ -342,7 +358,7 @@ body {
 }
 
 .custom-hover:hover {
-   background-color: var(--color2) !important;
+  background-color: var(--color2) !important;
   box-shadow: 0 12px 13px rgba(60, 136, 77, 0.4) !important;
   color: white !important;
   outline: none;
@@ -712,7 +728,7 @@ body {
 
 .react-datepicker__header {
   background-color: var(--color1) !important;
-    opacity: 1 !important;
+  opacity: 1 !important;
 
 }
 
@@ -729,9 +745,10 @@ body {
 }
 
 /* Make all MUI TextField input containers have z-index 0 */
-.MuiInputBase-root  .textfield-z0{
+.MuiInputBase-root .textfield-z0 {
   z-index: 0 !important;
-  position: relative; /* required for z-index to take effect */
+  position: relative;
+  /* required for z-index to take effect */
 }
 
 .auth-page {
@@ -884,7 +901,7 @@ button {
 }
 
 .custom-dialog h2 .css-7es8l1-MuiSvgIcon-root {
-  color:  #fff;
+  color: #fff;
 }
 
 .border-green .css-14lt176-MuiInputBase-root-MuiInput-root::after {
@@ -911,17 +928,16 @@ button {
     padding: 0 !important;
   }
 
-  .css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expandedP
-  {
+  .css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expandedP {
     min-height: auto !important;
   }
 
-  .css-15v22id-MuiAccordionDetails-root{
+  .css-15v22id-MuiAccordionDetails-root {
     padding: 0 !important;
   }
-} 
+}
 
-.csrtureddididid{
+.csrtureddididid {
   @media (max-width: 1024px) {
     flex-direction: column-reverse !important;
   }

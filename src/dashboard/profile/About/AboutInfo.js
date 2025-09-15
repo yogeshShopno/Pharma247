@@ -49,7 +49,7 @@ const AboutInfo = () => {
   const fetchAboutDetails = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("about-get",{}, {
+      const response = await axios.post("about-get", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -126,7 +126,7 @@ const AboutInfo = () => {
   return (
     <>
       <Header key={reRender} />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -166,7 +166,6 @@ const AboutInfo = () => {
                   >
                     About Pharmacy
                     <BsLightbulbFill className="ml-4 secondary  hover-yellow" />
-                  
                   </h1>
                 </div>
                 <Box className="aboutPharmacy  abt_fld_pf">
@@ -341,33 +340,41 @@ const AboutInfo = () => {
                     type="file"
                     onChange={handleProfilePhoto}
                   />
-                  {selectedProfileFile == null || selectedProfileFile == "" ? (
-                    <div className="UploadClass abt_imf_dd">
-                      <img src={profileImage} width="50%" height="50%" />
-                    </div>
-                  ) : (
-                    <img
-                      src={frontImgUrl}
-                      alt="Uploaded"
-                      className="rounded-md"
-                      style={{
-                        height: "100px",
-                        width: "100px",
-                        marginTop: "15px",
-                      }}
-                    />
-                  )}
-                  <label htmlFor="front-photo-file" style={{ margin: "10px" }}>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {selectedProfileFile == null || selectedProfileFile == "" ? (
+                      <img src={profileImage} alt="default" style={{ width: "70px" }} />
+                    ) : (
+                      <img
+                        src={frontImgUrl}
+                        alt="Uploaded"
+                        className="rounded-md"
+                        style={{ height: "85px", width: "85px" }}
+                      />
+                    )}
+                  </div>
+
+                  <label htmlFor="front-photo-file" style={{ marginBottom: "10px" }}>
                     <Button
                       variant="contained"
                       component="span"
-                      style={{ padding: "5px", background: "var(--color1)" }}
+                      style={{
+                        background: "var(--color1)",
+                        padding: "5px 12px",
+                      }}
                     >
                       Choose Photo
                     </Button>
                   </label>
                 </div>
               </div>
+
             </div>
           </Box>
         </div>

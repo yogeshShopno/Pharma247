@@ -116,83 +116,91 @@ function App() {
       elem.msRequestFullscreen(); // IE11
     }
   };
+
+
   useEffect(() => {
-
-    // Inject CSS to style all MUI TextField components
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.innerHTML = `
-      /* Change default border color for Outlined TextFields */
-      .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-        border-color: #3f6212; /* Default border color */
-      }
-              .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
-    color: var(--color1) !important;
-}
-      .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
-    background-color: var(--color1);
-}
-  
-       '& .MuiOutlinedInput-root': {
-       '&:hover fieldset': {
-         borderColor: 'var(--color1)', 
-         },
-        '&.Mui-focused fieldset': {
-            borderColor: 'var(--color1)', 
-          },
-           },
-                                                        
-      /* Change border color on hover for Outlined TextFields */
-      .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-        border-color: #3f6212; /* Hover border color */
-      }
+    /* ================================
+       GLOBAL DIALOG BASE
+       ================================ */
+    .MuiDialog-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .MuiDialog-paper {
+      border-radius: 8px !important;
+    }
+    .MuiDialogTitle-root {
+      background-color: var(--COLOR_UI_PHARMACY) !important;
+      color: white !important;
+      font-weight: 600 !important;
+      padding: 12px 16px !important;
+    }
+    .MuiDialogActions-root {
+      justify-content: flex-end !important;
+      padding: 16px 24px !important;
+    }
 
-      /* Change border color when focused for Outlined TextFields */
-      .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-        border-color: #3f6212 !important; /* Focused border color */
-      }
+    /* ================================
+       SHARED: Stock Adjustment / Expense Dialogs
+       ================================ */
+    .modal_991 .MuiDialog-paper {
+      width: 800px !important;
+      max-width: 95% !important;
+    }
+    .modal_991 .MuiButton-contained {
+      background: var(--COLOR_UI_PHARMACY) !important;
+      color: white !important;
+      box-shadow: none !important;
+    }
+    .modal_991 .MuiButton-contained:hover {
+      background: #2e520d !important; /* darker green hover */
+    }
+    .modal_991 .MuiButton-contained.MuiButton-colorError {
+      background: #F31C1C !important;
+    }
 
-       .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #3f6212;
-    border-width: 2px;
-  }
-      /* Change label colors */
-      .MuiInputLabel-root {
-        color: #3f6212; /* Default label color */
-      }
-      
-      .MuiInputLabel-root.Mui-focused {
-        color: #3f6212 !important; /* Focused label color */
-      }
+    /* ================================
+       INPUTS INSIDE DIALOG
+       ================================ */
+    .modal_991 .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: rgba(0,0,0,0.3);
+    }
+    .modal_991 .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: var(--color1);
+    }
+    .modal_991 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: var(--color1);
+    }
+    .modal_991 .MuiInputLabel-root.Mui-focused {
+      color: var(--color1) !important;
+    }
 
-      /* Change underline color for Standard TextFields */
-      .MuiInput-underline:before {
-        border-bottom: 2px solid #3f6212; /* Default underline color */
-      }
+    /* === Button (Update) styles === */
+    .payment_btn_divv {
+      text-transform: none !important;
+      background: var(--color1) !important;
+      color: white !important;
+      box-shadow: none !important;
+    }
+    .payment_btn_divv:hover {
+      background: var(--color1) !important;
+      opacity: 0.9 !important;
+    }
 
-      .MuiInput-underline:hover:not(.Mui-disabled):before {
-        border-bottom: 2px solid #3f6212; /* Hover underline color */
-      }
-
-       .css-1z6833-MuiButtonBase-root-MuiButton-root:hover{
-      background-color: #3f6212;
-      }
-
-      .MuiInput-underline:after {
-        border-bottom: 2px solid #3f6212; /* Focused underline color */
-      }
-
-      .css-1aquho2-MuiTabs-indicator{
-      background-color: var(--color2) !important;
-      }
-
-      .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
-          background-color: var(--COLOR_UI_PHARMACY) !important;
-       }
-
-    `;
+    /* === Autocomplete styles === */
+    .custom-autocomplete .MuiInputBase-root {
+      height: 20px !important;
+      font-size: 1.10rem !important;
+    }
+    .custom-autocomplete .MuiAutocomplete-inputRoot {
+      padding: 10px 14px !important;
+    }
+  `;
     document.head.appendChild(style);
 
-    // Cleanup function to remove the styles on unmount
     return () => {
       document.head.removeChild(style);
     };
@@ -201,9 +209,9 @@ function App() {
 
   return (
     <div className="App">
-      <CssBaseline />
 
       <ThemeProvider theme={theme}>
+        <CssBaseline />
 
         <Router>
           <Switch>
@@ -350,7 +358,7 @@ function App() {
                 <ReturnList />
               </Protected>
             </Route>
-         
+
             <Route path='/purchase/addPurchaseBill'>
               <Protected>
                 <AddPurchaseBill />

@@ -454,7 +454,6 @@ const BankAccount = () => {
 
   const handleAccountClick = (id, index) => {
     setSelectedAccountId(id);
-    BankDetailgetByID(id);
     const selectedDetails = bankData.find((x) => x.id === id);
     setDetails(selectedDetails);
   };

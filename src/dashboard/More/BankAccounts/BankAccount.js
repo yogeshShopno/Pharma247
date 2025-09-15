@@ -544,7 +544,7 @@ const BankAccount = () => {
             onClick={() => toggleDrawer(false)}
           >
             {/* 💰 Savings Accounts */}
-            {bankData.filter(account => account.bank_account_name === "Savings").length > 0 && (
+            {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
               <List>
                 <h1
                   className="text-lg sm:text-base md:text-lg flex justify-start p-2"
@@ -553,11 +553,11 @@ const BankAccount = () => {
                   Savings Accounts
                 </h1>
                 {bankData
-                  .filter(account => account.bank_account_name === "Savings")
+                  .filter(account => account.bank_account_name === "Saving")
                   .map((account, index) => (
                     <ListItem
                       key={account.id}
-                      className={`list-bank ${selectedAccountId === account.id ? "highlighted" : ""}`}
+                      className={`list-bank ${selectedAccountId === account.id ? "primary-bg text-white" : ""}`}
                       disablePadding
                     >
                       <ListItemButton
@@ -566,7 +566,7 @@ const BankAccount = () => {
                       >
                         <div className="w-full min-w-0 flex-1">
                           <p
-                            className="text-xs text-gray-600 mb-1 font-mono tracking-wide"
+                            className={`text-xs  ${selectedAccountId === account.id ? " text-white" : ""} text-gray-600 mb-1 font-mono tracking-wide`}
                             style={{
                               wordBreak: "break-all",
                               lineHeight: "1.2"
@@ -575,7 +575,7 @@ const BankAccount = () => {
                             {account.bank_account_number || "Empty"}
                           </p>
                           <h6
-                            className="font-semibold text-sm mb-1"
+                            className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? " text-white" : ""}`}
                             style={{
                               wordWrap: "break-word",
                               lineHeight: "1.3",
@@ -585,7 +585,7 @@ const BankAccount = () => {
                             {account.bank_name}
                           </h6>
                           <h6
-                            className="text-xs text-black font-semibold"
+                            className={`text-xs text-black font-semibold  ${selectedAccountId === account.id ? " text-white" : ""}`}
                             style={{
                               wordWrap: "break-word",
                               lineHeight: "1.4",
@@ -620,16 +620,16 @@ const BankAccount = () => {
                   .map((account, index) => (
                     <ListItem
                       key={account.id}
-                      className={`list-bank ${selectedAccountId === account.id ? "highlighted" : ""}`}
+                      className={`list-bank  ${selectedAccountId === account.id ? " text-white primary-bg" : ""}`}
                       disablePadding
                     >
                       <ListItemButton
                         style={{ width: "100%", borderRadius: "10px" }}
                         onClick={() => handleAccountClick(account.id, index)}
                       >
-                        <div className="w-full min-w-0 flex-1">
+                        <div className={`w-full min-w-0 flex-1  ${selectedAccountId === account.id ? " text-white" : ""}`}>
                           <p
-                            className="text-xs text-gray-600 mb-1 font-mono tracking-wide"
+                            className={`text-xs text-gray-600 mb-1 font-mono tracking-wide  ${selectedAccountId === account.id ? " text-white" : ""}`}
                             style={{
                               wordBreak: "break-all",
                               lineHeight: "1.2"
@@ -638,17 +638,16 @@ const BankAccount = () => {
                             {account.bank_account_number || "Empty"}
                           </p>
                           <h6
-                            className="font-semibold text-sm mb-1"
+                            className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? " text-white" : ""}`}
                             style={{
                               wordWrap: "break-word",
                               lineHeight: "1.3",
                               hyphens: "auto"
                             }}
-                          >
-                            {account.bank_name}
+                          >{account.bank_name}
                           </h6>
                           <h6
-                            className="font-medium text-xs text-gray-700"
+                            className={`font-medium text-xs text-gray-700 ${selectedAccountId === account.id ? " text-white" : ""}`}
                             style={{
                               wordWrap: "break-word",
                               lineHeight: "1.4",
@@ -658,8 +657,7 @@ const BankAccount = () => {
                               WebkitBoxOrient: "vertical",
                               overflow: "hidden"
                             }}
-                          >
-                            {account.account_holder_name}
+                          >{account.account_holder_name}
                           </h6>
                         </div>
                       </ListItemButton>

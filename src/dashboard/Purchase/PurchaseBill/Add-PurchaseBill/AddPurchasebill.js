@@ -153,6 +153,8 @@ const AddPurchaseBill = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [dialogMode, setDialogMode] = useState(""); // "csv" | "stock"
+
 
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -170,7 +172,16 @@ const AddPurchaseBill = () => {
     "Pharma Byte": "pharmabyte-item-import",
     "Marg ERP": "mahalaxmi-item-import",
     "Techno Max": "techno-item-import",
+  };
 
+  const optionForCsv = {
+    "Skyway": "purchase-item-import",
+    "Pharma Byte": "pharmabyte-item-import",
+    "Marg ERP": "mahalaxmi-item-import",
+    "Techno Max": "techno-item-import",
+  };
+  const optionForStock = {
+    "Visual": "visual-item-purchase-import",
   };
 
   const [error, setError] = useState({});
@@ -554,7 +565,14 @@ const AddPurchaseBill = () => {
       return;
     }
 
-    const apiEndpoint = options[importConpany];
+    // Pick endpoint based on dialogMode
+    let apiEndpoint = "";
+    if (dialogMode === "csv") {
+      apiEndpoint = optionForCsv[importConpany];
+    } else if (dialogMode === "stock") {
+      apiEndpoint = optionForStock[importConpany];
+    }
+
     if (!apiEndpoint) {
       toast.error("Invalid option selected");
       return;
@@ -576,14 +594,12 @@ const AddPurchaseBill = () => {
         toast.success(response?.data?.message);
         setUnsavedItems(true);
         setOpenFile(false);
-
       }
+
       itemPurchaseList();
       setTimeout(() => {
         inputRefs.current[2]?.focus();
       }, 10);
-
-
 
     } catch (error) {
       console.error("API error:", error);
@@ -591,13 +607,13 @@ const AddPurchaseBill = () => {
       if (error.response?.data?.status === 400) {
         toast.error(error.response.data.message);
       } else {
-        // toast.error(error?.message || "Something went wrong. Please try again.");
+        toast.error(error?.message || "Something went wrong. Please try again.");
       }
     } finally {
       setIsLoading(false);
     }
-
   };
+
 
   /*<============================================================================ download selected file =========================================================================> */
 
@@ -607,8 +623,8 @@ const AddPurchaseBill = () => {
 
     switch (importConpany) {
       case "Visual":
-        fileName = "Visual.csv";
-        filePath = "/Visual.csv";
+        fileName = "Visual.xls";
+        filePath = "/Visual.xls";
         break;
       case "Skyway":
         fileName = "Skyway.csv";
@@ -1942,11 +1958,32 @@ const AddPurchaseBill = () => {
               <button
                 type="button"
                 className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
-                onClick={() => setOpenFile(true)}
+                onClick={() => {
+                  setDialogMode("csv");
+                  setOpenFile(true);
+                }}
               >
                 <CloudUploadIcon className="mr-2" />
                 Import CSV
               </button>
+
+              {/* Import Stock button (directly set Visual) */}
+              {distributor?.name === "OPENING DISTRIBUTOR" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDialogMode("stock");
+                    setImportConpany("Visual"); // auto select Visual
+                    setOpenFile(true);
+                  }}
+                  disabled={distributor?.name !== "OPENING DISTRIBUTOR"}
+                  className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  <CloudUploadIcon className="mr-2" />
+                  Import Stock
+                </button>
+              )}
+
 
               {distributor && (
                 <button
@@ -2168,7 +2205,7 @@ const AddPurchaseBill = () => {
                 <span className="title mb-2">Due Date</span>
                 <div>
                   <DatePicker
-                    className="custom-datepicker "
+                    className="custom-datepicker"
                     selected={dueDate}
                     variant="outlined"
                     onChange={(newDate) => setDueDate(newDate)}
@@ -3194,7 +3231,8 @@ const AddPurchaseBill = () => {
           </IconButton>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div className="bg-white"
+              <div
+                className="bg-white"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -3202,22 +3240,42 @@ const AddPurchaseBill = () => {
                   marginBlock: "20px",
                 }}
               >
-                {/* Software Selection */}
-                <FormControl size="small" sx={{ width: 200 }}>
-                  <InputLabel>Select Software</InputLabel>
-                  <Select
-                    value={importConpany}
-                    onChange={(event) => setImportConpany(event.target.value)}
-                    label="Select Software"
-                    autoFocus
-                  >
-                    {Object.keys(options).map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                {/* Different dropdowns for each mode */}
+                {dialogMode === "csv" && (
+                  <FormControl size="small" sx={{ width: 200 }}>
+                    <InputLabel>Select Software (CSV)</InputLabel>
+                    <Select
+                      value={importConpany}
+                      onChange={(event) => setImportConpany(event.target.value)}
+                      label="Select Software (CSV)"
+                      autoFocus
+                    >
+                      {Object.keys(optionForCsv).map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+
+                {dialogMode === "stock" && (
+                  <FormControl size="small" sx={{ width: 200 }}>
+                    <InputLabel>Select Software (Stock)</InputLabel>
+                    <Select
+                      value={importConpany}
+                      onChange={(event) => setImportConpany(event.target.value)}
+                      label="Select Software (Stock)"
+                      autoFocus
+                    >
+                      {Object.keys(optionForStock).map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
 
                 {/* File Upload */}
                 <div>
@@ -3229,9 +3287,8 @@ const AddPurchaseBill = () => {
                     onChange={handleFileSelect}
                   />
                 </div>
-
-                {/* Download Button */}
               </div>
+
               <Button
                 onClick={handleDownload}
                 style={{ backgroundColor: "#3f6212", color: "white" }}

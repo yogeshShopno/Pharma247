@@ -122,6 +122,64 @@ function App() {
     const style = document.createElement("style");
     style.innerHTML = `
     /* ================================
+       GLOBAL TEXTFIELD & INPUT STYLES
+       ================================ */
+    .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212; /* Default border color */
+    }
+
+    .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212; /* Hover border color */
+    }
+
+    .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212 !important; /* Focused border color */
+    }
+
+    .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: #3f6212;
+      border-width: 2px;
+    }
+
+    .MuiInputLabel-root {
+      color: #3f6212; /* Default label color */
+    }
+    .MuiInputLabel-root.Mui-focused {
+      color: #3f6212 !important; /* Focused label color */
+    }
+
+    /* Underline (Standard TextFields) */
+    .MuiInput-underline:before {
+      border-bottom: 2px solid #3f6212;
+    }
+    .MuiInput-underline:hover:not(.Mui-disabled):before {
+      border-bottom: 2px solid #3f6212;
+    }
+    .MuiInput-underline:after {
+      border-bottom: 2px solid #3f6212;
+    }
+
+    /* Buttons */
+    .css-1z6833-MuiButtonBase-root-MuiButton-root:hover {
+      background-color: #3f6212;
+    }
+
+    /* Radio checked */
+    .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
+      color: var(--color1) !important;
+    }
+
+    /* Switch checked */
+    .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+      background-color: var(--COLOR_UI_PHARMACY) !important;
+    }
+
+    /* Tabs indicator */
+    .css-1aquho2-MuiTabs-indicator {
+      background-color: var(--color2) !important;
+    }
+
+    /* ================================
        GLOBAL DIALOG BASE
        ================================ */
     .MuiDialog-container {
@@ -162,9 +220,7 @@ function App() {
       background: #F31C1C !important;
     }
 
-    /* ================================
-       INPUTS INSIDE DIALOG
-       ================================ */
+    /* Inputs inside dialog */
     .modal_991 .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
       border-color: rgba(0,0,0,0.3);
     }
@@ -178,7 +234,7 @@ function App() {
       color: var(--color1) !important;
     }
 
-    /* === Button (Update) styles === */
+    /* Payment button */
     .payment_btn_divv {
       text-transform: none !important;
       background: var(--color1) !important;
@@ -190,7 +246,7 @@ function App() {
       opacity: 0.9 !important;
     }
 
-    /* === Autocomplete styles === */
+    /* Autocomplete */
     .custom-autocomplete .MuiInputBase-root {
       height: 20px !important;
       font-size: 1.10rem !important;
@@ -205,6 +261,7 @@ function App() {
       document.head.removeChild(style);
     };
   }, []);
+
 
 
   return (

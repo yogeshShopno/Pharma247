@@ -76,6 +76,10 @@ const Dashboard = () => {
     { id: 1, value: "sales" },
     { id: 0, value: "purchase" },
   ];
+  const typeforstaff = [
+    { id: 1, value: "sales" },
+    { id: 0, value: "purchase" },
+  ];
   const [linechartValue, setLinechartValue] = useState("Today");
   const [staffListValue, setStaffListValue] = useState("7_day");
   const [typeValue, settypeValue] = useState("7_day");
@@ -86,7 +90,7 @@ const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [expiry, setExpiry] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pieChartvalue, setpieChartValue] = useState('sales');
+  const [staffValue, setStaffValue] = useState(1);
   const [value, setValue] = useState(1);
   const [data, setData] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState();
@@ -195,9 +199,7 @@ const Dashboard = () => {
   };
 
   const handlestaffTabchange = (event, newValue) => {
-    setpieChartValue(newValue);
-    console.log(newValue)
-    setValue(newValue);
+    setStaffValue(newValue);
   };
 
   const staffListHandlechange = (event) => {
@@ -229,7 +231,7 @@ const Dashboard = () => {
   useEffect(() => {
     dashboardData();
     userPermission();
-  }, [typeValue, value, expiredValue, staffListValue, pieChartvalue]);
+  }, [typeValue, value, expiredValue, staffListValue, staffValue]);
 
   const dashboardData = async () => {
     let data = new FormData();
@@ -238,7 +240,7 @@ const Dashboard = () => {
       bill_day: typeValue,
       expired: expiredValue,
       staff_bill_day: staffListValue,
-      staff_overview_count: pieChartvalue,
+      staff_overview_count: staffValue,
     };
     try {
       await axios
@@ -301,7 +303,7 @@ const Dashboard = () => {
 
           setBilldata(billData);
           setCustomers(initialData?.top_customer);
-          setStaffOverview(initialData?.staff_overview)
+          setStaffOverview(initialData?.staff_overview);
           setExpiry(initialData?.expiring_iteam);
           setDistributor(initialData?.top_distributor);
           setLoyaltyPoints(initialData?.loyalti_point_all_customer);
@@ -866,13 +868,13 @@ const Dashboard = () => {
                   {/* Tabs + Dropdown */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                     {/* Tabs */}
-                    <TabContext value={value}>
+                    <TabContext value={staffValue}>
                       <TabList
-                        onChange={handlechange}
+                        onChange={handlestaffTabchange}
                         TabIndicatorProps={{ style: { display: "none" } }}
                         className="rounded-full bg-gray-100 flex-shrink"
                       >
-                        {types.map((tab) => (
+                        {typeforstaff.map((tab) => (
                           <Tab
                             key={tab.id}
                             value={tab.id}
@@ -907,31 +909,29 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-
-                {/* Content + Footer pinned */}
-                <div className="flex flex-col flex-1 p-4">
-                  <TabContext value={pieChartvalue}>
-                    {pieChartTabs.map((tab) => (
-                      <TabPanel key={tab.id} value={tab.id} sx={{ p: 0 }} className="flex-1 flex flex-col">
-                        {/* Content area */}
-                        <div className="flex-1 flex flex-col justify-center">
+                {/* Content + Footer */}
+                <div className="flex-1 p-4 flex flex-col">
+                  <TabContext value={staffValue}>
+                    {typeforstaff.map((tab) => (
+                      <TabPanel key={tab.id} value={tab.id} sx={{ p: 0 }}>
+                        {/* Content area - removed flex-1 and justify-center */}
+                        <div className="mb-4">
                           {staffOverview.length > 0 ? (
                             <div className="space-y-3 overflow-auto">
                               {staffOverview.map((item, index) => (
                                 <div
                                   key={index}
-                                  className="flex justify-between items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                                  className="flex justify-between items-center py-3 px-8 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                                 >
                                   <p className="text-gray-800 font-medium">{item.lable}</p>
                                   <p className="text-green-700 font-semibold">
-                                    ₹ {item.value.toLocaleString()}
+                                    ₹ {Number(item.value).toLocaleString()}
                                   </p>
                                 </div>
                               ))}
                             </div>
                           ) : (
-                            // ✅ Centered No Data Image
-                            <div className="flex flex-1 justify-center items-center">
+                            <div className="flex justify-center items-center py-16">
                               <img src="../no-data.png" alt="No data" className="h-28 opacity-70" />
                             </div>
                           )}
@@ -940,8 +940,8 @@ const Dashboard = () => {
                     ))}
                   </TabContext>
 
-                  {/* ✅ Footer pinned bottom-right */}
-                  <div className="pt-4 flex justify-end">
+                  {/* Footer - pushed to bottom with mt-auto */}
+                  <div className="mt-auto flex justify-end">
                     <Link
                       to="/staff/overview"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"

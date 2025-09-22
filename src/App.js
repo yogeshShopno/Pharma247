@@ -122,30 +122,27 @@ function App() {
     const style = document.createElement("style");
     style.innerHTML = `
     /* ================================
-       GLOBAL TEXTFIELD & INPUT STYLES
+          CUSTOM DIALOG SCOPED STYLES
        ================================ */
     .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-      border-color: #3f6212; /* Default border color */
+      border-color: #3f6212;
     }
-
     .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-      border-color: #3f6212; /* Hover border color */
+      border-color: #3f6212;
     }
-
     .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: #3f6212 !important; /* Focused border color */
+      border-color: #3f6212 !important;
     }
-
-    .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
       border-color: #3f6212;
       border-width: 2px;
     }
 
     .MuiInputLabel-root {
-      color: #3f6212; /* Default label color */
+      color: #3f6212;
     }
     .MuiInputLabel-root.Mui-focused {
-      color: #3f6212 !important; /* Focused label color */
+      color: #3f6212 !important;
     }
 
     /* Underline (Standard TextFields) */
@@ -160,100 +157,161 @@ function App() {
     }
 
     /* Buttons */
-    .css-1z6833-MuiButtonBase-root-MuiButton-root:hover {
+    .custom-dialog .MuiButton-root:hover {
       background-color: #3f6212;
     }
 
     /* Radio checked */
-    .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
+    .custom-dialog .MuiRadio-root.Mui-checked {
       color: var(--color1) !important;
     }
 
     /* Switch checked */
-    .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+    .custom-dialog .MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
       background-color: var(--COLOR_UI_PHARMACY) !important;
     }
 
     /* Tabs indicator */
-    .css-1aquho2-MuiTabs-indicator {
+    .custom-dialog .MuiTabs-indicator {
       background-color: var(--color2) !important;
     }
 
     /* ================================
-       GLOBAL DIALOG BASE
+              DIALOG BASE
        ================================ */
-    .MuiDialog-container {
+    .custom-dialog .MuiDialog-container {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .MuiDialog-paper {
+    .custom-dialog .MuiDialog-paper {
       border-radius: 8px !important;
     }
-    .MuiDialogTitle-root {
+    .custom-dialog .MuiDialogTitle-root {
       background-color: var(--COLOR_UI_PHARMACY) !important;
       color: white !important;
       font-weight: 600 !important;
       padding: 12px 16px !important;
     }
-    .MuiDialogActions-root {
+    .custom-dialog .MuiDialogActions-root {
       justify-content: flex-end !important;
       padding: 16px 24px !important;
     }
 
     /* ================================
-       SHARED: Stock Adjustment / Expense Dialogs
+        SHARED: Stock Adjustment / Expense Dialogs
        ================================ */
-    .modal_991 .MuiDialog-paper {
+    .custom-dialog.modal_991 .MuiDialog-paper {
       width: 800px !important;
       max-width: 95% !important;
     }
-    .modal_991 .MuiButton-contained {
+    .custom-dialog.modal_991 .MuiButton-contained {
       background: var(--COLOR_UI_PHARMACY) !important;
       color: white !important;
       box-shadow: none !important;
     }
-    .modal_991 .MuiButton-contained:hover {
-      background: #2e520d !important; /* darker green hover */
+    .custom-dialog.modal_991 .MuiButton-contained:hover {
+      background: #2e520d !important;
     }
-    .modal_991 .MuiButton-contained.MuiButton-colorError {
+    .custom-dialog.modal_991 .MuiButton-contained.MuiButton-colorError {
       background: #F31C1C !important;
     }
 
     /* Inputs inside dialog */
-    .modal_991 .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    .custom-dialog.modal_991 .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
       border-color: rgba(0,0,0,0.3);
     }
-    .modal_991 .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    .custom-dialog.modal_991 .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
       border-color: var(--color1);
     }
-    .modal_991 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    .custom-dialog.modal_991 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
       border-color: var(--color1);
     }
-    .modal_991 .MuiInputLabel-root.Mui-focused {
+    .custom-dialog.modal_991 .MuiInputLabel-root.Mui-focused {
       color: var(--color1) !important;
     }
 
     /* Payment button */
-    .payment_btn_divv {
+    .custom-dialog .payment_btn_divv {
       text-transform: none !important;
       background: var(--color1) !important;
       color: white !important;
       box-shadow: none !important;
     }
-    .payment_btn_divv:hover {
+    .custom-dialog .payment_btn_divv:hover {
       background: var(--color1) !important;
       opacity: 0.9 !important;
     }
 
     /* Autocomplete */
-    .custom-autocomplete .MuiInputBase-root {
+    .custom-dialog .custom-autocomplete .MuiInputBase-root {
       height: 20px !important;
       font-size: 1.10rem !important;
     }
-    .custom-autocomplete .MuiAutocomplete-inputRoot {
+    .custom-dialog .custom-autocomplete .MuiAutocomplete-inputRoot {
       padding: 10px 14px !important;
     }
+
+    /* ================================
+        CUSTOM BILL FORM STYLES
+       ================================ */
+    .custom-dialog .detail.custommedia .MuiOutlinedInput-root {
+      width: 250px !important;
+    }
+    .custom-dialog .detail.custommedia .MuiInputBase-root {
+      height: 40px !important;
+      font-size: 1rem !important;
+    }
+    .custom-dialog .detail.custommedia .MuiAutocomplete-root {
+      width: 100% !important;
+    }
+    .custom-dialog .detail.custommedia .MuiAutocomplete-inputRoot {
+      padding: 10px 14px !important;
+    }
+    .custom-dialog .detail.custommedia .MuiOutlinedInput-input::placeholder {
+      font-size: 1rem !important;
+      color: black !important;
+    }
+    .custom-dialog .detail.custommedia span.heading {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* =========================================
+        RESET styles ONLY inside custom Drug Group Dialog
+       ========================================= */
+    .custom-dialog .MuiDialogTitle-root {
+      font-weight: 500 !important;
+      padding: 16px !important;
+    }
+    .custom-dialog .MuiDialogActions-root {
+      padding: 8px 24px !important;
+      justify-content: flex-end !important;
+    }
+    .custom-dialog .MuiButton-root {
+      text-transform: none !important;
+      box-shadow: none !important;
+    }
+    .MuiTabs-root {
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f3f4f6; /* same as bg-gray-100 */
+    }
+    .MuiTab-root {
+      text-transform: none !important;
+      padding: 6px 16px !important;
+      font-weight: 500;
+      color: #374151; /* text-gray-700 */
+    }
+    .MuiTab-root.Mui-selected {
+      background-color: var(--color1) !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+    }
+    .MuiTabs-indicator {
+      background-color: var(--color1) !important;
+      height: 3px; 
+  }
   `;
     document.head.appendChild(style);
 
@@ -261,6 +319,7 @@ function App() {
       document.head.removeChild(style);
     };
   }, []);
+
 
 
 

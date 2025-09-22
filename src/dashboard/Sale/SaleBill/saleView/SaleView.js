@@ -485,8 +485,8 @@ const SaleView = () => {
                       fontSize: "14px",
                     }}
                   >
+                    {/* Previous Bill */}
                     <div
-                      className=""
                       style={{
                         whiteSpace: "nowrap",
                         display: "flex",
@@ -495,22 +495,19 @@ const SaleView = () => {
                         justifyContent: "space-between",
                       }}
                       onClick={() => {
-                        const prevIndex =
-                          (currentIndex - 1 + saleData.length) %
-                          saleData.length;
+                        const prevIndex = (currentIndex - 1 + saleData.length) % saleData.length;
                         const prevId = saleData[prevIndex]?.id;
                         if (prevId) {
                           history.push(`/salebill/view/${prevId}`);
                         }
                       }}
                     >
-                      <label style={{ textTransform: "uppercase" }}>
-                        Next Bill
-                      </label>
+                      <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
                       <FaArrowUp size={20} />
                     </div>
+
+                    {/* Next Bill */}
                     <div
-                      className=""
                       style={{
                         whiteSpace: "nowrap",
                         display: "flex",
@@ -526,12 +523,11 @@ const SaleView = () => {
                         }
                       }}
                     >
-                      <label style={{ textTransform: "uppercase" }}>
-                        Previous Bill
-                      </label>
+                      <label style={{ textTransform: "uppercase" }}>Next Bill</label>
                       <FaArrowDown size={20} />
                     </div>
                   </div>
+
 
                   <div
                     style={{

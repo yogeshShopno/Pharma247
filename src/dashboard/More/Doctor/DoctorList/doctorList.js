@@ -85,7 +85,7 @@ const DoctorList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const [totalRecords, setTotalRecords] = useState(0);
-  const totalPages = Math.ceil(totalRecords/ rowsPerPage);
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
 
   const [sortConfig, setSortConfig] = useState({
@@ -674,13 +674,18 @@ const DoctorList = () => {
                                         align={column.align}
                                         onClick={() => history.push(`/more/doctor/${row.id}`)}
                                       >
-                                        {value}
-                                        {row.default_doctor === "1" && (
-                                          <span className="cursor-pointer self-end text-xs text-white bg-[var(--color2)] mx-2 px-2 py-1 rounded-2xl">default</span>
-                                        )}
+                                        <div className="flex items-center gap-2">
+                                          <span>{value}</span>
+                                          {row.default_doctor === "1" && (
+                                            <span className="cursor-pointer text-xs text-white bg-[var(--color2)] px-2 py-1 rounded-2xl">
+                                              default
+                                            </span>
+                                          )}
+                                        </div>
                                       </td>
                                     );
                                   }
+
 
                                   return (
                                     <td

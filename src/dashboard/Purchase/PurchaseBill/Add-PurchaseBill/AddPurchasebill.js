@@ -3342,9 +3342,9 @@ const AddPurchaseBill = () => {
               <div className="bg-white" style={{
                 alignItems: "center",
                 gap: "15px",
-                marginBlock: "20px",
+                overflow: "hidden"
               }}>
-                <div className="mainform bg-white rounded-lg" style={{ padding: "20px" }}>
+                <div className="mainform bg-white rounded-lg">
 
                   {/* Row 1: Distributor Name + GST */}
                   <div className="row gap-5">

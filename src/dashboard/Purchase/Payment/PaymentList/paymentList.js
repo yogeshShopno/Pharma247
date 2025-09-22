@@ -1039,7 +1039,9 @@ const PaymentList = () => {
                     size="small"
                     value={note}
                     onChange={(e) => {
-                      setNote(e.target.value);
+                      const input = e.target.value;
+                      const formatted = input.replace(/\b\w/g, (char) => char.toUpperCase());
+                      setNote(formatted);
                     }}
                     style={{ width: "100%" }}
                     rows={2}

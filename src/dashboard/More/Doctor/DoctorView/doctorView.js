@@ -113,7 +113,8 @@ const DoctorView = () => {
                     <div style={{
                         backgroundColor: 'rgb(63 98 18 / 11%)',
                         borderRadius: '10px',
-                        paddingTop: '0.5%'
+                        paddingTop: '0.5%',
+                        paddingLeft: '0.6%'
                     }}>
                         <div className="firstrow flex header_main_txt_CV" style={{ background: "none" }}>
                             <div className="detail_main_bg_CV">
@@ -193,7 +194,7 @@ const DoctorView = () => {
                                                     whiteSpace: 'noWrap'
                                                 }}
                                             >
-                                                
+
                                                 Total Sale Amount :-
                                                 <span style={{ color: "var(--color2)" }}>
                                                     Rs.
@@ -223,7 +224,7 @@ const DoctorView = () => {
                                                     whiteSpace: 'noWrap'
                                                 }}
                                             >
-                                                
+
                                                 Total Sale Return Amount :-
                                                 <span style={{ color: "var(--color2)" }}>
                                                     Rs.
@@ -266,7 +267,7 @@ const DoctorView = () => {
                                         <TablePagination
                                             rowsPerPageOptions={[5, 10, 12]}
                                             component="div"
-                                            count={doctorDetails?.sales?.[0]?.count}
+                                            count={doctorDetails?.sales?.length || 0}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={handleChangePage}
@@ -308,7 +309,7 @@ const DoctorView = () => {
                                         <TablePagination
                                             rowsPerPageOptions={[5, 10, 12]}
                                             component="div"
-                                            count={doctorDetails?.sales_return?.[0]?.count}
+                                            count={doctorDetails?.sales?.length || 0}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={handleChangePage}

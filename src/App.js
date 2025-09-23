@@ -269,10 +269,59 @@ function App() {
       padding: 10px 14px !important;
     }
   `;
-    document.head.appendChild(style);
+    document.head.append(style);
 
     return () => {
       document.head.removeChild(style);
+    };
+  }, []);
+
+  useEffect(() => {
+    const css = `
+      /* target dialog paper when you add className="custom-dialog" */
+      .custom-dialog .MuiDialog-paper {
+        background: linear-gradient(180deg, #fff, #fbfbfb);
+        border-radius: 12px;
+        padding: 0;
+      }
+
+      /* Dialog title background + text color */
+      .custom-dialog .MuiDialogTitle-root.primary {
+        background: #3f6212;
+        color: #fff;
+        padding: 12px 24px;
+      }
+
+      /* Outlined TextField border color (default and hover/focus) */
+      .custom-dialog .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+        border-color: #3f6212 !important;
+      }
+      .custom-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+        border-color: #3f6212 !important;
+      }
+      .custom-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: #2e4f0f !important;
+      }
+
+      /* IconButton close color (absolute positioned) */
+      .custom-dialog .MuiIconButton-root {
+        color: #ffffff !important;
+      }
+
+      /* Force Autocomplete popup z-index if overlay problems */
+      .MuiAutocomplete-popper {
+        z-index: 2000 !important;
+      }
+    `;
+
+    const styleEl = document.createElement("style");
+    styleEl.setAttribute("data-mui-hack", "custom-dialog-overrides");
+    styleEl.appendChild(document.createTextNode(css));
+    document.head.appendChild(styleEl);
+
+    return () => {
+      // cleanup on unmount
+      styleEl.remove();
     };
   }, []);
 

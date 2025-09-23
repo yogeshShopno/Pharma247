@@ -581,7 +581,20 @@ const LoginSignup = () => {
                     value={registerData.mobile_number}
                     inputRef={(el) => (inputRefs.current[1] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 1)}
-                    onChange={handleInputChange} />
+                    onChange={(e) => {
+                      const cleaned = e.target.value.replace(/\D/g, ""); // keep only digits
+                      if (cleaned.length <= 10) {
+                        e.target.value = cleaned; // update input value before passing
+                        handleInputChange(e);     // pass original event
+                      }
+                    }}
+                    inputProps={{
+                      maxLength: 10,
+                      inputMode: "numeric",
+                      pattern: "[0-9]*",
+                    }}
+                  />
+
                   <i className='bx bxs-phone'></i>
                 </div>
                 <div className="input-box">
@@ -593,7 +606,22 @@ const LoginSignup = () => {
                     value={registerData.email}
                     inputRef={(el) => (inputRefs.current[2] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 2)}
-                    onChange={handleInputChange} />
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\s/g, ""); // remove spaces
+                      // Basic email format check
+                      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value === "";
+                      e.target.value = value;
+                      handleInputChange(e); // update always
+
+                      // optional: you can set error state if needed
+                      if (!isValid && value !== "") {
+                        console.log("Invalid email format");
+                      }
+                    }}
+                    inputProps={{
+                      inputMode: "email", // brings email keyboard on mobile
+                    }}
+                  />
                   <i className='bx bxs-envelope'></i>
                 </div>
                 <div className="input-box">
@@ -723,13 +751,24 @@ const LoginSignup = () => {
                     fullWidth
                     size="small"
                     variant="outlined"
+                    value={mobile}
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
-                    onChange={(e) => setMobile(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ""); // remove non-digits
+                      if (value.length <= 10) {
+                        setMobile(value);
+                      }
+                    }}
+                    inputProps={{
+                      maxLength: 10, // prevent more than 10 digits
+                      inputMode: "numeric", // brings up numeric keypad on mobile
+                      pattern: "[0-9]*",
+                    }}
                     InputProps={{
                       sx: {
-                        backgroundColor: 'white',
-                        borderRadius: '4px',
+                        backgroundColor: "white",
+                        borderRadius: "4px",
                       },
                     }}
                   />

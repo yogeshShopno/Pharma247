@@ -312,6 +312,31 @@ function App() {
       background-color: var(--color1) !important;
       height: 3px; 
   }
+    /* ================================
+        BILL FORM ONLY
+   ================================ */
+.custom-dialog .detail.custommedia .MuiOutlinedInput-root {
+  width: 250px !important;
+}
+.custom-dialog .detail.custommedia .MuiInputBase-root {
+  height: 40px !important;
+  font-size: 1rem !important;
+}
+.custom-dialog .detail.custommedia .MuiAutocomplete-root {
+  width: 100% !important;
+}
+.custom-dialog .detail.custommedia .MuiAutocomplete-inputRoot {
+  padding: 10px 14px !important;
+}
+.custom-dialog .detail.custommedia .MuiOutlinedInput-input::placeholder {
+  font-size: 1rem !important;
+  color: black !important;
+}
+.custom-dialog .detail.custommedia span.heading {
+  display: block;
+  margin-bottom: 8px;
+}
+
   `;
     document.head.appendChild(style);
 

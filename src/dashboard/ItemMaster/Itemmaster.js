@@ -741,7 +741,7 @@ const Itemmaster = () => {
                         </ListItem>
                       )}
                       renderInput={(params) => (
-                        <TextField {...params} label="Search Item Name" autoFocus />
+                        <TextField {...params} placeholder="Search Item Name" autoFocus />
 
                       )}
                       freeSolo
@@ -823,7 +823,7 @@ const Itemmaster = () => {
                         onChange={(e, value) => setDrugGroup(value)}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => (
-                          <TextField {...params} label="Select DrugGroup" />
+                          <TextField {...params} placeholder="Select DrugGroup" />
                         )}
                         sx={{
                           "& .MuiOutlinedInput-root": {
@@ -987,7 +987,7 @@ const Itemmaster = () => {
                         // sx={{ width: 350 }}
                         getOptionLabel={(option) => option.company_name}
                         renderInput={(params) => (
-                          <TextField {...params} label="Select Company" />
+                          <TextField {...params} placeholder="Select Company" />
                         )}
                         sx={{
                           "& .MuiOutlinedInput-root": {
@@ -1030,7 +1030,7 @@ const Itemmaster = () => {
                         onChange={(e, value) => setSelectedSuppliers(value)}
                         getOptionLabel={(option) => option.name.toUpperCase()}
                         renderInput={(params) => (
-                          <TextField {...params} label="Select Suppliers" />
+                          <TextField {...params} placeholder="Select Suppliers" />
                         )}
                         sx={{
                           "& .MuiOutlinedInput-root": {
@@ -1122,7 +1122,6 @@ const Itemmaster = () => {
                     <Autocomplete
                       value={locationvalue}
                       inputValue={location}
-                      // sx={{ width: 350 }}
                       size="small"
                       onChange={handleLocationOptionChange}
                       onInputChange={handleLocationInputChange}
@@ -1136,23 +1135,35 @@ const Itemmaster = () => {
                         </ListItem>
                       )}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select Location" />
+                        <TextField
+                          {...params}
+                          placeholder="Select Location"
+                          InputProps={{
+                            ...params.InputProps,
+                          }}
+                          inputProps={{
+                            ...params.inputProps,
+                            style: { textTransform: "capitalize" }, // ✅ Apply directly to input
+                          }}
+                        />
                       )}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
+                            borderColor: "rgba(0, 0, 0, 0.38)"
                           },
                           "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
+                            borderColor: "var(--color1)",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
+                            borderColor: "var(--color1)",
                           },
                         },
                       }}
                       freeSolo
                     />
+
+
                   </div>
 
                   <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
@@ -1256,7 +1267,7 @@ const Itemmaster = () => {
                           onChange={(e, value) => setSelectedCategory(value)}
                           getOptionLabel={(option) => option.category_name}
                           renderInput={(params) => (
-                            <TextField {...params} label="Select Category " />
+                            <TextField {...params} placeholder="Select Category " />
                           )}
                           sx={{
                             "& .MuiOutlinedInput-root": {
@@ -1465,7 +1476,7 @@ const Itemmaster = () => {
                 </label>
                 <TextField
                   id="outlined-multiline-static"
-                  label="Message"
+                  placeholder="Message"
                   multiline
                   value={message}
                   onChange={(e) => {
@@ -1474,7 +1485,12 @@ const Itemmaster = () => {
                   className="w-full"
                   rows={4}
                   variant="outlined"
+                  inputProps={{
+                    style: { textTransform: "capitalize" }, // ✅ applies to textarea
+                  }}
                 />
+
+
               </div>
             </div>
 
@@ -1501,7 +1517,7 @@ const Itemmaster = () => {
             <label className="mb-2">Catagory Name</label>
             <TextField
               id="outlined-number"
-              label="Enter Catagory Name"
+              placeholder="Enter Catagory Name"
               type="text"
               size="small"
               style={{ width: "400px" }}
@@ -1536,7 +1552,7 @@ const Itemmaster = () => {
             <label className="mb-2">Drug Group Name</label>
             <TextField
               id="outlined-number"
-              label="Enter DrugGroup Name"
+              placeholder="Enter DrugGroup Name"
               type="text"
               size="small"
               style={{ width: "100%" }}
@@ -1575,7 +1591,7 @@ const Itemmaster = () => {
             <label className="mb-2">Company Name</label>
             <TextField
               id="outlined-number"
-              label="Enter Company Name"
+              placeholder="Enter Company Name"
               type="text"
               size="small"
               style={{ width: "100%" }}

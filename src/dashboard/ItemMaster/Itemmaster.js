@@ -1545,7 +1545,7 @@ const Itemmaster = () => {
         </DialogActions>
       </Dialog>
       {/* DrugGroup dialog Box */}
-      <Dialog id="modal" className="custom-dialog" open={openDrugGroup} onClose={handleCloseDrugGroup}>
+      <Dialog id="modal" className="custom-dialog form-dialog add-company-dialog" open={openDrugGroup} onClose={handleCloseDrugGroup}>
         <DialogTitle>Add Drug Group</DialogTitle>
         <DialogContent>
           <div className="dialog pt-4">
@@ -1584,7 +1584,12 @@ const Itemmaster = () => {
         </DialogActions>
       </Dialog>
       {/* Company Dialog Box */}
-      <Dialog id="modal" className="custom-dialog" open={openCompany} onClose={handleClose}>
+      <Dialog
+        id="modal"
+        className="custom-dialog add-company-dialog"
+        open={openCompany}
+        onClose={handleClose}
+      >
         <DialogTitle>Add Company</DialogTitle>
         <DialogContent>
           <div className="dialog pt-4">
@@ -1598,7 +1603,8 @@ const Itemmaster = () => {
               value={companyName}
               onChange={(e) => {
                 const value = e.target.value;
-                const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                const capitalized =
+                  value.charAt(0).toUpperCase() + value.slice(1);
                 setCompanyName(capitalized);
               }}
               required
@@ -1618,10 +1624,14 @@ const Itemmaster = () => {
             </Button>
             <Button
               style={{ background: "#F31C1C", color: "white" }}
-              onClick={handleCloseCompany}>Cancel</Button>
+              onClick={handleCloseCompany}
+            >
+              Cancel
+            </Button>
           </div>
         </DialogActions>
       </Dialog>
+
       {/*Bulk Item Data Added  */}
       <Dialog open={openFile} className="custom-dialog">
         <DialogTitle className="primary">Import Item</DialogTitle>

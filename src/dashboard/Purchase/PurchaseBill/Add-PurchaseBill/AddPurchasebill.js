@@ -3313,7 +3313,7 @@ const AddPurchaseBill = () => {
 
         {/*<======================================================================== add Distributor PopUp Box  =======================================================================> */}
 
-        <Dialog open={openAddDistributorPopUp} className="custom-dialog">
+        <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Distributor
           </DialogTitle>
@@ -3518,16 +3518,15 @@ const AddPurchaseBill = () => {
                       Add Distributor
                     </Button>
                   </div>
-
                 </div>
               </div>
             </DialogContentText>
           </DialogContent>
-        </Dialog>     
+        </Dialog>
 
         {/*<======================================================================== add item PopUp Box  =======================================================================> */}
 
-        <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 ">
+        <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add New Item
           </DialogTitle>

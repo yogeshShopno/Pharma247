@@ -268,50 +268,6 @@ function App() {
     .custom-dialog .detail.custommedia .MuiAutocomplete-inputRoot {
       padding: 10px 14px !important;
     }
-    .custom-dialog .detail.custommedia .MuiOutlinedInput-input::placeholder {
-      font-size: 1rem !important;
-      color: black !important;
-    }
-    .custom-dialog .detail.custommedia span.heading {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    /* =========================================
-        RESET styles ONLY inside custom Drug Group Dialog
-       ========================================= */
-    .custom-dialog .MuiDialogTitle-root {
-      font-weight: 500 !important;
-      padding: 16px !important;
-    }
-    .custom-dialog .MuiDialogActions-root {
-      padding: 8px 24px !important;
-      justify-content: flex-end !important;
-    }
-    .custom-dialog .MuiButton-root {
-      text-transform: none !important;
-      box-shadow: none !important;
-    }
-    .MuiTabs-root {
-      border-radius: 8px;
-      overflow: hidden;
-      background: #f3f4f6; /* same as bg-gray-100 */
-    }
-    .MuiTab-root {
-      text-transform: none !important;
-      padding: 6px 16px !important;
-      font-weight: 500;
-      color: #374151; /* text-gray-700 */
-    }
-    .MuiTab-root.Mui-selected {
-      background-color: var(--color1) !important;
-      color: #fff !important;
-      font-weight: 600 !important;
-    }
-    .MuiTabs-indicator {
-      background-color: var(--color1) !important;
-      height: 3px; 
-  }
   `;
     document.head.appendChild(style);
 

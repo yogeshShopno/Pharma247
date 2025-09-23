@@ -930,7 +930,7 @@ const DoctorList = () => {
                           </ListItem>
                         )}
                         renderInput={(params) => (
-                          <TextField autoComplete="off" {...params} />
+                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name"/>
                         )}
                         freeSolo
                       />
@@ -969,6 +969,7 @@ const DoctorList = () => {
                       <TextField
                         autoComplete="off"
                         size="small"
+                        placeholder="Enter Clinic Name"
                         value={clinic}
                         onChange={(e) => setClinic(e.target.value.toUpperCase())}
                         className="w-full"
@@ -987,12 +988,24 @@ const DoctorList = () => {
                       <TextField
                         autoComplete="off"
                         size="small"
+                        placeholder="Enter Email ID"
                         value={emailId}
-                        onChange={(e) => setEmailId(e.target.value)}
+                        onChange={(e) => {
+                          // Remove spaces instantly
+                          const value = e.target.value.replace(/\s/g, "");
+                          setEmailId(value);
+                        }}
                         className="w-full"
                         variant="outlined"
+                        error={emailId !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailId)}
+                        helperText={
+                          emailId !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailId)
+                            ? "Enter a valid email address"
+                            : ""
+                        }
                       />
                     </div>
+
 
                     {/* Mobile No */}
                     <div className="flex flex-col col-span-4">
@@ -1002,6 +1015,7 @@ const DoctorList = () => {
                       <OutlinedInput
                         type="number"
                         value={mobileNo}
+                        placeholder="Enter Mobile Number"
                         onChange={handleChange}
                         startAdornment={<InputAdornment position="start">+91</InputAdornment>}
                         className="w-full"
@@ -1019,6 +1033,7 @@ const DoctorList = () => {
                       <span className="label primary">Licence No.</span>
                       <OutlinedInput
                         type="text"
+                        placeholder="Enter Licence No."
                         value={licence}
                         onChange={(e) => setLicence(e.target.value.toUpperCase())}
                         className="w-full"
@@ -1032,6 +1047,7 @@ const DoctorList = () => {
                       <TextField
                         autoComplete="off"
                         size="small"
+                        placeholder="Enter Address"
                         value={address}
                         onChange={(e) => setAddress(e.target.value.toUpperCase())}
                         className="w-full"

@@ -1138,30 +1138,32 @@ const BankAccount = () => {
                       value={reEnterAccountNumber}
                       onChange={(e) => {
                         // Allow only numeric input
-                        const numericValue = e.target.value.replace(
-                          /[^0-9]/g,
-                          ""
-                        ); // Remove non-numeric characters
+                        const numericValue = e.target.value.replace(/[^0-9]/g, "");
                         setReEnterAccountNumber(numericValue);
                       }}
                       inputRef={(el) => (inputRefs.current[4] = el)}
                       onKeyDown={(e) => {
-                        if (reEnterAccountNumber) {
-                          handleKeyDown(e, 4);
-                        } else {
-                          const isEnter = e.key === "Enter";
+                        const isEnter = e.key === "Enter";
+                        const isTab = e.key === "Tab";
 
+                        if (!reEnterAccountNumber) {
                           if (isEnter) {
                             e.preventDefault();
                             toast.error("Re-Enter Account Number is Required");
                           }
-                          // Shift + Tab is allowed by default; do not prevent it
+                        } else if (isTab && accountNumber !== reEnterAccountNumber) {
+                          // Block focus move if mismatch
+                          e.preventDefault();
+                          toast.error("Account Numbers do not match");
+                        } else {
+                          handleKeyDown(e, 4);
                         }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                       fullWidth={fullScreen}
                     />
+
                     {errors.reEnterAccountNumber && (
                       <span className="error">
                         {errors.reEnterAccountNumber}

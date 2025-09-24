@@ -273,19 +273,18 @@ function App() {
        ================================ */
     .add-distributor-dialog .MuiDialog-paper {
       border-radius: 8px !important;
+      width: 700px !important;
+      max-width: 95% !important;
     }
     .add-distributor-dialog .MuiDialogTitle-root {
-      background-color: var(--COLOR_UI_PHARMACY) !important;
+     background-color: var(--COLOR_UI_PHARMACY) !important;
       color: white !important;
-      font-weight: 600 !important;
-      padding: 12px 16px !important;
     }
     .add-distributor-dialog .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
       border-color: #3f6212 !important;
     }
     .add-distributor-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
       border-color: #3f6212 !important;
-      border-width: 2px !important;
     }
     .add-distributor-dialog .MuiInputLabel-root.Mui-focused {
       color: #3f6212 !important;

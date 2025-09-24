@@ -174,7 +174,7 @@ const ManageStaffRole = () => {
                                     <tbody style={{ background: "#3f621217" }}>
                                         {manageStaffRoleData?.map((item, index) => {
                                             // Convert numeric status to text
-                                            const displayStatus = item.status === "1" ? "Active" : item.status === "2" ? "Disactive" : item.status;
+                                            const displayStatus = item.status === "1" ? "Active" : item.status === "0" ? "Disactive" : item.status;
 
                                             return (
                                                 <tr key={index}>

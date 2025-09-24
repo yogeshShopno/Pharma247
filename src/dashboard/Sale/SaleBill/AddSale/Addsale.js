@@ -3754,7 +3754,7 @@ const Addsale = () => {
           </DialogContent>
         </Dialog>
         {/*<====================================================================== Add item  =====================================================================> */}
-        <Dialog open={openAddItemPopUp} className="custom-dialog modal_991 ">
+        <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add New Item
           </DialogTitle>
@@ -3770,23 +3770,24 @@ const Addsale = () => {
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent className="">
+          <DialogContent >
             <DialogContentText id="alert-dialog-description">
               <div className="bg-white">
                 <div className="mainform bg-white rounded-lg">
-                  <div className="flex flex-col md:flex-row gap-4">
+                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Item Name</label>
+                      <label className="label secondary">Item Name <span className="text-red-600  ">*</span></label>
                       <TextField
                         id="outlined-number"
                         inputRef={itemNameInputRef}
                         onKeyDown={handleKeyDown}
                         size="small"
-                        sx={{ minWidth: "150px" }}
                         value={addItemName}
                         onChange={(e) => setAddItemName(e.target.value)}
                       />
                     </div>
+                  </div>
+                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
                     <div className="fields add_new_item_divv">
                       <label className="label  secondary">Barcode</label>
                       <TextField
@@ -4108,7 +4109,7 @@ const Addsale = () => {
             onClose={() => setShowModal(false)}
           />
         )}
-      </div>
+      </div >
 
     </>
   );

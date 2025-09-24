@@ -1980,7 +1980,7 @@ const AddPurchaseBill = () => {
                   className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <CloudUploadIcon className="mr-2" />
-                  Import Stock
+                  Opening Stock
                 </button>
               )}
 
@@ -3562,9 +3562,8 @@ const AddPurchaseBill = () => {
                         onKeyDown={(e) => handleKeyDown(e, 13)}
                       />
                     </div>
-
-
                   </div>
+
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
 
                     <div className="fields add_new_item_divv">

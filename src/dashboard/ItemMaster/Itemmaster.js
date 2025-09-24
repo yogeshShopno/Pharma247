@@ -1546,7 +1546,21 @@ const Itemmaster = () => {
       </Dialog>
       {/* DrugGroup dialog Box */}
       <Dialog id="modal" className="custom-dialog form-dialog add-company-dialog" open={openDrugGroup} onClose={handleCloseDrugGroup}>
-        <DialogTitle>Add Drug Group</DialogTitle>
+        <DialogTitle id="alert-dialog-title" className="primary">
+          Add Drug Group
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseDrugGroup}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <div className="dialog pt-4">
             <label className="mb-2">Drug Group Name</label>
@@ -1568,17 +1582,21 @@ const Itemmaster = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <div className="pb-3 flex gap-2 pr-5">
+          <div className="row" style={{
+            justifyContent: "flex-end",
+          }}>
             <Button
               type="submit"
               variant="contained"
+              sx={{
+                backgroundColor: "#3f6212",
+                "&:hover": { backgroundColor: "#3f6212" },
+              }}
               onClick={submitDrugGroup}
               disabled={!drugGroupName}
-              style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
             >
               Submit
             </Button>
-            <Button style={{ background: "#F31C1C", color: "white" }} onClick={handleCloseDrugGroup}>Cancel</Button>
           </div>
 
         </DialogActions>
@@ -1586,11 +1604,25 @@ const Itemmaster = () => {
       {/* Company Dialog Box */}
       <Dialog
         id="modal"
-        className="custom-dialog add-company-dialog"
+        className="custom-dialog add-company-dialog "
         open={openCompany}
         onClose={handleClose}
       >
-        <DialogTitle>Add Company</DialogTitle>
+        <DialogTitle id="alert-dialog-title" className="primary">
+          Add Company
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseCompany}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <div className="dialog pt-4">
             <label className="mb-2">Company Name</label>
@@ -1611,22 +1643,21 @@ const Itemmaster = () => {
             />
           </div>
         </DialogContent>
-        <DialogActions>
-          <div className="pb-3 flex gap-2 pr-5">
+        <DialogActions style={{ padding: "20px 24px" }}>
+          <div className="row" style={{
+            justifyContent: "flex-end",
+          }}>
             <Button
+              sx={{
+                backgroundColor: "#3f6212",
+                "&:hover": { backgroundColor: "#3f6212" },
+              }}
               type="submit"
               onClick={submitCompany}
               variant="contained"
               disabled={!companyName}
-              style={{ background: "var(--COLOR_UI_PHARMACY)", color: "white" }}
             >
               Submit
-            </Button>
-            <Button
-              style={{ background: "#F31C1C", color: "white" }}
-              onClick={handleCloseCompany}
-            >
-              Cancel
             </Button>
           </div>
         </DialogActions>

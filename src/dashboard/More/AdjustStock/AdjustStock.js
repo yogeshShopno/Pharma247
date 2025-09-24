@@ -705,7 +705,7 @@ const AdjustStock = () => {
                       onChange={handleOptionChange}
                       getOptionLabel={(option) => option.iteam_name}
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} />
+                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name"/>
                       )}
                     />
                   </div>
@@ -721,7 +721,7 @@ const AdjustStock = () => {
                       getOptionLabel={(option) => option.company_name}
                       disabled
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} />
+                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name"/>
                       )}
                     />
                   </div>
@@ -843,15 +843,6 @@ const AdjustStock = () => {
                 onClick={validateForm}
               >
                 Save
-              </Button>
-              <Button
-                style={{ background: "#F31C1C" }}
-                autoFocus
-                variant="contained"
-                onClick={resetAddDialog}
-                color="error"
-              >
-                Cancel
               </Button>
             </DialogActions>
           </Dialog>

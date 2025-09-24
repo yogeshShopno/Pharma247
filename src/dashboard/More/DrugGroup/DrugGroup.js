@@ -159,7 +159,7 @@ const DrugGroup = () => {
   };
 
   // Pagination controls
- const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
   const handleClick = (pageNum) => setCurrentPage(pageNum);
   const handlePrevious = () => currentPage > 1 && setCurrentPage(currentPage - 1);
   const handleNext = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
@@ -371,7 +371,7 @@ const DrugGroup = () => {
             </div>
           </div>
         </div>
-      {/* Pagination UI like PurchaseList */}
+        {/* Pagination UI like PurchaseList */}
         <div
           className="flex justify-center mt-4"
           style={{
@@ -436,7 +436,7 @@ const DrugGroup = () => {
         </div>
       </div>
       {/* Add/Edit Dialog */}
-      <Dialog className="order_list_ml custom-dialog" open={openAddPopUp}>
+      <Dialog className="custom-dialog add-company-dialog" open={openAddPopUp}>
         <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
           {header}
         </DialogTitle>
@@ -492,14 +492,6 @@ const DrugGroup = () => {
             onClick={validData}
           >
             {buttonLabel}
-          </Button>
-          <Button
-            autoFocus
-            variant="contained"
-            onClick={resetAddDialog}
-            color="error"
-          >
-            Cancel
           </Button>
         </DialogActions>
       </Dialog>

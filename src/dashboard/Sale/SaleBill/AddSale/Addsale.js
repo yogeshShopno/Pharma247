@@ -2205,9 +2205,6 @@ const Addsale = () => {
                       lg: "400px",
                     },
 
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "8px 8px",
-                    },
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -2309,9 +2306,6 @@ const Addsale = () => {
                     // },
                     "& .MuiInputBase-root": {
                       fontSize: "1.10rem",
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "8px 8px",
                     },
                   }}
                   renderOption={(props, option) => (
@@ -3487,7 +3481,7 @@ const Addsale = () => {
 
         {/*<====================================================================== Add Doctor  =====================================================================> */}
 
-        <Dialog open={openAddPopUp} className="custom-dialog">
+        <Dialog open={openAddPopUp} className="custom-dialog add-company-dialog ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add Doctor
           </DialogTitle>
@@ -3514,12 +3508,10 @@ const Addsale = () => {
                 style={{
                   alignItems: "center",
                   gap: "15px",
-                  marginBlock: "20px",
                 }}
               >
                 <div
                   className="mainform bg-white rounded-lg gap-2"
-                  style={{ padding: "20px" }}
                 >
                   {/* Doctor Name */}
                   <div className="fields add_new_item_divv">
@@ -3585,7 +3577,7 @@ const Addsale = () => {
         </Dialog>
 
         {/*<====================================================================== Add customer  =====================================================================> */}
-        <Dialog open={openCustomer} className="custom-dialog">
+        <Dialog open={openCustomer} className="custom-dialog add-company-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Customer
           </DialogTitle>
@@ -3606,70 +3598,76 @@ const Addsale = () => {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div
-                className="bg-white"
-                style={{
-                  alignItems: "center",
-                  gap: "15px",
-                  marginBlock: "20px",
-                }}
-              >
+            <div className="dialog">
+              <DialogContentText id="alert-dialog-description">
                 <div
-                  className="mainform bg-white rounded-lg gap-2"
-                  style={{ padding: "20px" }}
+                  className="bg-white"
+                  style={{
+                    alignItems: "center",
+                    gap: "15px",
+                  }}
                 >
-                  {/* Customer Name */}
-                  <div className="fields add_new_item_divv">
-                    <label className="label secondary">
-                      Customer Name <span className="text-red-600">*</span>
-                    </label>
-                    <TextField
-                      id="outlined-multiline-static"
-                      size="small"
-                      value={customerName}
-                      onChange={(e) => {
-                        setCustomerName(e.target.value.toUpperCase());
-                        setUnsavedItems(true);
-                      }}
-                      style={{ minWidth: 300 }}
-                      inputRef={(el) => (inputRefs.current[0] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 0)}
-                      inputProps={{
-                        style: { textTransform: "uppercase" },
-                        autoComplete: "off",
-                      }}
-                    />
-                  </div>
+                  <div
+                    className="mainform bg-white rounded-lg gap-2"
+                  >
+                    {/* Customer Name */}
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">
+                        Customer Name <span className="text-red-600">*</span>
+                      </label>
+                      <TextField
+                        id="outlined-multiline-static"
+                        size="small"
+                        value={customerName}
+                        onChange={(e) => {
+                          setCustomerName(e.target.value.toUpperCase());
+                          setUnsavedItems(true);
+                        }}
+                        style={{ minWidth: 300 }}
+                        inputRef={(el) => (inputRefs.current[0] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 0)}
+                        inputProps={{
+                          style: { textTransform: "uppercase" },
+                          autoComplete: "off",
+                        }}
+                      />
+                    </div>
 
-                  {/* Mobile Number */}
-                  <div className="fields add_new_item_divv">
-                    <label className="label secondary">
-                      Mobile Number <span className="text-red-600">*</span>
-                    </label>
-                    <TextField
-                      id="mobile-number"
-                      size="small"
-                      value={mobileNo}
-                      onChange={(e) => {
-                        setMobileNo(e.target.value);
-                        setUnsavedItems(true);
-                      }}
-                      style={{ minWidth: 300 }}
-                      inputRef={(el) => (inputRefs.current[1] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 1)} // Moves to next or submit manually
-                    />
+                    {/* Mobile Number */}
+                    <div className="fields add_new_item_divv">
+                      <label className="label secondary">
+                        Mobile Number <span className="text-red-600">*</span>
+                      </label>
+                      <TextField
+                        id="mobile-number"
+                        size="small"
+                        value={mobileNo}
+                        onChange={(e) => {
+                          setMobileNo(e.target.value);
+                          setUnsavedItems(true);
+                        }}
+                        style={{ minWidth: 300 }}
+                        inputRef={(el) => (inputRefs.current[1] = el)}
+                        onKeyDown={(e) => handleKeyDown(e, 1)} // Moves to next or submit manually
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </DialogContentText>
+              </DialogContentText>
+            </div>
           </DialogContent>
           <DialogActions>
-            <div className="px-3 pb-3">
+            <div className="row" style={{
+              justifyContent: "flex-end",
+              paddingRight: "4px",
+            }}>
               <Button
+                sx={{
+                  backgroundColor: "#3f6212",
+                  "&:hover": { backgroundColor: "#3f6212" },
+                }}
                 autoFocus
                 variant="contained"
-                color="success"
                 onClick={AddCustomerRecord}
                 ref={(el) => (inputRefs.current[2] = el)}
               >

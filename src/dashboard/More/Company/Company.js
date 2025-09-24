@@ -427,7 +427,7 @@ const Company = () => {
         </div>
       </div>
       {/* Add/Edit Dialog */}
-      <Dialog className="order_list_ml custom-dialog" open={openAddPopUp}>
+      <Dialog className="custom-dialog add-company-dialog" open={openAddPopUp}>
         <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
           {header}
         </DialogTitle>
@@ -483,14 +483,6 @@ const Company = () => {
             onClick={validData}
           >
             {buttonLabel}
-          </Button>
-          <Button
-            autoFocus
-            variant="contained"
-            onClick={resetAddDialog}
-            color="error"
-          >
-            Cancel
           </Button>
         </DialogActions>
       </Dialog>

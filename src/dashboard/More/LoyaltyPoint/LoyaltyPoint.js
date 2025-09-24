@@ -705,14 +705,6 @@ const LoyaltyPoint = () => {
             >
               {buttonLabel}
             </Button>
-            <Button
-              autoFocus
-              variant="contained"
-              onClick={resetAddDialog}
-              style={{ backgroundColor: "#F31C1C", color: "white" }}
-            >
-              Cancel
-            </Button>
           </DialogActions>
         </Dialog>
       </div>

@@ -320,14 +320,14 @@ function App() {
        ================================ */
     .add-company-dialog .MuiDialog-paper {
       border-radius: 8px !important;
-      min-width: 400px !important; /* optional for consistent sizing */
+      width: 700px !important;
+      max-width: 95% !important;
     }
 
     .add-company-dialog .MuiDialogTitle-root {
       background-color: var(--COLOR_UI_PHARMACY) !important;
       color: white !important;
       font-weight: 600 !important;
-      padding: 12px 16px !important;
     }
 
     .add-company-dialog .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {

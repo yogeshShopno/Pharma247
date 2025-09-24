@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { TextField ,Autocomplete} from "@mui/material";
+import { TextField, Autocomplete } from "@mui/material";
 
 import axios from "axios";
 
@@ -173,6 +173,14 @@ const AddDistributer = () => {
       }
     }
   };
+
+  const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  const mobileRegex = /^[6-9][0-9]{9}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const pincodeRegex = /^[1-9][0-9]{5}$/;
+  const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+  const accountRegex = /^[0-9]{9,18}$/;
+
   /*<================================================================================ UI  =======================================================================> */
 
   return (
@@ -244,8 +252,12 @@ const AddDistributer = () => {
 
                         setGSTNumber(raw);
                       }}
-
-
+                      error={GSTNumber.length > 0 && !gstRegex.test(GSTNumber)}
+                      helperText={
+                        GSTNumber.length > 0 && !gstRegex.test(GSTNumber)
+                          ? "Invalid GST Number"
+                          : ""
+                      }
                     />
 
                     <div
@@ -266,11 +278,15 @@ const AddDistributer = () => {
                   </label>
                   <Autocomplete
                     freeSolo
-                    options={distributorList.map((option) => option.distributor_name || option.name || "")}
+                    options={distributorList.map(
+                      (option) => option.distributor_name || option.name || ""
+                    )}
                     inputValue={distributorName}
                     onInputChange={(event, newInputValue) => {
-                      setDistributorName(newInputValue.toUpperCase());
-                      listDistributor({ search: newInputValue }); // call API with search
+                      // Allow only alphabets and spaces
+                      const filteredValue = newInputValue.replace(/[^A-Z\s]/gi, "").toUpperCase();
+                      setDistributorName(filteredValue);
+                      listDistributor({ search: filteredValue }); // call API with search
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -286,10 +302,11 @@ const AddDistributer = () => {
                           },
                         }}
                         className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
-                        // label="Distributor Name *"
+                      // label="Distributor Name *"
                       />
                     )}
                   />
+
 
                 </div>
                 <div>
@@ -309,14 +326,20 @@ const AddDistributer = () => {
                     }}
                     inputRef={(el) => (inputRefs.current[2] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 2)}
-                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                     name="mobile_no"
-                    type="number"
+                    type="text" // change to text to avoid issues with leading 0
                     value={mobileno}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
                       setMobileno(value);
                     }}
+                    error={mobileno.length > 0 && !mobileRegex.test(mobileno)}
+                    helperText={
+                      mobileno.length > 0 && !mobileRegex.test(mobileno)
+                        ? "Enter a valid 10-digit mobile number starting with 6-9"
+                        : ""
+                    }
                   />
                 </div>
                 <div>
@@ -338,9 +361,15 @@ const AddDistributer = () => {
                     onKeyDown={(e) => handleKeyDown(e, 3)}
                     className="appearance-none border rounded-lg lowercase w-full leading-tight focus:outline-none focus:shadow-outline"
                     name="email"
-                    type="email"
+                    type="text" // use text to handle validation manually
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    error={email.length > 0 && !emailRegex.test(email)}
+                    helperText={
+                      email.length > 0 && !emailRegex.test(email)
+                        ? "Enter a valid email address"
+                        : ""
+                    }
                   />
                 </div>
                 <div>
@@ -358,9 +387,9 @@ const AddDistributer = () => {
                         padding: "10px 12px",
                       },
                     }}
-                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                     name="whatsapp"
-                    type="number"
+                    type="text" // use text to handle leading 0 safely
                     value={whatsapp}
                     inputRef={(el) => (inputRefs.current[4] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 4)}
@@ -368,6 +397,12 @@ const AddDistributer = () => {
                       const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
                       setWhatsapp(value);
                     }}
+                    error={whatsapp.length > 0 && !mobileRegex.test(whatsapp)}
+                    helperText={
+                      whatsapp.length > 0 && !mobileRegex.test(whatsapp)
+                        ? "Enter a valid 10-digit number starting with 6-9"
+                        : ""
+                    }
                   />
                 </div>
                 <div>
@@ -477,14 +512,20 @@ const AddDistributer = () => {
                         padding: "10px 12px",
                       },
                     }}
-                    className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                    className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                     name="pincode"
-                    type="number"
+                    type="text" // use text to handle leading 0 safely
                     value={pincode}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "").slice(0, 6); // only digits, max 10
+                      const value = e.target.value.replace(/\D/g, "").slice(0, 6); // only digits, max 6
                       setPincode(value);
                     }}
+                    error={pincode.length > 0 && !pincodeRegex.test(pincode)}
+                    helperText={
+                      pincode.length > 0 && !pincodeRegex.test(pincode)
+                        ? "Enter a valid 6-digit pincode"
+                        : ""
+                    }
                   />
                   <div name="pincode" />
                 </div>
@@ -660,11 +701,20 @@ const AddDistributer = () => {
                             padding: "10px 12px",
                           },
                         }}
-                        className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline"
+                        className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline"
                         name="account_no"
-                        type="number"
+                        type="text" // use text to handle long numbers safely
                         value={accountNo}
-                        onChange={(e) => setAccountNo(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, ""); // only digits
+                          setAccountNo(value);
+                        }}
+                        error={accountNo.length > 0 && !accountRegex.test(accountNo)}
+                        helperText={
+                          accountNo.length > 0 && !accountRegex.test(accountNo)
+                            ? "Enter a valid bank account number (9-18 digits)"
+                            : ""
+                        }
                       />
                       <div name="account_no" />
                     </div>
@@ -685,16 +735,23 @@ const AddDistributer = () => {
                             padding: "10px 12px",
                           },
                         }}
-                        className="appearance-none border rounded-lg w-full  leading-tight focus:outline-none focus:shadow-outline uppercase"
+                        className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                         name="ifsc_code"
                         type="text"
                         value={ifsc}
                         onChange={(e) => {
                           const value = e.target.value
                             .toUpperCase()
-                            .replace(/[^A-Z0-9]/g, "");
+                            .replace(/[^A-Z0-9]/g, "")
+                            .slice(0, 11); // max 11 characters
                           setIfsc(value);
                         }}
+                        error={ifsc.length > 0 && !ifscRegex.test(ifsc)}
+                        helperText={
+                          ifsc.length > 0 && !ifscRegex.test(ifsc)
+                            ? "Enter a valid 11-character IFSC code"
+                            : ""
+                        }
                       />
                       <div name="ifsc_code" />
                     </div>

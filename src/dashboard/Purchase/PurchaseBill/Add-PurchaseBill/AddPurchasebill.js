@@ -3398,7 +3398,16 @@ const AddPurchaseBill = () => {
                         options={distributorList.map(d => d.phone_number)}
                         value={addDistributorMobile}
                         onInputChange={(e, newValue) => {
-                          setAddDistributorMobile(newValue);
+                          const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
+
+                          // Check if number already exists
+                          const exists = distributorList.some(d => d.phone_number === numericValue);
+                          if (exists) {
+                            // Optional: show alert or set error state
+                            console.warn("This number already exists!");
+                          }
+
+                          setAddDistributorMobile(numericValue);
                         }}
                         onChange={(e, selectedValue) => {
                           const found = distributorList.find(d => d.phone_number === selectedValue);
@@ -3412,7 +3421,6 @@ const AddPurchaseBill = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-
                             size="small"
                             inputRef={(el) => (inputRefs.current[17] = el)}
                             onKeyDown={(e) => handleKeyDown(e, 17)}
@@ -3426,7 +3434,8 @@ const AddPurchaseBill = () => {
                                 e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
                               }
                             }}
-
+                            error={distributorList.some(d => d.phone_number === addDistributorMobile)}
+                            helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
                           />
                         )}
                       />

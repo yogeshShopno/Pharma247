@@ -3643,13 +3643,21 @@ const Addsale = () => {
                         size="small"
                         value={mobileNo}
                         onChange={(e) => {
-                          setMobileNo(e.target.value);
+                          // Keep only digits, max 10 characters
+                          const value = e.target.value
+                            .split("")
+                            .filter(char => /[0-9]/.test(char))
+                            .join("")
+                            .slice(0, 10);
+
+                          setMobileNo(value);
                           setUnsavedItems(true);
                         }}
                         style={{ minWidth: 300 }}
                         inputRef={(el) => (inputRefs.current[1] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 1)} // Moves to next or submit manually
                       />
+
                     </div>
                   </div>
                 </div>

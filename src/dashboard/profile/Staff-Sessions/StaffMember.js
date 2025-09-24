@@ -373,32 +373,49 @@ const StaffMember = () => {
                                 </thead>
                                 <tbody style={{ background: "#3f621217" }}>
                                     {tableData?.map((item, index) => (
-                                        <tr key={index} >
-                                            <td style={{ borderRadius: '10px 0 0 10px' }}>  {index + 1}</td>
+                                        <tr key={index}>
+                                            <td style={{ borderRadius: '10px 0 0 10px' }}>{index + 1}</td>
                                             {StaffMemberColumns.map((column) => {
                                                 const value = item[column.id];
                                                 const isStatus = column.id === 'status';
-                                                const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
+
+                                                // Determine the display text based on numeric status
+                                                let displayStatus = value;
+                                                if (isStatus) {
+                                                    displayStatus = value === "1" ? "Active" : value === "0" ? "Disactive" : value;
+                                                }
+
+                                                // Determine class based on status
+                                                const statusClass =
+                                                    isStatus && displayStatus === "Active"
+                                                        ? "orderStatus"
+                                                        : isStatus && displayStatus === "Disactive"
+                                                            ? "dueStatus"
+                                                            : "text-black";
+
                                                 return (
-                                                    <td key={column.id} className={`text-lg `}>
-                                                        <span className={`text ${isStatus && statusClass}`}>
-                                                            {item.status === 1 ? item.status = 'Active' : item.status === 0 ? item.status = 'Disactive' : item[column.id]}
+                                                    <td key={column.id} className={`text-lg`}>
+                                                        <span className={`text ${isStatus ? statusClass : ""}`}>
+                                                            {isStatus ? displayStatus : value}
                                                         </span>
                                                     </td>
-                                                )
+                                                );
                                             })}
                                             <td style={{ borderRadius: '0 10px 10px 0' }}>
                                                 <div className="flex justify-center items-center">
-
-                                                    {hasPermission(permissions, "staff members edit") &&
+                                                    {hasPermission(permissions, "staff members edit") && (
                                                         <BorderColorIcon
-                                                            style={{ color: "var(--color1)" }} className="primary mr-3" onClick={() => handelEditOpen(item)} />
-                                                    }
+                                                            style={{ color: "var(--color1)" }}
+                                                            className="primary mr-3"
+                                                            onClick={() => handelEditOpen(item)}
+                                                        />
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
+
                             </table>
                         </div>
                     </div>

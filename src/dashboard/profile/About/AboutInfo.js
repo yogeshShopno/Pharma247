@@ -123,6 +123,12 @@ const AboutInfo = () => {
     setFrontImgUrl(url);
   };
 
+  const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  const mobileRegex = /^[6-9][0-9]{9}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const pincodeRegex = /^[1-9][0-9]{5}$/;
+
   return (
     <>
       <Header key={reRender} />
@@ -186,16 +192,17 @@ const AboutInfo = () => {
                   />
                   <TextField
                     autoComplete="off"
-                    id="standard-basic"
+                    id="owner-name"
                     label="Owner Name"
                     variant="outlined"
                     className="aboutTextField"
                     value={ownerName}
                     onChange={(e) => {
-                      const capitalizedValue = e.target.value
+                      const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      const capitalizedValue = lettersOnly
                         .toLowerCase()
                         .replace(/\b\w/g, (char) => char.toUpperCase());
-                      setOwnerName(capitalizedValue)
+                      setOwnerName(capitalizedValue);
                     }}
                     InputLabelProps={{}}
                   />
@@ -208,9 +215,19 @@ const AboutInfo = () => {
                     variant="outlined"
                     className="aboutTextField"
                     value={gstN}
-                    onChange={(e) => setGSTN(e.target.value.toUpperCase())}
-                    InputLabelProps={{}}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      // Prevent more than 15 characters
+                      if (value.length <= 15) {
+                        setGSTN(value);
+                      }
+                    }}
+                    error={gstN.length > 0 && !gstRegex.test(gstN)}
+                    helperText={
+                      gstN.length > 0 && !gstRegex.test(gstN) ? "Invalid GST Number" : ""
+                    }
                   />
+
                   <TextField
                     autoComplete="off"
                     id="standard-basic"
@@ -218,30 +235,55 @@ const AboutInfo = () => {
                     variant="outlined"
                     className="aboutTextField"
                     value={panCard}
-                    onChange={(e) => setPanCard(e.target.value.toUpperCase())}
-                    InputLabelProps={{}}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      // Prevent more than 10 characters
+                      if (value.length <= 10) {
+                        setPanCard(value);
+                      }
+                    }}
+                    error={panCard.length > 0 && !panRegex.test(panCard)}
+                    helperText={
+                      panCard.length > 0 && !panRegex.test(panCard) ? "Invalid PAN Number" : ""
+                    }
                   />
                 </Box>
                 <Box className="aboutPharmacy abt_fld_pf">
                   <TextField
                     autoComplete="off"
-                    id="standard-basic"
+                    id="mobile-input"
                     label="Mobile No."
                     variant="outlined"
                     className="aboutTextField"
                     value={mobileNo}
-                    onChange={(e) => setMobileNo(Number(e.target.value))}
-                    InputLabelProps={{}}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ""); // only digits
+                      if (value.length <= 10) {
+                        setMobileNo(value);
+                      }
+                    }}
+                    error={mobileNo.length > 0 && !mobileRegex.test(mobileNo)}
+                    helperText={
+                      mobileNo.length > 0 && !mobileRegex.test(mobileNo)
+                        ? "Enter valid 10-digit mobile number"
+                        : ""
+                    }
                   />
+
                   <TextField
                     autoComplete="off"
-                    id="standard-basic"
+                    id="email-input"
                     label="Email ID"
                     variant="outlined"
                     className="aboutTextField"
                     value={emailID}
                     onChange={(e) => setEmailID(e.target.value)}
-                    InputLabelProps={{}}
+                    error={emailID.length > 0 && !emailRegex.test(emailID)}
+                    helperText={
+                      emailID.length > 0 && !emailRegex.test(emailID)
+                        ? "Enter valid email address"
+                        : ""
+                    }
                   />
                 </Box>
                 <Box className="aboutPharmacy abt_fld_pf">
@@ -262,13 +304,23 @@ const AboutInfo = () => {
                   />
                   <TextField
                     autoComplete="off"
-                    id="standard-basic"
+                    id="pincode-input"
                     label="Pincode"
                     variant="outlined"
                     className="aboutTextField"
                     value={pincode}
-                    onChange={(e) => setPincode(e.target.value)}
-                    InputLabelProps={{}}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ""); // only digits
+                      if (value.length <= 6) {
+                        setPincode(value);
+                      }
+                    }}
+                    error={pincode.length > 0 && !pincodeRegex.test(pincode)}
+                    helperText={
+                      pincode.length > 0 && !pincodeRegex.test(pincode)
+                        ? "Enter valid 6-digit pincode"
+                        : ""
+                    }
                   />
                 </Box>
                 <Box className="aboutPharmacy abt_fld_pf">

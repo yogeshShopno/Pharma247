@@ -132,7 +132,7 @@ const ManageStaffRole = () => {
                 <div>
                     <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
                         <ProfileView />
-                        <div className="p-8" style={{width:'100%',minWidth:'50px'}}>
+                        <div className="p-8" style={{ width: '100%', minWidth: '50px' }}>
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h1 className="text-2xl flex items-center primary font-semibold  p-2 mb-5 mng_role_stf_txt" style={{ marginBottom: "25px" }} >Manage Staff Roles
@@ -172,37 +172,61 @@ const ManageStaffRole = () => {
                                         </tr>
                                     </thead>
                                     <tbody style={{ background: "#3f621217" }}>
+                                        {manageStaffRoleData?.map((item, index) => {
+                                            // Convert numeric status to text
+                                            const displayStatus = item.status === "1" ? "Active" : item.status === "2" ? "Disactive" : item.status;
 
-                                        {manageStaffRoleData?.map((item, index) => (
-                                            <tr key={index} >
-                                                <td style={{ borderRadius: "10px 0 0 10px" }}> {index + 1}</td>
-                                                {ManageStaffRole.map((column) => {
-                                                    const value = item[column.id];
-                                                    const isStatus = column.id === 'status';
-                                                    const statusClass = isStatus && value === 'Active' ? 'orderStatus' : isStatus && value === 'Disactive' ? 'dueStatus' : 'text-black';
-                                                    return (
-                                                        <td key={column.id} className={`text-lg `}>
-                                                            <span className={`text ${isStatus && statusClass}`}>
-                                                                {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive' : item[column.id]}
-                                                            </span>
-                                                        </td>
-                                                    )
-                                                })}
-                                                <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                                    <div className="flex justify-center items-center">
-                                                        <VisibilityIcon className="primary mr-3 " onClick={() => handelAddOpen(item.id)} />
-                                                        <BorderColorIcon
-                                                            style={{ color: "var(--color1)" }} className="primary mr-3" onClick={(() => history.push(`/edit-role/${item.id}`))} />
-                                                        <Tooltip title="Deactivate" className="">
-                                                            {item.status == 'Active' ?
-                                                                <DoNotDisturbIcon className="text-red-600 mr-3" onClick={() => handleDeactive(item.id)} /> :
-                                                                <FaCheckCircle className="text-blue-600 mr-3" size={24} onClick={() => handleDeactive(item.id)} />}
-                                                        </Tooltip>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                            return (
+                                                <tr key={index}>
+                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td>
+                                                    {ManageStaffRole.map((column) => {
+                                                        const value = column.id === "status" ? displayStatus : item[column.id];
+
+                                                        // Determine status class
+                                                        const statusClass =
+                                                            column.id === "status" && value === "Active"
+                                                                ? "orderStatus"
+                                                                : column.id === "status" && value === "Disactive"
+                                                                    ? "dueStatus"
+                                                                    : "text-black";
+
+                                                        return (
+                                                            <td key={column.id} className="text-lg">
+                                                                <span className={`text ${column.id === "status" ? statusClass : ""}`}>
+                                                                    {value}
+                                                                </span>
+                                                            </td>
+                                                        );
+                                                    })}
+                                                    <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                        <div className="flex justify-center items-center">
+                                                            <VisibilityIcon className="primary mr-3" onClick={() => handelAddOpen(item.id)} />
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)" }}
+                                                                className="primary mr-3"
+                                                                onClick={() => history.push(`/edit-role/${item.id}`)}
+                                                            />
+                                                            <Tooltip title={displayStatus === "Active" ? "Deactivate" : "Activate"}>
+                                                                {displayStatus === "Active" ? (
+                                                                    <DoNotDisturbIcon
+                                                                        className="text-red-600 mr-3"
+                                                                        onClick={() => handleDeactive(item.id)}
+                                                                    />
+                                                                ) : (
+                                                                    <FaCheckCircle
+                                                                        className="text-blue-600 mr-3"
+                                                                        size={24}
+                                                                        onClick={() => handleDeactive(item.id)}
+                                                                    />
+                                                                )}
+                                                            </Tooltip>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>

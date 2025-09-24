@@ -3313,7 +3313,7 @@ const AddPurchaseBill = () => {
 
         {/*<======================================================================== add Distributor PopUp Box  =======================================================================> */}
 
-        <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog">
+        <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Distributor
           </DialogTitle>

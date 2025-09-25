@@ -50,17 +50,21 @@ const ReturnView = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "PageDown") {
+      if (e.key === "PageDown" || e.key === "ArrowDown") {
+        e.preventDefault();
         const nextIndex = (currentIndex + 1) % returnData.length;
         const nextId = returnData[nextIndex]?.id;
         if (nextId) {
+          setCurrentIndex(nextIndex);
           history.push(`/return/view/${nextId}`);
         }
-      } else if (e.key === "PageUp") {
+      } else if (e.key === "PageUp" || e.key === "ArrowUp") {
+        e.preventDefault();
         const prevIndex =
           (currentIndex - 1 + returnData.length) % returnData.length;
         const prevId = returnData[prevIndex]?.id;
         if (prevId) {
+          setCurrentIndex(prevIndex);
           history.push(`/return/view/${prevId}`);
         }
       }
@@ -69,7 +73,7 @@ const ReturnView = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  });
+  }, [currentIndex, returnData, history]);
 
   useEffect(() => {
     // returnBillGetByID();
@@ -101,11 +105,11 @@ const ReturnView = () => {
     }
   };
 
-  const returnBillGetByID = () => {
+  const returnBillGetByID = (billId = id) => {
     let data = new FormData();
-    data.append("id", id);
+    data.append("id", billId);
     const params = {
-      purches_return_id: id,
+      purches_return_id: billId,
     };
     setIsLoading(true);
     try {
@@ -123,6 +127,7 @@ const ReturnView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -162,7 +167,7 @@ const ReturnView = () => {
     }
   };
 
- 
+
 
   return (
     <>
@@ -173,7 +178,7 @@ const ReturnView = () => {
         </div>
       ) : (
         <div className="p-6"
-          style={{ 
+          style={{
             alignItems: "center",
             overflow: "auto",
           }}
@@ -436,12 +441,13 @@ const ReturnView = () => {
                         returnData.length;
                       const prevId = returnData[prevIndex]?.id;
                       if (prevId) {
+                        setCurrentIndex(prevIndex);
                         history.push(`/return/view/${prevId}`);
                       }
                     }}
                   >
                     <label style={{ textTransform: "uppercase" }}>
-                      Next Bill
+                      Previous Bill
                     </label>
                     <FaArrowUp size={20} />
                   </div>
@@ -459,12 +465,13 @@ const ReturnView = () => {
                       const nextIndex = (currentIndex + 1) % returnData.length;
                       const nextId = returnData[nextIndex]?.id;
                       if (nextId) {
+                        setCurrentIndex(nextIndex);
                         history.push(`/return/view/${nextId}`);
                       }
                     }}
                   >
                     <label style={{ textTransform: "uppercase" }}>
-                      Previous Bill
+                      Next Bill
                     </label>
                     <FaArrowDown size={20} />
                   </div>
@@ -508,7 +515,7 @@ const ReturnView = () => {
                     size="lg"
                     position="bottom-center"
                     className="modal_amount"
-                    // style={{ width: "50%" }}
+                  // style={{ width: "50%" }}
                   >
                     <div
                       style={{
@@ -585,8 +592,8 @@ const ReturnView = () => {
                           {roundOff === "0.00"
                             ? roundOff
                             : roundOff < 0
-                            ? `-${Math.abs(roundOff)}`
-                            : `+${Math.abs(roundOff)}`}
+                              ? `-${Math.abs(roundOff)}`
+                              : `+${Math.abs(roundOff)}`}
                         </span>
                       </div>
                       <div

@@ -58,17 +58,21 @@ const PurchaseView = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "PageDown") {
+      if (e.key === "PageDown" || e.key === "ArrowDown") {
+        e.preventDefault();
         const nextIndex = (currentIndex + 1) % tableData.length;
         const nextId = tableData[nextIndex]?.id;
         if (nextId) {
+          setCurrentIndex(nextIndex);
           history.push(`/purchase/view/${nextId}`);
         }
-      } else if (e.key === "PageUp") {
+      } else if (e.key === "PageUp" || e.key === "ArrowUp") {
+        e.preventDefault();
         const prevIndex =
           (currentIndex - 1 + tableData.length) % tableData.length;
         const prevId = tableData[prevIndex]?.id;
         if (prevId) {
+          setCurrentIndex(prevIndex);
           history.push(`/purchase/view/${prevId}`);
         }
       }
@@ -77,7 +81,17 @@ const PurchaseView = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  });
+  }, [currentIndex, tableData, history]);
+
+  useEffect(() => {
+    if (tableData.length > 0) {
+      const index = tableData.findIndex((item) => item.id == parseInt(id));
+      if (index !== -1) {
+        setCurrentIndex(index);
+        purchaseBillGetByID(parseInt(id));
+      }
+    }
+  }, [id, tableData]);
 
   {/*<================================================================ get purchase list data  ================================================================> */ }
 
@@ -147,11 +161,11 @@ const PurchaseView = () => {
 
   {/*<===================================================================== get bill details  =====================================================================> */ }
 
-  const purchaseBillGetByID = async () => {
+  const purchaseBillGetByID = async (billId = id) => {
     let data = new FormData();
-    data.append("id", id);
+    data.append("id", billId);
     const params = {
-      id: id,
+      id: billId,
     };
     setIsLoading(true);
     try {
@@ -417,33 +431,57 @@ const PurchaseView = () => {
           </div>
 
           <div style={{ display: 'flex' }}>
-            <div className="invoice_total_fld" style={{ display: 'flex', flexDirection: 'column', alignSelf: "center", fontSize: '14px' }}>
-              <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }}
+            <div
+              className="invoice_total_fld"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignSelf: "center",
+                fontSize: "14px",
+              }}
+            >
+              {/* Previous Bill */}
+              <div
+                style={{
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  cursor: "pointer",
+                  width: "150px",
+                  justifyContent: "space-between",
+                }}
                 onClick={() => {
-                  const prevIndex =
-                    (currentIndex - 1 + tableData.length) % tableData.length;
+                  const prevIndex = (currentIndex - 1 + tableData.length) % tableData.length;
                   const prevId = tableData[prevIndex]?.id;
                   if (prevId) {
+                    setCurrentIndex(prevIndex);
                     history.push(`/purchase/view/${prevId}`);
                   }
                 }}
               >
-                <label style={{ textTransform: "uppercase" }}>Next Bill</label>
+                <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
                 <FaArrowUp size={20} />
               </div>
 
-              <div className="" style={{ whiteSpace: 'nowrap', display: 'flex', cursor: "pointer", width: '150px', justifyContent: 'space-between' }}
+              {/* Next Bill */}
+              <div
+                style={{
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  cursor: "pointer",
+                  width: "150px",
+                  justifyContent: "space-between",
+                }}
                 onClick={() => {
                   const nextIndex = (currentIndex + 1) % tableData.length;
                   const nextId = tableData[nextIndex]?.id;
                   if (nextId) {
+                    setCurrentIndex(nextIndex);
                     history.push(`/purchase/view/${nextId}`);
                   }
                 }}
               >
-                <label style={{ textTransform: "uppercase" }}>Previous Bill</label>
+                <label style={{ textTransform: "uppercase" }}>Next Bill</label>
                 <FaArrowDown size={20} />
-
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>

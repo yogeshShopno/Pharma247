@@ -124,17 +124,21 @@ const SaleView = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") {
+      if (e.key === "ArrowRight" || e.key === "PageDown") {
+        e.preventDefault();
         const nextIndex = (currentIndex + 1) % saleData.length;
         const nextId = saleData[nextIndex]?.id;
         if (nextId) {
+          setCurrentIndex(nextIndex);
           history.push(`/salebill/view/${nextId}`);
         }
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault();
         const prevIndex =
           (currentIndex - 1 + saleData.length) % saleData.length;
         const prevId = saleData[prevIndex]?.id;
         if (prevId) {
+          setCurrentIndex(prevIndex);
           history.push(`/salebill/view/${prevId}`);
         }
       }
@@ -143,11 +147,8 @@ const SaleView = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  });
+  }, [currentIndex, saleData, history]);
 
-  useEffect(() => {
-    //   history.replace('/salelist')
-  }, []);
 
   const saleBillGetByID = async () => {
     let data = new FormData();
@@ -498,6 +499,7 @@ const SaleView = () => {
                         const prevIndex = (currentIndex - 1 + saleData.length) % saleData.length;
                         const prevId = saleData[prevIndex]?.id;
                         if (prevId) {
+                          setCurrentIndex(prevIndex);
                           history.push(`/salebill/view/${prevId}`);
                         }
                       }}
@@ -519,6 +521,7 @@ const SaleView = () => {
                         const nextIndex = (currentIndex + 1) % saleData.length;
                         const nextId = saleData[nextIndex]?.id;
                         if (nextId) {
+                          setCurrentIndex(nextIndex);
                           history.push(`/salebill/view/${nextId}`);
                         }
                       }}

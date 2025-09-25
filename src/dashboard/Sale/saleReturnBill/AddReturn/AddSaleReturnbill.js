@@ -861,7 +861,7 @@ const Salereturn = () => {
                                                 fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                padding: '8px 8px',
+                                                // padding: '8px 8px',
                                             },
 
                                             // '& .MuiInputBase-root': {
@@ -933,13 +933,10 @@ const Salereturn = () => {
                                             // minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
-                                                // fontSize: '1.10rem',
+                                                fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '10px 14px',
-                                            },
-                                            '@media (max-width:600px)': {
-                                                // minWidth: '300px',
+                                                // padding: '8px 8px',
                                             },
                                         }}
                                         renderOption={(props, option) => (

@@ -2166,7 +2166,10 @@ const Addsale = () => {
 
           <div className=" flex gap-4  mt-4">
             <div className="flex flex-row gap-4 overflow-x-auto w-full">
-              <div>
+              <div style={{
+                  width: "100%",
+                  borderRadius: "15px",
+                }}>
                 <span
                   className="title mb-2 flex  items-center gap-2"
                 >
@@ -2199,10 +2202,10 @@ const Addsale = () => {
                   sx={{
                     width: "100%",
                     minWidth: {
-                      xs: "350px",
-                      sm: "400px",
-                      md: "400px",
-                      lg: "400px",
+                      // xs: "350px",
+                      // sm: "400px",
+                      // md: "400px",
+                      // lg: "250px",
                     },
                     // Remove default padding
                     '& .MuiAutocomplete-inputRoot': {
@@ -2305,10 +2308,10 @@ const Addsale = () => {
                   sx={{
                     width: "100%",
                     minWidth: {
-                      xs: "350px",
-                      sm: "400px",
-                      md: "400px",
-                      lg: "400px",
+                      // xs: "350px",
+                      // sm: "400px",
+                      // md: "400px",
+                      // lg: "350px",
                     },
                     // Remove default padding
                     '& .MuiAutocomplete-inputRoot': {
@@ -2358,6 +2361,7 @@ const Addsale = () => {
                 style={{
                   width: "100%",
                   borderRadius: "15px",
+                  marginleft: "10px",
                 }}
               >
                 <span

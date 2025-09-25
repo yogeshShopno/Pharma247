@@ -2420,7 +2420,7 @@ const Addsale = () => {
                   type="number"
                   size="small"
                   value={barcode}
-                  placeholder="scan barcode"
+                  placeholder="Scan Barcode"
                   // inputRef={inputRef10}
                   // onKeyDown={handleKeyDown}
                   sx={{ width: "50%", backgroundColor: "white" }}

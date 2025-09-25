@@ -859,11 +859,12 @@ const Salereturn = () => {
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 fontSize: '1.10rem',
+                                                padding: '0',
+
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '8px 8px',
+                                                padding: '0 !important',
                                             },
-
                                             // '& .MuiInputBase-root': {
 
                                             // fontSize: '1.10rem',
@@ -933,10 +934,11 @@ const Salereturn = () => {
                                             // minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
+                                                padding: '0',
                                                 fontSize: '1.10rem',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '8px 8px',
+                                                padding: '0 !important',
                                             },
                                         }}
                                         renderOption={(props, option) => (

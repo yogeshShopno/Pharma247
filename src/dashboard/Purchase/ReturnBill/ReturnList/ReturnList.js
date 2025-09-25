@@ -547,14 +547,14 @@ const ReturnList = () => {
                                     isStatus && value === "Paid"
                                       ? "text-black"
                                       : isStatus && value === "Due"
-                                        ? "text-red-500"
+                                        ? "text-black"
                                         : "text-black";
 
                                   const dueAmountClass =
                                     isDueAmount && row.status === "Paid"
                                       ? "text-black"
                                       : isDueAmount && value > 0
-                                        ? "text-red-500"
+                                        ? "text-black"
                                         : "text-black";
 
                                   return (

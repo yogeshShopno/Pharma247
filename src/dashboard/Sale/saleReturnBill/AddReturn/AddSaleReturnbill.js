@@ -5,7 +5,8 @@ import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Autocomplete from '@mui/material/Autocomplete';
 import { Button, Checkbox, CircularProgress, Input, InputAdornment, ListItemText, TextField } from "@mui/material";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
@@ -982,46 +983,32 @@ const Salereturn = () => {
                                     <div className='flex pb-4 sale_dates_divv'>
                                         <div style={{ padding: "0 5px", width: '100%' }}>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date <span className="text-red-600">*</span></span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    value={startDate}
-                                                    onChange={(newDate) => {
-                                                        setStartDate(newDate);
-                                                        setUnsavedItems(true);
-                                                    }}
-                                                    format="DD/MM/YYYY"
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            inputRef={el => inputRefs.current[2] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" }, "& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
-                                                        />
-                                                    )}
-                                                />
-                                            </LocalizationProvider>
+                                            <DatePicker
+                                                className="custom-datepicker"
+                                                selected={startDate ? startDate.toDate() : null}
+                                                onChange={(newDate) => {
+                                                    setStartDate(dayjs(newDate));
+                                                    setUnsavedItems(true);
+                                                }}
+                                                dateFormat="dd/MM/yyyy"
+                                                ref={(el) => (inputRefs.current[2] = el)}
+                                                onKeyDown={(e) => handleKeyDown(e, 2)}
+                                            />
                                         </div>
 
                                         <div style={{ padding: "0 5px", width: '100%' }}>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>End Date</span>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs} >
-                                                <DatePicker
-                                                    value={endDate}
-                                                    onChange={(newDate) => {
-                                                        setEndDate(newDate);
-                                                        setUnsavedItems(true);
-                                                    }}
-                                                    format="DD/MM/YYYY"
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            inputRef={el => inputRefs.current[3] = el}
-                                                            onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" }, "& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
-                                                        />
-                                                    )}
-                                                />
-                                            </LocalizationProvider>
+                                            <DatePicker
+                                                className="custom-datepicker"
+                                                selected={endDate ? endDate.toDate() : null}
+                                                onChange={(newDate) => {
+                                                    setEndDate(dayjs(newDate));
+                                                    setUnsavedItems(true);
+                                                }}
+                                                dateFormat="dd/MM/yyyy"
+                                                ref={(el) => (inputRefs.current[3] = el)}
+                                                onKeyDown={(e) => handleKeyDown(e, 3)}
+                                            />
                                         </div>
                                     </div>
                                     <div className="mt-2 main_fltr_btn" style={{ padding: "0 5px" }}>

@@ -1413,9 +1413,11 @@ const EditSaleBill = () => {
                     "& .MuiInputBase-root": {
                       height: 20,
                       fontSize: "1.10rem",
+                      padding: '0',
+
                     },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: "10px 14px",
+                    '& .MuiAutocomplete-inputRoot': {
+                      padding: '0 !important',
                     },
                   }}
                   renderOption={(props, option) => (
@@ -1475,9 +1477,10 @@ const EditSaleBill = () => {
                     "& .MuiInputBase-root": {
                       height: 20,
                       fontSize: "1.10rem",
+                      padding: '0',
                     },
                     "& .MuiAutocomplete-inputRoot": {
-                      padding: "10px 14px",
+                      padding: '0 !important',
                     },
                   }}
                   renderOption={(props, option) => (

@@ -3282,10 +3282,11 @@ const AddPurchaseBill = () => {
                   <input
                     className="File-upload"
                     type="file"
-                    accept=".csv"
+                    accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     id="file-upload"
                     onChange={handleFileSelect}
                   />
+
                 </div>
               </div>
 

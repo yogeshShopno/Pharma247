@@ -851,7 +851,7 @@ const AddReturnbill = () => {
     data.append("fr_qty", free ? free : 0);
     data.append("disocunt", disc ? disc : 0);
     data.append("gst", gstMapping[gst] ?? gst);
-    data.append("location", loc ? loc : 0);
+    data.append("location", loc ? loc : "");
     data.append("amount", ItemTotalAmount ? ItemTotalAmount : "");
 
     const params = {
@@ -971,7 +971,7 @@ const AddReturnbill = () => {
             </div>
             {/*<============================================================================ Top details   ===========================================================================> */}
 
-            <div className="flex gap-4  mt-4">
+            <div className="flex gap-4  mt-4">   
               <div className="flex flex-row gap-4 overflow-x-auto w-full ">
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>

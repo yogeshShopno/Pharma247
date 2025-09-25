@@ -382,14 +382,14 @@ const StaffMember = () => {
                                                 // Determine the display text based on numeric status
                                                 let displayStatus = value;
                                                 if (isStatus) {
-                                                    displayStatus = value === "1" ? "Active" : value === "0" ? "Disactive" : value;
+                                                    displayStatus = value === "1" ? "Active" : value === "0" ? "Inactive" : value;
                                                 }
 
                                                 // Determine class based on status
                                                 const statusClass =
                                                     isStatus && displayStatus === "Active"
                                                         ? "orderStatus"
-                                                        : isStatus && displayStatus === "Disactive"
+                                                        : isStatus && displayStatus === "Inactive"
                                                             ? "dueStatus"
                                                             : "text-black";
 

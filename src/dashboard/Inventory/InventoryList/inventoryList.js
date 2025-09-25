@@ -2677,6 +2677,7 @@ const InventoryList = () => {
                   disablePortal
                   options={purchaseItemData}
                   size="small"
+                  disabled
                   value={selectedItem}
                   onChange={handleOptionChange}
                   getOptionLabel={(option) => option.iteam_name}
@@ -2740,23 +2741,27 @@ const InventoryList = () => {
               </div>
 
               <div className="w-full">
-                <span className="title primary mb-2">Stock</span>
+                <span className="title primary mb-2">Current Stock</span>
                 <TextField autoComplete="off" disabled size="small" type="number" value={stock} />
               </div>
 
               <div className="w-full">
-                <span className="title primary mb-2">Stock Adjusted</span>
+                <span className="title primary mb-2">Maintain Stock</span>
                 <TextField
                   autoComplete="off"
                   size="small"
                   type="number"
                   value={stockAdjust}
-                  onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setStockAdjust(val === "" ? "" : parseFloat(val));
+                  }}
                 />
+
               </div>
 
               <div className="w-full">
-                <span className="title primary mb-2">Remaining Stock</span>
+                <span className="title primary mb-2">Stock Adjust</span>
                 <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} />
               </div>
             </div>
@@ -2774,14 +2779,6 @@ const InventoryList = () => {
             onClick={validateForm}
           >
             Save
-          </Button>
-          <Button
-            style={{ background: "#F31C1C", color: "white" }}
-            autoFocus
-            variant="contained"
-            onClick={resetAddDialog}
-          >
-            Cancel
           </Button>
         </DialogActions>
       </Dialog>

@@ -858,7 +858,7 @@ const Salereturn = () => {
                                             // minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
-                                                fontSize: '1.10rem',
+                                                fontSize: '1.10rem !important',
                                                 padding: '0',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
@@ -935,7 +935,7 @@ const Salereturn = () => {
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 fontSize: '1.10rem',
-                                                padding: '0',
+                                                padding: '0 !important',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
                                                 padding: '0 !important',

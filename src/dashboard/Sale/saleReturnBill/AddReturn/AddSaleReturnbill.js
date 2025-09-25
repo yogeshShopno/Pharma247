@@ -979,11 +979,12 @@ const Salereturn = () => {
                                 </div>
 
                                 <div className='flex items-center sale_dates_divv_main '>
-                                    <div className='flex pb-4 sale_dates_divv'>
+                                    <div className='flex pb-4 '>
                                         <div style={{ padding: "0 5px", width: '100%' }}>
                                             <span className="heading mb-2 title" style={{ fontWeight: "500", fontSize: "17px", color: "var(--color1)" }}>Start Date <span className="text-red-600">*</span></span>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
+                                                    className=" "
                                                     value={startDate}
                                                     onChange={(newDate) => {
                                                         setStartDate(newDate);
@@ -995,7 +996,7 @@ const Salereturn = () => {
                                                             {...params}
                                                             inputRef={el => inputRefs.current[2] = el}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" } }}
+                                                            sx={{ width: "100%", height: "40px" }}
                                                         />
                                                     )}
                                                 />
@@ -1017,7 +1018,7 @@ const Salereturn = () => {
                                                             {...params}
                                                             inputRef={el => inputRefs.current[3] = el}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" } }}
+                                                            sx={{ width: "100%", height: "40px" }}
                                                         />
                                                     )}
                                                 />

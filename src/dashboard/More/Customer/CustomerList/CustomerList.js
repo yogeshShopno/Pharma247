@@ -746,9 +746,7 @@ const CustomerList = () => {
                               } else if (
                                 column.id === "total_amount" &&
                                 row.status === ""
-                              ) {
-                                style.color = "var(--color2)";
-                              }
+                              )
 
                               // Lowercase email if it's not already in lowercase
                               if (column.id === "email") {

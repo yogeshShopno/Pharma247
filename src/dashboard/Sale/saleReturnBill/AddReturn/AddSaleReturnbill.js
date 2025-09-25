@@ -859,9 +859,10 @@ const Salereturn = () => {
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 fontSize: '1.10rem',
+                                                padding: '0',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '8px 8px',
+                                                padding: '0 !important',
                                             },
 
                                             // '& .MuiInputBase-root': {
@@ -934,9 +935,10 @@ const Salereturn = () => {
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
                                                 fontSize: '1.10rem',
+                                                padding: '0',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {
-                                                // padding: '8px 8px',
+                                                padding: '0 !important',
                                             },
                                         }}
                                         renderOption={(props, option) => (
@@ -993,7 +995,7 @@ const Salereturn = () => {
                                                             {...params}
                                                             inputRef={el => inputRefs.current[2] = el}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" },"& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
+                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" }, "& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
                                                         />
                                                     )}
                                                 />
@@ -1015,7 +1017,7 @@ const Salereturn = () => {
                                                             {...params}
                                                             inputRef={el => inputRefs.current[3] = el}
                                                             onKeyDown={handleKeyDown}
-                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" },"& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
+                                                            sx={{ width: "100%", "& .MuiInputBase-root": { height: "40px" }, "& .css-1uvydh2": { padding: "6.5px 0px 7.5px 13px" } }}
                                                         />
                                                     )}
                                                 />

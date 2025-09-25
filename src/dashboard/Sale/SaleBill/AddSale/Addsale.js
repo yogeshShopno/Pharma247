@@ -2204,7 +2204,13 @@ const Addsale = () => {
                       md: "400px",
                       lg: "400px",
                     },
-
+                    // Remove default padding
+                    '& .MuiAutocomplete-inputRoot': {
+                      padding: '0 !important',
+                    },
+                    '& .MuiInputBase-root': {
+                      padding: '0',
+                    }
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -2298,15 +2304,19 @@ const Addsale = () => {
                   loading={isLoading}
                   sx={{
                     width: "100%",
-                    // minWidth: {
-                    //     xs: '350px',
-                    //     sm: '500px',
-                    //     md: '500px',
-                    //     lg: '400px',
-                    // },
-                    "& .MuiInputBase-root": {
-                      fontSize: "1.10rem",
+                    minWidth: {
+                      xs: "350px",
+                      sm: "400px",
+                      md: "400px",
+                      lg: "400px",
                     },
+                    // Remove default padding
+                    '& .MuiAutocomplete-inputRoot': {
+                      padding: '0 !important',
+                    },
+                    '& .MuiInputBase-root': {
+                      padding: '0',
+                    }
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -3791,8 +3801,9 @@ const Addsale = () => {
                         onKeyDown={handleKeyDown}
                         size="small"
                         value={addItemName}
-                        onChange={(e) => setAddItemName(e.target.value)}
+                        onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
                       />
+
                     </div>
                   </div>
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">

@@ -50,17 +50,21 @@ const SaleReturnView = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") {
+      if (e.key === "ArrowRight" || e.key === "PageDown") {
+        e.preventDefault();
         const nextIndex = (currentIndex + 1) % saleReturnData.length;
         const nextId = saleReturnData[nextIndex]?.id;
         if (nextId) {
+          setCurrentIndex(nextIndex);
           history.push(`/SaleReturn/View/${nextId}`);
         }
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault();
         const prevIndex =
           (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
         const prevId = saleReturnData[prevIndex]?.id;
         if (prevId) {
+          setCurrentIndex(prevIndex);
           history.push(`/SaleReturn/View/${prevId}`);
         }
       }
@@ -69,7 +73,7 @@ const SaleReturnView = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  });
+  }, [currentIndex, saleReturnData, history]);
 
   const pdfGenerator = async (id) => {
     let data = new FormData();
@@ -124,11 +128,11 @@ const SaleReturnView = () => {
     }
   };
 
-  const saleReturnBillGetByID = async () => {
+  const saleReturnBillGetByID = async (billId = id) => {
     let data = new FormData();
-    data.append("id", id);
+    data.append("id", billId);
     const params = {
-      id: id,
+      id: billId,
     };
     setIsLoading(true);
     try {
@@ -145,6 +149,7 @@ const SaleReturnView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -162,7 +167,7 @@ const SaleReturnView = () => {
               <div className="p-6"
                 style={{
                   backgroundColor: "rgba(153, 153, 153, 0.1)",
-                  height: "calc(100vh - 130px)", 
+                  height: "calc(100vh - 130px)",
                   alignItems: "center",
                   overflow: "auto",
                 }}
@@ -260,7 +265,7 @@ const SaleReturnView = () => {
                   <div
                     className="firstrow flex rounded-md p-3 gap-3 "
                     style={{
-                      backgroundColor: "rgb(63 98 18 / 11%)", 
+                      backgroundColor: "rgb(63 98 18 / 11%)",
                     }}
                   >
                     <div className="detail_main">
@@ -461,15 +466,17 @@ const SaleReturnView = () => {
                             saleReturnData.length;
                           const prevId = saleReturnData[prevIndex]?.id;
                           if (prevId) {
+                            setCurrentIndex(prevIndex);
                             history.push(`/SaleReturn/view/${prevId}`);
                           }
                         }}
                       >
                         <label style={{ textTransform: "uppercase" }}>
-                          Next Bill
+                          Previous Bill
                         </label>
                         <FaArrowUp size={20} />
                       </div>
+
                       <div
                         className=""
                         style={{
@@ -484,12 +491,13 @@ const SaleReturnView = () => {
                             (currentIndex + 1) % saleReturnData.length;
                           const nextId = saleReturnData[nextIndex]?.id;
                           if (nextId) {
+                            setCurrentIndex(nextIndex);
                             history.push(`/SaleReturn/view/${nextId}`);
                           }
                         }}
                       >
                         <label style={{ textTransform: "uppercase" }}>
-                          Previous Bill
+                          Next Bill
                         </label>
                         <FaArrowDown size={20} />
                       </div>
@@ -534,7 +542,7 @@ const SaleReturnView = () => {
                         size="lg"
                         position="bottom-center"
                         className="modal_amount custom_modal"
-                        // style={{ width: "50%" }}
+                      // style={{ width: "50%" }}
                       >
                         <div
                           style={{

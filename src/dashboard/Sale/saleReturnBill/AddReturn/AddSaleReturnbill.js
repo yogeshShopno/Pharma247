@@ -859,7 +859,7 @@ const Salereturn = () => {
                                             // minWidth: '400px',
                                             '& .MuiInputBase-root': {
                                                 // height: 20,
-                                                fontSize: '1.10rem',
+                                                fontSize: '1.10rem !important',
                                                 padding: '0',
                                             },
                                             '& .MuiAutocomplete-inputRoot': {

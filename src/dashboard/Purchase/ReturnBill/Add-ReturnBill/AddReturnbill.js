@@ -1398,6 +1398,7 @@ const AddReturnbill = () => {
                         onKeyDown={async (e) => {
                           if (e.key === "Enter") {
                             await EditReturn();
+                            setSelectedIndex(-1);
                             if (inputRefs.current[5]) {
                               inputRefs.current[5].focus();
                             }

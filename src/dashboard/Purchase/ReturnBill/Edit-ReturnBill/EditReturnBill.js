@@ -1474,7 +1474,7 @@ const EditReturnBill = () => {
                                                     onKeyDown={async (e) => {
                                                         if (e.key === 'Enter') {
                                                             await EditReturnItem();
-                                                            
+                                                            setSelectedIndex(-1);
                                                         }
                                                     }}
                                                 />

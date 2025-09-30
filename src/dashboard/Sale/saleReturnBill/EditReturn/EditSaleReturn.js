@@ -461,7 +461,6 @@ const EditSaleReturn = () => {
     data.append("mrp", mrp);
     data.append("unit", unit);
     data.append("random_number", randomNumber);
-    // data.append("random_number", localStorage.getItem('RandomNumber'));
     data.append("unit", unit);
     data.append("batch", batch);
     data.append("location", loc);
@@ -475,7 +474,6 @@ const EditSaleReturn = () => {
 
     try {
       if (isEditMode) {
-        // If in edit mode, include item_id with the request
         await axios.post("sales-return-edit-iteam-second?", data, {
           params: params,
           headers: {
@@ -483,21 +481,20 @@ const EditSaleReturn = () => {
           },
         });
 
-        // Fetch updated sale bill details
         saleBillGetBySaleID();
 
         const updatedItems = saleReturnItems.sales_iteam.map((item) => {
           if (item.id === selectedEditItemId) {
             return {
               ...item,
-              base: base, // Update the base value
+              base: base,
               qty: qty,
               exp: expiryDate,
               gst: gst,
               mrp: mrp,
               location: loc,
               unit: unit,
-              net_rate: itemAmount, // You can update other fields as needed
+              net_rate: itemAmount,
             };
           }
           return item;
@@ -510,6 +507,8 @@ const EditSaleReturn = () => {
 
         setIsEditMode(false);
       }
+
+      // Clear all fields and reset state
       setSearchItem(null);
       setUnit("");
       setBatch("");
@@ -521,7 +520,16 @@ const EditSaleReturn = () => {
       setBatch("");
       setLoc("");
       setIsEditMode(false);
-    } catch (e) { }
+      setSelectedIndex(-1);
+      setSelectedEditItemId(null); // Add this
+
+      // Force blur on any active input
+      if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+        document.activeElement.blur();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -540,7 +548,9 @@ const EditSaleReturn = () => {
       } else if (event.target === inputRef8.current) {
         inputRef5.current.focus(); // GST field to Quantity field
       } else if (event.target === inputRef5.current) {
-        inputRef9.current.focus(); // Quantity field to Location field
+        editSaleReturnItem();
+        setSelectedIndex(-1); // Add this line to clear highlight
+        inputRef5.current?.blur(); // Quantity field to Location field
       } else if (event.target === inputRef9.current) {
         inputRef10.current.focus();
       }
@@ -698,7 +708,6 @@ const EditSaleReturn = () => {
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
 
-    // Pre-fill the form with current item details
     if (item) {
       setSearchItem(item.iteam_name);
       setSearchItemID(item.item_id);
@@ -707,16 +716,18 @@ const EditSaleReturn = () => {
       setExpiryDate(item.exp);
       setMRP(item.mrp);
       setQty(item.qty);
-      setBase(item.base); // Set the current base value here
+      setBase(item.base);
       setOrder(item.order);
       setGst(item.gst);
       setLoc(item.location);
       setItemAmount(item.net_rate);
     }
-    setTimeout(() => {
-      inputRef6?.current?.focus(); // This focuses on the base field (inputRef6 is used for base)
-    }, 100);
+    // Remove or comment out this setTimeout - it's causing refocus
+    // setTimeout(() => {
+    //   inputRef6?.current?.focus();
+    // }, 100);
   };
+
   const handleQty = (value) => {
     const newQty = Number(value);
 
@@ -958,9 +969,11 @@ const EditSaleReturn = () => {
                         "& .MuiInputBase-root": {
                           // height: 20,
                           fontSize: "1.10rem",
+                          padding: '0',
+
                         },
-                        "& .MuiAutocomplete-inputRoot": {
-                          padding: "10px 14px",
+                        '& .MuiAutocomplete-inputRoot': {
+                          padding: '0 !important',
                         },
                         // '@media (max-width:600px)': {
                         //     minWidth: '300px',
@@ -1031,10 +1044,12 @@ const EditSaleReturn = () => {
                         // minWidth: '400px',
                         "& .MuiInputBase-root": {
                           // height: 20,
-                          // fontSize: '1.10rem',
+                          fontSize: "1.10rem",
+                          padding: '0',
+
                         },
-                        "& .MuiAutocomplete-inputRoot": {
-                          // padding: '10px 14px',
+                        '& .MuiAutocomplete-inputRoot': {
+                          padding: '0 !important',
                         },
                         // '@media (max-width:600px)': {
                         //     minWidth: '300px',
@@ -1128,19 +1143,26 @@ const EditSaleReturn = () => {
                             <TextField
                               autoComplete="off"
                               id="outlined-number"
-                              disabled
                               type="number"
-                              inputRef={inputRef1}
-                              onKeyDown={handleKeyDown}
-                              size="small"
-                              value={unit}
                               sx={{ width: "130px", textAlign: "right" }}
-                              onChange={(e) => {
-                                setUnit(e.target.value);
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
+                              size="small"
+                              inputRef={inputRef5}
+                              value={qty}
+                              onKeyDown={async (e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  await editSaleReturnItem();
+                                  setSelectedIndex(-1);
+                                  if (inputRef5.current) {
+                                    inputRef5.current.blur();
+                                    document.activeElement?.blur();
+                                  }
+                                } else if (
+                                  !/[0-9]/.test(e.key) &&
+                                  e.key !== "Backspace"
+                                ) {
+                                  e.preventDefault();
+                                }
                               }}
                             />
                           </td>
@@ -1296,64 +1318,64 @@ const EditSaleReturn = () => {
                           <td className="total ">{itemAmount}</td>
                         </tr>
                         {filteredItems.map((item, index) => (
-                            <tr
-                              key={item.id}
-                              className={`input-row cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                                }`}
-                              onClick={() => {
-                                handleEditClick(item);
-                                setSelectedIndex(index);
+                          <tr
+                            key={item.id}
+                            className={`input-row cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
+                              }`}
+                            onClick={() => {
+                              handleEditClick(item);
+                              setSelectedIndex(index);
+                            }}
+                          >
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "8px",
+                                alignItems: "center",
+                                whiteSpace: "nowrap",
                               }}
                             >
-                              <td
-                                style={{
-                                  display: "flex",
-                                  gap: "8px",
-                                  alignItems: "center",
-                                  whiteSpace: "nowrap",
+                              <Checkbox
+                                sx={{
+                                  color: "var(--color2)",
+                                  "&.Mui-checked": { color: "var(--color1)" }, padding: "0px"
                                 }}
-                              >
-                                <Checkbox
-                                  sx={{
-                                    color: "var(--color2)",
-                                    "&.Mui-checked": { color: "var(--color1)" }, padding: "0px"
-                                  }}
-                                  checked={item?.iss_check}
-                                  onClick={(event) => event.stopPropagation()}
-                                  onChange={(event) => {
-                                    handleChecked(
-                                      item.id,
-                                      event.target.checked
-                                    );
-                                    setUnsavedItems(true);
-                                  }}
-                                />
-                                <BorderColorIcon
-                                 sx={{
+                                checked={item?.iss_check}
+                                onClick={(event) => event.stopPropagation()}
+                                onChange={(event) => {
+                                  handleChecked(
+                                    item.id,
+                                    event.target.checked
+                                  );
+                                  setUnsavedItems(true);
+                                }}
+                              />
+                              <BorderColorIcon
+                                sx={{
                                   color: "var(--color1)",
                                 }}
-                                  color="primary"
-                                  className="cursor-pointer primary"
-                                  onClick={() => handleEditClick(item)}
-                                />
-                                {item.iteam_name}
-                              </td>
-                              <td>{item.unit}</td>
-                              <td>{item.batch}</td>
-                              <td>{item.exp}</td>
-                              <td>{item.mrp}</td>
-                              <td>{item.base}</td>
-                              <td>{item.gst}</td>
-                              <td>{item.qty}</td>
-                              <td>{item.location}</td>
-                              <td>{item.net_rate}</td>
-                            </tr>
-                          ))}
+                                color="primary"
+                                className="cursor-pointer primary"
+                                onClick={() => handleEditClick(item)}
+                              />
+                              {item.iteam_name}
+                            </td>
+                            <td>{item.unit}</td>
+                            <td>{item.batch}</td>
+                            <td>{item.exp}</td>
+                            <td>{item.mrp}</td>
+                            <td>{item.base}</td>
+                            <td>{item.gst}</td>
+                            <td>{item.qty}</td>
+                            <td>{item.location}</td>
+                            <td>{item.net_rate}</td>
+                          </tr>
+                        ))}
 
                       </tbody>
                     </table>
                     <>
-                   
+
                     </>
                   </div>
                 </div>

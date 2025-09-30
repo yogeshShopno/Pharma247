@@ -540,11 +540,32 @@ const Salereturn = () => {
         if (event.key === 'Enter') {
             event.preventDefault();
             const currentIndex = inputRefs.current.findIndex(ref => ref === event.target);
+
+            // Check if we're on the last input field (qty field at index 12)
+            if (currentIndex === 12) {
+                // Call editReturnItem and don't move focus or highlight row
+                editReturnItem();
+                setSelectedIndex(-1); // Clear any row highlighting
+                setIsEditMode(false); // Turn off edit mode
+                event.target.blur(); // Remove focus from the qty field
+
+                // Clear all form fields
+                removeItem();
+                setSelectedEditItemId(null);
+
+                return; // Exit early to prevent focus change
+            }
+
             if (currentIndex !== -1) {
                 for (let i = currentIndex + 1; i < inputRefs.current.length; i++) {
                     const nextRef = inputRefs.current[i];
                     if (nextRef && !nextRef.disabled) {
-                        nextRef.focus();
+                        // Handle DatePicker refs differently
+                        if (nextRef.input) {
+                            nextRef.input.focus();
+                        } else if (typeof nextRef.focus === 'function') {
+                            nextRef.focus();
+                        }
                         break;
                     }
                 }
@@ -826,7 +847,9 @@ const Salereturn = () => {
                         </div>
                         <div className="border-b">
                             <div className="flex gap-4  mt-4">
-                                <div style={{ display: 'flex', flexDirection: 'column',  }}>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', }}>
+
                                     <span className="heading mb-2">Bill No <span className="text-red-600">*</span></span>
                                     <TextField
                                         autoComplete="off"
@@ -1034,60 +1057,68 @@ const Salereturn = () => {
                                 </div>
 
                             </div>
-                            <div className="overflow-x-auto w-full scroll-two">
-                                <table className="w-full border-collapse item-table">
+
+                            <div className="table-container">
+                                <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                                     <thead>
-                                        <tr style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}>
-                                            <th className="w-1/4 " style={{ textAlign: "center" }}>Item Name</th>
-                                            <th >Unit </th>
-                                            <th >Batch </th>
-                                            <th >Expiry</ th>
-                                            <th >MRP</th>
-                                            <th>Base</th>
-                                            <th >GST%  </th>
-                                            <th >QTY </th>
-                                            {/* <th >Order</th> */}
-                                            <th >Loc.</ th>
-                                            <th >Amount </th>
+                                        <tr>
+                                            <th>
+                                                <div className="flex justify-center items-center gap-2">
+                                                    Item Name <span className="text-red-600">*</span>
+                                                </div>
+                                            </th>
+                                            <th>Unit <span className="text-red-600">*</span></th>
+                                            <th>Batch <span className="text-red-600">*</span></th>
+                                            <th>Expiry <span className="text-red-600">*</span></th>
+                                            <th>MRP <span className="text-red-600">*</span></th>
+                                            <th>Base <span className="text-red-600">*</span></th>
+                                            <th>GST% <span className="text-red-600">*</span></th>
+                                            <th>QTY <span className="text-red-600">*</span></th>
+                                            <th>Loc.</th>
+                                            <th>Amount</th>
                                         </tr>
                                     </thead>
-                                    <tbody ref={tableRef} tabIndex={0}>
-                                        {/* Editable row: always show for add/edit */}
-                                        <tr className="input-row" >
-                                            {isEditMode ? <td>
-                                                <div className="flex items-center gap-2">
-                                                    <DeleteIcon className="delete-icon" onClick={removeItem} />
-                                                    <span className="text-sm">{searchItem}</span>
-                                                </div>
-                                            </td> :
-                                                <td  >
+                                    <tbody>
+                                        {/* Input row */}
+                                        <tr className="input-row">
+                                            <td className="p-0">
+                                                {isEditMode ? (
+                                                    <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left' }}>
+                                                        <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
+                                                        {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
+                                                    </div>
+                                                ) : (
                                                     <TextField
                                                         autoComplete="off"
                                                         id="outlined-basic"
                                                         size="small"
-                                                        sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
+                                                        fullWidth
+                                                        sx={{
+                                                            minWidth: 350,
+                                                            width: "100%",
+                                                        }}
                                                         value={search}
                                                         onChange={handleInputChange}
+                                                        variant="outlined"
+                                                        placeholder="Please search any items.."
                                                         inputRef={el => inputRefs.current[5] = el}
                                                         onKeyDown={e => {
                                                             if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
                                                                 handleArrowNavigation(e);
                                                             }
                                                         }}
-                                                        variant="outlined"
-                                                        placeholder="Please search any items.."
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <InputAdornment position="start">
-                                                                    <SearchIcon />
+                                                                    <svg width="20" height="20" fill="gray"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                                                                 </InputAdornment>
                                                             ),
                                                             type: "search",
                                                         }}
                                                     />
-                                                </td>
-                                            }
-                                            <td className="td-up " >
+                                                )}
+                                            </td>
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
@@ -1097,85 +1128,64 @@ const Salereturn = () => {
                                                     onKeyDown={handleKeyDown}
                                                     size="small"
                                                     value={unit}
-                                                    sx={{ width: '130px', textAlign: 'right', }}
+                                                    sx={{ width: '100px' }}
                                                     onChange={(e) => { setUnit(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up "  >
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="string"
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     size="small"
                                                     disabled
                                                     value={batch}
                                                     inputRef={el => inputRefs.current[7] = el}
                                                     onKeyDown={handleKeyDown}
-                                                    // onChange={(e) => { setBatch(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up " >
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     disabled
                                                     size="small"
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     inputRef={el => inputRefs.current[8] = el}
                                                     onKeyDown={handleKeyDown}
                                                     value={expiryDate}
                                                     placeholder="MM/YY"
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up ">
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     disabled
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[9] = el}
                                                     onKeyDown={handleKeyDown}
                                                     value={mrp}
                                                     onChange={(e) => { setMRP(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up " >
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[10] = el}
                                                     onKeyDown={handleKeyDown}
                                                     value={base}
                                                     onChange={(e) => { setBase(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up ">
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
@@ -1184,39 +1194,25 @@ const Salereturn = () => {
                                                     size="small"
                                                     inputRef={el => inputRefs.current[11] = el}
                                                     onKeyDown={handleKeyDown}
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     value={gst}
                                                     onChange={(e) => { setGst(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td className="td-up ">
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[12] = el}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            editReturnItem();
-                                                        } else if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
+                                                    onKeyDown={handleKeyDown}
                                                     value={qty}
                                                     onChange={(e) => { handleQty(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
-                                            </td >
-                                            <td className="td-up ">
+                                            </td>
+                                            <td>
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
@@ -1224,56 +1220,59 @@ const Salereturn = () => {
                                                     inputRef={el => inputRefs.current[13] = el}
                                                     onKeyDown={handleKeyDown}
                                                     disabled
-                                                    sx={{ width: '130px' }}
+                                                    sx={{ width: '100px' }}
                                                     value={loc}
                                                     onChange={(e) => { setLoc(e.target.value) }}
-                                                    InputProps={{
-                                                        inputProps: { style: { textAlign: 'right' } },
-                                                        disableUnderline: true
-                                                    }}
                                                 />
                                             </td>
-                                            <td style={{ textAlign: "right" }} className="total">{itemAmount}</td>
+                                            <td className="total">
+                                                <span className="font-bold">{itemAmount}</span>
+                                            </td>
                                         </tr>
-                                        {/* Mapped rows for each item */}
+
+                                        {/* Data rows */}
                                         {saleItems?.sales_item?.length > 0 ? (
                                             saleItems.sales_item.map((item, index) => (
-                                                <tr key={item.id}
-                                                    className={`cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                                <tr
+                                                    key={item.id}
                                                     onClick={(event) => {
                                                         handleEditClick(item);
                                                         setSelectedIndex(index);
                                                     }}
-                                                    style={{ whiteSpace: 'nowrap' }} >
-                                                    <td style={{ display: 'flex', gap: '8px', alignItems: "center" }}>
+                                                    className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                                                    style={{
+                                                        borderBottom: index !== saleItems.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none',
+                                                    }}
+                                                >
+                                                    <td style={{ display: 'flex', gap: '8px', width: '396px', minWidth: 396, textAlign: 'left', verticalAlign: 'left', justifyContent: 'left', alignItems: 'center' }}>
                                                         <Checkbox
                                                             sx={{
                                                                 color: "var(--color2)",
-                                                                '&.Mui-checked': {
-                                                                    color: "var(--color1)",
-                                                                },
+                                                                '&.Mui-checked': { color: "var(--color1)" },
+                                                                margin: 0,
+                                                                padding: 0
                                                             }}
                                                             checked={item?.iss_check}
                                                             onClick={(event) => event.stopPropagation()}
                                                             onChange={(event) => handleChecked(item.id, event.target.checked)}
                                                         />
-                                                        <BorderColorIcon color="primary" className="cursor-pointer" onClick={() => handleEditClick(item)} />
+                                                        <BorderColorIcon style={{ color: "var(--color1)" }} />
                                                         {item.iteam_name}
                                                     </td>
-                                                    <td className="td-bottom">{item.unit}</td>
-                                                    <td className="td-bottom">{item.batch}</td>
-                                                    <td className="td-bottom">{item.exp}</td>
-                                                    <td className="td-bottom">{item.mrp}</td>
-                                                    <td className="td-bottom">{item.base}</td>
-                                                    <td className="td-bottom">{item.gst}</td>
-                                                    <td className="td-bottom">{item.qty}</td>
-                                                    <td className="td-bottom">{item.location}</td>
-                                                    <td className="td-bottom">{item.net_rate}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
+                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.net_rate}</td>
                                                 </tr>
                                             ))
                                         ) : (!isEditMode && (
                                             <tr>
-                                                <td colSpan={12} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
+                                                <td colSpan={10} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
                                             </tr>
                                         ))}
                                     </tbody>

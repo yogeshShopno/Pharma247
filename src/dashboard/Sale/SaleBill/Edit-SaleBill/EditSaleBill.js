@@ -1411,9 +1411,11 @@ const EditSaleBill = () => {
                     //   sm: "400px",
                     // },
                     "& .MuiInputBase-root": {
-                      height: 20,
+                      // height: 20,
                       fontSize: "1.10rem",
+
                       padding: '0',
+
 
                     },
                     '& .MuiAutocomplete-inputRoot': {
@@ -1475,7 +1477,7 @@ const EditSaleBill = () => {
                     //   sm: "400px",
                     // },
                     "& .MuiInputBase-root": {
-                      height: 20,
+                      // height: 20,
                       fontSize: "1.10rem",
                       padding: '0',
                     },

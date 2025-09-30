@@ -877,7 +877,7 @@ const LoginSignup = () => {
                 <div className="forgot-link">
                   <p onClick={() => setStep('login')}>Already have an account? Login</p>
                 </div>
-                <button onClick={handleForgotDetails} className="btn">Varify</button>
+                <button onClick={handleForgotDetails} className="btn">Verify</button>
               </form>)}
 
             {/*<=========================================================================== OTP verifiaction ==================================================================> */}

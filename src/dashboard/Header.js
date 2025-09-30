@@ -63,36 +63,31 @@ const Header = () => {
   const userPermission = async () => {
     let data = new FormData();
     try {
-      await axios
-        .post("user-permission", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const permission = response.data.data;
-          const encryptedPermission = encryptData(permission);
+      const response = await axios.post("user-permission", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-          const storedPermissions = decryptData(encryptedPermission);
+      const permission = response.data.data;
+      const encryptedPermission = encryptData(permission);
+      const storedPermissions = decryptData(encryptedPermission);
 
-          const filteredPermissions = storedPermissions.filter((permission) => {
-            const key = Object.keys(permission)[0];
-            return permission[key] === true;
-          });
-          setPermission(filteredPermissions);
+      const filteredPermissions = storedPermissions.filter((permission) => {
+        const key = Object.keys(permission)[0];
+        return permission[key] === true;
+      });
 
-          permission.forEach((item) => {
-            Object.keys(item).forEach((key) => { });
-          });
-        });
+      setPermission(filteredPermissions);
     } catch (error) {
-      console.error("API error:", error.response.status);
+      console.error("API error:", error?.response?.status);
 
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         setIsClear(true);
       }
     }
   };
+
 
   const fetchNotification = () => {
     axios
@@ -686,7 +681,7 @@ const Header = () => {
                             style={{ alignItems: "center" }}
                           >
                             <div>
-                             
+
                             </div>
                             <IconButton
                               onClick={toggleDrawerNotifications(false)}

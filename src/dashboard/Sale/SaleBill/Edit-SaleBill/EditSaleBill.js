@@ -1413,13 +1413,7 @@ const EditSaleBill = () => {
                     "& .MuiInputBase-root": {
                       // height: 20,
                       fontSize: "1.10rem",
-<<<<<<< HEAD
-=======
-
                       padding: '0',
-
-
->>>>>>> 24fe55d53a2763d99ae5fcc071e805681236a17e
                     },
                     '& .MuiAutocomplete-inputRoot': {
                       padding: '0 !important',

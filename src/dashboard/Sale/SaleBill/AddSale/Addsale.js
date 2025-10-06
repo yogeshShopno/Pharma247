@@ -301,27 +301,28 @@ const Addsale = () => {
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
       if (!event.altKey || event.repeat) return;
 
       const key = event.key.toLowerCase();
-      event.preventDefault(); // Prevent default browser behavior
+      event.preventDefault();
       if (isSubmitting) return;
 
       switch (key) {
         case "s":
           setIsSubmitting(true);
           setBillSaveDraft("1");
-          handleSubmit("1");
+          await handleSubmit("1");
           break;
 
         case "g":
           setBillSaveDraft("0");
-          handleSubmit("0");
+          await handleSubmit("0");
           break;
+
         case "p":
           setBillSaveDraft("2");
-          handleSubmit("1");
+          await handleSubmit("1");
           break;
 
         case "m":
@@ -368,7 +369,9 @@ const Addsale = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [billNo, ItemSaleList, isSubmitting]);
+  }, [billNo, ItemSaleList, isSubmitting, netAmount, totalAmount, loyaltyVal, customer]);
+
+
   // Dependencies only affect Alt+S
 
   //   const handleKeyDown = (event, index) => {
@@ -1291,16 +1294,17 @@ const Addsale = () => {
 
   /*<========================================================================= save sale bill  ====================================================================> */
 
-  const handleSubmit = (draft) => {
-
-
+  const handleSubmit = async (draft) => {
     if (isSubmitting) {
       toast.warning("Please wait, request in progress...");
       return;
     }
-    setIsSubmitting(true); // Lock
-
+    setIsSubmitting(true);
     setUnsavedItems(false);
+
+    // Wait for next tick to ensure state updates have completed
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     const newErrors = {};
     if (!customer) {
       newErrors.customer = "Please select Customer";
@@ -1310,8 +1314,7 @@ const Addsale = () => {
       toast.error("Total Amount must be greater than 0");
     }
     if (loyaltyVal > totalAmount) {
-      newErrors.totalAmount =
-        "Total Amount must be greater than Loyalty points";
+      newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
       toast.error("Total Amount must be greater than Loyalty points");
     } else if (ItemSaleList?.sales_item.length == 0) {
       newErrors.item = "Please Add any Item in Sale Bill";
@@ -1320,9 +1323,7 @@ const Addsale = () => {
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
       setIsSubmitting(false);
-
       return;
-
     }
     submitSaleData(draft);
   };
@@ -2167,9 +2168,9 @@ const Addsale = () => {
           <div className=" flex gap-4  mt-4">
             <div className="flex flex-row gap-4 overflow-x-auto w-full">
               <div style={{
-                  width: "100%",
-                  borderRadius: "15px",
-                }}>
+                width: "100%",
+                borderRadius: "15px",
+              }}>
                 <span
                   className="title mb-2 flex  items-center gap-2"
                 >

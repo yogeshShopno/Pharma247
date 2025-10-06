@@ -560,7 +560,7 @@ const SaleView = () => {
                           alignItems: "center",
                         }}
                       >
-                        {tableData?.net_amount}
+                        {tableData?.net_amt}
                         <FaCaretUp />
                       </span>
                     </div>
@@ -700,7 +700,7 @@ const SaleView = () => {
                               color: "var(--COLOR_UI_PHARMACY)",
                             }}
                           >
-                            {tableData?.net_amount}
+                            {tableData?.net_amt}
                           </span>
                         </div>
                       </div>

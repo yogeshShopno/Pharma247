@@ -537,7 +537,7 @@ const EditSaleBill = () => {
         setRandomNum(fetchedRandomNumber);
       }
       setLoyaltyVal(record.roylti_point);
-      setNetAmount(record.net_amount);
+      setNetAmount(record.net_amt);
       setNetRateAmount(record.total_net_rate);
       setMarginNetProfit(record.margin_net_profit);
       setMargin(record.total_margin);
@@ -1120,6 +1120,10 @@ const EditSaleBill = () => {
 
     if (!currentCustomer?.id) {
       toast.error("Please select a customer before saving");
+      return;
+    }
+    if (!netAmount || netAmount <= 0) {
+      toast.error("Net amount must be greater than 0");
       return;
     }
 

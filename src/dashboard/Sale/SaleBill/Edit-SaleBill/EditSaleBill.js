@@ -537,7 +537,7 @@ const EditSaleBill = () => {
         setRandomNum(fetchedRandomNumber);
       }
       setLoyaltyVal(record.roylti_point);
-      setNetAmount(record.net_amount);
+      setNetAmount(record.net_amt);
       setNetRateAmount(record.total_net_rate);
       setMarginNetProfit(record.margin_net_profit);
       setMargin(record.total_margin);
@@ -1122,6 +1122,10 @@ const EditSaleBill = () => {
       toast.error("Please select a customer before saving");
       return;
     }
+    if (!netAmount || netAmount <= 0) {
+      toast.error("Net amount must be greater than 0");
+      return;
+    }
 
     let data = new FormData();
     data.append("bill_no", currentSaleAllData?.bill_no || "");
@@ -1413,10 +1417,7 @@ const EditSaleBill = () => {
                     "& .MuiInputBase-root": {
                       // height: 20,
                       fontSize: "1.10rem",
-
                       padding: '0',
-
-
                     },
                     '& .MuiAutocomplete-inputRoot': {
                       padding: '0 !important',

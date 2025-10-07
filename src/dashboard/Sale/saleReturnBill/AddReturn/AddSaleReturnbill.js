@@ -847,9 +847,7 @@ const Salereturn = () => {
                         </div>
                         <div className="border-b">
                             <div className="flex gap-4  mt-4">
-
                                 <div style={{ display: 'flex', flexDirection: 'column', }}>
-
                                     <span className="heading mb-2">Bill No <span className="text-red-600">*</span></span>
                                     <TextField
                                         autoComplete="off"

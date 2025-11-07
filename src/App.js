@@ -103,6 +103,7 @@ import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
 import LoginSignup from './componets/Login/LoginSignup';
 import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
+import TrialEnd from './componets/pre-login/TrialEnd';
 
 function App() {
   const goFullScreen = () => {
@@ -376,6 +377,13 @@ function App() {
 
         <Router>
           <Switch>
+            <Route path='/trial-end'>
+              <TrialEnd />
+            </Route>
+             <Route path='/trial-ends'>
+              <SubscriptionModal />
+            </Route>
+
             <Route exact path='/'>
               <LoginSignup />
             </Route>

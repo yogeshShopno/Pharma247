@@ -545,17 +545,26 @@ const AddPurchaseBill = () => {
 
   /*<=============================================================================== select file to upload =======================================================================> */
 
-  const handleFileSelect = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const fileType = selectedFile.type;
-      if (fileType === "text/csv") {
-        setFile(selectedFile);
-      } else {
-        toast.error("Please select an Excel or CSV file.");
-      }
+const handleFileSelect = (e) => {
+  const selectedFile = e.target.files[0];
+  if (selectedFile) {
+    const fileType = selectedFile.type;
+
+    // Allowed MIME types
+    const allowedTypes = [
+      "text/csv",
+      "application/vnd.ms-excel",                     // .xls
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
+    ];
+
+    if (allowedTypes.includes(fileType)) {
+      setFile(selectedFile);
+    } else {
+      toast.error("Please select a valid Excel (.xls/.xlsx) or CSV file.");
     }
-  };
+  }
+};
+
 
   /*<================================================================================== upload selected file ======================================================================> */
   const handleFileUpload = async () => {
@@ -3282,7 +3291,7 @@ const AddPurchaseBill = () => {
                   <input
                     className="File-upload"
                     type="file"
-                    accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   accept=".csv, .xls, .xlsx"
                     id="file-upload"
                     onChange={handleFileSelect}
                   />

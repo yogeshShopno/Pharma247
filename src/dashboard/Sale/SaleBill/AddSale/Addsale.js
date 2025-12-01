@@ -742,12 +742,6 @@ const Addsale = () => {
     if (!addItemName) {
       newErrors.addItemName = "Item Name is required";
       toast.error(newErrors.addItemName);
-    } else if (!addUnit) {
-      newErrors.addUnit = "Unit is required";
-      toast.error(newErrors.addUnit);
-    } else if (!addBarcode) {
-      newErrors.addBarcode = "Barcode is required";
-      toast.error(newErrors.addBarcode);
     }
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -794,6 +788,7 @@ const Addsale = () => {
         //console.log("response===>", response.data);
         toast.success(response.data.message);
         setOpenAddItemPopUp(false);
+       resetAddDialog();
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       } else if (response.data.status === 401) {

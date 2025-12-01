@@ -380,9 +380,9 @@ function App() {
             <Route path='/trial-end'>
               <TrialEnd />
             </Route>
-             <Route path='/trial-ends'>
+             {/* <Route path='/trial-ends'>
               <SubscriptionModal />
-            </Route>
+            </Route> */}
 
             <Route exact path='/'>
               <LoginSignup />

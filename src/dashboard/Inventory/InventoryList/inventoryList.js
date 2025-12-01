@@ -130,8 +130,6 @@ const InventoryList = () => {
   const [missingData, setmissingData] = useState(false);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [openFile, setOpenFile] = useState(false);
-  const [file, setFile] = useState(null);
 
   const toggleDrawerFilter = (open) => () => {
     setDrawerOpen(open);
@@ -186,55 +184,6 @@ const InventoryList = () => {
   useEffect(() => {
     handleSearch();
   }, [page, rowsPerPage]);
-
-  const handleDownload = () => {
-
-    const link = document.createElement("a");
-    link.href = "/ItemSample_Data.csv";
-    link.download = "ItemSample_Data.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  let handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const fileType = selectedFile.type;
-      if (fileType === "text/csv") {
-        setFile(selectedFile);
-      } else {
-        toast.error("Please select an Excel or CSV file.");
-      }
-    }
-  };
-
-  const handleFileUpload = async () => {
-    if (file) {
-      let data = new FormData();
-      data.append("file", file);
-      setIsLoading(true);
-      try {
-        await axios
-          .post("item-import", data, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            toast.success(response.data.message);
-            setOpenFile(false);
-            setIsLoading(false);
-          });
-      } catch (error) {
-        setIsLoading(false);
-        console.error("API error:", error);
-
-      }
-    } else {
-      toast.error("No file selected");
-    }
-  };
 
   let missingCount = () => {
     axios
@@ -1723,17 +1672,7 @@ const InventoryList = () => {
 
 
             <div className="flex gap-2 inventory_search_btn">
-              <Button
-                variant="contained"
-                style={{
-                  background: "var(--color1)",
-                  display: "flex",
-                  gap: "10px",
-                }}
-                onClick={() => setOpenFile(true)}
-              >
-                <CloudUploadIcon /> Import</Button>
-              <Button
+                      <Button
                 variant="contained"
                 className="mt-4 absolute"
                 style={{
@@ -2996,60 +2935,7 @@ const InventoryList = () => {
           </div>
         </DialogActions>
       </Dialog>
-      {/*<=========================================================================== *Bulk Item Data Added  ===========================================================================>*/}
 
-
-      <Dialog open={openFile} className="custom-dialog">
-        <DialogTitle className="primary">Import Item</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={() => setOpenFile(false)}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: "#ffffff",
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <div className="primary">Item File Upload <span className="text-red-600  ">*</span></div>
-            <div
-              style={{ display: "flex", gap: "15px", flexDirection: "column" }}
-            >
-              <div>
-                <input
-                  className="File-upload"
-                  type="file"
-                  accept=".csv"
-                  id="file-upload"
-                  onChange={handleFileChange}
-                />
-                <span className="errorFile">*select only .csv File.</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button onClick={handleDownload} style={{ backgroundColor: "var(--COLOR_UI_PHARMACY)", color: "white" }}  >
-                  <CloudDownloadIcon className="mr-2" />
-                  Download Sample File
-                </Button>
-              </div>
-            </div>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            style={{ backgroundColor: "var(--color1)", color: "white" }}
-
-            type="success"
-            onClick={handleFileUpload}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
       {/* Bulk Print QR */}
       {/* <Dialog open={openEdit} >
                 <DialogTitle id="alert-dialog-title" className="secondary">

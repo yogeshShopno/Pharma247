@@ -842,7 +842,7 @@ const Itemmaster = () => {
                     </FormControl>
                   </div>
                 </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
+                {/* <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
                     <label className="label">Minimum</label>
                     <TextField
@@ -952,6 +952,30 @@ const Itemmaster = () => {
                         },
                       }}
                     />
+                  </div>
+                </div> */}
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+                  <div className="fields four_divv" style={{ width: "100%" }}>
+                    <label className="label">Packaging In</label>
+                    <Select
+                      labelId="dropdown-label"
+                      id="dropdown"
+                      value={packaging}
+                      // sx={{ minWidth: "250px" }}
+                      onChange={handlePackagingChange}
+                      size="small"
+                      displayEmpty
+                    >
+                      <MenuItem value="" disabled>
+                        Select Packaging
+                      </MenuItem>
+                      {packList.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.packging_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
                   </div>
                 </div>
               </div>
@@ -1195,30 +1219,7 @@ const Itemmaster = () => {
                   </div>
                 </div>
 
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields four_divv" style={{ width: "100%" }}>
-                    <label className="label">Packaging In</label>
-                    <Select
-                      labelId="dropdown-label"
-                      id="dropdown"
-                      value={packaging}
-                      // sx={{ minWidth: "250px" }}
-                      onChange={handlePackagingChange}
-                      size="small"
-                      displayEmpty
-                    >
-                      <MenuItem value="" disabled>
-                        Select Packaging
-                      </MenuItem>
-                      {packList.map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.packging_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {/* {error.packaging && <span style={{ color: 'red', fontSize: '14px' }}>{error.packaging}</span>} */}
-                  </div>
-                </div>
+              
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
                     <label className="label">HSN code.</label>

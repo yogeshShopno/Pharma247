@@ -1897,7 +1897,7 @@ const InventoryList = () => {
                                 style={{ paddingBottom: "3px" }}
                               >
                                 <span style={{ fontSize: "14px" }}>
-                                  Pack | 1*{item.unit + " " + item.old_unit}
+                                  Pack | 1*{item.old_unit || 1}
                                 </span>
                               </div>
                             </div>

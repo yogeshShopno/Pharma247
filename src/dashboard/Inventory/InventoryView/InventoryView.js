@@ -924,7 +924,7 @@ const InventoryView = () => {
                       <thead>
                         <tr className="primary text-sm border border-gray-300 font-bold">
                           <td className="px-12 py-2">Current Stock</td>
-                          <td className="px-12 py-2">Default Disc.</td>
+                          {/* <td className="px-12 py-2">Default Disc.</td> */}
                           <td className="px-12 py-2">Location</td>
                           <td className="px-12 py-2">HSN Code</td>
                         </tr>
@@ -934,9 +934,9 @@ const InventoryView = () => {
                           <td className="px-12 py-4 text-center">
                             {itemAllData.stock}
                           </td>
-                          <td className="px-12 py-4 text-center">
+                          {/* <td className="px-12 py-4 text-center">
                             {itemAllData.discount}%
-                          </td>
+                          </td> */}
                           <td className="px-12 py-4 text-center">
                             {itemAllData.location}
                           </td>
@@ -956,20 +956,20 @@ const InventoryView = () => {
                     >
                       <thead>
                         <tr className="primary text-sm border border-gray-300 font-bold">
-                          <td className="px-12 py-2">Minimum Qty</td>
-                          <td className="px-12 py-2">Maximum Qty</td>
+                          {/* <td className="px-12 py-2">Minimum Qty</td>
+                          <td className="px-12 py-2">Maximum Qty</td> */}
                           <td className="px-12 py-2">GST</td>
                           <td className="px-12 py-2">Item Category</td>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td className="px-12 py-4 text-center">
+                          {/* <td className="px-12 py-4 text-center">
                             {!itemAllData.minimum ? "---" : itemAllData.minimum}
                           </td>
                           <td className="px-12 py-4 text-center">
                             {!itemAllData.maximum ? "---" : itemAllData.maximum}
-                          </td>
+                          </td> */}
                           <td className="px-12 py-4 text-center">
                             {itemAllData.gst}%
                           </td>

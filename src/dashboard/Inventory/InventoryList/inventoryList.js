@@ -1880,7 +1880,7 @@ const InventoryList = () => {
                                 src={
                                   item.front_photo
                                     ? item.front_photo
-                                    : "./Pharma Medicine-01.png"
+                                    : "./Pharma Medicine-02.png"
                                 }
                                 alt={item.front_photo ? "Pharma" : "Tablet"}
                                 className="w-10 h-10 ml-2 object-cover cursor-pointer"

@@ -743,11 +743,14 @@ const Addsale = () => {
       newErrors.addItemName = "Item Name is required";
       toast.error(newErrors.addItemName);
     }
+        if (!addUnit) {
+      newErrors.addUnit = "Item Unit is required";
+      toast.error(newErrors.addUnit);
+    }
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       handleAddNewItem();
     }
-
     return isValid;
   };
 
@@ -3821,7 +3824,7 @@ const Addsale = () => {
                       />
                     </div>
                     <div className="fields add_new_item_divv">
-                      <label className="label secondary">Unit</label>
+                      <label className="label secondary">Unit <span className="text-red-600  ">*</span></label>
                       <TextField
                         id="outlined-number"
                         type="number"

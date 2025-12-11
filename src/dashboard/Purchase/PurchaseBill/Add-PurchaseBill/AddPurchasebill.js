@@ -545,25 +545,25 @@ const AddPurchaseBill = () => {
 
   /*<=============================================================================== select file to upload =======================================================================> */
 
-const handleFileSelect = (e) => {
-  const selectedFile = e.target.files[0];
-  if (selectedFile) {
-    const fileType = selectedFile.type;
+  const handleFileSelect = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const fileType = selectedFile.type;
 
-    // Allowed MIME types
-    const allowedTypes = [
-      "text/csv",
-      "application/vnd.ms-excel",                     // .xls
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
-    ];
+      // Allowed MIME types
+      const allowedTypes = [
+        "text/csv",
+        "application/vnd.ms-excel",                     // .xls
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
+      ];
 
-    if (allowedTypes.includes(fileType)) {
-      setFile(selectedFile);
-    } else {
-      toast.error("Please select a valid Excel (.xls/.xlsx) or CSV file.");
+      if (allowedTypes.includes(fileType)) {
+        setFile(selectedFile);
+      } else {
+        toast.error("Please select a valid Excel (.xls/.xlsx) or CSV file.");
+      }
     }
-  }
-};
+  };
 
 
   /*<================================================================================== upload selected file ======================================================================> */
@@ -593,16 +593,17 @@ const handleFileSelect = (e) => {
     data.append("distributor_id", distributor ? distributor.id : "");
 
     setIsLoading(true);
-
+    setOpenFile(false);
     try {
       const response = await axios.post(apiEndpoint, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+
+
       if (response?.data?.status === 200) {
         toast.success(response?.data?.message);
         setUnsavedItems(true);
-        setOpenFile(false);
       }
 
       itemPurchaseList();
@@ -965,6 +966,8 @@ const handleFileSelect = (e) => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
+    setIsLoading(true);
+
     try {
       const response = await axios
         .post("item-purchase-list?", data, {
@@ -989,7 +992,6 @@ const handleFileSelect = (e) => {
       setUnsavedItems(false);
     } finally {
       setIsLoading(false);
-
     }
   };
 
@@ -3291,7 +3293,7 @@ const handleFileSelect = (e) => {
                   <input
                     className="File-upload"
                     type="file"
-                   accept=".csv, .xls, .xlsx"
+                    accept=".csv, .xls, .xlsx"
                     id="file-upload"
                     onChange={handleFileSelect}
                   />

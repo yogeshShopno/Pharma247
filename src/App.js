@@ -1,7 +1,4 @@
 import './App.css';
-import SignUp from './componets/pre-login/SignUp';
-import Login from './componets/pre-login/Login';
-import Forgot from './componets/pre-login/Forgot';
 import Dashboard from './dashboard/Dashboard';
 import Adminprotected from './protected/AdminProtect';
 import Package from './dashboard/More/Package/Package';
@@ -99,11 +96,10 @@ import { ThemeProvider } from '@material-tailwind/react';
 import theme from './theme';
 import { useEffect } from 'react';
 import OnlineOrders from './dashboard/profile/Settings/OnlineOrders';
-
 import LoginSignup from './componets/Login/LoginSignup';
 import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
-import TrialEnd from './componets/pre-login/TrialEnd';
+import TrialEnd from './componets/Login/TrialEnd';
 
 function App() {
   const goFullScreen = () => {
@@ -117,7 +113,6 @@ function App() {
       elem.msRequestFullscreen(); // IE11
     }
   };
-
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -366,9 +361,6 @@ function App() {
     };
   }, []);
 
-
-
-
   return (
     <div className="App">
 
@@ -398,9 +390,6 @@ function App() {
             </Route>
             <Route path='/login'>
               <LoginSignup />
-            </Route>
-            <Route path='/forgotPassword'>
-              <Forgot />
             </Route>
             <Route path='/admindashboard'>
               <Protected>

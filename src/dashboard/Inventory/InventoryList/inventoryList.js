@@ -631,8 +631,7 @@ const InventoryList = () => {
       let bValue = b[key];
       //     // Convert values to numbers if they are numeric
       if (
-        key === "minimum" ||
-        key === "maximum" ||
+        key === "mrp" ||
         key === "stock" ||
         key === "discount" ||
         key === "barcode"
@@ -1632,7 +1631,7 @@ const InventoryList = () => {
             >
               Missing Category :{missingData.items_with_missing_category}
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               style={{
                 background: "rgb(14 86 143)",
@@ -1644,7 +1643,7 @@ const InventoryList = () => {
               }}
             >
               Invalid Price : {missingData.items_with_invalid_price}
-            </Button>
+            </Button> */}
           </div>
 
           <div className="flex flex-wrap  justify-between relative inventory_search_main">
@@ -1672,7 +1671,7 @@ const InventoryList = () => {
 
 
             <div className="flex gap-2 inventory_search_btn">
-                      <Button
+              {/* <Button
                 variant="contained"
                 className="mt-4 absolute"
                 style={{
@@ -1684,7 +1683,7 @@ const InventoryList = () => {
                 onClick={handleSearch}
               >
                 Search
-              </Button>
+              </Button> */}
               <Button
                 variant="contained"
                 className="gap-7 downld_btn_csh"
@@ -1795,16 +1794,16 @@ const InventoryList = () => {
                       </th>
                       <th
                         className="cursor-pointer"
-                        onClick={() => sortByColumn("minimum")}
+                        onClick={() => sortByColumn("mrp")}
                       >
-                        Min
+                        MRP
                         <SwapVertIcon />
                       </th>
                       <th
                         className="cursor-pointer"
-                        onClick={() => sortByColumn("maximum")}
+                        onClick={() => sortByColumn("drug_group_name")}
                       >
-                        Max
+                        Drug Group
                         <SwapVertIcon />
                       </th>
                       <th
@@ -1908,14 +1907,19 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.minimum == "null" ? "-" : item.minimum}
+                          {item.mrp}
                         </td>
                         <td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.maximum == "null" ? "-" : item.maximum}
+                          {
+                            item.drug_group_name.length > 12
+                              ? item.drug_group_name.slice(0, 12) + "..."
+                              : item.drug_group_name
+                          }
+
                         </td>
                         <Tooltip title="Stock Adjusted" placement="left" arrow>
                           <td
@@ -2834,8 +2838,12 @@ const InventoryList = () => {
                   // sx={{ width: 200 }}
                   className="w-full"
                   size="small"
-                  onChange={(event, newValue) => setLocationBulk(newValue)}
-                  onInputChange={(event, newInputValue) => setLocationBulk(newInputValue)}
+                  onChange={(event, newValue) => setLocationBulk(
+                    typeof newValue === "string" ? newValue.toUpperCase() : newValue
+                  )}
+                  onInputChange={(event, newInputValue) =>
+                    setLocationBulk(newInputValue.toUpperCase())
+                  }
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option
                   }
@@ -2865,7 +2873,7 @@ const InventoryList = () => {
                   size="small"
                   value={barcode}
                   onChange={(e) => {
-                    setBarcode(e.target.value);
+                    setBarcode(e.target.value.toUpperCase());
                   }}
                 />
               </div>

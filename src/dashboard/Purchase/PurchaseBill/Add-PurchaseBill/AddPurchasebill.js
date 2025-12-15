@@ -609,7 +609,7 @@ const AddPurchaseBill = () => {
       itemPurchaseList();
       setTimeout(() => {
         inputRefs.current[2]?.focus();
-      }, 10);
+      }, 100);
 
     } catch (error) {
       console.error("API error:", error);
@@ -1126,12 +1126,12 @@ const AddPurchaseBill = () => {
       newErrors.mrp = "MRP is required";
       toast.error(newErrors.mrp);
     }
-    if (!ptr) {
-      newErrors.ptr = "PTR is required";
-    } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
-      newErrors.ptr = "PTR must be less than or equal to MRP";
-      toast.error("PTR must be less than or equal to MRP");
-    }
+    // if (!ptr) {
+    //   newErrors.ptr = "PTR is required";
+    // } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
+    //   newErrors.ptr = "PTR must be less than or equal to MRP";
+    //   toast.error("PTR must be less than or equal to MRP");
+    // }
     if (!gst) {
       newErrors.gst = "GST is required";
       toast.error("GST is required");
@@ -2206,7 +2206,7 @@ const AddPurchaseBill = () => {
                     onChange={(newDate) => setSelectedDate(newDate)}
                     dateFormat="dd/MM/yyyy"
                     filterDate={(date) => !isDateDisabled(date)}
-                    ref={(el) => (inputRefs.current[2] = el)}
+                    inputRef={(el) => (inputRefs.current[2] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 2)}
                   />
                 </div>
@@ -2262,9 +2262,7 @@ const AddPurchaseBill = () => {
                       Search Item Name <span className="text-red-600 ">*</span>
                       <FaPlusCircle
                         className="primary cursor-pointer"
-                        onClick={() => {
-                          setOpenAddItemPopUp(true);
-                        }}
+                        onClick={() => {setOpenAddItemPopUp(true)}}
                       />
                     </div>
                   </th>
@@ -2317,7 +2315,6 @@ const AddPurchaseBill = () => {
                           key={autocompleteKey}
                           value={selectedOption}
                           size="small"
-
                           onChange={handleOptionChange}
                           onInputChange={handleInputChange}
                           open={autoCompleteOpen}
@@ -2642,11 +2639,11 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
-                            if (!ptr || ptr === 0) {
-                              e.preventDefault();
-                              toast.error("PTR is required and must be greater than 0");
-                              return;
-                            }
+                            // if (!ptr || ptr === 0) {
+                            //   e.preventDefault();
+                            //   toast.error("PTR is required and must be greater than 0");
+                            //   return;
+                            // }
 
                             if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                               e.preventDefault();
@@ -2731,7 +2728,7 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
-                            const allowedGST = [0, 5, 12, 18, 28];
+                            const allowedGST = [0, 5, 18];
 
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
@@ -2741,7 +2738,7 @@ const AddPurchaseBill = () => {
 
                             if (!allowedGST.includes(Number(gst))) {
                               e.preventDefault();
-                              toast.error("Only 0%, 5%, 12%, 18%, or 28% GST is allowed");
+                              toast.error("Only 0%, 5%, 18% GST is allowed");
                               return;
                             }
                           }

@@ -1199,7 +1199,7 @@ const PaymentList = () => {
             <DialogTitle> Distributor Pending Bill Details</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                <label className="block  text-gray-700 font-bold mb-2 mt-3">
+                <label className="block  font-bold mb-2 mt-3">
                   Distributor Name:- {distributorValue?.name}
                 </label>
                 <table className="invoice-table">

@@ -696,12 +696,12 @@ const EditPurchaseBill = () => {
       }
     }
     if (!mrp) newErrors.mrp = "MRP is required";
-    if (!ptr) {
-      newErrors.ptr = "PTR is required";
-    } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
-      newErrors.ptr = "PTR must be less than or equal to MRP";
-      toast.error("PTR must be less than or equal to MRP");
-    }
+    // if (!ptr) {
+    //   newErrors.ptr = "PTR is required";
+    // } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
+    //   newErrors.ptr = "PTR must be less than or equal to MRP";
+    //   toast.error("PTR must be less than or equal to MRP");
+    // }
 
     if (!gst) {
       newErrors.gst = "GST is required";
@@ -711,10 +711,10 @@ const EditPurchaseBill = () => {
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
-    if (!ItemTotalAmount) {
-      toast.error("Total amount is not available");
-      newErrors.searchItem = "Total amount is not available";
-    }
+    // if (!ItemTotalAmount) {
+    //   toast.error("Total amount is not available");
+    //   newErrors.searchItem = "Total amount is not available";
+    // }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -1877,11 +1877,11 @@ const EditPurchaseBill = () => {
                         }
                         if (isShiftTab) return;
                         if (isEnter || isTab) {
-                          if (!ptr || ptr === 0) {
-                            e.preventDefault();
-                            toast.error("PTR is required and must be greater than 0");
-                            return;
-                          }
+                          // if (!ptr || ptr === 0) {
+                          //   e.preventDefault();
+                          //   toast.error("PTR is required and must be greater than 0");
+                          //   return;
+                          // }
                           if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                             e.preventDefault();
                             toast.error("PTR must be less than MRP");

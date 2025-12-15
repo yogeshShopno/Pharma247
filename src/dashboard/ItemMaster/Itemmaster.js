@@ -339,15 +339,22 @@ const Itemmaster = () => {
           setDrugGroupName("");
           setIsLoading(false);
           listDrougGroup();
+          toast.success(response.data.message);
         });
+
     } catch (error) {
       console.error("API error:", error);
+      toast.error(error);
 
     }
   };
 
   const submitCompany = async () => {
     let data = new FormData();
+    if(!companyName) {
+      toast.error("enter company name")
+      return;
+    }
     data.append("company_name", companyName);
     try {
       await axios
@@ -612,6 +619,7 @@ const Itemmaster = () => {
   const handleCloseCompany = () => {
     setOpenCompany(false);
   };
+  
   const handleFileClose = () => {
     setOpenFile(false);
   };
@@ -954,7 +962,7 @@ const Itemmaster = () => {
                     />
                   </div>
                 </div> */}
-                  <div className="row item_fld_rw gap-3 md:pt-2">
+                <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv" style={{ width: "100%" }}>
                     <label className="label">Packaging In</label>
                     <Select
@@ -1219,7 +1227,7 @@ const Itemmaster = () => {
                   </div>
                 </div>
 
-              
+
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
                     <label className="label">HSN code.</label>
@@ -1576,9 +1584,19 @@ const Itemmaster = () => {
                 const value = e.target.value;
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
                 setDrugGroupName(capitalized);
+                if (e.target.value) {
+                  console.log(e.target.value, "Enter");
+                }
               }}
 
+
               required
+
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  submitDrugGroup();
+                }
+              }}
             />
           </div>
         </DialogContent>
@@ -1639,6 +1657,12 @@ const Itemmaster = () => {
                 const capitalized =
                   value.charAt(0).toUpperCase() + value.slice(1);
                 setCompanyName(capitalized);
+              }}
+              
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  submitCompany();
+                }
               }}
               required
             />

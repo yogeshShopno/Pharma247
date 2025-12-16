@@ -659,8 +659,8 @@ const Addsale = () => {
 
   const handleInputChange = (event, newInputValue) => {
     setUnsavedItems(true);
-    setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    setSearchItem(newInputValue.toUpperCase());
+    handleSearch(newInputValue.toUpperCase());
   };
 
 
@@ -743,7 +743,7 @@ const Addsale = () => {
       newErrors.addItemName = "Item Name is required";
       toast.error(newErrors.addItemName);
     }
-        if (!addUnit) {
+    if (!addUnit) {
       newErrors.addUnit = "Item Unit is required";
       toast.error(newErrors.addUnit);
     }
@@ -791,7 +791,7 @@ const Addsale = () => {
         //console.log("response===>", response.data);
         toast.success(response.data.message);
         setOpenAddItemPopUp(false);
-       resetAddDialog();
+        resetAddDialog();
       } else if (response.data.status === 400) {
         toast.error(response.data.message);
       } else if (response.data.status === 401) {
@@ -2546,8 +2546,7 @@ const Addsale = () => {
                                 ...params.InputProps,
                                 style: {
                                   height: 40,
-
-                                  fontSize: "1.2rem",
+                                  textTransform: 'uppercase',
                                 },
                                 startAdornment: (
                                   <InputAdornment position="start">
@@ -2561,8 +2560,10 @@ const Addsale = () => {
                                 ),
                               }}
                               sx={{
-                                "& .MuiInputBase-input::placeholder":
-                                {
+                                "& .MuiInputBase-input": {
+                                  textTransform: "uppercase",
+                                },
+                                "& .MuiInputBase-input::placeholder": {
                                   fontSize: "1rem",
                                   color: "black",
                                 },

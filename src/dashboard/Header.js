@@ -59,7 +59,23 @@ const Header = () => {
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, [token]);
+  
+  // Add this useEffect after your other useEffects
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
 
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
   const userPermission = async () => {
     let data = new FormData();
     try {
@@ -744,7 +760,7 @@ const Header = () => {
                       <IoCaretDown className="text-white ml-1 mt-1" />
                     </div>
                     {isOpen && (
-                      <div className="absolute right-0 top-8 mt-2 w-48 bg-white shadow-lg user-icon mr-4">
+                      <div className="absolute right-0 top-8 mt-2 w-48 bg-white shadow-lg user-icon mr-4 z-50">
                         <ul className="transition-all">
                           <Link to="/about-info">
                             <li

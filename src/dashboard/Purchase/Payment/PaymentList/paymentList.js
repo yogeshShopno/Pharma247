@@ -1199,12 +1199,12 @@ const PaymentList = () => {
             <DialogTitle> Distributor Pending Bill Details</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                <label className="block  font-bold mb-2 mt-3">
+                <label className="block text-gray-700 font-bold mb-2 mt-3">
                   Distributor Name:- {distributorValue?.name}
                 </label>
                 <table className="invoice-table">
                   <thead>
-                    <tr>
+                    <tr className="text-black">
                       <th>Bill No</th>
                       <th>Date</th>
                       <th>Bill Amount</th>
@@ -1220,6 +1220,7 @@ const PaymentList = () => {
                               role="checkbox"
                               tabIndex={-1}
                               key={row.code}
+                              className="text-gray-900"
                             >
                               <td>{row.bill_no}</td>
                               <td>{row.date}</td>
@@ -1237,7 +1238,7 @@ const PaymentList = () => {
                           <span
                             style={{
                               fontSize: "14px",
-                              fontWeight: 800,
+                              fontWeight: 700,
                               color: "black",
                             }}
                           >

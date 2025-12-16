@@ -1916,8 +1916,8 @@ const InventoryList = () => {
                         >
                           {
                             item.drug_group_name.length > 12
-                              ? item.drug_group_name.slice(0, 12) + "..."
-                              : item.drug_group_name
+                              ? item.drug_group_name.slice(0, 12).toUpperCase() + "..."
+                              : item.drug_group_name.toUpperCase()
                           }
 
                         </td>

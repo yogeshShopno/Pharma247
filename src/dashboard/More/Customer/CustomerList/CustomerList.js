@@ -212,8 +212,8 @@ const CustomerList = () => {
     if (isEditMode == false) {
       //  Add Customer
       const newErrors = {};
-      if (!customer) newErrors.customer = "Customer is required";
-      if (!state) newErrors.customer = "State is required";
+      if (!customer) newErrors.customer = "Customer Name is required";
+      if (!state) newErrors.state = "State is required";
 
       if (!mobileNo) {
         newErrors.mobileNo = "Mobile No is required";
@@ -228,7 +228,7 @@ const CustomerList = () => {
       return isValid;
     } else {
       const newErrors = {};
-      if (!customer) newErrors.customer = "Customer is required";
+      if (!customer) newErrors.customer = "Customer Name is required";
       if (!mobileNo) {
         newErrors.mobileNo = "Mobile No is required";
       } else if (!/^\d{10}$/.test(mobileNo)) {

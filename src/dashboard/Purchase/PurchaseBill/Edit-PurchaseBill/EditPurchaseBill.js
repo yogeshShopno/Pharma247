@@ -1435,7 +1435,7 @@ const EditPurchaseBill = () => {
                 className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
                 onClick={handleSubmit}
               >
-                Save
+                Update
               </button>
             </div>
           </div>

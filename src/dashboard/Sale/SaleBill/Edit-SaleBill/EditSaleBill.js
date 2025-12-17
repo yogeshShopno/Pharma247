@@ -504,6 +504,26 @@ const EditSaleBill = () => {
     return () => clearTimeout(timeoutId);
   }, [barcode]);
 
+  const updateTodayPoints = async (netAmount) => {
+    let data = new FormData();
+    data.append("net_amount", netAmount);
+
+    try {
+      const response = await axios.post("sales-update-today-points", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.status === 200) {
+        const todayPoint = response.data.data[0]?.today_point || 0;
+        setTodayLoyaltyPoint(todayPoint);
+      }
+    } catch (error) {
+      console.error("Error updating today points:", error);
+    }
+  };
+
   const saleBillGetBySaleID = async (doctorData, customerData) => {
     let data = new FormData();
     data.append("id", id || "");
@@ -2265,7 +2285,12 @@ const EditSaleBill = () => {
                       invoice total
                     </h2>
                     <IoMdClose
-                      onClick={() => { setIsModalOpen(!isModalOpen) }}
+                      onClick={async () => {
+                        if (isModalOpen) {
+                          await updateTodayPoints(netAmount);
+                        }
+                        setIsModalOpen(!isModalOpen);
+                      }} 
                       cursor={"pointer"}
                       size={30}
                     />

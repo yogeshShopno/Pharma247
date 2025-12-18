@@ -432,7 +432,7 @@ const StaffMember = () => {
                         position: "absolute",
                         right: 8,
                         top: 8,
-                        color: "#ffffff",
+                       
                     }}
                 >
                     <CloseIcon />

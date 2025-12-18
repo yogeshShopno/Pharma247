@@ -43,6 +43,7 @@ const Header = () => {
   const [searchPage, setSearchPage] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [notificationsList, setNotificationsList] = useState([],);
+  const hoverTimeoutRef = useRef(null);
 
 
 
@@ -59,7 +60,7 @@ const Header = () => {
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, [token]);
-  
+
   // Add this useEffect after your other useEffects
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -751,8 +752,21 @@ const Header = () => {
 
               <div className="hidden xl:flex">
                 <div>
-                  <div className="relative z-10" ref={dropdownRef}>
-                    <div className="flex mr-8" onClick={toggleDropdown}>
+                  <div
+                    className="relative z-10"
+                    ref={dropdownRef}
+                    onMouseEnter={() => {
+                      clearTimeout(hoverTimeoutRef.current);
+                      setIsOpen(true);
+                    }}
+                    onMouseLeave={() => {
+                      hoverTimeoutRef.current = setTimeout(() => {
+                        setIsOpen(false);
+                      }, 200);
+                    }}
+                  >
+                    <div className="flex mr-8 cursor-pointer">
+
                       <FaUserAlt
                         className="text-white"
                         style={{ fontSize: "1.2rem" }}
@@ -771,13 +785,16 @@ const Header = () => {
                               Profile
                             </li>
                           </Link>
-                          <li
-                            onClick={LogoutOpen}
-                            className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)]"
-                          >
-                            <LuLogOut style={{ fontSize: "1.2rem" }} />
-                            Logout
-                          </li>
+                          {token && (
+                            <li
+                              onClick={LogoutOpen}
+                              className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)]"
+                            >
+                              <LuLogOut style={{ fontSize: "1.2rem" }} />
+                              Logout
+                            </li>
+                          )}
+
                         </ul>
                       </div>
                     )}

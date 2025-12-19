@@ -5,11 +5,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   Button,
+  CircularProgress,
   InputAdornment,
   ListItem,
   ListItemText,
   OutlinedInput,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import SaveIcon from "@mui/icons-material/Save";
@@ -190,6 +192,7 @@ const AddPurchaseBill = () => {
   const [id, setId] = useState(null);
   const [importConpany, setImportConpany] = useState("");
 
+
   let defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 3);
 
@@ -199,6 +202,9 @@ const AddPurchaseBill = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  const [itemHistoryData, setItemHistoryData] = useState(null);
+  const [openItemHistory, setOpenItemHistory] = useState(false);
+
   /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -206,7 +212,6 @@ const AddPurchaseBill = () => {
   const inputRefs = useRef([]);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
-
   /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
 
   useEffect(() => {
@@ -1073,8 +1078,6 @@ const AddPurchaseBill = () => {
 
   const handleAddButtonClick = async () => {
     // Prevent multiple submissions
-
-
     setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
@@ -1153,10 +1156,7 @@ const AddPurchaseBill = () => {
       if (isSubmitting) return; // ⛔ Block if already submitting
       else {
         await handleAddItem(); // Call handleEditItem if validation passes
-
       }
-
-
     }
 
     return false;
@@ -1466,6 +1466,30 @@ const AddPurchaseBill = () => {
     }
   };
 
+
+  /*<========================================================================= Fetch customer history   ====================================================================> */
+
+  const fetchItemHistory = async (selectedOption) => {
+    let data = new FormData();
+    data.append("item_id", selectedOption.id);
+    setIsLoading(true);
+    try {
+      const response = await axios.post("item-purchase-history", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.status === 200) {
+        setItemHistoryData(response.data.data);
+        setOpenItemHistory(true);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("API error:", error);
+      toast.error("Failed to fetch customer history");
+    }
+  };
   /*<============================================================================== submit purchase bill  ==========================================================================> */
 
   const submitPurchaseData = async (draft) => {
@@ -1647,12 +1671,6 @@ const AddPurchaseBill = () => {
     // setCnAmount(0);
   };
 
-  /*<============================================================================== Distributor select  ==========================================================================> */
-
-  const handleDistributorSelect = (event, newValue) => {
-    setDistributor(newValue);
-    purchaseReturnData(id);
-  };
 
   /*<============================================================================== Select Item  ==========================================================================> */
 
@@ -2262,7 +2280,7 @@ const AddPurchaseBill = () => {
                       Search Item Name <span className="text-red-600 ">*</span>
                       <FaPlusCircle
                         className="primary cursor-pointer"
-                        onClick={() => {setOpenAddItemPopUp(true)}}
+                        onClick={() => { setOpenAddItemPopUp(true) }}
                       />
                     </div>
                   </th>
@@ -2351,10 +2369,72 @@ const AddPurchaseBill = () => {
                                 width: "100%",
                               }}
 
-                              inputProps={{
-                                ...params.inputProps,
+                              InputProps={{
+                                ...params.InputProps,
                                 style: { textTransform: 'uppercase' },
+                                endAdornment: (
+                                  <>
+                                    {selectedOption && (
+                                      <Tooltip
+                                        title="Item Purchase History"
+                                        arrow
+                                        componentsProps={{
+                                          tooltip: {
+                                            sx: {
+                                              backgroundColor: "#3f6212",
+                                              color: 'white',
+                                              fontSize: '14px',
+                                              fontWeight: '500',
+                                              padding: '8px 12px',
+                                              '& .MuiTooltip-arrow': {
+                                                color: '#3f6212',
+                                              }
+                                            }
+                                          }
+                                        }}
+                                      >
+                                        <IconButton
+                                          size="small"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            fetchItemHistory(selectedOption);
+                                          }}
+                                          sx={{
+                                            marginRight: '-8px',
+                                            zIndex: 1,
+                                            width: '28px',
+                                            height: '28px',
+                                            border: '2px solid var(--color1)',
+                                            borderRadius: '50%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                              backgroundColor: 'var(--color1) !important',
+                                              borderColor: 'var(--color1)',
+                                            },
+                                            '&:hover .sales-history-text': {
+                                              color: 'white !important'
+                                            }
+                                          }}
+                                        >
+                                          <span
+                                            className="sales-history-text"
+                                            style={{
+                                              color: 'var(--color1)',
+                                              fontWeight: 'bold',
+                                              fontSize: '14px',
+                                              transition: 'color 0.3s ease'
+                                            }}
+                                          >
+                                            P
+                                          </span>
+                                        </IconButton>
+                                      </Tooltip>
+                                    )}
+                                    {params.InputProps.endAdornment}
+                                  </>
+                                ),
                               }}
+
                               onKeyDown={(e) => {
                                 const { key, shiftKey } = e;
                                 const isTab = key === "Tab";
@@ -3650,6 +3730,162 @@ const AddPurchaseBill = () => {
                   </div>
                 </div>
               </div>
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+
+        {/*<====================================================================== Item History Modal  =====================================================================> */}
+        <Dialog
+          open={openItemHistory}
+          onClose={() => setOpenItemHistory(false)}
+          className="custom-dialog"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "80%",
+                maxWidth: "1200px",
+              },
+            },
+          }}
+        >
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Item Purchase History
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenItemHistory(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent sx={{ padding: 0 }}>
+            <DialogContentText id="alert-dialog-description" sx={{ margin: 0 }}>
+              {isLoading ? (
+                <div className="flex justify-center items-center p-8">
+                  <CircularProgress />
+                </div>
+              ) : (
+                <div
+                  className="flex"
+                  style={{ flexDirection: "column", gap: "0" }}
+                >
+                  <div className="custom-scroll-sale" style={{ width: "100%" }}>
+                    <table className="custom-table" style={{ background: "none", margin: 0 }}>
+                      <thead>
+                        <tr className="customtable">
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Distributor</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Bill No</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Bill Date</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Unit</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Batch</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Expiry Date</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Qty</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Free Qty</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Discount</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Rate</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>MRP</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Margin</span>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {itemHistoryData && itemHistoryData.length > 0 ? (
+                          itemHistoryData.map((item) => (
+                            <tr
+                              hover
+                              tabIndex={-1}
+                              key={item.id}
+                              onClick={() => {
+                                console.log(item)
+                                history.push(`/purchase/view/${item.id}`)
+                              }}
+                            >
+                              <td>{item.party_name}</td>
+                              <td>{item.bill_no}</td>
+                              <td>{item.bill_date}</td>
+                              <td>{item.unit}</td>
+                              <td>{item.batch_name}</td>
+                              <td>{item.expiry_date}</td>
+                              <td>{item.qty}</td>
+                              <td>{item.free_qty}</td>
+                              <td>{item.sch}</td>
+                              <td>{item.rate}</td>
+                              <td>{item.mrp}</td>
+                              <td>{item.margin}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              style={{
+                                textAlign: "center",
+                                fontSize: "16px",
+                                fontWeight: 600,
+                                padding: "20px"
+                              }}
+                            >
+                              No sales history found
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </DialogContentText>
           </DialogContent>
         </Dialog>

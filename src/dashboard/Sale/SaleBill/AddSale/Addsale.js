@@ -170,16 +170,12 @@ const Addsale = () => {
   const [barcodeBatch, setBarcodeBatch] = useState("");
   const [billNo, setBillNo] = useState(localStorage.getItem("BillNo"));
   const tableRef = useRef(null); // Reference for table container
-
-  const [openCustomerHistory, setOpenCustomerHistory] = useState(false);
+  const [openCustomerHistory,setOpenCustomerHistory] = useState(false);
   const [customerHistoryData, setCustomerHistoryData] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
-
   const [billSaveDraft, setBillSaveDraft] = useState("0");
   const toggleModal = async () => {
     // If modal is currently open and we're closing it, update points
@@ -835,6 +831,8 @@ const Addsale = () => {
     }
   };
 
+  /*<========================================================================= Fetch customer history   ====================================================================> */
+
   const fetchCustomerHistory = async (customerId) => {
     let data = new FormData();
     data.append("id", customerId);
@@ -847,6 +845,7 @@ const Addsale = () => {
       });
       if (response.data.status === 200) {
         setCustomerHistoryData(response.data.data);
+
         setOpenCustomerHistory(true);
       }
       setIsLoading(false);
@@ -4212,6 +4211,10 @@ const Addsale = () => {
                               hover
                               tabIndex={-1}
                               key={sale.id}
+                                 onClick={() => {
+                                console.log(item)
+                                history.push(`/salebill/view/${sale.id}`)
+                              }}
                             >
                               <td>{customerHistoryData.name}</td>
                               <td>{sale.area}</td>

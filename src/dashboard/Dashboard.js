@@ -17,7 +17,6 @@ import Select from "@mui/material/Select";
 // import { FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Loader from "../componets/loader/Loader";
-import { encryptData } from "../componets/cryptoUtils";
 // import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import stockByPTR from '../Image/ptr.jpg'
 // import stockByPTROne from '../Image/stockbyptr.png'
@@ -230,7 +229,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     dashboardData();
-    userPermission();
   }, [typeValue, value, expiredValue, staffListValue, staffValue]);
 
   const dashboardData = async () => {
@@ -315,22 +313,6 @@ const Dashboard = () => {
     }
   };
 
-  const userPermission = async () => {
-    let data = new FormData();
-    try {
-      await axios
-        .post("user-permission", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const permission = response.data.data;
-          const encryptedPermission = encryptData(permission);
-          localStorage.setItem("Permission", encryptedPermission);
-        });
-    } catch (error) { }
-  };
 
 
   const getNiceTicks = (data) => {

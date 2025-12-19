@@ -23,7 +23,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { encryptData, decryptData } from "../componets/cryptoUtils";
 import { toast, ToastContainer } from "react-toastify";
 import Search from "./Search";
 import { Typography } from "@mui/material";
@@ -39,7 +38,6 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
   // const token = localStorage.getItem("token");
-  const [permission, setPermission] = useState([]);
   const [searchPage, setSearchPage] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [notificationsList, setNotificationsList] = useState([],);
@@ -50,10 +48,6 @@ const Header = () => {
   /*<=============================================================================== get permissions  ======================================================================> */
 
   useEffect(() => {
-    const fetchPermissions = async () => {
-      await userPermission(); // Assuming this fetches permissions and stores them correctly
-    };
-    fetchPermissions();
     fetchNotification(); // Fetch notifications when the component mounts
   }, []);
 
@@ -77,33 +71,6 @@ const Header = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
-  const userPermission = async () => {
-    let data = new FormData();
-    try {
-      const response = await axios.post("user-permission", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const permission = response.data.data;
-      const encryptedPermission = encryptData(permission);
-      const storedPermissions = decryptData(encryptedPermission);
-
-      const filteredPermissions = storedPermissions.filter((permission) => {
-        const key = Object.keys(permission)[0];
-        return permission[key] === true;
-      });
-
-      setPermission(filteredPermissions);
-    } catch (error) {
-      console.error("API error:", error?.response?.status);
-
-      if (error?.response?.status === 401) {
-        setIsClear(true);
-      }
-    }
-  };
 
 
   const fetchNotification = () => {

@@ -14,6 +14,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import loginlogo from '../../assets/loginlogo.png';
+import { encryptData } from "../cryptoUtils";
 
 const LoginSignup = () => {
   // const loginlogo = process.env.PUBLIC_URL + "/loginlogo.PNG";
@@ -268,6 +269,28 @@ const LoginSignup = () => {
 
   {/*<=============================================================================== handle login ===================================================================> */ }
 
+
+
+  const userPermission = async (token) => {
+    let data = new FormData();
+    try {
+      await axios.post("user-permission", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          const permission = response.data.data;
+          const encryptedPermission = encryptData(permission);
+          localStorage.setItem("permissions", encryptedPermission);
+        });
+    } catch (error) {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+      }
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -304,6 +327,8 @@ const LoginSignup = () => {
           localStorage.setItem("email", email);
 
           toast.success(response.data.message);
+
+          await userPermission(token)
 
           setRole(role);
 
@@ -347,6 +372,7 @@ const LoginSignup = () => {
 
 
   };
+
   {/*<========================================================================= handle forget details ===================================================================> */ }
 
   const handleForgotDetails = async (event) => {

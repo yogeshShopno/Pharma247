@@ -9,7 +9,7 @@ const usePermissions = () => {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    const encryptedPermissions = localStorage.getItem('Permission');
+    const encryptedPermissions = localStorage.getItem('permissions');
 
     if (encryptedPermissions) {
 

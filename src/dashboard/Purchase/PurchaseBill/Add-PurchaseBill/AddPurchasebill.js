@@ -3877,7 +3877,7 @@ const AddPurchaseBill = () => {
                                 padding: "20px"
                               }}
                             >
-                              No sales history found
+                              No history found
                             </td>
                           </tr>
                         )}

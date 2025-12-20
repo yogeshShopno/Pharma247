@@ -100,6 +100,7 @@ import LoginSignup from './componets/Login/LoginSignup';
 import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
 import TrialEnd from './componets/Login/TrialEnd';
+import SehatPoints from './dashboard/More/SehatPoints/SehatPoints';
 
 function App() {
   const goFullScreen = () => {
@@ -372,7 +373,7 @@ function App() {
             <Route path='/trial-end'>
               <TrialEnd />
             </Route>
-             {/* <Route path='/trial-ends'>
+            {/* <Route path='/trial-ends'>
               <SubscriptionModal />
             </Route> */}
 
@@ -461,6 +462,11 @@ function App() {
             <Route path='/more/reconciliation'>
               <Protected>
                 <Reconciliation />
+              </Protected>
+            </Route>
+            <Route path='/more/sehatpoints'>
+              <Protected>
+                <SehatPoints />
               </Protected>
             </Route>
             <Route path='/more/loyaltypoints'>

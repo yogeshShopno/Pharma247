@@ -557,10 +557,10 @@ const Header = () => {
                             </span>
                           </Link>
                         </li>
-                        <li className="block border-b border-black">
+                        <li className="block border-b-2">
                           <Link to="/more/sehatpoints">
                             <span
-                              className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                              className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
                             >Sehat Point
                             </span>

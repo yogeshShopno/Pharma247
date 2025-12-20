@@ -557,6 +557,15 @@ const Header = () => {
                             </span>
                           </Link>
                         </li>
+                        <li className="block border-b border-black">
+                          <Link to="/more/sehatpoints">
+                            <span
+                              className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                              href=""
+                            >Sehat Point
+                            </span>
+                          </Link>
+                        </li>
                         <Link to="/Resports">
                           <li className="block border-b-2">
                             <span
@@ -1127,7 +1136,24 @@ const Header = () => {
                         </span>
                       </Link>
                     </li>
-
+                    <li className="block border-b border-black">
+                      <Link to="/more/loyaltypoints">
+                        <span
+                          className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                          href=""
+                        >Loyalty Point
+                        </span>
+                      </Link>
+                    </li>
+                    <li className="block border-b border-black">
+                      <Link to="/more/sehatpoints">
+                        <span
+                          className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
+                          href=""
+                        >Sehat Point
+                        </span>
+                      </Link>
+                    </li>
                     <Link to="/Resports">
                       <li className="block border-b border-black">
                         <span

@@ -3869,7 +3869,7 @@ const AddPurchaseBill = () => {
                         ) : (
                           <tr>
                             <td
-                              colSpan={7}
+                              colSpan={12}
                               style={{
                                 textAlign: "center",
                                 fontSize: "16px",

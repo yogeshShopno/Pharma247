@@ -1169,9 +1169,8 @@ const AddPurchaseBill = () => {
     setIsSubmitting(true); // Lock
 
     const gstMapping = {
-      28: 6,
+    
       18: 4,
-      12: 3,
       5: 2,
       0: 1,
     };
@@ -1265,9 +1264,13 @@ const AddPurchaseBill = () => {
       // Delay focus to wait for rerender
       setTimeout(() => {
         if (inputRefs.current[2]) {
-          inputRefs.current[2].focus(); // Item Name input
+          inputRefs.current[2]?.focus(); // Item Name input
         }
       }, 100);
+
+      if (inputRefs.current[2]) {
+          inputRefs.current[2]?.focus(); // Item Name input
+        }
 
     } catch (e) {
       throw e; // Re-throw to be caught by handleAddButtonClick

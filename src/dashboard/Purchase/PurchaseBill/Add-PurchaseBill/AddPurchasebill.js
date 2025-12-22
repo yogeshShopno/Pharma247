@@ -6,6 +6,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {
   Button,
   CircularProgress,
+  Input,
   InputAdornment,
   ListItem,
   ListItemText,
@@ -90,7 +91,7 @@ const AddPurchaseBill = () => {
   const [gst, setGst] = useState();
   const [batch, setBatch] = useState("");
   const [HSN, setHSN] = useState("");
-
+  const [otherAmt, setOtherAmt] = useState("");
   const [gstList, setGstList] = useState([]);
   const userId = localStorage.getItem("userId");
   const [barcode, setBarcode] = useState("");
@@ -1516,6 +1517,7 @@ const AddPurchaseBill = () => {
     data.append("sr_no", srNo);
     data.append("payment_type", paymentType);
     data.append("total_amount", ItemPurchaseList.new_total_price);
+    data.append("other_amount", otherAmt);
     data.append("net_amount", netAmount);
     data.append("cn_amount", cnAmount);
     data.append("total_gst", !totalGst ? 0 : totalGst);
@@ -1860,6 +1862,22 @@ const AddPurchaseBill = () => {
     resetAddDialog();
     // Reset dialog after submission
   };
+
+  useEffect(() => {
+    const baseNetAmount =
+      finalTotalAmount - finalCnAmount + roundOffAmount;
+    const other = Number(otherAmt) || 0;
+
+    // Prevent reducing below zero
+    if (other < 0 && Math.abs(other) > baseNetAmount) {
+      setOtherAmt("");
+      setNetAmount(baseNetAmount);
+      return;
+    }
+
+    setNetAmount(baseNetAmount + other);
+  }, [otherAmt, finalTotalAmount, finalCnAmount, roundOffAmount]);
+
 
   const handleNavigation = (path) => {
     setOpenAddPopUp(false);
@@ -3121,6 +3139,43 @@ const AddPurchaseBill = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
+                    }}
+                  >
+                    <label className="font-bold">Other Amount : </label>
+                    <span style={{ fontWeight: 600 }}>
+                      <Input
+                        type="text"
+                        value={otherAmt}
+
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (/^-?\d*\.?\d*$/.test(val)) {
+                            setOtherAmt(val);
+                          }
+                        }} size="small"
+                        style={{
+                          width: "70px",
+                          background: "none",
+                          // borderBottom: "1px solid gray",
+                          justifyItems: "end",
+                          outline: "none",
+                        }}
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            height: "35px",
+                          },
+                          "& .MuiInputBase-input": { textAlign: "end" },
+                        }}
+                      />
+                    </span>
+                  </div>
+
+
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
                       paddingBottom: "5px",
                     }}
                   >
@@ -3854,10 +3909,7 @@ const AddPurchaseBill = () => {
                               hover
                               tabIndex={-1}
                               key={item.id}
-                              onClick={() => {
-                                console.log(item)
-                                history.push(`/purchase/view/${item.id}`)
-                              }}
+                              onClick={() => { history.push(`/purchase/view/${item.id}`) }}
                             >
                               <td>{item.party_name}</td>
                               <td>{item.bill_no}</td>

@@ -2041,6 +2041,8 @@ const EditPurchaseBill = () => {
                   {/*<==============================================================   item rows   =============================================================> */}
 
                   {purchase?.item_list?.map((item, index) => (
+                    
+                    <>
                     <tr
                       key={item.id}
                       onClick={() => {
@@ -2085,6 +2087,8 @@ const EditPurchaseBill = () => {
                       <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
                       <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
                     </tr>
+                    </>
+                    
                   ))}
                 </tbody>)}
             </table>

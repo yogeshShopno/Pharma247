@@ -4,38 +4,22 @@ import Loader from "../../../componets/loader/Loader";
 import { ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import { Select, MenuItem, TextField, Button } from "@mui/material";
+import axios from "axios";
 
 const SehatPoints = () => {
+    const [token, setToken] = useState(localStorage.getItem("token"));
     const [isLoading, setIsLoading] = useState(false);
+    const [planList, setPlanList] = useState([])
+    const [relations, setRelations] = useState([])
+
+
     const [formData, setFormData] = useState({
         planId: "",
         paymentMethod: "",
         email: "",
         contacts: []
     });
-    const [errors, setErrors] = useState({
-        contacts: []
-    });
 
-
-    // Constants
-    const planList = [
-        { id: 1, plan_name: "Sehat Sathi", price: 199, customer_limit: 2 },
-        { id: 2, plan_name: "Sehat Plus", price: 399, customer_limit: 3 },
-        { id: 3, plan_name: "Premium Plan", price: 599, customer_limit: 6 }
-    ];
-
-    const relations = [
-        { id: 1, relation: "Self" },
-        { id: 2, relation: "Brother" },
-        { id: 3, relation: "Sister" },
-        { id: 4, relation: "Father" },
-        { id: 5, relation: "Mother" },
-        { id: 6, relation: "Grand Father" },
-        { id: 7, relation: "Grand Mother" },
-        { id: 8, relation: "Son" },
-        { id: 9, relation: "Daughter" },
-    ];
 
     const paymentTypes = [
         { id: 1, type: "Cash" },
@@ -43,7 +27,60 @@ const SehatPoints = () => {
         { id: 3, type: "UPI" },
     ];
 
+    const [errors, setErrors] = useState({
+        planId: "",
+        paymentMethod: "",
+        email: "",
+        contacts: []
+    });
 
+    /*<======================================================================== Fetch data from API ====================================================================> */
+
+    useEffect(() => {
+        getPlanList()
+        relationList()
+    }, []);
+
+    /*<======================================================================== fetch plan list ====================================================================> */
+
+    const getPlanList = async () => {
+
+        try {
+            await axios.get("sehat-membership-plan-list?", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setPlanList(response.data.data);
+                });
+        } catch (error) {
+            console.error("API error:", error?.response?.status);
+            if (error?.response?.status === 401) {
+            }
+        }
+    };
+
+    /*<======================================================================== fetch Relations list ====================================================================> */
+
+    const relationList = async () => {
+        try {
+            await axios.get("patient-family-relation-list?", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setRelations(response.data.data);
+                });
+        } catch (error) {
+            console.error("API error:", error?.response?.status);
+            if (error?.response?.status === 401) {
+            }
+        }
+    };
+
+    /*<======================================================================== Change plan ====================================================================> */
 
     const selectedPlanData = planList.find(plan => plan.id === formData.planId);
 
@@ -53,14 +90,14 @@ const SehatPoints = () => {
             setFormData(prev => ({
                 ...prev,
                 contacts: Array.from(
-                    { length: selectedPlanData.customer_limit },
+                    { length: selectedPlanData.user_covered },
                     () => ({ name: "", mobile: "", relation: "" })
                 )
             }));
-        } else if (selectedPlanData && formData.contacts.length !== selectedPlanData.customer_limit) {
+        } else if (selectedPlanData && formData.contacts.length !== selectedPlanData.user_covered) {
             // Adjust array size if plan changes, preserving existing data
             const currentContacts = [...formData.contacts];
-            const newLength = selectedPlanData.customer_limit;
+            const newLength = selectedPlanData.user_covered;
 
             if (newLength > currentContacts.length) {
                 // Add empty contacts if new plan has more slots
@@ -87,15 +124,51 @@ const SehatPoints = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    /*<============================================================= ======= handle contact form =============================================================== => */
+
     const handleContactChange = (index, field, value) => {
         const updatedContacts = [...formData.contacts];
         updatedContacts[index][field] = value;
         setFormData(prev => ({ ...prev, contacts: updatedContacts }));
     };
+
+    /*<========================================================================== Validation ======================================================================> */
     const validateForm = () => {
         let isValid = true;
-        const contactErrors = [];
 
+        const contactErrors = [];
+        const newErrors = {
+            planId: "",
+            paymentMethod: "",
+            email: "",
+            contacts: []
+        };
+
+        // ---- Plan Validation ----
+        if (!formData.planId) {
+            newErrors.planId = "Plan is required";
+            isValid = false;
+        }
+
+        // ---- Payment Method Validation ----
+        if (!formData.paymentMethod) {
+            newErrors.paymentMethod = "Payment method is required";
+            isValid = false;
+        }
+
+        // ---- Email Validation ----
+        if (!formData.email) {
+            newErrors.email = "Email is required";
+            isValid = false;
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                newErrors.email = "Enter a valid email address";
+                isValid = false;
+            }
+        }
+
+        // ---- Contacts Validation ----
         formData.contacts.forEach((contact, index) => {
             const err = {};
 
@@ -120,10 +193,13 @@ const SehatPoints = () => {
             contactErrors[index] = err;
         });
 
-        setErrors({ contacts: contactErrors });
+        newErrors.contacts = contactErrors;
+        setErrors(newErrors);
+
         return isValid;
     };
 
+    /*<========================================================================= handle submit =====================================================================> */
 
     const handleSubmit = () => {
         if (!validateForm()) {
@@ -145,6 +221,7 @@ const SehatPoints = () => {
         console.log("================================");
     };
 
+    {/*<====================================================================== UI =====================================================================> */ }
 
     return (
         <div>
@@ -177,47 +254,64 @@ const SehatPoints = () => {
                             {/* Plan Selection Row */}
                             <div className="flex justify-between gap-5 my-5">
                                 <div className="flex flex-col w-full">
-                                    <label className="label">Select Plan *</label>
+                                    <label className="label">Select Plan <span className="text-red-600 ">*</span></label>
                                     <Select
                                         size="small"
                                         value={formData.planId}
                                         onChange={(e) => handleChange("planId", e.target.value)}
+                                        error={!!errors.planId}
+
                                         displayEmpty
                                     >
-                                        <MenuItem value="" disabled>Select Plan</MenuItem>
+                                        <MenuItem value="" disabled>Select Plan <span className="text-red-600 ">*</span></MenuItem>
                                         {planList.map(plan => (
                                             <MenuItem key={plan.id} value={plan.id}>
                                                 {plan.plan_name} ₹{plan.price}
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.planId && (
+                                        <span className="text-red-600 text-xs">{errors.planId}</span>
+                                    )}
+
                                 </div>
 
                                 <div className="flex flex-col w-full">
-                                    <label className="label">Payment Method *</label>
+                                    <label className="label">Payment Method <span className="text-red-600 ">*</span></label>
                                     <Select
                                         size="small"
                                         value={formData.paymentMethod}
                                         onChange={(e) => handleChange("paymentMethod", e.target.value)}
                                         displayEmpty
+                                        required
+                                        error={!!errors.paymentMethod}
+
+
                                     >
-                                        <MenuItem value="" disabled>Select Payment Method</MenuItem>
+                                        <MenuItem value="" disabled>Select Payment Method <span className="text-red-600 ">*</span></MenuItem>
                                         {paymentTypes.map(item => (
                                             <MenuItem key={item.id} value={item.type}>
                                                 {item.type}
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    {errors.paymentMethod && (
+                                        <span className="text-red-600 text-xs">{errors.paymentMethod}</span>
+                                    )}
+
                                 </div>
 
                                 <div className="flex flex-col w-full">
-                                    <label className="label">Email *</label>
+                                    <label className="label">Email <span className="text-red-600 ">*</span></label>
                                     <TextField
                                         size="small"
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => handleChange("email", e.target.value)}
+                                        error={!!errors.email}
+                                        helperText={errors.email}
                                     />
+
                                 </div>
                             </div>
 
@@ -233,7 +327,7 @@ const SehatPoints = () => {
                                         style={{ borderColor: "var(--color2)" }}
                                     >
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Contact Name *</label>
+                                            <label className="label">Contact Name <span className="text-red-600 ">*</span></label>
                                             <TextField
                                                 size="small"
                                                 type="text"
@@ -246,7 +340,7 @@ const SehatPoints = () => {
                                         </div>
 
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Mobile No *</label>
+                                            <label className="label">Mobile No <span className="text-red-600 ">*</span></label>
                                             <TextField
                                                 size="small"
                                                 type="tel"
@@ -268,7 +362,7 @@ const SehatPoints = () => {
                                         </div>
 
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Relation *</label>
+                                            <label className="label">Relation <span className="text-red-600 ">*</span></label>
                                             <Select
                                                 size="small"
                                                 value={contact.relation}
@@ -277,10 +371,10 @@ const SehatPoints = () => {
                                                 onChange={(e) => handleContactChange(index, "relation", e.target.value)}
                                                 displayEmpty
                                             >
-                                                <MenuItem value="" disabled>Select Relation</MenuItem>
+                                                <MenuItem value="" disabled>Select Relation </MenuItem>
                                                 {relations.map(item => (
-                                                    <MenuItem key={item.id} value={item.relation}>
-                                                        {item.relation}
+                                                    <MenuItem key={item.id} value={item.name}>
+                                                        {item.name}
                                                     </MenuItem>
                                                 ))}
                                             </Select>

@@ -573,7 +573,6 @@ const Addsale = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          // console.log('response.data.data :>> ', response.data.data);
           setCustomerDetails(response.data.data);
           if (response.data.status === 401) {
             history.push("/");
@@ -686,11 +685,6 @@ const Addsale = () => {
       setItemList(items);
 
       const allOutOfStock = items.every((item) => item.stock === 0);
-
-      // if (allOutOfStock) {
-      //   // console.log('Search Item-------');
-      //   fetchItemDrugGroup(searchItem);
-      // }
 
       return items;
     } catch (error) {
@@ -840,7 +834,6 @@ const Addsale = () => {
       });
 
       if (response.data.status === 200) {
-        //console.log("response===>", response.data);
         toast.success(response.data.message);
         setOpenAddItemPopUp(false);
         resetAddDialog();
@@ -897,13 +890,11 @@ const Addsale = () => {
       });
 
       if (res.data) {
-        // console.log('Item Drug Group Data:', res.data.data.data);
         if (res.data.data) {
           const filteredItems = res.data.data.data.filter(
             (item) => item.stock > 0
           );
           setItemList(filteredItems);
-          // console.log('Filtered itemList:', filteredItems);
         }
       }
     } catch (error) {
@@ -1180,7 +1171,6 @@ const Addsale = () => {
           },
         })
         .then((response) => {
-          // console.log('response-------- :>> ', response.data.data.sales_item);
           setItemSaleList(response.data.data);
           setTodayLoyaltyPoint(response.data.data.today_loylti_point);
           setTotalAmount(response.data.data.sales_amount);
@@ -1478,9 +1468,7 @@ const Addsale = () => {
           (item) => parseFloat(item.total_stock) <= 1
         );
 
-        if (lowStockItems.length > 0) {
-          // console.log('Low stock items:', lowStockItems);
-        }
+    
 
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
@@ -1934,7 +1922,6 @@ const Addsale = () => {
   {/*<====================================================================== Handle PDF download   =====================================================================> */ }
 
   const pdfGenerator = async (id) => {
-    console.log(id);
     let data = new FormData();
     data.append("id", id);
     setIsLoading(true);
@@ -2025,7 +2012,6 @@ const Addsale = () => {
           },
         });
         if (response.data.status === 200) {
-          //console.log("response===>", response.data);
           toast.success("Reminder(s) set successfully");
           setOpenReminderPopUp(false);
 
@@ -4303,7 +4289,6 @@ const Addsale = () => {
                               tabIndex={-1}
                               key={sale.id}
                               onClick={() => {
-                                console.log(item)
                                 history.push(`/salebill/view/${sale.id}`)
                               }}
                             >
@@ -4454,7 +4439,6 @@ const Addsale = () => {
                               tabIndex={-1}
                               key={item.id}
                               onClick={() => {
-                                console.log(item)
                                 history.push(`/purchase/view/${item.id}`)
                               }}
                             >

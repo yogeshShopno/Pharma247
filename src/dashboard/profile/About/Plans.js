@@ -59,7 +59,6 @@ const Plans = () => {
 /*<====================================================================== Call razorpay API to get payment ======================================================================> */
 
   const loadRazorpay = async (plan) => {
-    console.log(plan.annual_price, "plan");
     try {
       const key = "rzp_test_qp5ViSvdWQsuNd";
       const name = localStorage.getItem("UserName");
@@ -75,8 +74,6 @@ const Plans = () => {
           return;
         }
         // const remainingTime = Math.floor((timer - Date.now()) / 1000);
-
-        // console.log(remainingTime);
         const options = {
           key: key, // Use the fetched key
           amount: Number(plan.annual_price) * 100, // Razorpay expects the amount in paise
@@ -122,7 +119,7 @@ const Plans = () => {
   /*<========================================================= call backend API to store plans Details after getting success response frm razorpay ====================================> */
 
   const submitPlan = async (PaymentId, amount) => {
-    console.log(PaymentId, "PaymentId");
+    
     let data = new FormData();
     data.append("payment_id", PaymentId);
     data.append("payment_date", format(new Date(), "yyyy-MM-dd"));
@@ -142,7 +139,6 @@ const Plans = () => {
         },
       });
       if (response.status == 200) {
-        console.log(response.data.data);
         getPurchaseHistory();
         setIsLoading(false);
       }

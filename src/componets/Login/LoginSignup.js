@@ -638,11 +638,6 @@ const LoginSignup = () => {
                       const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value === "";
                       e.target.value = value;
                       handleInputChange(e); // update always
-
-                      // optional: you can set error state if needed
-                      if (!isValid && value !== "") {
-                        console.log("Invalid email format");
-                      }
                     }}
                     inputProps={{
                       inputMode: "email", // brings email keyboard on mobile

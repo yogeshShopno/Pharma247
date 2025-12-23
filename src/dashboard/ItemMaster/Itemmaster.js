@@ -1584,9 +1584,7 @@ const Itemmaster = () => {
                 const value = e.target.value;
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
                 setDrugGroupName(capitalized);
-                if (e.target.value) {
-                  console.log(e.target.value, "Enter");
-                }
+            
               }}
 
 

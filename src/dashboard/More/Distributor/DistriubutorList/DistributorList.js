@@ -351,7 +351,7 @@ const DistributerList = () => {
       // Extract and set total count for pagination
       const totalCount = response.data.total_records
       setTotalRecords(totalCount);
-      console.log()
+
     } catch (error) {
       console.error("API error:", error);
       setTableData([]);

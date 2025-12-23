@@ -148,7 +148,6 @@ const Salereturn = () => {
 
     // New function specifically for arrow key navigation that works even when input is focused
     const handleArrowNavigation = (e) => {
-        console.log("handleArrowNavigation");
         if (!saleItems?.sales_item?.length) return;
 
         if (e.key === "ArrowDown" || e.key === "ArrowUp") {

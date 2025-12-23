@@ -431,7 +431,7 @@ const BankAccount = () => {
 
   const handlePaymentTypeChange = async (e) => {
     const selectedPaymentType = e.target.value;
-    console.log(selectedPaymentType)
+
     setPaymentType(selectedPaymentType);
     const selectedBankData = bankData.find(
       (bank) => bank.id === selectedPaymentType);
@@ -441,12 +441,11 @@ const BankAccount = () => {
       setCurrentBalance(selectedBankData.total_amount);
 
       setAccountHolderName(selectedBankData.account_holder_name);
-      console.log(selectedBankData)
-
+   
     } else {
       setCurrentBalance(selectedBankData.total_amount);
       setAccountHolderName(selectedBankData.account_holder_name);
-      console.log(selectedBankData)
+ 
     }
 
 

@@ -34,7 +34,6 @@ const usePermissions = () => {
 export default usePermissions;
 
 export const hasPermission = (permissions, permissionKey) => {
-  //console.log(permissions.some(permission => permission[permissionKey] === true));
   return permissions.some(permission => permission[permissionKey] === true);
 };
 
@@ -45,8 +44,7 @@ export const ProtectedRoute = ({ component: Component, requiredPermission, ...re
     <Route
       {...rest}
       render={props => {
-        ////console.log('Current Permissions:', permissions); // Debug
-        ////console.log('Required Permission:', requiredPermission); // Debug
+  
 
         if (hasPermission(permissions, requiredPermission)) {
           return <Component {...props} />;
@@ -58,24 +56,3 @@ export const ProtectedRoute = ({ component: Component, requiredPermission, ...re
     />
   );
 };
-
-// export const ProtectedRoute = ({ component: Component, requiredPermission, ...rest }) => {
-//   const permissions = usePermissions();
-
-//   return (
-//     <Route
-//       {...rest}
-//       render={props => {
-//         //console.log('Current Permissions:', permissions); // Debug: Check current permissions
-//         //console.log('Required Permission:', requiredPermission); // Debug: Check the required permission
-
-//         if (hasPermission(permissions, requiredPermission)) {
-//           return <Component {...props} />;
-//         } else {
-//           toast.error("You do not have permission to access this page.");
-//           return <Redirect to="/errorpage" />;
-//         }
-//       }}
-//     />
-//   );
-// };

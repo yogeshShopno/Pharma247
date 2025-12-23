@@ -113,7 +113,6 @@ const ReadyForPickup = ({ orderid }) => {
           setIsLoading(false);
           setOrderData(response.data.data);
           setImageUrls(response.data.data.prescrption_list)
-          console.log("orderData", response.data.data);
         });
     } catch (error) {
       setIsLoading(false);

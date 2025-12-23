@@ -59,7 +59,6 @@ const ReferEarn = () => {
       })
       .then((response) => {
         setLogData(response.data.data);
-        console.log(response.data.data);
         setIsLoading(false);
       })
       .catch((error) => {

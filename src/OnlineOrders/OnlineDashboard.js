@@ -66,7 +66,6 @@ const OnlineDashboard = () => {
 
   const openOrderDetails = (order) => {
     setSelectedOrder(order);
-    console.log("Selected Order:", order);
   };
 
   const handleClick = (pageNum) => {

@@ -215,10 +215,6 @@ const SehatPoints = () => {
             contacts: formData.contacts,
             totalContacts: formData.contacts.length
         };
-
-        console.log("=== SEHAT POINTS SUBMISSION ===");
-        console.log("Form Data:", submissionData);
-        console.log("================================");
     };
 
     {/*<====================================================================== UI =====================================================================> */ }

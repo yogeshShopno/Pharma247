@@ -227,7 +227,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+      
       });
   };
 
@@ -243,7 +243,7 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+       
       });
   };
 
@@ -256,10 +256,10 @@ const InventoryList = () => {
       })
       .then((response) => {
         setLocationList(response.data.data);
-        // setIsLoading(false);
+  
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+       
       });
   };
 
@@ -272,10 +272,10 @@ const InventoryList = () => {
       })
       .then((response) => {
         setPackgingTypeList(response.data.data);
-        // setIsLoading(false);
+    
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+       
       });
   };
 
@@ -288,10 +288,10 @@ const InventoryList = () => {
       })
       .then((response) => {
         setGstList(response.data.data);
-        // setIsLoading(false);
+
       })
       .catch((error) => {
-        // console.log("API Error:", error);
+     
       });
   };
 
@@ -364,7 +364,6 @@ const InventoryList = () => {
   const callBulkQRCode = async () => {
     const cleanQRBatch = QRBatch.map(({ item_name, ...rest }) => rest);
 
-    console.log("QRBatch", cleanQRBatch);
     try {
       const response = await axios.post(
         "item-bulk-qr-code?",
@@ -405,7 +404,6 @@ const InventoryList = () => {
         : [...prevSelected, itemId]
     );
 
-    // console.log("id", selectedItems);
   };
 
   /*<==================================================================================== pagination  ===========================================================================> */
@@ -548,8 +546,7 @@ const InventoryList = () => {
             // toast.error("No Record Found");
           }
           setIsLoading(false);
-          // console.log(data);
-          // console.log(searchItem);
+        
           // setSearchItem("");
           setSelectedOption("");
           setHsnCode("");
@@ -694,7 +691,7 @@ const InventoryList = () => {
   const handleInputChange = (event, newInputValue) => {
     setLocationBulk(newInputValue);
     // handleSearch(newInputValue);
-    // console.log(newInputValue + "ayusf");
+
   };
 
   const bulkOrderData = async () => {
@@ -1757,10 +1754,10 @@ const InventoryList = () => {
                           onChange={() => {
                             if (selectedItems.length === data.length) {
                               setSelectedItems([]);
-                              // console.log("id", selectedItems);
+                            
                             } else {
                               setSelectedItems(data.map((item) => item.id));
-                              // console.log("id", selectedItems);
+                           
                             }
                           }}
                           checked={selectedItems.length === data.length}
@@ -1777,10 +1774,10 @@ const InventoryList = () => {
                           onChange={() => {
                             if (selectedItems.length === data.length) {
                               setSelectedItems([]);
-                              // console.log("id", selectedItems);
+                            
                             } else {
                               setSelectedItems(data.map((item) => item.id));
-                              // console.log("id", selectedItems);
+                           
                             }
                           }}
                         />

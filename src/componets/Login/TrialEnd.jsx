@@ -16,15 +16,6 @@ const SubscriptionModal = ({ subscriptionType = "trial" }) => {
     }, 400);
   };
 
-  const handleSubscribe = () => {
-    if (isTrial) {
-      console.log("Redirecting to purchase page...");
-      // Add navigation or payment logic here
-    } else {
-      console.log("Redirecting to renewal page...");
-      // Add renewal logic here
-    }
-  };
 
   // Disable right-click, inspect, and copy actions
 //   useEffect(() => {

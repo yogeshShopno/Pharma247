@@ -85,11 +85,13 @@ const Header = () => {
       })
       .catch((error) => {
         console.error("API Error:", error);
+         if(error.response.status == 401) { 
+          setIsClear(true)
+         }
       });
   };
 
   /*<=============================================================================== logout  ======================================================================> */
-
 
   const handleLogout = async () => {
     let data = new FormData();
@@ -114,6 +116,7 @@ const Header = () => {
       setIsClear(true);
     }
   };
+  
   const LogoutOpen = (categoryId) => {
     setIsLogout(true);
   };

@@ -754,9 +754,9 @@ const EditPurchaseBill = () => {
     setUnsavedItems(true);
 
     const gstMapping = {
-      28: 6,
+   
       18: 4,
-      12: 3,
+
       5: 2,
       0: 1,
     };
@@ -1970,7 +1970,7 @@ const EditPurchaseBill = () => {
                           const isShiftTab = isTab && e.shiftKey;
                           if (isShiftTab) return;
                           if (isEnter || isTab) {
-                            const allowedGST = [0, 5, 12, 18, 28];
+                            const allowedGST = [0, 5, 18,];
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
                               toast.error("GST is required");

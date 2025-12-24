@@ -235,7 +235,7 @@ const EditPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList]); // Dependencies only affect Alt+S
+  }, [distributor, billNo, ItemPurchaseList,purchase]); // Dependencies only affect Alt+S
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -404,6 +404,7 @@ const EditPurchaseBill = () => {
       const purchaseData = response?.data?.data;
 
       setPurchase(purchaseData);
+
       const apiNet = Number(response?.data?.data.net_amount) || 0;
       setBaseNetAmount(apiNet);
       setNetAmount(apiNet);
@@ -437,6 +438,7 @@ const EditPurchaseBill = () => {
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
+      return purchaseData;
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
@@ -754,7 +756,7 @@ const EditPurchaseBill = () => {
     setUnsavedItems(true);
 
     const gstMapping = {
-   
+
       18: 4,
 
       5: 2,
@@ -2041,54 +2043,54 @@ const EditPurchaseBill = () => {
                   {/*<==============================================================   item rows   =============================================================> */}
 
                   {purchase?.item_list?.map((item, index) => (
-                    
+
                     <>
-                    <tr
-                      key={item.id}
-                      onClick={() => {
-                        setSelectedIndex(index);
-                        handleEditClick(item);
-                      }}
-                      className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                      style={{ borderBottom: index !== purchase.item_list.length - 1 ? '1px solid #e0e0e0' : 'none' }}
-                    >
-                      <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
-                        <BorderColorIcon
-                          style={{ color: "var(--color1)" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditClick(item);
-                          }}
-                        />
-                        <DeleteIcon
-                          className="delete-icon bg-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsDelete(true)
-                            setItemId(item.id)
-                            setUnsavedItems(true)
-                          }
-                          }
-                        />
-                        {item.item_name ? item.item_name : "-----"}
-                      </td>
-                      <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
-                      <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
-                      <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
-                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
-                      <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-----"}</td>
-                      <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
-                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
-                      <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
-                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-----"}</td>
-                      <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
-                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
-                      <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-----"}</td>
-                      <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
-                      <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
-                    </tr>
+                      <tr
+                        key={item.id}
+                        onClick={() => {
+                          setSelectedIndex(index);
+                          handleEditClick(item);
+                        }}
+                        className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                        style={{ borderBottom: index !== purchase.item_list.length - 1 ? '1px solid #e0e0e0' : 'none' }}
+                      >
+                        <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
+                          <BorderColorIcon
+                            style={{ color: "var(--color1)" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditClick(item);
+                            }}
+                          />
+                          <DeleteIcon
+                            className="delete-icon bg-none"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsDelete(true)
+                              setItemId(item.id)
+                              setUnsavedItems(true)
+                            }
+                            }
+                          />
+                          {item.item_name ? item.item_name : "-----"}
+                        </td>
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
+                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
+                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-----"}</td>
+                        <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-----"}</td>
+                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
+                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-----"}</td>
+                        <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
+                        <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
+                      </tr>
                     </>
-                    
+
                   ))}
                 </tbody>)}
             </table>

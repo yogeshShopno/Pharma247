@@ -124,7 +124,7 @@ const SehatPoints = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    /*<============================================================= ======= handle contact form =============================================================== => */
+    /*<==================================================================== handle contact form =============================================================== => */
 
     const handleContactChange = (index, field, value) => {
         const updatedContacts = [...formData.contacts];
@@ -201,10 +201,12 @@ const SehatPoints = () => {
 
     /*<========================================================================= handle submit =====================================================================> */
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateForm()) {
             return;
         }
+
+        let data = new FormData();
 
         const submissionData = {
             planId: formData.planId,
@@ -215,6 +217,20 @@ const SehatPoints = () => {
             contacts: formData.contacts,
             totalContacts: formData.contacts.length
         };
+         try {
+            const response =   await axios.post("log-out", data, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+           
+            });
+        } catch (error) {
+          console.error("API error:", error);
+        //   setIsClear(true);
+        }
+        
     };
 
     {/*<====================================================================== UI =====================================================================> */ }

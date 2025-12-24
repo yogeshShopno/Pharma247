@@ -16,40 +16,6 @@ const SubscriptionModal = ({ subscriptionType = "trial" }) => {
     }, 400);
   };
 
-
-  // Disable right-click, inspect, and copy actions
-//   useEffect(() => {
-//     const disableEvents = (e) => e.preventDefault();
-
-//     document.addEventListener("contextmenu", disableEvents);
-
-//     const disableKeys = (e) => {
-//       if (
-//         e.key === "F12" ||
-//         (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-//         (e.ctrlKey && e.key === "U")
-//       ) {
-//         e.preventDefault();
-//       }
-//     };
-//     document.addEventListener("keydown", disableKeys);
-//     document.addEventListener("selectstart", disableEvents);
-//     document.addEventListener("dragstart", disableEvents);
-//     document.addEventListener("copy", disableEvents);
-//     document.addEventListener("cut", disableEvents);
-//     document.addEventListener("paste", disableEvents);
-
-//     return () => {
-//       document.removeEventListener("contextmenu", disableEvents);
-//       document.removeEventListener("keydown", disableKeys);
-//       document.removeEventListener("selectstart", disableEvents);
-//       document.removeEventListener("dragstart", disableEvents);
-//       document.removeEventListener("copy", disableEvents);
-//       document.removeEventListener("cut", disableEvents);
-//       document.removeEventListener("paste", disableEvents);
-//     };
-//   }, []);
-
   return (
     <div
       className="relative min-h-screen flex items-center justify-center bg-gray-50 text-gray-900 p-4 select-none"

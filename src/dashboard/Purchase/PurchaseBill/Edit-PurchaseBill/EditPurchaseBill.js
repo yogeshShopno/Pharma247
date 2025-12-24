@@ -1978,7 +1978,7 @@ const EditPurchaseBill = () => {
                             }
                             if (!allowedGST.includes(Number(gst))) {
                               e.preventDefault();
-                              toast.error("Only 5%, 12%, 18%, or 28% GST is allowed");
+                              toast.error("Only 0%,5%,18%, GST is allowed");
                               return;
                             }
                           }

@@ -175,7 +175,6 @@ const SubscriptionModal = ({ subscriptionType = "trial" }) => {
               {/* Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={handleSubscribe}
                   className="flex-1 py-3 px-6 rounded-lg text-white font-semibold text-base transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
                   style={{ backgroundColor: "#3f6212" }}
                 >

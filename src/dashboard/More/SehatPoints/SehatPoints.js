@@ -3,23 +3,22 @@ import Header from "../../Header";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
-import { Select, MenuItem, TextField, Button } from "@mui/material";
+import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, DialogContent, DialogContentText, FormControl, DialogActions } from "@mui/material";
 import axios from "axios";
+import PlanDialog from "./Plandialog";
 
 const SehatPoints = () => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [isLoading, setIsLoading] = useState(false);
     const [planList, setPlanList] = useState([])
     const [relations, setRelations] = useState([])
-
-
+    const [showPlans, setShowPlans] = useState(false);
     const [formData, setFormData] = useState({
         planId: "",
         paymentMethod: "",
         email: "",
         contacts: []
     });
-
 
     const paymentTypes = [
         { id: 1, type: "Cash" },
@@ -212,18 +211,6 @@ const SehatPoints = () => {
         if (!validateForm()) {
             return;
         }
-
-        const submissionData = {
-            planId: formData.planId,
-            planName: selectedPlanData?.plan_name,
-            price: selectedPlanData?.price,
-            paymentMethod: formData.paymentMethod,
-            email: formData.email,
-            contacts: formData.contacts,
-
-        };
-
-
         const data = new FormData();
         data.append("plan_id", String(formData.planId));
         data.append("payment_method", formData.paymentMethod);
@@ -231,7 +218,7 @@ const SehatPoints = () => {
         data.append("customers", JSON.stringify(formData.contacts));
 
         try {
-           await axios.post("sehat-membership-plan-create", data, {
+            await axios.post("sehat-membership-plan-create", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -267,12 +254,41 @@ const SehatPoints = () => {
             ) : (
                 <div style={{ minHeight: "calc(100vh - 64px)" }}>
                     <div className="p-6">
-                        {/* Header */}
-                        <div className="mb-4 lyl_main_header_txt" style={{ display: "flex", gap: "4px" }}>
-                            <span className="primary" style={{ fontWeight: 700, fontSize: "20px" }}>
-                                Membership Plan
-                            </span>
-                            <BsLightbulbFill onClick={() => console.log("hi")} className="w-6 h-6 secondary hover-yellow" />
+                        <div
+                            className="mb-4 lyl_main_header_txt"
+                            style={{ display: "flex", gap: "4px" }}
+                        >
+                            <div
+                                style={{ display: "flex", gap: "5px", alignItems: "center" }}
+                            >
+                                <span
+                                    className="primary"
+                                    style={{
+                                        display: "flex",
+                                        fontWeight: 700,
+                                        fontSize: "20px",
+                                        // width: "130px",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    Membership plan
+                                </span>
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+                            </div>
+                            <div className="headerList">
+                                <Button
+                                    style={{
+                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                                        color: "white",
+                                    }}
+                                    className="add_lyl_btn"
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => { setShowPlans(true) }}
+                                >
+                                    View Plans
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Main Form Container */}
@@ -305,6 +321,7 @@ const SehatPoints = () => {
                                     {errors.planId && (
                                         <span className="text-red-600 text-xs">{errors.planId}</span>
                                     )}
+
 
                                 </div>
 
@@ -435,7 +452,10 @@ const SehatPoints = () => {
                             Submit
                         </Button>
                     </div>
+                    {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
+                 
                 </div>
+
             )}
         </div>
     );

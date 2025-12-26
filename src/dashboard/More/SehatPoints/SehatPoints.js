@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../Header";
 import Loader from "../../../componets/loader/Loader";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import { Select, MenuItem, TextField, Button } from "@mui/material";
 import axios from "axios";
@@ -91,7 +91,7 @@ const SehatPoints = () => {
                 ...prev,
                 contacts: Array.from(
                     { length: selectedPlanData.user_covered },
-                    () => ({ name: "", mobile: "", relation: "" })
+                    () => ({ name: "", number: "", relation: "" })
                 )
             }));
         } else if (selectedPlanData && formData.contacts.length !== selectedPlanData.user_covered) {
@@ -103,7 +103,7 @@ const SehatPoints = () => {
                 // Add empty contacts if new plan has more slots
                 const additionalContacts = Array.from(
                     { length: newLength - currentContacts.length },
-                    () => ({ name: "", mobile: "", relation: "" })
+                    () => ({ name: "", number: "", relation: "" })
                 );
                 setFormData(prev => ({
                     ...prev,
@@ -172,23 +172,30 @@ const SehatPoints = () => {
         formData.contacts.forEach((contact, index) => {
             const err = {};
 
-            if (!contact.name.trim()) {
-                err.name = "Name is required";
-                isValid = false;
+            const hasAnyValue =
+                contact.name.trim() ||
+                contact.number.trim() ||
+                contact.relation;
+            if (index === 0) {
+                if (!contact.name.trim()) {
+                    err.name = "Name is required";
+                    isValid = false;
+                }
+
+                if (!contact.relation) {
+                    err.relation = "Relation is required";
+                    isValid = false;
+                }
+
+                if (!contact.number) {
+                    err.number = "Number number is required";
+                    isValid = false;
+                } else if (contact.number.length !== 10) {
+                    err.number = "Number number must be 10 digits";
+                    isValid = false;
+                }
             }
 
-            if (!contact.relation) {
-                err.relation = "Relation is required";
-                isValid = false;
-            }
-
-            if (!contact.mobile) {
-                err.mobile = "Mobile number is required";
-                isValid = false;
-            } else if (contact.mobile.length !== 10) {
-                err.mobile = "Mobile number must be 10 digits";
-                isValid = false;
-            }
 
             contactErrors[index] = err;
         });
@@ -206,8 +213,6 @@ const SehatPoints = () => {
             return;
         }
 
-        let data = new FormData();
-
         const submissionData = {
             planId: formData.planId,
             planName: selectedPlanData?.plan_name,
@@ -215,22 +220,37 @@ const SehatPoints = () => {
             paymentMethod: formData.paymentMethod,
             email: formData.email,
             contacts: formData.contacts,
-            totalContacts: formData.contacts.length
+
         };
-         try {
-            const response =   await axios.post("log-out", data, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+
+
+        const data = new FormData();
+        data.append("plan_id", String(formData.planId));
+        data.append("payment_method", formData.paymentMethod);
+        data.append("email", formData.email);
+        data.append("customers", JSON.stringify(formData.contacts));
+
+        try {
+           await axios.post("sehat-membership-plan-create", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             })
-            .then((response) => {
-           
-            });
+                .then((response) => {
+                    toast.success(response.data.message);
+                    setFormData({
+                        planId: "",
+                        paymentMethod: "",
+                        email: "",
+                        contacts: []
+                    });
+                });
         } catch (error) {
-          console.error("API error:", error);
-        //   setIsClear(true);
+            console.error("API error:", error);
+            toast.error(error.response.data.message);
+
         }
-        
+
     };
 
     {/*<====================================================================== UI =====================================================================> */ }
@@ -252,7 +272,7 @@ const SehatPoints = () => {
                             <span className="primary" style={{ fontWeight: 700, fontSize: "20px" }}>
                                 Membership Plan
                             </span>
-                            <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
+                            <BsLightbulbFill onClick={() => console.log("hi")} className="w-6 h-6 secondary hover-yellow" />
                         </div>
 
                         {/* Main Form Container */}
@@ -332,6 +352,9 @@ const SehatPoints = () => {
                                 <React.Fragment key={index}>
                                     <h3 className="font-semibold text-[16px]">
                                         Contact {index + 1}
+                                        {index === 0 && (
+                                            <span className="text-red-600"> *</span>
+                                        )}
                                     </h3>
 
                                     <div
@@ -339,7 +362,9 @@ const SehatPoints = () => {
                                         style={{ borderColor: "var(--color2)" }}
                                     >
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Contact Name <span className="text-red-600 ">*</span></label>
+                                            <label className="label">Contact Name    {index === 0 && (
+                                                <span className="text-red-600"> *</span>
+                                            )}</label>
                                             <TextField
                                                 size="small"
                                                 type="text"
@@ -352,17 +377,19 @@ const SehatPoints = () => {
                                         </div>
 
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Mobile No <span className="text-red-600 ">*</span></label>
+                                            <label className="label">Mobile No    {index === 0 && (
+                                                <span className="text-red-600"> *</span>
+                                            )}</label>
                                             <TextField
                                                 size="small"
                                                 type="tel"
-                                                value={contact.mobile}
-                                                error={!!errors.contacts?.[index]?.mobile}
-                                                helperText={errors.contacts?.[index]?.mobile}
+                                                value={contact.number}
+                                                error={!!errors.contacts?.[index]?.number}
+                                                helperText={errors.contacts?.[index]?.number}
                                                 onChange={(e) => {
                                                     const value = e.target.value.replace(/\D/g, "");
                                                     if (value.length <= 10) {
-                                                        handleContactChange(index, "mobile", value);
+                                                        handleContactChange(index, "number", value);
                                                     }
                                                 }}
                                                 inputProps={{
@@ -374,7 +401,9 @@ const SehatPoints = () => {
                                         </div>
 
                                         <div className="flex flex-col w-full">
-                                            <label className="label">Relation <span className="text-red-600 ">*</span></label>
+                                            <label className="label">Relation    {index === 0 && (
+                                                <span className="text-red-600"> *</span>
+                                            )}</label>
                                             <Select
                                                 size="small"
                                                 value={contact.relation}
